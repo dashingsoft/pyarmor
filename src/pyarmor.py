@@ -199,7 +199,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
     except AttributeError:
         rootdir = os.path.dirname(os.path.abspath(sys.argv[0]))
     logging.info('rootdir is %s' % rootdir)
-    filelist = 'public.key', 'pyimcore.py'
+    filelist = 'public.key', 'pyimcore.py', 'pytransform.py'
     for x in filelist:
         src = os.path.join(rootdir, x)
         if not os.path.exists(src):
@@ -220,6 +220,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.write(os.path.join(rootdir, 'public.key'), 'pyshield.key')
         myzip.writestr('pyshield.lic', capkey)
         myzip.write(os.path.join(rootdir, 'pyimcore.py'), 'pyimcore.py')
+        myzip.write(os.path.join(rootdir, 'pytransform.py'), 'pytransform.py')
         myzip.writestr('private.key', pri)
         myzip.writestr('product.key', pubx)
         myzip.writestr('license.lic', lic)
@@ -228,12 +229,12 @@ def make_capsule(rootdir=None, filename='project.zip'):
     logging.info('generate capsule %s OK.' % os.path.abspath(filename))
     return True
 
-def encrypt_files(files, kv, output=None):
+def encrypt_files(files, prokey, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
 
     files          list all the scripts
-    kv             32 bytes used to encrypt scripts
+    prokey         project key file used to encrypt scripts
     output         output directory. If None, the output file will be saved
                    in the same path as the original script
 
@@ -249,70 +250,70 @@ def encrypt_files(files, kv, output=None):
     flist = []
     for x in files:
         flist.append((x, fn(output, x)))
-        logging.info(_('encrypt %s to %s') % flist[-1])
+        logging.info('encrypt %s to %s' % flist[-1])
 
-    if flist[:1]:
-        if isinstance(kv, str) and kv.endswith('product.key'):
-            if not os.path.exists(kv):
-                raise RuntimeError('missing product.key')
-            pytransform.encrypt_project_files(kv, tuple(flist))
-        else:
-            pytransform.encrypt_files(kv, tuple(flist))
-        logging.info(_('encrypt all scripts OK.'))
+    if len(flist[:1]) == 0:
+        logging.info('no any script specified')
     else:
-        logging.info(_('No script found.'))
+        if not os.path.exists(kv):
+            raise RuntimeError('missing product.key')
+        pytransform.encrypt_project_files(kv, tuple(flist))
+        logging.info('encrypt all scripts OK.')
 
-def make_license(capsule, filename, fmt):
+def make_license(capsule, filename, code):
     myzip = ZipFile(capsule, 'r')
     myzip.extract('private.key', tempfile.gettempdir())
     prikey = os.path.join(tempfile.tempdir, 'private.key')
-    start = -1
-    count = 1
-    pytransform.generate_serial_number(filename, prikey, fmt, start, count)
-    os.remove(prikey)
+    try:
+        pytransform.generate_license_file(filename, prikey, code)
+    finally:
+        os.remove(prikey)
 
 @checklicense
 def do_encrypt(argv):
-    '''
-Usage: pyarmor encrypt [OPTIONS] [File Patterns or @Filename]
+    '''Usage: pyarmor encrypt [OPTIONS] [File Patterns or @Filename]
 
-  Encrpty the files list in the command line, you can use a
-  specified pattern according to the rules used by the Unix
-  shell. No tilde expansion is done, but *, ?, and character
-  ranges expressed with [] will be correctly matched.
+Encrpty the files list in the command line, you can use a specified
+pattern according to the rules used by the Unix shell. No tilde
+expansion is done, but *, ?, and character ranges expressed with []
+will be correctly matched.
 
-  You can either list file patterns in one file, one pattern one line,
-  then add a prefix '@' to the filename.
+You can either list file patterns in one file, one pattern one line,
+then add a prefix '@' to the filename.
 
-  All the files will be encrypted and saved as orginal file
-  name plus 'e'. By default, the encrypted scripts and all the
-  auxiliary files used to run the encrypted scripts are save in
-  the path "dist".
+All the files will be encrypted and saved as orginal file name plus
+'e'. By default, the encrypted scripts and all the auxiliary files
+used to run the encrypted scripts are save in the path "dist".
 
-  Available options:
+Available options:
 
-  -O, --output=DIR                [option], all the encrypted files will
-                                  be saved here.
+  -O, --output=DIR                Output path for runtime files and encrypted
+                                  files (if no --in-place)
+
                                   The default value is "dist".
 
-  -C, --with-capsule=FILENAME     [option] Specify the filename of capsule
-                                  generated before. If this option isn't
-                                  specified, pyarmor will generate a
-                                  temporary capsule to encrypt the scripts.
+  -C, --with-capsule=FILENAME     Specify the filename of capsule generated
+                                  before.
 
-  -i                              [option], the encrypted scripts will be saved
-                                  in the original path (same as source).
+                                  The default value is "project.zip".
 
-  -P, --path=DIR                  [option], the source path of python scripts.
+  -i, --in-place                  [option], the encrypted scripts will be
+                                  saved in the original path (same as source).
+                                  Otherwise, save to --output specified.
+
+  -s, --src=DIR                   [option], the source path of python scripts.
                                   The default value is current path.
 
-                                  The default value is "dist".
-  -S, --with-extension=FILENAME   [option] Specify the filename of python
-                                  module "pytransform", only used for cross
-                                  publish. By default, it will be the value
-                                  of pytransform.__file__ imported by pyarmor.
+  -p, --plat-name                 [option] platform name to run encrypted
+                                  scripts. Only used when encrypted scripts
+                                  will be run in different platform.
 
-  For examples:
+  -n, --no-runtime                Do not generate extra runtime files. Runtime
+                                  files are required to run encrypted scripts.
+                                  By default, all these file will be generated
+                                  and save in output path.
+
+For examples:
 
     - Encrypt a.py and b.py as a.pyx and b.pyx, saved in the path "dist":
 
@@ -333,92 +334,79 @@ Usage: pyarmor encrypt [OPTIONS] [File Patterns or @Filename]
 
     - Encrypt python scripts to run in different platform:
 
-      pyarmor encrypt \
-        --with-extension=extensions/pytransform-1.7.2.linux-armv7.so \
-        a.py b.py
+      pyarmor encrypt --plat-name=linux_x86_64 a.py b.py
 
     '''
 
     try:
         opts, args = getopt.getopt(
             argv,
-            'C:O:iP:S:',
-            ['in-place', 'output=', 'path=', 'with-capsule=', 'with-extension=']
+            'C:O:inp:s::',
+            ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
+             'no-runtime']
             )
     except getopt.GetoptError:
         logging.exception('option error')
         usage('encrypt')
         sys.exit(1)
 
-    if len(args) == 0:
-        logging.error(_('missing the script names'))
-        usage('encrypt')
-        sys.exit(2)
+    # if len(args) == 0:
+    #     logging.error(_('missing the script names'))
+    #     usage('encrypt')
+    #     sys.exit(2)
 
     output = 'dist'
     srcpath = None
-    kv = None
-    capsule = None
+    capsule = 'project.zip'
+    inplace = False
+    noruntime = False
+    platname = None
     extfile = None
-    sameplace = False
 
     for o, a in opts:
         if o in ('-O', '--output'):
             output = a
-        elif o in ('-P', '--path'):
+        elif o in ('-s', '--src'):
             srcpath = a
         elif o in ('-i', '--in-place'):
-            sameplace = True
+            inplace = True
         elif o in ('-C', '--with-capsule'):
             capsule = a
-        elif o in ('-S', '--with-extension'):
-            extfile = a
+        elif o in ('-p', '--plat-name'):
+            platname = a
+        elif o in ('-n', '--no-runtime'):
+            noruntime = True
 
     if srcpath is not None and not os.path.exists(srcpath):
-        logging.error(_('missing base path "%s"') % srcpath)
+        logging.error('missing base path "%s"' % srcpath)
         return False
 
     if capsule is not None and not os.path.exists(capsule):
-        logging.error(_('missing capsule file'))
+        logging.error('missing capsule file')
         return False
 
     if output == '':
-        output = os.getcwd()
+        output = 'dist'
 
-    logging.info(_('output path is %s') % output)
+    logging.info('output path is %s' % output)
     if not os.path.exists(output):
-        logging.info(_('make output path: %s') % output)
+        logging.info('make output path: %s' % output)
         os.makedirs(output)
 
-    if extfile is None:
-        extfile = pytransform.__file__
-        relfiles = get_related_files()
-    elif os.path.exists(extfile):
-        relfiles = get_related_files(extfile)
+    extname = '_pytransform.so' if sys.platform.startswith('linux') else '_pytransform.dll'
+    if platname is None:
+        platform = _format_platform()
+        extfile = os.path.join(sys.rootdir, name)
     else:
-        logging.error(_('missing pytransform extension file %s') % extfile)
-        return False
+        extfile = os.path.join(sys.rootdir, 'platforms', platname, name)
+        if not os.path.exists(extfile):
+            # Need to download platforms from pyarmor homepage
+            logging.info('missing cross platform library %s' % extfile)
+            logging.info('you need download prebuilt platform library from pyarmor homepage, and save them into platforms/arch')
+            return False    
 
-    if extfile.endswith('.pyd'):
-        target = os.path.join(output, 'pytransform.pyd')
-    elif extfile.endswith('.so'):
-        target = os.path.join(output, 'pytransform.so')
-    else:
-        raise RuntimeError(_('Unsupport extension format'))
-
-    logging.info(_('copy %s as %s') % (extfile, target))
-    shutil.copy(extfile, target)
-
-    for filename in relfiles:
-        if not os.path.exists(filename):
-            logging.error(_('missing file %s') % filename)
-            return False
-        logging.info(_('copy %s to %s') % (filename, output))
-        target = os.path.join(output, os.path.basename(filename))
-        shutil.copy(filename, target)
-
-    if kv is not None:
-        logging.info(_('key is %s') % kv)
+    logging.info('copy %s to %s' % (extfile, output))
+    shutil.copy(extfile, output)
 
     filelist = []
     patterns = []
@@ -439,101 +427,72 @@ Usage: pyarmor encrypt [OPTIONS] [File Patterns or @Filename]
             for name in glob.glob(os.path.join(srcpath, pat)):
                 filelist.append(name)
 
-    if capsule is None:
-        logging.info(_('make anonymous capsule'))
-        filename = os.path.join(output, 'tmp_project.zip')
-        make_capsule(sys.rootdir, None, filename)
-        logging.info(_('extract anonymous capsule'))
-        ZipFile(filename).extractall(path=output)
-        os.remove(filename)
-    else:
-        logging.info(_('extract capsule %s') % capsule)
-        ZipFile(capsule).extractall(path=output)
+    logging.info('extract capsule %s' % capsule)
+    ZipFile(capsule).extractall(path=output)
+
     prikey = os.path.join(output, 'private.key')
     if os.path.exists(prikey):
-        logging.info(_('remove private key %s') % capsule)
+        logging.info('remove private key %s' % capsule)
         os.remove(prikey)
-    kvfile = os.path.join(output, 'key.txt')
-    if os.path.exists(kvfile):
-        logging.info(_('use capsule key in %s') % kvfile)
-        kv = unhexlify(_get_kv(kvfile).replace(' ', ''))
-        logging.info(_('remove key file %s') % kvfile)
-        os.remove(kvfile)
 
-    if kv is None:
-        kv = os.path.join(output, 'product.key')
-    elif not os.path.exists(os.path.join(output, 'module.key')):
-        raise RuntimeError(_('missing module key'))
-    logging.info(_('encrypt files ...'))
-    encrypt_files(filelist, kv, None if sameplace else output)
-
-    logging.info(_('Encrypt files OK.'))
+    if len(filelist[:1]) == 0:
+        logging.info('Generate runtime files to %s OK.' % output)
+    else:
+        prokey = os.path.join(output, 'product.key')
+        if not os.path.exists(prokey):
+            raise RuntimeError('missing project key %s' % prokey)
+        logging.info('encrypt files ...')
+        encrypt_files(filelist, prokey, None if inplace else output)
+        logging.info('Encrypt files OK.')
 
 @checklicense
 def do_capsule(argv):
-    '''
-Usage: pyarmor capsule [Options] [name]
+    '''Usage: pyarmor capsule [name]
 
-  Generate a capsule which used to encrypt/decrypt python scripts later, it
-  will generate different capsule when run this command again. Generately,
-  one project, one capsule.
+Generate a capsule which used to encrypt/decrypt python scripts later,
+it will generate random capsule when run this command again. Note that
+the trial version of Pyarmor will always generate same project capsule
 
-  Available options:
+Generately, one project, one capsule.
 
-  -O, --output=DIR            [option] The path used to save capsule file.
-
-  For example,
+For example,
 
      - Generate default capsule "project.zip":
 
        pyarmor capsule
 
-     - Generate a capsule "dist/foo.zip":
+     - Generate a capsule "foo.zip":
 
-       pyarmor capsule --output=dist foo
+       pyarmor capsule foo
+
     '''
 
     try:
-        opts, args = getopt.getopt(argv, 'K:O:', ['key=', 'output='])
+        opts, args = getopt.getopt(argv, '', [])
     except getopt.GetoptError:
         logging.exception('option error')
         usage('capsule')
         sys.exit(2)
-
-    output = ''
-    keystr = None
-    for o, a in opts:
-        if o in ('-K', '--key'):
-            keystr = _get_kv(a)
-        elif o in ('-O', '--output'):
-            output = a
-
-    if output == '':
-        output = os.getcwd()
-
-    if not os.path.exists(output):
-        logging.info(_('make output path: %s') % output)
-        os.makedirs(output)
-
+    
+    output = os.getcwd()
     if len(args) == 0:
         filename = os.path.join(output, 'project.zip')
     else:
         filename = os.path.join(output, '%s.zip' % args[0])
 
-    if keystr is not None:
-        logging.info(_('key is %s') % keystr)
-    logging.info(_('output filename is %s') % filename)
-    make_capsule(sys.rootdir, keystr, filename)
-    logging.info(_('Generate capsule OK.'))
+    logging.info('output filename is %s' % filename)
+    make_capsule(sys.rootdir, filename)
+    logging.info('Generate capsule OK.')
 
 @checklicense
 def do_license(argv):
-    '''Usage: pyarmor license [Options] [CODE]
+    '''
+Usage: pyarmor license [Options] [CODE]
 
-  Generate a registration code for project capsule, save it to "license.lic"
-  by default.
+Generate a registration code for project capsule, save it to "license.lic"
+by default.
 
-  Available options:
+Available options:
 
   -O, --output=DIR                [option] The path used to save license file.
 
@@ -547,7 +506,7 @@ def do_license(argv):
   -C, --with-capsule=FILENAME     [required] Specify the filename of capsule
                                   generated before.
 
-  For example,
+For example,
 
      - Generate a license file "license.lic" for project capsule "project.zip":
 
@@ -638,9 +597,9 @@ def do_license(argv):
             logging.error('bind file %s not found', bindfile)
             return
 
-    logging.info(_('output filename is %s'), filename)
+    logging.info('output filename is %s', filename)
     make_license(capsule, filename, fmt if fmt else key)
-    logging.info(_('Generate license file "%s" OK.'), filename)
+    logging.info('Generate license file "%s" OK.', filename)
 
 if __name__ == '__main__':
     sys.rootdir = os.path.dirname(os.path.abspath(sys.argv[0]))
