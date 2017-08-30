@@ -7,6 +7,7 @@ import shutil
 import tarfile
 import tempfile
 from zipfile import ZipFile
+from StringIO import StringIO
 
 # Both python2/python3
 try:
@@ -23,6 +24,7 @@ namelist = ('pyshield.lic', 'pyshield.key', 'public.key', 'product.key',
             'config.py', 'pyarmor.py', 'pytransform.py', 'pyimcore.py')
 workpath = '__runtime__'
 ext_char = 'e'
+logfile = os.path.join(workpath, '__pyarmor.log')
 
 def setupModuleTest():
     if not os.path.exists(workpath):
@@ -48,13 +50,24 @@ def cleanupModuleTest():
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.stdout = open(os.path.join(workpath, 'stdout.log'), 'w')
+        # self.stdout = open(os.path.join(workpath, 'stdout.log'), 'w')
+        self.stdout = StringIO()
         sys.stdout = self.stdout
         self.pyarmor = test_support.import_module('pyarmor')
+        self.pyarmor.__dict__['pytransform'] = test_support.import_module('pytransform')
+
+        with open(logfile, 'w') as f:
+            pass
 
     def tearDown(self):
         sys.stdout = sys.__stdout__
         self.stdout.close()
+
+    def searchStdoutOutput(self, text):
+        with open(logfile, 'r') as f:
+            s = f.read()
+            # sys.stderr.write('\n\n%s\n\n' % s)
+            return not (s.decode().find(text) == -1)
 
 class PyarmorTestCases(BaseTestCase):
 
@@ -96,10 +109,31 @@ class PyarmorTestCases(BaseTestCase):
     def test_make_license(self):
         ft = self.pyarmor.make_license
         capsule = os.path.join('data', 'project.zip')
-        filename = 'license.new_1.txt'
+        filename = os.path.join(workpath, 'license.new_1.txt')
         code = 'test_make_license'
         ft(capsule, filename, code)
         self.assertTrue(os.path.exists(filename))
+
+    def test_do_capsule(self):
+        ft = self.pyarmor.do_capsule
+        argv = ['--output', workpath]
+        ft(argv)
+        self.assertTrue(os.path.exists(os.path.join(workpath, 'project.zip')))
+        self.assertTrue(self.searchStdoutOutput('Generate capsule OK'))
+
+        argv = ['--output', workpath, 'myproject']
+        ft(argv)
+        self.assertTrue(os.path.exists(os.path.join(workpath, 'myproject.zip')))
+
+    def test_do_capsule_with_force(self):
+        ft = self.pyarmor.do_capsule
+        argv = ['--output', workpath]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('already exists'))
+
+        argv.append('-f')
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate capsule OK'))
 
     # def test_encrypt_files_with_output(self):
     #     ft = self.pyarmor.encrypt_files
@@ -176,15 +210,15 @@ class PyarmorTestCases(BaseTestCase):
     #     self.assertTrue(os.path.exists(os.path.join(output, 'pyshield.py' + ext_char)))
 
 if __name__ == '__main__':
-    # logging.basicConfig(
-    #     level=logging.DEBUG,
-    #     format='%(levelname)-8s %(message)s',
-    #     filename=os.path.join(os.getcwd(), '__pyarmor.log'),
-    #     filemode='w',
-    #     )
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(levelname)-8s %(message)s',
+        filename=logfile,
+        filemode='w',
+        )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_make_capsule'
+    # loader.testMethodPrefix = 'test_do_capsule'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
