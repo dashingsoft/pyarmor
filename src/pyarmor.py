@@ -468,7 +468,7 @@ Available options:
 
   -O, --output=DIR                Path used to save license file.
 
-  -B, --bind                      [optional] Generate license file bind to
+  -B, --bind-disk                 [optional] Generate license file bind to
                                   fixed machine.
 
   -F, --bind-file=FILENAME        [option] Generate license file bind to
@@ -493,7 +493,7 @@ For example,
   - Generate a license file "license.lic" bind to machine whose harddisk's
     serial number is "PBN2081SF3NJ5T":
   
-    pyarmor license --wth-capsule=project.zip --bind PBN2081SF3NJ5T
+    pyarmor license --wth-capsule=project.zip --bind-disk PBN2081SF3NJ5T
   
   - Generate a license file "license.lic" bind to ssh key file id_rsa:
   
@@ -512,7 +512,8 @@ For example,
     '''
     opts, args = getopt.getopt(
         argv, 'BC:e:F:O:',
-        ['bind', 'expired-date=', 'bind-file=', 'with-capsule=', 'output=']
+        ['bind-disk', 'expired-date=', 'bind-file=', 'with-capsule=',
+         'output=']
     )
 
     filename = 'license.lic.txt'
@@ -524,7 +525,7 @@ For example,
     for o, a in opts:
         if o in ('-C', '--with-capsule'):
             capsule = a
-        elif o in ('-B', '--bind'):
+        elif o in ('-B', '--bind-disk'):
             bindflag = True
         elif o in ('-F', '--bind-file'):
             bindfileflag = True
@@ -533,7 +534,7 @@ For example,
             expired = a
         elif o in ('-O', '--output'):
             if os.path.exists(a) and os.path.isdir(a):
-                filename = os.path.join(a, 'license.txt')
+                filename = os.path.join(a, 'license.lic.txt')
             else:
                 filename = a
 
