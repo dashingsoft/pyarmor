@@ -75,6 +75,7 @@ def checklicense(func):
         if code == '':
             print(trial_info)
         func(*arg, **kwargs)
+    wrap.__doc__ = func.__doc__
     return wrap
 
 def show_version_info(verbose=True):
@@ -157,7 +158,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         logging.error('missing license file %s' % licfile)
         return False
 
-    logging.info(_('generate product key'))
+    logging.info('generate product key')
     pri, pubx, capkey, lic = pytransform.generate_project_capsule()
 
     logging.info('generating capsule %s ...' % filename)
