@@ -17,23 +17,23 @@ import os
 import sys
 
 # Options
-_verbose_mode = 1
+_verbose_mode = 0
 
 class PytransformError(Exception):
     def __init__(self, *args, **kwargs):
         super(Exception, self).__init__(*args, **kwargs)
         if _verbose_mode:
-            self._print_exc()
+            self._print_stack()
 
     @classmethod
-    def _print_exc(self):
+    def _print_stack(self):
         try:
-            from traceback import print_exc
+            from traceback import print_stack
         except Exception:
             _verbose_mode = 0
             sys.stderr.write('Disabled verbose mode.\n')
         else:
-            print_exc()
+            print_stack()
 
 def dllmethod(func):
     def format_message(msg, *args, **kwargs):
