@@ -59,6 +59,7 @@ test: build
 
 
 build:
+	rm -rf $(WORKPATH)
 	mkdir -p $(WORKPATH)
 	cp ../src/platforms/$(PLATFORM)/$(TARGET) $(WORKPATH)
 
