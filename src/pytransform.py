@@ -97,7 +97,7 @@ def encrypt_files(key, filelist):
     dlfunc = prototype(('encrypt_files', _pytransform))
     return dlfunc(t_key(*key), filelist)
 
-def generate_project_capsule(licfile=None):
+def generate_project_capsule(licfile):
     prikey, pubkey, prolic = _generate_project_capsule()
     capkey = _encode_capsule_key_file(licfile)
     return prikey, pubkey, capkey, prolic
