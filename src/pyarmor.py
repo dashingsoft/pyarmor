@@ -145,23 +145,23 @@ def make_capsule(rootdir=None, filename='project.zip'):
             rootdir = sys.rootdir
     except AttributeError:
         rootdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-    logging.info('rootdir is %s' % rootdir)
+    logging.info('Rootdir is %s', rootdir)
     filelist = 'public.key', 'pyimcore.py', 'pytransform.py'
     for x in filelist:
         src = os.path.join(rootdir, x)
         if not os.path.exists(src):
-            logging.error('missing %s' % src)
+            logging.error('No %s found in the rootdir', src)
             return False
 
     licfile = os.path.join(rootdir, 'license.lic')
     if not os.path.exists(licfile):
-        logging.error('missing license file %s' % licfile)
+        logging.error('Missing license file %s', licfile)
         return False
 
-    logging.info('generate product key')
-    pri, pubx, capkey, lic = pytransform.generate_project_capsule()
-
-    logging.info('generating capsule %s ...' % filename)
+    logging.info('Generating project key ...')
+    pri, pubx, capkey, lic = pytransform.generate_project_capsule(licfile)
+    logging.info('Generating project OK.')
+    logging.info('Writing capsule to %s ...', filename)
     myzip = ZipFile(filename, 'w')
     try:
         myzip.write(os.path.join(rootdir, 'public.key'), 'pyshield.key')
@@ -173,7 +173,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.writestr('license.lic', lic)
     finally:
         myzip.close()
-    logging.info('generate capsule %s OK.' % os.path.abspath(filename))
+    logging.info('Write project capsule OK.')
     return True
 
 def encrypt_files(files, prokey, output=None):
@@ -202,9 +202,9 @@ def encrypt_files(files, prokey, output=None):
     if len(flist[:1]) == 0:
         logging.info('no any script specified')
     else:
-        if not os.path.exists(kv):
-            raise RuntimeError('missing product.key')
-        pytransform.encrypt_project_files(kv, tuple(flist))
+        if not os.path.exists(prokey):
+            raise RuntimeError('missing project key "%s"' % prokey)
+        pytransform.encrypt_project_files(prokey.encode(), tuple(flist))
         logging.info('encrypt all scripts OK.')
 
 def make_license(capsule, filename, code):
@@ -254,7 +254,7 @@ For example,
     output = os.getcwd()
     overwrite = False
     for o, a in opts:
-        if o in ('-O', '--ouput'):
+        if o in ('-O', '--output'):
             output = a
         elif o in ('-f', '--force'):
             overwrite = True
@@ -265,14 +265,15 @@ For example,
         filename = os.path.join(output, '%s.zip' % args[0])
 
     if os.path.exists(filename) and not overwrite:
-        logging.error("Capsule %s already exists" % filename)
+        logging.error("Capsule %s already exists", filename)
         logging.info("Specify -f to overwrite it if you really want to do")
         sys.exit(3)
 
     if not os.path.exists(output):
+        logging.info("Make output path %s", output)
         os.makedirs(output)
 
-    logging.info('output filename is %s' % filename)
+    logging.info('Output filename is %s', filename)
     make_capsule(sys.rootdir, filename)
     logging.info('Generate capsule OK.')
 
