@@ -3,10 +3,9 @@ from distutils.util import get_platform
 version = '3.0.1'
 
 version_info = '''
-Pyarmor is a tool used to import or run the encrypted python
-scripts. Only by a few extra files, pyarmor can run and imported
-encrypted files in the normal python environments. Here are the basic
-steps:
+Pyarmor is a tool used to import or run the encrypted python scripts.
+Only by a few extra files, pyarmor can run and imported encrypted
+files in the normal python environments. Here are the basic steps:
 
 - Generate project capsule
 - Encrypt python scripts with project capsule
@@ -22,13 +21,15 @@ You're using trail version. Free trial version that never expires,
 but project capsule generated is fixed by hardcode, so all the
 encrypted files are encrypted by same key.
 
-A registration code is required to generate random project
-capsule. Visit
-https://shopper.mycommerce.com/checkout/cart/add/55259-1 to purchase
-one.
+A registration code is required to generate random project capsule.
+If Pyarmor is helpful for you, please purchase one by visiting
 
-If you have received a registration code, just replace the content of
-"license.lic" with registration code only (no newline).
+https://shopper.mycommerce.com/checkout/cart/add/55259-1
+
+If you have received a registration code, just replace the content
+of "license.lic" with registration code only (no newline).
+
+Enjoy it!
 
 '''
 

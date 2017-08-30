@@ -49,17 +49,17 @@ def _import_pytransform():
         return m
     except Exception:
         pass
+    logging.info('Searching pytransform library ...')
     path = sys.rootdir
     src = os.path.join(path, 'platforms', platform, dll_name + dll_ext)
-    if not os.path.exists(src):
-        raise RuntimeError('No library %s found', src)
-    logging.info('Find pytransform library "%s"', src)
-    logging.info('Copy %s to %s', src, path)
-    shutil.copy(src, path)
-
-    m = __import__('pytransform')
-    logging.info('Load pytransform OK.')
-    return m
+    if os.path.exists(src):
+        logging.info('Find pytransform library "%s"', src)
+        logging.info('Copy %s to %s', src, path)
+        shutil.copy(src, path)
+        m = __import__('pytransform')
+        logging.info('Load pytransform OK.')
+        return m
+    logging.error('No library %s found', src)
 
 def _get_registration_code():
     try:
@@ -72,8 +72,16 @@ def checklicense(func):
     def wrap(*arg, **kwargs):
         code = _get_registration_code()
         if code == '':
-            print(trial_info)
-        func(*arg, **kwargs)
+            sys.stderr.write('Pyarmor Trial Version %s\n' % version)
+            sys.stderr.write(trial_info)
+        else:
+            sys.stderr.write('Pyarmor Version %s\n' % version)
+        try:
+            func(*arg, **kwargs)
+        except RuntimeError as e:
+            logging.error(str(e))
+        except getopt.GetoptError as e:
+            logging.error(str(e))
     wrap.__doc__ = func.__doc__
     return wrap
 
@@ -149,13 +157,11 @@ def make_capsule(rootdir=None, filename='project.zip'):
     for x in filelist:
         src = os.path.join(rootdir, x)
         if not os.path.exists(src):
-            logging.error('No %s found in the rootdir', src)
-            return False
+            raise RuntimeError('No %s found in the rootdir', src)
 
     licfile = os.path.join(rootdir, 'license.lic')
     if not os.path.exists(licfile):
-        logging.error('Missing license file %s', licfile)
-        return False
+        raise RuntimeError('Missing license file %s', licfile)
 
     logging.info('Generating project key ...')
     pri, pubx, capkey, lic = pytransform.generate_project_capsule(licfile)
@@ -173,7 +179,6 @@ def make_capsule(rootdir=None, filename='project.zip'):
     finally:
         myzip.close()
     logging.info('Write project capsule OK.')
-    return True
 
 def encrypt_files(files, prokey, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
@@ -242,13 +247,7 @@ For example,
    pyarmor capsule --output mycapsules foo
 
     '''
-
-    try:
-        opts, args = getopt.getopt(argv, 'fO:', ['force', 'output='])
-    except getopt.GetoptError:
-        logging.exception('option error')
-        usage('capsule')
-        return False
+    opts, args = getopt.getopt(argv, 'fO:', ['force', 'output='])
 
     output = os.getcwd()
     overwrite = False
@@ -264,19 +263,16 @@ For example,
         filename = os.path.join(output, '%s.zip' % args[0])
 
     if os.path.exists(filename) and not overwrite:
-        logging.error("Capsule %s already exists", filename)
         logging.info("Specify -f to overwrite it if you really want to do")
-        return False
+        raise RuntimeError("Capsule %s already exists", filename)
 
     if not os.path.exists(output):
         logging.info("Make output path %s", output)
         os.makedirs(output)
 
     logging.info('Output filename is %s', filename)
-    if make_capsule(sys.rootdir, filename):
-        logging.info('Generate capsule OK.')
-        return False
-    return True
+    make_capsule(sys.rootdir, filename)
+    logging.info('Generate capsule OK.')
 
 @checklicense
 def do_encrypt(argv):
@@ -296,30 +292,30 @@ used to run the encrypted scripts are save in the path "dist".
 
 Available options:
 
-  -O, --output=DIR                Output path for runtime files and encrypted
-                                  files (if no --in-place)
+  -O, --output=DIR            Output path for runtime files and encrypted
+                              files (if no --in-place)
 
-                                  The default value is "build".
+                              The default value is "build".
 
-  -C, --with-capsule=FILENAME     Specify the filename of capsule generated
-                                  before.
+  -C, --with-capsule=FILENAME Specify the filename of capsule generated
+                              before.
 
-                                  The default value is "project.zip".
+                              The default value is "project.zip".
 
-  -i, --in-place                  [option], the encrypted scripts will be
-                                  saved in the original path (same as source).
-                                  Otherwise, save to --output specified.
+  -i, --in-place              [option], the encrypted scripts will be
+                              saved in the original path (same as source).
+                              Otherwise, save to --output specified.
 
-  -s, --src=DIR                   [option], the source path of python scripts.
-                                  The default value is current path.
+  -s, --src=DIR               [option], the source path of python scripts.
+                              The default value is current path.
 
-  -p, --plat-name                 [option] platform name to run encrypted
-                                  scripts. Only used when encrypted scripts
-                                  will be run in different platform.
+  -p, --plat-name             [option] platform name to run encrypted
+                              scripts. Only used when encrypted scripts
+                              will be run in different platform.
 
-  -m, --main=NAME                 Generate wrapper file to run encrypted script
+  -m, --main=NAME             Generate wrapper file to run encrypted script
 
-  -f, --force                     Force to clean output path
+  -f, --force                 Force to clean output path
 
 For examples:
 
@@ -356,7 +352,7 @@ For examples:
     except getopt.GetoptError:
         logging.exception('option error')
         usage('encrypt')
-        sys.exit(1)
+        return False
 
     output = 'build'
     srcpath = None
@@ -599,6 +595,8 @@ if __name__ == '__main__':
         sys.exit(0)
 
     pytransform = _import_pytransform()
+    if pytransform is None:
+        sys.exit(1)
 
     if 'help'.startswith(command) or sys.argv[1].startswith('-h'):
         try:
