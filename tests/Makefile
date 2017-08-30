@@ -46,7 +46,7 @@ WORKPATH = __runtime__
 
 VERSIONS := 27
 
-.PHONY: test unit build
+.PHONY: test unit trial build
 
 
 test: build
@@ -68,8 +68,16 @@ unit: build
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
             $(subst XY,$${pyver},$(PYTHON)) test-pyarmor.py || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
-	done	
-	# make clean
+	done
+	make clean
+
+trial: build
+	for pyver in  $(VERSIONS) ; do \
+            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
+            $(subst XY,$${pyver},$(PYTHON)) test-trial-pyarmor.py || exit 1; \
+            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+	done
+	make clean
 
 
 clean:
