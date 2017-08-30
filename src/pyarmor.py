@@ -315,7 +315,7 @@ Available options:
 
   -m, --main=NAME             Generate wrapper file to run encrypted script
 
-  -f, --force                 Force to clean output path
+  -d, --clean                 Clean output path at start.
 
 For examples:
 
@@ -343,8 +343,8 @@ For examples:
     '''
 
     opts, args = getopt.getopt(
-        argv, 'C:fiO:p:s:',
-        ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=', 'force']
+        argv, 'C:diO:p:s:',
+        ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=', 'clean']
     )
 
     output = 'build'
@@ -354,7 +354,7 @@ For examples:
     platname = None
     extfile = None
     mainname = None
-    overwrite = False
+    clean = False
 
     for o, a in opts:
         if o in ('-O', '--output'):
@@ -367,8 +367,8 @@ For examples:
             capsule = a
         elif o in ('-p', '--plat-name'):
             platname = a
-        elif o in ('-f', '--force'):
-            overwrite = True
+        elif o in ('-d', '--clean'):
+            clean = True
         elif o in ('-m', '--main'):
             mainname = a
 
@@ -383,7 +383,7 @@ For examples:
         output = 'build'
 
     logging.info('Output path is %s' % output)
-    if os.path.exists(output) and overwrite:
+    if os.path.exists(output) and clean:
         logging.info('Removing output path %s', output)
         shutil.rmtree(output)
         logging.info('Remove output path OK.')
