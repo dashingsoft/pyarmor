@@ -17,7 +17,7 @@ import os
 import sys
 
 # Options
-_verbose_mode = 0
+_verbose_mode = 1
 
 class PytransformError(Exception):
     def __init__(self, *args, **kwargs):
@@ -173,7 +173,8 @@ def _load_library():
 
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
     # m.set_option('enable_encrypt_generator'.encode(), c_char_p(1))
-    # m.set_option('pyshield_path'.encode(), './mylib/pyshield')
+    if not os.path.abspath('.') == os.path.abspath(path):
+        m.set_option('pyshield_path'.encode(), path.encode())
     return m
 
 _pytransform = _load_library()
