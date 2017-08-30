@@ -7,6 +7,7 @@ import tarfile
 import tempfile
 from subprocess import Popen
 from zipfile import ZipFile
+from StringIO import StringIO
 
 # Both python2/python3
 try:
@@ -48,7 +49,8 @@ def cleanupModuleTest():
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.stdout = open(os.path.join(workpath, 'stdout.log'), 'w')
+        # self.stdout = open(os.path.join(workpath, 'stdout.log'), 'w')
+        self.stdout = StringIO()
         sys.stdout = self.stdout
         self.pyarmor = test_support.import_module('pyarmor')
 
@@ -105,7 +107,7 @@ class PyarmorTestCases(BaseTestCase):
     def test_make_license(self):
         ft = self.pyarmor.make_license
         capsule = os.path.join('data', 'project.zip')
-        filename = 'license.new_1.txt'
+        filename = os.path.join(workpath, 'license.new_1.txt')
         code = 'test_make_license'
         ft(capsule, filename, code)
         self.assertTrue(os.path.exists(filename))
