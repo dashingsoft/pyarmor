@@ -43,13 +43,6 @@ except Exception:
 from config import (version, version_info, trial_info, help_footer,
                     ext_char, platform, dll_ext, dll_name, wrap_runner)
 
-def _get_registration_code():
-    try:
-        code = pytransform.get_registration_code()
-    except Exception:
-        code = ''
-    return code
-
 def _import_pytransform():
     try:
         m = __import__('pytransform')
@@ -67,6 +60,14 @@ def _import_pytransform():
     m = __import__('pytransform')
     logging.info('Load pytransform OK.')
     return m
+pytransform = _import_pytransform()
+
+def _get_registration_code():
+    try:
+        code = pytransform.get_registration_code()
+    except Exception:
+        code = ''
+    return code
 
 def checklicense(func):
     def wrap(*arg, **kwargs):
@@ -587,8 +588,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         usage()
         sys.exit(0)
-
-    pytransform = _import_pytransform()
+    
     command = sys.argv[1]
     if len(sys.argv) >= 3 and sys.argv[2] == 'help':
         usage(command)
