@@ -53,6 +53,7 @@ class BaseTestCase(unittest.TestCase):
         self.stdout = StringIO()
         sys.stdout = self.stdout
         self.pyarmor = test_support.import_module('pyarmor')
+        self.pyarmor.__dict__['pytransform'] = test_support.import_module('pytransform')
 
     def tearDown(self):
         sys.stdout = sys.__stdout__
