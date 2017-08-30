@@ -41,7 +41,7 @@ except Exception:
     from binascii import a2b_hex as unhexlify
 
 from config import (version, version_info, trial_info, help_footer,
-                    ext_char, platform, dll_ext, dll_name)
+                    ext_char, platform, dll_ext, dll_name, wrap_runner)
 
 def _get_registration_code():
     try:
@@ -57,8 +57,7 @@ def _import_pytransform():
     except ImportError:
         pass
     path = sys.rootdir
-    name = '_pytransform.' + ('so' if platform.startswith('linux') else 'dll')
-    src = os.path.join(path, 'platforms', platform, name)
+    src = os.path.join(path, 'platforms', platform, dll_name + dll_ext)
     if not os.path.exists(src):
         raise RuntimeError('no library %s found' % src)
     logging.info('find pytransform library "%s"' % src)
