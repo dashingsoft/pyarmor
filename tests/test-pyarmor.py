@@ -3,6 +3,7 @@
 import logging
 import sys
 import os
+import py_compile
 import shutil
 import tarfile
 import tempfile
@@ -135,79 +136,184 @@ class PyarmorTestCases(BaseTestCase):
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Generate capsule OK'))
 
-    # def test_encrypt_files_with_output(self):
-    #     ft = self.pyarmor.encrypt_files
-    #     files = [os.path.join(workpath, 'examples', 'hello1.py')]
-    #     kv = self.key + self.iv
-    #     output = os.path.join(workpath, 'build')
-    #     ft(files, kv, output=output)
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'hello1.py' + ext_char)))
+    def test_do_encrypt(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build')
+        argv = ['-O', output,
+                '-C', capsule,
+                os.path.join(workpath, 'main.py'),
+                os.path.join(workpath, 'foo.py'),
+                ]
+        ft(argv)
+        self.assertTrue(os.path.exists(os.path.join(output, 'main.py' + ext_char)))
+        self.assertTrue(os.path.exists(os.path.join(output, 'foo.py' + ext_char)))
+        self.assertTrue(os.path.exists(os.path.join(output, 'pyshield.key')))
 
-    # def test_do_encrypt(self):
-    #     ft = self.pyarmor.do_encrypt
+    def test_parse_file_args(self):
+        fm = self.pyarmor._parse_file_args
 
-    #     output = os.path.join(workpath, 'build')
-    #     argv = ['-O', output,
-    #             os.path.join(workpath, 'examples/hello1.py'),
-    #             os.path.join(workpath, 'examples/hello2.py'),
-    #             os.path.join(workpath, 'examples/helloext.c'),
-    #             os.path.join(workpath, 'examples/helloext.pyd'),
-    #             ]
-    #     ft(argv)
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'hello1.py' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'hello2.py' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'helloext.c' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'helloext.pyd' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'pyshield.key')))
+        args = workpath + '/foo.?y', workpath + '/sky.*'
+        filelist = fm(args)
+        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
+                                     os.path.join(workpath, 'sky.py')])
 
-    # def test_do_encrypt_pattern_file(self):
-    #     ft = self.pyarmor.do_encrypt
+        filename = os.path.join(workpath, 'filelist.txt')
+        with open(filename, 'w') as f:
+            f.write(workpath + '/foo.?y\n')
+            f.write(workpath + '/main.*y\n')
+        args = ['@' + filename]
+        filelist = fm(args)
+        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
+                                     os.path.join(workpath, 'main.py')])
 
-    #     output = os.path.join(workpath, 'build')
-    #     argv = ['-O', output,
-    #             os.path.join(workpath, 'examples/*.py'),
-    #             ]
-    #     ft(argv)
+        args = 'foo.py', 'main.py'
+        filelist = fm(args, srcpath=workpath)
+        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
+                                     os.path.join(workpath, 'main.py')])
 
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'hello1.py' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'hello2.py' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'pyhello.py' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'pyshield.key')))
+    def test_do_encrypt_empty_file(self):
+        ft = self.pyarmor.do_encrypt
+        filename = os.path.join(workpath, 'empty.py')
+        f = open(filename, 'w')
+        f.close()
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build')
+        argv = ['-O', output,
+                '-C', capsule,
+                filename]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Could not encrypt empty file'))
+        self.assertFalse(os.path.exists(os.path.join(output, 'empty.py' + ext_char)))
 
-    # def test_do_encrypt_with_path(self):
-    #     ft = self.pyarmor.do_encrypt
-    #     output = os.path.join(workpath, 'build')
-    #     argv = ['-O', output, '--path',
-    #             os.path.join(workpath, 'examples'),
-    #             '*.pyd'
-    #             ]
-    #     ft(argv)
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'helloext.pyd' + ext_char)))
+    def test_do_encrypt_pyc(self):
+        ft = self.pyarmor.do_encrypt
+        filename = os.path.join(workpath, 'foo.pyc')
+        py_compile.compile(filename[:-1])
+        self.assertTrue(os.path.exists(filename))
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'compile')
+        argv = ['-O', output,
+                '-C', capsule,
+                filename]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertTrue(os.path.exists(os.path.join(output, 'foo.pyc' + ext_char)))
 
-    # def test_do_encrypt_empty_file(self):
-    #     ft = self.pyarmor.do_encrypt
-    #     output = os.path.join(workpath, 'build')
-    #     filename = os.path.join(workpath, 'examples', 'empty.py')
-    #     f = open(filename, 'w')
-    #     f.close()
-    #     argv = ['-O', output, filename]
-    #     ft(argv)
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'empty.py' + ext_char)))
+    def test_do_encrypt_in_place(self):
+        ft = self.pyarmor.do_encrypt
+        filename = os.path.join(workpath, 'bootstrap.py')
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build')
+        argv = ['-O', output,
+                '-C', capsule,
+                '-i',
+                filename]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertFalse(os.path.exists(os.path.join(output, 'bootstrap.py' + ext_char)))
+        self.assertTrue(os.path.exists(os.path.join(workpath, 'bootstrap.py' + ext_char)))
 
-    # def test_do_encrypt_with_path_at_file(self):
-    #     ft = self.pyarmor.do_encrypt
-    #     output = os.path.join(workpath, 'build')
-    #     filename = os.path.join(workpath, 'filelist.txt')
-    #     f = open(filename, 'w')
-    #     f.write('register.py\n\ncore/pyshield.py')
-    #     f.close()
-    #     argv = ['-O', output, '--path',
-    #             os.path.join(workpath, 'examples', 'pydist'),
-    #             '@' + filename
-    #             ]
-    #     ft(argv)
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'register.py' + ext_char)))
-    #     self.assertTrue(os.path.exists(os.path.join(output, 'pyshield.py' + ext_char)))
+    def test_do_encrypt_main(self):
+        ft = self.pyarmor.do_encrypt
+        filename = os.path.join(workpath, 'main.py')
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'scripts')
+        argv = ['-O', output,
+                '-C', capsule,
+                '-m', 'main',
+                filename]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertTrue(os.path.exists(os.path.join(output, 'main.py' + ext_char)))
+        target = os.path.join(output, 'main.py')
+        self.assertTrue(os.path.exists(target))
+        with open(target, 'r') as f:
+            s = f.read()
+        self.assertTrue(s.find('main.pye') > 0)
+
+    def test_do_encrypt_clean(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build2')
+        argv = ['-O', output,
+                '-C', capsule,
+                '-d',
+                os.path.join(workpath, 'main.py'),
+                os.path.join(workpath, 'foo.py'),
+                ]
+        ft(argv)
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Remove output path OK'))
+
+    def test_do_encrypt_platname(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build3')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--plat-name', 'unknow-plat',
+                os.path.join(workpath, 'foo.py'),
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Cross publish'))
+
+    def test_do_license(self):
+        ft = self.pyarmor.do_license
+        capsule = os.path.join('data', 'project.zip')        
+        argv = ['-O', workpath,
+                '-C', capsule,
+                ]
+        ft(argv)
+        self.assertTrue(os.path.exists(workpath + '/license.lic.txt'))
+        self.assertTrue(self.searchStdoutOutput('Generate license file'))
+
+        output = os.path.join(workpath, 'license.1.txt')
+        argv = ['-O', output,
+                '-C', capsule,
+                'test-reg-code'
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate license file'))
+        self.assertTrue(os.path.exists(output))
+
+        output = os.path.join(workpath, 'license.2.txt')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--bind-disk', 'abcdefh-hid'
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate license file'))
+        self.assertTrue(os.path.exists(output))
+
+        output = os.path.join(workpath, 'license.3.txt')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--e', '2018-10-05',
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate license file'))
+        self.assertTrue(os.path.exists(output))
+
+        output = os.path.join(workpath, 'license.4.txt')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--e', '2018-10-05',
+                '--bind-disk', 'abcdefh-hid'
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate license file'))
+        self.assertTrue(os.path.exists(output))
+
+        output = os.path.join(workpath, 'license.5.txt')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--bind-file', workpath + '/id_rsa',
+                '~/.ssh/my_id_rsa'
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate license file'))
+        self.assertTrue(os.path.exists(output))
 
 if __name__ == '__main__':
     logging.basicConfig(
@@ -218,7 +324,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_do_capsule'
+    # loader.testMethodPrefix = 'test_do_license'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
