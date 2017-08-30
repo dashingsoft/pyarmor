@@ -47,20 +47,19 @@ def _import_pytransform():
     try:
         m = __import__('pytransform')
         return m
-    except ImportError:
+    except Exception:
         pass
     path = sys.rootdir
     src = os.path.join(path, 'platforms', platform, dll_name + dll_ext)
     if not os.path.exists(src):
-        raise RuntimeError('no library %s found' % src)
-    logging.info('find pytransform library "%s"' % src)
-    logging.info('copy %s to %s' % (src, path))
-    shutil.copyfile(src, path)
+        raise RuntimeError('No library %s found', src)
+    logging.info('Find pytransform library "%s"', src)
+    logging.info('Copy %s to %s', src, path)
+    shutil.copy(src, path)
 
     m = __import__('pytransform')
     logging.info('Load pytransform OK.')
     return m
-pytransform = _import_pytransform()
 
 def _get_registration_code():
     try:
@@ -218,7 +217,7 @@ def make_license(capsule, filename, code):
 
 @checklicense
 def do_capsule(argv):
-    '''Usage: pyarmor capsule [name]
+    '''Usage: pyarmor capsule [OPTIONS] [NAME]
 
 Generate a capsule which used to encrypt/decrypt python scripts later,
 it will generate random capsule when run this command again. Note that
@@ -234,13 +233,13 @@ Available options:
 
 For example,
 
-     - Generate default capsule "project.zip":
+ - Generate default capsule "project.zip":
 
-       pyarmor capsule project
+   pyarmor capsule project
 
-     - Generate a capsule "mycapsules/foo.zip":
+ - Generate a capsule "mycapsules/foo.zip":
 
-       pyarmor capsule --output mycapsules foo
+   pyarmor capsule --output mycapsules foo
 
     '''
 
@@ -321,7 +320,7 @@ Available options:
   -m, --main=NAME                 Generate wrapper file to run encrypted script
 
   -f, --force                     Force to clean output path
- 
+
 For examples:
 
     - Encrypt a.py and b.py as a.pyx and b.pyx, saved in the path "dist":
@@ -445,7 +444,7 @@ For examples:
     if os.path.exists(prikey):
         logging.info('remove private key %s' % capsule)
         os.remove(prikey)
-    
+
     if mainname is not None:
         mainscript = os.path.join(output, mainname + '.py')
         logging.info('writing main script wrapper %s', mainscript)
@@ -582,6 +581,7 @@ For example,
 
 if __name__ == '__main__':
     sys.rootdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
     logging.basicConfig(
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
@@ -592,11 +592,13 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         usage()
         sys.exit(0)
-    
+
     command = sys.argv[1]
     if len(sys.argv) >= 3 and sys.argv[2] == 'help':
         usage(command)
         sys.exit(0)
+
+    pytransform = _import_pytransform()
 
     if 'help'.startswith(command) or sys.argv[1].startswith('-h'):
         try:
