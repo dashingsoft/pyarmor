@@ -6,6 +6,7 @@ import shutil
 import tarfile
 import tempfile
 from subprocess import Popen
+from zipfile import ZipFile
 
 # Both python2/python3
 try:
@@ -21,6 +22,7 @@ srcpath = '../src'
 namelist = ('pyshield.lic', 'pyshield.key', 'public.key', 'product.key', 'license.lic',
             'config.py', 'pyarmor.py', 'pytransform.py', 'pyimcore.py')
 workpath = '__runtime__'
+ext_char = 'e'
 
 def setupModuleTest():
     if not os.path.exists(workpath):
@@ -29,6 +31,11 @@ def setupModuleTest():
     tar = tarfile.open(os.path.join('data', 'pyarmor-data.tar.gz'))
     tar.extractall(path=workpath)
     tar.close()
+
+    capsule = os.path.join('data', 'project.zip')
+    path = os.path.join(workpath, 'project')
+    os.makedirs(path)
+    ZipFile(capsule).extractall(path=path)
 
     sys.rootdir = workpath
     sys.path.append(workpath)
@@ -85,6 +92,23 @@ class PyarmorTestCases(BaseTestCase):
         p = Popen(['diff', filename1, filename2])
         retcode = p.wait()
         self.assertEquals(retcode, 0)
+
+    def test_encrypt_files(self):
+        ft = self.pyarmor.encrypt_files
+        names = 'main.py', 'foo.py'
+        files = [os.path.join(workpath, x) for x in names]
+        prokey = os.path.join(workpath, 'project', 'product.key')
+        ft(files, prokey)
+        self.assertTrue(os.path.exists(files[0] + ext_char))
+        self.assertTrue(os.path.exists(files[1] + ext_char))
+
+    def test_make_license(self):
+        ft = self.pyarmor.make_license
+        capsule = os.path.join('data', 'project.zip')
+        filename = 'license.new_1.txt'
+        code = 'test_make_license'
+        ft(capsule, filename, code)
+        self.assertTrue(os.path.exists(filename))
 
 if __name__ == '__main__':
     setupModuleTest()
