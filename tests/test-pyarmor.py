@@ -18,8 +18,8 @@ if not hasattr(test_support, 'import_module'):
 import unittest
 
 srcpath = '../src'
-namelist = ('pyshield.lic', 'pyshield.key', 'public.key', 'product.key', 'config.py',
-            'pyarmor.py', 'pytransform.py', 'pyimcore.py')
+namelist = ('pyshield.lic', 'pyshield.key', 'public.key', 'product.key',
+            'config.py', 'pyarmor.py', 'pytransform.py', 'pyimcore.py')
 workpath = '__runtime__'
 
 def setupModuleTest():
@@ -41,52 +41,41 @@ def cleanupModuleTest():
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.key = '\x01\x02\x03\x04\x05\x06\x07\x00' \
-                   '\x01\x02\x03\x04\x05\x06\x07\x00' \
-                   '\x01\x02\x03\x04\x05\x06\x07\x00'
-        self.iv = '\x01\x02\x03\x00\x00\x03\x02\x01'
-        self.keystr = '00 01 02 03 04 05 06 07\n' \
-                      '08 09 0A 0B 0C 0D 0E 0F\n' \
-                      '10 11 12 13 14 15 16 17\n' \
-                      '18 19 1A 1B 1C 1D 1E 1F\n'
+        self.stdout = open(os.path.join(workpath, 'stdout.log'), 'w')
+        sys.stdout = self.stdout
         self.pyarmor = test_support.import_module('pyarmor')
 
     def tearDown(self):
-        pass
+        sys.stdout = sys.__stdout__
+        self.stdout.close()
 
 class PyarmorTestCases(BaseTestCase):
+
+    def test_get_registration_code(self):
+        fm = self.pyarmor._get_registration_code
+        self.assertEquals(fm(), 'Dashingsoft Pyshield Project')
 
     def test_show_version_info(self):
         fm = self.pyarmor.show_version_info
         fm()
 
+    def test_show_hd_info(self):
+        fm = self.pyarmor.show_hd_info
+        fm()
+
+    def test_usage(self):
+        fm = self.pyarmor.usage
+        fm()
+        fm('capsule')
+        fm('encrypt')
+        fm('license')
+        fm('not_command')
+
     def test_make_capsule(self):
-        '''test it's not same when generate capsule after start python'''
         ft = self.pyarmor.make_capsule
-        filename = os.path.join(workpath, 'pycapsule.zip')
-        ft(rootdir=__src_path__, filename=filename)
+        filename = os.path.join(workpath, 'project.zip')
+        ft(rootdir=workpath, filename=filename)
         self.assertTrue(os.path.exists(filename))
-
-    def test_format_kv(self):
-        key = self.keystr
-        ft = self.pyarmor.format_kv
-        self.assertEquals(''.join(list(ft(key))), key)
-
-    def test_make_capsule_with_key(self):
-        ft = self.pyarmor.make_capsule
-        filename = os.path.join(workpath, 'pycapsule.zip')
-        keystr = self.keystr.replace('\n', ' ')
-        ft(rootdir=__src_path__, keystr=keystr, filename=filename)
-        self.assertTrue(os.path.exists(filename))
-
-    def test_do_capsule_with_key(self):
-        ft = self.pyarmor.do_capsule
-
-        key = self.keystr
-        output = os.path.join(workpath, 'build')
-        argv = ['-K', key, '-O', output, 'project_key']
-        ft(argv)
-        self.assertTrue(os.path.exists(os.path.join(output, 'project_key.zip')))
 
     def test_encrypt_files(self):
         ft = self.pyarmor.encrypt_files
@@ -170,16 +159,15 @@ class PyarmorTestCases(BaseTestCase):
         self.assertTrue(os.path.exists(os.path.join(output, 'pyshield.py' + ext_char)))
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(levelname)-8s %(message)s',
-        filename=os.path.join(os.getcwd(), 'test_pyarmor.log'),
-        filemode='w',
-        )
-
+    # logging.basicConfig(
+    #     level=logging.DEBUG,
+    #     format='%(levelname)-8s %(message)s',
+    #     filename=os.path.join(os.getcwd(), '__pyarmor.log'),
+    #     filemode='w',
+    #     )
     setupModuleTest()
     loader = unittest.TestLoader()
-    loader.testMethodPrefix = 'test_show_version'
+    loader.testMethodPrefix = 'test_make_capsule'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()

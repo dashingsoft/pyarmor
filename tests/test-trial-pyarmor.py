@@ -5,6 +5,7 @@ import os
 import shutil
 import tarfile
 import tempfile
+from subprocess import Popen
 
 # Both python2/python3
 try:
@@ -33,17 +34,20 @@ def setupModuleTest():
     sys.path.append(workpath)
     for name in namelist:
         shutil.copyfile(os.path.join(srcpath, name), os.path.join(workpath, name))
-    
+
 def cleanupModuleTest():
     sys.path.remove(workpath)
 
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
+        self.stdout = open(os.path.join(workpath, 'stdout.log'), 'w')
+        sys.stdout = self.stdout
         self.pyarmor = test_support.import_module('pyarmor')
 
     def tearDown(self):
-        pass
+        sys.stdout = sys.__stdout__
+        self.stdout.close()
 
 class PyarmorTestCases(BaseTestCase):
 
@@ -68,16 +72,24 @@ class PyarmorTestCases(BaseTestCase):
         fm('not_command')
 
     def test_make_capsule(self):
+        '''Check all capsules generated are same.'''
         ft = self.pyarmor.make_capsule
-        filename = os.path.join('data', 'project.zip')
-        ft(rootdir=workpath, filename=filename)
-        self.assertTrue(os.path.exists(filename))
+        filename1 = os.path.join(workpath, 'project-t1.zip')
+        ft(rootdir=workpath, filename=filename1)
+        self.assertTrue(os.path.exists(filename1))
 
+        filename2 = os.path.join(workpath, 'project-t2.zip')
+        ft(rootdir=workpath, filename=filename2)
+        self.assertTrue(os.path.exists(filename2))
+
+        p = Popen(['diff', filename1, filename2])
+        retcode = p.wait()
+        self.assertEquals(retcode, 0)
 
 if __name__ == '__main__':
     setupModuleTest()
     loader = unittest.TestLoader()
-    loader.testMethodPrefix = 'test_usage'
+    # loader.testMethodPrefix = 'test_'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
