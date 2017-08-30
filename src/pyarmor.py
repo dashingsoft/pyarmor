@@ -342,17 +342,10 @@ For examples:
 
     '''
 
-    try:
-        opts, args = getopt.getopt(
-            argv,
-            'C:fiO:p:s:',
-            ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
-             'force']
-            )
-    except getopt.GetoptError:
-        logging.exception('option error')
-        usage('encrypt')
-        return False
+    opts, args = getopt.getopt(
+        argv, 'C:fiO:p:s:',
+        ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=', 'force']
+    )
 
     output = 'build'
     srcpath = None
@@ -380,38 +373,36 @@ For examples:
             mainname = a
 
     if srcpath is not None and not os.path.exists(srcpath):
-        logging.error('missing base path "%s"' % srcpath)
-        return False
+        raise RuntimeError('No found specified source path "%s"', srcpath)
 
-    if capsule is not None and not os.path.exists(capsule):
-        logging.error('missing capsule file')
-        return False
+    if capsule is None or not os.path.exists(capsule):
+        raise RuntimeError('No found capsule file %s', capsule)
 
     # Maybe user specify an empty path
     if output == '':
         output = 'build'
 
-    logging.info('output path is %s' % output)
+    logging.info('Output path is %s' % output)
     if os.path.exists(output) and overwrite:
-        logging.info('removing output path: %s' % output)
+        logging.info('Removing output path %s', output)
         shutil.rmtree(output)
-        logging.info('remove output path OK.')
+        logging.info('Remove output path OK.')
     if not os.path.exists(output):
-        logging.info('make output path: %s' % output)
+        logging.info('Make output path %s', output)
         os.makedirs(output)
 
     if platname is None:
         extfile = os.path.join(sys.rootdir, dll_name + dll_ext)
     else:
+        logging.info("Cross publish, target platform is %s", platname)
         name = dll_name + ('.so' if platname.startswith('linux') else '.dll')
         extfile = os.path.join(sys.rootdir, 'platforms', platname, name)
         if not os.path.exists(extfile):
             # Need to download platforms/... from pyarmor homepage
-            logging.info('missing cross platform library %s' % extfile)
-            logging.info('you need download prebuilt platform library from'
-                         'pyarmor homepage, and save them into platforms/ARCH')
-            return False
-    logging.info('copy %s to %s' % (extfile, output))
+            logging.info('You need download prebuilt library files '
+                         'from pyarmor homepage first.')
+            raise RuntimeError('Missing cross platform library %s', extfile)
+    logging.info('Copy %s to %s' % (extfile, output))
     shutil.copy(extfile, output)
 
     filelist = []
@@ -433,28 +424,29 @@ For examples:
             for name in glob.glob(os.path.join(srcpath, pat)):
                 filelist.append(name)
 
-    logging.info('extract capsule %s' % capsule)
+    logging.info('Extract capsule %s ...', capsule)
     ZipFile(capsule).extractall(path=output)
+    logging.info('Extract capsule to %s OK.', output)
 
     prikey = os.path.join(output, 'private.key')
     if os.path.exists(prikey):
-        logging.info('remove private key %s' % capsule)
+        logging.info('Remove private key %s in the output', prikey)
         os.remove(prikey)
 
     if mainname is not None:
         mainscript = os.path.join(output, mainname + '.py')
-        logging.info('writing main script wrapper %s', mainscript)
+        logging.info('Writing main script wrapper %s ...', mainscript)
         with open(mainscript, 'w') as f:
             f.write(wrap_runner % (mainname + '.py' + ext_char))
-        logging.info('write main script wrapper OK.')
+        logging.info('Write main script wrapper OK.')
 
     if len(filelist[:1]) == 0:
         logging.info('Generate runtime files to %s OK.' % output)
     else:
         prokey = os.path.join(output, 'product.key')
         if not os.path.exists(prokey):
-            raise RuntimeError('missing project key %s' % prokey)
-        logging.info('encrypt files ...')
+            raise RuntimeError('Missing project key %s' % prokey)
+        logging.info('Encrypt files ...')
         encrypt_files(filelist, prokey, None if inplace else output)
         logging.info('Encrypt files OK.')
 
@@ -463,62 +455,59 @@ def do_license(argv):
     '''
 Usage: pyarmor license [Options] [CODE]
 
-Generate a registration code for project capsule, save it to "license.lic"
+Generate a registration code for project capsule, save it to "license.txt"
 by default.
 
 Available options:
 
-  -O, --output=DIR                [option] The path used to save license file.
+  -O, --output=DIR                Path used to save license file.
 
-  -B, --bind                      [option] Generate license file bind to fixed machine.
+  -B, --bind                      [optional] Generate license file bind to
+                                  fixed machine.
 
-  -F, --bind-file=FILENAME        [option] Generate license file bind to fixed file, for example, ssh private key.
+  -F, --bind-file=FILENAME        [option] Generate license file bind to
+                                  fixed file, for example, ssh private key.
 
-  -e, --expired-date=YYYY-MM-NN   [option] Generate license file expired in certain day.
-                                           This option could be combined with "--bind"
+  -e, --expired-date=YYYY-MM-NN   [option] Generate expired license file.                                  
+                                  It could be combined with "--bind"
 
   -C, --with-capsule=FILENAME     [required] Specify the filename of capsule
                                   generated before.
 
 For example,
 
-     - Generate a license file "license.lic" for project capsule "project.zip":
-
-       pyarmor license --wth-capsule=project.zip MYPROJECT-0001
-
-     - Generate a license file "license.lic" expired in 05/30/2015:
-
-       pyarmor license --wth-capsule=project.zip -e 2015-05-30 MYPROJECT-0001
-
-     - Generate a license file "license.lic" bind to machine whose harddisk's
-       serial number is "PBN2081SF3NJ5T":
-
-       pyarmor license --wth-capsule=project.zip --bind PBN2081SF3NJ5T
-
-     - Generate a license file "license.lic" bind to ssh private key file id_rsa:
-
-       pyarmor license --wth-capsule=project.zip --bind-file src/id_rsa ~/.ssh/my_id_rsa
-
-       File "src/id_rsa" is in the develop machine, pyarmor will read data from this file
-       when generating license file.
-
-       Argument "~/.ssh/id_rsa" means full path filename in target machine, pyarmor will
-       find this file as key file when decrypting python scripts.
-
-       You shuold copy "license.lic" to target machine, at the same time, copy "src/id_rsa"
-       to target machine as "~/.ssh/my_id_rsa"
+  - Generate a license file "license.lic" for project capsule "project.zip":
+  
+    pyarmor license --wth-capsule=project.zip MYPROJECT-0001
+  
+  - Generate a license file "license.lic" expired in 05/30/2015:
+  
+    pyarmor license --wth-capsule=project.zip -e 2015-05-30 MYPROJECT-0001
+  
+  - Generate a license file "license.lic" bind to machine whose harddisk's
+    serial number is "PBN2081SF3NJ5T":
+  
+    pyarmor license --wth-capsule=project.zip --bind PBN2081SF3NJ5T
+  
+  - Generate a license file "license.lic" bind to ssh key file id_rsa:
+  
+    pyarmor license --wth-capsule=project.zip \
+            --bind-file src/id_rsa ~/.ssh/my_id_rsa
+  
+    File "src/id_rsa" is in the develop machine, pyarmor will read data
+    from this file when generating license file.
+  
+    Argument "~/.ssh/id_rsa" means full path filename in target machine,
+    pyarmor will find this file as key file when decrypting python scripts.
+  
+    You shuold copy "license.lic" to target machine, at the same time,
+    copy "src/id_rsa" to target machine as "~/.ssh/my_id_rsa"
 
     '''
-    try:
-        opts, args = getopt.getopt(
-            argv,
-            'BC:e:F:O:',
-            ['bind', 'expired-date=', 'bind-file=', 'with-capsule=', 'output=']
-            )
-    except getopt.GetoptError:
-        logging.exception('option error')
-        usage('license')
-        sys.exit(2)
+    opts, args = getopt.getopt(
+        argv, 'BC:e:F:O:',
+        ['bind', 'expired-date=', 'bind-file=', 'with-capsule=', 'output=']
+    )
 
     filename = 'license.lic.txt'
     bindfile = None
@@ -538,28 +527,29 @@ For example,
             expired = a
         elif o in ('-O', '--output'):
             if os.path.exists(a) and os.path.isdir(a):
-                filename = os.path.join(a, 'license.lic')
+                filename = os.path.join(a, 'license.txt')
             else:
                 filename = a
 
     if len(args) == 0:
-        key = 'PROJECT-CODE'
+        key = 'POWERD-BY-PYARMOR'
     else:
         key = args[0]
 
     if expired is None:
         fmt = ''
     else:
-        logging.info('license file expired at %s', expired)
+        logging.info('License file expired at %s', expired)
         fmt = '*TIME:%.0f\n' % time.mktime(time.strptime(expired, '%Y-%m-%d'))
 
     if bindflag:
-        logging.info('license file bind to harddisk %s', key)
+        logging.info('License file bind to harddisk %s', key)
         fmt = '%s*HARDDISK:%s' % (fmt, key)
 
     elif bindfileflag:
         if os.path.exists(bindfile):
-            logging.info('you need copy %s to target machine as %s with license file.', bindfile, key)
+            logging.info('You need copy %s to target machine as %s '
+                         'with license file.', bindfile, key)
             f = open(bindfile, 'rb')
             s = f.read()
             f.close()
@@ -568,10 +558,9 @@ For example,
             else:
                 fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s)
         else:
-            logging.error('bind file %s not found', bindfile)
-            return
+            raise RuntimeError('Bind file %s not found', bindfile)
 
-    logging.info('output filename is %s', filename)
+    logging.info('Output filename is %s', filename)
     make_license(capsule, filename, fmt if fmt else key)
     logging.info('Generate license file "%s" OK.', filename)
 
