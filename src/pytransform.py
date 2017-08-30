@@ -17,12 +17,13 @@ import os
 import sys
 
 # Options
-_verbose_mode = 0
+_verbose_mode = 1
+_debug_mode = 0
 
 class PytransformError(Exception):
     def __init__(self, *args, **kwargs):
         super(Exception, self).__init__(*args, **kwargs)
-        if _verbose_mode:
+        if _debug_mode:
             self._print_stack()
 
     @classmethod

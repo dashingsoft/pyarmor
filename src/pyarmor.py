@@ -79,9 +79,11 @@ def checklicense(func):
         try:
             func(*arg, **kwargs)
         except RuntimeError as e:
-            logging.error(str(e))
-        except getopt.GetoptError as e:
-            logging.error(str(e))
+            logging.error(str(sys.exc_info()[1]))
+        except getopt.GetoptError:
+            logging.error(str(sys.exc_info()[1]))
+        except pytransform.PytransformError:
+            logging.error(str(sys.exc_info()[1]))
     wrap.__doc__ = func.__doc__
     return wrap
 
@@ -157,11 +159,11 @@ def make_capsule(rootdir=None, filename='project.zip'):
     for x in filelist:
         src = os.path.join(rootdir, x)
         if not os.path.exists(src):
-            raise RuntimeError('No %s found in the rootdir', src)
+            raise RuntimeError('No %s found in the rootdir' % src)
 
     licfile = os.path.join(rootdir, 'license.lic')
     if not os.path.exists(licfile):
-        raise RuntimeError('Missing license file %s', licfile)
+        raise RuntimeError('Missing license file %s' % licfile)
 
     logging.info('Generating project key ...')
     pri, pubx, capkey, lic = pytransform.generate_project_capsule(licfile)
@@ -201,15 +203,15 @@ def encrypt_files(files, prokey, output=None):
     flist = []
     for x in files:
         flist.append((x, fn(output, x)))
-        logging.info('encrypt %s to %s' % flist[-1])
+        logging.info('Encrypt %s to %s', *flist[-1])
 
     if len(flist[:1]) == 0:
-        logging.info('no any script specified')
+        logging.info('No any script specified')
     else:
         if not os.path.exists(prokey):
-            raise RuntimeError('missing project key "%s"' % prokey)
+            raise RuntimeError('Missing project key "%s"' % prokey)
         pytransform.encrypt_project_files(prokey.encode(), tuple(flist))
-        logging.info('encrypt all scripts OK.')
+        logging.info('Encrypt all scripts OK.')
 
 def make_license(capsule, filename, code):
     myzip = ZipFile(capsule, 'r')
@@ -264,7 +266,7 @@ For example,
 
     if os.path.exists(filename) and not overwrite:
         logging.info("Specify -f to overwrite it if you really want to do")
-        raise RuntimeError("Capsule %s already exists", filename)
+        raise RuntimeError("Capsule %s already exists" % filename)
 
     if not os.path.exists(output):
         logging.info("Make output path %s", output)
@@ -273,6 +275,27 @@ For example,
     logging.info('Output filename is %s', filename)
     make_capsule(sys.rootdir, filename)
     logging.info('Generate capsule OK.')
+
+def _parse_file_args(args, srcpath=None):
+    filelist = []
+    patterns = []
+    for arg in args:
+        if arg[0] == '@':
+            f = open(arg[1:], 'r')
+            for pattern in f.read().splitlines():
+                if not pattern.strip() == '':
+                    patterns.append(pattern.strip())
+            f.close()
+        else:
+            patterns.append(arg)
+    for pat in patterns:
+        if os.path.isabs(pat) or srcpath is None:
+            for name in glob.glob(pat):
+                filelist.append(name)
+        else:
+            for name in glob.glob(os.path.join(srcpath, pat)):
+                filelist.append(name)
+    return filelist
 
 @checklicense
 def do_encrypt(argv):
@@ -343,8 +366,9 @@ For examples:
     '''
 
     opts, args = getopt.getopt(
-        argv, 'C:diO:p:s:',
-        ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=', 'clean']
+        argv, 'C:dim:O:p:s:',
+        ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
+         'main=', 'clean']
     )
 
     output = 'build'
@@ -373,10 +397,10 @@ For examples:
             mainname = a
 
     if srcpath is not None and not os.path.exists(srcpath):
-        raise RuntimeError('No found specified source path "%s"', srcpath)
+        raise RuntimeError('No found specified source path "%s"' % srcpath)
 
     if capsule is None or not os.path.exists(capsule):
-        raise RuntimeError('No found capsule file %s', capsule)
+        raise RuntimeError('No found capsule file %s' % capsule)
 
     # Maybe user specify an empty path
     if output == '':
@@ -401,28 +425,9 @@ For examples:
             # Need to download platforms/... from pyarmor homepage
             logging.info('You need download prebuilt library files '
                          'from pyarmor homepage first.')
-            raise RuntimeError('Missing cross platform library %s', extfile)
+            raise RuntimeError('Missing cross platform library %s' % extfile)
     logging.info('Copy %s to %s' % (extfile, output))
     shutil.copy(extfile, output)
-
-    filelist = []
-    patterns = []
-    for arg in args:
-        if arg[0] == '@':
-            f = open(arg[1:], 'r')
-            for pattern in f.read().splitlines():
-                if not pattern.strip() == '':
-                    patterns.append(pattern.strip())
-            f.close()
-        else:
-            patterns.append(arg)
-    for pat in patterns:
-        if os.path.isabs(pat) or srcpath is None:
-            for name in glob.glob(pat):
-                filelist.append(name)
-        else:
-            for name in glob.glob(os.path.join(srcpath, pat)):
-                filelist.append(name)
 
     logging.info('Extract capsule %s ...', capsule)
     ZipFile(capsule).extractall(path=output)
@@ -440,6 +445,7 @@ For examples:
             f.write(wrap_runner % (mainname + '.py' + ext_char))
         logging.info('Write main script wrapper OK.')
 
+    filelist = _parse_file_args(args, srcpath=srcpath)
     if len(filelist[:1]) == 0:
         logging.info('Generate runtime files to %s OK.' % output)
     else:
@@ -558,7 +564,7 @@ For example,
             else:
                 fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s)
         else:
-            raise RuntimeError('Bind file %s not found', bindfile)
+            raise RuntimeError('Bind file %s not found' % bindfile)
 
     logging.info('Output filename is %s', filename)
     make_license(capsule, filename, fmt if fmt else key)
