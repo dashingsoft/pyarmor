@@ -249,7 +249,7 @@ For example,
     except getopt.GetoptError:
         logging.exception('option error')
         usage('capsule')
-        sys.exit(2)
+        return False
 
     output = os.getcwd()
     overwrite = False
@@ -267,15 +267,17 @@ For example,
     if os.path.exists(filename) and not overwrite:
         logging.error("Capsule %s already exists", filename)
         logging.info("Specify -f to overwrite it if you really want to do")
-        sys.exit(3)
+        return False
 
     if not os.path.exists(output):
         logging.info("Make output path %s", output)
         os.makedirs(output)
 
     logging.info('Output filename is %s', filename)
-    make_capsule(sys.rootdir, filename)
-    logging.info('Generate capsule OK.')
+    if make_capsule(sys.rootdir, filename):
+        logging.info('Generate capsule OK.')
+        return False
+    return True
 
 @checklicense
 def do_encrypt(argv):
