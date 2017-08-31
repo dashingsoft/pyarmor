@@ -118,5 +118,6 @@ if __name__ == '__main__':
     loader = unittest.TestLoader()
     # loader.testMethodPrefix = 'test_'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
+    sys.exit(len(result.errors) + len(result.failures))

@@ -8,7 +8,11 @@ import shutil
 import tarfile
 import tempfile
 from zipfile import ZipFile
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except Exception:
+    from io import StringIO
 
 # Both python2/python3
 try:
@@ -25,7 +29,7 @@ namelist = ('pyshield.lic', 'pyshield.key', 'public.key', 'product.key',
             'config.py', 'pyarmor.py', 'pytransform.py', 'pyimcore.py')
 workpath = '__runtime__'
 ext_char = 'e'
-logfile = os.path.join(workpath, '__pyarmor.log')
+logfile =  os.path.join(workpath, '__pyarmor.log')
 
 def setupModuleTest():
     if not os.path.exists(workpath):
@@ -65,16 +69,16 @@ class BaseTestCase(unittest.TestCase):
         self.stdout.close()
 
     def searchStdoutOutput(self, text):
-        with open(logfile, 'r') as f:
+        with open(logfile, 'rt') as f:
             s = f.read()
             # sys.stderr.write('\n\n%s\n\n' % s)
-            return not (s.decode().find(text) == -1)
+            return not (s.find(text) == -1)
 
 class PyarmorTestCases(BaseTestCase):
 
     def test_get_registration_code(self):
         fm = self.pyarmor._get_registration_code
-        self.assertEquals(fm(), 'Dashingsoft Pyshield Project')
+        self.assertEquals(fm(), 'Dashingsoft Pyshield Project'.encode())
 
     def test_show_version_info(self):
         fm = self.pyarmor.show_version_info
@@ -189,7 +193,7 @@ class PyarmorTestCases(BaseTestCase):
     def test_do_encrypt_pyc(self):
         ft = self.pyarmor.do_encrypt
         filename = os.path.join(workpath, 'foo.pyc')
-        py_compile.compile(filename[:-1])
+        py_compile.compile(filename[:-1], filename)
         self.assertTrue(os.path.exists(filename))
         capsule = os.path.join('data', 'project.zip')
         output = os.path.join(workpath, 'compile')
@@ -260,7 +264,7 @@ class PyarmorTestCases(BaseTestCase):
 
     def test_do_license(self):
         ft = self.pyarmor.do_license
-        capsule = os.path.join('data', 'project.zip')        
+        capsule = os.path.join('data', 'project.zip')
         argv = ['-O', workpath,
                 '-C', capsule,
                 ]
@@ -324,7 +328,8 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_do_encrypt_empty'
+    # loader.testMethodPrefix = 'test_do_encrypt_pyc'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
+    sys.exit(len(result.errors) + len(result.failures))

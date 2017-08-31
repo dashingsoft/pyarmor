@@ -62,21 +62,24 @@ build:
 	cp ../src/platforms/$(PLATFORM)/$(TARGET) $(WORKPATH)
 
 
-unit: build
+unit:
 	for pyver in  $(VERSIONS) ; do \
+            make build ; \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
             $(subst XY,$${pyver},$(PYCMD)) test-pyarmor.py || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            make clean; \
 	done
-	make clean
 
-trial: build
+
+trial:
 	for pyver in  $(VERSIONS) ; do \
+            make build ; \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
             $(subst XY,$${pyver},$(PYCMD)) test-trial-pyarmor.py || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            make clean; \
 	done
-	make clean
 
 
 clean:
