@@ -50,7 +50,7 @@ WORKPATH = __runtime__
 test: build
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash test-functions.sh || exit 1; \
+            PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash integration-test.sh || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
 	done
 	make clean
