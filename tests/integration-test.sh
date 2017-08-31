@@ -18,7 +18,7 @@ else
 fi
 
 # version=${1:-2.6.1}
-filename=$(cd /cygdrive/d/projects/pyarmor/src/dist; ls -t pyarmor-*.${PKGEXT}) || exit 1
+filename=$(cd ../src/dist; ls -t pyarmor-*.${PKGEXT}) || exit 1
 version=${filename:8:5}
 
 case ${PLATFORM} in
