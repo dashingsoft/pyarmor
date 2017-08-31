@@ -20,19 +20,21 @@ fi
 # version=${1:-2.6.1}
 filename=$(cd ../src/dist; ls -t pyarmor-*.${PKGEXT}) || exit 1
 version=${filename:8:5}
-
-workpath=__runtest__
-datafile=./data/pyarmor-data.tar.gz
-pkgfile=../../src/dist/pyarmor-$version.${PKGEXT}
 extchar=${PYARMOR_EXTRA_CHAR:-e}
 
 case ${PLATFORM} in
 
     win32)
         PYTHON=${PYTHON:-C:/Python26/python}
+        workpath=/cygdrive/d/projects/pyarmor/tests/__runtest__
+        datafile=/cygdrive/d/projects/pyarmor/tests/data/pyarmor-data.tar.gz
+        pkgfile=/cygdrive/d/projects/pyarmor/src/dist/pyarmor-$version.${PKGEXT
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
         ;;
     win_amd64)
+        workpath=~/workspace//pyarmor/tests/__runtest__
+        datafile=~/workspace//pyarmor/tests/data/pyarmor-data.tar.gz
+        pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT
         ;;
     linux_i386)
         ;;
