@@ -31,8 +31,8 @@ class PytransformError(Exception):
         try:
             from traceback import print_stack
         except Exception:
-            _verbose_mode = 0
-            sys.stderr.write('Disabled verbose mode.\n')
+            _debug_mode = 0
+            sys.stderr.write('Disabled debug mode.\n')
         else:
             print_stack()
 
@@ -42,9 +42,11 @@ def dllmethod(func):
             s1 = str(args)[:-1]
             s2 = ', '.join(['%s=%s' % (k, repr(v)) for k, v in kwargs.items()])
             sep = ', ' if (s1 and s2) else ''
-            return '%s\nCall with arguments: %s%s%s)' % (msg, s1, sep, s2)
+            line = 'Call with arguments: %s%s%s)' % (s1, sep, s2)
+            return msg
         return msg.split('\n')[-1]
     def wrap(*args, **kwargs):
+        args = [(s.encode() if isinstance(s, str) else s) for s in args]
         result = func(*args, **kwargs)
         errmsg = _get_error_msg()
         if errmsg:
@@ -86,10 +88,10 @@ def exec_file(filename):
 _exec_file = None
 
 @dllmethod
-def encrypt_project_files(prokey, filelist):
+def encrypt_project_files(proname, filelist):
     prototype = PYFUNCTYPE(c_int, c_char_p, py_object)
     dlfunc = prototype(('encrypt_project_files', _pytransform))
-    return dlfunc(prokey, filelist)
+    return dlfunc(proname, filelist)
 
 @dllmethod
 def encrypt_files(key, filelist):
@@ -110,17 +112,17 @@ def _generate_project_capsule():
     return dlfunc()
 
 @dllmethod
-def _encode_capsule_key_file(licfile, filename=None):
+def _encode_capsule_key_file(licfile):
     prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
     dlfunc = prototype(('encode_capsule_key_file', _pytransform))
-    return dlfunc(licfile, filename)
+    return dlfunc(licfile, None)
 
 @dllmethod
-def generate_module_key(pubname, key, filename=None):
+def generate_module_key(pubname, key):
     t_key = c_char * 32
     prototype = PYFUNCTYPE(py_object, c_char_p, t_key, c_char_p)
     dlfunc = prototype(('generate_module_key', _pytransform))
-    return dlfunc(pubname, t_key(*key), filename)
+    return dlfunc(pubname, t_key(*key), None)
 
 @dllmethod
 def generate_license_file(filename, priname, rcode, start=-1, count=1):

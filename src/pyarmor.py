@@ -212,7 +212,7 @@ def encrypt_files(files, prokey, output=None):
     else:
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key "%s"' % prokey)
-        pytransform.encrypt_project_files(prokey.encode(), tuple(flist))
+        pytransform.encrypt_project_files(prokey, tuple(flist))
         logging.info('Encrypt all scripts OK.')
 
 def make_license(capsule, filename, code):
