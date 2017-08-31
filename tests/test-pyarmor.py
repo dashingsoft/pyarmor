@@ -183,8 +183,8 @@ class PyarmorTestCases(BaseTestCase):
                 '-C', capsule,
                 filename]
         ft(argv)
-        self.assertTrue(self.searchStdoutOutput('Could not encrypt empty file'))
-        self.assertFalse(os.path.exists(os.path.join(output, 'empty.py' + ext_char)))
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertTrue(os.path.exists(os.path.join(output, 'empty.py' + ext_char)))
 
     def test_do_encrypt_pyc(self):
         ft = self.pyarmor.do_encrypt
@@ -324,7 +324,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_do_license'
+    # loader.testMethodPrefix = 'test_do_encrypt_empty'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
