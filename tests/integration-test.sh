@@ -32,14 +32,14 @@ case ${PLATFORM} in
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
         ;;
     win_amd64)
-        workpath=~/workspace//pyarmor/tests/__runtest__
-        datafile=~/workspace//pyarmor/tests/data/pyarmor-data.tar.gz
-        pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
         ;;
     linux_i386)
         ;;
     linux_x86_64)
         PYTHON=python
+        workpath=~/workspace//pyarmor/tests/__runtest__
+        datafile=~/workspace//pyarmor/tests/data/pyarmor-data.tar.gz
+        pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
         declare -r harddisk_sn='            9WK3FEMQ'
         ;;
     *)
