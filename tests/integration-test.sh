@@ -28,13 +28,13 @@ case ${PLATFORM} in
         PYTHON=${PYTHON:-C:/Python26/python}
         workpath=/cygdrive/d/projects/pyarmor/tests/__runtest__
         datafile=/cygdrive/d/projects/pyarmor/tests/data/pyarmor-data.tar.gz
-        pkgfile=/cygdrive/d/projects/pyarmor/src/dist/pyarmor-$version.${PKGEXT
+        pkgfile=/cygdrive/d/projects/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
         ;;
     win_amd64)
         workpath=~/workspace//pyarmor/tests/__runtest__
         datafile=~/workspace//pyarmor/tests/data/pyarmor-data.tar.gz
-        pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT
+        pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
         ;;
     linux_i386)
         ;;
