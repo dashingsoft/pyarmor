@@ -23,7 +23,7 @@ version=${filename:8:5}
 
 workpath=__runtest__
 datafile=./data/pyarmor-data.tar.gz
-pkgfile=../src/dist/pyarmor-$version.${PKGEXT}
+pkgfile=../../src/dist/pyarmor-$version.${PKGEXT}
 extchar=${PYARMOR_EXTRA_CHAR:-e}
 
 case ${PLATFORM} in
