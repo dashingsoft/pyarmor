@@ -7,7 +7,11 @@ import tarfile
 import tempfile
 from subprocess import Popen
 from zipfile import ZipFile
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except Exception:
+    from io import StringIO
 
 # Both python2/python3
 try:
