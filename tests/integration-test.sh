@@ -36,7 +36,7 @@ case ${PLATFORM} in
     linux_i386)
         ;;
     linux_x86_64)
-        PYTHON=python
+        PYTHON=${PYTHON:-python}
         workpath=~/workspace/pyarmor/tests/__runtest__
         datafile=~/workspace/pyarmor/tests/data/pyarmor-data.tar.gz
         pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
