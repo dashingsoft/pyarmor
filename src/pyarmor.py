@@ -51,7 +51,8 @@ def _import_pytransform():
         pass
     logging.info('Searching pytransform library ...')
     path = sys.rootdir
-    src = os.path.join(path, 'platforms', platform, dll_name + dll_ext)
+    platname = platform.replace('i586', 'i386').replace('i686', 'i386')
+    src = os.path.join(path, 'platforms', platname, dll_name + dll_ext)
     if os.path.exists(src):
         logging.info('Find pytransform library "%s"', src)
         logging.info('Copy %s to %s', src, path)
