@@ -69,6 +69,8 @@ def _get_registration_code():
     return code
 
 def checklicense(func):
+    # Fix python25 no "as" keyword in statement "except"
+    exc_msg = lambda : str(sys.exc_info()[1])
     def wrap(*arg, **kwargs):
         code = _get_registration_code()
         if code == '':
@@ -79,11 +81,11 @@ def checklicense(func):
         try:
             func(*arg, **kwargs)
         except RuntimeError as e:
-            logging.error(str(sys.exc_info()[1]))
+            logging.error(exc_msg())
         except getopt.GetoptError:
-            logging.error(str(sys.exc_info()[1]))
+            logging.error(exc_msg())
         except pytransform.PytransformError:
-            logging.error(str(sys.exc_info()[1]))
+            logging.error(exc_msg())
     wrap.__doc__ = func.__doc__
     return wrap
 
