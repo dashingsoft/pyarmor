@@ -1,4 +1,4 @@
 include ../README.md
 include pyshield.key pyshield.lic public.key product.key license.lic
-recursive-include examples *.py
+recursive-include example *.py README LINCESE
 graft platforms
