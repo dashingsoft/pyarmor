@@ -21,32 +21,32 @@ fi
 filename=$(cd ../src/dist; ls -t pyarmor-*.${PKGEXT}) || exit 1
 version=${filename:8:5}
 extchar=${PYARMOR_EXTRA_CHAR:-e}
+workpath=__runtest__
+datafile=$(pwd)/data/pyarmor-data.tar.gz
+pkgfile=$(pwd)/../src/dist/pyarmor-${version}.${PKGEXT}
+
+declare -i _bug_counter=0
 
 case ${PLATFORM} in
 
     win32)
         PYTHON=${PYTHON:-C:/Python26/python}
-        workpath=/cygdrive/d/projects/pyarmor/tests/__runtest__
-        datafile=/cygdrive/d/projects/pyarmor/tests/data/pyarmor-data.tar.gz
-        pkgfile=/cygdrive/d/projects/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
         ;;
     win_amd64)
         ;;
     linux_i386)
+        PYTHON=${PYTHON:-python}
+        declare -r harddisk_sn='VB07ab3ff6-81eb5787 '
         ;;
     linux_x86_64)
         PYTHON=${PYTHON:-python}
-        workpath=~/workspace/pyarmor/tests/__runtest__
-        datafile=~/workspace/pyarmor/tests/data/pyarmor-data.tar.gz
-        pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
         declare -r harddisk_sn='            9WK3FEMQ'
         ;;
     *)
         echo Unknown platform "${PLATFORM}"
         exit 1
     esac
-declare -i _bug_counter=0
 
 # ======================================================================
 # Initial setup, csih routines, etc.  PART 1
