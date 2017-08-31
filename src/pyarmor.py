@@ -379,7 +379,7 @@ For examples:
     inplace = False
     platname = None
     extfile = None
-    mainname = None
+    mainname = []
     clean = False
 
     for o, a in opts:
@@ -396,7 +396,7 @@ For examples:
         elif o in ('-d', '--clean'):
             clean = True
         elif o in ('-m', '--main'):
-            mainname = a
+            mainname.append(a)
 
     if srcpath is not None and not os.path.exists(srcpath):
         raise RuntimeError('No found specified source path "%s"' % srcpath)
@@ -440,16 +440,16 @@ For examples:
         logging.info('Remove private key %s in the output', prikey)
         os.remove(prikey)
 
-    if mainname is not None:
-        mainscript = os.path.join(output, mainname + '.py')
-        logging.info('Writing main script wrapper %s ...', mainscript)
-        with open(mainscript, 'w') as f:
-            f.write(wrap_runner % (mainname + '.py' + ext_char))
-        logging.info('Write main script wrapper OK.')
+    for name in mainname:
+        script = os.path.join(output, name + '.py')
+        logging.info('Writing script wrapper %s ...', script)
+        with open(script, 'w') as f:
+            f.write(wrap_runner % (name + '.py' + ext_char))
+        logging.info('Write script wrapper OK.')
 
     filelist = _parse_file_args(args, srcpath=srcpath)
     if len(filelist[:1]) == 0:
-        logging.info('Generate runtime files to %s OK.' % output)
+        logging.info('Generate extra files OK.')
     else:
         prokey = os.path.join(output, 'product.key')
         if not os.path.exists(prokey):
