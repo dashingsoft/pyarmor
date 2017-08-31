@@ -9,7 +9,7 @@ if [[ ${UNAME:0:5} == Linux ]] ; then
     fi
     PKGEXT=tar.bz2
 else
-    if [[ $(ARCH) == amd64 ]] ; then
+    if [[ $(ARCH) == x86_64 ]] ; then
         PLATFORM=win_amd64
     else
         PLATFORM=win32
@@ -34,6 +34,8 @@ case ${PLATFORM} in
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
         ;;
     win_amd64)
+        PYTHON=${PYTHON:-C:/Python26/python}
+        declare -r harddisk_sn=100304PBN2081SF3NJ5T
         ;;
     linux_i386)
         PYTHON=${PYTHON:-python}

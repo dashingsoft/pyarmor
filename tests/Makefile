@@ -11,7 +11,7 @@ endif
 
 else
 
-ifeq ($(ARCH),amd64)
+ifeq ($(ARCH),x86_64)
 PLATFORM := win_amd64
 else
 PLATFORM := win32
