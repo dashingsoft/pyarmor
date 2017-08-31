@@ -1,18 +1,47 @@
 #! /bin/bash
 
+UNAME=$(uname)
+if [[ ${UNAME:0:5} == Linux ]] ; then
+    if [[ $(arch) == x86_64 ]] ; then
+        PLATFORM=linux_x86_64
+    else
+        PLATFORM=linux_i386
+    fi
+    PKGEXT=bz2
+else
+    if [[ $(ARCH) == amd64 ]] ; then
+        PLATFORM=win_amd64
+    else
+        PLATFORM=win32
+    fi
+    PKGEXT=zip
+fi
+
 # version=${1:-2.6.1}
-filename=$(cd /cygdrive/d/projects/pyarmor/src/dist; ls -t pyarmor-*.zip) || exit 1
+filename=$(cd /cygdrive/d/projects/pyarmor/src/dist; ls -t pyarmor-*.${PKGEXT}) || exit 1
 version=${filename:8:5}
 
-PYTHON=${PYTHON:-C:/Python26/python}
-workpath=/cygdrive/d/projects/pyarmor/tests/__runtest__
-datafile=/cygdrive/d/projects/pyarmor/tests/data/pyarmor-data.tar.gz
-pkgfile=/cygdrive/d/projects/pyarmor/src/dist/pyarmor-$version.zip
-extchar=${PYARMOR_EXTRA_CHAR:-e}
-
+case ${PLATFORM} in
+    
+    win32)
+        PYTHON=${PYTHON:-C:/Python26/python}
+        workpath=/cygdrive/d/projects/pyarmor/tests/__runtest__
+        datafile=/cygdrive/d/projects/pyarmor/tests/data/pyarmor-data.tar.gz
+        pkgfile=/cygdrive/d/projects/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
+        extchar=${PYARMOR_EXTRA_CHAR:-e}
+        declare -r harddisk_sn=100304PBN2081SF3NJ5T
+        ;;
+    win_amd64)
+        ;;
+    linux_i386)
+        ;;
+    linux_x86_64)
+        ;;
+    *)
+        echo Unknown platform "${PLATFORM}"
+        exit 1
+    esac
 declare -i _bug_counter=0
-declare -r harddisk_sn=100304PBN2081SF3NJ5T
-declare -r keystr="00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F"
 
 # ======================================================================
 # Initial setup, csih routines, etc.  PART 1
