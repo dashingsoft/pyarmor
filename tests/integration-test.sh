@@ -7,7 +7,7 @@ if [[ ${UNAME:0:5} == Linux ]] ; then
     else
         PLATFORM=linux_i386
     fi
-    PKGEXT=bz2
+    PKGEXT=tar.bz2
 else
     if [[ $(ARCH) == amd64 ]] ; then
         PLATFORM=win_amd64
@@ -37,8 +37,8 @@ case ${PLATFORM} in
         ;;
     linux_x86_64)
         PYTHON=python
-        workpath=~/workspace//pyarmor/tests/__runtest__
-        datafile=~/workspace//pyarmor/tests/data/pyarmor-data.tar.gz
+        workpath=~/workspace/pyarmor/tests/__runtest__
+        datafile=~/workspace/pyarmor/tests/data/pyarmor-data.tar.gz
         pkgfile=~/workspace/pyarmor/src/dist/pyarmor-$version.${PKGEXT}
         declare -r harddisk_sn='            9WK3FEMQ'
         ;;
@@ -506,7 +506,7 @@ grep -q "Result is 10" result.log \
 
 csih_inform "Case 5.2: generate license bind to fixed machine"
 $PYTHON pyarmor.py license --with-capsule=project.zip \
-    --bind-disk -O license.txt 100304PBN2081SF3NJ5T >result.log 2>&1 \
+    --bind-disk -O license.txt "${harddisk_sn}" >result.log 2>&1 \
     || csih_bug "Case 5.2 FAILED: return non-zero code"
 [[ -f license.txt ]] \
     || csih_bug "Case 5.2 FAILED: no license.txt found"
@@ -521,7 +521,7 @@ grep -q "Result is 10" result.log \
 
 csih_inform "Case 5.3: generate period license bind to fixed machine"
 $PYTHON pyarmor.py license --with-capsule=project.zip -e $(next_month) \
-    --bind-disk -O license1.txt ${harddisk_sn} >result.log 2>&1 \
+    --bind-disk -O license1.txt "${harddisk_sn}" >result.log 2>&1 \
     || csih_bug "Case 5.3 FAILED: return non-zero code"
 [[ -f license1.txt ]] \
     || csih_bug "Case 5.3 FAILED: no license.txt found"
