@@ -34,17 +34,15 @@ $(info )
 ifeq ($(findstring linux,$(PLATFORM)),linux)
 TARGET = _pytransform.so
 PYROOT = /home/jondy/workspace/pytransform-legend/python/usr/local
-PYTHON = LD_LIBRARY_PATH=$(PYROOT)/lib $(PYROOT)/bin/pythonXY
+PYCMD = LD_LIBRARY_PATH=$(PYROOT)/lib $(PYROOT)/bin/pythonXY
 VERSIONS := 2.6 2.7 3.0 3.1 3.2 3.3 3.4
 else
 TARGET = _pytransform.dll
-PYTHON = C:/PythonXY/python
-VERSIONS := 25 26 27 30 31 32 33 34
+PYCMD = C:/PythonXY/python
+VERSIONS := 26 27 30 31 32 33 34
 endif
 
 WORKPATH = __runtime__
-
-VERSIONS := 27
 
 .PHONY: test unit trial build
 
@@ -52,7 +50,7 @@ VERSIONS := 27
 test: build
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(subst XY,$${pyver},$(PYTHON)) test-functions.sh || exit 1; \
+            PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash test-functions.sh || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
 	done
 	make clean
@@ -67,7 +65,7 @@ build:
 unit: build
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(subst XY,$${pyver},$(PYTHON)) test-pyarmor.py || exit 1; \
+            $(subst XY,$${pyver},$(PYCMD)) test-pyarmor.py || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
 	done
 	make clean
@@ -75,7 +73,7 @@ unit: build
 trial: build
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(subst XY,$${pyver},$(PYTHON)) test-trial-pyarmor.py || exit 1; \
+            $(subst XY,$${pyver},$(PYCMD)) test-trial-pyarmor.py || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
 	done
 	make clean
