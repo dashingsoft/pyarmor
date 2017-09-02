@@ -1,8 +1,9 @@
 # Pyarmor
 
-Pyarmor is a tool used to import or run encrypted python scripts. Only
-by a few extra files, pyarmor can run and imported encrypted files in
-the normal python environments. Here are the basic steps:
+Pyarmor is a command line tool used to import or run encrypted python
+scripts. Only by a few extra files, pyarmor can run and imported
+encrypted files in the normal python environments. Here are the basic
+steps:
 
 - Generate project capsule
 - Encrypt python scripts with project capsule
@@ -23,35 +24,29 @@ encrypted files.
 
 - Python 2.5, 2.6, 2.7 and Python3
 
-- win32, win_amd64, linux_i386, linux_x86_64
+- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64
 
-For other platforms, please contact <jondy.zhao@gmail.com>
+Got prebuilt library [platforms.zip](https://github.com/dashingsoft/pyarmor/releases/latest),
+then extract it to src of Pyarmor
+
+The core of [Pyarmor] is written by C, the only dependency is libc. So
+it's not difficult to build for any other platform, even for embeded
+system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
+scripts in other platform.
 
 ## Installation
 
-Got source
+Got source package from [pypi](https://pypi.python.org/pypi/pyarmor)
 
-- From pypi
-- From git release
+Pyarmor is a command line tool, main script is pyarmor.py. After you
+got source package, unpack it to any path, then run paramor.py as
+common python script
 
-Unpack source package to any path, then run paramor.py as common
-python script.
+```
+    python pyarmor.py
+```
 
 ## Usage
-
-
-generate capsule
-
-encrypt scripts
-
-run scripts / with arguments
-
-import module
-
-
-For more usage, see below advanced examples
-
-Pyarmor is command line tool, main script is pyarmor.py, for detail command line options, see below command line options.
 
 
 ## License
@@ -77,17 +72,31 @@ registration code only (no newline), then replace the content of
 
 ### Check License
 
+```
     python pyarmor.py --version
+```
 
 For more information, refer to [pyarmor homepage](https://github.com/dashingsoft/pyarmor)
 
-## Advanced Examples
+## Examples
+
+encrypted files in different path, or in-place
+
+multi --main
 
 mixed encrypted and common files
+  encrypted main script import plain and encrypted python module
+  plain main script  import plain and encrypted python module
+
+encrypted pyc/pyo file
 
 expired encrypted files
 
 bind to machine
+
+bind to machine with expired date
+
+bind to fix files
 
 ## Command Line Options
 
@@ -97,12 +106,23 @@ bind to machine
 
 ### license
 
-### info
-
-### help
-
-## FAQ
+### hdinfo
 
 ## Change Logs
 
+3.0.1
+-----
+
+* Use ctypes load core library other than python extentions which need
+  built for each python version.
+* "\__main__" block not running in encrypted script.
+* Avoid source code got by c debugger.
+* Change default outoupt path to "build" in command "encrypt"
+* Change option "--bind" to "--bind-disk" in command "license"
+* Document usages in details
+
 ## Issues and Support
+
+[Report issuse](https://github.com/dashingsoft/pyarmor/issues)
+
+Any question feel free to contact <jondy.zhao@gmail.com>
