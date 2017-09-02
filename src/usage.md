@@ -195,5 +195,28 @@ exec_file("queens.pye")
 
 # Command Line Options
 
+```
+Usage: pyarmor [command name] [options]
+
+Command name can be one of the following list
+
+  help                Show this usage
+  version             Show version information
+  capsule             Generate project capsule used to encrypted files
+  encrypt             Encrypt the scripts
+  license             Generate registration code
+
+If you want to know the usage of each command, type the
+following command:
+
+  pyarmor help [command name]
+
+and you can type the left match command, such as
+
+   pyarmor c
+or pyarmor cap
+or pyarmor capsule
+
+```
 
 [Pyarmor]: https://github.com/dashingsoft/pyarmor
