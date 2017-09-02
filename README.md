@@ -46,8 +46,9 @@ common python script
     python pyarmor.py
 ```
 
-## Usage
+For more information, refer to [pyarmor homepage](https://github.com/dashingsoft/pyarmor)
 
+## [Usage](src/usage.md)
 
 ## License
 
@@ -76,50 +77,7 @@ registration code only (no newline), then replace the content of
     python pyarmor.py --version
 ```
 
-For more information, refer to [pyarmor homepage](https://github.com/dashingsoft/pyarmor)
-
-## Examples
-
-encrypted files in different path, or in-place
-
-multi --main
-
-mixed encrypted and common files
-  encrypted main script import plain and encrypted python module
-  plain main script  import plain and encrypted python module
-
-encrypted pyc/pyo file
-
-expired encrypted files
-
-bind to machine
-
-bind to machine with expired date
-
-bind to fix files
-
-## Command Line Options
-
-### capsule
-
-### encrypt
-
-### license
-
-### hdinfo
-
-## Change Logs
-
-3.0.1
------
-
-* Use ctypes load core library other than python extentions which need
-  built for each python version.
-* "\__main__" block not running in encrypted script.
-* Avoid source code got by c debugger.
-* Change default outoupt path to "build" in command "encrypt"
-* Change option "--bind" to "--bind-disk" in command "license"
-* Document usages in details
+## [Change Log](ChangeLog.rst)
 
 ## Issues and Support
 
