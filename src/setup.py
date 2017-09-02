@@ -12,7 +12,7 @@ except ImportError:
     from distutils.core import setup
 
 def get_description():
-    README = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'README.md'))
+    README = os.path.abspath(os.path.join(os.path.dirname(__file__), 'README.rst'))
     with open(README, 'r') as f:
         return f.read()
 
