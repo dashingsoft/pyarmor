@@ -29,7 +29,7 @@ def main():
         maintainer='Jondy Zhao',
         maintainer_email='jondy.zhao@gmail.com',
         url='https://github.com/dashingsoft/pyarmor',
-        platforms=['Windows', 'Linux'],
+        platforms='Windows,Linux',
         license='Shareware',
         )
     setup(**args)
