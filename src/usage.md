@@ -29,8 +29,8 @@ Use command "capsule"
 ```
 
 Project capsule is a compressed zip file, which include all the files
-used when encrypting scripts. This command will generate "pybench.zip"
-in the current path.
+used to encrypt scripts. This command will generate "pybench.zip" in
+the current path.
 
 Generally, one capsule is only used for one project.
 
