@@ -77,7 +77,7 @@ registration code only (no newline), then replace the content of
     python pyarmor.py --version
 ```
 
-The registration code is valid forever, it can be used permanently.
+**The registration code is valid forever, it can be used permanently.**
 
 ## [Change Log](ChangeLog.rst)
 
