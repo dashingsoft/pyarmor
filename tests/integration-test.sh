@@ -273,8 +273,12 @@ next_month()
   else
       let _month++
   fi
-  month="0${_month}"
-  echo -e "${_year}-${month:-1:2}-01"
+  if (( _month > 9 )) ; then
+      month="${_month}"
+  else
+      month="0${_month}"
+  fi
+  echo -e "${_year}-${month}-01"
 } # === End of next_month() === #
 readonly -f next_month
 
@@ -535,7 +539,6 @@ cp license1.txt build/license.lic
 )
 grep -q "Result is 10" result.log \
     || csih_bug "Case 5.3 FAILED: python script returns unexpected result"
-
 
 csih_inform "Case 5.4: generate expired license"
 $PYTHON pyarmor.py license --with-capsule=project.zip -e 2014-01-01 \
