@@ -74,6 +74,12 @@ class BaseTestCase(unittest.TestCase):
             # sys.stderr.write('\n\n%s\n\n' % s)
             return not (s.find(text) == -1)
 
+    def searchFile(self, filename, text):
+        with open(filename, 'rt') as f:
+            s = f.read()
+            # sys.stderr.write('\n\n%s\n\n' % s)
+            return not (s.find(text) == -1)
+
 class PyarmorTestCases(BaseTestCase):
 
     def test_get_registration_code(self):
@@ -262,6 +268,32 @@ class PyarmorTestCases(BaseTestCase):
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Cross publish'))
 
+    def test_do_encrypt_mode_1(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build_m1')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--mode', '1',
+                os.path.join(workpath, 'foo.py'),
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'), '_mode = 1'))
+
+    def test_do_encrypt_mode_2(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build_m2')
+        argv = ['-O', output,
+                '-C', capsule,
+                '-e', '2',
+                os.path.join(workpath, 'foo.py'),
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'), '_mode = 2'))
+
     def test_do_license(self):
         ft = self.pyarmor.do_license
         capsule = os.path.join('data', 'project.zip')
@@ -328,7 +360,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_do_encrypt_pyc'
+    # loader.testMethodPrefix = 'test_do_encrypt_mode'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
