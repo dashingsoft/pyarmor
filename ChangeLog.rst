@@ -1,3 +1,9 @@
+3.1.1
+-----
+* Fix issue when import encrypted package
+* Add encrypted mode 2 and 3 to improve performance
+* Refine module pyimcore to improve performance
+
 3.0.1
 -----
 It's a milestone for Pyarmor, from this version, use ctypes import
