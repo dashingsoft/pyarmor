@@ -12,7 +12,7 @@ class PyshieldImporter(object):
 
     def __init__(self):
         self.mod_info = None
-        self.imp_loader = False
+        self.imp_loader = None
 
     def find_module(self, name, path=None):
         try:
@@ -20,7 +20,7 @@ class PyshieldImporter(object):
             self.imp_loader = True
             return self
         except ImportError:
-            self.imp_loader = False
+            self.imp_loader = None
 
         m = name.rsplit('.', 1)[-1]
         for dirname in sys.path if path is None else path:
