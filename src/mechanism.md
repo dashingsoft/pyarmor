@@ -114,15 +114,15 @@ Add import hooker to sys.meta_path, when an encrypted module found:
 
 **No sys.setprofile needed**
 
-## Compare 3 mode3
+## Compare 3 modes
 
 ```
-                 0                    1                    2
+MODE             0                    1                    2
 
 import hooker   NEED                 No                   Need
 profile hooker  NEED                 Need                 No
-performance    low                   high                 medium
-security       high                  medium               low
+performance     low                  high                 medium
+security        high                 medium               low
 ```
 
 ## Limitations
@@ -143,33 +143,21 @@ Use any of one to decrypt byte-code in runtime in other thread (not main thread)
 
 If Py_TRACE_REFS or Py_DEBUG is defined, the size of_PyObject_HEAD_EXTRA will not be 0. In this case, f_code is not right and pytransform will not work.
 
-### one package in multi-path
+### About package
 
-It doesn't work if both of __init__.py are encrypted
+**It works if package is only in one path**
+
 ```
     a/pkg/__init__.pye
          foo.pye
          hello.py
 
-    b/pkg/__init__.pye
-         foo2.py
-         hello2.py
-
 ```
 
-It doesn't work if any of __init__.py is encrypted
-```
-    a/pkg/__init__.pye
-         foo.pye
-         hello.py
+**If one package locates at different path, any of __init__.py CAN NOT
+be encrypted**
 
-    b/pkg/__init__.py
-         foo2.py
-         hello2.py
-
-```
-
-It workw if none of __init__.py is encrypted
+It works if none of \__init__.py is encrypted
 ```
     a/pkg/__init__.py
          foo.pye
@@ -181,10 +169,26 @@ It workw if none of __init__.py is encrypted
 
 ```
 
-It works if package is only in one path
+It doesn't work if both of \__init__.py are encrypted
 ```
     a/pkg/__init__.pye
          foo.pye
          hello.py
+
+    b/pkg/__init__.pye
+         foo2.py
+         hello2.py
+
+```
+
+It doesn't work if any of \__init__.py is encrypted
+```
+    a/pkg/__init__.pye
+         foo.pye
+         hello.py
+
+    b/pkg/__init__.py
+         foo2.py
+         hello2.py
 
 ```
