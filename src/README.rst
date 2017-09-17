@@ -38,7 +38,7 @@ system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
 scripts in other platform.
 
 Installation
-~~~~~~~~~~~~
+------------
 Got source package from `pypi <https://pypi.python.org/pypi/pyarmor>`_
 
 Pyarmor is a command line tool, main script is pyarmor.py. After you
@@ -47,4 +47,4 @@ common python script
 
     python pyarmor.py
 
-For more information, refer to `Pyarmor homepage <https://github.com/dashingsoft/pyarmor>`_
+For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_
