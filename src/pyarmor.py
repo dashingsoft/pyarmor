@@ -185,7 +185,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
-def encrypt_files(files, prokey, output=None):
+def encrypt_files(files, prokey, emode=0, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
 
@@ -196,10 +196,11 @@ def encrypt_files(files, prokey, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
+    ch = 'c' if emode == 1 else ext_char
     if output is None:
-        fn = lambda a, b : b + ext_char
+        fn = lambda a, b : b + ch
     else:
-        fn = lambda a, b : os.path.join(a, os.path.basename(b) + ext_char)
+        fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
         if not os.path.exists(output):
             os.makedirs(output)
 
@@ -213,7 +214,8 @@ def encrypt_files(files, prokey, output=None):
     else:
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key "%s"' % prokey)
-        pytransform.encrypt_project_files(prokey, tuple(flist))
+        mode = 1 if emode == 1 else 0
+        pytransform.encrypt_project_files(prokey, tuple(flist), mode)
         logging.info('Encrypt all scripts OK.')
 
 def make_license(capsule, filename, code):
@@ -341,6 +343,13 @@ Available options:
 
   -m, --main=NAME             Generate wrapper file to run encrypted script
 
+  -e, --mode=MODE             Encrypt mode, available value:
+                                0     (Default), encrypt both source
+                                      and bytecode
+                                1     Encrypt bytecode only.
+                                2     Encrypt source code only.
+                              Mode 1, 2 is used to improve performance.
+
   -d, --clean                 Clean output path at start.
 
 For examples:
@@ -382,6 +391,7 @@ For examples:
     extfile = None
     mainname = []
     clean = False
+    emode = 0
 
     for o, a in opts:
         if o in ('-O', '--output'):
@@ -396,6 +406,10 @@ For examples:
             platname = a
         elif o in ('-d', '--clean'):
             clean = True
+        elif o in ('-e', '--mode'):
+            if a not in ('0', '1', '2'):
+                raise RuntimeError('Invalid mode "%s"' % a)
+            emode = int(a)
         elif o in ('-m', '--main'):
             mainname.append(a)
 
@@ -456,7 +470,7 @@ For examples:
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key %s' % prokey)
         logging.info('Encrypt files ...')
-        encrypt_files(filelist, prokey, None if inplace else output)
+        encrypt_files(filelist, prokey, emode, None if inplace else output)
         logging.info('Encrypt files OK.')
 
 @checklicense
