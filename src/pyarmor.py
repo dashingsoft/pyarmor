@@ -185,7 +185,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
-def encrypt_files(files, prokey, emode=0, output=None):
+def encrypt_files(files, prokey, mode=0, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
 
@@ -196,7 +196,7 @@ def encrypt_files(files, prokey, emode=0, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ch = 'c' if emode == 1 else ext_char
+    ch = 'c' if mode == 1 else ext_char
     if output is None:
         fn = lambda a, b : b + ch
     else:
@@ -213,8 +213,7 @@ def encrypt_files(files, prokey, emode=0, output=None):
         logging.info('No any script specified')
     else:
         if not os.path.exists(prokey):
-            raise RuntimeError('Missing project key "%s"' % prokey)
-        mode = 1 if emode == 1 else 0
+            raise RuntimeError('Missing project key "%s"' % prokey)        
         pytransform.encrypt_project_files(prokey, tuple(flist), mode)
         logging.info('Encrypt all scripts OK.')
 
@@ -391,7 +390,7 @@ For examples:
     extfile = None
     mainname = []
     clean = False
-    emode = 0
+    mode = 0
 
     for o, a in opts:
         if o in ('-O', '--output'):
@@ -409,7 +408,7 @@ For examples:
         elif o in ('-e', '--mode'):
             if a not in ('0', '1', '2'):
                 raise RuntimeError('Invalid mode "%s"' % a)
-            emode = int(a)
+            mode = int(a)
         elif o in ('-m', '--main'):
             mainname.append(a)
 
@@ -450,12 +449,12 @@ For examples:
     ZipFile(capsule).extractall(path=output)
     logging.info('Extract capsule to %s OK.', output)
 
-    if emode:
+    if mode:
         with open(os.path.join(output, 'pyimcore.py'), 'r+') as f:
             lines = f.readlines()
             for i in range(-1, -len(lines), -1):
                 if lines[i] == '_mode = 0':
-                    lines[i] = '_mode = %s' % emode
+                    lines[i] = '_mode = %s' % mode
                     break
             f.truncate(0)
             f.writelines(lines)
@@ -480,7 +479,7 @@ For examples:
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key %s' % prokey)
         logging.info('Encrypt files ...')
-        encrypt_files(filelist, prokey, emode, None if inplace else output)
+        encrypt_files(filelist, prokey, mode, None if inplace else output)
         logging.info('Encrypt files OK.')
 
 @checklicense
