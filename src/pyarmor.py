@@ -191,7 +191,13 @@ def make_capsule(rootdir=None, filename='project.zip'):
 def _write_bytecode(src, dest):
     '''Convert co_object file to .pyc'''
     def _w_long(x):
-        return (int(x) & 0xFFFFFFFF).to_bytes(4, 'little')
+        try:
+            return (int(x) & 0xFFFFFFFF).to_bytes(4, 'little')
+        except Exception:
+            return bytes([x         & 0xff,
+                          (x >> 8)  & 0xff,
+                          (x >> 16) & 0xff,
+                          (x >> 24) & 0xff])
     def _get_header(mtime=0, source_size=0):
         data = bytearray(MAGIC_NUMBER)
         data.extend(_w_long(mtime))
@@ -199,7 +205,7 @@ def _write_bytecode(src, dest):
             data.extend(_w_long(source_size))
         return data
     major, minor = sys.version_info[:2]
-    mtime = int(time.now())
+    mtime = int(time.time())
     with open(src, 'rb') as fs:
         code = fs.read()
         source_size = len(code)
@@ -402,9 +408,9 @@ For examples:
     '''
 
     opts, args = getopt.getopt(
-        argv, 'C:dim:O:p:s:',
+        argv, 'C:de:im:O:p:s:',
         ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
-         'main=', 'clean']
+         'main=', 'clean', 'mode=']
     )
 
     output = 'build'
