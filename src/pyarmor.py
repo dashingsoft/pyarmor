@@ -450,6 +450,16 @@ For examples:
     ZipFile(capsule).extractall(path=output)
     logging.info('Extract capsule to %s OK.', output)
 
+    if emode:
+        with open(os.path.join(output, 'pyimcore.py'), 'r+') as f:
+            lines = f.readlines()
+            for i in range(-1, -len(lines), -1):
+                if lines[i] == '_mode = 0':
+                    lines[i] = '_mode = %s' % emode
+                    break
+            f.truncate(0)
+            f.writelines(lines)
+
     prikey = os.path.join(output, 'private.key')
     if os.path.exists(prikey):
         logging.info('Remove private key %s in the output', prikey)
@@ -491,7 +501,7 @@ Available options:
   -F, --bind-file=FILENAME        [option] Generate license file bind to
                                   fixed file, for example, ssh private key.
 
-  -e, --expired-date=YYYY-MM-NN   [option] Generate expired license file.                                  
+  -e, --expired-date=YYYY-MM-NN   [option] Generate expired license file.
                                   It could be combined with "--bind"
 
   -C, --with-capsule=FILENAME     [required] Specify the filename of capsule
@@ -500,29 +510,29 @@ Available options:
 For example,
 
   - Generate a license file "license.lic" for project capsule "project.zip":
-  
+
     pyarmor license --wth-capsule=project.zip MYPROJECT-0001
-  
+
   - Generate a license file "license.lic" expired in 05/30/2015:
-  
+
     pyarmor license --wth-capsule=project.zip -e 2015-05-30 MYPROJECT-0001
-  
+
   - Generate a license file "license.lic" bind to machine whose harddisk's
     serial number is "PBN2081SF3NJ5T":
-  
+
     pyarmor license --wth-capsule=project.zip --bind-disk PBN2081SF3NJ5T
-  
+
   - Generate a license file "license.lic" bind to ssh key file id_rsa:
-  
+
     pyarmor license --wth-capsule=project.zip \
             --bind-file src/id_rsa ~/.ssh/my_id_rsa
-  
+
     File "src/id_rsa" is in the develop machine, pyarmor will read data
     from this file when generating license file.
-  
+
     Argument "~/.ssh/id_rsa" means full path filename in target machine,
     pyarmor will find this file as key file when decrypting python scripts.
-  
+
     You shuold copy "license.lic" to target machine, at the same time,
     copy "src/id_rsa" to target machine as "~/.ssh/my_id_rsa"
 
