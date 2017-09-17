@@ -481,11 +481,12 @@ For examples:
     logging.info('Extract capsule to %s OK.', output)
 
     if mode:
+        logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'r+') as f:
             lines = f.readlines()
             for i in range(-1, -len(lines), -1):
-                if lines[i] == '_mode = 0':
-                    lines[i] = '_mode = %s' % mode
+                if lines[i].rstrip() == '_mode = 0':
+                    lines[i] = '_mode = %s\n' % mode
                     break
             f.truncate(0)
             f.writelines(lines)
