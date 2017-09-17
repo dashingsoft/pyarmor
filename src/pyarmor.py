@@ -26,6 +26,7 @@
 import fnmatch
 import getopt
 import glob
+import imp
 import logging
 import os
 import platform
@@ -42,6 +43,8 @@ except Exception:
 
 from config import (version, version_info, trial_info, help_footer,
                     ext_char, platform, dll_ext, dll_name, wrap_runner)
+
+MAGIC_NUMBER = imp.get_magic()
 
 def _import_pytransform():
     try:
@@ -185,6 +188,25 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
+def _write_bytecode(src, dest):
+    '''Convert co_object file to .pyc'''
+    def _w_long(x):
+        return (int(x) & 0xFFFFFFFF).to_bytes(4, 'little')
+    def _get_header(mtime=0, source_size=0):
+        data = bytearray(MAGIC_NUMBER)
+        data.extend(_w_long(mtime))
+        if major == 3 and minor > 2:
+            data.extend(_w_long(source_size))
+        return data
+    major, minor = sys.version_info[:2]
+    mtime = int(time.now())
+    with open(src, 'rb') as fs:
+        code = fs.read()
+        source_size = len(code)
+    with open(dest, 'wb') as fc:
+        fc.write(_get_header(mtime, source_size))
+        fc.write(code)
+
 def encrypt_files(files, prokey, mode=0, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
@@ -196,11 +218,10 @@ def encrypt_files(files, prokey, mode=0, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ch = 'c' if mode == 1 else ext_char
     if output is None:
-        fn = lambda a, b : b + ch
+        fn = lambda a, b : b + ext_char
     else:
-        fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
+        fn = lambda a, b : os.path.join(a, os.path.basename(b) + ext_char)
         if not os.path.exists(output):
             os.makedirs(output)
 
@@ -213,8 +234,12 @@ def encrypt_files(files, prokey, mode=0, output=None):
         logging.info('No any script specified')
     else:
         if not os.path.exists(prokey):
-            raise RuntimeError('Missing project key "%s"' % prokey)        
+            raise RuntimeError('Missing project key "%s"' % prokey)
         pytransform.encrypt_project_files(prokey, tuple(flist), mode)
+        if mode == 1:
+            for fpp in flist:
+                _write_bytecode(fpp[1], fpp[0] + 'c')
+                os.remove(fpp[1])
         logging.info('Encrypt all scripts OK.')
 
 def make_license(capsule, filename, code):
