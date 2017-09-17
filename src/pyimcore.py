@@ -16,7 +16,7 @@ class PyshieldImporter(object):
 
     def find_module(self, name, path=None):
         try:
-            self.mod_info = find_module(name, path=path)
+            self.mod_info = find_module(name, path)
             self.imp_loader = True
             return self
         except ImportError:
@@ -60,5 +60,12 @@ class PyshieldImporter(object):
         pkg.__path__ = path
         return pkg
 
-sys.meta_path.append(PyshieldImporter())
-init_runtime()
+_mode = 0
+if _mode == 1:
+    init_runtime()
+elif _mode == 2:
+    sys.meta_path.append(PyshieldImporter())
+    init_runtime(0, 0, 0, 0)
+else:
+    sys.meta_path.append(PyshieldImporter())
+    init_runtime()
