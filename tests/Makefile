@@ -85,4 +85,4 @@ trial:
 
 
 clean:
-	rm -rf *.pyc *.pyo __pycache__ _pytransform.log $(WORKPATH)
+	rm -rf *.pyc *.pyo __pycache__ _pytransform.log $(WORKPATH) __runtest__
