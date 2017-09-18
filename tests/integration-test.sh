@@ -458,6 +458,17 @@ $PYTHON pyarmor.py encrypt --with-capsule=foo-key.zip \
         || csih_bug "Case 3.4 FAILED: return non-zero code"
 )
 
+csih_inform "Case 3.5: import encrypted code with mode 1"
+$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=1 \
+    --output=build_m1 foo.py >result.log 2>&1 \
+    || csih_bug "Case 3.5 FAILED: return non-zero code"
+(cd build_m1 ;
+    cp ../startup.py ./ ;
+    $PYTHON startup.py >../result.log 2>&1 \
+        || csih_bug "Case 3.5 FAILED: return non-zero code"
+)
+grep -q "foo.hello(2) = 7" result.log \
+    || csih_bug "Case 3.5 FAILED: python script returns unexpected result"
 
 #
 # Cross publish
