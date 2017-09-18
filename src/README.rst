@@ -29,7 +29,7 @@ Support Platforms
 
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64
 
-Got prebuilt library `platforms.zip <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.1/platforms.zip>`_
+Got prebuilt library `platforms.zip <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.2/platforms.zip>`_
 then extract it to src of Pyarmor
 
 The core of Pyarmor is written by C, the only dependency is libc. So
