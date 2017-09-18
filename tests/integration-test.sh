@@ -9,7 +9,7 @@ if [[ ${UNAME:0:5} == Linux ]] ; then
     fi
     PKGEXT=tar.bz2
 else
-    if [[ $(ARCH) == x86_64 ]] ; then
+    if [[ $(arch) == x86_64 ]] ; then
         PLATFORM=win_amd64
     else
         PLATFORM=win32
