@@ -15,6 +15,8 @@ class PyshieldImporter(object):
         self.imp_loader = None
 
     def find_module(self, name, path=None):
+        # From Python3.3, path of package is <class '_frozen_importlib._NamespacePath'>
+        path = None if path is None else list(path)
         try:
             self.mod_info = find_module(name, path)
             self.imp_loader = True
