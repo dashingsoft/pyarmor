@@ -1,5 +1,8 @@
 3.1.1
 -----
+In this version, introduce 2 extra encrypt modes to improve
+performance of encrypted scripts.
+
 * Fix issue when import encrypted package
 * Add encrypted mode 2 and 3 to improve performance
 * Refine module pyimcore to improve performance
