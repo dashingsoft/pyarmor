@@ -279,7 +279,8 @@ class PyarmorTestCases(BaseTestCase):
                 ]
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
-        self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'), '_mode = 1'))
+        self.assertFalse(self.searchFile(os.path.join(output, 'pyimcore.py'),
+                                         'sys.meta_path.append(PyshieldImporter())'))
 
     def test_do_encrypt_mode_2(self):
         ft = self.pyarmor.do_encrypt
@@ -292,7 +293,9 @@ class PyarmorTestCases(BaseTestCase):
                 ]
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
-        self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'), '_mode = 2'))
+        self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'),
+                                        'init_runtime(0, 0, 0, 0)'))
+
 
     def test_do_license(self):
         ft = self.pyarmor.do_license
