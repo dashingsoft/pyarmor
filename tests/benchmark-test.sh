@@ -23,7 +23,7 @@ version=${filename:8:5}
 extchar=${PYARMOR_EXTRA_CHAR:-e}
 workpath=__runtest__
 datafile=$(pwd)/data/pyarmor-data.tar.gz
-testfile=$(pwd)/data/pybench.tar.gz
+testfile=$(pwd)/data/pybench
 pkgfile=$(pwd)/../src/dist/pyarmor-${version}.${PKGEXT}
 resultpath=../../../data
 
@@ -260,7 +260,7 @@ cd ${workpath}
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
-tar xzf ${testfile} || csih_error "Extract pybench files FAILED"
+cp -a ${testfile} ./ || csih_error "Copy pybench files FAILED"
 
 pyver=$("$PYTHON" -c"import sys
 sys.stdout.write('%d%d' % sys.version_info[:2])")
