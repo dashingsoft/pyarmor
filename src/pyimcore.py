@@ -40,7 +40,10 @@ class PyshieldImporter(object):
     def load_module(self, name):
         fp, filename, description = self.mod_info
         if self.imp_loader is None:
-            m = import_module(name, filename)
+            try:
+                m = import_module(name, filename)
+            except PytransformError:
+                raise ImportError(str(sys.exc_info()[1]))
             m.__loader__ = self
             if description == PKG_DIRECTORY:
                 m.__package__ = name
