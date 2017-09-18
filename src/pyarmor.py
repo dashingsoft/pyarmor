@@ -188,31 +188,6 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
-def _write_bytecode(src, dest):
-    '''Convert co_object file to .pyc'''
-    def _w_long(x):
-        try:
-            return (int(x) & 0xFFFFFFFF).to_bytes(4, 'little')
-        except Exception:
-            return bytes([x         & 0xff,
-                          (x >> 8)  & 0xff,
-                          (x >> 16) & 0xff,
-                          (x >> 24) & 0xff])
-    def _get_header(mtime=0, source_size=0):
-        data = bytearray(MAGIC_NUMBER)
-        data.extend(_w_long(mtime))
-        if major == 3 and minor > 2:
-            data.extend(_w_long(source_size))
-        return data
-    major, minor = sys.version_info[:2]
-    mtime = int(time.time())
-    with open(src, 'rb') as fs:
-        code = fs.read()
-        source_size = len(code)
-    with open(dest, 'wb') as fc:
-        fc.write(_get_header(mtime, source_size))
-        fc.write(code)
-
 def encrypt_files(files, prokey, mode=0, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
@@ -224,10 +199,11 @@ def encrypt_files(files, prokey, mode=0, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
+    ch = 'c' if mode == 1 else ext_char
     if output is None:
-        fn = lambda a, b : b + ext_char
+        fn = lambda a, b : b + ch
     else:
-        fn = lambda a, b : os.path.join(a, os.path.basename(b) + ext_char)
+        fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
         if not os.path.exists(output):
             os.makedirs(output)
 
@@ -242,10 +218,6 @@ def encrypt_files(files, prokey, mode=0, output=None):
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key "%s"' % prokey)
         pytransform.encrypt_project_files(prokey, tuple(flist), mode)
-        if mode == 1:
-            for fpp in flist:
-                _write_bytecode(fpp[1], fpp[1][:-1] + 'c')
-                os.remove(fpp[1])
         logging.info('Encrypt all scripts OK.')
 
 def make_license(capsule, filename, code):
@@ -482,19 +454,18 @@ For examples:
 
     if mode:
         logging.info('Encrypt mode: %s', mode)
-        with open(os.path.join(output, 'pyimcore.py'), 'r+') as f:
-            lines = f.readlines()
-            for i in range(-2, -10, -1):
-                if lines[i].rstrip() == '':
-                    break
-            f.truncate(0)
+        with open(os.path.join(output, 'pyimcore.py'), 'r') as f:
+            lines = f.read()
+        with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
+            i = lines.rfind('\n\n')
+            if i == -1:
+                raise RuntimeError('Invalid pyimcore.py')
+            f.write(lines[:i])
             if mode == 1:
-                lines[i:] = ['\n', 'init_runtime()\n']
+                f.write('\n\ninit_runtime()\n')
             elif mode == 2:
-                lines[i:] = ['\n',
-                             'sys.meta_path.append(PyshieldImporter())\n',
-                             'init_runtime(0, 0, 0, 0)\n']
-            f.writelines(lines)
+                f.write('\n\nsys.meta_path.append(PyshieldImporter())\n'
+                        'init_runtime(0, 0, 0, 0)\n')
 
     prikey = os.path.join(output, 'private.key')
     if os.path.exists(prikey):
