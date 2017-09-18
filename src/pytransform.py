@@ -75,7 +75,10 @@ def import_module(modname, filename):
     if _import_module is None:
         prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
         _import_module = prototype(('import_module', _pytransform))
-    return _import_module(modname, filename)
+    try:
+        return _import_module(modname, filename)
+    except PytransformError:
+        raise ImportError(str(sys.exc_info()[1]))
 _import_module = None
 
 @dllmethod
