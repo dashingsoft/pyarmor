@@ -287,7 +287,7 @@ output=dist
 mode=0
 result_base=../py${pyver}.base.bench
 
-csih_inform "* Run plain pybench"
+csih_inform "* Run base pybench"
 (cd pybench; $PYTHON pybench.py -f ${result_base})
 csih_inform "* Write result to ${result_base}"
 
