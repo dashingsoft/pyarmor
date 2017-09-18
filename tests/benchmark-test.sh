@@ -30,7 +30,7 @@ resultpath=../../../data
 case ${PLATFORM} in
 
     win32)
-        PYTHON=${PYTHON:-C:/Python26/python}
+        PYTHON=${PYTHON:-C:/Python32/python}
         ;;
     win_amd64)
         PYTHON=${PYTHON:-C:/Python26/python}
@@ -285,7 +285,7 @@ $PYTHON pyarmor.py capsule project >result.log 2>&1 \
 
 output=dist
 mode=0
-result_base=../py${pyver}.bench
+result_base=../py${pyver}.base.bench
 
 csih_inform "* Run plain pybench"
 (cd pybench; $PYTHON pybench.py -f ${result_base})
@@ -293,8 +293,8 @@ csih_inform "* Write result to ${result_base}"
 
 for mode in 0 1 2 ; do
 
-  result_mode=../py${pyver}.armor-m${mode}.bench
-  result=${resultpath}/py${pyver}.plain-m${mode}.bench
+  result_mode=../py${pyver}.mode${mode}.bench
+  result=${resultpath}/py${pyver}.base-mode${mode}.bench
   
   echo ""
   echo "-------------------- Mode ${mode} --------------------"
@@ -303,6 +303,9 @@ for mode in 0 1 2 ; do
   csih_inform "* Encrypt package pybench"
   rm -rf ${output}
   cp -a pybench/ ${output}/
+  if [[ ${pyver:0:1} == "3" ]] ; then
+      sed -i -e"s/u'/'/g" ${output}/Unicode.py
+  fi
   $PYTHON pyarmor.py encrypt -C project.zip -O ${output} --in-place \
       ${output}/*.py ${output}/package/*.py >result.log 2>&1 \
       || csih_error "FAILED: return non-zero code"
@@ -318,13 +321,13 @@ for mode in 0 1 2 ; do
   mv ${output}/{pybench.py,main.py}
   
   csih_inform "* Run encrypted pybench"
-  (cd ${output}; $PYTHON main.py -v -f ${result_mode} >result.log 2>&1 \
-      || csih_error "FAILED: return non-zero code")
+  (cd ${output}; $PYTHON main.py -v -f ${result_mode} >result.log 2>&1) \
+      || csih_error "FAILED: return non-zero code"
   csih_inform "* Write result to ${result_mode}"
   
   csih_inform "* Compare pybench result"
-  (cd pybench; $PYTHON pybench.py -s ${result_base} -c ${result_mode} > ${result} \
-      || csih_error "FAILED: return non-zero code")
+  (cd pybench; $PYTHON pybench.py -s ${result_base} -c ${result_mode} > ${result}) \
+      || csih_error "FAILED: return non-zero code"
   csih_inform "* Write result to ${result}"
 done
 
