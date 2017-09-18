@@ -301,6 +301,7 @@ cd ${workpath}
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
+cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
 
 csih_inform "Prepare for testing"
 echo ""
@@ -482,6 +483,20 @@ $PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=2 \
 )
 grep -q "foo.hello(2) = 7" result.log \
     || csih_bug "Case 3.6 FAILED: python script returns unexpected result"
+
+csih_inform "Case 3.7: import encrypted package"
+$PYTHON pyarmor.py encrypt --with-capsule=project.zip --in-place \
+    --output=build_pkg package/*.py >result.log 2>&1 \
+    || csih_bug "Case 3.7 FAILED: return non-zero code"
+(cp -a package build_pkg;
+    cd build_pkg && rm package/*.py ;
+    cp ../startup.py ./ ;
+    sed -i -e 's/import foo/from package import foo/g' startup.py ;
+    $PYTHON startup.py >../result.log 2>&1 \
+        || csih_bug "Case 3.7 FAILED: return non-zero code"
+)
+grep -q "foo.hello(2) = 7" result.log \
+    || csih_bug "Case 3.7 FAILED: python script returns unexpected result"
 
 #
 # Cross publish
