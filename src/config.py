@@ -52,5 +52,5 @@ dll_name = '_pytransform'
 wrap_runner = '''
 import pyimcore
 from pytransform import exec_file
-exec_file(%s)
+exec_file('%s')
 '''
