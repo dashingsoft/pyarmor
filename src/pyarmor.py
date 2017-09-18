@@ -244,7 +244,7 @@ def encrypt_files(files, prokey, mode=0, output=None):
         pytransform.encrypt_project_files(prokey, tuple(flist), mode)
         if mode == 1:
             for fpp in flist:
-                _write_bytecode(fpp[1], fpp[0] + 'c')
+                _write_bytecode(fpp[1], fpp[1][:-1] + 'c')
                 os.remove(fpp[1])
         logging.info('Encrypt all scripts OK.')
 
@@ -484,11 +484,16 @@ For examples:
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'r+') as f:
             lines = f.readlines()
-            for i in range(-1, -len(lines), -1):
-                if lines[i].rstrip() == '_mode = 0':
-                    lines[i] = '_mode = %s\n' % mode
+            for i in range(-2, -10, -1):
+                if lines[i].rstrip() == '':
                     break
             f.truncate(0)
+            if mode == 1:
+                lines[i:] = ['\n', 'init_runtime()\n']
+            elif mode == 2:
+                lines[i:] = ['\n',
+                             'sys.meta_path.append(PyshieldImporter())\n',
+                             'init_runtime(0, 0, 0, 0)\n']
             f.writelines(lines)
 
     prikey = os.path.join(output, 'private.key')

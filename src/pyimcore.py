@@ -60,12 +60,5 @@ class PyshieldImporter(object):
         pkg.__path__ = path
         return pkg
 
-_mode = 0
-if _mode == 1:
-    init_runtime()
-elif _mode == 2:
-    sys.meta_path.append(PyshieldImporter())
-    init_runtime(0, 0, 0, 0)
-else:
-    sys.meta_path.append(PyshieldImporter())
-    init_runtime()
+sys.meta_path.append(PyshieldImporter())
+init_runtime()
