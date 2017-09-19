@@ -475,8 +475,9 @@ For examples:
     for name in mainname:
         script = os.path.join(output, name + '.py')
         logging.info('Writing script wrapper %s ...', script)
+        ch = 'c' if mode == 1 else ext_char
         with open(script, 'w') as f:
-            f.write(wrap_runner % (name + '.py' + ext_char))
+            f.write(wrap_runner % (name + '.py' + ch))
         logging.info('Write script wrapper OK.')
 
     filelist = _parse_file_args(args, srcpath=srcpath)
