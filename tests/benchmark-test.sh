@@ -30,7 +30,7 @@ resultpath=../../../data
 case ${PLATFORM} in
 
     win32)
-        PYTHON=${PYTHON:-C:/Python32/python}
+        PYTHON=${PYTHON:-C:/Python26/python}
         ;;
     win_amd64)
         PYTHON=${PYTHON:-C:/Python26/python}
@@ -288,7 +288,9 @@ mode=0
 result_base=../py${pyver}.base.bench
 
 csih_inform "* Run base pybench"
-(cd pybench; $PYTHON pybench.py -f ${result_base})
+(cd pybench;
+    rm -rf *.pyc __pycache__ package/*.pyc package/__pycache__;
+    $PYTHON pybench.py -f ${result_base})
 csih_inform "* Write result to ${result_base}"
 
 for mode in 0 1 2 ; do
@@ -306,18 +308,23 @@ for mode in 0 1 2 ; do
   if [[ ${pyver:0:1} == "3" ]] ; then
       sed -i -e"s/u'/'/g" ${output}/Unicode.py
   fi
-  $PYTHON pyarmor.py encrypt -C project.zip -O ${output} --in-place \
+  $PYTHON pyarmor.py encrypt -C project.zip -O ${output} -e ${mode} --in-place \
       ${output}/*.py ${output}/package/*.py >result.log 2>&1 \
       || csih_error "FAILED: return non-zero code"
-  [[ -f ${output}/pybench.py${extchar} ]] \
-      || csih_error "FAILED: no ${output}/pybench/pybench.py${extchar} found"
+  if [[ $mode == "1" ]] ; then
+      ch=c
+  else
+      ch=${extchar}
+  fi
+  [[ -f ${output}/pybench.py${ch} ]] \
+      || csih_error "FAILED: no ${output}/pybench.py${ch} found"
   find ${output}/ -name "*.py" -delete
   
   csih_inform "* Generate main wrapper"
   $PYTHON pyarmor.py encrypt -C project.zip -O ${output} -m pybench >result.log 2>&1 \
       || csih_error "FAILED: return non-zero code"
   [[ -f ${output}/pybench.py ]] \
-      || csih_error "FAILED: no wrapper ${output}/pybench/pybench.py} found"
+      || csih_error "FAILED: no wrapper ${output}/pybench.py} found"
   mv ${output}/{pybench.py,main.py}
   
   csih_inform "* Run encrypted pybench"
