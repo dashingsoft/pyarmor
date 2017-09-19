@@ -321,7 +321,8 @@ for mode in 0 1 2 ; do
   find ${output}/ -name "*.py" -delete
   
   csih_inform "* Generate main wrapper"
-  $PYTHON pyarmor.py encrypt -C project.zip -O ${output} -m pybench >result.log 2>&1 \
+  $PYTHON pyarmor.py encrypt -C project.zip -O ${output} \
+      -e ${mode} -m pybench >result.log 2>&1 \
       || csih_error "FAILED: return non-zero code"
   [[ -f ${output}/pybench.py ]] \
       || csih_error "FAILED: no wrapper ${output}/pybench.py} found"
