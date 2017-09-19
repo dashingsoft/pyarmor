@@ -4,8 +4,7 @@ import sys
 
 from pytransform import PytransformError, init_runtime, import_module
 
-ext_char = os.getenv('PYARMOR_EXTRA_CHAR', 'e')
-ext_list = [x + ext_char for x in ('.py', '.pyc', '.pyo')]
+_ext = '.py' + os.getenv('PYARMOR_EXTRA_CHAR', 'e')
 
 class PyshieldImporter(object):
     '''Import encrypted module or package, package in multi-pathes is not supported.'''
@@ -26,15 +25,14 @@ class PyshieldImporter(object):
 
         m = name.rsplit('.', 1)[-1]
         for dirname in sys.path if path is None else path:
-            for ext in ext_list:
-                filename = os.path.join(dirname, m + ext)
-                if os.path.exists(filename):
-                    self.mod_info = None, filename, None
-                    return self
-                filename = os.path.join(dirname, name, '__init__' + ext)
-                if os.path.exists(filename):
-                    self.mod_info = None, filename, PKG_DIRECTORY
-                    return self
+            filename = os.path.join(dirname, m + _ext)
+            if os.path.exists(filename):
+                self.mod_info = None, filename, None
+                return self
+            filename = os.path.join(dirname, name, '__init__' + _ext)
+            if os.path.exists(filename):
+                self.mod_info = None, filename, PKG_DIRECTORY
+                return self
         self.mod_info = None
 
     def load_module(self, name):
