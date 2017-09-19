@@ -84,7 +84,7 @@ def checklicense(func):
             sys.stderr.write('Pyarmor Version %s\n' % version)
         try:
             func(*arg, **kwargs)
-        except RuntimeError as e:
+        except RuntimeError:
             logging.error(exc_msg())
         except getopt.GetoptError:
             logging.error(exc_msg())
