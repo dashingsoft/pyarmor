@@ -296,6 +296,19 @@ class PyarmorTestCases(BaseTestCase):
         self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'),
                                         'init_runtime(0, 0, 0, 0)'))
 
+    def test_do_encrypt_with_main_in_mode_1(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build_m1')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--mode', '1',
+                '--main', 'foo',
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate extra files OK'))
+        self.assertTrue(self.searchFile(os.path.join(output, 'foo.py'),
+                                        'foo.pyc'))
 
     def test_do_license(self):
         ft = self.pyarmor.do_license
@@ -363,7 +376,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_do_encrypt_mode'
+    # loader.testMethodPrefix = 'test_do_encrypt_with_main_in_mode_1'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
