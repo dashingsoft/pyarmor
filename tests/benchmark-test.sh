@@ -265,6 +265,13 @@ cp -a ${testfile} ./ || csih_error "Copy pybench files FAILED"
 pyver=$("$PYTHON" -c"import sys
 sys.stdout.write('%d%d' % sys.version_info[:2])")
 
+if [[ ${pyver} == "30" || ${pyver} == "31" ]] ; then
+    csih_warning "pybench can not work in Python${pyver}"
+    csih_inform "Test abort for ${PYTHON}"
+    echo ""
+    exit 0
+fi
+
 csih_inform "Prepare for testing"
 echo ""
 
