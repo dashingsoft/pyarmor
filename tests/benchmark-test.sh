@@ -296,7 +296,7 @@ result_base=../py${pyver}.base.bench
 
 csih_inform "* Run base pybench"
 (cd pybench;
-    rm -rf *.pyc __pycache__ package/*.pyc package/__pycache__;
+    rm -rf *.py? __pycache__ package/*.py? package/__pycache__;
     $PYTHON pybench.py -f ${result_base})
 csih_inform "* Write result to ${result_base}"
 
