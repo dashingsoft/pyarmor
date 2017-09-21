@@ -10,10 +10,13 @@
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
   <style type="text/css">
     .toolbar {
-    margin: 10px 15px 10px 15px;
-    position: absolute;
-    right: 0;
-    top: 0;
+      margin: 10px 15px 10px 15px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .tab-pane > div {
+      padding: 0 1em;
     }
   </style>
 
@@ -25,234 +28,276 @@
 </head>
 
 <body role="document">
-    <nav role="navigation" class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="https://github.com/dashingsoft/pyarmor">Pyarmor</a>
-        </div>
-        <!-- /.navbar-header -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-            <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-            <li role="presentation" class="active"><a href="#project" aria-controls="project" role="tab" data-toggle="tab">Project</a></li>
-            <li role="presentation"><a href="#documentation" aria-controls="documentation" role="tab" data-toggle="tab">Documentation</a></li>
-            <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Purchase</a></li>
-            <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
-            <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
-          </ul>
-        </div>
-        <!-- /.navbar-collapse -->
+  <nav role="navigation" class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main-tab" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://github.com/dashingsoft/pyarmor">Pyarmor</a>
       </div>
-      <!-- /.container-fluid -->
-    </nav>
+      <!-- /.navbar-header -->
+      <div class="collapse navbar-collapse" id="navbar-main-tab">
+        <ul class="nav navbar-nav">
+          <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+          <li role="presentation" class="active"><a href="#project" aria-controls="project" role="tab" data-toggle="tab">Project</a></li>
+          <li role="presentation"><a href="#documentation" aria-controls="documentation" role="tab" data-toggle="tab">Documentation</a></li>
+          <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Purchase</a></li>
+          <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
+          <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+  </nav>
 
-    <div id="global-message"></div>
+  <div id="global-message"></div>
 
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <div role="tabpanel" class="tab-pane" id="home">
-        <div class="toolbar">
-          <a type="button" class="btn btn-success" href="index-zh.html">中文版</a>
-        </div>
-        Pyarmor is a tool
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane" id="home">
+      <div class="toolbar">
+        <a type="button" class="btn btn-success" href="index-zh.html">中文版</a>
       </div>
-      <div role="tabpanel" class="tab-pane active" id="project">
-        <div class="toolbar">
-          <button id="new-project" type="button" class="btn btn-success">New</button>
-          <button id="open-project" type="button" class="btn btn-default">Open</button>
-          <button id="save-project" type="button" class="btn btn-default">Save</button>
-          <button id="encrypt-project" type="button" class="btn btn-default">Encrypt</button>
-          <!-- <h4><span class="label label-warning">Demo Version</span></h4> -->
-          <button id="demo-button" type="button" class="btn btn-warning hidden">Demo Version</button>
-        </div>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-sm-2">
-              <ul class="nav nav-pills nav-stacked">
-                <li role="presentation" class="active"><a href="#project-basic" aria-controls="project-basic" role="tab" data-toggle="pill">Basic</a></li>
-                <li role="presentation"><a href="#project-runtime" aria-controls="project-runtime" role="tab" data-toggle="pill">Runtime Environments</a></li>
-                <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
-                <!-- <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li> -->
-              </ul>
-            </div>
-            <!-- /.col-sm-2 -->
-            <div class="col-sm-10">
-              <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="project-basic">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">Project Infromation</div>
-                    <div class="panel-body">
-                      <form>
-                        <div class="form-group hidden">
-                          <label for="input_project_name">Name</label>
-                          <input type="text" class="form-control" id="input_project_name">
-                        </div>
-                        <div class="form-group">
-                          <label for="input_project_title">Title</label>
-                          <input type="text" class="form-control" id="input_project_title">
-                        </div>
-                        <div class="form-group hidden">
-                          <label for="input_project_capsule">Capsule</label>
-                          <input type="text" class="form-control" id="input_project_capsule" placeholder="Project Capsule Filename" disabled>
-                          <p class="help-block">It will be generated when new project and can not be changed.</p>
-                        </div>
-                        <div class="form-group hidden">
-                          <label for="input_project_description">Description</label>
-                          <textarea class="form-control" rows="5" id="input_project_description"></textarea>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_source_path">Source Path</label>
-                          <input type="text" class="form-control" id="input_project_path">
-                          <p class="help-block">Required. Absolute path of your python package in local machine.</p>
-                        </div>
-                        <div class="checkbox hidden">
-                          <label>
-                            <input type="checkbox" id="input_in_place" value="">Save encrypt python scripts in the same path of original file
-                          </label>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_project_files">MANIFEST.in</label>
-                          <textarea class="form-control" rows="5" id="input_project_files"></textarea>
-                          <p class="help-block">Optional. Following the Distutils’ own manifest template, all these files will be encrypted.</p>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_main_script">Main Script</label>
-                          <input type="text" class="form-control" id="input_main_scripts">
-                          <p class="help-block">Optional. Main script name.</p>
-                        </div>
-                        <div class="form-group hidden">
-                          <label for="input_output_path">Output Path</label>
-                          <input type="text" class="form-control" id="input_project_output"/>
-                          <p class="help-block">Required. Encrypted scripts and extra files will be saved here</p>
-                        </div>
-                      </form>
-                    </div>
-                    <!-- /.panel-body -->
-                  </div>
-                  <!-- /.panel-default -->
-                </div>
-                <!-- /.tab-pane -->
-                <div role="tabpanel" class="tab-pane" id="project-licenses">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">Generate project license for special user</div>
-                    <div class="panel-body">
-                      <form>
-                        <div class="form-group">
-                          <label for="input_harddisk_info">
-                            <div class="checkbox">
-                              <label>
-                                <input type="checkbox" id="check_bind_harddisk" value="">Run encrypted scripts in special machine, type harddisk serial number of target machine
-                              </label>
-                            </div>
-                          </label>
-                          <input type="text" class="form-control" id="input_bind_harddisk" disabled>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_expired_date">
-                            <div class="checkbox">
-                              <label>
-                                <input type="checkbox" id="check_expired_date" value="">Expired encrypted scripts at some point, type expired date (YYYY-MM-NN)
-                              </label>
-                            </div>
-                          </label>
-                          <input type="text" class="form-control" id="input_expired_date" disabled>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_registration_code">Registration Code</label>
-                          <input type="text" class="form-control" id="input_license_rcode">
-                          <p class="help-block">Any string, for example, 'mycustomer-01'. Note that it will be ignored if any of checkbox above is checked.</p>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_available_licenses">Available Licenses</label>
-                          <textarea class="form-control" id="input_project_licenses" rows="3" readonly></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-default">Generate</button>
-                        <div class="pull-right">
-                          <button type="submit" class="btn btn-default">Remove</button>
-                          <button type="submit" class="btn btn-default">Download</button>
-                        </div>
-                      </form>
-                    </div>
-                    <!-- /.panel-body -->
-                  </div>
-                  <!-- /.panel-default -->
-                </div>
-                <!-- /.tab-pane -->
-                <div role="tabpanel" class="tab-pane" id="project-runtime">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">Where to run encrypted scripts</div>
-                    <div class="panel-body">
-                      <form>
-                        <div class="form-group">
-                          <label for="input_project_target">Run encrypted scripts in other platform</label>
-                          <select class="form-control" id="input_project_target">
-                            <option></option>
-                            <option>win32</option>
-                            <option>win_amd64</option>
-                            <option>linux_i386</option>
-                            <option>linux_x86_64</option>
-                          </select>
-                          <p class="help-block">Leave it blank if it's same with current platform.</p>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_project_default_license">Run encrypted scripts in which license</label>
-                          <select class="form-control" id="input_project_default_license">
-                            <option value="">Run in any machine and never expired</option>
-                          </select>
-                          <p class="help-block">Click Licenses to generate available project licenses</p>
-                        </div>
-                      </form>
-                    </div>
-                    <!-- /.panel-body -->
-                  </div>
-                  <!-- /.panel-default -->
-                </div>
-                <!-- /.tab-pane -->
-                <div role="tabpanel" class="tab-pane" id="project-console">
-                  <div>
-                    <form>
-                      <div class="form-group">
-                        <label for="input_project_console">Output of project actions such as New, Open, Save, Encrypt etc.</label>
-                        <textarea class="form-control" rows="10" id="input_project_console"></textarea>
-                      </div>
-                      <button type="submit" class="btn btn-default">Clear</button>
-                    </form>
-                  </div>
-                  <!-- /.panel-default -->
-                </div>
-                <!-- /.tab-pane -->
-              </div>
-              <!-- /.tab-content -->
-            </div>
-            <!-- /.col-md-10 -->
-          </div>
-          <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
-      </div>
-      <!-- /.tab-pane -->
-      <div role="tabpanel" class="tab-pane" id="documentation">
-        Documentation
-      </div>
-      <div role="tabpanel" class="tab-pane" id="purchase">
-        Downloads
-      </div>
-      <div role="tabpanel" class="tab-pane" id="settings">
-        Settings
-      </div>
-      <div role="tabpanel" class="tab-pane" id="about">
-        <ul class="">
-          <li role="presentation">Version Info</li>
-          <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Support &amp; Issues</a></li>
-          <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">Homepage &amp; Source</a></li>
+      <div class="content">
+        <p>Pyarmor is a command line tool used to import or run encrypted python scripts.</p>
+        <h4 id="main-features">Main Features</h4>
+        <ul>
+          <li>Run encrypted script or import encrypted module</li>
+          <li>Run or import encrypted compiled python files (.pyc, .pyo)</li>
+          <li>Expire encrypted files</li>
+          <li>Bind encrypted files to harddisk</li>
+        </ul>
+        <h4 id="support-platforms">Support Platforms</h4>
+        <ul>
+          <li><p>Python 2.5, 2.6, 2.7 and Python3</p></li>
+          <li><p>Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64</p></li>
+        </ul>
+        <h4 id="quick-start">Quick Start</h4>
+        <p>Got source package from <a href="https://pypi.python.org/pypi/pyarmor">pypi</a></p>
+        <p>Pyarmor is a command line tool, main script is pyarmor.py. After you got source package, unpack it to any path, then run paramor.py as common python script</p>
+        <h4 id="license">License</h4>
+        <p>Pyarmor is published as shareware. Free trial version that never expires, the limitation is</p>
+        <ul>
+          <li>Project Capsule generated by trial version is NOT random, but FIXED by hardcode.</li>
+        </ul>
+        <p>A registration code is required to generate random project capsule.</p>
+        <ul>
+          <li>Personal user: one registration code is enough.</li>
+          <li>Company user: one registration code is only used for one project/product.</li>
         </ul>
       </div>
     </div>
-  </body>
+    <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane active" id="project">
+      <div class="toolbar">
+        <button id="new-project" type="button" class="btn btn-success">New</button>
+        <button id="open-project" type="button" class="btn btn-default">Open</button>
+        <button id="save-project" type="button" class="btn btn-default">Save</button>
+        <button id="encrypt-project" type="button" class="btn btn-default">Encrypt</button>
+        <!-- <h4><span class="label label-warning">Demo Version</span></h4> -->
+        <button id="demo-button" type="button" class="btn btn-warning hidden">Demo Version</button>
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-2">
+            <ul class="nav nav-pills nav-stacked">
+              <li role="presentation" class="active"><a href="#project-basic" aria-controls="project-basic" role="tab" data-toggle="pill">Basic</a></li>
+              <li role="presentation"><a href="#project-runtime" aria-controls="project-runtime" role="tab" data-toggle="pill">Runtime Environments</a></li>
+              <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
+              <!-- <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li> -->
+            </ul>
+          </div>
+          <!-- /.col-sm-2 -->
+          <div class="col-sm-10">
+            <div class="tab-content">
+              <div role="tabpanel" class="tab-pane active" id="project-basic">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Project Infromation</div>
+                  <div class="panel-body">
+                    <form>
+                      <div class="form-group hidden">
+                        <label for="input_project_name">Name</label>
+                        <input type="text" class="form-control" id="input_project_name"/>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_title">Title</label>
+                        <input type="text" class="form-control" id="input_project_title"/>
+                      </div>
+                      <div class="form-group hidden">
+                        <label for="input_project_capsule">Capsule</label>
+                        <input type="text" class="form-control" id="input_project_capsule" placeholder="Project Capsule Filename" disabled/>
+                        <p class="help-block">It will be generated when new project and can not be changed.</p>
+                      </div>
+                      <div class="form-group hidden">
+                        <label for="input_project_description">Description</label>
+                        <textarea class="form-control" rows="5" id="input_project_description"></textarea>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_source_path">Source Path</label>
+                        <input type="text" class="form-control" id="input_project_path"/>
+                        <p class="help-block">Required. Absolute path of your python package in local machine.</p>
+                      </div>
+                      <div class="checkbox hidden">
+                        <label>
+                          <input type="checkbox" id="input_in_place" value=""/>Save encrypt python scripts in the same path of original file
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_files">MANIFEST.in</label>
+                        <textarea class="form-control" rows="5" id="input_project_files"></textarea>
+                        <p class="help-block">Optional. Following the Distutils’ own manifest template, all these files will be encrypted.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_main_script">Main Script</label>
+                        <input type="text" class="form-control" id="input_main_scripts"/>
+                        <p class="help-block">Optional. Main script name.</p>
+                      </div>
+                      <div class="form-group hidden">
+                        <label for="input_output_path">Output Path</label>
+                        <input type="text" class="form-control" id="input_project_output"/>
+                        <p class="help-block">Required. Encrypted scripts and extra files will be saved here</p>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+              <div role="tabpanel" class="tab-pane" id="project-licenses">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Generate project license for special user</div>
+                  <div class="panel-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="input_harddisk_info">
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" id="check_bind_harddisk" value=""/>Run encrypted scripts in special machine, type harddisk serial number of target machine
+                            </label>
+                          </div>
+                        </label>
+                        <input type="text" class="form-control" id="input_bind_harddisk" disabled />
+                      </div>
+                      <div class="form-group">
+                        <label for="input_expired_date">
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" id="check_expired_date" value=""/>Expired encrypted scripts at some point, type expired date (YYYY-MM-NN)
+                            </label>
+                          </div>
+                        </label>
+                        <input type="text" class="form-control" id="input_expired_date" disabled/>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_registration_code">Registration Code</label>
+                        <input type="text" class="form-control" id="input_license_rcode"/>
+                        <p class="help-block">Any string, for example, 'mycustomer-01'. Note that it will be ignored if any of checkbox above is checked.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_available_licenses">Available Licenses</label>
+                        <textarea class="form-control" id="input_project_licenses" rows="3" readonly></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-default">Generate</button>
+                      <div class="pull-right">
+                        <button type="submit" class="btn btn-default">Remove</button>
+                        <button type="submit" class="btn btn-default">Download</button>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+              <div role="tabpanel" class="tab-pane" id="project-runtime">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Where to run encrypted scripts</div>
+                  <div class="panel-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="input_project_target">Run encrypted scripts in other platform</label>
+                        <select class="form-control" id="input_project_target">
+                          <option></option>
+                          <option>win32</option>
+                          <option>win_amd64</option>
+                          <option>linux_i386</option>
+                          <option>linux_x86_64</option>
+                        </select>
+                        <p class="help-block">Leave it blank if it's same with current platform.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_default_license">Run encrypted scripts in which license</label>
+                        <select class="form-control" id="input_project_default_license">
+                          <option value="">Run in any machine and never expired</option>
+                        </select>
+                        <p class="help-block">Click Licenses to generate available project licenses</p>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+              <div role="tabpanel" class="tab-pane" id="project-console">
+                <div>
+                  <form>
+                    <div class="form-group">
+                      <label for="input_project_console">Output of project actions such as New, Open, Save, Encrypt etc.</label>
+                      <textarea class="form-control" rows="10" id="input_project_console"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-default">Clear</button>
+                  </form>
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- /.col-md-10 -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane" id="documentation">
+      Documentation
+    </div>
+    <div role="tabpanel" class="tab-pane" id="purchase">
+      <div class="content">
+        <p>You're using trail version. Free trial version that never expires, but project capsule generated is fixed by hardcode, so all the encrypted files are encrypted by same key.</p>
+        <p>A registration code is required to generate random project capsule. If Pyarmor is helpful for you, please purchase one by visiting</p>
+        <p><a href="https://shopper.mycommerce.com/checkout/cart/add/55259-1">https://shopper.mycommerce.com/checkout/cart/add/55259-1</a></p>
+        <p>After you have received a registration code, just replace the content of "license.lic" with registration code only (no newline).</p>
+        <p><strong>The registration code is valid forever, it can be used permanently.</strong></p>
+        <p>Enjoy it!</p>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="settings">
+      Settings
+    </div>
+    <div role="tabpanel" class="tab-pane" id="about">
+      <div class="content">
+        <p id="version-info">Pyarmor Version</p>
+        <p><strong>Homepage:</strong> <a href="http://pyarmor.dashingsoft.com">http://pyarmor.dashingsoft.com</a></p>
+        <p><strong>Source:</strong> <a href="https://github.com/dashingsoft/pyarmor">https://github.com/dashingsoft/pyarmor</a></p>
+        <p><strong>PyPI:</strong> <a href="https://pypi.python.org/pypi/pyarmor">https://pypi.python.org/pypi/pyarmor</a></p>
+        <p><strong>Report Issues:</strong> <a href="https://github.com/dashingsoft/pyarmor/issues">https://github.com/dashingsoft/pyarmor/issues</a></p>
+        <p><strong>Support Email:</strong> <a href="mailto:jondy.zhao@gmail.com">jondy.zhao@gmail.com</a></p>
+        <p>Any question feel free to email: <a href="mailto:jondy.zhao@gmail.com">jondy.zhao@gmail.com</a></p>
+      </div>
+      <!-- /.content -->
+    </div>
+    <!-- /.tab-pane -->
+  </div>
+  <!-- /.tab-content -->
+</body>
 </html>
