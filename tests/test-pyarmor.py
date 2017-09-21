@@ -185,6 +185,16 @@ class PyarmorTestCases(BaseTestCase):
             (os.path.join(workpath, 'foo.py'), 'foo'),
             (os.path.join(workpath, 'main.py'), 'main')])
 
+    def test_parse_manifest_file(self):
+        fm = self.pyarmor._parse_file_args
+        filename = os.path.join(workpath, 'MANIFEST.in')
+        args = ['@%s' % filename]
+        with open(filename, 'w') as f:
+            f.write('include foo.py main.py')
+
+        filelist = fm(args, srcpath=workpath)
+        self.assertEquals(filelist, [('foo.py', 'foo'), ('main.py', 'main')])
+
     def test_do_encrypt_empty_file(self):
         ft = self.pyarmor.do_encrypt
         filename = os.path.join(workpath, 'empty.py')
@@ -385,7 +395,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_encrypt_files'
+    # loader.testMethodPrefix = 'test_parse_manifest_file'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
