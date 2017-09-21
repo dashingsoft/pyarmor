@@ -47,14 +47,14 @@ def _create_default_project(name):
         'name': name,
         'title': '',
         'description': '',
-        'srcpath': '',
+        'path': '',
         'scripts': [],
         'files': ['include *.py'],
         'licenses': [],
         'output': '',
-        'capsule': None,
-        'target': None,
-        'default_license': None,
+        'capsule': '',
+        'target': '',
+        'default_license': '',
     }
 
 def newProject(args=None):
@@ -113,7 +113,7 @@ def buildProject(args):
     >>> p['title'] = 'My Project'
     >>> p['scripts'] = []
     >>> p['files'] = ['include *.py']
-    >>> p['srcpath'] = ''
+    >>> p['path'] = ''
     >>> buildProject(p)
     'Encrypt scripts OK.'
 
@@ -123,7 +123,7 @@ def buildProject(args):
     'Encrypt scripts OK.'
     '''
     name = args['name']
-    src = args['srcpath']
+    path = args['path']
     output = args['output']
     scripts = args['scripts']
     files = args['files']
@@ -131,9 +131,9 @@ def buildProject(args):
     target = args.get('target', None)
     default_license = args.get('default_license', None)
 
-    if src.strip() == '':
-        src = os.getcwd()
-    argv = ['-O', output, '-s', src, '-C', capsule]    
+    if path.strip() == '':
+        path = os.getcwd()
+    argv = ['-O', output, '-s', path, '-C', capsule]
     for s in scripts:
         argv.append('-m')
         argv.append(os.path.splitext(os.path.basename(s))[0])
@@ -147,7 +147,7 @@ def buildProject(args):
 
     do_encrypt(argv)
 
-    if default_license is not None:
+    if not default_license == '':
         shutil.copyfile(default_license, os.path.join(output, 'license.lic'))
 
     return 'Encrypt scripts OK.'
@@ -183,7 +183,8 @@ def queryProject(args=None):
         name = args.get('name')
         config = os.path.join(project_data_path, name, project_config_name)
         with open(config, 'r') as fp:
-            return json.load(fp)
+            data = json.load(fp)
+        return dict(project=data, message='Got project %s' % name)
 
     filename = _check_project_index()
     with open(filename, 'r') as fp:

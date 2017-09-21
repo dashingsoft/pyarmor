@@ -1,41 +1,32 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>Pyarmor</title>
+  <title>Pyarmor</title>
 
-    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <style type="text/css">
+    .toolbar {
+    margin: 10px 15px 10px 15px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    }
+  </style>
 
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        HAS_SOURCE:  false
-      };
-    </script>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script data-main="app" src="js/require.js"></script>
-
-    <style type="text/css">
-      table.right { float: right; margin-left: 20px; }
-      table.right td { border: 1px solid #ccc; }
-      .related { display: none; }
-      .toolbar { 
-          margin: 10px 15px 10px 15px;
-          position: absolute;
-          right: 0;
-          top: 0;
-      }
-    </style>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script data-main="app" src="js/require.js"></script>
+  <script type="text/javascript">
+  </script>
 </head>
-  <body role="document">
+
+<body role="document">
     <nav role="navigation" class="navbar navbar-default">
       <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
@@ -45,7 +36,7 @@
           </button>
           <a class="navbar-brand" href="https://github.com/dashingsoft/pyarmor">Pyarmor</a>
         </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- /.navbar-header -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
@@ -55,8 +46,10 @@
             <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
             <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
           </ul>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
     </nav>
 
     <div id="global-message"></div>
@@ -75,22 +68,20 @@
           <button id="open-project" type="button" class="btn btn-default">Open</button>
           <button id="save-project" type="button" class="btn btn-default">Save</button>
           <button id="encrypt-project" type="button" class="btn btn-default">Encrypt</button>
-          <button id="toggle-output" type="button" class="btn btn-default hidden">&lt;&lt;</button>
           <!-- <h4><span class="label label-warning">Demo Version</span></h4> -->
-          <button id="demo-version" type="button" class="btn btn-warning">Demo Version</button>
+          <button id="demo-button" type="button" class="btn btn-warning hidden">Demo Version</button>
         </div>
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-2">
               <ul class="nav nav-pills nav-stacked">
                 <li role="presentation" class="active"><a href="#project-basic" aria-controls="project-basic" role="tab" data-toggle="pill">Basic</a></li>
-                <!-- <li role="presentation"><a href="#project-files" aria-controls="project-files" role="tab" data-toggle="pill">Files</a></li> -->
                 <li role="presentation"><a href="#project-runtime" aria-controls="project-runtime" role="tab" data-toggle="pill">Runtime Environments</a></li>
                 <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
                 <!-- <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li> -->
               </ul>
             </div>
-            <!-- /.col-md-2 -->
+            <!-- /.col-sm-2 -->
             <div class="col-sm-10">
               <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="project-basic">
@@ -100,11 +91,11 @@
                       <form>
                         <div class="form-group hidden">
                           <label for="input_project_name">Name</label>
-                          <input type="text" class="form-control" id="input_project_name" placeholder="Project Name">
+                          <input type="text" class="form-control" id="input_project_name">
                         </div>
                         <div class="form-group">
                           <label for="input_project_title">Title</label>
-                          <input type="text" class="form-control" id="input_project_title" placeholder="Project Title">
+                          <input type="text" class="form-control" id="input_project_title">
                         </div>
                         <div class="form-group hidden">
                           <label for="input_project_capsule">Capsule</label>
@@ -117,38 +108,29 @@
                         </div>
                         <div class="form-group">
                           <label for="input_source_path">Source Path</label>
-                          <input type="text" class="form-control" id="input_source_path">
+                          <input type="text" class="form-control" id="input_project_path">
+                          <p class="help-block">Required. Absolute path of your python package in local machine.</p>
                         </div>
                         <div class="checkbox hidden">
                           <label>
                             <input type="checkbox" id="input_in_place" value="">Save encrypt python scripts in the same path of original file
                           </label>
                         </div>
-                          <div class="form-group">
+                        <div class="form-group">
+                          <label for="input_project_files">MANIFEST.in</label>
+                          <textarea class="form-control" rows="5" id="input_project_files"></textarea>
+                          <p class="help-block">Optional. Following the Distutils’ own manifest template, all these files will be encrypted.</p>
+                        </div>
+                        <div class="form-group">
                           <label for="input_main_script">Main Script</label>
-                          <input type="text" class="form-control" id="input_main_script">
+                          <input type="text" class="form-control" id="input_main_scripts">
+                          <p class="help-block">Optional. Main script name.</p>
                         </div>
-                        <div class="form-group">
-                          <label for="input_project_files">Modules and Packages</label>
-                          <textarea class="form-control" rows="5" id="input_project_files" placeholder="*.py"></textarea>
-                          <p class="help-block">No tilde expansion is done, but *, ?, and character ranges expressed with [] will be correctly matched.</p>
-                        </div>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                           <label for="input_output_path">Output Path</label>
-                          <input type="text" class="form-control" id="input_output_path" placeholder="Encrypted scripts and extra files will be saved here ">
+                          <input type="text" class="form-control" id="input_project_output"/>
+                          <p class="help-block">Required. Encrypted scripts and extra files will be saved here</p>
                         </div>
-                      </form>
-                    </div>
-                    <!-- /.panel-body -->
-                  </div>
-                  <!-- /.panel-default -->
-                </div>
-                <!-- /.tab-pane -->
-                <div role="tabpanel" class="tab-pane" id="project-files">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">Add files need to be encrypted to project</div>
-                    <div class="panel-body">
-                      <form>
                       </form>
                     </div>
                     <!-- /.panel-body -->
@@ -165,29 +147,30 @@
                           <label for="input_harddisk_info">
                             <div class="checkbox">
                               <label>
-                                <input type="checkbox" id="input_bind_harddisk" value="">Run encrypted scripts in special machine, type harddisk serial number of target machine
+                                <input type="checkbox" id="check_bind_harddisk" value="">Run encrypted scripts in special machine, type harddisk serial number of target machine
                               </label>
                             </div>
                           </label>
-                          <input type="text" class="form-control" id="input_harddisk_info">
+                          <input type="text" class="form-control" id="input_bind_harddisk" disabled>
                         </div>
                         <div class="form-group">
                           <label for="input_expired_date">
                             <div class="checkbox">
                               <label>
-                                <input type="checkbox" id="input_expired_date" value="">Expired encrypted scripts at some point, type expired date (YYYY-MM-NN)
+                                <input type="checkbox" id="check_expired_date" value="">Expired encrypted scripts at some point, type expired date (YYYY-MM-NN)
                               </label>
                             </div>
                           </label>
-                          <input type="text" class="form-control" id="input_expired_date">
+                          <input type="text" class="form-control" id="input_expired_date" disabled>
                         </div>
                         <div class="form-group">
                           <label for="input_registration_code">Registration Code</label>
-                          <input type="text" class="form-control" id="input_registration_code">
+                          <input type="text" class="form-control" id="input_license_rcode">
+                          <p class="help-block">Any string, for example, 'mycustomer-01'. Note that it will be ignored if any of checkbox above is checked.</p>
                         </div>
                         <div class="form-group">
                           <label for="input_available_licenses">Available Licenses</label>
-                          <textarea class="form-control" id="input_available_licenses" rows="3" readonly></textarea>
+                          <textarea class="form-control" id="input_project_licenses" rows="3" readonly></textarea>
                         </div>
                         <button type="submit" class="btn btn-default">Generate</button>
                         <div class="pull-right">
@@ -207,8 +190,8 @@
                     <div class="panel-body">
                       <form>
                         <div class="form-group">
-                          <label for="input_platform">Run encrypted scripts in other platform</label>
-                          <select class="form-control" id="input_platform">
+                          <label for="input_project_target">Run encrypted scripts in other platform</label>
+                          <select class="form-control" id="input_project_target">
                             <option></option>
                             <option>win32</option>
                             <option>win_amd64</option>
@@ -218,9 +201,9 @@
                           <p class="help-block">Leave it blank if it's same with current platform.</p>
                         </div>
                         <div class="form-group">
-                          <label for="input_project_license">Run encrypted scripts in which license</label>
-                          <select class="form-control" id="input_platform">
-                            <option>Run in any machine and never expired</option>
+                          <label for="input_project_default_license">Run encrypted scripts in which license</label>
+                          <select class="form-control" id="input_project_default_license">
+                            <option value="">Run in any machine and never expired</option>
                           </select>
                           <p class="help-block">Click Licenses to generate available project licenses</p>
                         </div>
