@@ -74,6 +74,12 @@ class BaseTestCase(unittest.TestCase):
             # sys.stderr.write('\n\n%s\n\n' % s)
             return not (s.find(text) == -1)
 
+    def searchFile(self, filename, text):
+        with open(filename, 'rt') as f:
+            s = f.read()
+            # sys.stderr.write('\n\n%s\n\n' % s)
+            return not (s.find(text) == -1)
+
 class PyarmorTestCases(BaseTestCase):
 
     def test_get_registration_code(self):
@@ -104,12 +110,12 @@ class PyarmorTestCases(BaseTestCase):
 
     def test_encrypt_files(self):
         ft = self.pyarmor.encrypt_files
-        names = 'main.py', 'foo.py'
-        files = [os.path.join(workpath, x) for x in names]
+        names = [os.path.join(workpath, x) for x in ('main', 'foo')]
+        files = [(x + '.py', x) for x in names]
         prokey = os.path.join(workpath, 'project', 'product.key')
         ft(files, prokey)
-        self.assertTrue(os.path.exists(files[0] + ext_char))
-        self.assertTrue(os.path.exists(files[1] + ext_char))
+        self.assertTrue(os.path.exists(files[0][0] + ext_char))
+        self.assertTrue(os.path.exists(files[1][0] + ext_char))
 
     def test_make_license(self):
         ft = self.pyarmor.make_license
@@ -146,8 +152,8 @@ class PyarmorTestCases(BaseTestCase):
         output = os.path.join(workpath, 'build')
         argv = ['-O', output,
                 '-C', capsule,
-                os.path.join(workpath, 'main.py'),
-                os.path.join(workpath, 'foo.py'),
+                '-s', workpath,
+                'main.py', 'foo.py',
                 ]
         ft(argv)
         self.assertTrue(os.path.exists(os.path.join(output, 'main.py' + ext_char)))
@@ -159,8 +165,9 @@ class PyarmorTestCases(BaseTestCase):
 
         args = workpath + '/foo.?y', workpath + '/sky.*'
         filelist = fm(args)
-        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
-                                     os.path.join(workpath, 'sky.py')])
+        self.assertEquals(filelist, [
+            (os.path.join(workpath, 'foo.py'), os.path.join(workpath, 'foo')),
+            (os.path.join(workpath, 'sky.py'), os.path.join(workpath, 'sky'))])
 
         filename = os.path.join(workpath, 'filelist.txt')
         with open(filename, 'w') as f:
@@ -168,13 +175,15 @@ class PyarmorTestCases(BaseTestCase):
             f.write(workpath + '/main.*y\n')
         args = ['@' + filename]
         filelist = fm(args)
-        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
-                                     os.path.join(workpath, 'main.py')])
+        self.assertEquals(filelist, [
+            (os.path.join(workpath, 'foo.py'), os.path.join(workpath, 'foo')),
+            (os.path.join(workpath, 'main.py'), os.path.join(workpath, 'main'))])
 
         args = 'foo.py', 'main.py'
         filelist = fm(args, srcpath=workpath)
-        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
-                                     os.path.join(workpath, 'main.py')])
+        self.assertEquals(filelist, [
+            (os.path.join(workpath, 'foo.py'), 'foo'),
+            (os.path.join(workpath, 'main.py'), 'main')])
 
     def test_do_encrypt_empty_file(self):
         ft = self.pyarmor.do_encrypt
@@ -185,7 +194,8 @@ class PyarmorTestCases(BaseTestCase):
         output = os.path.join(workpath, 'build')
         argv = ['-O', output,
                 '-C', capsule,
-                filename]
+                '-s', workpath,
+                'empty.py']
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
         self.assertTrue(os.path.exists(os.path.join(output, 'empty.py' + ext_char)))
@@ -199,10 +209,11 @@ class PyarmorTestCases(BaseTestCase):
         output = os.path.join(workpath, 'compile')
         argv = ['-O', output,
                 '-C', capsule,
-                filename]
+                '-s', workpath,
+                'foo.pyc']
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
-        self.assertTrue(os.path.exists(os.path.join(output, 'foo.pyc' + ext_char)))
+        self.assertTrue(os.path.exists(os.path.join(output, 'foo.py' + ext_char)))
 
     def test_do_encrypt_in_place(self):
         ft = self.pyarmor.do_encrypt
@@ -220,11 +231,12 @@ class PyarmorTestCases(BaseTestCase):
 
     def test_do_encrypt_main(self):
         ft = self.pyarmor.do_encrypt
-        filename = os.path.join(workpath, 'main.py')
+        filename = 'main.py'
         capsule = os.path.join('data', 'project.zip')
         output = os.path.join(workpath, 'scripts')
         argv = ['-O', output,
                 '-C', capsule,
+                '-s', workpath,
                 '-m', 'main',
                 filename]
         ft(argv)
@@ -243,8 +255,8 @@ class PyarmorTestCases(BaseTestCase):
         argv = ['-O', output,
                 '-C', capsule,
                 '-d',
-                os.path.join(workpath, 'main.py'),
-                os.path.join(workpath, 'foo.py'),
+                '-s', workpath,
+                'main.py', 'foo.py'
                 ]
         ft(argv)
         ft(argv)
@@ -257,10 +269,55 @@ class PyarmorTestCases(BaseTestCase):
         argv = ['-O', output,
                 '-C', capsule,
                 '--plat-name', 'unknow-plat',
-                os.path.join(workpath, 'foo.py'),
+                '-s', workpath,
+                'foo.py',
                 ]
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Cross publish'))
+
+    def test_do_encrypt_mode_1(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build_m1')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--mode', '1',
+                '-s', workpath,
+                'foo.py',
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertFalse(self.searchFile(os.path.join(output, 'pyimcore.py'),
+                                         'sys.meta_path.append(PyshieldImporter())'))
+
+    def test_do_encrypt_mode_2(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build_m2')
+        argv = ['-O', output,
+                '-C', capsule,
+                '-e', '2',
+                '-s', workpath,
+                'foo.py',
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'),
+                                        'init_runtime(0, 0, 0, 0)'))
+
+    def test_do_encrypt_with_main_in_mode_1(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build_m1')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--mode', '1',
+                '--main', 'foo',
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Generate extra files OK'))
+        self.assertTrue(self.searchFile(os.path.join(output, 'foo.py'),
+                                        'foo.pyc'))
 
     def test_do_license(self):
         ft = self.pyarmor.do_license
@@ -328,7 +385,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_do_encrypt_pyc'
+    # loader.testMethodPrefix = 'test_encrypt_files'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()

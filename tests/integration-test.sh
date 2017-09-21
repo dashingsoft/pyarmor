@@ -9,7 +9,7 @@ if [[ ${UNAME:0:5} == Linux ]] ; then
     fi
     PKGEXT=tar.bz2
 else
-    if [[ $(ARCH) == x86_64 ]] ; then
+    if [[ $(arch) == x86_64 ]] ; then
         PLATFORM=win_amd64
     else
         PLATFORM=win32
@@ -273,8 +273,12 @@ next_month()
   else
       let _month++
   fi
-  month="0${_month}"
-  echo -e "${_year}-${month:-1:2}-01"
+  if (( _month > 9 )) ; then
+      month="${_month}"
+  else
+      month="0${_month}"
+  fi
+  echo -e "${_year}-${month}-01"
 } # === End of next_month() === #
 readonly -f next_month
 
@@ -297,6 +301,7 @@ cd ${workpath}
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
+cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
 
 csih_inform "Prepare for testing"
 echo ""
@@ -454,6 +459,44 @@ $PYTHON pyarmor.py encrypt --with-capsule=foo-key.zip \
         || csih_bug "Case 3.4 FAILED: return non-zero code"
 )
 
+csih_inform "Case 3.5: import encrypted code with mode 1"
+$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=1 \
+    --output=build_m1 foo.py >result.log 2>&1 \
+    || csih_bug "Case 3.5 FAILED: return non-zero code"
+(cd build_m1 ;
+    cp ../startup.py ./ ;
+    $PYTHON startup.py >../result.log 2>&1 \
+        || csih_bug "Case 3.5 FAILED: return non-zero code"
+)
+grep -q "foo.hello(2) = 7" result.log \
+    || csih_bug "Case 3.5 FAILED: python script returns unexpected result"
+
+
+csih_inform "Case 3.6: import encrypted code with mode 2"
+$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=2 \
+    --output=build_m2 foo.py >result.log 2>&1 \
+    || csih_bug "Case 3.6 FAILED: return non-zero code"
+(cd build_m2 ;
+    cp ../startup.py ./ ;
+    $PYTHON startup.py >../result.log 2>&1 \
+        || csih_bug "Case 3.6 FAILED: return non-zero code"
+)
+grep -q "foo.hello(2) = 7" result.log \
+    || csih_bug "Case 3.6 FAILED: python script returns unexpected result"
+
+csih_inform "Case 3.7: import encrypted package"
+$PYTHON pyarmor.py encrypt --with-capsule=project.zip --in-place \
+    --output=build_pkg package/*.py >result.log 2>&1 \
+    || csih_bug "Case 3.7 FAILED: return non-zero code"
+(cp -a package build_pkg;
+    cd build_pkg && rm package/*.py ;
+    cp ../startup.py ./ ;
+    sed -i -e 's/import foo/from package import foo/g' startup.py ;
+    $PYTHON startup.py >../result.log 2>&1 \
+        || csih_bug "Case 3.7 FAILED: return non-zero code"
+)
+grep -q "foo.hello(2) = 7" result.log \
+    || csih_bug "Case 3.7 FAILED: python script returns unexpected result"
 
 #
 # Cross publish
@@ -535,7 +578,6 @@ cp license1.txt build/license.lic
 )
 grep -q "Result is 10" result.log \
     || csih_bug "Case 5.3 FAILED: python script returns unexpected result"
-
 
 csih_inform "Case 5.4: generate expired license"
 $PYTHON pyarmor.py license --with-capsule=project.zip -e 2014-01-01 \

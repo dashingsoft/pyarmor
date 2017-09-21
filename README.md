@@ -79,6 +79,10 @@ registration code only (no newline), then replace the content of
 
 **The registration code is valid forever, it can be used permanently.**
 
+## [Encrypted Mechanism](src/mechanism.md)
+
+It's worth having a glance if you care about performance of encrypted scripts.
+
 ## [Change Log](ChangeLog.rst)
 
 ## Issues and Support

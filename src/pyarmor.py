@@ -26,6 +26,7 @@
 import fnmatch
 import getopt
 import glob
+import imp
 import logging
 import os
 import platform
@@ -42,6 +43,8 @@ except Exception:
 
 from config import (version, version_info, trial_info, help_footer,
                     ext_char, platform, dll_ext, dll_name, wrap_runner)
+
+MAGIC_NUMBER = imp.get_magic()
 
 def _import_pytransform():
     try:
@@ -81,7 +84,7 @@ def checklicense(func):
             sys.stderr.write('Pyarmor Version %s\n' % version)
         try:
             func(*arg, **kwargs)
-        except RuntimeError as e:
+        except RuntimeError:
             logging.error(exc_msg())
         except getopt.GetoptError:
             logging.error(exc_msg())
@@ -185,7 +188,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
-def encrypt_files(files, prokey, output=None):
+def encrypt_files(files, prokey, mode=0, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
 
@@ -196,16 +199,26 @@ def encrypt_files(files, prokey, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
+    ext = '.pyc' if mode == 1 else '.py' + ext_char
     if output is None:
-        fn = lambda a, b : b + ext_char
+        fn = lambda a, b : b[1] + ext
     else:
-        fn = lambda a, b : os.path.join(a, os.path.basename(b) + ext_char)
         if not os.path.exists(output):
             os.makedirs(output)
-
+        # fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
+        def _get_path(a, b):
+            if os.path.isabs(b[0]):
+                p = os.path.join(a, '__root__', b[1] + ext)
+            else:
+                p = os.path.join(a, b[1] + ext)
+            d = os.path.dirname(p)
+            if not os.path.exists(d):
+                os.makedirs(d)
+            return p
+        fn = _get_path
     flist = []
     for x in files:
-        flist.append((x, fn(output, x)))
+        flist.append((x[0], fn(output, x)))
         logging.info('Encrypt %s to %s', *flist[-1])
 
     if len(flist[:1]) == 0:
@@ -213,7 +226,7 @@ def encrypt_files(files, prokey, output=None):
     else:
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key "%s"' % prokey)
-        pytransform.encrypt_project_files(prokey, tuple(flist))
+        pytransform.encrypt_project_files(prokey, tuple(flist), mode)
         logging.info('Encrypt all scripts OK.')
 
 def make_license(capsule, filename, code):
@@ -291,13 +304,16 @@ def _parse_file_args(args, srcpath=None):
             f.close()
         else:
             patterns.append(arg)
+    n = 0 if srcpath is None else (len(srcpath) + 1)
     for pat in patterns:
         if os.path.isabs(pat) or srcpath is None:
             for name in glob.glob(pat):
-                filelist.append(name)
+                p = os.path.splitext(name.replace(':', '/'))
+                filelist.append((name, p[0]))
         else:
             for name in glob.glob(os.path.join(srcpath, pat)):
-                filelist.append(name)
+                p = os.path.splitext(name)
+                filelist.append((name, p[0][n:]))
     return filelist
 
 @checklicense
@@ -341,6 +357,13 @@ Available options:
 
   -m, --main=NAME             Generate wrapper file to run encrypted script
 
+  -e, --mode=MODE             Encrypt mode, available value:
+                                0     (Default), encrypt both source
+                                      and bytecode
+                                1     Encrypt bytecode only.
+                                2     Encrypt source code only.
+                              Mode 1, 2 is used to improve performance.
+
   -d, --clean                 Clean output path at start.
 
 For examples:
@@ -369,9 +392,9 @@ For examples:
     '''
 
     opts, args = getopt.getopt(
-        argv, 'C:dim:O:p:s:',
+        argv, 'C:de:im:O:p:s:',
         ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
-         'main=', 'clean']
+         'main=', 'clean', 'mode=']
     )
 
     output = 'build'
@@ -382,6 +405,7 @@ For examples:
     extfile = None
     mainname = []
     clean = False
+    mode = 0
 
     for o, a in opts:
         if o in ('-O', '--output'):
@@ -396,6 +420,10 @@ For examples:
             platname = a
         elif o in ('-d', '--clean'):
             clean = True
+        elif o in ('-e', '--mode'):
+            if a not in ('0', '1', '2'):
+                raise RuntimeError('Invalid mode "%s"' % a)
+            mode = int(a)
         elif o in ('-m', '--main'):
             mainname.append(a)
 
@@ -436,6 +464,21 @@ For examples:
     ZipFile(capsule).extractall(path=output)
     logging.info('Extract capsule to %s OK.', output)
 
+    if mode:
+        logging.info('Encrypt mode: %s', mode)
+        with open(os.path.join(output, 'pyimcore.py'), 'r') as f:
+            lines = f.read()
+        with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
+            i = lines.rfind('\n\n')
+            if i == -1:
+                raise RuntimeError('Invalid pyimcore.py')
+            f.write(lines[:i])
+            if mode == 1:
+                f.write('\n\ninit_runtime()\n')
+            elif mode == 2:
+                f.write('\n\nsys.meta_path.append(PyshieldImporter())\n'
+                        'init_runtime(0, 0, 0, 0)\n')
+
     prikey = os.path.join(output, 'private.key')
     if os.path.exists(prikey):
         logging.info('Remove private key %s in the output', prikey)
@@ -444,8 +487,9 @@ For examples:
     for name in mainname:
         script = os.path.join(output, name + '.py')
         logging.info('Writing script wrapper %s ...', script)
+        ch = 'c' if mode == 1 else ext_char
         with open(script, 'w') as f:
-            f.write(wrap_runner % (name + '.py' + ext_char))
+            f.write(wrap_runner % (name + '.py' + ch))
         logging.info('Write script wrapper OK.')
 
     filelist = _parse_file_args(args, srcpath=srcpath)
@@ -456,7 +500,7 @@ For examples:
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key %s' % prokey)
         logging.info('Encrypt files ...')
-        encrypt_files(filelist, prokey, None if inplace else output)
+        encrypt_files(filelist, prokey, mode, None if inplace else output)
         logging.info('Encrypt files OK.')
 
 @checklicense
@@ -477,7 +521,7 @@ Available options:
   -F, --bind-file=FILENAME        [option] Generate license file bind to
                                   fixed file, for example, ssh private key.
 
-  -e, --expired-date=YYYY-MM-NN   [option] Generate expired license file.                                  
+  -e, --expired-date=YYYY-MM-NN   [option] Generate expired license file.
                                   It could be combined with "--bind"
 
   -C, --with-capsule=FILENAME     [required] Specify the filename of capsule
@@ -486,29 +530,29 @@ Available options:
 For example,
 
   - Generate a license file "license.lic" for project capsule "project.zip":
-  
+
     pyarmor license --wth-capsule=project.zip MYPROJECT-0001
-  
+
   - Generate a license file "license.lic" expired in 05/30/2015:
-  
+
     pyarmor license --wth-capsule=project.zip -e 2015-05-30 MYPROJECT-0001
-  
+
   - Generate a license file "license.lic" bind to machine whose harddisk's
     serial number is "PBN2081SF3NJ5T":
-  
+
     pyarmor license --wth-capsule=project.zip --bind-disk PBN2081SF3NJ5T
-  
+
   - Generate a license file "license.lic" bind to ssh key file id_rsa:
-  
+
     pyarmor license --wth-capsule=project.zip \
             --bind-file src/id_rsa ~/.ssh/my_id_rsa
-  
+
     File "src/id_rsa" is in the develop machine, pyarmor will read data
     from this file when generating license file.
-  
+
     Argument "~/.ssh/id_rsa" means full path filename in target machine,
     pyarmor will find this file as key file when decrypting python scripts.
-  
+
     You shuold copy "license.lic" to target machine, at the same time,
     copy "src/id_rsa" to target machine as "~/.ssh/my_id_rsa"
 

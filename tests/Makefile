@@ -46,7 +46,7 @@ endif
 
 WORKPATH = __runtime__
 
-.PHONY: test unit trial build
+.PHONY: test unit trial build bench
 
 
 test: build
@@ -56,7 +56,6 @@ test: build
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
 	done
 	make clean
-
 
 build:
 	rm -rf $(WORKPATH)
@@ -83,6 +82,13 @@ trial:
             make clean; \
 	done
 
+bench:
+	for pyver in  $(VERSIONS) ; do \
+            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash benchmark-test.sh || exit 1; \
+            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+	done
+	make clean
 
 clean:
-	rm -rf *.pyc *.pyo __pycache__ _pytransform.log $(WORKPATH)
+	rm -rf *.pyc *.pyo __pycache__ _pytransform.log $(WORKPATH) __runtest__

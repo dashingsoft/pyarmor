@@ -29,7 +29,7 @@ Support Platforms
 
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64
 
-Got prebuilt library from `github <https://github.com/dashingsoft/pyarmor/releases/latest>`_
+Got prebuilt library `platforms.zip <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.2/platforms.zip>`_
 then extract it to src of Pyarmor
 
 The core of Pyarmor is written by C, the only dependency is libc. So
@@ -38,7 +38,7 @@ system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
 scripts in other platform.
 
 Installation
-~~~~~~~~~~~~
+------------
 Got source package from `pypi <https://pypi.python.org/pypi/pyarmor>`_
 
 Pyarmor is a command line tool, main script is pyarmor.py. After you
@@ -47,4 +47,4 @@ common python script
 
     python pyarmor.py
 
-For more information, refer to `Pyarmor homepage <https://github.com/dashingsoft/pyarmor>`_
+For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_

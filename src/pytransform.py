@@ -88,17 +88,17 @@ def exec_file(filename):
 _exec_file = None
 
 @dllmethod
-def encrypt_project_files(proname, filelist):
-    prototype = PYFUNCTYPE(c_int, c_char_p, py_object)
+def encrypt_project_files(proname, filelist, mode=0):
+    prototype = PYFUNCTYPE(c_int, c_char_p, py_object, c_int)
     dlfunc = prototype(('encrypt_project_files', _pytransform))
-    return dlfunc(proname, filelist)
+    return dlfunc(proname, filelist, mode)
 
 @dllmethod
-def encrypt_files(key, filelist):
+def encrypt_files(key, filelist, mode=0):
     t_key = c_char * 32
-    prototype = PYFUNCTYPE(c_int, t_key, py_object)
+    prototype = PYFUNCTYPE(c_int, t_key, py_object, c_int)
     dlfunc = prototype(('encrypt_files', _pytransform))
-    return dlfunc(t_key(*key), filelist)
+    return dlfunc(t_key(*key), filelist, mode)
 
 def generate_project_capsule(licfile):
     prikey, pubkey, prolic = _generate_project_capsule()
