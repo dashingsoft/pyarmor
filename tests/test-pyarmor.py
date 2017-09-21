@@ -110,12 +110,12 @@ class PyarmorTestCases(BaseTestCase):
 
     def test_encrypt_files(self):
         ft = self.pyarmor.encrypt_files
-        names = 'main.py', 'foo.py'
-        files = [os.path.join(workpath, x) for x in names]
+        names = [os.path.join(workpath, x) for x in ('main', 'foo')]
+        files = [(x + '.py', x) for x in names]
         prokey = os.path.join(workpath, 'project', 'product.key')
         ft(files, prokey)
-        self.assertTrue(os.path.exists(files[0] + ext_char))
-        self.assertTrue(os.path.exists(files[1] + ext_char))
+        self.assertTrue(os.path.exists(files[0][0] + ext_char))
+        self.assertTrue(os.path.exists(files[1][0] + ext_char))
 
     def test_make_license(self):
         ft = self.pyarmor.make_license
@@ -165,8 +165,9 @@ class PyarmorTestCases(BaseTestCase):
 
         args = workpath + '/foo.?y', workpath + '/sky.*'
         filelist = fm(args)
-        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
-                                     os.path.join(workpath, 'sky.py')])
+        self.assertEquals(filelist, [
+            (os.path.join(workpath, 'foo.py'), os.path.join(workpath, 'foo')),
+            (os.path.join(workpath, 'sky.py'), os.path.join(workpath, 'sky'))])
 
         filename = os.path.join(workpath, 'filelist.txt')
         with open(filename, 'w') as f:
@@ -174,13 +175,15 @@ class PyarmorTestCases(BaseTestCase):
             f.write(workpath + '/main.*y\n')
         args = ['@' + filename]
         filelist = fm(args)
-        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
-                                     os.path.join(workpath, 'main.py')])
+        self.assertEquals(filelist, [
+            (os.path.join(workpath, 'foo.py'), os.path.join(workpath, 'foo')),
+            (os.path.join(workpath, 'main.py'), os.path.join(workpath, 'main'))])
 
         args = 'foo.py', 'main.py'
         filelist = fm(args, srcpath=workpath)
-        self.assertEquals(filelist, [os.path.join(workpath, 'foo.py'),
-                                     os.path.join(workpath, 'main.py')])
+        self.assertEquals(filelist, [
+            (os.path.join(workpath, 'foo.py'), 'foo'),
+            (os.path.join(workpath, 'main.py'), 'main')])
 
     def test_do_encrypt_empty_file(self):
         ft = self.pyarmor.do_encrypt
@@ -382,7 +385,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_do_encrypt'
+    # loader.testMethodPrefix = 'test_encrypt_files'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
