@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 from __future__ import print_function
 
 import json
@@ -32,7 +33,7 @@ class HelperHandler(BaseHTTPRequestHandler):
         if self.path[1:] not in ('newProject', 'updateProject',
                                  'buildProject', 'removeProject',
                                  'queryProject', 'queryVersion',
-                                 'newLicense'):
+                                 'newLicense', 'removeLicense'):
             self.send_error(404, "File not found")
             return
 
