@@ -42,7 +42,7 @@ class HelperHandler(BaseHTTPRequestHandler):
         if n == 0:
             arguments = ''
         else:
-            arguments = self.rfile.read(n)
+            arguments = self.rfile.read(n).decode()
 
         self.log_message("Arguments '%s'", arguments)
         result = self.run_command(self.path[1:], arguments)
