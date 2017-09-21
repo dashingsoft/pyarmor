@@ -5,6 +5,7 @@ import json
 import os
 import posixpath
 import shutil
+import sys
 
 try:
     from urllib import unquote
@@ -202,8 +203,11 @@ class HelperHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    HOST, PORT = "", 0
-    server = socketserver.TCPServer((HOST, PORT), HelperHandler)
+    try:
+        PORT = int(sys.argv[1])
+    except Exception:
+        PORT = 0
+    server = socketserver.TCPServer(("", PORT), HelperHandler)
     print("Serving HTTP on %s port %s ..." % server.server_address)
     try:
         from webbrowser import open_new_tab
