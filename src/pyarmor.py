@@ -188,7 +188,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
-def encrypt_files(files, prokey, mode=0, output=None):
+def encrypt_files(files, prokey, mode=0, output=None, path=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
 
@@ -208,8 +208,18 @@ def encrypt_files(files, prokey, mode=0, output=None):
             os.makedirs(output)
 
     flist = []
+    n = len(path if path is not None else '')
     for x in files:
-        flist.append((x, fn(output, x)))
+        if path is None or output is None:
+            flist.append((x, fn(output, x)))
+        else:
+            if x.startswith(path):
+                flist.append((x, os.path.join(output, x[n:] + ch))
+            else:
+                flist.append((x, os.path.join(output, '__root__',
+                                              x.replace(':', '/') + ch))
+            if not os.path.exists(os.path.dirname(flist[-1][1])):
+                os.makedirs(os.path.dirname(flist[-1][1]))
         logging.info('Encrypt %s to %s', *flist[-1])
 
     if len(flist[:1]) == 0:
