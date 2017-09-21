@@ -214,6 +214,7 @@ def encrypt_files(files, prokey, mode=0, output=None):
             d = os.path.dirname(p)
             if not os.path.exists(d):
                 os.makedirs(d)
+            return p
         fn = _get_path
     flist = []
     for x in files:
