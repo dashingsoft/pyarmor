@@ -199,18 +199,18 @@ def encrypt_files(files, prokey, mode=0, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ch = 'c' if mode == 1 else ext_char
+    ext = '.pyc' if mode == 1 else '.py' + ext_char
     if output is None:
-        fn = lambda a, b : b + ch
+        fn = lambda a, b : b[1] + ext
     else:
         if not os.path.exists(output):
             os.makedirs(output)
         # fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
         def _get_path(a, b):
-            if os.path.isabs(b):
-                p = os.path.join(a, '__root__', b.replace(':', '/') + ch)
+            if os.path.isabs(b[0]):
+                p = os.path.join(a, '__root__', b[1] + ext)
             else:
-                p = os.path.join(a, b + ch)
+                p = os.path.join(a, b[1] + ext)
             d = os.path.dirname(p)
             if not os.path.exists(d):
                 os.makedirs(d)
@@ -218,7 +218,7 @@ def encrypt_files(files, prokey, mode=0, output=None):
         fn = _get_path
     flist = []
     for x in files:
-        flist.append((x, fn(output, x)))
+        flist.append((x[0], fn(output, x)))
         logging.info('Encrypt %s to %s', *flist[-1])
 
     if len(flist[:1]) == 0:
@@ -304,13 +304,16 @@ def _parse_file_args(args, srcpath=None):
             f.close()
         else:
             patterns.append(arg)
+    n = 0 if srcpath is None else (len(srcpath) + 1)
     for pat in patterns:
         if os.path.isabs(pat) or srcpath is None:
             for name in glob.glob(pat):
-                filelist.append(name)
+                p = os.path.splitext(name.replace(':', '/'))
+                filelist.append((name, p[0]))
         else:
             for name in glob.glob(os.path.join(srcpath, pat)):
-                filelist.append(name)
+                p = os.path.splitext(name)
+                filelist.append((name, p[0][n:]))
     return filelist
 
 @checklicense
