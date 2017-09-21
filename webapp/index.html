@@ -8,7 +8,7 @@
 
     <title>Pyarmor</title>
 
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
 
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -16,15 +16,20 @@
         HAS_SOURCE:  false
       };
     </script>
-    <script type="text/javascript" src="bootstrap/js/jquery.min.js"></script>
-    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script data-main="app" src="js/require.js"></script>
 
     <style type="text/css">
       table.right { float: right; margin-left: 20px; }
       table.right td { border: 1px solid #ccc; }
       .related { display: none; }
-      .toolbar { margin: 0px 15px 15px 15px; }
+      .toolbar { 
+          margin: 10px 15px 10px 15px;
+          position: absolute;
+          right: 0;
+          top: 0;
+      }
     </style>
 </head>
   <body role="document">
@@ -46,20 +51,15 @@
             <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
             <li role="presentation" class="active"><a href="#project" aria-controls="project" role="tab" data-toggle="tab">Project</a></li>
             <li role="presentation"><a href="#documentation" aria-controls="documentation" role="tab" data-toggle="tab">Documentation</a></li>
-            <li role="presentation"><a href="#downloads" aria-controls="downloads" role="tab" data-toggle="tab">Downloads</a></li>
-            <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+            <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Purchase</a></li>
+            <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
             <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
 
-    <div id="global-message">
-      <div class="alert alert-info alert-dismissible hidden" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Warning!</strong> Better check yourself, you're not looking too good.
-      </div>
-    </div>
+    <div id="global-message"></div>
 
     <!-- Tab panes -->
     <div class="tab-content">
@@ -73,20 +73,18 @@
           <button id="save-project" type="button" class="btn btn-default">Save</button>
           <button id="encrypt-project" type="button" class="btn btn-default">Encrypt</button>
           <button id="toggle-output" type="button" class="btn btn-default hidden">&lt;&lt;</button>
-          <div class="pull-right">
-            <button id="import-project" type="button" class="btn btn-default">Import</button>
-            <button id="export-project" type="button" class="btn btn-default">Export</button>
-          </div>
+          <!-- <h4><span class="label label-warning">Demo Version</span></h4> -->
+          <button id="demo-version" type="button" class="btn btn-warning">Demo Version</button>
         </div>
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-2">
               <ul class="nav nav-pills nav-stacked">
                 <li role="presentation" class="active"><a href="#project-basic" aria-controls="project-basic" role="tab" data-toggle="pill">Basic</a></li>
-                <li role="presentation"><a href="#project-files" aria-controls="project-files" role="tab" data-toggle="pill">Files</a></li>
-                <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
+                <!-- <li role="presentation"><a href="#project-files" aria-controls="project-files" role="tab" data-toggle="pill">Files</a></li> -->
                 <li role="presentation"><a href="#project-runtime" aria-controls="project-runtime" role="tab" data-toggle="pill">Runtime Environments</a></li>
-                <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li>
+                <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
+                <!-- <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li> -->
               </ul>
             </div>
             <!-- /.col-md-2 -->
@@ -97,7 +95,7 @@
                     <div class="panel-heading">Project Infromation</div>
                     <div class="panel-body">
                       <form>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                           <label for="input_project_name">Name</label>
                           <input type="text" class="form-control" id="input_project_name" placeholder="Project Name">
                         </div>
@@ -105,14 +103,36 @@
                           <label for="input_project_title">Title</label>
                           <input type="text" class="form-control" id="input_project_title" placeholder="Project Title">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                           <label for="input_project_capsule">Capsule</label>
                           <input type="text" class="form-control" id="input_project_capsule" placeholder="Project Capsule Filename" disabled>
                           <p class="help-block">It will be generated when new project and can not be changed.</p>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                           <label for="input_project_description">Description</label>
                           <textarea class="form-control" rows="5" id="input_project_description"></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label for="input_source_path">Source Path</label>
+                          <input type="text" class="form-control" id="input_source_path">
+                        </div>
+                        <div class="checkbox hidden">
+                          <label>
+                            <input type="checkbox" id="input_in_place" value="">Save encrypt python scripts in the same path of original file
+                          </label>
+                        </div>
+                          <div class="form-group">
+                          <label for="input_main_script">Main Script</label>
+                          <input type="text" class="form-control" id="input_main_script">
+                        </div>
+                        <div class="form-group">
+                          <label for="input_project_files">Modules and Packages</label>
+                          <textarea class="form-control" rows="5" id="input_project_files" placeholder="*.py"></textarea>
+                          <p class="help-block">No tilde expansion is done, but *, ?, and character ranges expressed with [] will be correctly matched.</p>
+                        </div>
+                        <div class="form-group">
+                          <label for="input_output_path">Output Path</label>
+                          <input type="text" class="form-control" id="input_output_path" placeholder="Encrypted scripts and extra files will be saved here ">
                         </div>
                       </form>
                     </div>
@@ -126,20 +146,6 @@
                     <div class="panel-heading">Add files need to be encrypted to project</div>
                     <div class="panel-body">
                       <form>
-                        <div class="form-group">
-                          <label for="input_output_path">Output Path</label>
-                          <input type="text" class="form-control" id="input_output_path" placeholder="Encrypted scripts and extra files will be saved here ">
-                        </div>
-                        <div class="checkbox">
-                          <label>
-                            <input type="checkbox" id="input_in_place" value="">Save encrypt python scripts in the same path of original file
-                          </label>
-                        </div>
-                        <div class="form-group">
-                          <label for="input_project_files">Project File Patterns</label>
-                          <textarea class="form-control" rows="5" id="input_project_files" placeholder="*.py"></textarea>
-                          <p class="help-block">No tilde expansion is done, but *, ?, and character ranges expressed with [] will be correctly matched.</p>
-                        </div>
                       </form>
                     </div>
                     <!-- /.panel-body -->
@@ -182,8 +188,8 @@
                         </div>
                         <button type="submit" class="btn btn-default">Generate</button>
                         <div class="pull-right">
-                        <button type="submit" class="btn btn-default">Remove</button>
-                        <button type="submit" class="btn btn-default">Download</button>
+                          <button type="submit" class="btn btn-default">Remove</button>
+                          <button type="submit" class="btn btn-default">Download</button>
                         </div>
                       </form>
                     </div>
@@ -248,7 +254,7 @@
       <div role="tabpanel" class="tab-pane" id="documentation">
         Documentation
       </div>
-      <div role="tabpanel" class="tab-pane" id="downloads">
+      <div role="tabpanel" class="tab-pane" id="purchase">
         Downloads
       </div>
       <div role="tabpanel" class="tab-pane" id="settings">
@@ -256,9 +262,9 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="about">
         <ul class="">
-          <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Purchase</a></li>
+          <li role="presentation">Version Info</li>
           <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Support &amp; Issues</a></li>
-          <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
+          <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">Homepage &amp; Source</a></li>
         </ul>
       </div>
     </div>

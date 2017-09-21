@@ -4,8 +4,11 @@ import json
 import os
 import posixpath
 import shutil
-import urllib
 
+try:
+    from urllib import unquote
+except Exception:
+    from urllib.parse import unquote
 try:
     from BaseHTTPServer import BaseHTTPRequestHandler
 except ImportError:
@@ -14,6 +17,8 @@ try:
     import SocketServer as socketserver
 except ImportError:
     import socketserver
+
+import project
 
 __version__ = '0.1'
 
@@ -24,7 +29,10 @@ class HelperHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         """Serve a POST request."""
-        if self.path not in ('/capsule', '/license', '/encrypt'):
+        if self.path[1:] not in ('newProject', 'updateProject',
+                                 'buildProject', 'removeProject',
+                                 'queryProject', 'queryVersion',
+                                 'newLicense'):
             self.send_error(404, "File not found")
             return
 
@@ -42,6 +50,7 @@ class HelperHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/json")
             self.send_header("Content-Length", str(len(response)))
+            self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Last-Modified", self.date_time_string())
             self.end_headers()
             self.wfile.write(response)
@@ -89,11 +98,11 @@ class HelperHandler(BaseHTTPRequestHandler):
             else:
                 self.send_error(404, "File not found")
                 return None
-        if os.path.basename(path) not in (
-                'bootstrap.min.css', 'bootstrap.min.js', 'jquery.min.js',
-                'pyarmor.js', 'index.html'):
-            self.send_error(404, "File not found")
-            return None
+        # if os.path.basename(path) not in (
+        #         'bootstrap.min.css', 'bootstrap.min.js', 'jquery.min.js',
+        #         'pyarmor.js', 'index.html'):
+        #     self.send_error(404, "File not found")
+        #     return None
 
         ctype = self.guess_type(path)
         try:
@@ -113,10 +122,14 @@ class HelperHandler(BaseHTTPRequestHandler):
         return f
 
     def run_command(self, command, arguments):
-        return {
-            "errcode": 0,
-            "message": "make capsule is ok",
-        }
+        try:
+            data = json.loads(arguments)
+            result = getattr(project, command)(data)
+            errcode = 0
+        except Exception as e:
+            errcode = 1
+            result = "Unhandle Server Error: %s" % str(e)
+        return dict(errcode=errcode, result=result)
 
     def translate_path(self, path):
         """Translate a /-separated PATH to the local filename syntax.
@@ -129,7 +142,7 @@ class HelperHandler(BaseHTTPRequestHandler):
         # abandon query parameters
         path = path.split('?',1)[0]
         path = path.split('#',1)[0]
-        path = posixpath.normpath(urllib.unquote(path))
+        path = posixpath.normpath(unquote(path))
         words = path.split('/')
         words = filter(None, words)
         path = os.getcwd()
@@ -186,8 +199,14 @@ class HelperHandler(BaseHTTPRequestHandler):
         '.js': 'application/x-javascript',
         }
 
+
 if __name__ == '__main__':
-    HOST, PORT = "", 8000
+    HOST, PORT = "", 0
     server = socketserver.TCPServer((HOST, PORT), HelperHandler)
     print("Serving HTTP on %s port %s ..." % server.server_address)
+    try:
+        from webbrowser import open_new_tab
+        open_new_tab("http://localhost:%d" % server.server_address[1])
+    except Exception:
+        pass
     server.serve_forever()
