@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import logging
 import json
 import os
 import shutil
@@ -16,8 +17,10 @@ sys.rootdir = rootdir
 sys.path.append(rootdir)
 
 from config import version
-from pyarmor import (_get_registration_code,
+from pyarmor import (_get_registration_code, _import_pytransform,
                      do_capsule, do_encrypt, do_license)
+import pyarmor
+pyarmor.pytransform = _import_pytransform()
 
 def _check_project_index():
     filename = os.path.join(project_data_path, project_index_name)
@@ -55,7 +58,12 @@ def _create_default_project(name):
     }
 
 def newProject(args=None):
-    _check_project_index()
+    '''
+    >>> p = newProject()
+    >>> p['message']
+    'Project has been created'
+    '''
+    filename = _check_project_index()
     with open(filename, 'r') as fp:
         pindexes = json.load(fp)
 
@@ -66,7 +74,7 @@ def newProject(args=None):
         logging.warning('Project path %s has been exists', path)
     else:
         logging.info('Make project path %s', path)
-        os.makedir(path)
+        os.mkdir(path)
     capsule = os.path.join(path, project_capsule_name + '.zip')
     if not os.path.exists(capsule):
         argv = ['-O', path, project_capsule_name]
@@ -87,6 +95,12 @@ def newProject(args=None):
     return dict(project=data, message='Project has been created')
 
 def updateProject(args):
+    '''
+    >>> p = newProject()['project']
+    >>> p['title'] = 'MyProject'
+    >>> updateProject(p)
+    'Update project OK'
+    '''
     name = args['name']
     config = os.path.join(project_data_path, name, project_config_name)
     with open(config, 'w') as fp:
@@ -94,6 +108,20 @@ def updateProject(args):
     return 'Update project OK'
 
 def buildProject(args):
+    '''
+    >>> p = newProject()['project']
+    >>> p['title'] = 'My Project'
+    >>> p['scripts'] = []
+    >>> p['files'] = ['*.py']
+    >>> p['srcpath'] = ''
+    >>> buildProject(p)
+    'Encrypt scripts OK.'
+
+    >>> a = newLicense(p)
+    >>> p['default_license'] = a['filename']
+    >>> buildProject(p)
+    'Encrypt scripts OK.'
+    '''
     name = args['name']
     src = args['srcpath']
     output = args['output']
@@ -102,11 +130,13 @@ def buildProject(args):
     capsule = args['capsule']
     target = args.get('target', None)
     default_license = args.get('default_license', None)
-    
+
+    if src.strip() == '':
+        src = os.getcwd()
     argv = ['-O', output, '-s', src, '-C', capsule]
     for s in scripts:
         argv.append('-m')
-        argv.append(os.path.splitext(os.path.basename(s))[0])        
+        argv.append(os.path.splitext(os.path.basename(s))[0])
     argv.extend(scripts)
     argv.extend(files)
 
@@ -118,6 +148,11 @@ def buildProject(args):
     return 'Encrypt scripts OK.'
 
 def removeProject(args):
+    '''
+    >>> p1 = newProject()['project']
+    >>> removeProject(p1)
+    'Remove project OK'
+    '''
     filename = _check_project_index()
     with open(filename, 'r') as fp:
         pindexes = json.load(fp)
@@ -127,10 +162,18 @@ def removeProject(args):
         pindexes['projects'].pop(name)
     except KeyError:
         pass
+    with open(filename, 'w') as fp:
+        json.dump(pindexes, fp)
+
     shutil.rmtree(os.path.join(project_data_path, name))
     return 'Remove project OK'
 
 def queryProject(args=None):
+    '''
+    >>> r = queryProject()
+    >>> len(r) > 1
+    True
+    '''
     filename = _check_project_index()
     with open(filename, 'r') as fp:
         pindexes = json.load(fp)
@@ -147,10 +190,22 @@ def queryProject(args=None):
     return result
 
 def queryVersion(args=None):
+    '''
+    >>> queryVersion()
+    {'version': '3.1.3', 'rcode': ''}
+    '''
     rcode = _get_registration_code()
     return dict(version=version, rcode=rcode)
 
 def newLicense(args):
+    '''
+    >>> p = newProject()['project']
+    >>> p['hdinfo'] = 'hdsioa-2abc'
+    >>> a1 = newLicense(p)
+    >>> p['expired'] = '2017-11-20'
+    >>> a2 = newLicense(p)
+
+    '''
     name = args['name']
     capsule = os.path.join(project_data_path, name, project_capsule_name + '.zip')
     for i in range(1024):
@@ -199,12 +254,21 @@ def newLicense(args):
 
     return dict(title=title, filename=output)
 
-def removeLincese(args):
+def removeLicense(args):
+    '''
+    >>> p = newProject()['project']
+    >>> p['rcode'] = 'my-customer-a'
+    >>> a = newLicense(p)
+    >>> a['name'] = p['name']
+    >>> m = removeLicense(a)
+    >>> m['message']
+    'Remove license "Code: my-customer-a" OK.'
+    '''
     name = args['name']
     title = args['title']
     filename = args['filename']
 
-    os.remove(os.path.join(project_data_path, name, filename))
+    os.remove(filename)
 
     config = os.path.join(project_data_path, name, project_config_name)
     with open(config, 'r') as fp:
@@ -218,8 +282,7 @@ def removeLincese(args):
     with open(config, 'w') as fp:
         json.dump(data, fp)
 
-    return dict(index=index,
-                message='Remove license "%s" OK.' % title)
+    return dict(index=i, message='Remove license "%s" OK.' % title)
 
 if __name__ == '__main__':
     import doctest
