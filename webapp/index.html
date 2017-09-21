@@ -109,7 +109,7 @@
               <li role="presentation" class="active"><a href="#project-basic" aria-controls="project-basic" role="tab" data-toggle="pill">Basic</a></li>
               <li role="presentation"><a href="#project-runtime" aria-controls="project-runtime" role="tab" data-toggle="pill">Runtime Environments</a></li>
               <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
-              <!-- <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li> -->
+              <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li>
             </ul>
           </div>
           <!-- /.col-sm-2 -->
@@ -153,8 +153,8 @@
                         <p class="help-block">Optional. Following the Distutils’ own manifest template, all these files will be encrypted.</p>
                       </div>
                       <div class="form-group">
-                        <label for="input_main_script">Main Script</label>
-                        <input type="text" class="form-control" id="input_main_scripts"/>
+                        <label for="input_project_script">Main Script</label>
+                        <input type="text" class="form-control" id="input_project_scripts"/>
                         <p class="help-block">Optional. Main script name.</p>
                       </div>
                       <div class="form-group hidden">
@@ -249,10 +249,10 @@
                 <div>
                   <form>
                     <div class="form-group">
-                      <label for="input_project_console">Output of project actions such as New, Open, Save, Encrypt etc.</label>
-                      <textarea class="form-control" rows="10" id="input_project_console"></textarea>
+                      <label for="project-log-message">Log message</label>
+                      <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
                     </div>
-                    <button type="submit" class="btn btn-default">Clear</button>
+                    <a id="clear-log-message" role="button" class="btn btn-default">Clear</a>
                   </form>
                 </div>
                 <!-- /.panel-default -->
