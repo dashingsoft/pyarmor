@@ -421,8 +421,14 @@ For examples:
 
       pyarmor encrypt --plat-name=linux_x86_64 a.py b.py
 
-    '''
 
+Use MANIFEST.in to list files
+
+      pyarmor encrypt --with-capsule=project.zip @myproject/MANIFEST.in
+
+It's Following the Distutils’ own manifest template
+
+    '''
     opts, args = getopt.getopt(
         argv, 'C:de:im:O:p:s:',
         ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
