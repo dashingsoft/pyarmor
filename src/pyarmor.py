@@ -23,6 +23,8 @@
 #
 #   A tool used to import or un encrypted python scripts.
 #
+from distutils.filelist import FileList
+from distutils.text_file import TextFile
 import fnmatch
 import getopt
 import glob
@@ -201,16 +203,14 @@ def encrypt_files(files, prokey, mode=0, output=None):
     '''
     ext = '.pyc' if mode == 1 else '.py' + ext_char
     if output is None:
-        fn = lambda a, b : b[1] + ext
+        fn = lambda a, b: b[1] + ext
     else:
+        # fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
+        # fn = lambda a, b: os.path.join(a, b[1] + ext)
         if not os.path.exists(output):
             os.makedirs(output)
-        # fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
         def _get_path(a, b):
-            if os.path.isabs(b[0]):
-                p = os.path.join(a, '__root__', b[1] + ext)
-            else:
-                p = os.path.join(a, b[1] + ext)
+            p = os.path.join(a, b[1] + ext)
             d = os.path.dirname(p)
             if not os.path.exists(d):
                 os.makedirs(d)
@@ -292,8 +292,44 @@ For example,
     make_capsule(sys.rootdir, filename)
     logging.info('Generate capsule OK.')
 
+def _parse_template_file(filename, path=None):
+    template = TextFile(filename,
+                        strip_comments=1,
+                        skip_blanks=1,
+                        join_lines=1,
+                        lstrip_ws=1,
+                        rstrip_ws=1,
+                        collapse_join=1)
+    lines = template.readlines()
+
+    filelist = FileList()
+    try:
+        if path is not None and not path == old:
+            os.chdir(path)
+            oldpath = os.getcwd()
+        else:
+            oldpath = None
+
+        for line in lines:
+            filelist.process_template_line(line)
+    finally:
+        if oldpath is not None:
+            os.chdir(oldpath)
+    return filelist.files
+
 def _parse_file_args(args, srcpath=None):
     filelist = []
+
+    if srcpath is None:
+        path, n = '', 0
+    else:
+        path, n = srcpath, len(srcpath) + 1
+
+    if len(args) == 1 and args[0] == '@MANIFEST.in':
+        for x in _parse_template_file(args[0], path=srcpath):
+            filelist.append((x, os.path.splitext(x)[0][n:]))
+        return filelist
+
     patterns = []
     for arg in args:
         if arg[0] == '@':
@@ -304,16 +340,12 @@ def _parse_file_args(args, srcpath=None):
             f.close()
         else:
             patterns.append(arg)
-    n = 0 if srcpath is None else (len(srcpath) + 1)
+
     for pat in patterns:
-        if os.path.isabs(pat) or srcpath is None:
-            for name in glob.glob(pat):
-                p = os.path.splitext(name.replace(':', '/'))
-                filelist.append((name, p[0]))
-        else:
-            for name in glob.glob(os.path.join(srcpath, pat)):
-                p = os.path.splitext(name)
-                filelist.append((name, p[0][n:]))
+        for name in glob.glob(os.path.join(path, pat)):
+            p = os.path.splitext(name)
+            filelist.append((name, p[0][n:]))
+
     return filelist
 
 @checklicense
