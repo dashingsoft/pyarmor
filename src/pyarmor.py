@@ -304,7 +304,7 @@ def _parse_template_file(filename, path=None):
 
     filelist = FileList()
     try:
-        if path is not None and not path == old:
+        if path is not None and not path == os.getcwd():
             os.chdir(path)
             oldpath = os.getcwd()
         else:
@@ -325,9 +325,9 @@ def _parse_file_args(args, srcpath=None):
     else:
         path, n = srcpath, len(srcpath) + 1
 
-    if len(args) == 1 and args[0] == '@MANIFEST.in':
-        for x in _parse_template_file(args[0], path=srcpath):
-            filelist.append((x, os.path.splitext(x)[0][n:]))
+    if len(args) == 1 and args[0][0] == '@' and args[0].endswith('MANIFEST.in'):
+        for x in _parse_template_file(args[0][1:], path=srcpath):
+            filelist.append((x, os.path.splitext(x)[0]))
         return filelist
 
     patterns = []
