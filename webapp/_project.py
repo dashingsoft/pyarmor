@@ -81,6 +81,8 @@ def newProject(args=None):
         do_capsule(argv)
 
     data = _create_default_project(name)
+    data['title'] = 'Project %d' % counter
+    data['path'] = os.path.abspath(os.getcwd())
     data['capsule'] = capsule
     data['output'] = os.path.join(path, 'dist')
     config = os.path.join(path, project_config_name)
@@ -111,8 +113,8 @@ def buildProject(args):
     '''
     >>> p = newProject()['project']
     >>> p['title'] = 'My Project'
-    >>> p['scripts'] = []
-    >>> p['files'] = ['include *.py']
+    >>> p['scripts'] = ''
+    >>> p['files'] = 'include *.py'
     >>> p['path'] = ''
     >>> buildProject(p)
     'Encrypt scripts OK.'
@@ -125,8 +127,8 @@ def buildProject(args):
     name = args['name']
     path = args['path']
     output = args['output']
-    scripts = args['scripts']
-    files = args['files']
+    scripts = args['scripts'].split()
+    files = args['files'].splitlines()
     capsule = args['capsule']
     target = args.get('target', None)
     default_license = args.get('default_license', None)
