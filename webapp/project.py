@@ -174,6 +174,12 @@ def queryProject(args=None):
     >>> len(r) > 1
     True
     '''
+    if args is not None and args.get('name') is not None:
+        name = args.get('name')
+        config = os.path.join(project_data_path, name, project_config_name)
+        with open(config, 'r') as fp:
+            return json.load(fp)
+
     filename = _check_project_index()
     with open(filename, 'r') as fp:
         pindexes = json.load(fp)
