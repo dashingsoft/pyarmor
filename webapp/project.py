@@ -49,7 +49,7 @@ def _create_default_project(name):
         'description': '',
         'srcpath': '',
         'scripts': [],
-        'files': [],
+        'files': ['include *.py'],
         'licenses': [],
         'output': '',
         'capsule': None,
@@ -112,7 +112,7 @@ def buildProject(args):
     >>> p = newProject()['project']
     >>> p['title'] = 'My Project'
     >>> p['scripts'] = []
-    >>> p['files'] = ['*.py']
+    >>> p['files'] = ['include *.py']
     >>> p['srcpath'] = ''
     >>> buildProject(p)
     'Encrypt scripts OK.'
@@ -133,12 +133,17 @@ def buildProject(args):
 
     if src.strip() == '':
         src = os.getcwd()
-    argv = ['-O', output, '-s', src, '-C', capsule]
+    argv = ['-O', output, '-s', src, '-C', capsule]    
     for s in scripts:
         argv.append('-m')
         argv.append(os.path.splitext(os.path.basename(s))[0])
-    argv.extend(scripts)
-    argv.extend(files)
+
+    template = os.path.join(project_data_path, name, 'MANIFEST.in')
+    with open(template, 'w') as fp:
+        if len(scripts[:1]):
+            fp.write('include %s\n' % ' '.join(scripts))
+        fp.write('\n'.join(files))
+    argv.append('@' + template)
 
     do_encrypt(argv)
 
