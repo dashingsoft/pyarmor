@@ -19,7 +19,7 @@ try:
 except ImportError:
     import socketserver
 
-import project
+import _project
 
 __version__ = '0.1'
 
@@ -125,7 +125,7 @@ class HelperHandler(BaseHTTPRequestHandler):
     def run_command(self, command, arguments):
         try:
             data = json.loads(arguments)
-            result = getattr(project, command)(data)
+            result = getattr(_project, command)(data)
             errcode = 0
         except Exception as e:
             errcode = 1
