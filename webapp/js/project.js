@@ -48,6 +48,18 @@ define(['connector', 'utils'], function(conn, utils) {
         _project.default_license  = document.getElementById('input_project_default_license').value;
     }
 
+    function newProject() {
+        var _callback = function (response) {
+            if (response.errcode) {
+                utils.showMessage(response.result);
+                return ;
+            }
+            result = response.result;
+            loadProject(result.project);
+        }
+        conn.newProject(_callback);
+    }
+
     function saveProject() {
         var _callback = function (response) {
             if (response.errcode) {
@@ -219,11 +231,7 @@ define(['connector', 'utils'], function(conn, utils) {
 
         loadProject: loadProject,
         initProject: initProject,
-
-        newProject: function () {
-            conn.newProject(_callback);
-        },
-
+        newProject: newProject,
         openProjectModal: openProjectModal,
         openProject: openProject,
         saveProject: saveProject,
