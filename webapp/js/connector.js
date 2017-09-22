@@ -1,4 +1,4 @@
-define(['settings', 'utils'], function(settings, utils) {
+define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
 
     function onError(e) {
         utils.showMessage('Request failed: ' + e);
@@ -13,7 +13,8 @@ define(['settings', 'utils'], function(settings, utils) {
             return;
         }
         else if (flag === true) {
-            utils.showMessage('Demo version ');
+            // utils.showMessage('Demo version ');
+            demo.handleRequest(url, args, callback);
             return;
         }
 
