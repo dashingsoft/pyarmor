@@ -15,7 +15,7 @@
       right: 0;
       top: 0;
     }
-    .tab-pane > div {
+    .tab-pane > div.content {
       padding: 0 1em;
     }
   </style>
@@ -192,7 +192,7 @@
                             </label>
                           </div>
                         </label>
-                        <input type="date" class="form-control" id="input_expired_date" disabled/>
+                        <input type="text" class="form-control" id="input_expired_date" disabled/>
                       </div>
                       <div class="form-group">
                         <label for="input_license_rcode">Registration Code</label>
@@ -203,8 +203,8 @@
                         <label for="input_available_licenses">Available Licenses</label>
                         <select class="form-control" id="input_project_licenses" multiple readonly></select>
                       </div>
-                      <button type="submit" class="btn btn-default" id="new-license">Generate</button>
-                      <button type="submit" class="btn btn-default pull-right" id="remove-license">Remove</button>
+                      <button type="button" class="btn btn-default" id="new-license">Generate</button>
+                      <button type="button" class="btn btn-default pull-right" id="remove-license">Remove</button>
                     </form>
                   </div>
                   <!-- /.panel-body -->
