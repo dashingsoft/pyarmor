@@ -49,9 +49,9 @@
       <!-- /.navbar-header -->
       <div class="collapse navbar-collapse" id="navbar-main-tab">
         <ul class="nav navbar-nav">
-          <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-          <li role="presentation" class="active"><a href="#project" aria-controls="project" role="tab" data-toggle="tab">Project</a></li>
-          <li role="presentation"><a href="#documentation" aria-controls="documentation" role="tab" data-toggle="tab">Documentation</a></li>
+          <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+          <li role="presentation"><a href="#project" aria-controls="project" role="tab" data-toggle="tab">Project</a></li>
+          <li role="presentation"><a href="#documentation" aria-controls="documentation" role="tab" data-toggle="tab">Tutorial</a></li>
           <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Purchase</a></li>
           <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
           <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
@@ -66,16 +66,17 @@
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane" id="home">
+    <div role="tabpanel" class="tab-pane active" id="home">
       <div class="toolbar">
         <a type="button" class="btn btn-success" href="index-zh.html">中文版</a>
       </div>
       <div class="content">
-        <p>Pyarmor is a command line tool used to import or run encrypted python scripts.</p>
+        <p>Pyarmor is a line tool used to import or run encrypted python scripts.</p>
         <h4 id="main-features">Main Features</h4>
         <ul>
           <li>Run encrypted script or import encrypted module</li>
           <li>Run or import encrypted compiled python files (.pyc, .pyo)</li>
+          <li>Mixed encrypted files with normal python files.</li>
           <li>Expire encrypted files</li>
           <li>Bind encrypted files to harddisk</li>
         </ul>
@@ -85,8 +86,20 @@
           <li><p>Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64</p></li>
         </ul>
         <h4 id="quick-start">Quick Start</h4>
-        <p>Got source package from <a href="https://pypi.python.org/pypi/pyarmor">pypi</a></p>
-        <p>Pyarmor is a command line tool, main script is pyarmor.py. After you got source package, unpack it to any path, then run paramor.py as common python script</p>
+        <ul>
+          <li><p>Download <a href="https://github.com/dashingsoft/pyarmor/releases/download/v3.1.2/pyarmor-webapp.zip">pyarmor-webapp.zip</a></p></li>
+          <li><p>Extract it to any path, for example, <em>/opt</em>, then enter <em>/opt/pyarmor/webapp</em></p></li>
+          <li><p>Double click <strong>start-server.bat</strong> (For Windows) or <strong>start-server.sh</strong> (For Linux)</p></li>
+          <li><p>A webpage will open in default web browser at the same time, the following steps are in this web page.</p>
+            <ul>
+              <li>Click tab <strong>Project</strong></li>
+              <li>Type absolute path of python source files in <strong>Source Path</strong>, for example, <em>/home/jondy/workspace/pytransform</em></li>
+              <li>Type main script name in <strong>Main Script</strong>, for example, <em>main.py</em></li>
+              <li>Click button <strong>Encrypt</strong></li>
+              <li>All the encrypted files would be save in <em>/opt/pyarmor/projects/project-1/dist</em>, run encrypted script: <code>python main.py</code></li>
+            </ul>
+          </li>
+        </ul>
         <h4 id="license">License</h4>
         <p>Pyarmor is published as shareware. Free trial version that never expires, the limitation is</p>
         <ul>
@@ -100,7 +113,7 @@
       </div>
     </div>
     <!-- /.tab-pane -->
-    <div role="tabpanel" class="tab-pane active" id="project">
+    <div role="tabpanel" class="tab-pane" id="project">
       <div class="toolbar">
         <button id="new-project" type="button" class="btn btn-success">New</button>
         <button id="open-project" type="button" class="btn btn-default">Open</button>
