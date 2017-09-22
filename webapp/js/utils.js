@@ -19,7 +19,7 @@ define([], function() {
 
     var _logElement = document.getElementById('project-log-message');
     var logMessage = function (msg) {
-        _logElement.value += msg + '\n';
+        _logElement.value += msg.replace('<p>', '\n') + '\n';
     }
     document.getElementById('clear-log-message').addEventListener('click', function (e) {
         e.preventDefault();

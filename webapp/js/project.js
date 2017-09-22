@@ -80,7 +80,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 utils.showMessage(response.result);
                 return ;
             }
-            utils.showMessage(response.result + '<p> Output path: ' + _project.output);
+            utils.showMessage(response.result + '<p>Output path: ' + _project.output);
         }
 
         _updateProject();
