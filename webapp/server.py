@@ -210,7 +210,7 @@ if __name__ == '__main__':
     try:
         PORT = int(sys.argv[1])
     except Exception:
-        PORT = 0
+        PORT = 9096
     server = socketserver.TCPServer(("", PORT), HelperHandler)
     print("Serving HTTP on %s port %s ..." % server.server_address)
     try:

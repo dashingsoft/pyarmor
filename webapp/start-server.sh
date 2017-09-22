@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-python server.py 9096
+python server.py

@@ -9,7 +9,7 @@ IF "%PYPATH%" == "" (
   PAUSE
 ) ELSE (
   ECHO Use %PYPATH% to run server ...
-  %PYPATH%\python.exe server.py 9096
+  %PYPATH%\python.exe server.py
   IF ERRORLEVEL 1 PAUSE
 )
 
