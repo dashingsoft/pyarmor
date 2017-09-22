@@ -94,9 +94,15 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             var result = response.result;
-            var options = []
-            for (var i = 0; i < result.length; i ++)
-                options.push('<option value="' + result[i].name + '">' + result[i].title + '</option>');
+            var options = [];
+            var currentName = _project.name;
+            for (var i = 0; i < result.length; i ++) {
+                var name = result[i].name;
+                if (name === currentName)
+                    continue;
+                var title = result[i].title;
+                options.push('<option value="' + name + '">' + name + ': ' + title + '</option>');
+            }
             _projectList.innerHTML = options.join('');
             $('#project-manage-modal').modal('show');
         }
