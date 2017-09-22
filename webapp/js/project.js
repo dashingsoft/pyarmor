@@ -126,13 +126,13 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             var result = response.result;
-            _project.licenses.append(result);
+            _project.licenses.push(result);
 
             var opt = document.createElement("option");
             opt.text = result.title + ' (' + result.filename + ')';
             opt.value = result.filename;
             document.getElementById('input_project_licenses').add(opt);
-            document.getElementById('input_project_default_license').add(opt);
+            document.getElementById('input_project_default_license').add(opt.cloneNode(true));
             utils.showMessage('New license ' + result.title + ' OK.');
         }
 
