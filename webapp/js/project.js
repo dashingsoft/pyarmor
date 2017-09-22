@@ -125,7 +125,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 utils.showMessage(response.result);
                 return ;
             }
-            var result = response.result;            
+            var result = response.result;
             var opt = document.createElement("option");
             opt.text = result.title + ' (' + result.filename + ')';
             opt.value = result.filename;
@@ -152,14 +152,19 @@ define(['connector', 'utils'], function(conn, utils) {
                 return;
             }
             args.expired = value;
-        }        
+        }
         if (!document.getElementById('input_license_rcode').disabled)
             args.rcode = document.getElementById('input_license_rcode').value;
+
+        if (args.hdinfo === undefined && args.expired === undefined && args.rcode === '') {
+            utils.showMesssage('Default license has been generated.');
+            return;
+        }
 
         conn.newLicense(args, _callback);
     }
 
-    function removeLicense() {
+    function removeLicense(e) {
         var licenseList = document.getElementById('input_project_licenses');
         var _callback = function (response) {
             if (response.errcode) {
@@ -171,15 +176,15 @@ define(['connector', 'utils'], function(conn, utils) {
 
             var element = document.getElementById('input_project_default_license');
             if (index == element.selectedIndex)
-                element.selectedIndex = 0;                
+                element.selectedIndex = 0;
         }
         var index = licenseList.selectedIndex;
         if (index > 0)
             conn.removeLicense({name: licenseList.value}, _callback);
         else if (index === 0)
-            utils.showMessage('Default license can not be removed.');                               
+            utils.showMessage('Default license can not be removed.');
     }
-       
+
     // Load default project when webapp start
     function initProject() {
         var _callback = function (response) {

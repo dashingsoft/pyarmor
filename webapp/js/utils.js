@@ -13,7 +13,8 @@ define([], function() {
     };
 
     document.addEventListener('click', function (e) {
-        _element.style.display = 'none';
+        if (e.target.tagName !== 'BUTTON' || e.target.className === 'close')
+            _element.style.display = 'none';
     }, false);
 
     var _logElement = document.getElementById('project-log-message');
