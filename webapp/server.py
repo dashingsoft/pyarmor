@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 from __future__ import print_function
 
+import logging
 import json
 import os
 import posixpath
@@ -201,8 +202,11 @@ class HelperHandler(BaseHTTPRequestHandler):
         '.js': 'application/x-javascript',
         }
 
-
 if __name__ == '__main__':
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(levelname)-8s %(message)s',
+    )
     try:
         PORT = int(sys.argv[1])
     except Exception:
