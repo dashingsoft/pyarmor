@@ -152,7 +152,7 @@ def buildProject(args):
     if not default_license == '':
         shutil.copyfile(default_license, os.path.join(output, 'license.lic'))
 
-    return 'Encrypt scripts OK.'
+    return 'Encrypt project OK.'
 
 def removeProject(args):
     '''
