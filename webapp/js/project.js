@@ -35,6 +35,7 @@ define(['connector', 'utils'], function(conn, utils) {
 
         _project = data;
         window.localStorage.setItem(_key, data.name);
+        $('#project a[href="#project-basic"]').tab('show');
     }
 
     function _updateProject() {
