@@ -12,7 +12,6 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
             : document.getElementById('input_expired_date').setAttribute('disabled', '1');
     }, false);
 
-
     document.getElementById('new-project').addEventListener('click', project.newProject, false);
     document.getElementById('open-project').addEventListener('click', project.openProjectModal, false);
     document.getElementById('save-project').addEventListener('click', project.saveProject, false);

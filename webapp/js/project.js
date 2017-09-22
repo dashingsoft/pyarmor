@@ -153,12 +153,12 @@ define(['connector', 'utils'], function(conn, utils) {
             }
             args.expired = value;
         }
-        if (!document.getElementById('input_license_rcode').disabled)
+        if (args.hdinfo === undefined && args.expired === undefined) {
             args.rcode = document.getElementById('input_license_rcode').value;
-
-        if (args.hdinfo === undefined && args.expired === undefined && args.rcode === '') {
-            utils.showMesssage('Default license has been generated.');
-            return;
+            if (args.rcode === '') {
+                utils.showMessage('All input is blank, at least one is required.');
+                return;
+            }
         }
 
         conn.newLicense(args, _callback);

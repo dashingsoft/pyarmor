@@ -27,8 +27,8 @@ define([], function() {
     }, false);
 
     return {
-        'logMessage': logMessage,
-        'showMessage': showMessage,
+        logMessage: logMessage,
+        showMessage: showMessage,
     }
 
 });
