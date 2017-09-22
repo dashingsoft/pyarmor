@@ -116,10 +116,10 @@
     <!-- /.tab-pane -->
     <div role="tabpanel" class="tab-pane active" id="project">
       <div class="toolbar">
-        <button id="new-project" type="button" class="btn btn-success">New</button>
-        <button id="open-project" type="button" class="btn btn-default">Open</button>
-        <button id="save-project" type="button" class="btn btn-default">Save</button>
-        <button id="build-project" type="button" class="btn btn-default">Encrypt</button>
+        <button id="new-project" type="button" class="btn btn-success" title="New project">New</button>
+        <button id="open-project" type="button" class="btn btn-default" title="Open project">Open</button>
+        <button id="save-project" type="button" class="btn btn-default" title="Save project">Save</button>
+        <button id="build-project" type="button" class="btn btn-default" title="Encrypt all files in project">Encrypt</button>
         <!-- <h4><span class="label label-warning">Demo Version</span></h4> -->
         <button id="demo-button" type="button" class="btn btn-warning hidden">Demo Version</button>
       </div>
@@ -128,7 +128,7 @@
           <div class="col-sm-2">
             <ul class="nav nav-pills nav-stacked">
               <li role="presentation" class="active"><a href="#project-basic" aria-controls="project-basic" role="tab" data-toggle="pill">Basic</a></li>
-              <li role="presentation"><a href="#project-runtime" aria-controls="project-runtime" role="tab" data-toggle="pill">Runtime Environments</a></li>
+              <li role="presentation"><a href="#project-advanced" aria-controls="project-advanced" role="tab" data-toggle="pill">Advanced</a></li>
               <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
               <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li>
             </ul>
@@ -190,6 +190,36 @@
                 <!-- /.panel-default -->
               </div>
               <!-- /.tab-pane -->
+              <div role="tabpanel" class="tab-pane" id="project-advanced">
+                <div class="panel panel-default">
+                  <div class="panel-heading">How to generate encrypted scripts</div>
+                  <div class="panel-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="input_project_target">Run encrypted scripts in other platform</label>
+                        <select class="form-control" id="input_project_target">
+                          <option></option>
+                          <option>win32</option>
+                          <option>win_amd64</option>
+                          <option>linux_i386</option>
+                          <option>linux_x86_64</option>
+                        </select>
+                        <p class="help-block">Leave it blank if it's same with current platform.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_default_license">Run encrypted scripts in which license</label>
+                        <select class="form-control" id="input_project_default_license">
+                          <option value="">Run in any machine and never expired</option>
+                        </select>
+                        <p class="help-block">Click tab <strong>Licenses</strong> to generate available project licenses</p>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
               <div role="tabpanel" class="tab-pane" id="project-licenses">
                 <div class="panel panel-default">
                   <div class="panel-heading">Generate project license for special user</div>
@@ -226,36 +256,6 @@
                       </div>
                       <button type="button" class="btn btn-default" id="new-license">Generate</button>
                       <button type="button" class="btn btn-default pull-right" id="remove-license">Remove</button>
-                    </form>
-                  </div>
-                  <!-- /.panel-body -->
-                </div>
-                <!-- /.panel-default -->
-              </div>
-              <!-- /.tab-pane -->
-              <div role="tabpanel" class="tab-pane" id="project-runtime">
-                <div class="panel panel-default">
-                  <div class="panel-heading">Where to run encrypted scripts</div>
-                  <div class="panel-body">
-                    <form>
-                      <div class="form-group">
-                        <label for="input_project_target">Run encrypted scripts in other platform</label>
-                        <select class="form-control" id="input_project_target">
-                          <option></option>
-                          <option>win32</option>
-                          <option>win_amd64</option>
-                          <option>linux_i386</option>
-                          <option>linux_x86_64</option>
-                        </select>
-                        <p class="help-block">Leave it blank if it's same with current platform.</p>
-                      </div>
-                      <div class="form-group">
-                        <label for="input_project_default_license">Run encrypted scripts in which license</label>
-                        <select class="form-control" id="input_project_default_license">
-                          <option value="">Run in any machine and never expired</option>
-                        </select>
-                        <p class="help-block">Click tab <strong>Licenses</strong> to generate available project licenses</p>
-                      </div>
                     </form>
                   </div>
                   <!-- /.panel-body -->
@@ -305,11 +305,28 @@
     <div role="tabpanel" class="tab-pane" id="about">
       <div class="content">
         <p id="version-info">Pyarmor Version</p>
-        <p><strong>Homepage:</strong> <a href="http://pyarmor.dashingsoft.com">http://pyarmor.dashingsoft.com</a></p>
-        <p><strong>Source:</strong> <a href="https://github.com/dashingsoft/pyarmor">https://github.com/dashingsoft/pyarmor</a></p>
-        <p><strong>PyPI:</strong> <a href="https://pypi.python.org/pypi/pyarmor">https://pypi.python.org/pypi/pyarmor</a></p>
-        <p><strong>Report Issues:</strong> <a href="https://github.com/dashingsoft/pyarmor/issues">https://github.com/dashingsoft/pyarmor/issues</a></p>
-        <p><strong>Support Email:</strong> <a href="mailto:jondy.zhao@gmail.com">jondy.zhao@gmail.com</a></p>
+        <table class="table">
+          <tr>
+            <td><strong>Homepage:</strong></td>
+            <td><a href="http://pyarmor.dashingsoft.com">http://pyarmor.dashingsoft.com</a></td>
+          </tr>
+          <tr>
+            <td><strong>Source:</strong></td>
+            <td><a href="https://github.com/dashingsoft/pyarmor">https://github.com/dashingsoft/pyarmor</a></td>
+          </tr>
+          <tr>
+            <td><strong>PyPI:</strong></td>
+            <td><a href="https://pypi.python.org/pypi/pyarmor">https://pypi.python.org/pypi/pyarmor</a></td>
+          </tr>
+          <tr>
+            <td><strong>Report Issues:</strong></td>
+            <td><a href="https://github.com/dashingsoft/pyarmor/issues">https://github.com/dashingsoft/pyarmor/issues</a></td>
+          </tr>
+          <tr>
+            <td><strong>Support Email:</strong></td>
+            <td><a href="mailto:jondy.zhao@gmail.com">jondy.zhao@gmail.com</a></td>
+          </tr>
+        </table>
         <p>Any question feel free to email: <a href="mailto:jondy.zhao@gmail.com">jondy.zhao@gmail.com</a></p>
       </div>
       <!-- /.content -->
