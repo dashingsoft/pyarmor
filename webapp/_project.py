@@ -84,7 +84,7 @@ def newProject(args=None):
     data['title'] = 'Project %d' % counter
     data['path'] = os.path.abspath(os.getcwd())
     data['capsule'] = capsule
-    data['output'] = os.path.join(path, 'dist')
+    data['output'] = os.path.abspath(os.path.join(path, 'dist'))
     config = os.path.join(path, project_config_name)
     with open(config, 'w') as fp:
         json.dump(data, fp)
