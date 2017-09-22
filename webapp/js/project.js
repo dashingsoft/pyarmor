@@ -90,12 +90,6 @@ define(['connector', 'utils'], function(conn, utils) {
         conn.queryProject({}, _callback);
     }
 
-    function _getSelectedProject() {
-        var select =
-
-        return [ index, select.options[index].value ];
-    }
-
     function openProject() {
         var _callback = function (response) {
             if (response.errcode) {
