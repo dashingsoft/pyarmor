@@ -279,24 +279,29 @@ def removeLicense(args):
     'Remove license "Code: my-customer-a" OK.'
     '''
     name = args['name']
-    title = args['title']
-    filename = args['filename']
-
-    os.remove(filename)
-
     config = os.path.join(project_data_path, name, project_config_name)
     with open(config, 'r') as fp:
         data = json.load(fp)
 
     licenses = data['licenses']
-    for i in range(len(licenses)):
-        if licenses[i]['filename'] == filename:
-            licenses.pop(i)
+    index = args.get('index')
+    if index is None:
+        filename = args['filename']
+        for index in range(len(licenses)):
+            if licenses[index]['filename'] == filename:
+                break
+        else:
+            raise RuntimeError('No license %s found', filename)
+    lic = licenses.pop(index)
 
     with open(config, 'w') as fp:
         json.dump(data, fp)
 
-    return dict(index=i, message='Remove license "%s" OK.' % title)
+    title = lic['title'];
+    filename = lic['filename'];
+    os.remove(filename)
+
+    return 'Remove license "%s" OK.' % title
 
 if __name__ == '__main__':
     import doctest

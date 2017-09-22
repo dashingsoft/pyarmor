@@ -161,6 +161,7 @@ define(['connector', 'utils'], function(conn, utils) {
             }
         }
 
+        args.name = _project.name;
         conn.newLicense(args, _callback);
     }
 
@@ -179,8 +180,14 @@ define(['connector', 'utils'], function(conn, utils) {
                 element.selectedIndex = 0;
         }
         var index = licenseList.selectedIndex;
-        if (index > 0)
-            conn.removeLicense({name: licenseList.value}, _callback);
+        if (index > 0) {
+            args = {
+                name: _project.name,
+                filename: licenseList.value,
+                index: index - 1
+            }
+            conn.removeLicense(args, _callback);
+        }
         else if (index === 0)
             utils.showMessage('Default license can not be removed.');
     }
