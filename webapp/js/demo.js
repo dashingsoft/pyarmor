@@ -80,6 +80,7 @@ define([], function() {
 
                 var index = getProject(args.name);                
                 var n = parseInt(args.name.split('-')[1]);
+                if (_counter < n) _counter = n;
                 result.project = (index === undefined) ? defaultProject(n) : _projectList[index];
                 result.message = 'Got project OK';
 
