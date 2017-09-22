@@ -173,7 +173,7 @@ def removeProject(args):
         json.dump(pindexes, fp)
 
     shutil.rmtree(os.path.join(project_data_path, name))
-    return 'Remove project OK'
+    return 'Remove project %s OK' % name
 
 def queryProject(args=None):
     '''
