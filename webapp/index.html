@@ -98,7 +98,7 @@
         <button id="new-project" type="button" class="btn btn-success">New</button>
         <button id="open-project" type="button" class="btn btn-default">Open</button>
         <button id="save-project" type="button" class="btn btn-default">Save</button>
-        <button id="encrypt-project" type="button" class="btn btn-default">Encrypt</button>
+        <button id="build-project" type="button" class="btn btn-default">Encrypt</button>
         <!-- <h4><span class="label label-warning">Demo Version</span></h4> -->
         <button id="demo-button" type="button" class="btn btn-warning hidden">Demo Version</button>
       </div>
@@ -192,22 +192,19 @@
                             </label>
                           </div>
                         </label>
-                        <input type="text" class="form-control" id="input_expired_date" disabled/>
+                        <input type="date" class="form-control" id="input_expired_date" disabled/>
                       </div>
                       <div class="form-group">
-                        <label for="input_registration_code">Registration Code</label>
+                        <label for="input_license_rcode">Registration Code</label>
                         <input type="text" class="form-control" id="input_license_rcode"/>
                         <p class="help-block">Any string, for example, 'mycustomer-01'. Note that it will be ignored if any of checkbox above is checked.</p>
                       </div>
                       <div class="form-group">
                         <label for="input_available_licenses">Available Licenses</label>
-                        <textarea class="form-control" id="input_project_licenses" rows="3" readonly></textarea>
+                        <select class="form-control" id="input_project_licenses" multiple readonly></select>
                       </div>
-                      <button type="submit" class="btn btn-default">Generate</button>
-                      <div class="pull-right">
-                        <button type="submit" class="btn btn-default">Remove</button>
-                        <button type="submit" class="btn btn-default">Download</button>
-                      </div>
+                      <button type="submit" class="btn btn-default" id="new-license">Generate</button>
+                      <button type="submit" class="btn btn-default pull-right" id="remove-license">Remove</button>
                     </form>
                   </div>
                   <!-- /.panel-body -->
@@ -299,5 +296,31 @@
     <!-- /.tab-pane -->
   </div>
   <!-- /.tab-content -->
+  <div class="modal fade" id="project-manage-modal" tabindex="-1" role="dialog" aria-labelledby="ProjectModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="ProjectModalLabel">Projects</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <select class="form-control" id="project-manage-list" size="9" multiple required></select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" id="project-manage-remove">Remove</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="project-manage-open">Open</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
 </body>
 </html>
