@@ -126,10 +126,13 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             var result = response.result;
+            _project.licenses.append(result);
+
             var opt = document.createElement("option");
             opt.text = result.title + ' (' + result.filename + ')';
             opt.value = result.filename;
             document.getElementById('input_project_licenses').add(opt);
+            document.getElementById('input_project_default_license').add(opt);
             utils.showMessage('New license ' + result.title + ' OK.');
         }
 
@@ -172,10 +175,12 @@ define(['connector', 'utils'], function(conn, utils) {
                 utils.showMessage(response.result);
                 return ;
             }
+            _project.licenses.pop(index - 1);
             licenseList.remove(index);
             utils.showMessage(response.result);
 
             var element = document.getElementById('input_project_default_license');
+            element.remove(index)
             if (index == element.selectedIndex)
                 element.selectedIndex = 0;
         }
