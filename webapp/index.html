@@ -89,12 +89,12 @@
         <h4 id="quick-start">Quick Start</h4>
         <ul>
           <li><p>Download <a href="https://github.com/dashingsoft/pyarmor/releases/download/v3.1.2/pyarmor-webapp.zip">pyarmor-webapp.zip</a></p></li>
-          <li><p>Extract it to any path, for example, <em>/opt</em>, then enter <em>/opt/pyarmor/webapp</em></p></li>
-          <li><p>Double click <strong>start-server.bat</strong> (For Windows) or <strong>start-server.sh</strong> (For Linux)</p></li>
+          <li><p>Extract it to any path, for example, <em>/opt</em></p></li>
+          <li><p>Enter <em>/opt/pyarmor/webapp</em>, double click <strong>start-server.bat</strong> (For Windows) or <strong>start-server.sh</strong> (For Linux)</p></li>
           <li><p>A webpage will open in web browser at the same time, do the following steps in this web page:</p>
             <ul>
               <li>Click tab <strong>Project</strong></li>
-              <li>Type absolute path of python source files in <strong>Source Path</strong>, for example, <em>/opt/pyarmor/src/examples</em></li>
+              <li>Type absolute path of python source files in <strong>Base Path</strong>, for example, <em>/opt/pyarmor/src/examples</em></li>
               <li>Type <strong>Startup Wrapper Script</strong>, for example, <em>queens</em></li>
               <li>Type <strong>Build Path</strong>, for example, <em>/opt/pyarmor/webapp/build</em></li>
               <li>Click button <strong>Encrypt</strong></li>
@@ -245,7 +245,7 @@
                         <label for="input_expired_date">
                           <div class="checkbox">
                             <label>
-                              <input type="checkbox" id="check_expired_date" value=""/>Expired encrypted scripts at some point, type expired date (YYYY-MM-NN)
+                              <input type="checkbox" id="check_expired_date" value=""/>Expire encrypted scripts at some point, type expired date (YYYY-MM-NN)
                             </label>
                           </div>
                         </label>
