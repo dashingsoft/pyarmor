@@ -95,7 +95,7 @@
             <ul>
               <li>Click tab <strong>Project</strong></li>
               <li>Type absolute path of python source files in <strong>Source Path</strong>, for example, <em>/opt/pyarmor/src/examples</em></li>
-              <li>Type <strong>Startup Script Name</strong>, for example, <em>queens</em></li>
+              <li>Type <strong>Startup Wrapper Script</strong>, for example, <em>queens</em></li>
               <li>Type <strong>Build Path</strong>, for example, <em>/opt/pyarmor/webapp/build</em></li>
               <li>Click button <strong>Encrypt</strong></li>
               <li>All the encrypted files would be save in <em>/opt/pyarmor/build</em>, enter this path</li>
@@ -163,7 +163,7 @@
                       <div class="form-group">
                         <label for="input_source_path">Base Path</label>
                         <input type="text" class="form-control" id="input_project_path"/>
-                        <p class="help-block">Required. Absolute path in local machine used by MANIFEST.in</p>
+                        <p class="help-block">Required. Absolute path in local machine used by MANIFEST.in to search files.</p>
                       </div>
                       <div class="form-group">
                         <label for="input_project_files">MANIFEST.in</label>
@@ -171,7 +171,7 @@
                         <p class="help-block">Optional. Following the Distutils’ own manifest template, all these files will be encrypted.</p>
                       </div>
                       <div class="form-group">
-                        <label for="input_project_scripts">Startup Script Wrapper</label>
+                        <label for="input_project_scripts">Startup Wrapper Script</label>
                         <input type="text" class="form-control" id="input_project_scripts" placeholder="main:alias.py"/>
                         <p class="help-block">Optional. Generate wrapper script to run the encrypted script.</p>
                       </div>
@@ -273,7 +273,7 @@
                 <div>
                   <form>
                     <div class="form-group">
-                      <label for="project-log-message">Log message</label>
+                      <!-- <label for="project-log-message">Log message</label> -->
                       <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
                     </div>
                     <a id="clear-log-message" role="button" class="btn btn-default">Clear</a>
