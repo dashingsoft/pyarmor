@@ -305,8 +305,8 @@ def _parse_template_file(filename, path=None):
     filelist = FileList()
     try:
         if path is not None and not path == os.getcwd():
-            os.chdir(path)
             oldpath = os.getcwd()
+            os.chdir(path)
         else:
             oldpath = None
 
@@ -398,6 +398,8 @@ Available options:
 
   -d, --clean                 Clean output path at start.
 
+  --manifest FILENAME         Write file list to FILENAME
+
 For examples:
 
     - Encrypt a.py and b.py as a.pyx and b.pyx, saved in the path "dist":
@@ -432,7 +434,7 @@ It's Following the Distutils’ own manifest template
     opts, args = getopt.getopt(
         argv, 'C:de:im:O:p:s:',
         ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
-         'main=', 'clean', 'mode=']
+         'main=', 'clean', 'mode=', 'manifest=']
     )
 
     output = 'build'
@@ -444,6 +446,7 @@ It's Following the Distutils’ own manifest template
     mainname = []
     clean = False
     mode = 0
+    manifest = None
 
     for o, a in opts:
         if o in ('-O', '--output'):
@@ -464,6 +467,8 @@ It's Following the Distutils’ own manifest template
             mode = int(a)
         elif o in ('-m', '--main'):
             mainname.append(a)
+        elif o in ('--manifest', ):
+            manifest = a
 
     if srcpath is not None and not os.path.exists(srcpath):
         raise RuntimeError('No found specified source path "%s"' % srcpath)
@@ -523,6 +528,12 @@ It's Following the Distutils’ own manifest template
         os.remove(prikey)
 
     for name in mainname:
+        n = name.find(':')
+        if n == -1:
+            script = os.path.join(output, name + '.py')
+        else:
+            script = os.path.join(output, name[n:])
+            name = name[:n]
         script = os.path.join(output, name + '.py')
         logging.info('Writing script wrapper %s ...', script)
         ch = 'c' if mode == 1 else ext_char
@@ -531,6 +542,11 @@ It's Following the Distutils’ own manifest template
         logging.info('Write script wrapper OK.')
 
     filelist = _parse_file_args(args, srcpath=srcpath)
+    if manifest is not None:
+        logging.info('Write filelist to %s', manifest)
+        with open(manifest, 'w') as fp:
+            fp.writelines([x[0] for x in filelist])
+
     if len(filelist[:1]) == 0:
         logging.info('Generate extra files OK.')
     else:
