@@ -258,6 +258,17 @@ class PyarmorTestCases(BaseTestCase):
             s = f.read()
         self.assertTrue(s.find('main.pye') > 0)
 
+        argv = ['-O', output,
+                '-C', capsule,
+                '-s', workpath,
+                '-m', 'pybench:main2.py']
+        ft(argv)
+        target = os.path.join(output, 'main2.py')
+        self.assertTrue(os.path.exists(target))
+        with open(target, 'r') as f:
+            s = f.read()
+        self.assertTrue(s.find('pybench.pye') > 0)
+
     def test_do_encrypt_clean(self):
         ft = self.pyarmor.do_encrypt
         capsule = os.path.join('data', 'project.zip')
@@ -271,6 +282,21 @@ class PyarmorTestCases(BaseTestCase):
         ft(argv)
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Remove output path OK'))
+
+    def test_do_encrypt_clean(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build2')
+        manifest = os.path.join(workpath, 'manifest')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--manifest', manifest, 
+                '-s', workpath,
+                'main.py', 'foo.py'
+                ]
+        ft(argv)
+        self.assertTrue(os.path.exists(manifest))
+        self.searchFile(manifest, 'main.py\n')            
 
     def test_do_encrypt_platname(self):
         ft = self.pyarmor.do_encrypt
