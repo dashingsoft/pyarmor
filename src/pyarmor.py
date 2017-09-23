@@ -532,9 +532,8 @@ It's Following the Distutils’ own manifest template
         if n == -1:
             script = os.path.join(output, name + '.py')
         else:
-            script = os.path.join(output, name[n:])
+            script = os.path.join(output, name[n+1:])
             name = name[:n]
-        script = os.path.join(output, name + '.py')
         logging.info('Writing script wrapper %s ...', script)
         ch = 'c' if mode == 1 else ext_char
         with open(script, 'w') as f:
@@ -545,7 +544,7 @@ It's Following the Distutils’ own manifest template
     if manifest is not None:
         logging.info('Write filelist to %s', manifest)
         with open(manifest, 'w') as fp:
-            fp.writelines([x[0] for x in filelist])
+            fp.write('\n'.join([x[0] for x in filelist]))
 
     if len(filelist[:1]) == 0:
         logging.info('Generate extra files OK.')
