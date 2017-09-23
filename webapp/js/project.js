@@ -52,8 +52,7 @@ define(['connector', 'utils'], function(conn, utils) {
         _project.clean = document.getElementById('input_project_clean').checked;
         var path = document.getElementById('input_build_path').value.trim();
         _project.inplace = path === '' ? 1 : 0;
-        _project.output = path === '' ? _project.path : path;
-        
+        _project.output = path === '' ? _project.path : path;        
     }
 
     function newProject() {
