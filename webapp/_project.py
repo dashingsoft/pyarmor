@@ -52,6 +52,8 @@ def _create_default_project(name):
         'files': ['include *.py'],
         'licenses': [],
         'output': '',
+        'inplace': 1,
+        'clean': 1,
         'capsule': '',
         'target': '',
         'default_license': '',
@@ -84,7 +86,7 @@ def newProject(args=None):
     data['title'] = 'Project %d' % counter
     data['path'] = os.path.abspath(os.getcwd())
     data['capsule'] = capsule
-    data['output'] = os.path.abspath(os.path.join(path, 'dist'))
+    data['output'] = data['path']
     config = os.path.join(path, project_config_name)
     with open(config, 'w') as fp:
         json.dump(data, fp)
@@ -116,13 +118,15 @@ def buildProject(args):
     >>> p['scripts'] = ''
     >>> p['files'] = 'include *.py'
     >>> p['path'] = ''
+    >>> p['inplace'] = 0
+    >>> p['output'] = os.path.join('projects', 'build')
     >>> buildProject(p)
-    'Encrypt scripts OK.'
+    'Encrypt project OK.'
 
     >>> a = newLicense(p)
     >>> p['default_license'] = a['filename']
     >>> buildProject(p)
-    'Encrypt scripts OK.'
+    'Encrypt project OK.'
     '''
     name = args['name']
     path = args['path']
@@ -136,6 +140,8 @@ def buildProject(args):
     if path.strip() == '':
         path = os.getcwd()
     argv = ['-O', output, '-s', path, '-C', capsule]
+    if args['inplace'] == 1:
+        argv.append('--in-place')
     for s in scripts:
         argv.append('-m')
         argv.append(os.path.splitext(os.path.basename(s))[0])
@@ -157,8 +163,9 @@ def buildProject(args):
 def removeProject(args):
     '''
     >>> p1 = newProject()['project']
-    >>> removeProject(p1)
-    'Remove project OK'
+    >>> m = removeProject(p1)
+    >>> m == 'Remove project %s OK' % p1['name']
+    True
     '''
     filename = _check_project_index()
     with open(filename, 'r') as fp:
@@ -275,8 +282,8 @@ def removeLicense(args):
     >>> a = newLicense(p)
     >>> a['name'] = p['name']
     >>> m = removeLicense(a)
-    >>> m['message']
-    'Remove license "Code: my-customer-a" OK.'
+    >>> m == 'Remove license "Code: my-customer-a" OK.'
+    True
     '''
     name = args['name']
     config = os.path.join(project_data_path, name, project_config_name)
