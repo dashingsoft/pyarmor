@@ -13,7 +13,7 @@ define(['connector', 'utils'], function(conn, utils) {
         document.getElementById('input_project_scripts').value = data.scripts;
 
         document.getElementById('input_project_clean').checked = data.clean;
-        document.getElementById('input_build_path').value = data.inplace ? '' : data.output;
+        document.getElementById('input_build_path').value = data.output;
         document.getElementById('input_project_target').value = data.target;
 
         document.getElementById('check_bind_harddisk').value = '';
@@ -50,9 +50,7 @@ define(['connector', 'utils'], function(conn, utils) {
         _project.target = document.getElementById('input_project_target').value;
         _project.default_license  = document.getElementById('input_project_default_license').value;
         _project.clean = document.getElementById('input_project_clean').checked;
-        var path = document.getElementById('input_build_path').value.trim();
-        _project.inplace = path === '' ? 1 : 0;
-        _project.output = path === '' ? _project.path : path;        
+        _project.output = document.getElementById('input_build_path').value;
     }
 
     function newProject() {
