@@ -12,6 +12,7 @@ cp -a js css $target
 cp start-server.* $target
 cp $src/*.py $src/*.key $src/*.lic $target/$src
 cp -a $src/platforms $target/$src
+cp -a $src/examples $target/$src
 rm $target/$src/setup.py
 
 (cd $build && zip -r ../pyarmor-webapp ./)
