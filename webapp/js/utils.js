@@ -1,5 +1,10 @@
 define([], function() {
 
+    if (typeof String.prototype.trim === 'undefined')
+        String.prototype.trim = function() {
+            return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+        }
+
     var _element = document.getElementById('global-message');
     var showMessage = function (msg) {
         _element.innerHTML =
