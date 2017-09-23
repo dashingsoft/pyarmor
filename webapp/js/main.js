@@ -23,7 +23,7 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
     document.getElementById('project-manage-open').addEventListener('click', project.openProject, false);
     document.getElementById('project-manage-remove').addEventListener('click', project.removeProject, false);
 
-    utils.loadPage('tutorial.html', function (text) {
+    utils.loadPage(document.getElementById('documentation').firstElementChild.textContent, function (text) {
         document.getElementById('documentation').firstElementChild.innerHTML = text;
         document.getElementById('documentation').querySelector('h1').remove();
     });
