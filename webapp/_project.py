@@ -132,7 +132,7 @@ def buildProject(args):
     scripts = args['scripts'].split()
     files = args['files'].splitlines()
     capsule = args['capsule']
-    target = args.get('target', None)
+    target = args['target'].strip()
     default_license = args.get('default_license', None)
 
     if path == '':
@@ -142,11 +142,10 @@ def buildProject(args):
     argv = ['-O', output, '-s', path, '-C', capsule]
     if output == path:
         argv.append('--in-place')
-    if not args['target'] == '':
-        argv.extend(['-p', args['target']])
-    for s in scripts:
-        argv.append('-m')
-        argv.append(os.path.splitext(os.path.basename(s))[0])
+    if target:
+        argv.extend(['-p', target])
+    for wrapper in scripts:
+        argv.append(['-m', wrapper])
 
     manifest = os.path.join(project_data_path, name, 'MANIFEST');
     argv.append('--manifest')
