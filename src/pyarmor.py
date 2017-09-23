@@ -327,7 +327,7 @@ def _parse_file_args(args, srcpath=None):
 
     if len(args) == 1 and args[0][0] == '@' and args[0].endswith('MANIFEST.in'):
         for x in _parse_template_file(args[0][1:], path=srcpath):
-            filelist.append((x, os.path.splitext(x)[0]))
+            filelist.append((os.path.join(path, x), os.path.splitext(x)[0]))
         return filelist
 
     patterns = []
