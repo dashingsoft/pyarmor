@@ -142,7 +142,7 @@ def buildProject(args):
     argv = ['-O', output, '-s', path, '-C', capsule]
     if output == path:
         argv.append('--in-place')
-    if args['target'] !== '':
+    if not args['target'] == '':
         argv.extend(['-p', args['target']])
     for s in scripts:
         argv.append('-m')
