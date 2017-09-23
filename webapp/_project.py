@@ -143,6 +143,8 @@ def buildProject(args):
     argv = ['-O', output, '-s', path, '-C', capsule]
     if args['inplace'] == 1:
         argv.append('--in-place')
+    if args['target'] !== '':
+        argv.extend(['-p', args['target']])
     for s in scripts:
         argv.append('-m')
         argv.append(os.path.splitext(os.path.basename(s))[0])
