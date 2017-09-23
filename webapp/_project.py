@@ -140,8 +140,6 @@ def buildProject(args):
     if output == '':
         output = path
     argv = ['-O', output, '-s', path, '-C', capsule]
-    if output == path:
-        argv.append('--in-place')
     if target:
         argv.extend(['-p', target])
     for wrapper in scripts:
@@ -169,11 +167,11 @@ def buildProject(args):
         backup = os.path.join(project_data_path, name, 'backup.zip')
         myzip = ZipFile(backup, 'w')
         logging.info('Backup source files to %s', backup)
-        for filename in filelist:
-            try:
+        try:
+            for filename in filelist:
                 myzip.write(filename)
-            finally:
-                myzip.close()
+        finally:
+            myzip.close()
         for filename in filelist:
             logging.info('Remove source file %s', filename)
             os.remove(filename)
