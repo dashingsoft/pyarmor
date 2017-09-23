@@ -229,8 +229,11 @@ def queryProject(args=None):
 
 def queryVersion(args=None):
     '''
-    >>> queryVersion()
-    {'version': '3.1.3', 'rcode': ''}
+    >>> r = queryVersion()
+    >>> r['version'][0] == '3'
+    True
+    >>> r['rcode'] == ''
+    True
     '''
     rcode = _get_registration_code()
     return dict(version=version, rcode=rcode)
