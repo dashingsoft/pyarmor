@@ -148,8 +148,6 @@ def buildProject(args):
 
     template = os.path.join(project_data_path, name, 'MANIFEST.in')
     with open(template, 'w') as fp:
-        if len(scripts[:1]):
-            fp.write('include %s\n' % ' '.join(scripts))
         fp.write('\n'.join(files))
     argv.append('@' + template)
 

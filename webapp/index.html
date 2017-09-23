@@ -25,6 +25,7 @@
       top: 50px;
       z-index: 1;
     }
+    #project-basic .panel-body { padding-bottom: 5px; }
   </style>
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -90,14 +91,15 @@
           <li><p>Download <a href="https://github.com/dashingsoft/pyarmor/releases/download/v3.1.2/pyarmor-webapp.zip">pyarmor-webapp.zip</a></p></li>
           <li><p>Extract it to any path, for example, <em>/opt</em>, then enter <em>/opt/pyarmor/webapp</em></p></li>
           <li><p>Double click <strong>start-server.bat</strong> (For Windows) or <strong>start-server.sh</strong> (For Linux)</p></li>
-          <li><p>A webpage will open in default web browser at the same time, the following steps are in this web page.</p>
+          <li><p>A webpage will open in web browser at the same time, do the following steps in this web page:</p>
             <ul>
               <li>Click tab <strong>Project</strong></li>
-              <li>Type absolute path of python source files in <strong>Source Path</strong>, for example, <em>/home/jondy/workspace/pytransform</em></li>
-              <li>Type main script name in <strong>Main Script</strong>, for example, <em>main.py</em></li>
+              <li>Type absolute path of python source files in <strong>Source Path</strong>, for example, <em>/opt/pyarmor/src/examples</em></li>
+              <li>Type <strong>Startup Script Name</strong>, for example, <em>queens</em></li>
+              <li>Type <strong>Build Path</strong>, for example, <em>/opt/pyarmor/webapp/build</em></li>
               <li>Click button <strong>Encrypt</strong></li>
-              <li>All the encrypted files would be save in <em>/opt/pyarmor/projects/project-1/dist</em>, enter this path</li>
-              <li>Run encrypted script with command: <code>python main.py</code></li>
+              <li>All the encrypted files would be save in <em>/opt/pyarmor/build</em>, enter this path</li>
+              <li>Run encrypted script with command: <code>python queens.py</code></li>
             </ul>
           </li>
         </ul>
@@ -159,24 +161,24 @@
                         <textarea class="form-control" rows="5" id="input_project_description"></textarea>
                       </div>
                       <div class="form-group">
-                        <label for="input_source_path">Source Path</label>
+                        <label for="input_source_path">Base Path</label>
                         <input type="text" class="form-control" id="input_project_path"/>
-                        <p class="help-block">Required. Absolute path of your python package in local machine.</p>
-                      </div>
-                      <div class="checkbox hidden">
-                        <label>
-                          <input type="checkbox" id="input_in_place" value=""/>Save encrypt python scripts in the same path of original file
-                        </label>
+                        <p class="help-block">Required. Absolute path in local machine used by MANIFEST.in</p>
                       </div>
                       <div class="form-group">
                         <label for="input_project_files">MANIFEST.in</label>
-                        <textarea class="form-control" rows="5" id="input_project_files"></textarea>
+                        <textarea class="form-control" rows="3" id="input_project_files"></textarea>
                         <p class="help-block">Optional. Following the Distutils’ own manifest template, all these files will be encrypted.</p>
                       </div>
                       <div class="form-group">
-                        <label for="input_project_script">Main Script</label>
-                        <input type="text" class="form-control" id="input_project_scripts"/>
-                        <p class="help-block">Optional. Main script name.</p>
+                        <label for="input_project_scripts">Startup Script Name</label>
+                        <input type="text" class="form-control" id="input_project_scripts" placeholder="main:alias.py"/>
+                        <p class="help-block">Optional. Generate wrapper script to run the encrypted script.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_build_path">Build Path</label>
+                        <input type="text" class="form-control" id="input_build_path"/>
+                        <p class="help-block">Optional. If not blank, encrypted scripts will be saved here, otherwise <strong>Base Path</strong></p>
                       </div>
                     </form>
                   </div>
@@ -194,15 +196,10 @@
                         <div class="checkbox">
                           <label>
                             <input type="checkbox" id="check_clean_source" value=""/>
-                            Remove source files after enrypt successfully. <strong>Caution! To be sure you know what you're doing before check this option.</strong>
+                            <strong>Remove source files after enrypt successfully.</strong>
                           </label>
                           <p class="help-block"></p>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="input_build_path">Build Path</label>
-                        <input type="text" class="form-control" id="input_build_path"/>
-                        <p class="help-block">If not blank, encrypted scripts will be saved here</p>
                       </div>
                       <div class="form-group">
                         <label for="input_project_target">Run encrypted scripts in other platform</label>
