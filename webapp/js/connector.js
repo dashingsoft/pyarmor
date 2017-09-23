@@ -7,6 +7,7 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
     function sendRequest(url, args, callback, onerror) {
 
         var flag = settings.demoFlag;
+        var data = JSON.stringify(args);
 
         if (flag === undefined && !(url === '/queryVersion')) {
             utils.showMessage('Please waiting for a while ...');
@@ -18,9 +19,7 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
             return;
         }
 
-        var data = JSON.stringify(args);
         utils.logMessage('Request ' + url + ': ' + data)
-
         var request = new XMLHttpRequest();
 
         request.onerror = (onerror === undefined) ? onError : onerror;
