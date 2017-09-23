@@ -132,6 +132,7 @@ class HelperHandler(BaseHTTPRequestHandler):
         except Exception as e:
             errcode = 1
             result = "Unhandle Server Error: %s" % str(e)
+            logging.exception("Unhandle Server Error")
         return dict(errcode=errcode, result=result)
 
     def translate_path(self, path):
