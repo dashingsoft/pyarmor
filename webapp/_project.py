@@ -143,11 +143,10 @@ def buildProject(args):
     if target:
         argv.extend(['-p', target])
     for wrapper in scripts:
-        argv.append(['-m', wrapper])
+        argv.extend(['-m', wrapper])
 
     manifest = os.path.join(project_data_path, name, 'MANIFEST');
-    argv.append('--manifest')
-    argv.append(manifest)
+    argv.extend(['--manifest', manifest])
 
     template = os.path.join(project_data_path, name, 'MANIFEST.in')
     with open(template, 'w') as fp:
@@ -257,16 +256,14 @@ def newLicense(args):
 
     try:
         value = args.pop('hdinfo')
-        argv.append('-B')
-        argv.append(value)
+        argv.extend(['-B', value])
         title += 'Bind to %s.' % value
     except KeyError:
         pass
 
     try:
         value = args.pop('expired')
-        argv.append('-e')
-        argv.append(value)
+        argv.extend(['-e', value])
         title += 'Expired on %s.' % value
     except KeyError:
         pass
