@@ -31,9 +31,22 @@ define([], function() {
         _logElement.value = '';
     }, false);
 
-    return {
+    var loadPage = function (url, callback) {
+        var request = new XMLHttpRequest();
+        request.onerror = function (e) {
+            showMessage('Request "' + url + '" failed: ' + e);
+        }
+        request.onload = function() {
+            callback(request.responseText);
+        };
+        request.open('GET', url, true);
+        request.send();
+    }
+
+    return {        
         logMessage: logMessage,
         showMessage: showMessage,
+        loadPage: loadPage,
     }
 
 });
