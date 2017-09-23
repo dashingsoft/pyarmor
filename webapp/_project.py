@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import sys
+from zipfile import ZipFile
 
 project_data_path = 'projects'
 project_capsule_name = 'capsule'
@@ -146,6 +147,10 @@ def buildProject(args):
         argv.append('-m')
         argv.append(os.path.splitext(os.path.basename(s))[0])
 
+    manifest = os.path.join(project_data_path, name, 'MANIFEST');
+    argv.append('--manifest')
+    argv.append(manifest)
+
     template = os.path.join(project_data_path, name, 'MANIFEST.in')
     with open(template, 'w') as fp:
         fp.write('\n'.join(files))
@@ -154,7 +159,24 @@ def buildProject(args):
     do_encrypt(argv)
 
     if not default_license == '':
-        shutil.copyfile(default_license, os.path.join(output, 'license.lic'))
+        licfile = os.path.join(output, 'license.lic')
+        logging.info('Copy %s to %s', default_license, licfile)
+        shutil.copyfile(default_license, licfile)
+
+    if args['clean'] == 1:
+        with open(manifest) as f:
+            filelist = f.read().splitlines()
+        backup = os.path.join(project_data_path, name, 'backup.zip')
+        myzip = ZipFile(backup, 'w')
+        logging.info('Backup source files to %s', backup)
+        for filename in filelist:
+            try:
+                myzip.write(filename)
+            finally:
+                myzip.close()
+        for filename in filelist:
+            logging.info('Remove source file %s', filename)
+            os.remove(filename)
 
     return 'Encrypt project OK.'
 
