@@ -110,6 +110,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 var title = result[i].title;
                 options.push('<option value="' + name + '">' + name + ': ' + title + '</option>');
             }
+            options.sort();
             _projectList.innerHTML = options.join('');
             $('#project-manage-modal').modal('show');
         }
