@@ -25,6 +25,7 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
 
     utils.loadPage('tutorial.html', function (text) {
         document.getElementById('documentation').firstElementChild.innerHTML = text;
+        document.getElementById('documentation').querySelector('h1').remove();
     });
 
     conn.queryVersion(

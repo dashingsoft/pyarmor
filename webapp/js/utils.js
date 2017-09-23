@@ -34,7 +34,7 @@ define([], function() {
     var loadPage = function (url, callback) {
         var request = new XMLHttpRequest();
         request.onerror = function (e) {
-            showMessage('Request "' + url + '" failed: ' + e);
+            callback('<a href="' + url + '">' + url + '</a>');
         }
         request.onload = function() {
             callback(request.responseText);
