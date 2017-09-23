@@ -7,12 +7,12 @@ define([], function() {
         data = {}
         data.name = 'project-' + n;
         data.title = 'Project ' + n;
-        data.path = '/home/jondy/workspace/pyarmor';
+        data.path = '/opt/pyarmor/src/examples';
         data.capsule = '';
         data.files = 'include *.py';
-        data.scripts = 'main.py';
-        data.output = '';
-        data.inplace = 1;
+        data.scripts = 'main';
+        data.output = '/opt/pyarmor/webapp/build';
+        data.inplace = 0;
         data.clean = 0;
         data.target = '';
         data.licenses = [];
