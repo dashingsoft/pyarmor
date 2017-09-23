@@ -53,7 +53,7 @@ def _create_default_project(name):
         'licenses': [],
         'output': '',
         'inplace': 1,
-        'clean': 1,
+        'clean': 0,
         'capsule': '',
         'target': '',
         'default_license': '',
