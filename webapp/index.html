@@ -178,11 +178,6 @@
                         <input type="text" class="form-control" id="input_project_scripts"/>
                         <p class="help-block">Optional. Main script name.</p>
                       </div>
-                      <div class="form-group hidden">
-                        <label for="input_output_path">Output Path</label>
-                        <input type="text" class="form-control" id="input_project_output"/>
-                        <p class="help-block">Required. Encrypted scripts and extra files will be saved here</p>
-                      </div>
                     </form>
                   </div>
                   <!-- /.panel-body -->
@@ -195,6 +190,20 @@
                   <div class="panel-heading">How to generate encrypted scripts</div>
                   <div class="panel-body">
                     <form>
+                      <div class="has-warning">
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" id="check_clean_source" value=""/>
+                            Remove source files after enrypt successfully. <strong>Caution! To be sure you know what you're doing before check this option.</strong>
+                          </label>
+                          <p class="help-block"></p>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_build_path">Build Path</label>
+                        <input type="text" class="form-control" id="input_build_path"/>
+                        <p class="help-block">If not blank, encrypted scripts will be saved here</p>
+                      </div>
                       <div class="form-group">
                         <label for="input_project_target">Run encrypted scripts in other platform</label>
                         <select class="form-control" id="input_project_target">
@@ -226,7 +235,7 @@
                   <div class="panel-body">
                     <form>
                       <div class="form-group">
-                        <label for="input_harddisk_info">
+                        <label for="input_bind_harddisk">
                           <div class="checkbox">
                             <label>
                               <input type="checkbox" id="check_bind_harddisk" value=""/>Run encrypted scripts in special machine, type harddisk serial number of target machine

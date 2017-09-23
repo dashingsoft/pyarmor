@@ -11,7 +11,9 @@ define([], function() {
         data.capsule = '';
         data.files = 'include *.py';
         data.scripts = 'main.py';
-        data.output = '/var/build/pyarmor';
+        data.output = '';
+        data.inplace = 1;
+        data.clean = 0;
         data.target = '';
         data.licenses = [];
         data.default_license = '';
