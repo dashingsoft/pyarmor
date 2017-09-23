@@ -53,7 +53,6 @@ def _create_default_project(name):
         'files': ['include *.py'],
         'licenses': [],
         'output': '',
-        'inplace': 1,
         'clean': 0,
         'capsule': '',
         'target': '',
@@ -119,7 +118,6 @@ def buildProject(args):
     >>> p['scripts'] = ''
     >>> p['files'] = 'include *.py'
     >>> p['path'] = ''
-    >>> p['inplace'] = 0
     >>> p['output'] = os.path.join('projects', 'build')
     >>> buildProject(p)
     'Encrypt project OK.'
@@ -130,18 +128,20 @@ def buildProject(args):
     'Encrypt project OK.'
     '''
     name = args['name']
-    path = args['path']
-    output = args['output']
+    path = args['path'].strip()
+    output = args['output'].strip()
     scripts = args['scripts'].split()
     files = args['files'].splitlines()
     capsule = args['capsule']
     target = args.get('target', None)
     default_license = args.get('default_license', None)
 
-    if path.strip() == '':
+    if path == '':
         path = os.getcwd()
+    if output == '':
+        output = path
     argv = ['-O', output, '-s', path, '-C', capsule]
-    if args['inplace'] == 1:
+    if output == path:
         argv.append('--in-place')
     if args['target'] !== '':
         argv.extend(['-p', args['target']])
