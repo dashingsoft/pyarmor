@@ -13,7 +13,7 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
             return;
         }
         else if (flag === true) {
-            // utils.showMessage('Demo version ');
+            utils.logMessage('Request ' + url + ': ' + data)
             demo.handleRequest(url, args, callback);
             return;
         }
