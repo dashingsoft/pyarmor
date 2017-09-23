@@ -7,7 +7,7 @@ define([], function() {
             $('#navbar-main-tab a[aria-controls="documentation"]').tab('show');
         }, false);
         element = document.getElementById('version-info');
-        element.innerHTML = 'Pyarmor Demo Version';        
+        element.innerHTML = 'Pyarmor Demo Version';
     }
 
     function setVersionInfo(data) {
