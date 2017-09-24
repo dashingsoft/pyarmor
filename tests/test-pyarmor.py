@@ -193,7 +193,9 @@ class PyarmorTestCases(BaseTestCase):
             f.write('include foo.py main.py')
 
         filelist = fm(args, srcpath=workpath)
-        self.assertEquals(filelist, [('foo.py', 'foo'), ('main.py', 'main')])
+        self.assertEquals(filelist, [
+            (os.path.join(workpath, 'foo.py'), 'foo'),
+            (os.path.join(workpath, 'main.py'), 'main')])
 
     def test_do_encrypt_empty_file(self):
         ft = self.pyarmor.do_encrypt

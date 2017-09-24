@@ -104,10 +104,11 @@ class PyarmorTestCases(BaseTestCase):
         ft = self.pyarmor.encrypt_files
         names = 'main.py', 'foo.py'
         files = [os.path.join(workpath, x) for x in names]
+        files = [(x, os.path.splitext(x)[0]) for x in files]
         prokey = os.path.join(workpath, 'project', 'product.key')
         ft(files, prokey)
-        self.assertTrue(os.path.exists(files[0] + ext_char))
-        self.assertTrue(os.path.exists(files[1] + ext_char))
+        self.assertTrue(os.path.exists(files[0][0] + ext_char))
+        self.assertTrue(os.path.exists(files[1][0] + ext_char))
 
     def test_make_license(self):
         ft = self.pyarmor.make_license
