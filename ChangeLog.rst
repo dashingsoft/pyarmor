@@ -1,3 +1,14 @@
+3.1.3
+-----
+A web gui interface is introduced as Pyarmor WebApp， and support MANIFEST.in
+
+* In encrypt command, save encrypted scripts with same file structure of source.
+* Add a web gui interface for pyarmor.
+* Support MANIFEST.in to list files for command encrypt
+* Add option --manifest, file list will be written here
+* DO NOT support absolute path in file list for command encrypt
+* Option --main support format "NAME:ALIAS.py"
+
 3.1.2
 -----
 * Refine decrypted mechanism to improve performance
