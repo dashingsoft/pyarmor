@@ -296,5 +296,5 @@ If there is a button **Demo Version** in the top right corner of tab
 purpose of this mode is only to help users to understand the functions
 of Pyarmor, there are 2 cases:
 
-  * [Pyarmor official online demo](http://pyarmor.dashingsoft.com)
+  * [Pyarmor official online demo](http://pyarmor.dashingsoft.com:9096)
   * Open **/opt/pyarmor/webapp/index.html** in web browser directly.
