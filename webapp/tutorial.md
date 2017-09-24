@@ -7,7 +7,7 @@ tutorial mainly show the usage of WebApp.
 
 ## Download
 
-First download Pyarmor WebApp from <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.2/pyarmor-webapp.zip>
+First download Pyarmor WebApp from <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.3/pyarmor-webapp.zip>
 
 Then extract it to any path, for example **/opt**. In this turorial, **/opt**
 will be as the installed path of Pyarmor WebApp. Replace it with real path when
@@ -54,6 +54,10 @@ This example show how to encrypt script [/opt/pyarmor/src/examples/queens.py](..
 
     About the format of **Startup Wrapper Script**, refer to appendix [Startup Wrapper Script](#startup-wrapper-script)
 
+    After this action, in the **Build Path**
+    **/opt/pyarmor/webapp/build**, enccrypted script **queens.pye**,
+    wrapper script **main.py**, and some extra files will be found.
+    
 2. Run it
 
 ```
@@ -74,7 +78,7 @@ This example show how to encrypt script [/opt/pyarmor/src/examples/queens.py](..
 
 ```
 
-3. Click button **Save** to save project information
+4. Click button **Save** to save project information
 
 ### Import encrypted module
 
@@ -128,9 +132,12 @@ Why not encrypt [pybench.py](../src/examples/pybench/pybench.py), don't worry, y
     14: import pyimcore
 ```
 
-* Run pybench.py
+It's pyimcore's due to import encrypted modules, after that use encrypted module normally.
+
+* Run pybench.py in command window
 
 ```
+    cd /opt/pyarmor/webapp/build/pybench
     python pybench.py
 ```
 
