@@ -1,6 +1,7 @@
 build=__build__
 mkdir -p $build
 rm -rf $build/pyarmor
+rm -f pyarmor-webapp.zip
 mkdir -p $build/pyarmor/webapp/projects
 mkdir $build/pyarmor/src
 
