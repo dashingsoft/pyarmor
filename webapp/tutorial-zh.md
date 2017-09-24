@@ -26,7 +26,7 @@ D:/tools/Python27/python server.py
 
 这条命令会打开一个控制台，显示服务器的行为动态，同时本机默认的浏览器会自动打开一个网页，这就是 WebApp。
 
-单击 **Project**, 进入 Pyarmor 的世界
+单击 **项目**, 进入 Pyarmor 的世界
 
 ![](images/zh/pyarmor-webapp.jpg)
 
