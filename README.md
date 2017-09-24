@@ -2,12 +2,7 @@
 
 Pyarmor is a command line tool used to import or run encrypted python
 scripts. Only by a few extra files, pyarmor can run and imported
-encrypted files in the normal python environments. Here are the basic
-steps:
-
-- Generate project capsule
-- Encrypt python scripts with project capsule
-- Copy project capsule and encrypted scripts to runtime environments.
+encrypted files in the normal python environments.
 
 Pyarmor just likes an enhancement which let python could run or import
 encrypted files.
@@ -16,7 +11,7 @@ encrypted files.
 
 - Run encrypted script or import encrypted module
 - Run or import encrypted compiled python files (.pyc, .pyo)
-- Mixed encrypted files with normal python files. 
+- Mixed encrypted files with normal python files.
 - Expire encrypted files
 - Bind encrypted files to harddisk
 
@@ -25,9 +20,6 @@ encrypted files.
 - Python 2.5, 2.6, 2.7 and Python3
 
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64
-
-Got prebuilt library [platforms.zip](https://github.com/dashingsoft/pyarmor/releases/latest),
-then extract it to src of Pyarmor
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
 it's not difficult to build for any other platform, even for embeded
@@ -46,7 +38,9 @@ common python script
     python pyarmor.py
 ```
 
-For more information, refer to [pyarmor homepage](https://github.com/dashingsoft/pyarmor)
+## Web App
+
+Pyarmor Web App is a gui interface of Pyarmor, visit [Pyarmor Web App Online Version](http://pyarmor.dashingsoft.com:9096)
 
 ## [Usage](src/usage.md)
 
