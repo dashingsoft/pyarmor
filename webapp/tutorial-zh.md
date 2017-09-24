@@ -266,17 +266,19 @@ recursive-include examples *.py
 
 模板支持的命令如下表所示（从 Python 帮助文件拷贝而来）
 
-|              Command               |              Description                                                              |
-|------------------------------------|---------------------------------------------------------------------------------------|
-|include pat1 pat2 ...               | include all files matching any of the listed patterns                                 |
-|exclude pat1 pat2 ...               | exclude all files matching any of the listed patterns                                 |
-|recursive-include dir pat1 pat2 ... | include all files under dir matching any of the listed patterns                       |
-|recursive-exclude dir pat1 pat2 ... | exclude all files under dir matching any of the listed patterns                       |
-|global-include pat1 pat2 ...        | include all files anywhere in the source tree matching — & any of the listed patterns |
-|global-exclude pat1 pat2 ...        | exclude all files anywhere in the source tree matching — & any of the listed patterns |
-|prune dir                           | exclude all files under dir                                                           |
-|graft dir                           | include all files under dir                                                           |
+```
+              Command                             Description
+---------------------------------------------------------------------------------------------------------------------------
+include pat1 pat2 ...                include all files matching any of the listed patterns
+exclude pat1 pat2 ...                exclude all files matching any of the listed patterns
+recursive-include dir pat1 pat2 ...  include all files under dir matching any of the listed patterns
+recursive-exclude dir pat1 pat2 ...  exclude all files under dir matching any of the listed patterns
+global-include pat1 pat2 ...         include all files anywhere in the source tree matching — & any of the listed patterns
+global-exclude pat1 pat2 ...         exclude all files anywhere in the source tree matching — & any of the listed patterns
+prune dir                            exclude all files under dir
+graft dir                            include all files under dir
 
+```
 
 需要注意的是在 Pyarmor WebApp 中，MANIFEST.in 里面的路径都是相对于项目 **源路径**，并且不支持绝对路径。
 
