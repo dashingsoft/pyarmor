@@ -185,7 +185,7 @@ D:/tools/Python27/python server.py
 使用新的许可证只需要使用新的许可证替换默认许可证 **/opt/pyarmor/webapp/build/license.lic** 即可
 
 ```
-    cp /opt/pyarmor/webapp/projects/project-2/license-0.lic /opt/pyarmor/webapp/build/license.lic
+    cp /opt/pyarmor/webapp/projects/project-1/license-0.lic /opt/pyarmor/webapp/build/license.lic
 ```
 
 打开命令行窗口，再次运行
