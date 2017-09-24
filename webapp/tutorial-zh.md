@@ -28,7 +28,7 @@ D:/tools/Python27/python server.py
 
 单击 **Project**, 进入 Pyarmor 的世界
 
-![](images/pyarmor-webapp.jpg)
+![](images/zh/pyarmor-webapp.jpg)
 
 我们下面的操作主要就是在这个网页里面进行的，另外还需要打开一个命令窗口执行相关的 Python 命令。
 
@@ -50,7 +50,7 @@ D:/tools/Python27/python server.py
     * 按照下图输入 **标题**, **源路径**, **包裹脚本**, **输出路径**
     * 点击按钮 **加密**
 
-    ![](images/project-queen.jpg)
+    ![](images/zh/project-queen.jpg)
 
     关于 **包裹脚本** 的格式，参考附录 [包裹脚本](#包裹脚本)
 
@@ -105,15 +105,15 @@ D:/tools/Python27/python server.py
 * 点击按钮 **新建**，创建一个新的项目
 * 按照下图内容输入 **标题**, **源路径**, **MANIFEST.in**
 
-    ![](images/project-pybench.jpg)
+    ![](images/zh/project-pybench.jpg)
 
     关于 **MANIFEST.in** 的格式，参考附录 [MANIFEST.in](#manifest.in)
 
-* 点击左边的 **高级**
+* 点击左边的 **高级设置**
 
 * 选中 **加密文件生成后删除源文件**
 
-    ![](images/project-advanced.jpg)
+    ![](images/zh/project-advanced.jpg)
 
 * 点击按钮 **保存**，保存修改后的项目
 
@@ -164,21 +164,21 @@ D:/tools/Python27/python server.py
 * 点击按钮 **打开**，弹出项目列表对话框
 * 在列出的项目中选中 **project-1:Queen**，然后点击对话框下方按钮 **打开**
 
-    ![](images/project-open.jpg)
+    ![](images/zh/project-open.jpg)
 
 * 点击左侧 **许可证**
 
 * 选中 **绑定加密脚本到指定机器**，在下面的文本框输入 **100304PBN2081SF3NJ5T**
 
-    ![](images/project-license-1.jpg)
+    ![](images/zh/project-license-1.jpg)
 
 * 点击下面的按钮 **生成**
 
-    ![](images/project-license-2.jpg)
+    ![](images/zh/project-license-2.jpg)
 
-    如上图所示，新的许可文件会显示在 **所有许可方式** 的列表中，上图中例子是 **Bind to 100304PBN2081SF3NJ5T (projects\\project-2\\license-0.lic)**
+    如上图所示，新的许可文件会显示在 **所有许可方式** 的列表中，上图中例子是 **Bind to 100304PBN2081SF3NJ5T (projects\\project-1\\license-0.lic)**
 
-    小括号里面的内容是许可证的文件名称，加上安装路径，全路径的文件名称是 **/opt/pyarmor/webapp/projects/project-2/license-0.lic**
+    小括号里面的内容是许可证的文件名称，加上安装路径，全路径的文件名称是 **/opt/pyarmor/webapp/projects/project-1/license-0.lic**
 
 #### 使用新的许可证
 
@@ -205,7 +205,7 @@ D:/tools/Python27/python server.py
 * 点击左侧 **许可证**
 * 选中 **设置加密脚本的有效期**，在下面的文本框输入 **2017-12-25**
 
-    ![](images/project-license-3.jpg)
+    ![](images/zh/project-license-3.jpg)
 
 * 点击下面的按钮 **生成**
 
@@ -282,5 +282,5 @@ recursive-include examples *.py
 
 如果在项目页面的右上角有个 **演示版本** 的按钮，那就是说，WebApp 现在只能演示功能。通常情况下，有两种方式会进入演示模块
 
-  * [Pyarmor WebApp 官方在线版](http://pyarmor.dashingsoft.com)
+  * [Pyarmor WebApp 官方在线版](http://pyarmor.dashingsoft.com:9096)
   * 直接在文件夹打开 **/opt/pyarmor/webapp/index-zh.html**
