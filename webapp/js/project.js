@@ -225,8 +225,8 @@ define(['connector', 'utils'], function(conn, utils) {
     function initProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.logMessage(response.result);
-                window.localStorage.removeItem(_key);
+                utils.showMessage(response.result + '<p>Click button New to start');
+                window.localStorage.clear();
                 return ;
             }
             result = response.result;
@@ -234,9 +234,12 @@ define(['connector', 'utils'], function(conn, utils) {
         }
 
         var name = window.localStorage.getItem(_key);
-        name === undefined || name === null || name === ''
-            ? conn.newProject(_callback)
-            : conn.queryProject({ name: name }, _callback);
+        if (name === undefined || name === null || name === '') {
+            $('#navbar-main-tab a[href="#home"]').tab('show');
+            conn.newProject(_callback);
+        }
+        else
+            conn.queryProject({ name: name }, _callback);
     }
 
     return {
