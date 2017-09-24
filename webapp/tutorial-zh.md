@@ -261,9 +261,10 @@ recursive-include examples *.py
 
 ```
 
-上面的例子一看就能明白： 所有在项目 **源路径** 下面的 py 文件，递归所
-有在项目子目录 **examples** 下面的 py 文件。所有支持的命令如下表
-所示（从 Python 帮助文件拷贝而来）
+上面的例子一看就能明白： 所有在项目 **源路径** 下面的 py 文件，递归所有在项目子目录 **examples** 下面的 py 文件。
+
+
+模板支持的命令如下表所示（从 Python 帮助文件拷贝而来）
 
 |              Command               |              Description                                                              |
 |------------------------------------|---------------------------------------------------------------------------------------|
@@ -275,6 +276,7 @@ recursive-include examples *.py
 |global-exclude pat1 pat2 ...        | exclude all files anywhere in the source tree matching — & any of the listed patterns |
 |prune dir                           | exclude all files under dir                                                           |
 |graft dir                           | include all files under dir                                                           |
+
 
 需要注意的是在 Pyarmor WebApp 中，MANIFEST.in 里面的路径都是相对于项目 **源路径**，并且不支持绝对路径。
 
