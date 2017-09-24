@@ -225,7 +225,8 @@ define(['connector', 'utils'], function(conn, utils) {
     function initProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.logMessage(response.result);
+                window.localStorage.removeItem(_key);
                 return ;
             }
             result = response.result;
