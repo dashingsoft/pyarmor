@@ -1,0 +1,111 @@
+-------------------------------------------------------------------------------
+PYBENCH 2.1
+-------------------------------------------------------------------------------
+* using CPython 3.4.2 (v3.4.2:ab2c023a9432, Oct 6 2014, 22:16:31) [MSC v.1600 64 bit (AMD64)]
+* disabled garbage collection
+* system check interval set to maximum: 2147483647
+* using timer: time.clock
+
+-------------------------------------------------------------------------------
+Benchmark: ../py34.base.bench
+-------------------------------------------------------------------------------
+
+    Rounds: 10
+    Warp:   10
+    Timer:  time.clock
+
+    Machine Details:
+       Platform ID:    Windows-7-6.1.7601-SP1
+       Processor:      Intel64 Family 6 Model 23 Stepping 10, GenuineIntel
+    
+    Python:
+       Implementation: CPython
+       Executable:     C:\Python34\python.exe
+       Version:        3.4.2
+       Compiler:       MSC v.1600 64 bit (AMD64)
+       Bits:           64bit
+       Build:          Oct  6 2014 22:16:31 (#v3.4.2:ab2c023a9432)
+       Unicode:        UCS4
+
+
+-------------------------------------------------------------------------------
+Comparing with: ../py34.mode0.bench
+-------------------------------------------------------------------------------
+
+    Rounds: 10
+    Warp:   10
+    Timer:  time.clock
+
+    Machine Details:
+       Platform ID:    Windows-7-6.1.7601-SP1
+       Processor:      Intel64 Family 6 Model 23 Stepping 10, GenuineIntel
+    
+    Python:
+       Implementation: CPython
+       Executable:     C:\Python34\python.exe
+       Version:        3.4.2
+       Compiler:       MSC v.1600 64 bit (AMD64)
+       Bits:           64bit
+       Build:          Oct  6 2014 22:16:31 (#v3.4.2:ab2c023a9432)
+       Unicode:        UCS4
+
+
+Test                             minimum run-time        average  run-time
+                                 this    other   diff    this    other   diff
+-------------------------------------------------------------------------------
+          BuiltinFunctionCalls:    94ms   103ms   -8.6%    96ms   104ms   -8.6%
+           BuiltinMethodLookup:    59ms    60ms   -1.5%    60ms    61ms   -0.3%
+                 CompareFloats:    77ms     0ms     n/a    77ms     0ms     n/a
+         CompareFloatsIntegers:   217ms     0ms     n/a   217ms     0ms     n/a
+               CompareIntegers:   110ms     0ms     n/a   110ms     0ms     n/a
+        CompareInternedStrings:    83ms    83ms   -0.5%    83ms    83ms   -0.3%
+                  CompareLongs:    65ms     0ms     n/a    65ms     0ms     n/a
+                CompareStrings:    70ms    70ms   -0.3%    71ms    70ms   +0.3%
+    ComplexPythonFunctionCalls:   105ms   109ms   -4.0%   107ms   111ms   -3.3%
+                 ConcatStrings:    81ms    88ms   -8.5%    89ms    92ms   -2.9%
+               CreateInstances:   102ms   108ms   -5.2%   105ms   111ms   -5.3%
+            CreateNewInstances:    76ms    81ms   -6.5%    78ms    83ms   -5.1%
+       CreateStringsWithConcat:   134ms   129ms   +3.6%   135ms   130ms   +3.4%
+                  DictCreation:   118ms   118ms   +0.2%   119ms   120ms   -0.8%
+             DictWithFloatKeys:   158ms   156ms   +1.3%   163ms   161ms   +1.4%
+           DictWithIntegerKeys:    68ms    70ms   -2.1%    69ms    72ms   -4.0%
+            DictWithStringKeys:    60ms    60ms   -0.5%    61ms    61ms   +0.3%
+                      ForLoops:    54ms    55ms   -2.8%    54ms    56ms   -3.6%
+                    IfThenElse:    85ms    85ms   +0.4%    85ms    85ms   +0.0%
+                   ListSlicing:    87ms    87ms   +0.7%    88ms    87ms   +1.0%
+                NestedForLoops:    93ms    88ms   +5.5%    94ms    89ms   +5.9%
+      NestedListComprehensions:    89ms    89ms   +0.1%    90ms    90ms   -0.3%
+          NormalClassAttribute:   152ms   153ms   -0.4%   154ms   153ms   +0.2%
+       NormalInstanceAttribute:    92ms    90ms   +2.0%    94ms    98ms   -4.8%
+           PythonFunctionCalls:    96ms   109ms  -12.2%    97ms   111ms  -12.8%
+             PythonMethodCalls:   114ms   119ms   -4.0%   116ms   121ms   -4.6%
+                     Recursion:   142ms   167ms  -14.9%   143ms   168ms  -14.9%
+                  SecondImport:    82ms    80ms   +2.4%    83ms    81ms   +2.9%
+           SecondPackageImport:    83ms    83ms   -0.1%    84ms    84ms   +0.1%
+         SecondSubmoduleImport:   186ms   313ms  -40.4%   188ms   316ms  -40.3%
+       SimpleComplexArithmetic:    77ms    75ms   +1.8%    78ms    76ms   +2.4%
+        SimpleDictManipulation:   133ms   139ms   -3.9%   136ms   141ms   -3.4%
+         SimpleFloatArithmetic:    67ms    66ms   +0.7%    67ms    67ms   +0.4%
+      SimpleIntFloatArithmetic:    96ms    96ms   -0.1%    97ms    97ms   -0.0%
+       SimpleIntegerArithmetic:    97ms    96ms   +0.7%    98ms    97ms   +0.5%
+      SimpleListComprehensions:    79ms    75ms   +4.4%    79ms    77ms   +3.3%
+        SimpleListManipulation:    67ms    75ms  -10.0%    68ms    75ms   -9.6%
+          SimpleLongArithmetic:    63ms    61ms   +3.7%    64ms    62ms   +2.5%
+                    SmallLists:   100ms   105ms   -4.5%   101ms   106ms   -4.3%
+                   SmallTuples:    92ms    92ms   +0.1%    93ms    93ms   -0.5%
+         SpecialClassAttribute:   153ms   154ms   -0.9%   154ms   155ms   -0.8%
+      SpecialInstanceAttribute:    89ms    89ms   -0.2%    90ms    90ms   -0.2%
+                StringMappings:   216ms   222ms   -2.7%   216ms   223ms   -2.8%
+              StringPredicates:   110ms   121ms   -9.3%   110ms   121ms   -9.5%
+                 StringSlicing:   121ms   123ms   -1.8%   122ms   125ms   -2.7%
+                     TryExcept:    62ms    62ms   +0.1%    62ms    62ms   -0.0%
+                    TryFinally:    69ms    81ms  -14.7%    69ms    81ms  -14.8%
+                TryRaiseExcept:    34ms    34ms   +1.4%    35ms    35ms   +0.6%
+                  TupleSlicing:   109ms   113ms   -2.9%   110ms   113ms   -3.1%
+                   WithFinally:   105ms   121ms  -13.5%   106ms   123ms  -13.8%
+               WithRaiseExcept:    99ms   110ms  -10.2%   100ms   111ms  -10.1%
+-------------------------------------------------------------------------------
+Totals:                          5070ms  4864ms     n/a  5130ms  4929ms     n/a
+
+(this=../py34.base.bench, other=../py34.mode0.bench)
+
