@@ -57,7 +57,7 @@ This example show how to encrypt script [/opt/pyarmor/src/examples/queens.py](..
     After this action, in the **Build Path**
     **/opt/pyarmor/webapp/build**, enccrypted script **queens.pye**,
     wrapper script **main.py**, and some extra files will be found.
-    
+
 2. Run it
 
 ```
@@ -68,7 +68,7 @@ This example show how to encrypt script [/opt/pyarmor/src/examples/queens.py](..
     python main.py 6
 
 ```
-   
+
 3. Check the content of main.py
 
 ```
@@ -125,14 +125,16 @@ Why not encrypt [pybench.py](../src/examples/pybench/pybench.py), don't worry, y
 
     List content of this directory, there is only one ".py" file **pybench.py**, all the others are ".pye"
 
-* Edit pybench.py, after the first code line 13, insert line 14
+* Import pyimcore in main script
+
+    It's pyimcore's due to import encrypted modules, after that use encrypted module normally.
+
+    Edit pybench.py, after the first code line 13, insert line 14
 
 ```
     13: from __future__ import print_function
     14: import pyimcore
 ```
-
-It's pyimcore's due to import encrypted modules, after that use encrypted module normally.
 
 * Run pybench.py in command window
 
@@ -142,13 +144,13 @@ It's pyimcore's due to import encrypted modules, after that use encrypted module
 ```
 
 It's no problem to encrypt **[pybench.py](../src/examples/pybench/pybench.py)**
-either, but leave this work to you. A
-tip [Startup Wrapper Script](#startup-wrapper-script)
+either, but leave this work to you. Refer to first example (A tip [Startup Wrapper Script](#startup-wrapper-script))
 
 ### Bind encrypted script to one machine
 
-This examble show how to bind encrypted script to this machine. Here we reuse
-project **Queen** created in the first example.
+This examble show how to bind encrypted script to this machine. Here
+we reuse project **Queen** created in the first example, the encrypted
+script has been saved in **/opt/pyarmor/webapp/build**.
 
 * Get serial number of harddisk before this example
 
@@ -190,7 +192,7 @@ project **Queen** created in the first example.
 ```
     cd /opt/pyarmor/webapp/build
     python main.py
-    
+
 ```
 
 It would not work if you run main.py in other machine.
