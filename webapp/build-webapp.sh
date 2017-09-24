@@ -9,7 +9,7 @@ src=../src
 target=$build/pyarmor/webapp
 
 cp *.py *.html *.js *.md $target
-cp -a js css $target
+cp -a js css images $target
 cp start-server.* $target
 cp $src/*.py $src/*.key $src/*.lic $target/$src
 cp -a $src/platforms $target/$src
