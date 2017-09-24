@@ -32,6 +32,13 @@ D:/tools/Python27/python server.py
 
 我们下面的操作主要就是在这个网页里面进行的，另外还需要打开一个命令窗口执行相关的 Python 命令。
 
+### 演示模式
+
+如果在项目页面的右上角有个 **演示版本** 的按钮，那就是说，WebApp 现在只能演示功能。通常情况下，有两种方式会进入演示模块
+
+  * [Pyarmor WebApp 官方在线版](http://pyarmor.dashingsoft.com:9096)
+  * 直接在文件夹打开 **/opt/pyarmor/webapp/index-zh.html**
+
 ## 使用方法
 
 下面通过四个例子来演示 WebApp 的主要功能：
@@ -282,9 +289,3 @@ graft dir                            include all files under dir
 
 需要注意的是在 Pyarmor WebApp 中，MANIFEST.in 里面的路径都是相对于项目 **源路径**，并且不支持绝对路径。
 
-### 演示模式
-
-如果在项目页面的右上角有个 **演示版本** 的按钮，那就是说，WebApp 现在只能演示功能。通常情况下，有两种方式会进入演示模块
-
-  * [Pyarmor WebApp 官方在线版](http://pyarmor.dashingsoft.com:9096)
-  * 直接在文件夹打开 **/opt/pyarmor/webapp/index-zh.html**
