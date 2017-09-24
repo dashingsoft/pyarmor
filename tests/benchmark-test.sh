@@ -25,7 +25,7 @@ workpath=__runtest__
 datafile=$(pwd)/data/pyarmor-data.tar.gz
 benchfile=$(pwd)/data/pybench
 pkgfile=$(pwd)/../src/dist/pyarmor-${version}.${PKGEXT}
-resultpath=../../../data
+resultpath=../../../benchmark/${PLATFORM}
 
 case ${PLATFORM} in
 

@@ -28,7 +28,7 @@ scripts in other platform.
 
 ## Installation
 
-Got source package from [pypi](https://pypi.python.org/pypi/pyarmor)
+Got source package from [pypi/pyarmor](https://pypi.python.org/pypi/pyarmor)
 
 Pyarmor is a command line tool, main script is pyarmor.py. After you
 got source package, unpack it to any path, then run paramor.py as
@@ -43,6 +43,12 @@ common python script
 Pyarmor Web App is a gui interface of Pyarmor, visit [Pyarmor Web App Online Version](http://pyarmor.dashingsoft.com:9096)
 
 ## [Usage](src/usage.md)
+
+## [Encrypted Mechanism](src/mechanism.md)
+
+It's worth having a glance if you care about performance of encrypted scripts.
+
+## [Benchmark Test](tests/benchmark/README.md)
 
 ## License
 
@@ -73,14 +79,8 @@ registration code only (no newline), then replace the content of
 
 **The registration code is valid forever, it can be used permanently.**
 
-## [Encrypted Mechanism](src/mechanism.md)
-
-It's worth having a glance if you care about performance of encrypted scripts.
-
 ## [Change Log](ChangeLog.rst)
 
-## Issues and Support
+## [Report issuses](https://github.com/dashingsoft/pyarmor/issues)
 
-[Report issuse](https://github.com/dashingsoft/pyarmor/issues)
-
-Any question feel free to contact <jondy.zhao@gmail.com>
+Any question feel free email to <jondy.zhao@gmail.com>
