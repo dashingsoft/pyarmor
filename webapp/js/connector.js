@@ -27,7 +27,11 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
         request.onload = function() {
 
             if (request.status != 200) {
-                utils.showMessage('Request return : ' + request.status);
+                if (request.responseURL.substr(-12) === 'queryVersion') {
+                    request.onerror();
+                    return;
+                }
+                utils.showMessage('Request ' + request.responseURL + ' return : ' + request.status);
                 return;
             }
 
