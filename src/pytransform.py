@@ -167,12 +167,15 @@ def _load_library():
     try:
         path = os.path.dirname(sys.modules['pytransform'].__file__)
         if sys.platform.startswith('linux'):
-            m = cdll.LoadLibrary(os.path.join(path, '_pytransform.so'))
+            if path == '':
+                m = cdll.LoadLibrary(os.path.abspath('_pytransform.so'))
+            else:
+                m = cdll.LoadLibrary(os.path.join(path, '_pytransform.so'))
             m.set_option('libc'.encode(), find_library('c').encode())
         else:
             m = cdll.LoadLibrary(os.path.join(path, '_pytransform.dll'))
     except Exception:
-        raise PytransformError('Cound not load library _pytransform.')
+        raise PytransformError('Could not load library _pytransform.')
 
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
     # m.set_option('enable_encrypt_generator'.encode(), c_char_p(1))
