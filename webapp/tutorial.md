@@ -7,7 +7,7 @@ the usage of WebApp.
 
 ## Download
 
-First download Pyarmor WebApp from <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.3/pyarmor-webapp.zip>
+First download Pyarmor WebApp from <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.4/pyarmor-webapp.zip>
 
 Then extract it to any path, for example **/opt**. In this turorial, **/opt**
 will be as the installed path of Pyarmor WebApp. Replace it with real path when
