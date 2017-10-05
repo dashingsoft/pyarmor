@@ -1,3 +1,8 @@
+3.1.4
+-----
+* Fix issue: load _pytransfrom failed in linux x86_64 by subprocess.Popen
+* Fix typo in error messge when load _pytransfrom failed.
+
 3.1.3
 -----
 A web gui interface is introduced as Pyarmor WebApp， and support MANIFEST.in
