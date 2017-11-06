@@ -172,6 +172,8 @@ def _load_library():
             else:
                 m = cdll.LoadLibrary(os.path.join(path, '_pytransform.so'))
             m.set_option('libc'.encode(), find_library('c').encode())
+        elif sys.platform.startswith('darwin'):
+            m = cdll.LoadLibrary(os.path.join(path, '_pytransform.dylib'))
         else:
             m = cdll.LoadLibrary(os.path.join(path, '_pytransform.dll'))
     except Exception:
