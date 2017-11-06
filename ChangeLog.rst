@@ -1,3 +1,7 @@
+3.1.5
+-----
+* Support MACOS
+
 3.1.4
 -----
 * Fix issue: load _pytransfrom failed in linux x86_64 by subprocess.Popen

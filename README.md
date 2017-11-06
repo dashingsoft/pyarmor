@@ -19,7 +19,7 @@ encrypted files.
 
 - Python 2.5, 2.6, 2.7 and Python3
 
-- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64
+- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
 it's not difficult to build for any other platform, even for embeded
