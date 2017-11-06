@@ -9,12 +9,18 @@ if [[ ${UNAME:0:5} == Linux ]] ; then
     fi
     PKGEXT=tar.bz2
 else
-    if [[ $(arch) == x86_64 ]] ; then
-        PLATFORM=win_amd64
+
+    if [[ $(uname) == Darwin ]] ; then
+        PLATFORM=macos_intel
+        PKGEXT=tar.bz2
     else
-        PLATFORM=win32
+        if [[ $(arch) == x86_64 ]] ; then
+            PLATFORM=win_amd64
+        else
+            PLATFORM=win32
+        fi
+        PKGEXT=zip
     fi
-    PKGEXT=zip
 fi
 
 # version=${1:-2.6.1}
@@ -44,6 +50,10 @@ case ${PLATFORM} in
     linux_x86_64)
         PYTHON=${PYTHON:-python}
         declare -r harddisk_sn='            9WK3FEMQ'
+        ;;
+    macosx_intel)
+        PYTHON=python
+        declare -r harddisk_sn=''
         ;;
     *)
         echo Unknown platform "${PLATFORM}"
