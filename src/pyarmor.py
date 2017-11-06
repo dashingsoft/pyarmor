@@ -31,7 +31,6 @@ import glob
 import imp
 import logging
 import os
-import platform
 import shutil
 import sys
 import tempfile
