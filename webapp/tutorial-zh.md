@@ -8,7 +8,7 @@ WebApp 是网页版的图形界面，它通过启动一个本地的 Web 服务�
 
 ## 下载
 
-首先是下载 Pyarmor WebApp，下载地址： <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.4/pyarmor-webapp.zip>
+首先是下载 Pyarmor WebApp，下载地址： <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.5/pyarmor-webapp.zip>
 
 解压下载文件到任意目录，例如 **/opt**。本教程后面的章节都是以 **/opt** 作为 WebApp 的安装路径，运行里面的例子需要把它替换成为实际的安装路径。
 
