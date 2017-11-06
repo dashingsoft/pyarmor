@@ -337,6 +337,7 @@ $PYTHON pyarmor.py --help >result.log 2>&1 \
     || csih_bug "Case 1.1 FAILED"
 [[ -f _pytransform.so ]] \
     || [[ -f _pytransform.dll ]] \
+    || [[ -f _pytransform.dylib ]] \
     || csih_error "Case 1.1 FAILED: no pytransform extension found"
 
 csih_inform "Case 1.2: generate anonymous capsule"
