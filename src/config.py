@@ -44,9 +44,11 @@ ext_char = 'e'
 # called "compatibility tags." The compatibility tags express the
 # package's basic interpreter requirements and are detailed in PEP
 # 425(https://www.python.org/dev/peps/pep-0425).
-platform = get_platform().replace('-', '_').replace('.', '_').lower()
+platform = get_platform().split('-')
+platform = '_'.join(platform if len(platform) < 3 else platform[0:3:2])
 
-dll_ext = '.so' if platform.startswith('linux') else '.dll'
+dll_ext = '.so' if platform.startswith('linux') else \
+          '.dylib' if platform.startswith('macosx') else '.dll'
 dll_name = '_pytransform'
 
 wrap_runner = '''import pyimcore
