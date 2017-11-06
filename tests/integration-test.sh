@@ -11,7 +11,7 @@ if [[ ${UNAME:0:5} == Linux ]] ; then
 else
 
     if [[ $(uname) == Darwin ]] ; then
-        PLATFORM=macos_intel
+        PLATFORM=macosx_intel
         PKGEXT=tar.bz2
     else
         if [[ $(arch) == x86_64 ]] ; then
