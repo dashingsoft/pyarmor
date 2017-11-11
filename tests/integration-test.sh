@@ -53,7 +53,7 @@ case ${PLATFORM} in
         ;;
     macosx_intel)
         PYTHON=python
-        declare -r harddisk_sn=''
+        declare -r harddisk_sn='VB85de09d4-23402b07 '
         ;;
     *)
         echo Unknown platform "${PLATFORM}"
