@@ -1,3 +1,7 @@
+3.1.6
+-----
+* Fix serial number of harddisk doesn't work in mac osx.
+
 3.1.5
 -----
 * Support MACOS
