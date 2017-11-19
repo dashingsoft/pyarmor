@@ -25,22 +25,21 @@ importing obfuscation python script has been remarkably improved.
     n+7 JUMP_ABSOLUTE            0
 
 ```
-  In the next section, we'll explain these instructions in details
-
 - Save obfuscated code objects as .pyc or .pyo, so it can be run or
   imported by common Python interpreter.
 
 ## Run or Import Obfuscated Python Scripts
 
-Those obfuscated python scripts can be run and imported as normal way
-by common python interpreter, only when those code object is called,
-refer to above code
+Those obfuscated file (.pyc or .pyo) can be run and imported as normal
+way by common python interpreter. But when those code object is called
+first time, from the wrapped bytecode descripted in above section, we
+know
 
-- For each obfuscated code object, first op is jump to offset n.
+- First op is JUMP_ABSOLUTE, it will jump to offset n
 
-- At offset n, the instruction is to call a PyCFunction. It will
-  restore those obfuscation bytecode between offset 3 and n, and place
-  the original bytecode from offset 0
+- At offset n, the instruction is to call a PyCFunction. This function
+  will restore those obfuscation bytecode between offset 3 and n, then
+  place the original bytecode from offset 0
   
 - After function call, the last instruction is to jump to
   offset 0. The really bytecode now is executed.
