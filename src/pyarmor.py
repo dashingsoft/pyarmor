@@ -105,7 +105,7 @@ def show_version_info(verbose=True):
         print(help_footer)
 
 def show_hd_info():
-    pytransform.show_hdinfo()
+    pytransform.show_hd_info()
 
 def usage(command=None):
     '''
