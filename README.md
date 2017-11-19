@@ -13,13 +13,16 @@ encrypted files.
 - Run or import encrypted compiled python files (.pyc, .pyo)
 - Mixed encrypted files with normal python files.
 - Expire encrypted files
-- Bind encrypted files to harddisk
+- Bind encrypted files to harddisk, mac address, ip etc.
 
 ## Support Platforms
 
 - Python 2.5, 2.6, 2.7 and Python3
 
-- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64
+- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_intel
+
+- [Raspberry Pi](http://pyarmor.dashingsoft.com/downloads/platforms/raspberrypi/_pytransform.so)
+  [Banana Pi](http://pyarmor.dashingsoft.com/downloads/platforms/bananapi/_pytransform.so)
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
 it's not difficult to build for any other platform, even for embeded
