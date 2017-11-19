@@ -162,6 +162,9 @@ def get_hd_sn():
         return ''
     return sn.value.decode()
 
+def show_hd_info():
+    return _pytransform.show_hd_info()
+
 # Load _pytransform library
 def _load_library():
     try:
