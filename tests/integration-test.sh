@@ -712,6 +712,21 @@ cp license-ifip2.txt build/license.lic
 grep -q "Verify license failed" result.log \
     || csih_bug "Case 5.8-1 FAILED: no failed message found"
 
+csih_inform "Case 5.8-2: generate license bind to both mac and ip address"
+$PYTHON pyarmor.py license --with-capsule=project.zip \
+    --bind-mac="${ifmac_address}" --bind-ip="${ifip_address}" -O license-macip.txt >result.log 2>&1 \
+    || csih_bug "Case 5.8-2 FAILED: return non-zero code"
+[[ -f license-macip.txt ]] \
+    || csih_bug "Case 5.8-2 FAILED: no license-macip.txt found"
+cp license-macip.txt build/license.lic
+(cd build ;
+    cp ../bootstrap.py ./ ;
+    $PYTHON bootstrap.py >../result.log 2>&1 \
+        || csih_bug "Case 5.8-2 FAILED: return non-zero code when run script"
+)
+grep -q "Result is 10" result.log \
+    || csih_bug "Case 5.8-2 FAILED: python script returns unexpected result"
+
 csih_inform "Case 5.9-1: generate license bind to other domain name"
 $PYTHON pyarmor.py license --with-capsule=project.zip \
     --bind-domain="snsoffice.com" -O license-domain2.txt >result.log 2>&1 \
@@ -726,7 +741,6 @@ cp license-domain2.txt build/license.lic
 )
 grep -q "Verify license failed" result.log \
     || csih_bug "Case 5.9-1 FAILED: no failed message found"
-
 
 #
 # AST/PYC Hole
