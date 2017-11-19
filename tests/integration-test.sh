@@ -45,8 +45,8 @@ case ${PLATFORM} in
     win_amd64)
         PYTHON=${PYTHON:-C:/Python26/python}
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
-        declare -r ifmac_address=
-        declare -r ifip_address=
+        declare -r ifmac_address=70:f1:a1:23:f0:94
+        declare -r ifip_address=169.254.225.168
         declare -r domain_name=
         ;;
     linux_i386)
