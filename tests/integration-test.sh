@@ -38,22 +38,37 @@ case ${PLATFORM} in
     win32)
         PYTHON=${PYTHON:-C:/Python26/python}
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
+        declare -r ifmac_address=70:f1:a1:23:f0:94
+        declare -r ifip_address=192.168.121.101
+        declare -r domain_name=
         ;;
     win_amd64)
         PYTHON=${PYTHON:-C:/Python26/python}
         declare -r harddisk_sn=100304PBN2081SF3NJ5T
+        declare -r ifmac_address=
+        declare -r ifip_address=
+        declare -r domain_name=
         ;;
     linux_i386)
         PYTHON=${PYTHON:-python}
         declare -r harddisk_sn='VB07ab3ff6-81eb5787 '
+        declare -r ifmac_address=
+        declare -r ifip_address=
+        declare -r domain_name=
         ;;
     linux_x86_64)
         PYTHON=${PYTHON:-python}
         declare -r harddisk_sn='            9WK3FEMQ'
+        declare -r ifmac_address=
+        declare -r ifip_address=
+        declare -r domain_name=
         ;;
     macosx_intel)
         PYTHON=python
         declare -r harddisk_sn='VB85de09d4-23402b07 '
+        declare -r ifmac_address=
+        declare -r ifip_address=
+        declare -r domain_name=
         ;;
     *)
         echo Unknown platform "${PLATFORM}"
@@ -636,6 +651,37 @@ cp license4.txt build/license.lic
 )
 grep -q "Result is 10" result.log \
     || csih_bug "Case 5.6 FAILED: python script returns unexpected result"
+
+csih_inform "Case 5.7: generate license bind to mac address"
+$PYTHON pyarmor.py license --with-capsule=project.zip \
+    --bind-mac="${ifmac_address}" -O license-ifmac.txt >result.log 2>&1 \
+    || csih_bug "Case 5.7 FAILED: return non-zero code"
+[[ -f license-ifmac.txt ]] \
+    || csih_bug "Case 5.7 FAILED: no license-ifmac.txt found"
+cp license-ifmac.txt build/license.lic
+(cd build ;
+    cp ../bootstrap.py ./ ;
+    $PYTHON bootstrap.py >../result.log 2>&1 \
+        || csih_bug "Case 5.7 FAILED: return non-zero code when run script"
+)
+grep -q "Result is 10" result.log \
+    || csih_bug "Case 5.7 FAILED: python script returns unexpected result"
+
+csih_inform "Case 5.7-1: generate license bind to other mac address"
+$PYTHON pyarmor.py license --with-capsule=project.zip \
+    --bind-mac="xx:yy" -O license-ifmac2.txt >result.log 2>&1 \
+    || csih_bug "Case 5.7-1 FAILED: return non-zero code"
+[[ -f license-ifmac2.txt ]] \
+    || csih_bug "Case 5.7-1 FAILED: no license-ifmac2.txt found"
+cp license-ifmac2.txt build/license.lic
+(cd build ;
+    cp ../bootstrap.py ./ ;
+    $PYTHON bootstrap.py >../result.log 2>&1 \
+        && csih_bug "Case 5.7-1 FAILED: return 0 when run script by invalid license"
+)
+grep -q "Verify license failed" result.log \
+    || csih_bug "Case 5.7-1 FAILED: no failed message found"
+
 
 #
 # AST/PYC Hole
