@@ -105,11 +105,7 @@ def show_version_info(verbose=True):
         print(help_footer)
 
 def show_hd_info():
-    sn = pytransform.get_hd_sn()
-    if sn == '':
-        print("Could not get harddisk's serial number")
-    else:
-        print("Harddisk's serial number is '%s'" % sn)
+    pytransform.show_hdinfo()
 
 def usage(command=None):
     '''
@@ -568,7 +564,16 @@ Available options:
   -O, --output=DIR                Path used to save license file.
 
   -B, --bind-disk                 [optional] Generate license file bind to
-                                  fixed machine.
+                                  harddisk of one machine.
+
+      --bind-mac="XX:YY"          [optional] Generate license file bind to
+                                  mac address of one machine.
+
+      --bind-ip="a.b.c.d"         [optional] Generate license file bind to
+                                  ipv4 of one machine.
+
+      --bind-domain="domain"      [optional] Generate license file bind to
+                                  domain of one machine.
 
   -F, --bind-file=FILENAME        [option] Generate license file bind to
                                   fixed file, for example, ssh private key.
@@ -611,8 +616,8 @@ For example,
     '''
     opts, args = getopt.getopt(
         argv, 'BC:e:F:O:',
-        ['bind-disk', 'expired-date=', 'bind-file=', 'with-capsule=',
-         'output=']
+        ['bind-disk', 'bind-mac=', 'bind-ip=', 'bind-domain=',
+         'expired-date=', 'bind-file=', 'with-capsule=', 'output=']
     )
 
     filename = 'license.lic.txt'
@@ -620,12 +625,21 @@ For example,
     capsule = 'project.zip'
     bindflag = False
     bindfileflag = False
+    bindip = None
+    bindmac = None
+    binddomain = None
     expired = None
     for o, a in opts:
         if o in ('-C', '--with-capsule'):
             capsule = a
         elif o in ('-B', '--bind-disk'):
             bindflag = True
+        elif o in ('-B', '--bind-mac'):
+            bindmac = a
+        elif o in ('-B', '--bind-ip'):
+            bindip = a
+        elif o in ('-B', '--bind-domain'):
+            binddomain = a
         elif o in ('-F', '--bind-file'):
             bindfileflag = True
             bindfile = a
@@ -649,10 +663,22 @@ For example,
         fmt = '*TIME:%.0f\n' % time.mktime(time.strptime(expired, '%Y-%m-%d'))
 
     if bindflag:
-        logging.info('License file bind to harddisk %s', key)
+        logging.info('License file bind to harddisk "%s"', key)
         fmt = '%s*HARDDISK:%s' % (fmt, key)
+    
+    if bindmac:
+        logging.info('License file bind to mac addr "%s"', key)
+        fmt = '%s*IFMAC:%s' % (fmt, bindmac)
 
-    elif bindfileflag:
+    if bindip:
+        logging.info('License file bind to ip "%s"', key)
+        fmt = '%s*IFIPV4:%s' % (fmt, bindip)
+
+    if binddomain:
+        logging.info('License file bind to domain "%s"', key)
+        fmt = '%s*DOMAIN:%s' % (fmt, binddomain)
+
+    if bindfileflag:
         if os.path.exists(bindfile):
             logging.info('You need copy %s to target machine as %s '
                          'with license file.', bindfile, key)
