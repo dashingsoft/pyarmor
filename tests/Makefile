@@ -11,6 +11,10 @@ endif
 
 else
 
+ifeq ($(findstring Darwin,$(UNAME)),Darwin)
+PLATFORM := macosx_intel
+else
+
 ifeq ($(ARCH),x86_64)
 PLATFORM := win_amd64
 else
@@ -19,10 +23,12 @@ endif
 
 endif
 
+endif
+
 
 ifndef PLATFORM
 $(info Usage: PLATFORM=XXXX make)
-$(info XXXX coule be win32, win_amd64, linux_i386 or linux_x86_64)
+$(info XXXX coule be win32, win_amd64, linux_i386, linux_x86_64 or macosx_intel)
 $(info )
 $(error PLATFORM IS EMPTY)
 endif
@@ -38,10 +44,19 @@ CMDPREFIX = LD_LIBRARY_PATH=$(PYROOT)/lib
 PYCMD = $(PYROOT)/bin/pythonXY
 VERSIONS := 2.6 2.7 3.0 3.1 3.2 3.3 3.4
 else
+
+ifeq ($(findstring macosx,$(PLATFORM)),macosx)
+TARGET = _pytransform.dylib
+CMDPREFIX =
+PYCMD = python
+VERSIONS := 2.7
+else
 TARGET = _pytransform.dll
 CMDPREFIX =
 PYCMD = C:/PythonXY/python
 VERSIONS := 26 27 30 31 32 33 34
+endif
+
 endif
 
 WORKPATH = __runtime__
