@@ -52,8 +52,8 @@ case ${PLATFORM} in
     linux_i386)
         PYTHON=${PYTHON:-python}
         declare -r harddisk_sn='VB07ab3ff6-81eb5787 '
-        declare -r ifmac_address=
-        declare -r ifip_address=
+        declare -r ifmac_address=08:00:27:88:4b:88
+        declare -r ifip_address=192.168.121.106
         declare -r domain_name=
         ;;
     linux_x86_64)
