@@ -1,3 +1,9 @@
+3.1.7
+-----
+* Add option "--bind-mac", "--bind-ip", "--bind-domain" for command "license"
+* Command "hdinfo" show more information(serial number of hdd, mac address, ip address, domain name)
+* Fix the issue of dev name of hdd for Banana Pi
+
 3.1.6
 -----
 * Fix serial number of harddisk doesn't work in mac osx.
