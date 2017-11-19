@@ -1,4 +1,82 @@
-# Pyarmor Mechanism
+# How to Obfuscate Python Script by Pyarmor
+
+From Pyarmor 3.2.0, a new mode is introduced. By this way, no import
+hooker, no setprofile, no settrace. The performance of running or
+importing obfuscation python script has been remarkably improved. 
+
+## Obfuscate Python Scripts
+
+- At first, compile python source file to code objects
+  
+- Iterate code object, wrap bytecode of each code object as the
+  following format
+  
+```
+    0   JUMP_ABSOLUTE            n = 3 + len(bytecode)
+    
+    3
+    ...
+    ... Here it's obfuscated bytecode
+    ...
+    
+    n   LOAD_GLOBAL              ? (armor)
+    n+3 CALL_FUNCTION            0
+    n+6 POP_TOP
+    n+7 JUMP_ABSOLUTE            0
+
+```
+  In the next section, we'll explain these instructions in details
+
+- Save obfuscated code objects as .pyc or .pyo, so it can be run or
+  imported by common Python interpreter.
+
+## Run or Import Obfuscated Python Scripts
+
+Those obfuscated python scripts can be run and imported as normal way
+by common python interpreter, only when those code object is called,
+refer to above code
+
+- For each obfuscated code object, first op is jump to offset n.
+
+- At offset n, the instruction is to call a PyCFunction. It will
+  restore those obfuscation bytecode between offset 3 and n, and place
+  the original bytecode from offset 0
+  
+- After function call, the last instruction is to jump to
+  offset 0. The really bytecode now is executed.
+
+## Performance Analaysis
+
+With default configuration, Pyarmor will do the following extra work
+to run or import obfuscated bytecode:
+
+- Verify license at statup
+- Restore obfuscated bytecode when code object is called first time
+
+In my laptop, it spend about ?ms to check license, if this license is
+bind to fixed machine, it need more time to read hardware information.
+
+Regarding to the second factor, it equals 
+
+    F + V * n
+
+- F is the time consumed to run an empty code object which bytecode is obfuscated
+- V is the time counsumed to obfuscate every 1K bytes bytecode
+- n is the length of bytecode in K bytes
+
+In my laptop, F is about ?ms, V ?ms. To get the exactly data in the
+target machine, run the following command
+
+```
+  python pyarmor.py check --profile
+```
+
+# DEPRECATED Mode
+
+The following modes are used by Pyarmor before v3.2.0. It requires
+import hooker, for example, sys.meta_path, and sys.setprofile or
+sys.settrace. Especially the latter, it could dramatically effect
+performance.
 
 ## Mode 0
 
