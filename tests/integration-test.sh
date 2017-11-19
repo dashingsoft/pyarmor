@@ -702,7 +702,7 @@ $PYTHON pyarmor.py license --with-capsule=project.zip \
     --bind-ip="192.188.2.2" -O license-ifip2.txt >result.log 2>&1 \
     || csih_bug "Case 5.8-1 FAILED: return non-zero code"
 [[ -f license-ifip2.txt ]] \
-    || csih_bug "Case 5.8-1 FAILED: no license-ifmac2.txt found"
+    || csih_bug "Case 5.8-1 FAILED: no license-ifip2.txt found"
 cp license-ifip2.txt build/license.lic
 (cd build ;
     cp ../bootstrap.py ./ ;
@@ -711,6 +711,21 @@ cp license-ifip2.txt build/license.lic
 )
 grep -q "Verify license failed" result.log \
     || csih_bug "Case 5.8-1 FAILED: no failed message found"
+
+csih_inform "Case 5.9-1: generate license bind to other domain name"
+$PYTHON pyarmor.py license --with-capsule=project.zip \
+    --bind-domain="snsoffice.com" -O license-domain2.txt >result.log 2>&1 \
+    || csih_bug "Case 5.9-1 FAILED: return non-zero code"
+[[ -f license-domain2.txt ]] \
+    || csih_bug "Case 5.9-1 FAILED: no license-domain.txt found"
+cp license-domain2.txt build/license.lic
+(cd build ;
+    cp ../bootstrap.py ./ ;
+    $PYTHON bootstrap.py >../result.log 2>&1 \
+        && csih_bug "Case 5.9-1 FAILED: return 0 when run script by invalid license"
+)
+grep -q "Verify license failed" result.log \
+    || csih_bug "Case 5.9-1 FAILED: no failed message found"
 
 
 #
