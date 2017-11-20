@@ -113,7 +113,7 @@ class PyarmorTestCases(BaseTestCase):
         names = [os.path.join(workpath, x) for x in ('main', 'foo')]
         files = [(x + '.py', x) for x in names]
         prokey = os.path.join(workpath, 'project', 'product.key')
-        ft(files, prokey)
+        ft(files, prokey, mode=0)
         self.assertTrue(os.path.exists(files[0][0] + ext_char))
         self.assertTrue(os.path.exists(files[1][0] + ext_char))
 
@@ -153,6 +153,7 @@ class PyarmorTestCases(BaseTestCase):
         argv = ['-O', output,
                 '-C', capsule,
                 '-s', workpath,
+                '--mode', '0',
                 'main.py', 'foo.py',
                 ]
         ft(argv)
@@ -207,6 +208,7 @@ class PyarmorTestCases(BaseTestCase):
         argv = ['-O', output,
                 '-C', capsule,
                 '-s', workpath,
+                '--mode', '0',
                 'empty.py']
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
@@ -222,6 +224,7 @@ class PyarmorTestCases(BaseTestCase):
         argv = ['-O', output,
                 '-C', capsule,
                 '-s', workpath,
+                '--mode', '0',
                 'foo.pyc']
         ft(argv)
         self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
@@ -234,6 +237,7 @@ class PyarmorTestCases(BaseTestCase):
         output = os.path.join(workpath, 'build')
         argv = ['-O', output,
                 '-C', capsule,
+                '--mode', '0',
                 '-i',
                 filename]
         ft(argv)
@@ -249,6 +253,7 @@ class PyarmorTestCases(BaseTestCase):
         argv = ['-O', output,
                 '-C', capsule,
                 '-s', workpath,
+                '--mode', '0',
                 '-m', 'main',
                 filename]
         ft(argv)
@@ -263,6 +268,7 @@ class PyarmorTestCases(BaseTestCase):
         argv = ['-O', output,
                 '-C', capsule,
                 '-s', workpath,
+                '--mode', '0',
                 '-m', 'pybench:main2.py']
         ft(argv)
         target = os.path.join(output, 'main2.py')
@@ -277,6 +283,7 @@ class PyarmorTestCases(BaseTestCase):
         output = os.path.join(workpath, 'build2')
         argv = ['-O', output,
                 '-C', capsule,
+                '--mode', '0',
                 '-d',
                 '-s', workpath,
                 'main.py', 'foo.py'
@@ -294,6 +301,7 @@ class PyarmorTestCases(BaseTestCase):
                 '-C', capsule,
                 '--manifest', manifest, 
                 '-s', workpath,
+                '--mode', '0',
                 'main.py', 'foo.py'
                 ]
         ft(argv)
@@ -308,6 +316,7 @@ class PyarmorTestCases(BaseTestCase):
                 '-C', capsule,
                 '--plat-name', 'unknow-plat',
                 '-s', workpath,
+                '--mode', '0',
                 'foo.py',
                 ]
         ft(argv)
