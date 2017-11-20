@@ -185,7 +185,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
-def encrypt_files(files, prokey, mode=0, output=None):
+def encrypt_files(files, prokey, mode=3, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
 
@@ -196,7 +196,7 @@ def encrypt_files(files, prokey, mode=0, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ext = '.pyc' if mode == 1 else '.py' + ext_char
+    ext = '.pyc' if mode == 1 or mode == 3 else '.py' + ext_char
     if output is None:
         fn = lambda a, b: b[1] + ext
     else:
@@ -385,11 +385,12 @@ Available options:
   -m, --main=NAME             Generate wrapper file to run encrypted script
 
   -e, --mode=MODE             Encrypt mode, available value:
-                                0     (Default), encrypt both source
-                                      and bytecode
+                                0     Encrypt both source and bytecode
                                 1     Encrypt bytecode only.
                                 2     Encrypt source code only.
-                              Mode 1, 2 is used to improve performance.
+                                3     (Default) Obfuscate bytecodes.
+                              Mode 0, 1, 2 is deprecated from v3.2.0, this
+                              option can be ignored in general.
 
   -d, --clean                 Clean output path at start.
 
@@ -418,7 +419,6 @@ For examples:
 
       pyarmor encrypt --plat-name=linux_x86_64 a.py b.py
 
-
 Use MANIFEST.in to list files
 
       pyarmor encrypt --with-capsule=project.zip @myproject/MANIFEST.in
@@ -440,7 +440,7 @@ It's Following the Distutils’ own manifest template
     extfile = None
     mainname = []
     clean = False
-    mode = 0
+    mode = 3
     manifest = None
 
     for o, a in opts:
@@ -457,7 +457,7 @@ It's Following the Distutils’ own manifest template
         elif o in ('-d', '--clean'):
             clean = True
         elif o in ('-e', '--mode'):
-            if a not in ('0', '1', '2'):
+            if a not in ('0', '1', '2', '3'):
                 raise RuntimeError('Invalid mode "%s"' % a)
             mode = int(a)
         elif o in ('-m', '--main'):
@@ -502,7 +502,13 @@ It's Following the Distutils’ own manifest template
     ZipFile(capsule).extractall(path=output)
     logging.info('Extract capsule to %s OK.', output)
 
-    if mode:
+    if mode == 3:
+        logging.info('Encrypt mode: %s', mode)
+        with open(os.path.join(output, 'pyimcore.py'), 'r') as f:
+            lines = 'from _pytransform import init_runtime', \
+                    'init_runtime(0, 0, 0, 0)'
+            f.write(lines.join('\n'))
+    elif mode:
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'r') as f:
             lines = f.read()
