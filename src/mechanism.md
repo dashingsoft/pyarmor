@@ -38,8 +38,8 @@ know
 - First op is JUMP_ABSOLUTE, it will jump to offset n
 
 - At offset n, the instruction is to call a PyCFunction. This function
-  will restore those obfuscation bytecode between offset 3 and n, then
-  place the original bytecode from offset 0
+  will restore those obfuscated bytecode between offset 3 and n, and
+  place the original bytecode at offset 0
   
 - After function call, the last instruction is to jump to
   offset 0. The really bytecode now is executed.
@@ -52,22 +52,23 @@ to run or import obfuscated bytecode:
 - Verify license at statup
 - Restore obfuscated bytecode when code object is called first time
 
-In my laptop, it spend about ?ms to check license, if this license is
-bind to fixed machine, it need more time to read hardware information.
+In my laptop, it spend about ?ms to check a normal license, if the
+license is bind to fixed machine, it need more time to read hardware
+information.
 
 Regarding to the second factor, it equals 
 
     F + V * n
 
 - F is the time consumed to run an empty code object which bytecode is obfuscated
-- V is the time counsumed to obfuscate every 1K bytes bytecode
+- V is the time consumed to restore every 1K bytes obfuscated bytecode
 - n is the length of bytecode in K bytes
 
 In my laptop, F is about ?ms, V ?ms. To get the exactly data in the
 target machine, run the following command
 
 ```
-  python pyarmor.py check --profile
+  python pyarmor.py benchmark
 ```
 
 # DEPRECATED Mode
