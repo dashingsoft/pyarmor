@@ -563,7 +563,7 @@ Available options:
 
   -O, --output=DIR                Path used to save license file.
 
-  -B, --bind-disk                 [optional] Generate license file bind to
+  -B, --bind-disk="XX"            [optional] Generate license file bind to
                                   harddisk of one machine.
 
       --bind-mac="XX:YY"          [optional] Generate license file bind to
@@ -615,16 +615,16 @@ For example,
 
     '''
     opts, args = getopt.getopt(
-        argv, 'BC:e:F:O:',
-        ['bind-disk', 'bind-mac=', 'bind-ip=', 'bind-domain=',
+        argv, 'B:C:e:F:O:',
+        ['bind-disk=', 'bind-mac=', 'bind-ip=', 'bind-domain=',
          'expired-date=', 'bind-file=', 'with-capsule=', 'output=']
     )
 
     filename = 'license.lic.txt'
     bindfile = None
     capsule = 'project.zip'
-    bindflag = False
     bindfileflag = False
+    binddisk = None
     bindip = None
     bindmac = None
     binddomain = None
@@ -633,7 +633,7 @@ For example,
         if o in ('-C', '--with-capsule'):
             capsule = a
         elif o in ('-B', '--bind-disk'):
-            bindflag = True
+            binddisk = a
         elif o in ('-B', '--bind-mac'):
             bindmac = a
         elif o in ('-B', '--bind-ip'):
@@ -662,9 +662,9 @@ For example,
         logging.info('License file expired at %s', expired)
         fmt = '*TIME:%.0f\n' % time.mktime(time.strptime(expired, '%Y-%m-%d'))
 
-    if bindflag:
-        logging.info('License file bind to harddisk "%s"', key)
-        fmt = '%s*HARDDISK:%s' % (fmt, key)
+    if binddisk:
+        logging.info('License file bind to harddisk "%s"', binddisk)
+        fmt = '%s*HARDDISK:%s' % (fmt, binddisk)
     
     if bindmac:
         logging.info('License file bind to mac addr "%s"', key)

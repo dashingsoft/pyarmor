@@ -577,7 +577,7 @@ grep -q "Result is 10" result.log \
 
 csih_inform "Case 5.2: generate license bind to fixed machine"
 $PYTHON pyarmor.py license --with-capsule=project.zip \
-    --bind-disk -O license.txt "${harddisk_sn}" >result.log 2>&1 \
+    --bind-disk="${harddisk_sn}" -O license.txt >result.log 2>&1 \
     || csih_bug "Case 5.2 FAILED: return non-zero code"
 [[ -f license.txt ]] \
     || csih_bug "Case 5.2 FAILED: no license.txt found"
@@ -592,7 +592,7 @@ grep -q "Result is 10" result.log \
 
 csih_inform "Case 5.3: generate period license bind to fixed machine"
 $PYTHON pyarmor.py license --with-capsule=project.zip -e $(next_month) \
-    --bind-disk -O license1.txt "${harddisk_sn}" >result.log 2>&1 \
+    --bind-disk="${harddisk_sn}" -O license1.txt >result.log 2>&1 \
     || csih_bug "Case 5.3 FAILED: return non-zero code"
 [[ -f license1.txt ]] \
     || csih_bug "Case 5.3 FAILED: no license.txt found"
