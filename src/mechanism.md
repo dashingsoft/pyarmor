@@ -64,8 +64,9 @@ Regarding to the second factor, it equals
 - V is the time consumed to restore every 1K bytes obfuscated bytecode
 - n is the length of bytecode in K bytes
 
-In my laptop, F is about ?ms, V ?ms. To get the exactly data in the
-target machine, run the following command
+In my laptop, F is about ?ms, V ?ms. 
+
+To get the exactly data in the target machine, run the following command
 
 ```
   python pyarmor.py benchmark
