@@ -387,14 +387,14 @@ csih_inform "Test command: encrypt"
 echo ""
 
 csih_inform "Case 2.1: encrypt script"
-$PYTHON pyarmor.py encrypt -C project.zip -O dist \
+$PYTHON pyarmor.py encrypt --mode=0 -C project.zip -O dist \
     foo.py >result.log 2>&1 \
     || csih_bug "Case 2.1 FAILED: return non-zero code"
 [[ -f dist/foo.py${extchar} ]] \
     || csih_bug "Case 2.1 FAILED: no dist/foo.py${extchar} found"
 
 csih_inform "Case 2.2: encrypt script with named capsule"
-$PYTHON pyarmor.py encrypt --with-capsule=project.zip \
+$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=project.zip \
     --output=build main.py foo.py >result.log 2>&1 \
     || csih_bug "Case 2.2 FAILED: return non-zero code"
 [[ -f build/main.py${extchar} ]] \
@@ -403,7 +403,7 @@ $PYTHON pyarmor.py encrypt --with-capsule=project.zip \
     || csih_bug "Case 2.2 FAILED: no build/foo.py${extchar} found"
 
 csih_inform "Case 2.3: encrypt script with key capsule"
-$PYTHON pyarmor.py encrypt --with-capsule=foo-key.zip \
+$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
     --output=foo-key foo.py >result.log 2>&1 \
     || csih_bug "Case 2.3 FAILED: return non-zero code"
 [[ -f foo-key/foo.py${extchar} ]] \
@@ -415,7 +415,7 @@ cp foo.py test_in_place/foo.py
 cp foo.py test_in_place/a/foo.py
 echo "test_in_place/foo.py" > filelist.txt
 echo "test_in_place/a/foo.py" >> filelist.txt
-$PYTHON pyarmor.py encrypt --with-capsule=foo-key.zip \
+$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
     --output=foo-key -i @filelist.txt >result.log 2>&1 \
     || csih_bug "Case 2.4 FAILED: return non-zero code"
 [[ -f test_in_place/foo.py${extchar} ]] || [[ -f test_in_place/a/foo.py${extchar} ]] \
@@ -475,7 +475,7 @@ grep -q "foo.hello(2) = 7" result.log \
 csih_inform "Case 3.4: run encrypted code from __future__"
 echo "from __future__ import with_statement" > foo-future.py
 cat foo.py >> foo-future.py
-$PYTHON pyarmor.py encrypt --with-capsule=foo-key.zip \
+$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
     --output=foo-future foo-future.py >result.log 2>&1 \
     || csih_bug "Case 3.4 FAILED: return non-zero code"
 (cd foo-future ;
@@ -511,7 +511,7 @@ grep -q "foo.hello(2) = 7" result.log \
     || csih_bug "Case 3.6 FAILED: python script returns unexpected result"
 
 csih_inform "Case 3.7: import encrypted package"
-$PYTHON pyarmor.py encrypt --with-capsule=project.zip --in-place \
+$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=project.zip --in-place \
     --output=build_pkg package/*.py >result.log 2>&1 \
     || csih_bug "Case 3.7 FAILED: return non-zero code"
 (cp -a package build_pkg;
@@ -524,6 +524,18 @@ $PYTHON pyarmor.py encrypt --with-capsule=project.zip --in-place \
 grep -q "foo.hello(2) = 7" result.log \
     || csih_bug "Case 3.7 FAILED: python script returns unexpected result"
 
+csih_inform "Case 3.8: import encrypted code with mode 3"
+$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=3 \
+    --output=build_m3 foo.py >result.log 2>&1 \
+    || csih_bug "Case 3.8 FAILED: return non-zero code"
+(cd build_m3 ;
+    cp ../startup.py ./ ;
+    $PYTHON startup.py >../result.log 2>&1 \
+        || csih_bug "Case 3.8 FAILED: return non-zero code"
+)
+grep -q "foo.hello(2) = 7" result.log \
+    || csih_bug "Case 3.8 FAILED: python script returns unexpected result"
+
 #
 # Cross publish
 #
@@ -532,7 +544,7 @@ csih_inform "Test cross publish"
 echo ""
 
 csih_inform "Case 4.1: cross publish for windows"
-$PYTHON pyarmor.py encrypt \
+$PYTHON pyarmor.py encrypt --mode=0 \
     --output=others \
     --plat-name=win_amd64 \
     foo.py  >result.log 2>&1 \
@@ -543,7 +555,7 @@ $PYTHON pyarmor.py encrypt \
     || csih_bug "Case 4.1 FAILED: no others/_pytransform.dll found"
 
 csih_inform "Case 4.2: cross publish for linux"
-$PYTHON pyarmor.py encrypt \
+$PYTHON pyarmor.py encrypt --mode=0 \
     --output=others \
     --plat-name=linux_x86_64 \
     main.py  >result.log 2>&1 \
@@ -749,7 +761,7 @@ echo ""
 csih_inform "Test crack: ast node / pyc"
 echo ""
 
-$PYTHON pyarmor.py encrypt --with-capsule=project.zip \
+$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=project.zip \
     --output=hole sky.py >result.log 2>&1 \
     || csih_bug "Case 6 FAILED: return non-zero code"
 [[ -f hole/sky.py${extchar} ]] \
@@ -803,7 +815,7 @@ $PYTHON pyarmor.py capsule >result.log 2>&1 \
     || csih_bug "Case T1.1 FAILED: no project.zip found"
 
 csih_inform "Case T1.2: encrypt script in trial license"
-$PYTHON pyarmor.py encrypt -C project.zip -O dist foo.py >result.log 2>&1 \
+$PYTHON pyarmor.py encrypt --mode=0 -C project.zip -O dist foo.py >result.log 2>&1 \
     || csih_bug "Case T1.2 FAILED: return non-zero code"
 [[ -f dist/foo.py${extchar} ]] \
     || csih_bug "Case T1.2 FAILED: no dist/foo.py${extchar} found"
@@ -846,7 +858,7 @@ grep -q "$searchmsg" result.log \
 
 csih_inform "Case E1.2: encrypt script in expired license"
 rm -rf _pytransform.dll _pytransform.so
-$PYTHON pyarmor.py encrypt -O dist foo.py >result.log 2>&1 \
+$PYTHON pyarmor.py encrypt --mode=0 -O dist foo.py >result.log 2>&1 \
     && csih_bug "Case E1.2 FAILED: return zero code"
 grep -q "$searchmsg" result.log \
     || csih_bug "Case E1.2 FAILED: unexpected message"
