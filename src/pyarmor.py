@@ -506,8 +506,8 @@ It's Following the Distutils’ own manifest template
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'r') as f:
             lines = 'from _pytransform import init_runtime', \
-                    'init_runtime(0, 0, 0, 0)'
-            f.write(lines.join('\n'))
+                    'init_runtime(0, 0, 0, 0)', ''
+            f.write('\n'.join(lines))
     elif mode:
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'r') as f:
