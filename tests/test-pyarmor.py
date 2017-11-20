@@ -352,6 +352,21 @@ class PyarmorTestCases(BaseTestCase):
         self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'),
                                         'init_runtime(0, 0, 0, 0)'))
 
+    def test_do_encrypt_mode_3(self):
+        ft = self.pyarmor.do_encrypt
+        capsule = os.path.join('data', 'project.zip')
+        output = os.path.join(workpath, 'build_m3')
+        argv = ['-O', output,
+                '-C', capsule,
+                '--mode', '3',
+                '-s', workpath,
+                'foo.py',
+                ]
+        ft(argv)
+        self.assertTrue(self.searchStdoutOutput('Encrypt all scripts OK'))
+        self.assertTrue(self.searchFile(os.path.join(output, 'pyimcore.py'),
+                                        'init_runtime(0, 0, 0, 0)'))
+
     def test_do_encrypt_with_main_in_mode_1(self):
         ft = self.pyarmor.do_encrypt
         capsule = os.path.join('data', 'project.zip')
@@ -432,7 +447,7 @@ if __name__ == '__main__':
         )
     setupModuleTest()
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_parse_manifest_file'
+    # loader.testMethodPrefix = 'test_do_encrypt_mode_3'
     suite = loader.loadTestsFromTestCase(PyarmorTestCases)
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     cleanupModuleTest()
