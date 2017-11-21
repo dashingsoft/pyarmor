@@ -23,7 +23,7 @@ def main():
         description='A command line tool used to import or run encrypted python scripts.',
         long_description=get_description(),
         keywords=['encrypt', 'distribute'],
-        py_modules=['pyarmor', 'pytransform', 'pyimcore', 'config'],
+        py_modules=['pyarmor', 'pytransform', 'pyimcore', 'config', 'benchmark'],
         author='Jondy Zhao',
         author_email='jondy.zhao@gmail.com',
         maintainer='Jondy Zhao',
