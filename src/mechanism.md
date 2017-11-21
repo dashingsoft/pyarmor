@@ -122,7 +122,7 @@ vi pytransform.py
     
 ```
 
-By default, bytecode will be decrypted by DES algorithm. If it's
+By default, bytecode will be encrypted by DES algorithm. If it's
 disabled, another simple algorithm is applied. Now run "benchmark.py"
 to prepare new test data
 
