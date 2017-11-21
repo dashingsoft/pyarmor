@@ -19,7 +19,7 @@ importing obfuscation python script has been remarkably improved.
     ... Here it's obfuscated bytecode
     ...
     
-    n   LOAD_GLOBAL              ? (armor)
+    n   LOAD_GLOBAL              ? (__pyarmor__)
     n+3 CALL_FUNCTION            0
     n+6 POP_TOP
     n+7 JUMP_ABSOLUTE            0
@@ -49,27 +49,109 @@ know
 With default configuration, Pyarmor will do the following extra work
 to run or import obfuscated bytecode:
 
-- Verify license at statup
+- Load library _pytransform at startup
+- Initialize library _pytransform at startup
+- Veirfy license at startup
 - Restore obfuscated bytecode when code object is called first time
 
-In my laptop, it spend about ?ms to check a normal license, if the
-license is bind to fixed machine, it need more time to read hardware
-information.
-
-Regarding to the second factor, it equals 
-
-    F + V * n
-
-- F is the time consumed to run an empty code object which bytecode is obfuscated
-- V is the time consumed to restore every 1K bytes obfuscated bytecode
-- n is the length of bytecode in K bytes
-
-In my laptop, F is about ?ms, V ?ms. 
-
-To get the exactly data in the target machine, run the following command
+There is a script "benchmark.py" in the package of Pyarmor used to
+check performance. First run it to prepare test data
 
 ```
-  python pyarmor.py benchmark
+python benchmark.py
+  
+```
+
+It will create directory "test-bench", change to this directory, and
+run benchmark.py again. In my laptop, the output is
+
+```
+cd test-bench
+python benchmark.py
+
+load_pytransform: 1.65887005192 ms
+init_pytransform: 1.31916207227 ms
+verify_license: 0.771047716958 ms
+
+Test script: bfoo.py
+Obfuscated script: obfoo.pyc
+
+run_empty_no_obfuscated_code_object: 0.00446984183744 ms
+run_empty_obfuscated_code_object: 0.0430222276854 ms
+
+run_one_thousand_no_obfuscated_bytecode: 0.0041904767226 ms
+run_one_thousand_obfuscated_bytecode: 0.120126999381 ms
+
+run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+run_ten_thousand_obfuscated_bytecode: 0.72551120324 ms
+
+```
+
+Here it's a normal license checked by verify_license. If the license
+is bind to fixed machine, for example, it need more time to read hardware
+information.
+
+The bytecode size of function one_thousand is about 1K, and
+ten_thousand is about 10K. Most of them will not be executed, because
+they're in False condition for ever. So run_empty, run_one_thousand,
+run_ten_thousand are almost same in non-obfuscated mode, about 0.004
+ms.
+
+In obfuscated mode, it's about 0.1 ms for 1K bytecoe, and 0.7~0.8 ms
+for 10K bytecode in my laptop.
+
+If you really care about performance, there is another option.
+
+```
+# First change to src path of pyarmor
+cd ..
+
+# Edit pytransform.py
+vi pytransform.py
+
+# Uncomment line 187
+
+    # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
+
+# Change to
+
+    m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
+    
+```
+
+By default, bytecode will be decrypted by DES algorithm. If it's
+disabled, another simple algorithm is applied. Now run "benchmark.py"
+to prepare new test data
+
+```
+python benchmark.py
+  
+```
+
+It will update test files in output path "test-bench", change to this
+directory, run benchmark.py again. In my laptop, the output is
+
+
+```
+cd test-bench
+python benchmark.py
+
+load_pytransform: 1.78905419544 ms
+init_pytransform: 1.32139699319 ms
+verify_license: 0.759314382135 ms
+
+Test script: bfoo.py
+Obfuscated script: obfoo.pyc
+
+run_empty_no_obfuscated_code_object: 0.00502857206712 ms
+run_empty_obfuscated_code_object: 0.00474920695228 ms
+
+run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+run_one_thousand_obfuscated_bytecode: 0.00642539764132 ms
+
+run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+run_ten_thousand_obfuscated_bytecode: 0.0287746068285 ms
+
 ```
 
 # DEPRECATED Mode
