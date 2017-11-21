@@ -15,14 +15,14 @@ Main Features
 - Run or import encrypted compiled python files (.pyc, .pyo)
 - Mixed encrypted files with normal python files.
 - Expire encrypted files
-- Bind encrypted files to harddisk
+- Bind encrypted files to harddisk, mac address, ip etc.
 
 Support Platforms
 -----------------
 
 - Python 2.5, 2.6, 2.7 and Python3
 
-- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64
+- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64, Raspberry Pi, Banana Pi
 
 The core of Pyarmor is written by C, the only dependency is libc. So
 it's easy to build for any other platform, even for embeded
@@ -43,6 +43,6 @@ common python script
 Web App
 -------
 
-Pyarmor Web App is a gui interface of Pyarmor, visit `Pyarmor Web App Online Version <http://pyarmor.dashingsoft.com:9096>`_
+Pyarmor Web App is a gui interface of Pyarmor, visit `Pyarmor Web App Online Version <http://pyarmor.dashingsoft.com>`_
 
 For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_

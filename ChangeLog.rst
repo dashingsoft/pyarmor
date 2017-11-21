@@ -1,3 +1,14 @@
+3.2.0
+-----
+From this version, a new obfuscation mode is introduced. By this way,
+no import hooker, no setprofile, no settrace required. The performance
+of running or importing obfuscation python scripts has been remarkably
+improved. It's significant for Pyarmor.
+
+* Use this new mode as default way to obfuscate python scripts.
+* Add new script "benchmark.py" to check performance in target machine: python benchmark.py
+* Change option "--bind-disk" in command "license",  now it must be have a value
+
 3.1.7
 -----
 * Add option "--bind-mac", "--bind-ip", "--bind-domain" for command "license"
