@@ -138,6 +138,8 @@ def obffuscate_python_scripts(output, filename):
     p.wait()
 
 def check_default_capsule():
+    if not os.path.exists('pyarmor.py'):
+        return
     capsule = 'project.zip'
     if os.path.exists(capsule):
         logging.info('Use capsule: %s', capsule)
