@@ -184,6 +184,7 @@ def _load_library():
 
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
     # m.set_option('enable_encrypt_generator'.encode(), c_char_p(1))
+    # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
     if not os.path.abspath('.') == os.path.abspath(path):
         m.set_option('pyshield_path'.encode(), path.encode())
     return m
