@@ -137,7 +137,18 @@ def obffuscate_python_scripts(output, filename):
                           'encrypt', '-O', output, '-i', filename])
     p.wait()
 
+def check_default_capsule():
+    capsule = 'project.zip'
+    if os.path.exists(capsule):
+        logging.info('Use capsule: %s', capsule)
+        return
+
+    p = subprocess.Popen([sys.executable, 'pyarmor.py', 'capsule'])
+    p.wait()
+
 def main():
+    check_default_capsule()
+
     time.clock()
     pytransform = load_pytransform()
     init_pytransform(pytransform)
