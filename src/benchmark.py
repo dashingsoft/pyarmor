@@ -161,7 +161,7 @@ def main():
         logging.info('Test script %s has been generated.', filename)
 
     if os.path.exists(os.path.basename(obfilename)):
-        logging.info('Obffuscated script: %s', os.path.basename(obfilename))
+        logging.info('Obfuscated script: %s', os.path.basename(obfilename))
     else:
         check_output(output)
         logging.info('Obffuscate test script ...')
