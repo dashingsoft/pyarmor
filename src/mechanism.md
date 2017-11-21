@@ -88,8 +88,8 @@ run_ten_thousand_obfuscated_bytecode: 0.72551120324 ms
 ```
 
 Here it's a normal license checked by verify_license. If the license
-is bind to fixed machine, for example, it need more time to read hardware
-information.
+is bind to fixed machine, for example, mac address, it need more time
+to read hardware information.
 
 The bytecode size of function one_thousand is about 1K, and
 ten_thousand is about 10K. Most of them will not be executed, because
@@ -98,9 +98,12 @@ run_ten_thousand are almost same in non-obfuscated mode, about 0.004
 ms.
 
 In obfuscated mode, it's about 0.1 ms for 1K bytecoe, and 0.7~0.8 ms
-for 10K bytecode in my laptop.
+for 10K bytecode in my laptop. It's mainly consumed by restoring
+obfuscated bytecodes.
 
-If you really care about performance, there is another option.
+If you really care about performance, there is another option which
+could reduce the elapsed time here.
+
 
 ```
 # First change to src path of pyarmor
@@ -129,7 +132,7 @@ python benchmark.py
 ```
 
 It will update test files in output path "test-bench", change to this
-directory, run benchmark.py again. In my laptop, the output is
+directory, run "benchmark.py" again. In my laptop, the output is
 
 
 ```
