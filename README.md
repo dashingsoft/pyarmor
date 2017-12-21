@@ -21,7 +21,7 @@ encrypted files.
 
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_intel
 
-- [Raspberry Pi](http://pyarmor.dashingsoft.com/downloads/platforms/raspberrypi/_pytransform.so)
+- Embeded Platform: [Raspberry Pi](http://pyarmor.dashingsoft.com/downloads/platforms/raspberrypi/_pytransform.so),
   [Banana Pi](http://pyarmor.dashingsoft.com/downloads/platforms/bananapi/_pytransform.so)
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
@@ -50,8 +50,6 @@ Pyarmor Web App is a gui interface of Pyarmor, visit [Pyarmor Web App Online Ver
 ## [Encrypted Mechanism](src/mechanism.md)
 
 It's worth having a glance if you care about performance of encrypted scripts.
-
-## [Benchmark Test](tests/benchmark/README.md)
 
 ## License
 
