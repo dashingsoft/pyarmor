@@ -1,3 +1,8 @@
+3.2.1
+-----
+* Fix issue: the traceback of an exception contains the name "<pytransform>" instead of the correct module name
+* Obfuscate all the string constant in the script, co_names include function name, variable name etc still are in clear text.
+
 3.2.0
 -----
 From this version, a new obfuscation mode is introduced. By this way,
