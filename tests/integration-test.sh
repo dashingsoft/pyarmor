@@ -452,7 +452,7 @@ EOF
 $PYTHON pyarmor.py encrypt --mode=3 -C project.zip -O test_const co_consts.py >result.log 2>&1
 if [[ -f test_const/co_consts.pyc ]] ; then
     cd test_const
-    grep -q "(Module comment|Hello|Function comment|jondy|bob|time)" co_consts.pyc \
+    grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.pyc \
         && csih_bug "Case 2.6 FAILED: co_consts still in clear text"
     cat <<EOF > main.py
 import pyimcore
