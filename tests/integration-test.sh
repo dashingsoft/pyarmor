@@ -421,6 +421,53 @@ $PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
 [[ -f test_in_place/foo.py${extchar} ]] || [[ -f test_in_place/a/foo.py${extchar} ]] \
     || csih_bug "Case 2.4 FAILED: no in-place encrypted foo.py${extchar} found"
 
+csih_inform "Case 2.5: verify co_filename of code object in encrypt script"
+cat <<EOF > co_hello.py
+i = 1 / 0.
+EOF
+$PYTHON pyarmor.py encrypt --mode=3 -C project.zip -O test_filename co_hello.py  >result.log 2>&1
+if [[ -f test_filename/co_hello.pyc ]] ; then
+    cd test_filename
+    cat <<EOF > main.py
+import pyimcore
+import co_hello
+EOF
+    $PYTHON main.py >result.log 2>&1
+    grep -q 'File "co_hello.py"' result.log || csih_bug "Case 2.5 FAILED: script name isn't right"
+    cd ..
+else
+    csih_bug "Case 2.5 FAILED: no encrypted script found"
+fi
+
+csih_inform "Case 2.6: verify constant is obfucated"
+cat << EOF > co_consts.py
+'''Module comment'''
+title = "Hello"
+def hello(arg="first"):
+    '''Function comment'''
+    name = "jondy"
+    users = [ "bob", "time", 3]
+    return "%s,%s,%s" % (name, arg, users[0])
+EOF
+$PYTHON pyarmor.py encrypt --mode=3 -C project.zip -O test_const co_consts.py >result.log 2>&1
+if [[ -f test_const/co_consts.pyc ]] ; then
+    cd test_const
+    grep -q "(Module comment|Hello|Function comment|jondy|bob|time)" co_consts.pyc \
+        && csih_bug "Case 2.6 FAILED: co_consts still in clear text"
+    cat <<EOF > main.py
+import pyimcore
+import sys
+import co_consts
+sys.stdout.write("%s:%s:%s" % (co_consts.title, co_consts.__doc__, co_consts.hello("second")))
+EOF
+    $PYTHON main.py >result.log 2>&1 || csih_bug "Case 2.6 FAILED: run script return non-zero code"
+    grep -q "Hello:Module comment:jondy,second,bob" result.log \
+        || csih_bug "Case 2.6 FAILED: python script returns unexpected result"
+    cd ..
+else
+    csih_bug "Case 2.6 FAILED: no test_consts/co_consts.pyc found"
+fi
+
 #
 # Import encrypted module and run encrypted scripts
 #
