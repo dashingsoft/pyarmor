@@ -196,7 +196,7 @@ def encrypt_files(files, prokey, mode=3, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ext = '.pyc' if mode == 1 or mode == 3 else '.py' + ext_char
+    ext = '.pyc' if mode == 1 or mode >= 3 else '.py' + ext_char
     if output is None:
         fn = lambda a, b: b[1] + ext
     else:
@@ -389,6 +389,7 @@ Available options:
                                 1     Encrypt bytecode only.
                                 2     Encrypt source code only.
                                 3     (Default) Obfuscate bytecodes.
+                                5     Obfuscate code object of module.
                               Mode 0, 1, 2 is deprecated from v3.2.0, this
                               option can be ignored in general.
 
@@ -457,7 +458,7 @@ It's Following the Distutils’ own manifest template
         elif o in ('-d', '--clean'):
             clean = True
         elif o in ('-e', '--mode'):
-            if a not in ('0', '1', '2', '3'):
+            if a not in ('0', '1', '2', '3', '5'):
                 raise RuntimeError('Invalid mode "%s"' % a)
             mode = int(a)
         elif o in ('-m', '--main'):
@@ -502,7 +503,7 @@ It's Following the Distutils’ own manifest template
     ZipFile(capsule).extractall(path=output)
     logging.info('Extract capsule to %s OK.', output)
 
-    if mode == 3:
+    if mode >= 3:
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
             lines = 'from pytransform import init_runtime', \
