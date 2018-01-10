@@ -1,7 +1,8 @@
 3.2.1
 -----
 * Fix issue: the traceback of an exception contains the name "<pytransform>" instead of the correct module name
-* Obfuscate all the string constant in the script, co_names include function name, variable name etc still are in clear text.
+* Fix issue: All the constant, co_names include function name, variable name etc still are in clear text.
+  Refer to https://github.com/dashingsoft/pyarmor/issues/5
 
 3.2.0
 -----
