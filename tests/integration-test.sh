@@ -449,7 +449,7 @@ def hello(arg="first"):
     users = [ "bob", "time", 3]
     return "%s,%s,%s" % (name, arg, users[0])
 EOF
-$PYTHON pyarmor.py encrypt --mode=3 -C project.zip -O test_const co_consts.py >result.log 2>&1
+$PYTHON pyarmor.py encrypt --mode=5 -C project.zip -O test_const co_consts.py >result.log 2>&1
 if [[ -f test_const/co_consts.pyc ]] ; then
     cd test_const
     grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.pyc \
@@ -466,6 +466,26 @@ EOF
     cd ..
 else
     csih_bug "Case 2.6 FAILED: no test_consts/co_consts.pyc found"
+fi
+
+csih_inform "Case 2.7: verify mode 6 works"
+$PYTHON pyarmor.py encrypt --mode=6 -C project.zip -O test_mode6 co_consts.py >result.log 2>&1
+if [[ -f test_mode6/co_consts.pyc ]] ; then
+    cd test_mode6
+    grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.pyc \
+        && csih_bug "Case 2.7 FAILED: co_consts still in clear text"
+    cat <<EOF > main.py
+import pyimcore
+import sys
+import co_consts
+sys.stdout.write("%s:%s:%s" % (co_consts.title, co_consts.__doc__, co_consts.hello("second")))
+EOF
+    $PYTHON main.py >result.log 2>&1 || csih_bug "Case 2.7 FAILED: run script return non-zero code"
+    grep -q "Hello:Module comment:jondy,second,bob" result.log \
+        || csih_bug "Case 2.7 FAILED: python script returns unexpected result"
+    cd ..
+else
+    csih_bug "Case 2.7 FAILED: no test_mode6/co_consts.pyc found"
 fi
 
 #
