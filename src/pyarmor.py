@@ -8,7 +8,7 @@
 #                                                           #
 #      pyarmor                                              #
 #                                                           #
-#      Version: 1.7.0 - 3.0.1                               #
+#      Version: 1.7.0 - 3.2.1                               #
 #                                                           #
 #############################################################
 #
@@ -390,6 +390,7 @@ Available options:
                                 2     Encrypt source code only.
                                 3     (Default) Obfuscate bytecodes.
                                 5     Obfuscate code object of module.
+                                6     Combine mode 3 and 4
                               Mode 0, 1, 2 is deprecated from v3.2.0, this
                               option can be ignored in general.
 
@@ -458,7 +459,7 @@ It's Following the Distutils’ own manifest template
         elif o in ('-d', '--clean'):
             clean = True
         elif o in ('-e', '--mode'):
-            if a not in ('0', '1', '2', '3', '5'):
+            if a not in ('0', '1', '2', '3', '5', '6'):
                 raise RuntimeError('Invalid mode "%s"' % a)
             mode = int(a)
         elif o in ('-m', '--main'):
