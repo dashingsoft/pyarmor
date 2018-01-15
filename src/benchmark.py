@@ -132,9 +132,12 @@ def check_output(output):
     else:
         logging.info('Output path: %s', output)
 
-def obffuscate_python_scripts(output, filename):
-    p = subprocess.Popen([sys.executable, 'pyarmor.py',
-                          'encrypt', '-O', output, '-i', filename])
+def obffuscate_python_scripts(output, filename, mode=None):
+    args = [sys.executable, 'pyarmor.py', 'encrypt']
+    if mode is not None:
+        args.extend(['--mode', mode])
+    args.extend(['-O', output, filename])
+    p = subprocess.Popen(args)
     p.wait()
 
 def check_default_capsule():
@@ -162,27 +165,26 @@ def main():
     name = 'bfoo'
     filename = os.path.join(output, name + '.py')
 
-    obname = 'obfoo'
-    obfilename = os.path.join(output, obname + '.pyc')
+    mode = sys.argv[2] if len(sys.argv) > 2 else '8'
+    ext = '' if mode in ('7', '8') else 'c'
 
-    if os.path.exists(os.path.basename(filename)):
-        logging.info('Test script: %s', os.path.basename(filename))
-    else:
+    obname = 'obfoo'
+    obfilename = os.path.join(output, obname + '.py' + ext)
+
+    if len(sys.argv) > 1 and 'bootstrap'.startswith(sys.argv[1]):
         check_output(output)
         logging.info('Generate test script %s ...', filename)
         make_test_script(filename)
         logging.info('Test script %s has been generated.', filename)
-
-    if os.path.exists(os.path.basename(obfilename)):
-        logging.info('Obfuscated script: %s', os.path.basename(obfilename))
-    else:
-        check_output(output)
-        logging.info('Obffuscate test script ...')
-        obffuscate_python_scripts(output, filename)
-        if not os.path.exists(filename + 'c'):
+        if mode not in ('3', '5', '6', '7', '8'):
+            logging.warning('Unsupport mode %s, use default mode 8', mode)
+            mode = '8'
+        logging.info('Obffuscate test script with mode %s...', mode)
+        obffuscate_python_scripts(output, filename, mode)
+        if not os.path.exists(filename + ext):
             logging.info('Something is wrong to obsfucate %s.', filename)
             return
-        shutil.move(filename + 'c', obfilename)
+        shutil.move(os.path.join(output, filename + ext), obfilename)
         logging.info('Generate obffuscated script %s', obfilename)
 
         logging.info('Copy benchmark.py to %s', output)
@@ -190,7 +192,21 @@ def main():
 
         logging.info('')
         logging.info('Now change to "%s"', output)
-        logging.info('Run "%s benchmark.py" again.', sys.executable)
+        logging.info('Run "%s benchmark.py".', sys.executable)
+        return
+
+    if os.path.exists(os.path.basename(filename)):
+        logging.info('Test script: %s', os.path.basename(filename))
+    else:
+        logging.warning('Test script: %s not found', os.path.basename(filename))
+        logging.info('Run "%s benchmark.py bootstrap" first.', sys.executable)
+        return
+
+    if os.path.exists(os.path.basename(obfilename)):
+        logging.info('Obfuscated script: %s', os.path.basename(obfilename))
+    else:
+        logging.warning('Obfuscated script: %s not found', os.path.basename(obfilename))
+        logging.info('Run "%s benchmark.py bootstrap" first.', sys.executable)
         return
 
     foo = __import__(name)
