@@ -488,6 +488,46 @@ else
     csih_bug "Case 2.7 FAILED: no test_mode6/co_consts.pyc found"
 fi
 
+csih_inform "Case 2.8: verify mode 7 works"
+$PYTHON pyarmor.py encrypt --mode=7 -C project.zip -O test_mode7 co_consts.py >result.log 2>&1
+if [[ -f test_mode7/co_consts.py ]] ; then
+    cd test_mode7
+    grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.py \
+        && csih_bug "Case 2.8 FAILED: co_consts still in clear text"
+    cat <<EOF > main.py
+import pyimcore
+import sys
+import co_consts
+sys.stdout.write("%s:%s:%s" % (co_consts.title, co_consts.__doc__, co_consts.hello("second")))
+EOF
+    $PYTHON main.py >result.log 2>&1 || csih_bug "Case 2.8 FAILED: run script return non-zero code"
+    grep -q "Hello:Module comment:jondy,second,bob" result.log \
+        || csih_bug "Case 2.8 FAILED: python script returns unexpected result"
+    cd ..
+else
+    csih_bug "Case 2.8 FAILED: no test_mode8/co_consts.py found"
+fi
+
+csih_inform "Case 2.9: verify mode 8 works"
+$PYTHON pyarmor.py encrypt --mode=8 -C project.zip -O test_mode8 co_consts.py >result.log 2>&1
+if [[ -f test_mode8/co_consts.py ]] ; then
+    cd test_mode8
+    grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.py \
+        && csih_bug "Case 2.9 FAILED: co_consts still in clear text"
+    cat <<EOF > main.py
+import pyimcore
+import sys
+import co_consts
+sys.stdout.write("%s:%s:%s" % (co_consts.title, co_consts.__doc__, co_consts.hello("second")))
+EOF
+    $PYTHON main.py >result.log 2>&1 || csih_bug "Case 2.9 FAILED: run script return non-zero code"
+    grep -q "Hello:Module comment:jondy,second,bob" result.log \
+        || csih_bug "Case 2.9 FAILED: python script returns unexpected result"
+    cd ..
+else
+    csih_bug "Case 2.9 FAILED: no test_mode8/co_consts.py found"
+fi
+
 #
 # Import encrypted module and run encrypted scripts
 #
