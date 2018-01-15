@@ -8,7 +8,7 @@
 #                                                           #
 #      pyarmor                                              #
 #                                                           #
-#      Version: 1.7.0 - 3.2.1                               #
+#      Version: 1.7.0 - 3.3.0                               #
 #                                                           #
 #############################################################
 #
@@ -185,7 +185,7 @@ def make_capsule(rootdir=None, filename='project.zip'):
         myzip.close()
     logging.info('Write project capsule OK.')
 
-def encrypt_files(files, prokey, mode=3, output=None):
+def encrypt_files(files, prokey, mode=8, output=None):
     '''Encrypt all the files, all the encrypted scripts will be plused with
     a suffix 'e', for example, hello.py -> hello.pye
 
@@ -196,7 +196,8 @@ def encrypt_files(files, prokey, mode=3, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ext = '.pyc' if mode == 1 or mode >= 3 else '.py' + ext_char
+    ext = '.py' if mode in (7, 8) else \
+          '.pyc' if mode in (1, 3, 4, 5, 6) else '.py' + ext_char
     if output is None:
         fn = lambda a, b: b[1] + ext
     else:
@@ -388,9 +389,13 @@ Available options:
                                 0     Encrypt both source and bytecode
                                 1     Encrypt bytecode only.
                                 2     Encrypt source code only.
-                                3     (Default) Obfuscate bytecodes.
+                                3     Obfuscate bytecodes.
                                 5     Obfuscate code object of module.
                                 6     Combine mode 3 and 4
+                                7     Obfuscate code object of module,
+                                      output wrapper scripts
+                                8     Obfuscate both code object and bytecode,
+                                      output wrapper scripts
                               Mode 0, 1, 2 is deprecated from v3.2.0, this
                               option can be ignored in general.
 
@@ -442,7 +447,7 @@ It's Following the Distutils’ own manifest template
     extfile = None
     mainname = []
     clean = False
-    mode = 3
+    mode = 8
     manifest = None
 
     for o, a in opts:
@@ -459,7 +464,7 @@ It's Following the Distutils’ own manifest template
         elif o in ('-d', '--clean'):
             clean = True
         elif o in ('-e', '--mode'):
-            if a not in ('0', '1', '2', '3', '5', '6'):
+            if a not in ('0', '1', '2', '3', '5', '6', '7', '8'):
                 raise RuntimeError('Invalid mode "%s"' % a)
             mode = int(a)
         elif o in ('-m', '--main'):
