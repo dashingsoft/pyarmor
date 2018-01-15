@@ -1,13 +1,26 @@
 # How to Obfuscate Python Script by Pyarmor
 
-From Pyarmor 3.2.0, a new mode is introduced. By this way, no import
+From Pyarmor 3.3.0, a new mode is introduced. By this way, no import
 hooker, no setprofile, no settrace. The performance of running or
-importing obfuscation python script has been remarkably improved. 
+importing obfuscation python script has been remarkably improved.
 
-## Obfuscate Python Scripts
+## Mechanism
 
-- At first, compile python source file to code objects
-  
+There are 2 ways to protect Python Scripts by Pyarmor:
+
+* Obfuscate byte code of each code object
+* Obfuscate whole code object of python module
+
+### Obfuscate Python Scripts
+
+- Compile python source file to code object
+
+```
+    char * filname = "xxx.py";
+    char * source = read_file( filename );
+    PyObject *co = Py_CompileString( source, filename, Py_file_input );
+```
+
 - Iterate code object, wrap bytecode of each code object as the
   following format
   
@@ -19,19 +32,49 @@ importing obfuscation python script has been remarkably improved.
     ... Here it's obfuscated bytecode
     ...
     
-    n   LOAD_GLOBAL              ? (__pyarmor__)
+    n   LOAD_GLOBAL              ? (__armor__)
     n+3 CALL_FUNCTION            0
     n+6 POP_TOP
     n+7 JUMP_ABSOLUTE            0
 
 ```
-- Save obfuscated code objects as .pyc or .pyo, so it can be run or
-  imported by common Python interpreter.
 
-## Run or Import Obfuscated Python Scripts
+- Serialize code object and obfuscate it
 
-Those obfuscated file (.pyc or .pyo) can be run and imported as normal
-way by common python interpreter. But when those code object is called
+```
+    char *original_code = marshal.dumps( co );
+    char *obfuscated_code = obfuscate_algorithm( original_code  );
+```
+
+- Create wrapper script "xxx.py", **${obfuscated_code}** stands for string constant generated in previous step.
+
+```
+    __pyarmor__(__name__, b'${obfuscated_code}')
+```
+
+### Run or Import Obfuscated Python Scripts
+
+When import or run this wrapper script, the first statement is to call a CFunction:
+
+```
+    int __pyarmor__(char *name, unsigned char *obfuscated_code) {
+      char *original_code = resotre_obfuscated_code( obfuscated_code );
+      PyObject *co = marshal.loads( original_code );
+      PyObject *mod = PyImport_ExecCodeModule( name, co );
+    }
+```
+
+This function accepts 2 parameters: module name and obfuscated code, then
+
+* Restore obfuscated code
+* Create a code object by original code
+* Import original module
+
+**Note: this will result in an extra frame in trace stack when importing obfuscated module.**
+
+#### Run or Import Obfuscated Bytecode
+
+After module imported, when any code object in this module is called
 first time, from the wrapped bytecode descripted in above section, we
 know
 
@@ -52,13 +95,14 @@ to run or import obfuscated bytecode:
 - Load library _pytransform at startup
 - Initialize library _pytransform at startup
 - Veirfy license at startup
+- Restore obfuscated code object of python module
 - Restore obfuscated bytecode when code object is called first time
 
 There is a script "benchmark.py" in the package of Pyarmor used to
 check performance. First run it to prepare test data
 
 ```
-python benchmark.py
+python benchmark.py bootstrap
   
 ```
 
@@ -127,7 +171,7 @@ disabled, another simple algorithm is applied. Now run "benchmark.py"
 to prepare new test data
 
 ```
-python benchmark.py
+python benchmark.py bootstrap
   
 ```
 
