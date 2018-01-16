@@ -9,6 +9,8 @@ Refer to https://github.com/dashingsoft/pyarmor/blob/v3.3.0/src/mechanism.md
 * Introduce new mode: 7, 8
 * Change default mode from 3 to 8
 * Change benchmark.py to test new mode
+* Update webapp and tutorial
+* Update usage 
 * Fix issue of py2exe, now py2exe can work with python scripts obfuscated by pyarmor
 * Fix issue of odoo, now odoo can load python modules obfuscated by pyarmor
 
