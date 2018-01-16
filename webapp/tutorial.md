@@ -7,7 +7,7 @@ the usage of WebApp.
 
 ## Download
 
-First download Pyarmor WebApp from <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.5/pyarmor-webapp.zip>
+First download Pyarmor WebApp from <https://github.com/dashingsoft/pyarmor/releases/download/v3.3.0/pyarmor-webapp.zip>
 
 Then extract it to any path, for example **/opt**. In this turorial, **/opt**
 will be as the installed path of Pyarmor WebApp. Replace it with real path when
@@ -39,7 +39,7 @@ If there is a button **Demo Version** in the top right corner of tab
 purpose of this mode is only to help users to understand the functions
 of Pyarmor, there are 2 cases:
 
-  * [Pyarmor official online demo](http://pyarmor.dashingsoft.com:9096)
+  * [Pyarmor official online demo](http://pyarmor.dashingsoft.com)
   * Open **/opt/pyarmor/webapp/index.html** in web browser directly.
 
 ## Usage
@@ -57,16 +57,13 @@ This example show how to encrypt script [/opt/pyarmor/src/examples/queens.py](..
 
 1. Encrypt script
 
-    * Type **Title**, **Base Path**, **Start Wrapper Script**, **Build Path** as the following figure
+    * Type **Title**, **Base Path**, **Startup Script**, **Build Path** as the following figure
     * Click button **Encrypt**
 
     ![](images/project-queen.jpg)
 
-    About the format of **Startup Wrapper Script**, refer to appendix [Startup Wrapper Script](#startup-wrapper-script)
-
     After this action, in the **Build Path**
-    **/opt/pyarmor/webapp/build**, enccrypted script **queens.pye**,
-    wrapper script **main.py**, and some extra files will be found.
+    **/opt/pyarmor/webapp/build**, enccrypted script **queens.py**, and some extra files will be found.
 
 2. Run it
 
@@ -74,17 +71,16 @@ This example show how to encrypt script [/opt/pyarmor/src/examples/queens.py](..
     # Encrypted files are saved here
     cd /opt/pyarmor/webapp/build
 
-    # Run ecnrypted queens.pye with arguments "6"
-    python main.py 6
+    # Run ecnrypted queens.py with arguments "6"
+    python queens.py 6
 
 ```
 
-3. Check the content of main.py
+3. Check the content of queens.py
 
 ```
     import pyimcore
-    from pytransform import exec_file
-    exec_file('queens.pye')
+    __pyarmor__(__name__, b'xxxxx')
 
 ```
 
@@ -94,23 +90,12 @@ This example show how to encrypt script [/opt/pyarmor/src/examples/queens.py](..
 
 [/opt/pyarmor/src/examples/pybench](../src/examples/pybench) is a collection of
 tests that provides a standardized way to measure the performance of Python
-implementations. This example show how to use encrypted pybench except main
-script [pybench.py](../src/examples/pybench/pybench.py) and package/\__init__.py
-
-It's possible to encrypt package/\__init__.py, but not recommended for the sake of performance.
-
-Why not encrypt [pybench.py](../src/examples/pybench/pybench.py), don't worry, you'll find answer at the end of this example. Now begin this example.
+implementations. This example show how to use encrypted pybench.
 
 #### Encrypt modules
 
-* Copy whole directory **/opt/pyarmor/src/examples/pybench** to **/opt/pyarmor/webapp/build**
-
-```
-    cp -a /opt/pyarmor/src/examples/pybench /opt/pyarmor/webapp/build
-
-```
-
 * Click button **New** to create a new project
+
 * Type **Title**, **Base Path**, **MANIFEST.in** as the following figure
 
     ![](images/project-pybench.jpg)
@@ -118,10 +103,6 @@ Why not encrypt [pybench.py](../src/examples/pybench/pybench.py), don't worry, y
     About the format of **MANIFEST.in**, refer to appendix [MANIFEST.in](#manifest.in)
 
 * Click side tab **Advanced**
-
-* Check **Remove source files after enrypt successfully.**
-
-    ![](images/project-advanced.jpg)
 
 * Click button **Save** to save project information
 
@@ -131,30 +112,12 @@ Why not encrypt [pybench.py](../src/examples/pybench/pybench.py), don't worry, y
 
 #### Run pybench to import encrypted modules
 
-* Enter path **/opt/pyarmor/webapp/build/pybench**
-
-    List content of this directory, there is only one ".py" file **pybench.py**, all the others are ".pye"
-
-* Import pyimcore in main script
-
-    It's pyimcore's due to import encrypted modules, after that use encrypted module normally.
-
-    Edit pybench.py, after the first code line 13, insert line 14
-
-```
-    13: from __future__ import print_function
-    14: import pyimcore
-```
-
 * Run pybench.py in command window
 
 ```
     cd /opt/pyarmor/webapp/build/pybench
     python pybench.py
 ```
-
-It's no problem to encrypt **[pybench.py](../src/examples/pybench/pybench.py)**
-either, but leave this work to you. Refer to first example (A tip [Startup Wrapper Script](#startup-wrapper-script))
 
 ### Bind encrypted script to one machine
 
@@ -229,34 +192,6 @@ reuse project **Queen**.
     It would not work after Christmas of 2017 even in this machine.
 
 ## Appendix
-
-### Startup Wrapper Script
-
-It used to generate a python script to call the encrypted script. The basic of
-format
-
-```
-    NAME:ALIAS.py
-```
-
-NAME means main script name, ALIAS.py is target filename. For example,
-if Startup Wrapper Script is **pybench:main.py**, after click button
-Encrypt, **main.py** will be generated. Its content would be
-
-```
-import pyimcore
-from pytransform import exec_file
-exec_file('pybench.pye')
-```
-
-Note that **pybench.pye** in the last line.
-
-If ALIAS equals NAME, it could simplify to be
-
-```
-    NAME
-
-```
 
 ### MANIFEST.in
 
