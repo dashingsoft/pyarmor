@@ -8,7 +8,7 @@ WebApp 是网页版的图形界面，它通过启动一个本地的 Web 服务�
 
 ## 下载
 
-首先是下载 Pyarmor WebApp，下载地址： <https://github.com/dashingsoft/pyarmor/releases/download/v3.1.5/pyarmor-webapp.zip>
+首先是下载 Pyarmor WebApp，下载地址： <https://github.com/dashingsoft/pyarmor/releases/download/v3.3.0/pyarmor-webapp.zip>
 
 解压下载文件到任意目录，例如 **/opt**。本教程后面的章节都是以 **/opt** 作为 WebApp 的安装路径，运行里面的例子需要把它替换成为实际的安装路径。
 
@@ -36,7 +36,7 @@ D:/tools/Python27/python server.py
 
 如果在项目页面的右上角有个 **演示版本** 的按钮，那就是说，WebApp 现在只能演示功能。通常情况下，有两种方式会进入演示模块
 
-  * [Pyarmor WebApp 官方在线版](http://pyarmor.dashingsoft.com:9096)
+  * [Pyarmor WebApp 官方在线版](http://pyarmor.dashingsoft.com)
   * 直接在文件夹打开 **/opt/pyarmor/webapp/index-zh.html**
 
 ## 使用方法
@@ -54,14 +54,12 @@ D:/tools/Python27/python server.py
 
 1. 加密
 
-    * 按照下图输入 **标题**, **源路径**, **包裹脚本**, **输出路径**
+    * 按照下图输入 **标题**, **源路径**, **启动脚本**, **输出路径**
     * 点击按钮 **加密**
 
     ![](images/zh/project-queen.jpg)
 
-    关于 **包裹脚本** 的格式，参考附录 [包裹脚本](#包裹脚本)
-
-    加密成功之后在目录 **/opt/pyarmor/webapp/build** 下面会有加密脚本 **queens.pye**，包裹脚本 **main.py** 以及相关的辅助文件。
+    加密成功之后在目录 **/opt/pyarmor/webapp/build** 下面会有加密脚本 **queens.py** 以及相关的辅助文件。
 
 2. 运行
 
@@ -72,16 +70,15 @@ D:/tools/Python27/python server.py
     cd /opt/pyarmor/webapp/build
 
     # 执行包裹脚本，并且传入命令行参数: "6"
-    python main.py 6
+    python queens.py 6
 
 ```
 
-3. 包裹脚本 **main.py** 会执行加密后的 **queens.pye**，它的内容如下
+3. 查看加密后的 **queens.py**，它的内容如下
 
 ```
     import pyimcore
-    from pytransform import exec_file
-    exec_file('queens.pye')
+    __pyarmor__(__name__, b'xxxxx')
 
 ```
 
@@ -92,67 +89,39 @@ D:/tools/Python27/python server.py
 第二个例子稍微复杂一些，使用一个真实的包 [/opt/pyarmor/src/examples/pybench](../src/examples/pybench) 。这是
 一个用来测试 Python 实现性能的小工具包，用在这里最合适不过了。
 
-在这个例子中，将会加密 **pybench** 中的所有 ".py" 文件，除了主文
-件 [pybench.py](../src/examples/pybench/pybench.py) 和
-"package/\__init__.py"，然后运行脚本 **pybench.py**，它可以像正常方式一样，使用导入后的加密模块。
-
-当然也可以加密包文件 "package/\__init__.py", 基于性能方法的考虑，不建议加密这个文件。
-
-至于为什么不加密主文件 [pybench.py](../src/examples/pybench/pybench.py), 留个小问题，在这个例子的最后揭晓答案。
+在这个例子中，将会加密 **pybench** 中的所有 ".py" 文件，然后运行脚本 **pybench.py**，它可以像正常方式一样，使用导入后的加密模块。
 
 #### 加密
 
-* 拷贝整个包 **/opt/pyarmor/src/examples/pybench** 到 **/opt/pyarmor/webapp/build**，加密后的脚本也会存放在这里
-
-```
-    cp -a /opt/pyarmor/src/examples/pybench /opt/pyarmor/webapp/build
-
-```
-
 * 点击按钮 **新建**，创建一个新的项目
-* 按照下图内容输入 **标题**, **源路径**, **MANIFEST.in**
+
+* 按照下图内容输入 **标题**, **源路径**, **输出路径**， **MANIFEST.in**
 
     ![](images/zh/project-pybench.jpg)
 
     关于 **MANIFEST.in** 的格式，参考附录 [MANIFEST.in](#manifest.in)
 
-* 点击左边的 **高级设置**
-
-* 选中 **加密文件生成后删除源文件**
-
-    ![](images/zh/project-advanced.jpg)
-
 * 点击按钮 **保存**，保存修改后的项目
 
 * 点击按钮 **加密**
 
-    因为 **输出路径** 是空，所有加密后的脚本会和源文件一样存放在 **源路径** **/opt/pyarmor/webapp/build/pybench** 下面，并且删除了相应的 ".py" 源文件。
+    所有加密后的脚本存放在 **输出路径** **/opt/pyarmor/webapp/build/pybench** 下面
 
 #### 运行
 
-* 打开文件夹 **/opt/pyarmor/webapp/build/pybench**
-
-    在这个文件夹中，只有一个 ".py" 文件 **pybench.py**，其他的都是 ".pye"
-
-* 导入模块 **pyimcore**
-
-    模块 **pyimcore** 负责导入加密模块，导入后的加密模块使用方式和之前没有任何改变。
-
-    使用编辑器打开 **pybench.py**，在第一个代码行（第13行）后面，如下所示，插入一行（第14行）
-
-```
-    13: from __future__ import print_function
-    14: import pyimcore
-```
-
-* 运行脚本 pybench.py
+* 运行加密脚本 pybench.py
 
 ```
     cd /opt/pyarmor/webapp/build/pybench
     python pybench.py
 ```
 
-现在回答开始的问题，事实上，也可以把主脚本 **[pybench.py](../src/examples/pybench/pybench.py)** 加密，具体怎么做，参考第一个例子（提示：[包裹脚本](#包裹脚本)）
+* 查看加密脚本 **pybench.py**
+
+```
+    import pyimcore
+    __pyarmor__(__name__, b'xxx')
+```
 
 ### 绑定加密脚本到指定机器
 
@@ -223,40 +192,13 @@ D:/tools/Python27/python server.py
 
 ```
     cd /opt/pyarmor/webapp/build
-    python main.py 6
+    python queens.py 6
 
 ```
 这个加密脚本只能在本机运行到2071年的圣诞节。在圣诞节之后，就会出错。
 
 
 ## 附录
-
-### 包裹脚本
-
-包裹脚本主要用来直接调用加密后脚本，它的标准格式为
-
-```
-    NAME:ALIAS.py
-```
-
-NAME 是主脚本的名称，ALIAS.py 是 WebApp 输出的包裹脚本的文件名称。 例如
-**pybench:main.py**, 在加密后的输出路径里面，将会生成包裹脚本
-**main.py** ，它的内容如下
-
-```
-import pyimcore
-from pytransform import exec_file
-exec_file('pybench.pye')
-```
-
-注意最后一行的 **pybench.pye**
-
-如果 ALIAS 和 NAME 相同，可以简化为
-
-```
-    NAME
-
-```
 
 ### MANIFEST.in
 

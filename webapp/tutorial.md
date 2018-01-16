@@ -96,7 +96,7 @@ implementations. This example show how to use encrypted pybench.
 
 * Click button **New** to create a new project
 
-* Type **Title**, **Base Path**, **MANIFEST.in** as the following figure
+* Type **Title**, **Base Path**, **Build Path**, **MANIFEST.in** as the following figure
 
     ![](images/project-pybench.jpg)
 
@@ -108,7 +108,7 @@ implementations. This example show how to use encrypted pybench.
 
 * Click button **Encrypt**
 
-    Because **Build Path** is empty, all the encrypted files will saved in **Base Path**
+    All the encrypted files will saved in **Build Path**
 
 #### Run pybench to import encrypted modules
 
@@ -117,6 +117,13 @@ implementations. This example show how to use encrypted pybench.
 ```
     cd /opt/pyarmor/webapp/build/pybench
     python pybench.py
+```
+
+* Check encrypted file "pybench.py"
+
+```
+    import pyimcore
+    __pyarmor__(__name__, b'xxx')
 ```
 
 ### Bind encrypted script to one machine
@@ -160,11 +167,11 @@ script has been saved in **/opt/pyarmor/webapp/build**.
     cp /opt/pyarmor/webapp/projects/project-2/license-0.lic /opt/pyarmor/webapp/build/license.lic
 ```
 
-* Run main.py again
+* Run queens.py again
 
 ```
     cd /opt/pyarmor/webapp/build
-    python main.py
+    python queens.py
 
 ```
 
