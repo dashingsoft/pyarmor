@@ -1,3 +1,17 @@
+3.3.0
+-----
+In this version, new obfuscate mode 7 and 8 are introduced. The main
+difference is that obfuscated script now is a normal python file (.py)
+other than compiled script (.pyc), so it can be used as common way. 
+
+Refer to https://github.com/dashingsoft/pyarmor/blob/v3.3.0/src/mechanism.md
+
+* Introduce new mode: 7, 8
+* Change default mode from 3 to 8
+* Change benchmark.py to test new mode
+* Fix issue of py2exe, now py2exe can work with python scripts obfuscated by pyarmor
+* Fix issue of odoo, now odoo can load python modules obfuscated by pyarmor
+
 3.2.1
 -----
 * Fix issue: the traceback of an exception contains the name "<pytransform>" instead of the correct module name
