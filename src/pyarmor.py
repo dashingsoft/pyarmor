@@ -535,18 +535,19 @@ It's Following the Distutils’ own manifest template
         logging.info('Remove private key %s in the output', prikey)
         os.remove(prikey)
 
-    for name in mainname:
-        n = name.find(':')
-        if n == -1:
-            script = os.path.join(output, name + '.py')
-        else:
-            script = os.path.join(output, name[n+1:])
-            name = name[:n]
-        logging.info('Writing script wrapper %s ...', script)
-        ch = 'c' if mode == 1 or mode == 3 else ext_char
-        with open(script, 'w') as f:
-            f.write(wrap_runner % (name + '.py' + ch))
-        logging.info('Write script wrapper OK.')
+    if mode not in (7, 8):
+        for name in mainname:
+            n = name.find(':')
+            if n == -1:
+                script = os.path.join(output, name + '.py')
+            else:
+                script = os.path.join(output, name[n+1:])
+                name = name[:n]
+            logging.info('Writing script wrapper %s ...', script)
+            ch = 'c' if mode == 1 or mode == 3 else ext_char
+            with open(script, 'w') as f:
+                f.write(wrap_runner % (name + '.py' + ch))
+            logging.info('Write script wrapper OK.')
 
     filelist = _parse_file_args(args, srcpath=srcpath)
     if manifest is not None:
@@ -561,7 +562,16 @@ It's Following the Distutils’ own manifest template
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key %s' % prokey)
         logging.info('Encrypt files ...')
-        encrypt_files(filelist, prokey, mode, None if inplace else output)
+        encrypt_files(filelist, prokey, mode, None if inplace else output)        
+        if mode in (7, 8):
+            for name in mainname:
+                script = os.path.join(output, name + '.py')
+                with open(script, 'r') as f:
+                    source = f.read()
+                logging.info('Patch entry script %s.', script)
+                with open(script, 'w') as f:
+                    f.write('import pyimcore\n')
+                    f.write(source)
         logging.info('Encrypt files OK.')
 
 @checklicense
