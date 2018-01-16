@@ -16,7 +16,7 @@ There are 2 ways to protect Python Scripts by Pyarmor:
 - Compile python source file to code object
 
 ```
-    char * filname = "xxx.py";
+    char * filename = "xxx.py";
     char * source = read_file( filename );
     PyObject *co = Py_CompileString( source, filename, Py_file_input );
 ```
