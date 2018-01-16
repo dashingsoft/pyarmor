@@ -164,6 +164,8 @@ run benchmark.py again. In my laptop, the output is
 
 ```
     cd test-bench
+    
+    # Run this command more times to check the results
     python benchmark.py
     
     load_pytransform: 1.93544151561 ms
@@ -194,8 +196,7 @@ is bind to fixed machine, for example, mac address, it need more time
 to read hardware information.
 
 import_obfuscated_module will first restore obfuscated code object,
-then import this pre-compiled code object. import_no_obfuscated_module
-need time to compile source script, so it spends more time.
+then import this pre-compiled code object. 
 
 The bytecode size of function one_thousand is about 1K, and
 ten_thousand is about 10K. Most of them will not be executed, because
