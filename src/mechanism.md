@@ -68,9 +68,8 @@ This function accepts 2 parameters: module name and obfuscated code, then
 
 * Restore obfuscated code
 * Create a code object by original code
-* Import original module
-
-**Note: this will result in an extra frame in trace stack when importing obfuscated module.**
+* Import original module **(this will result in a duplicated frame in
+  Traceback)**
 
 #### Run or Import Obfuscated Bytecode
 
@@ -87,6 +86,52 @@ know
 - After function call, the last instruction is to jump to
   offset 0. The really bytecode now is executed.
 
+## Usage
+
+In Pyarmor 3.3, there are 2 modes to obfucate python scripts:
+
+* mode 7: only code object of python module is obfuscated, it's almost
+  quickly as no obfuscated module.
+  
+```
+    python pyarmor.py --with-capsule=project.zip --output=dist --mode=7 foo.py
+    
+```
+
+* mode 8: both code object and bytecode are obfuscated, it's slower
+  but more secure. It's the default mode.
+
+```
+    python pyarmor.py --with-capsule=project.zip --output=dist --mode=8 foo.py
+
+```
+
+### Change Obfuscated Algorithm
+
+For mode 8, there is another option which could reduce the elapsed
+time
+
+```
+    # First change to src path of pyarmor
+    cd ..
+    
+    # Edit pytransform.py
+    vi pytransform.py
+    
+    # Uncomment line 187
+    
+        # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
+    
+    # Change to
+    
+        m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
+        
+```
+
+By default, bytecode will be encrypted by DES algorithm. If it's
+disabled, another simple algorithm is applied, it's fater than DES
+remarkably.
+
 ## Performance Analaysis
 
 With default configuration, Pyarmor will do the following extra work
@@ -102,38 +147,55 @@ There is a script "benchmark.py" in the package of Pyarmor used to
 check performance. First run it to prepare test data
 
 ```
-python benchmark.py bootstrap
-  
+    python benchmark.py bootstrap MODE
+
+```
+
+**MODE** could be 7, 8, and the default value is 8
+
+For example,
+
+```
+    python benchmark.py bootstrap
 ```
 
 It will create directory "test-bench", change to this directory, and
 run benchmark.py again. In my laptop, the output is
 
 ```
-cd test-bench
-python benchmark.py
-
-load_pytransform: 1.65887005192 ms
-init_pytransform: 1.31916207227 ms
-verify_license: 0.771047716958 ms
-
-Test script: bfoo.py
-Obfuscated script: obfoo.pyc
-
-run_empty_no_obfuscated_code_object: 0.00446984183744 ms
-run_empty_obfuscated_code_object: 0.0430222276854 ms
-
-run_one_thousand_no_obfuscated_bytecode: 0.0041904767226 ms
-run_one_thousand_obfuscated_bytecode: 0.120126999381 ms
-
-run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
-run_ten_thousand_obfuscated_bytecode: 0.72551120324 ms
-
+    cd test-bench
+    python benchmark.py
+    
+    load_pytransform: 1.93544151561 ms
+    init_pytransform: 1.29848905378 ms
+    verify_license: 0.727187393929 ms
+    
+    Test script: bfoo.py
+    Obfuscated script: obfoo.py
+    Start test with mode 8
+    --------------------------------------
+    
+    import_no_obfuscated_module: 0.315403214654 ms
+    import_obfuscated_module: 1.37224144409 ms
+    
+    run_empty_no_obfuscated_code_object: 0.00474920695228 ms
+    run_empty_obfuscated_code_object: 0.0441396881447 ms
+    
+    run_one_thousand_no_obfuscated_bytecode: 0.00502857206712 ms
+    run_one_thousand_obfuscated_bytecode: 0.117333348233 ms
+    
+    run_ten_thousand_no_obfuscated_bytecode: 0.00642539764132 ms
+    run_ten_thousand_obfuscated_bytecode: 0.726908028814 ms
+    
 ```
 
 Here it's a normal license checked by verify_license. If the license
 is bind to fixed machine, for example, mac address, it need more time
 to read hardware information.
+
+import_obfuscated_module will first restore obfuscated code object,
+then import this pre-compiled code object. import_no_obfuscated_module
+need time to compile source script, so it spends more time.
 
 The bytecode size of function one_thousand is about 1K, and
 ten_thousand is about 10K. Most of them will not be executed, because
@@ -145,61 +207,39 @@ In obfuscated mode, it's about 0.1 ms for 1K bytecoe, and 0.7~0.8 ms
 for 10K bytecode in my laptop. It's mainly consumed by restoring
 obfuscated bytecodes.
 
-If you really care about performance, there is another option which
-could reduce the elapsed time here.
-
+Now let's test mode 7
 
 ```
-# First change to src path of pyarmor
-cd ..
-
-# Edit pytransform.py
-vi pytransform.py
-
-# Uncomment line 187
-
-    # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
-
-# Change to
-
-    m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
+    cd ..
+    python benchmark.py bootstrap 7
+    
+    cd test-bench
+    python benchmark.py
+    
+    load_pytransform: 1.74212085614 ms
+    init_pytransform: 1.29625413286 ms
+    verify_license: 0.757079461216 ms
+    
+    Test script: bfoo.py
+    Obfuscated script: obfoo.py
+    Start test with mode 7
+    --------------------------------------
+    
+    import_no_obfuscated_module: 0.325739723903 ms
+    import_obfuscated_module: 1.32474937457 ms
+    
+    run_empty_no_obfuscated_code_object: 0.00446984183744 ms
+    run_empty_obfuscated_code_object: 0.00363174649292 ms
+    
+    run_one_thousand_no_obfuscated_bytecode: 0.00502857206712 ms
+    run_one_thousand_obfuscated_bytecode: 0.00363174649292 ms
+    
+    run_ten_thousand_no_obfuscated_bytecode: 0.006984127871 ms
+    run_ten_thousand_obfuscated_bytecode: 0.00391111160776 ms
     
 ```
-
-By default, bytecode will be encrypted by DES algorithm. If it's
-disabled, another simple algorithm is applied. Now run "benchmark.py"
-to prepare new test data
-
-```
-python benchmark.py bootstrap
-  
-```
-
-It will update test files in output path "test-bench", change to this
-directory, run "benchmark.py" again. In my laptop, the output is
-
-
-```
-cd test-bench
-python benchmark.py
-
-load_pytransform: 1.78905419544 ms
-init_pytransform: 1.32139699319 ms
-verify_license: 0.759314382135 ms
-
-Test script: bfoo.py
-Obfuscated script: obfoo.pyc
-
-run_empty_no_obfuscated_code_object: 0.00502857206712 ms
-run_empty_obfuscated_code_object: 0.00474920695228 ms
-
-run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
-run_one_thousand_obfuscated_bytecode: 0.00642539764132 ms
-
-run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
-run_ten_thousand_obfuscated_bytecode: 0.0287746068285 ms
-
-```
+Notice it almost spends same time with no obfuscate scripts. Because
+bytecode of each code object isn't obfuscated.
 
 # DEPRECATED Mode
 
