@@ -566,7 +566,7 @@ It's Following the Distutils’ own manifest template
         if mode in (7, 8):
             for name in mainname:
                 script = os.path.join(
-                    output, name + ('' if name.endswith('.py') else '.py')
+                    output, name + ('' if name.endswith('.py') else '.py'))
                 with open(script, 'r') as f:
                     source = f.read()
                 logging.info('Patch entry script %s.', script)
