@@ -168,7 +168,7 @@ D:/tools/Python27/python server.py
 
 ```
     cd /opt/pyarmor/webapp/build
-    python main.py 6
+    python queens.py 6
 
 ```
 

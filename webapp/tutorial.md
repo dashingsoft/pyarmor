@@ -175,7 +175,7 @@ script has been saved in **/opt/pyarmor/webapp/build**.
 
 ```
 
-It would not work if you run main.py in other machine.
+It would not work if you run queens.py in other machine.
 
 ### Expire encrypted script on some day
 
@@ -194,7 +194,7 @@ reuse project **Queen**.
 
 * Replace **/opt/pyarmor/webapp/build/license.lic** with this file as above example
 
-* Run main.py again
+* Run queens.py again
 
     It would not work after Christmas of 2017 even in this machine.
 
