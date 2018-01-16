@@ -102,6 +102,14 @@ def load_pytransform():
     return m
 
 @metricmethod
+def import_no_obfuscated_module(name):
+    return __import__(name)
+
+@metricmethod
+def import_obfuscated_module(name):
+    return __import__(name)
+
+@metricmethod
 def run_empty_obfuscated_code_object(foo):
     return foo.empty()
 
@@ -181,15 +189,18 @@ def main():
             mode = '8'
         logging.info('Obffuscate test script with mode %s...', mode)
         obffuscate_python_scripts(output, filename, mode)
-        if not os.path.exists(filename + ext):
+        if not os.path.exists(os.path.join(output, filename + ext)):
             logging.info('Something is wrong to obsfucate %s.', filename)
             return
         shutil.move(os.path.join(output, filename + ext), obfilename)
         logging.info('Generate obffuscated script %s', obfilename)
 
         logging.info('Copy benchmark.py to %s', output)
-        shutil.copy('benchmark.py', output)
-
+        with open('benchmark.py') as f:
+            lines = f.read()
+        with open(os.path.join(output, 'benchmark.py'), 'w') as f:
+            f.write(lines.replace("else '8'", "else '%s'" % mode))
+        # shutil.copy('benchmark.py', output)
         logging.info('')
         logging.info('Now change to "%s"', output)
         logging.info('Run "%s benchmark.py".', sys.executable)
@@ -209,8 +220,12 @@ def main():
         logging.info('Run "%s benchmark.py bootstrap" first.', sys.executable)
         return
 
-    foo = __import__(name)
-    obfoo = __import__(obname)
+    logging.info('Start test with mode %s', mode)
+    logging.info('--------------------------------------')
+
+    logging.info('')
+    foo = import_no_obfuscated_module(name)
+    obfoo = import_obfuscated_module(obname)
 
     logging.info('')
     run_empty_no_obfuscated_code_object(foo)
