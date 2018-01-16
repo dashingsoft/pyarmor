@@ -9,16 +9,13 @@ All of first,
 
 Then following the steps below to learn how to use [Pyarmor]
 
-## Import encrypted module
-
-The common usage for Pyarmor is to encrypted some python modules,
-import them in normal python environments.
+## Run and Import encrypted module
 
 [pybench](examples/pybench) is a collection of tests that provides a
 standardized way to measure the performance of Python
-implementations. It's an exactly one package to verify this
-feature. We'll encrypted 2 scripts [Strings.py](examples/Strings.py)
-and [Lists.py](examples/Lists.py), then import them by pybench.
+implementations. It's an exactly one package to verify this feature.
+
+First,
 
 ### Generate a project capsule
 
@@ -39,43 +36,51 @@ Generally, one capsule is only used for one project.
 Use command "encrypt"
 
 ``` bash
-    python pyarmor.py encrypt --with-capsule=pybench.zip --in-place --output=dist --src=examples/pybench Lists.py Strings.py
+    python pyarmor.py encrypt --with-capsule=pybench.zip --output=dist/pybench --src=examples/pybench "*.py"
+    python pyarmor.py encrypt --with-capsule=pybench.zip --output=dist/pybench/package --src=examples/pybench/package "*.py"
 ```
 
 * --with-capsule specifies project capsule generated above. It's required.
-* --in-place tell pyarmor save encrypted files in the same path of original file
 * --src specifies relative path of scripts
+* Quotation mark is required for argument "*.py", otherwise selected files is in the current path other than **src** path.
 
-This command will encrypt two scripts saved to
-
-```
-    examples/pybench/Lists.pye
-    examples/pybench/Strings.pye
-```
-
-and generate some extra files in the output path "dist":
+This command will encrypte all scripts of pybench and saved to "dist/pybench"
 
 ```
-    pyshield.key
-    pyshield.lic
-    product.key
-    * license.lic
-
-    pyimcore.py
-    pytransform.py
-    _pytransofrm.dll or _pytransofrm.so
+    ls dist/pybench
+    
+    _pytransform.dll  Dict.py        Lookups.py       pyimcore.py     systimes.py
+    Arithmetic.py     Exceptions.py  NewInstances.py  pyshield.key    Tuples.py
+    Calls.py          Imports.py     Numbers.py       pyshield.lic    Unicode.py
+    clockres.py       Instances.py   package          pytransform.py  With.py
+    CommandLine.py    license.lic    product.key      Setup.py
+    Constructs.py     Lists.py       pybench.py       Strings.py
+        
 ```
 
-### Imported encrypted module
+All of the .py files here are obfuscated like this:
 
-* Copy all the files in the path "dist/" to "examples/pybench"
-* Add one line "import pyimcore" in the file "examples/pybench/pybench.py"
-* Remove "examples/pybench/Lists.py" and "examples/pybench/Strings.py"
-* Run pybench.py
+```
+    __pyarmor__(__name__, b'xxxxxxxxxxx')
+```
 
-Both Lists.py and Strings.py are removed, they are replaced with
-"Lists.pye" and "Strings.pye". pybench.py still works, that's what
-pyarmor does.
+### Run and Imported encrypted module
+
+* Edit **dist/pybench/pybench.py**, insert a line "import pyimcore" like this:
+
+```
+    import pyimcore
+    __pyarmor__(__name__, b'xxx...')
+    
+```
+
+* Run obfuscated script
+
+```
+    cd dist/pybench
+    python pybench.py
+
+```
 
 ## Bind encrypted script to fix machine or expired it
 
@@ -84,9 +89,9 @@ machine, or expired it at some point. Pyarmor command "license" is
 just for this case.
 
 Command "encrypt" generates some extra files include "license.lic". In
-above example, it's in the output path "dist". It's necessary to run
-or import encrypted scripts. This file is a part of project capsule,
-can be used in any machine and never expired.
+above example, it's in the output path "dist/pybench". It's necessary
+to run or import encrypted scripts. This file is a part of project
+capsule, can be used in any machine and never expired.
 
 Command "license" will generate special "license.lic", which could be
 bind to fixed machine or expired.
@@ -103,94 +108,158 @@ Now let's generate a license file bind to this machine, first got
 
 Run command "license"
 ```
-    python pyarmor.py encrypt --with-capsule=pybench.zip --bind-disk "100304PBN2081SF3NJ5T"
+    python pyarmor.py license --with-capsule=pybench.zip --bind-disk "100304PBN2081SF3NJ5T"
 ```
 
 This command will generate a "license.lic.txt" in the current path.
 
 Continue above example, replace "examples/pybench/license.lic" with this "license.lic.txt"
 ```
-    cp license.lic.txt examples/pybench/license.lic
+    cp license.lic.txt dist/pybench/license.lic
 ```
 
 Run pybench.py again
 
 ``` bash
-    cd examples/pybench
+    cd dist/pybench
     python pybench.py
 ```
 
-It should work in this machine. If you copy "examples/pybench" to
-other machine, it will failed to run pybench.py because encrypted
-modules "Strings.pye" and "Lists.pye" could not be imported
+It should work in this machine. If you copy "dist/pybench" to
+other machine, it will failed to run pybench.py.
 
 ### Generate a expired license
 ```
-    python pyarmor.py encrypt --with-capsule=pybench.zip --expired-date=2018-05-30
+    python pyarmor.py license --with-capsule=pybench.zip --expired-date=2018-05-30
 ```
 The "license.lic.txt" generate by this command will expired on May 30, 2018
 
 ### Combined license
 ```
-    python pyarmor.py encrypt --with-capsule=pybench.zip --expired-date=2018-05-30 --bind-disk "100304PBN2081SF3NJ5T"
+    python pyarmor.py license --with-capsule=pybench.zip --expired-date=2018-05-30 --bind-disk "100304PBN2081SF3NJ5T"
 ```
 
 The "license.lic.txt" generate by this command will expired on May 30,
 2018 and only could be used in this machine.
 
-## Run encrypted script
+## Examples
 
-[examples/queens.py](examples/queens.py) is a script to solve eight
-queens problem. This example show you how to run encrypted queens.py
+### Use odoo with obfuscated module scripts
 
-### Generate a project capsule
-```
-    python pyarmor.py capsule project
-```
-
-This command will generate "project.zip" in current path.
-
-### Encrypt script
-```
-    python pyarmor.py encrypt --with-capsule=project2.zip --main=queens --output=examples/runtime examples/queens.py
-```
-* --main tells pyarmor generate a wrapper script named "queens.py" in output path.
-
-After this command, the script "queens.py" will be encrypted and saved
-to "examples/runtime/queens.pye" , and all the extra files to run
-encrypted "queens.pye" in the output path "examples/runtime".
-
-The file list of "examples/runtime"
+There is a odoo module "odoo_web_login":
 
 ```
-    pyshield.key
-    pyshield.lic
-    product.key
-    license.lic
+    odoo_web_login/
+        __init__.py
+        mod_a.py
+        mod_b.py
+        
+        controller/
+            __init__.py
+            mod_c.py
+      
+```
 
-    pyimcore.py
-    pytransform.py
-    _pytransofrm.dll or _pytransofrm.so
+Now run the following command in the src path of Pyarmor:
 
-    queens.py
-    queens.pye
+```
+    # Generate capsule at first
+    python pyarmor.py capsule myodoo
+    
+    # Obfuscate scripts, assume ${src} is the parent path of "odoo_web_login"
+    python pyarmor.py encrypt --with-capsule=myodoo.zip --output=dist/odoo_web_login --src=${src}/odoo_web_login "*.py"
+    python pyarmor.py encrypt --with-capsule=myodoo.zip --output=dist/odoo_web_login/controller --src=${src}/odoo_web_login/controller "*.py"
+    
+    # Edit "dist/odoo_web_login/__init__.py", insert a line "import pyimcore" before the first line
+    
+    # Copy obfuscated scripts and all extra files to ${src}. Note: it will overwrite original scripts
+    cp dist/odoo_web_login/* ${src}/odoo_web_login
+    cp dist/odoo_web_login/controller/* ${src}/odoo_web_login/controller
+    
+    # Restart odoo again.
+```
+
+### Use py2exe with obfuscated scripts
+
+First install py2exe, run py2exe-0.6.9.win32-py2.7.exe
+
+There is an example of py2exe: **C:/Python27/Lib/site-packages/py2exe/samples/simple**
+
+Edit **setup.py**, comment line 33 if you don't have wxPython installed
+
+```
+    # windows = ["test_wx.py"],
+    console = ["hello.py"],
+```
+
+Run py2exe, 
+
+```
+    cd C:/Python27/Lib/site-packages/py2exe/samples/simple
+    C:/Python27/python setup.py py2exe
+```
+
+Then encrypt python scripts
+
+```
+    cd ${pyarmor_installed_path}
+    C:/Python27/python pyarmor.py capsule myproject
+    C:/Python27/python pyarmor.py encrypt --with-capsule=myproject.zip --output=dist \
+                       --src=C:/Python27/Lib/site-packages/py2exe/samples/simple \
+                       hello.py
+```
+
+Edit **dist/hello.py**, insert "import pyimcore" at the begin of this
+script. Only main script need this patch, all the other modules need nothing to do.
+
+
+Copy all the py file to source path **simple**
+
+```
+    cd dist
+    cp  pyimcore.py pytransform.py hello.py C:/Python27/Lib/site-packages/py2exe/samples/simple
 
 ```
 
-### Run encrypted script
+Copy all the others file to py2exe's dist
 
-``` bash
-    cd examples/runtime
-    python queens.py -n 8
+```
+    cp _pytransform.dll pyshield.lic pyshield.key product.key license.lic \
+       C:/Python27/Lib/site-packages/py2exe/samples/simple/dist
 ```
 
-Note that this queens.py is wrapper to run encrypted queens.pye, the
-content of it would be
+Edit **setup.py** again, add an extra line:
 
-``` python
-import pyimcore
-from pytransform import exec_file
-exec_file("queens.pye")
+```
+    py_modules = ["pyimcore", "pytransform"], 
+```
+
+Patch **pytransform.py**,
+
+```
+    1. Comment line 188~189
+    
+    # if not os.path.abspath('.') == os.path.abspath(path):
+    #    m.set_option('pyshield_path'.encode(), path.encode())
+
+    2. Replace line 181 with
+    
+    m = cdll.LoadLibrary('_pytransform.dll')
+
+```
+
+Run py2exe again:
+
+```
+    cd C:/Python27/Lib/site-packages/py2exe/samples/simple
+    C:/Python27/python setup.py py2exe
+```
+
+Now run "hello.exe"
+
+```
+    cd dist
+    ./hello.exe
 ```
 
 # Command Line Options
