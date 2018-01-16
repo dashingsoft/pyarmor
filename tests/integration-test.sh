@@ -528,6 +528,29 @@ else
     csih_bug "Case 2.9 FAILED: no test_mode8/co_consts.py found"
 fi
 
+csih_inform "Case 2.10: obfuscate empty script with mode 7"
+cat <<EOF > empty.py
+EOF
+$PYTHON pyarmor.py encrypt --mode=7 -C project.zip -O test_mode7 empty.py >result.log 2>&1
+if [[ ! -f test_mode7/empty.py ]] ; then
+    csih_bug "Case 2.10 FAILED: no test_mode7/empty.py found"
+fi
+
+csih_inform "Case 2.11: obfuscate empty script with mode 8"
+$PYTHON pyarmor.py encrypt --mode=8 -C project.zip -O test_mode8 empty.py >result.log 2>&1
+if [[ ! -f test_mode8/empty.py ]] ; then
+    csih_bug "Case 2.11 FAILED: no test_mode8/empty.py found"
+fi
+
+csih_inform "Case 2.12: test main script with mode 8"
+cp empty.py empty2.py
+$PYTHON pyarmor.py encrypt --mode=8 -C project.zip -O test_mode8 -m empty2 empty2.py >result.log 2>&1
+if [[ -f test_mode8/empty2.py ]] ; then
+    grep -q "import pyimcore" test_mode8/empty2.py || csih_bug "Case 2.12 FAILED: no main entry generated"
+else
+    csih_bug "Case 2.12 FAILED: no test_mode8/empty2.py found"
+fi
+
 #
 # Import encrypted module and run encrypted scripts
 #
