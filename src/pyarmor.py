@@ -562,10 +562,11 @@ It's Following the Distutils’ own manifest template
         if not os.path.exists(prokey):
             raise RuntimeError('Missing project key %s' % prokey)
         logging.info('Encrypt files ...')
-        encrypt_files(filelist, prokey, mode, None if inplace else output)        
+        encrypt_files(filelist, prokey, mode, None if inplace else output)
         if mode in (7, 8):
             for name in mainname:
-                script = os.path.join(output, name + '.py')
+                script = os.path.join(
+                    output, name + ('' if name.endswith('.py') else '.py')
                 with open(script, 'r') as f:
                     source = f.read()
                 logging.info('Patch entry script %s.', script)
@@ -688,7 +689,7 @@ For example,
     if binddisk:
         logging.info('License file bind to harddisk "%s"', binddisk)
         fmt = '%s*HARDDISK:%s' % (fmt, binddisk)
-    
+
     if bindmac:
         logging.info('License file bind to mac addr "%s"', key)
         fmt = '%s*IFMAC:%s' % (fmt, bindmac)
