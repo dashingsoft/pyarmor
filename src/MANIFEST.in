@@ -2,3 +2,4 @@ include README.rst usage.md
 include pyshield.key pyshield.lic public.key product.key license.lic
 recursive-include examples *.py README LINCESE
 graft platforms
+exclude platforms/*.zip platforms/*.sh
