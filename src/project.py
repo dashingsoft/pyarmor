@@ -96,7 +96,7 @@ class Project(dict):
             return filelist
             
         results = []
-        buildtime = self.get('build_time', 1.f)
+        buildtime = self.get('build_time', 1.)
         for x in filelist:
             if os.path.getmtime(x) > buildtime:
                 results.append(x)
@@ -128,6 +128,29 @@ class Project(dict):
             if oldpath is not None:
                 os.chdir(oldpath)
         return filelist.files
+
+    def add_license(self, code, title, source):
+        self.licenses[code] = dict(title=title, source=source)
+
+    def remove_license(self, code, path=''):
+        if code in self.licenses:
+            lic = self.licenses.pop(code)            
+            
+            licfile = lic['source']
+            if not os.path.isabs(licfile):
+                licfile = os.path.join(path, licfile)
+            os.remove(licfile)
+
+            try:
+                os.rmdir(os.path.dirname(licfile))
+            except OSError:
+                pass
+            
+    def add_target(self, name, platform=None, licode=None):
+        self.targets[name] = dict(platform=platform, license=licode)
+
+    def remove_target(self, name):
+        self.targets.pop(name)
 
     def _update(self, kwargs):
         result = []

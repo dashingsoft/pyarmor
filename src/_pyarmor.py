@@ -59,7 +59,8 @@ from config import  version, version_info, trial_info, \
                     platform, dll_ext, dll_name
 
 from project import Project
-from utils import make_capsule, build_manifest, obfuscate_scripts, make_runtime, make_project_license
+from utils import make_capsule, obfuscate_scripts, make_runtime, \
+    make_project_license, show_hd_info
 
 def armorcommand(func):
     def wrap(*args, **kwargs):
@@ -154,7 +155,8 @@ def _info(args):
 @armorcommand
 def _build(args):
     cfile = args.project
-    logging.info('Build project %s ...', os.path.dirname(cfile))
+    ppath = os.path.dirname(cfile)
+    logging.info('Build project %s ...', ppath)
 
     project = Project()
     project.load(cfile)
@@ -171,27 +173,115 @@ def _build(args):
         output = os.path.join(project.output, t)
         mode = project.get_obfuscate_mode()
         files = project.get_build_files(args.force)
-        obfuscate_scripts(files, mode, capsule, output)
+        pairs = obfuscate_scripts(files, mode, capsule, output)
 
+        n = len(output)
         for x in targets[1:]:
-            pass
-            
+            output = os.path.join(project.output, x)
+            copypairs = []
+            dirs = [ output ]
+            for _a, f in pairs:
+                p = os.path.join(output, os.path.dirname(f[n+1:]))
+                copypairs.append((f, p))
+                dirs.append(p)
+
+            for x in set(dirs):
+                if not os.path.exists(x):
+                    os.makedirs(x)
+
+            for src, dst in copypairs:
+                shutil.copy2(src, dst)
+
         project.build_time = time.time()
 
     if not args.no_runtime:
         capsule = project.capsule
         for x in targets:
             platform, licfile = project.get_target(x)
+            if os.path.abspath(licfile):
+                licfile = os.path.join(ppath, licfile)
             output = os.path.join(project.output, x)
             make_runtime(capsule, output, licfile, platform)
 
 @armorcommand
 def _license(args):
-    pass
+    cfile = args.project
+    ppath = os.path.dirname(cfile)
+    logging.info('Build project %s ...', ppath)
+
+    project = Project()
+    project.load(cfile)
+
+    if args.remove:
+        for c in args.code:
+            project.remove_license(code, ppath)
+        return
+
+    if args.expired is None:
+        fmt = ''
+    else:
+        fmt = '*TIME:%.0f\n' % \
+              time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
+
+    if args.bind_harddisk:
+        fmt = '%s*HARDDISK:%s' % (fmt, args.bind_harddisk)
+
+    if args.bind_mac:
+        fmt = '%s*IFMAC:%s' % (fmt, args.bind_mac)
+
+    if args.bind_ipv4:
+        fmt = '%s*IFIPV4:%s' % (fmt, args.bind_ipv4)
+
+    if args.bind_ipv6:
+        fmt = '%s*IFIPV6:%s' % (fmt, args.bind_ipv6)
+
+    if args.bind_domain:
+        fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
+
+    # if args.bind_file:
+    #     if os.path.exists(args.bind_file):
+    #         f = open(args.bind_file, 'rb')
+    #         s = f.read()
+    #         f.close()
+    #         if sys.version_info[0] == 3:
+    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s.decode())
+    #         else:
+    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s)
+    #     else:
+    #         raise RuntimeError('Bind file %s not found' % bindfile)
+
+    licpath = os.path.join(ppath, 'licenses')
+    if not os.path.exists(licpath):
+        os.mkdir(licpath)
+
+    # To be sure there is a blank before code
+    if not fmt == '':
+        fmt = fmt + ' '
+
+    capsule = project.capsule
+    for c in args.code:
+        output = os.path.join(licpath, code)
+        if not os.path.exits(output):
+            os.mkdir(output)
+        source = os.path.join(output, 'license.lic')
+        title = fmt + c
+        make_project_license(capsule, title, source)
+        project.add_license(c, title, source)
 
 @armorcommand
 def _target(args):
-    pass
+    cfile = args.project
+    ppath = os.path.dirname(cfile)
+    logging.info('Build project %s ...', ppath)
+
+    project = Project()
+    project.load(cfile)
+
+    if args.remove:
+        project.remove_target(args.name)
+        return
+
+    project.add_target(args.name, args.platform, args.license)
 
 @armorcommand
 def _obfuscate(args):
@@ -199,7 +289,14 @@ def _obfuscate(args):
 
 @armorcommand
 def _check(args):
-    pass
+    cfile = args.project
+    ppath = os.path.dirname(cfile)
+    logging.info('Build project %s ...', ppath)
+
+    project = Project()
+    project.load(cfile)
+
+    project._check()
 
 @armorcommand
 def _benchmark(args):
@@ -207,7 +304,7 @@ def _benchmark(args):
 
 @armorcommand
 def _hdinfo(args):
-    pass
+    show_hd_info()
 
 class ArgumentDefaultsRawFormatter(argparse.ArgumentDefaultsHelpFormatter):
 
@@ -360,6 +457,8 @@ def main(args):
                          help='Registration code for this license')
 
     group = cparser.add_argument_group('Bind license to hardware')
+    group.add_argument('-e', '--expired', metavar='YYYY-MM-DD',
+                       help='Expired date for this license')
     group.add_argument('-d', '--bind-harddisk', metavar='SN',
                        help='Bind license to serial number of harddisk')
     group.add_argument('-4', '--bind-ipv4', metavar='a.b.c.d',

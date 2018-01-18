@@ -115,6 +115,8 @@ def obfuscate_scripts(files, mode, capsule, output):
     if len(filepairs[:1]):
         pytransform.encrypt_project_files(prokey, tuple(filepairs), mode)
 
+    return filepairs
+
 def make_runtime(capsule, output, licfile=None, platform=None):
     myzip = ZipFile(capsule, 'r')
     myzip.extract('pyshield.key', output)
@@ -141,3 +143,6 @@ def make_project_license(capsule, code, output):
         pytransform.generate_license_file(output, prikey, code)
     finally:
         os.remove(prikey)
+
+def show_hd_info():
+    pytransform.show_hd_info()
