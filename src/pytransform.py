@@ -16,6 +16,10 @@ import imp
 import os
 import sys
 
+# Global
+_pytransform = None
+_get_error_msg = None
+
 # Options
 _verbose_mode = 1
 _debug_mode = 0
@@ -166,9 +170,10 @@ def show_hd_info():
     return _pytransform.show_hd_info()
 
 # Load _pytransform library
-def _load_library():
-    try:
+def _load_library(path=None):
+    if path is None:
         path = os.path.dirname(sys.modules['pytransform'].__file__)
+    try:
         if sys.platform.startswith('linux'):
             if path == '':
                 m = cdll.LoadLibrary(os.path.abspath('_pytransform.so'))
@@ -189,7 +194,14 @@ def _load_library():
         m.set_option('pyshield_path'.encode(), path.encode())
     return m
 
-_pytransform = _load_library()
-_get_error_msg = _pytransform.get_error_msg
-_get_error_msg.restype = c_char_p
-init_pytransform()
+def pyarmor_init(path=None):
+    global _pytransform
+    global _get_error_msg
+    if _pytransform is None:
+        _pytransform = _load_library(path)
+        _get_error_msg = _pytransform.get_error_msg
+        _get_error_msg.restype = c_char_p
+        init_pytransform()
+
+def pyarmor_runtime():
+    init_runtime(0, 0, 0, 0)

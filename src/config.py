@@ -55,3 +55,8 @@ wrap_runner = '''import pyimcore
 from pytransform import exec_file
 exec_file('%s')
 '''
+
+entry_code = '''from pytransform import pyarmor_init, pyarmor_runtime
+pyarmor_init(%s)
+pyarmor_runtime(%s)
+'''

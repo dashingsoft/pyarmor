@@ -45,8 +45,6 @@ except Exception:
 from config import (version, version_info, trial_info, help_footer,
                     ext_char, platform, dll_ext, dll_name, wrap_runner)
 
-MAGIC_NUMBER = imp.get_magic()
-
 def _import_pytransform():
     try:
         m = __import__('pytransform')
@@ -742,6 +740,7 @@ if __name__ == '__main__':
     pytransform = _import_pytransform()
     if pytransform is None:
         sys.exit(1)
+    pytransform.pyarmor_init()
 
     if 'help'.startswith(command) or sys.argv[1].startswith('-h'):
         try:
