@@ -67,7 +67,7 @@ class Project(dict):
         with open(filename, 'w') as f:
             json_dump(self, f, indent=2)
 
-    def load(self, filename):
+    def load(self, filename):        
         with open(filename, 'r') as f:
             obj = json_load(f)
         self._check(obj)
