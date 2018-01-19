@@ -25,7 +25,7 @@
 #
 '''See "pyarmor.py <command> -h" for more information on a specific command.
 
-Here an example to show how to use obfuscated scripts:
+Basic steps to obfuscate python scripts by Pyarmor:
 
 * Create a project to include all .py files in "examples/pybench"
 
@@ -224,8 +224,8 @@ def _license(args):
         fmt = '*TIME:%.0f\n' % \
               time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
 
-    if args.bind_harddisk:
-        fmt = '%s*HARDDISK:%s' % (fmt, args.bind_harddisk)
+    if args.bind_disk:
+        fmt = '%s*HARDDISK:%s' % (fmt, args.bind_disk)
 
     if args.bind_mac:
         fmt = '%s*IFMAC:%s' % (fmt, args.bind_mac)
@@ -467,7 +467,7 @@ def main(args):
     group = cparser.add_argument_group('Bind license to hardware')
     group.add_argument('-e', '--expired', metavar='YYYY-MM-DD',
                        help='Expired date for this license')
-    group.add_argument('-d', '--bind-harddisk', metavar='SN',
+    group.add_argument('-d', '--bind-disk', metavar='SN',
                        help='Bind license to serial number of harddisk')
     group.add_argument('-4', '--bind-ipv4', metavar='a.b.c.d',
                        help='Bind license to ipv4 addr')
@@ -492,16 +492,16 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Show hardware information'
     )
-    cparser.add_argument('-a', '--all', action='store_true',
-                         help='Show all known hardware information')
-    cparser.add_argument('-4', '--ipv4', action='store_true',
-                         help='Show ipv4 address of this machine')
-    cparser.add_argument('-6', '--ipv6', action='store_true',
-                         help='Show ipv4 address of this machine')
-    cparser.add_argument('-m', '--mac', action='store_true',
-                         help='Show mac address of primary netcard')
-    cparser.add_argument('-d', '--harddisk', action='store_true',
-                         help='Show serial number of primary harddisk')
+    # cparser.add_argument('-a', '--all', action='store_true',
+    #                      help='Show all known hardware information')
+    # cparser.add_argument('-4', '--ipv4', action='store_true',
+    #                      help='Show ipv4 address of this machine')
+    # cparser.add_argument('-6', '--ipv6', action='store_true',
+    #                      help='Show ipv4 address of this machine')
+    # cparser.add_argument('-m', '--mac', action='store_true',
+    #                      help='Show mac address of primary netcard')
+    # cparser.add_argument('-d', '--disk', action='store_true',
+    #                      help='Show serial number of primary harddisk')
     cparser.set_defaults(func=_hdinfo)
 
     #
