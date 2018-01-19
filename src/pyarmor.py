@@ -764,11 +764,7 @@ if __name__ == '__main__':
         do_encrypt(sys.argv[2:])
 
     elif 'license'.startswith(command):
-        try:
-          do_license(sys.argv[2:])
-        except getopt.GetoptError:
-            from pyarmor2 import main as main2
-            main2(sys.argv[1:])
+        do_license(sys.argv[2:])
 
     elif 'hdinfo'.startswith(command):
         show_hd_info()
