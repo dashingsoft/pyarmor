@@ -737,6 +737,12 @@ if __name__ == '__main__':
         usage(command)
         sys.exit(0)
 
+    if command in ('info', 'target', 'license', 'benchmark',
+                   'update', 'hdinfo', 'init', 'obfuscate',
+                   'build', 'check'):
+        from pyarmor2 import main as main2
+        main2(sys.argv[1:])
+
     pytransform = _import_pytransform()
     if pytransform is None:
         sys.exit(1)

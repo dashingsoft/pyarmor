@@ -47,6 +47,7 @@ import json
 import logging
 import os
 import shutil
+import subprocess
 import sys
 
 try:
@@ -300,7 +301,9 @@ def _check(args):
 
 @armorcommand
 def _benchmark(args):
-    pass
+    mode = Project.map_obfuscate_mode(args.obf_module_mode, obf_code_mode)
+    p = subprocess.Popen([sys.executable, 'benchmark.py', str(mode)])
+    p.wait()
 
 @armorcommand
 def _hdinfo(args):
@@ -514,7 +517,9 @@ def main(args):
     #
     # Command: obfuscate
     #
-    cparser = subparsers.add_parser('obfuscate', help='Obfuscate python scripts')
+    cparser = subparsers.add_parser(
+        'obfuscate',
+        help='Obfuscate python scripts without project')
     cparser.set_defaults(func=_obfuscate)
 
     args = parser.parse_args(args)

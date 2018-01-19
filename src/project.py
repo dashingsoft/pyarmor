@@ -29,9 +29,9 @@ class Project(dict):
 
     VERSION = 1, 0, 0
 
-    OBF_MODULE_MODE = 'none', 'DES'
+    OBF_MODULE_MODE = 'none', 'des'
 
-    OBF_CODE_MODE = 'none', 'fast', 'DES'
+    OBF_CODE_MODE = 'none', 'des', 'fast'
 
     DEFAULT_VALUE = {
         'version': '.'.join([str(x) for x in VERSION]),
@@ -43,8 +43,8 @@ class Project(dict):
         'entry': None,
         'output': 'build',
         'capsule': 'project.zip',
-        'obf_module_mode': 'DES',
-        'obf_code_mode': 'DES',
+        'obf_module_mode': 'des',
+        'obf_code_mode': 'des',
         'licenses': [],
         'targets': [],
     }
@@ -79,12 +79,18 @@ class Project(dict):
     def get_license(self, code):
         return self.licenses[code]['source']
 
-    def get_obfuscate_mode(self, module=None, code=None):
+    @classmethod
+    def map_obfuscate_mode(cls, module, comode):
+        a = Project.OBF_CODE_MODE.index(module)
+        b = Project.OBF_MODULE_MODE.index(comode)
+        return 7 + ( 1 - a ) * 3 + b
+
+    def get_obfuscate_mode(self, module=None, comode=None):
         if module is None:
             module = project.obf_module_mode
         if code is None:
-            code = project.obf_code_mode
-        return 8
+            comode = project.obf_code_mode
+        return Project.map_obfuscate_mode(module, comode)
 
     def get_build_files(self, force=False):
         s = self.manifest
