@@ -112,7 +112,7 @@ EXAMPLES
         os.makedirs(path)
 
     project = Project(name=name, title=name.capitalize(),
-                      src=args.src, entry=args.entry)
+                      src=os.path.abspath(args.src), entry=args.entry)
     logging.info('Create configure file ...')
     filename = os.path.join(path, 'project.json')
     project.dump(filename)
@@ -135,6 +135,8 @@ def _update(args):
     project = load_project(args.project)
     logging.info('Update project %s ...', project._path)
 
+    if args.src is not None:
+        args.src = os.path.abspath(args.src)
     keys = project._update(dict(args._get_kwargs()))
     logging.info('Changed attributes: %s', keys)
 
@@ -429,6 +431,7 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Build project, obfuscate all the scripts in the project')
     cparser.add_argument('project', nargs='?', metavar='PROJECT',
+                         default='project.json',
                          help='Project path or configure file')
     cparser.add_argument('-B', '--force', action='store_true',
                          help='Obfuscate all scripts even if it\'s not updated')
