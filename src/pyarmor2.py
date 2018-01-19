@@ -29,8 +29,8 @@ Basic steps to obfuscate python scripts by Pyarmor:
 
 * Create a project to include all .py files in "examples/pybench"
 
-    python pyarmor.py init --path=projects --src=examples/pybench \
-                           --entry=pybench.py myproject
+    python pyarmor.py init --path=projects/myproject
+                           --src=examples/pybench --entry=pybench.py
 
 * Build project, it will obfuscate all .py files and save them in
   default output path "build"
@@ -63,7 +63,7 @@ from config import  version, version_info, trial_info, \
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
     make_project_license, make_entry, show_hd_info, \
-    build_filelist, build_filepairs, build_path
+    build_filelist, build_filepairs, build_path, make_pyarmor_command
 
 def armorcommand(func):
     def wrap(*args, **kwargs):
@@ -126,6 +126,10 @@ EXAMPLES
         logging.info('Copy %s to %s', args.capsule, filename)
         shutil.copy2(args.capsule, filename)
     logging.info('Project capsule %s created', filename)
+
+    logging.info('Create pyarmor command ...')
+    script = make_pyarmor_command(platform, sys.executable, sys.argv[0], path)
+    logging.info('Pyarmor command %s created', script)
 
     logging.info('Project init successfully.')
 

@@ -167,3 +167,16 @@ def build_filepairs(filelist, output):
 
 def build_path(path, relpath):
     return path if os.path.isabs(path) else os.path.join(relpath, path)
+
+def make_pyarmor_command(platform, python, pyarmor, output):    
+    script = os.path.abspath(pyarmor)
+    if platform.startswith('win'):
+        filename = os.path.join(output, 'pyarmor.bat')
+        with open(filename, 'w') as f:
+            f.write('%s %s %%*' % (python, script))
+    else:
+        filename = os.path.join(output, 'pyarmor')
+        with open(filename, 'w') as f:
+            f.write('%s %s $*' % (python, script))
+    os.chmod(filename, 0755)
+    return filename
