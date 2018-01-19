@@ -49,8 +49,8 @@ class Project(dict):
         'capsule': 'project.zip',
         'obf_module_mode': 'des',
         'obf_code_mode': 'des',
-        'licenses': [],
-        'targets': [],
+        'licenses': {},
+        'targets': {},
     }
 
     def __init__(self, *args, **kwargs):
@@ -162,7 +162,7 @@ class Project(dict):
 
     def remove_target(self, name):
         self.targets.pop(name)
-
+    
     def _update(self, kwargs):
         result = []
         for name in Project.DEFAULT_VALUE.keys():

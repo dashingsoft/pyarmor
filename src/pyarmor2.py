@@ -219,6 +219,7 @@ def _license(args):
     if args.remove:
         for c in args.code:
             project.remove_license(code, ppath)
+        project.dump(cfile)
         return
 
     if args.expired is None:
@@ -239,8 +240,8 @@ def _license(args):
     if args.bind_ipv6:
         fmt = '%s*IFIPV6:%s' % (fmt, args.bind_ipv6)
 
-    if args.bind_domain:
-        fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
+    # if args.bind_domain:
+    #     fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
 
     # if args.bind_file:
     #     if os.path.exists(args.bind_file):
@@ -260,15 +261,16 @@ def _license(args):
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
-    capsule = project.capsule
-    for c in args.code:
-        output = os.path.join(licpath, code)
-        if not os.path.exits(output):
+    capsule = build_path(project.capsule, ppath)
+    for name in args.code:
+        output = os.path.join(licpath, name)
+        if not os.path.exists(output):
             os.mkdir(output)
         source = os.path.join(output, 'license.lic')
-        title = fmt + c
+        title = fmt + name
         make_project_license(capsule, title, source)
-        project.add_license(c, title, source)
+        project.add_license(name, title, source)
+    project.dump(cfile)
 
 @armorcommand
 def _target(args):
@@ -281,9 +283,9 @@ def _target(args):
 
     if args.remove:
         project.remove_target(args.name)
-        return
-
-    project.add_target(args.name, args.platform, args.license)
+    else:
+        project.add_target(args.name, args.platform, args.license)
+    project.dump(cfile)
 
 @armorcommand
 def _obfuscate(args):
