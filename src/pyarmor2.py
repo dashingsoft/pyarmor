@@ -78,8 +78,8 @@ def armorcommand(func):
 def _init(args):
     '''Create an empty repository or reinitialize an existing one
 
-This command creates an empty repository in the PATH/NAME - basically
-a configure file project.json, a project capsule project.zip will be
+This command creates an empty repository in the PATH - basically a
+configure file project.json, a project capsule project.zip will be
 created.
 
 Option --src specifies where to find python source files. By default,
@@ -95,23 +95,21 @@ EXAMPLES
 
 * Create a default project.
 
-    python pyarmor.py init --path=projects --src=examples myproject
+    python pyarmor.py init --src=examples --path=projects/myproject
 
 * Create a project with existing capsule
 
-    python pyarmor.py init --path=projects -C project2/project.zip \
-                           --src=examples myproject
+    python pyarmor.py init -C project2/project.zip \
+                           --src=examples --path=projects/myproject
 
     '''
-    name = args.name[0]
-    logging.info('Create project %s in %s ...', name, args.path)
+    path = args.path
+    name = os.path.basename(os.path.abspath(path))
+    logging.info('Create project in %s ...', path)
 
-    path = os.path.join(args.path, name)
-    if os.path.exists(path):
-        logging.info('Prject path %s has been exists', path)
-    else:
+    if not os.path.exists(path):
         logging.info('Make project directory %s', path)
-        os.mkdir(path)
+        os.makedirs(path)
 
     project = Project(name=name, title=name.capitalize(),
                       src=args.src, entry=args.entry)
@@ -134,43 +132,33 @@ EXAMPLES
 @armorcommand
 def _update(args):
     '''Update project information. '''
-    cfile = args.project
-    logging.info('Update project %s ...', os.path.dirname(cfile))
-
-    project = Project()
-    project.load(cfile)
+    project = load_project(args.project)
+    logging.info('Update project %s ...', project._path)
 
     keys = project._update(dict(args._get_kwargs()))
     logging.info('Changed attributes: %s', keys)
 
-    project.dump(cfile)
+    project.dump(project._file)
     logging.info('Update project OK.')
 
 @armorcommand
 def _info(args):
-    cfile = args.project
-    logging.info('Show project %s ...', os.path.dirname(cfile))
-
-    project = Project()
-    project.load(cfile)
+    project = load_project(args.project)
+    logging.info('Show project %s ...', project._path)
 
     logging.info('\n%s', json.dumps(project, indent=2))
 
 @armorcommand
 def _build(args):
-    cfile = args.project
-    ppath = os.path.dirname(cfile)
-    logging.info('Build project %s ...', ppath)
-
-    project = Project()
-    project.load(cfile)
-    capsule = build_path(project.capsule, ppath)
+    project = load_project(args.project)
+    logging.info('Build project %s ...', project._path)
+    capsule = build_path(project.capsule, project._path)
 
     if args.target is None:
         targets = [ '' ]
         targets.extend(project.targets)
     else:
-        targets = args.target.split(',')    
+        targets = args.target.split(',')
 
     if not args.only_runtime:
         t = targets[0]
@@ -203,23 +191,19 @@ def _build(args):
         for x in targets:
             plat, licfile = project.get_target(x)
             if licfile is not None:
-                licfile = build_path(licfile, ppath)
+                licfile = build_path(licfile, project._path)
             output = os.path.join(project.output, x)
             make_runtime(capsule, output, licfile, plat)
 
 @armorcommand
 def _license(args):
-    cfile = args.project
-    ppath = os.path.dirname(cfile)
-    logging.info('Build project %s ...', ppath)
-
-    project = Project()
-    project.load(cfile)
+    project = load_project(args.project)
 
     if args.remove:
+        logging.info('Remove licenses from project %s ...', project._path)
         for c in args.code:
-            project.remove_license(code, ppath)
-        project.dump(cfile)
+            project.remove_license(code, project._path)
+        project.dump(project._file)
         return
 
     if args.expired is None:
@@ -255,14 +239,14 @@ def _license(args):
     #     else:
     #         raise RuntimeError('Bind file %s not found' % bindfile)
 
-    licpath = os.path.join(ppath, 'licenses')
+    licpath = os.path.join(project._path, 'licenses')
     if not os.path.exists(licpath):
         os.mkdir(licpath)
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
-    capsule = build_path(project.capsule, ppath)
-    n = len(ppath)
+    capsule = build_path(project.capsule, project._path)
+    n = len(project._path)
     for name in args.code:
         output = os.path.join(licpath, name)
         if not os.path.exists(output):
@@ -271,23 +255,20 @@ def _license(args):
         title = fmt + name
         make_project_license(capsule, title, source)
         project.add_license(name, title, source[n+1:])
-    project.dump(cfile)
+    project.dump(project._file)
 
 @armorcommand
 def _target(args):
-    cfile = args.project
-    ppath = os.path.dirname(cfile)
-    logging.info('Build project %s ...', ppath)
-
-    project = Project()
-    project.load(cfile)
+    project = load_project(args.project)
 
     name = args.name[0]
     if args.remove:
+        logging.info('Remove target from project %s ...', project._path)
         project.remove_target(name)
     else:
+        logging.info('Add target to project %s ...', project._path)
         project.add_target(name, args.platform, args.license)
-    project.dump(cfile)
+    project.dump(project._file)
 
 @armorcommand
 def _obfuscate(args):
@@ -306,13 +287,8 @@ def _obfuscate(args):
 
 @armorcommand
 def _check(args):
-    cfile = args.project
-    ppath = os.path.dirname(cfile)
-    logging.info('Build project %s ...', ppath)
-
-    project = Project()
-    project.load(cfile)
-
+    project = load_project(args.project)
+    logging.info('Check project %s ...', project._path)
     project._check()
 
 @armorcommand
@@ -324,6 +300,22 @@ def _benchmark(args):
 @armorcommand
 def _hdinfo(args):
     show_hd_info()
+
+def load_project(path):
+    if os.path.isdir(path):
+        filename = os.path.join(path, 'project.zip')
+        basepath = path
+    else:
+        filename = path
+        basepath = os.path.dirname(filename)
+
+    project = Project()
+    project.load(filename)
+
+    project._path = basepath
+    project._file = filename
+
+    return project
 
 class ArgumentDefaultsRawFormatter(argparse.ArgumentDefaultsHelpFormatter):
 
@@ -355,10 +347,10 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Create an empty project or reinitialize an existing one'
     )
-    cparser.add_argument('name', nargs=1, metavar='NAME', default='',
-                         help='Project name')
+    # cparser.add_argument('name', nargs='?', metavar='NAME', default='',
+    #                      help='Project name')
     cparser.add_argument('-p', '--path', default='',
-                         help='Parent path of project')
+                         help='Project path')
     cparser.add_argument('-C', '--capsule',
                          help='Capsule filename of another project')
     cparser.add_argument('--entry',
