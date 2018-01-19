@@ -61,7 +61,7 @@ from config import  version, version_info, trial_info, \
 
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
-    make_project_license, show_hd_info
+    make_project_license, show_hd_info, build_filelist, build_filepairs
 
 def armorcommand(func):
     def wrap(*args, **kwargs):
@@ -284,7 +284,14 @@ def _target(args):
 
 @armorcommand
 def _obfuscate(args):
-    pass
+    capsule = os.path.join(args.output, 'project-temp.zip')
+    make_capsule(capsule)
+    files = build_filepairs(build_filelist(args.patterns, args.src),
+                            args.output)
+    mode = Project.map_obfuscate_mode(args.obf_module_mode, obf_code_mode)
+    obfuscate_scripts(files, mode, capsule, args.output)
+    make_runtime(capsule, output)
+    os.remove(capsule)
 
 @armorcommand
 def _check(args):
@@ -517,7 +524,15 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'obfuscate',
+        epilog=_obfuscate.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts without project')
+    cparser.add_argument('patterns', nargs='+', help='File patterns')
+    cparser.add_argument('--output', default='build', metavar='PATH')
+    cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
+    cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE)
+    cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE)
+    cparser.add_argument('--src', required=True, help='Base path for file patterns')
     cparser.set_defaults(func=_obfuscate)
 
     args = parser.parse_args(args)

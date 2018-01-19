@@ -25,6 +25,7 @@
 #
 from distutils.filelist import FileList
 from distutils.text_file import TextFile
+import glob
 import logging
 import os
 import shutil
@@ -146,3 +147,25 @@ def make_project_license(capsule, code, output):
 
 def show_hd_info():
     pytransform.show_hd_info()
+
+def build_filelist(patterns, path=''):
+    filelist = []
+    n = len(path) + 1
+    for x in patterns:
+        for name in glob.glob(os.path.join(path, x)):
+            filelist.append((name, name[n:]))
+    return filelist
+
+def build_filepairs(filelist, output):
+    pairs = []
+    dirs = []
+    for src, dst in filelist:
+        d = os.path.join(output, dst)
+        dirs.append(os.path.dirname(d))
+        pairs.append((src, d))
+
+    for d in set(dirs):
+        if not os.path.exists(d):
+            os.makedirs(d)
+    
+    return pairs
