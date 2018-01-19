@@ -125,8 +125,9 @@ def make_runtime(capsule, output, licfile=None, platform=None):
     if platform is None:
         shutil.copy2(os.path.join(PYARMOR_PATH, dll_name + dll_ext), output)
     else:
-        for x in os.listdir(os.path.join(PYARMOR_PATH, 'platforms', platform)):
-            shutil.copy2(x, output)
+        path = os.path.join(PYARMOR_PATH, 'platforms', platform)
+        for x in os.listdir(path):
+            shutil.copy2(os.path.join(path, x), output)
 
     shutil.copy2(os.path.join(PYARMOR_PATH, 'pytransform.py'), output)
 

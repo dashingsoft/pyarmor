@@ -262,6 +262,7 @@ def _license(args):
     # Prefix of registration code
     fmt = fmt + '*CODE:'
     capsule = build_path(project.capsule, ppath)
+    n = len(ppath)
     for name in args.code:
         output = os.path.join(licpath, name)
         if not os.path.exists(output):
@@ -269,7 +270,7 @@ def _license(args):
         source = os.path.join(output, 'license.lic')
         title = fmt + name
         make_project_license(capsule, title, source)
-        project.add_license(name, title, source)
+        project.add_license(name, title, source[n+1:])
     project.dump(cfile)
 
 @armorcommand
@@ -281,20 +282,25 @@ def _target(args):
     project = Project()
     project.load(cfile)
 
+    name = args.name[0]
     if args.remove:
-        project.remove_target(args.name)
+        project.remove_target(name)
     else:
-        project.add_target(args.name, args.platform, args.license)
+        project.add_target(name, args.platform, args.license)
     project.dump(cfile)
 
 @armorcommand
 def _obfuscate(args):
-    capsule = os.path.join(args.output, 'project-temp.zip')
-    make_capsule(capsule)
-    files = build_filepairs(build_filelist(args.patterns, args.src),
-                            args.output)
+    capsule = os.path.join(args.src, 'pyarmor-project.zip')
+    if not os.path.exists(capsule):
+        make_capsule(capsule)
+    if args.manifest:
+        pairs = []
+    else:
+        pairs = build_filepairs(build_filelist(args.patterns, args.src),
+                                args.output)
     mode = Project.map_obfuscate_mode(args.obf_module_mode, obf_code_mode)
-    obfuscate_scripts(files, mode, capsule, args.output)
+    obfuscate_scripts(pairs, mode, capsule, args.output)
     make_runtime(capsule, output)
     os.remove(capsule)
 
@@ -533,6 +539,7 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts without project')
     cparser.add_argument('patterns', nargs='+', help='File patterns')
+    cparser.add_argument('--manifest', action='store_true')
     cparser.add_argument('--output', default='build', metavar='PATH')
     cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE)
