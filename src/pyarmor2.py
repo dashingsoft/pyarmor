@@ -255,10 +255,8 @@ def _license(args):
     if not os.path.exists(licpath):
         os.mkdir(licpath)
 
-    # To be sure there is a blank before code
-    if not fmt == '':
-        fmt = fmt + ' '
-
+    # Prefix of registration code
+    fmt = fmt + '*CODE:'
     capsule = project.capsule
     for c in args.code:
         output = os.path.join(licpath, code)
