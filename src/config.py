@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '3.3.1'
+version = '3.4.0'
 
 version_info = '''
 Pyarmor is a tool used to import or run the encrypted python scripts.
