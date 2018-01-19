@@ -48,6 +48,7 @@ from config import (version, version_info, trial_info, help_footer,
 def _import_pytransform():
     try:
         m = __import__('pytransform')
+        m.pyarmor_init()
         return m
     except Exception:
         pass
@@ -60,6 +61,7 @@ def _import_pytransform():
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
         m = __import__('pytransform')
+        m.pyarmor_init()
         logging.info('Load pytransform OK.')
         return m
     logging.error('No library %s found', src)
@@ -737,16 +739,14 @@ if __name__ == '__main__':
         usage(command)
         sys.exit(0)
 
-    if command in ('info', 'target', 'license', 'benchmark',
-                   'update', 'hdinfo', 'init', 'obfuscate',
-                   'build', 'check'):
+    if command in ('info', 'target', 'benchmark', 'update', 'hdinfo',
+                   'init', 'obfuscate', 'build', 'check'):
         from pyarmor2 import main as main2
         main2(sys.argv[1:])
 
     pytransform = _import_pytransform()
     if pytransform is None:
-        sys.exit(1)
-    pytransform.pyarmor_init()
+        sys.exit(1)    
 
     if 'help'.startswith(command) or sys.argv[1].startswith('-h'):
         try:
@@ -755,19 +755,23 @@ if __name__ == '__main__':
             usage()
 
     elif 'version'.startswith(command) or sys.argv[1].startswith('-v'):
-          show_version_info()
+        show_version_info()
 
     elif 'capsule'.startswith(command):
-          do_capsule(sys.argv[2:])
+        do_capsule(sys.argv[2:])
 
     elif 'encrypt'.startswith(command):
-          do_encrypt(sys.argv[2:])
+        do_encrypt(sys.argv[2:])
 
     elif 'license'.startswith(command):
+        try:
           do_license(sys.argv[2:])
+        except getopt.GetoptError:
+            from pyarmor2 import main as main2
+            main2(sys.argv[1:])
 
     elif 'hdinfo'.startswith(command):
-          show_hd_info()
+        show_hd_info()
 
     else:
-          usage(command)
+        usage(command)
