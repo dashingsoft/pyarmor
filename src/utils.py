@@ -49,15 +49,15 @@ def search_pytransform(path):
         logging.info('Find _pytransform library "%s"', src)
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
-        return
-    raise RuntimeError('No library %s found', src)
+    else:
+        raise RuntimeError('No library %s found', src)
 
+import pytransform
 try:
-    import pytransform
+    pytransform.pyarmor_init()
 except Exception:
     search_pytransform(PYARMOR_PATH)
-    import pytransform
-pytransform.pyarmor_init()
+    pytransform.pyarmor_init()
 
 def make_capsule(filename='project.zip'):
     path = PYARMOR_PATH
