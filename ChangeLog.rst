@@ -1,3 +1,7 @@
+3.3.1
+-----
+* Remove unused files in distribute package
+
 3.3.0
 -----
 In this version, new obfuscate mode 7 and 8 are introduced. The main
