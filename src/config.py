@@ -56,7 +56,6 @@ from pytransform import exec_file
 exec_file('%s')
 '''
 
-entry_code = '''from pytransform import pyarmor_init, pyarmor_runtime
-pyarmor_init(%s)
+entry_code = '''from pytransform import pyarmor_runtime
 pyarmor_runtime(%s)
 '''

@@ -69,8 +69,7 @@ def init_pytransform():
 
 @dllmethod
 def init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
-    if _pytransform is None:
-        pyarmor_init()
+    pyarmor_init()
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
     _init_runtime = prototype(('init_runtime', _pytransform))
     _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
@@ -205,5 +204,6 @@ def pyarmor_init(path=None):
         _get_error_msg.restype = c_char_p
         init_pytransform()
 
-def pyarmor_runtime():
+def pyarmor_runtime(path=None):
+    pyarmor_init(path)
     init_runtime(0, 0, 0, 0)

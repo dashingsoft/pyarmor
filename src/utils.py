@@ -86,11 +86,11 @@ def make_capsule(filename='project.zip'):
         myzip.close()
     logging.info('Write capsule OK.')
 
-def make_entry(filename):
+def make_entry(filename, rpath=None):
     with open(filename, 'r') as f:
         source = f.read()
     with open(filename, 'w') as f:
-        f.write(entry_code)
+        f.write(entry_code % repr(rpath))
         f.write(source)
 
 def obfuscate_scripts(files, mode, capsule, output):
