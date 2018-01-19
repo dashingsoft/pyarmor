@@ -23,7 +23,11 @@
 #
 #   Define project object.
 #
-import json
+import os
+from distutils.filelist import FileList
+from distutils.text_file import TextFile
+from io import StringIO
+from json import dump as json_dump, load as json_load
 
 class Project(dict):
 
@@ -61,11 +65,11 @@ class Project(dict):
 
     def dump(self, filename):
         with open(filename, 'w') as f:
-            json.dump(self, f, indent=2)
+            json_dump(self, f, indent=2)
 
     def load(self, filename):
         with open(filename, 'r') as f:
-            obj = json.load(f)
+            obj = json_load(f)
         self._check(obj)
         self.update(obj)
 
@@ -80,17 +84,17 @@ class Project(dict):
         return self.licenses[code]['source']
 
     @classmethod
-    def map_obfuscate_mode(cls, module, comode):
-        a = Project.OBF_CODE_MODE.index(module)
+    def map_obfuscate_mode(cls, mode, comode):
+        a = Project.OBF_CODE_MODE.index(mode)
         b = Project.OBF_MODULE_MODE.index(comode)
         return 7 + ( 1 - a ) * 3 + b
 
-    def get_obfuscate_mode(self, module=None, comode=None):
-        if module is None:
-            module = project.obf_module_mode
-        if code is None:
-            comode = project.obf_code_mode
-        return Project.map_obfuscate_mode(module, comode)
+    def get_obfuscate_mode(self, mode=None, comode=None):
+        if mode is None:
+            mode = self.obf_module_mode
+        if comode is None:
+            comode = self.obf_code_mode
+        return Project.map_obfuscate_mode(mode, comode)
 
     def get_build_files(self, force=False):
         s = self.manifest
@@ -100,17 +104,18 @@ class Project(dict):
 
         if force:
             return filelist
-            
+
         results = []
         buildtime = self.get('build_time', 1.)
         for x in filelist:
-            if os.path.getmtime(x) > buildtime:
+            if os.path.getmtime(os.path.join(self.src, x)) > buildtime:
                 results.append(x)
         return results
-
+        
     def build_manifest(self, manifest, path=None):
         infile = StringIO()
         infile.write('\n'.join(manifest.split(',')))
+        infile.seek(0)
         template = TextFile(file=infile,
                             strip_comments=1,
                             skip_blanks=1,
@@ -140,8 +145,8 @@ class Project(dict):
 
     def remove_license(self, code, path=''):
         if code in self.licenses:
-            lic = self.licenses.pop(code)            
-            
+            lic = self.licenses.pop(code)
+
             licfile = lic['source']
             if not os.path.isabs(licfile):
                 licfile = os.path.join(path, licfile)
@@ -151,7 +156,7 @@ class Project(dict):
                 os.rmdir(os.path.dirname(licfile))
             except OSError:
                 pass
-            
+
     def add_target(self, name, platform=None, licode=None):
         self.targets[name] = dict(platform=platform, license=licode)
 

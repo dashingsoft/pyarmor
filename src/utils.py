@@ -23,8 +23,6 @@
 #
 #  All the routines of pytransform.
 #
-from distutils.filelist import FileList
-from distutils.text_file import TextFile
 import glob
 import logging
 import os
@@ -32,7 +30,6 @@ import shutil
 import sys
 import tempfile
 import time
-from io import StringIO
 from zipfile import ZipFile
 
 from config import platform, dll_ext, dll_name, entry_code
@@ -94,7 +91,7 @@ def make_entry(filename, rpath=None):
         f.write(entry_code % repr(rpath))
         f.write(source)
 
-def obfuscate_scripts(files, mode, capsule, output):
+def obfuscate_scripts(filepairs, mode, capsule, output):
     if not os.path.exists(output):
         os.makedirs(output)
 
@@ -102,18 +99,15 @@ def obfuscate_scripts(files, mode, capsule, output):
     if not os.path.exists(prokey):
         ZipFile(capsule).extract('product.key', path=output)
 
-    filepairs = []
     dirs = []
-    for x in files:
-        dest = os.path.join(output, x)
-        filepairs.append((x, dest))
-        dirs.append(os.path.dirname(dest))
+    for x in filepairs:
+        dirs.append(os.path.dirname(x[1]))
 
     for d in set(dirs):
         if not os.path.exists(d):
             os.makedirs(d)
 
-    if len(filepairs[:1]):
+    if filepairs:
         pytransform.encrypt_project_files(prokey, tuple(filepairs), mode)
 
     return filepairs
@@ -169,3 +163,6 @@ def build_filepairs(filelist, output):
             os.makedirs(d)
     
     return pairs
+
+def build_path(path, relpath):
+    return path if os.path.isabs(path) else os.path.join(relpath, path)

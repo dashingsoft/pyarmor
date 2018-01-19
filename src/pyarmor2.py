@@ -49,6 +49,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 
 try:
     import argparse
@@ -61,7 +62,8 @@ from config import  version, version_info, trial_info, \
 
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
-    make_project_license, show_hd_info, build_filelist, build_filepairs
+    make_project_license, make_entry, show_hd_info, \
+    build_filelist, build_filepairs, build_path
 
 def armorcommand(func):
     def wrap(*args, **kwargs):
@@ -131,6 +133,7 @@ EXAMPLES
 
 @armorcommand
 def _update(args):
+    '''Update project information. '''
     cfile = args.project
     logging.info('Update project %s ...', os.path.dirname(cfile))
 
@@ -161,48 +164,48 @@ def _build(args):
 
     project = Project()
     project.load(cfile)
+    capsule = build_path(project.capsule, ppath)
 
     if args.target is None:
         targets = [ '' ]
         targets.extend(project.targets)
     else:
-        targets = args.target.split(',')
+        targets = args.target.split(',')    
 
     if not args.only_runtime:
         t = targets[0]
-        capsule = project.capsule
         output = os.path.join(project.output, t)
         mode = project.get_obfuscate_mode()
         files = project.get_build_files(args.force)
-        pairs = obfuscate_scripts(files, mode, capsule, output)
+        src = project.src
+        pairs = [(os.path.join(src, x), os.path.join(output, x)) for x in files]
+        obfuscate_scripts(pairs, mode, capsule, output)
 
         n = len(output)
         for x in targets[1:]:
             output = os.path.join(project.output, x)
-            copypairs = []
-            dirs = [ output ]
-            for _a, f in pairs:
-                p = os.path.join(output, os.path.dirname(f[n+1:]))
-                copypairs.append((f, p))
-                dirs.append(p)
-
-            for x in set(dirs):
-                if not os.path.exists(x):
-                    os.makedirs(x)
-
-            for src, dst in copypairs:
-                shutil.copy2(src, dst)
+            pairs = [(os.path.join(src, x), os.path.join(output, x))
+                     for x in files]
+            for src, dst in pairs:
+                try:
+                    shutil.copy2(src, dst)
+                except Exception:
+                    os.makedirs(os.path.dirname(dst))
+                    shutil.copy2(src, dst)
 
         project.build_time = time.time()
 
+    if project.entry:
+        for entry in project.entry.split(','):
+            make_entry(os.path.join(output, entry))
+
     if not args.no_runtime:
-        capsule = project.capsule
         for x in targets:
-            platform, licfile = project.get_target(x)
-            if os.path.abspath(licfile):
-                licfile = os.path.join(ppath, licfile)
+            plat, licfile = project.get_target(x)
+            if licfile is not None:
+                licfile = build_path(licfile, ppath)
             output = os.path.join(project.output, x)
-            make_runtime(capsule, output, licfile, platform)
+            make_runtime(capsule, output, licfile, plat)
 
 @armorcommand
 def _license(args):
