@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '3.3.1'
+version = '3.4.0'
 
 version_info = '''
 Pyarmor is a tool used to import or run the encrypted python scripts.
@@ -55,3 +55,21 @@ wrap_runner = '''import pyimcore
 from pytransform import exec_file
 exec_file('%s')
 '''
+
+entry_code = '''from pytransform import pyarmor_runtime
+pyarmor_runtime(%s)
+'''
+
+config_filename = '.pyarmor_config'
+
+capsule_filename = '.pyarmor_capsule.zip'
+
+license_filename = 'license.lic'
+
+default_output_path = 'dist'
+
+default_manifest_template = 'global-include *.py'
+
+default_obf_module_mode = 'des'
+
+default_obf_code_mode = 'des'

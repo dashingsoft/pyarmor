@@ -1,3 +1,4 @@
+# DEPRECATED from v3.4.0.
 from imp import find_module, load_module, new_module, PKG_DIRECTORY
 import os
 import sys

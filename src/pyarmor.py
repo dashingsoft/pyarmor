@@ -12,6 +12,8 @@
 #                                                           #
 #############################################################
 #
+#  DEPRECATED from v3.4. It will be replaced by pyarmor2.py
+#  from v4.
 #
 #  @File: pyarmor.py
 #
@@ -45,11 +47,10 @@ except Exception:
 from config import (version, version_info, trial_info, help_footer,
                     ext_char, platform, dll_ext, dll_name, wrap_runner)
 
-MAGIC_NUMBER = imp.get_magic()
-
 def _import_pytransform():
     try:
         m = __import__('pytransform')
+        m.pyarmor_init()
         return m
     except Exception:
         pass
@@ -62,6 +63,7 @@ def _import_pytransform():
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
         m = __import__('pytransform')
+        m.pyarmor_init()
         logging.info('Load pytransform OK.')
         return m
     logging.error('No library %s found', src)
@@ -196,7 +198,7 @@ def encrypt_files(files, prokey, mode=8, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ext = '.py' if mode in (7, 8) else \
+    ext = '.py' if mode in (7, 8, 9, 10, 11, 12) else \
           '.pyc' if mode in (1, 3, 4, 5, 6) else '.py' + ext_char
     if output is None:
         fn = lambda a, b: b[1] + ext
@@ -464,7 +466,8 @@ It's Following the Distutils’ own manifest template
         elif o in ('-d', '--clean'):
             clean = True
         elif o in ('-e', '--mode'):
-            if a not in ('0', '1', '2', '3', '5', '6', '7', '8'):
+            if a not in ('0', '1', '2', '3', '5', '6',
+                         '7', '8', '9', '10', '11', '12'):
                 raise RuntimeError('Invalid mode "%s"' % a)
             mode = int(a)
         elif o in ('-m', '--main'):
@@ -535,7 +538,7 @@ It's Following the Distutils’ own manifest template
         logging.info('Remove private key %s in the output', prikey)
         os.remove(prikey)
 
-    if mode not in (7, 8):
+    if mode not in (7, 8, 9, 10, 11, 12):
         for name in mainname:
             n = name.find(':')
             if n == -1:
@@ -563,7 +566,7 @@ It's Following the Distutils’ own manifest template
             raise RuntimeError('Missing project key %s' % prokey)
         logging.info('Encrypt files ...')
         encrypt_files(filelist, prokey, mode, None if inplace else output)
-        if mode in (7, 8):
+        if mode in (7, 8, 9, 10, 11, 12):
             for name in mainname:
                 script = os.path.join(
                     output, name + ('' if name.endswith('.py') else '.py'))
@@ -739,6 +742,12 @@ if __name__ == '__main__':
         usage(command)
         sys.exit(0)
 
+    if command in ('info', 'target', 'benchmark', 'config', 'hdinfo',
+                   'init', 'obfuscate', 'build', 'check', 'licenses'):
+        from pyarmor2 import main as main2
+        main2(sys.argv[1:])
+        sys.exit(0)
+
     pytransform = _import_pytransform()
     if pytransform is None:
         sys.exit(1)
@@ -750,19 +759,19 @@ if __name__ == '__main__':
             usage()
 
     elif 'version'.startswith(command) or sys.argv[1].startswith('-v'):
-          show_version_info()
+        show_version_info()
 
     elif 'capsule'.startswith(command):
-          do_capsule(sys.argv[2:])
+        do_capsule(sys.argv[2:])
 
     elif 'encrypt'.startswith(command):
-          do_encrypt(sys.argv[2:])
+        do_encrypt(sys.argv[2:])
 
     elif 'license'.startswith(command):
-          do_license(sys.argv[2:])
+        do_license(sys.argv[2:])
 
     elif 'hdinfo'.startswith(command):
-          show_hd_info()
+        show_hd_info()
 
     else:
-          usage(command)
+        usage(command)
