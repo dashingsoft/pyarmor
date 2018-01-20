@@ -76,12 +76,8 @@ class Project(dict):
                 result.append(name)
         return result
 
-    def _check(self, path, project=None):
-        if project is None:
-            project = self
-
+    def _check(self, path):
         assert(os.path.exists(self.src))
-        assert(self.match_mode in Project.FILE_MATCH_MODE)
         assert(self.obf_module_mode in Project.OBF_MODULE_MODE)
         assert(self.obf_code_mode in Project.OBF_CODE_MODE)
 
@@ -95,15 +91,15 @@ class Project(dict):
     def _load(self, filename):
         with open(filename, 'r') as f:
             obj = json_load(f)
-        self._check(os.path.dirname(filename), obj)
         self.update(obj)
+        self._check(os.path.dirname(filename))
 
     def open(self, path):
-        filename = os.path.join(path, capsule_filename)
+        filename = os.path.join(path, config_filename)
         self._load(filename)
 
     def save(self, path):
-        filename = os.path.join(path, capsule_filename)
+        filename = os.path.join(path, config_filename)
         self._dump(filename)
 
     @classmethod
@@ -179,7 +175,7 @@ class Project(dict):
                 v = time.asctime(time.gmtime(self[k]))
             else:
                 v = self[k]
-            lines.append('\t%s: %s' % (k, v))
+            lines.append('%16s: %s' % (k, v))
         return '\n'.join(lines)
 
 if __name__ == '__main__':

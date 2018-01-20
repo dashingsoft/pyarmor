@@ -142,8 +142,7 @@ def _update(args):
 def _info(args):
     project = Project()
     project.open(args.project)
-    logging.info('Show project %s ...', args.project)
-    logging.info('\n%s', project.info())
+    logging.info('Project %s information\n%s', args.project, project.info())
 
 @armorcommand
 def _build(args):
