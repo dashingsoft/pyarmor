@@ -64,7 +64,7 @@ Obfuscate package **pybench** first time
 ```
     python pyarmor.py obfuscate --src examples/pybench --entry pybench.py
 
-    # This command will create 2 extra files in src path:
+    # This command will create 2 files in the path specified by --src:
     #
     #    .pyarmor_config, .pyarmor_capsule.zip
     #

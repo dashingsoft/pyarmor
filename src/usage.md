@@ -1,3 +1,5 @@
+# DEPRECATED from v3.3
+
 # Basic Usages
 
 Here are some exampes to show basic usage of [Pyarmor].

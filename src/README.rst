@@ -1,33 +1,35 @@
 Pyarmor
 =======
 
-Pyarmor is a command line tool used to import or run encrypted python
+Pyarmor is a command line tool used to import or run obfuscated python
 scripts. Only by a few extra files, pyarmor can run and imported
-encrypted files in the normal python environments.
+obfuscated files in the normal python environments.
 
 Pyarmor just likes an enhancement which let python could run or import
-encrypted files.
+obfuscated files.
 
 Main Features
 -------------
 
-- Run encrypted script or import encrypted module
-- Run or import encrypted compiled python files (.pyc, .pyo)
-- Mixed encrypted files with normal python files.
-- Expire encrypted files
-- Bind encrypted files to harddisk, mac address, ip etc.
+- Run obfuscated script or import obfuscated module
+- Expire obfuscated files
+- Bind obfuscated files to harddisk, mac address, ip address etc.
 
 Support Platforms
 -----------------
 
 - Python 2.5, 2.6, 2.7 and Python3
 
-- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64, Raspberry Pi, Banana Pi
+- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64
+
+- Embeded Platform: Raspberry Pi, Banana Pi, ts-4600
 
 The core of Pyarmor is written by C, the only dependency is libc. So
 it's easy to build for any other platform, even for embeded
-system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
+system. Contact <jondy.zhao@gmail.com> if you'd like to run obfuscated
 scripts in other platform.
+
+The latest platform-depentent library could be found `here <http://pyarmor.dashingsoft.com/downloads/platforms>`_
 
 Installation
 ------------
@@ -40,9 +42,60 @@ common python script
 
     python pyarmor.py
 
-Web App
--------
+Basic Usage
+-----------
 
-Pyarmor Web App is a gui interface of Pyarmor, visit `Pyarmor Web App Online Version <http://pyarmor.dashingsoft.com>`_
+The following examples show how to obfuscate a python package
+**pybench**, which locates in the **examples/pybench** in the source
+of pyarmor.
+
+Obfuscate package **pybench** first time
+
+    python pyarmor.py obfuscate --src examples/pybench --entry pybench.py
+
+    # This command will create 2 files in the path specified by --src:
+    #
+    #    .pyarmor_config, .pyarmor_capsule.zip
+    #
+    # And save all the obfuscated scripts to output path "dist" in the
+    # current path
+    #
+    cd dist
+
+    # Check obfuscated script
+    cat pybench.py
+
+    # Run obfuscated script
+    python pybench.py
+
+
+Once any script of package **pybench** changed, run the following
+command to obfuscate those updated scripts
+
+    python pyarmor.py obfuscate --src examples/pybench
+
+
+Obfuscate package **pybench**, save all extra files to another path
+
+    mkdir projects
+    python pyarmor.py init --path projects/pybench \
+                           --src examples/pybench --entry pybench.py
+
+    # All the extra files will be saved to --path
+    cd projects/pybench
+
+    # And there is a shell script "pyarmor" is created at the same time.
+    # (In windows, the name is "pyarmor.bat")
+    #
+    # Now run "pyarmor" to obfuscated all the scripts by subcommand "build"
+    #
+    ./pyarmor build
+
+    # Check obfuscated script
+    cd dist
+    cat pybench.py
+
+    # Run obfuscated script
+    python pybench.py
 
 For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_
