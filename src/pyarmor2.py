@@ -263,7 +263,7 @@ def _licenses(args):
         make_project_license(capsule, licode, licfile)
         logging.info('Write license file: %s', licfile)
 
-        logging.info('Write human information to "%s.txt"', licfile)
+        logging.info('Write information to %s.txt', licfile)
         with open(os.path.join(licfile + '.txt'), 'w') as f:
             f.write(txtcode)
 
