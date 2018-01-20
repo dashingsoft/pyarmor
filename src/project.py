@@ -26,8 +26,14 @@
 import os
 from distutils.filelist import FileList
 from distutils.text_file import TextFile
+from glob import glob
 from io import StringIO
 from json import dump as json_dump, load as json_load
+
+from config import config_filename, capsule_filename, default_output_path, \
+                   default_match_mode, default_match_template, \
+                   default_obf_module_mode, default_obf_code_mode
+
 
 class Project(dict):
 
@@ -37,24 +43,24 @@ class Project(dict):
 
     OBF_CODE_MODE = 'none', 'des', 'fast'
 
-    DEFAULT_VALUE = {
-        'version': '.'.join([str(x) for x in VERSION]),
-        'name': None,
-        'title': None,
-        'description': None,
-        'src': None,
-        'manifest': 'global-include *.py',
-        'entry': None,
-        'output': 'build',
-        'capsule': 'project.zip',
-        'obf_module_mode': 'des',
-        'obf_code_mode': 'des',
-        'licenses': {},
-        'targets': {},
-    }
+    FILE_MATCH_MODE = 'glob', 'manifest', 're'
+
+    DEFAULT_VALUE = \
+        ( 'version', '.'.join([str(x) for x in VERSION]) ), \
+        ( 'name', None ), \
+        ( 'title', None ), \
+        ( 'src', None ), \
+        ( 'match_mode', default_match_mode ), \
+        ( 'template', default_match_template ), \
+        ( 'entry', None ), \
+        ( 'output', default_output_path ), \
+        ( 'capsule', capsule_filename ), \
+        ( 'obf_module_mode', default_obf_module_mode ), \
+        ( 'obf_code_mode', default_obf_code_mode ), \
+        ( 'targets', {} )
 
     def __init__(self, *args, **kwargs):
-        for k, v in Project.DEFAULT_VALUE.items():
+        for k, v in Project.DEFAULT_VALUE:
             kwargs.setdefault(k, v)
         super(Project, self).__init__(*args, **kwargs)
 
@@ -63,31 +69,50 @@ class Project(dict):
             return self[name]
         raise AttributeError(name)
 
-    def dump(self, filename):
+    def _update(self, kwargs):
+        result = []
+        for name in dict(Project.DEFAULT_VALUE).keys():
+            value = kwargs.get(name)
+            if value is not None:
+                self[name] = value
+                result.append(name)
+        return result
+
+    def _check(self, path, project=None):
+        if project is None:
+            project = self
+
+        assert(os.path.exists(self.src))
+        assert(self.match_mode in Project.FILE_MATCH_MODE)
+        assert(self.obf_module_mode in Project.OBF_MODULE_MODE)
+        assert(self.obf_code_mode in Project.OBF_CODE_MODE)
+
+        assert(self.capsule.endswith('.zip'))
+        assert(os.path.exists(os.path.join(path, self.capsule)))
+
+    def _dump(self, filename):
         with open(filename, 'w') as f:
             json_dump(self, f, indent=2)
 
-    def load(self, filename):        
+    def _load(self, filename):
         with open(filename, 'r') as f:
             obj = json_load(f)
-        self._check(obj)
+        self._check(os.path.dirname(filename), obj)
         self.update(obj)
 
-    def get_target(self, name):
-        if name == '' or name is None:
-            return None, None
-        t = self.targets[name]
-        c = t.get('license')
-        return t.get('platform'), None if c is None else self.get_license(c)
+    def open(self, path):
+        filename = os.path.join(path, capsule_filename)
+        self._load(filename)
 
-    def get_license(self, code):
-        return self.licenses[code]['source']
+    def save(self, path):
+        filename = os.path.join(path, capsule_filename)
+        self._dump(filename)
 
     @classmethod
     def map_obfuscate_mode(cls, mode, comode):
-        a = Project.OBF_CODE_MODE.index(mode)
-        b = Project.OBF_MODULE_MODE.index(comode)
-        return 7 + ( 1 - a ) * 3 + b
+        m = Project.OBF_CODE_MODE.index(mode)
+        c = Project.OBF_MODULE_MODE.index(comode)
+        return 7 + ( 1 - m ) * 3 + c
 
     def get_obfuscate_mode(self, mode=None, comode=None):
         if mode is None:
@@ -97,21 +122,26 @@ class Project(dict):
         return Project.map_obfuscate_mode(mode, comode)
 
     def get_build_files(self, force=False):
-        s = self.manifest
-        if self.entry:
-            s = s + ',include ' + self.entry.replace(',', ' ')
-        filelist = self.build_manifest(s, self.src)
+        s = self.template
+        if self.match_mode == 'manifest':
+            if self.entry:
+                s = s + ',include ' + self.entry.replace(',', ' ')
+            files = self.build_manifest(s, self.src)
+        elif self.match_mode == 'glob':
+            if self.entry:
+                s = s + ',' + self.entry
+            filelist = self.build_globfiles(s, self.src)
 
         if force:
-            return filelist
+            return files
 
         results = []
         buildtime = self.get('build_time', 1.)
-        for x in filelist:
+        for x in files:
             if os.path.getmtime(os.path.join(self.src, x)) > buildtime:
                 results.append(x)
         return results
-        
+
     def build_manifest(self, manifest, path=None):
         infile = StringIO()
         infile.write('\n'.join(manifest.split(',')))
@@ -140,41 +170,27 @@ class Project(dict):
                 os.chdir(oldpath)
         return filelist.files
 
-    def add_license(self, code, title, source):
-        self.licenses[code] = dict(title=title, source=source)
-
-    def remove_license(self, code, path=''):
-        if code in self.licenses:
-            lic = self.licenses.pop(code)
-
-            licfile = lic['source']
-            if not os.path.isabs(licfile):
-                licfile = os.path.join(path, licfile)
-            os.remove(licfile)
-
-            try:
-                os.rmdir(os.path.dirname(licfile))
-            except OSError:
-                pass
+    @classmethod
+    def build_globfiles(cls, patterns, path=''):
+        files = []
+        n = len(path) + 1
+        for x in patterns.split(','):
+            for name in glob(os.path.join(path, x)):
+                files.append(name[n:])
+        return set(files)
 
     def add_target(self, name, platform=None, licode=None):
         self.targets[name] = dict(platform=platform, license=licode)
 
+    def get_target(self, name):
+        if name == '' or name is None:
+            return None, None
+        t = self.targets[name]
+        c = t.get('license')
+        return t.get('platform'), None if c is None else self.get_license(c)
+
     def remove_target(self, name):
         self.targets.pop(name)
-    
-    def _update(self, kwargs):
-        result = []
-        for name in Project.DEFAULT_VALUE.keys():
-            value = kwargs.get(name)
-            if value is not None:
-                self[name] = value
-                result.append(name)
-        return result
-
-    def _check(self, project=None):
-        if project is None:
-            project = self
 
 if __name__ == '__main__':
     project = Project()

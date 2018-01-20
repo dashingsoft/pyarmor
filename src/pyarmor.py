@@ -741,8 +741,8 @@ if __name__ == '__main__':
         usage(command)
         sys.exit(0)
 
-    if command in ('info', 'target', 'benchmark', 'update', 'hdinfo',
-                   'init', 'obfuscate', 'build', 'check'):
+    if command in ('info', 'target', 'benchmark', 'config', 'hdinfo',
+                   'init', 'obfuscate', 'build', 'check', 'licenses'):
         from pyarmor2 import main as main2
         main2(sys.argv[1:])
 

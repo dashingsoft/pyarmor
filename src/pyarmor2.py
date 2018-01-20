@@ -58,12 +58,13 @@ except ImportError:
     import polyfills.argparse as argparse
 
 from config import  version, version_info, trial_info, \
-                    platform, dll_ext, dll_name
+                    platform, dll_ext, dll_name, \
+                    config_filename, capsule_filename
 
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
-    make_project_license, make_entry, show_hd_info, \
-    build_filelist, build_filepairs, build_path, make_pyarmor_command
+                  make_project_license, make_entry, show_hd_info, \
+                  build_path, make_command
 
 def armorcommand(func):
     def wrap(*args, **kwargs):
@@ -79,8 +80,8 @@ def _init(args):
     '''Create an empty repository or reinitialize an existing one
 
 This command creates an empty repository in the PATH - basically a
-configure file project.json, a project capsule project.zip will be
-created.
+configure file .pyarmor_config, a project capsule .pyarmor_capsule.zip
+will be created.
 
 Option --src specifies where to find python source files. By default,
   all .py files in this directory will be included in this project.
@@ -88,19 +89,9 @@ Option --src specifies where to find python source files. By default,
 Option --entry specifies main script, which could be run directly
 after obfuscated.
 
-If --capsule is specified, copy CAPSULE to project.zip other than
-create a new capsule.
-
 EXAMPLES
 
-* Create a default project.
-
     python pyarmor.py init --src=examples --path=projects/myproject
-
-* Create a project with existing capsule
-
-    python pyarmor.py init -C project2/project.zip \
-                           --src=examples --path=projects/myproject
 
     '''
     path = args.path
@@ -114,29 +105,27 @@ EXAMPLES
     project = Project(name=name, title=name.capitalize(),
                       src=os.path.abspath(args.src), entry=args.entry)
     logging.info('Create configure file ...')
-    filename = os.path.join(path, 'project.json')
-    project.dump(filename)
+    filename = os.path.join(path, config_filename)
+    project.save(path)
     logging.info('Configure file %s created', filename)
 
     logging.info('Create project capsule ...')
-    filename = os.path.join(path, 'project.zip')
-    if args.capsule is None:
-        make_capsule(filename)
-    else:
-        logging.info('Copy %s to %s', args.capsule, filename)
-        shutil.copy2(args.capsule, filename)
+    filename = os.path.join(path, capsule_filename)
+    make_capsule(filename)
     logging.info('Project capsule %s created', filename)
 
-    logging.info('Create pyarmor command ...')
-    script = make_pyarmor_command(platform, sys.executable, sys.argv[0], path)
-    logging.info('Pyarmor command %s created', script)
+    if args.make_command:
+        logging.info('Create pyarmor command ...')
+        script = make_command(platform, sys.executable, sys.argv[0], path)
+        logging.info('Pyarmor command %s created', script)
 
     logging.info('Project init successfully.')
 
 @armorcommand
 def _update(args):
     '''Update project information. '''
-    project = load_project(args.project)
+    project = Project()
+    project.open(args.project)
     logging.info('Update project %s ...', project._path)
 
     if args.src is not None:
@@ -144,21 +133,23 @@ def _update(args):
     keys = project._update(dict(args._get_kwargs()))
     logging.info('Changed attributes: %s', keys)
 
-    project.dump(project._file)
+    project.save(args.project)
     logging.info('Update project OK.')
 
 @armorcommand
 def _info(args):
-    project = load_project(args.project)
-    logging.info('Show project %s ...', project._path)
+    project = Project()
+    project.open(args.project)
+    logging.info('Show project %s ...', args.project)
 
     logging.info('\n%s', json.dumps(project, indent=2))
 
 @armorcommand
 def _build(args):
-    project = load_project(args.project)
-    logging.info('Build project %s ...', project._path)
-    capsule = build_path(project.capsule, project._path)
+    project = Project()
+    project.open(args.project)
+    logging.info('Build project %s ...', args.project)
+    capsule = build_path(project.capsule, args.project)
 
     if args.target is None:
         targets = [ '' ]
@@ -197,19 +188,20 @@ def _build(args):
         for x in targets:
             plat, licfile = project.get_target(x)
             if licfile is not None:
-                licfile = build_path(licfile, project._path)
+                licfile = build_path(licfile, args.project)
             output = os.path.join(project.output, x)
             make_runtime(capsule, output, licfile, plat)
 
 @armorcommand
-def _license(args):
-    project = load_project(args.project)
+def _licenses(args):
+    project = Project()
+    project.open(args.project)
 
     if args.remove:
-        logging.info('Remove licenses from project %s ...', project._path)
+        logging.info('Remove licenses from project %s ...', args.project)
         for c in args.code:
-            project.remove_license(code, project._path)
-        project.dump(project._file)
+            project.remove_license(code, args.project)
+        project.save(args.project)
         return
 
     if args.expired is None:
@@ -245,14 +237,14 @@ def _license(args):
     #     else:
     #         raise RuntimeError('Bind file %s not found' % bindfile)
 
-    licpath = os.path.join(project._path, 'licenses')
+    licpath = os.path.join(args.project, 'licenses')
     if not os.path.exists(licpath):
         os.mkdir(licpath)
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
-    capsule = build_path(project.capsule, project._path)
-    n = len(project._path)
+    capsule = build_path(project.capsule, args.project)
+    n = len(args.project)
     for name in args.code:
         output = os.path.join(licpath, name)
         if not os.path.exists(output):
@@ -261,40 +253,38 @@ def _license(args):
         title = fmt + name
         make_project_license(capsule, title, source)
         project.add_license(name, title, source[n+1:])
-    project.dump(project._file)
+    project.save(args.project)
 
 @armorcommand
 def _target(args):
-    project = load_project(args.project)
+    project = Project()
+    project.open(args.project)
 
     name = args.name[0]
     if args.remove:
-        logging.info('Remove target from project %s ...', project._path)
+        logging.info('Remove target from project %s ...', args.project)
         project.remove_target(name)
     else:
-        logging.info('Add target to project %s ...', project._path)
+        logging.info('Add target to project %s ...', args.project)
         project.add_target(name, args.platform, args.license)
-    project.dump(project._file)
+    project.save(args.project)
 
 @armorcommand
 def _obfuscate(args):
-    capsule = os.path.join(args.src, 'pyarmor-project.zip')
+    path = args.src if arg.config is None else arg.config
+    capsule = os.path.join(path, capsule_filename)
     if not os.path.exists(capsule):
         make_capsule(capsule)
-    if args.manifest:
-        pairs = []
-    else:
-        pairs = build_filepairs(build_filelist(args.patterns, args.src),
-                                args.output)
-    mode = Project.map_obfuscate_mode(args.obf_module_mode, obf_code_mode)
+    mode = Project.map_obfuscate_mode(args.obf_module_mode, args.obf_code_mode)
     obfuscate_scripts(pairs, mode, capsule, args.output)
     make_runtime(capsule, output)
     os.remove(capsule)
 
 @armorcommand
 def _check(args):
-    project = load_project(args.project)
-    logging.info('Check project %s ...', project._path)
+    project = Project()
+    project.open(args.project)
+    logging.info('Check project %s ...', args.project)
     project._check()
 
 @armorcommand
@@ -306,27 +296,6 @@ def _benchmark(args):
 @armorcommand
 def _hdinfo(args):
     show_hd_info()
-
-def load_project(path):
-    if os.path.isdir(path):
-        filename = os.path.join(path, 'project.zip')
-        basepath = path
-    else:
-        filename = path
-        basepath = os.path.dirname(filename)
-
-    project = Project()
-    project.load(filename)
-
-    project._path = basepath
-    project._file = filename
-
-    return project
-
-class ArgumentDefaultsRawFormatter(argparse.ArgumentDefaultsHelpFormatter):
-
-    def _fill_text(self, text, width, indent):
-        return ''.join([indent + line for line in text.splitlines(True)])
 
 def main(args):
 
@@ -357,25 +326,27 @@ def main(args):
     #                      help='Project name')
     cparser.add_argument('-p', '--path', default='',
                          help='Project path')
-    cparser.add_argument('-C', '--capsule',
-                         help='Capsule filename of another project')
+    # cparser.add_argument('-C', '--capsule',
+    #                      help='Capsule filename of another project')
     cparser.add_argument('--entry',
                          help='Entry script of this project')
     cparser.add_argument('--src', required=True,
                          help='Base path of python scripts')
+    cparser.add_argument('--make-command', action='store_true',
+                         help='Create pyarmor command in project path')
     cparser.set_defaults(func=_init)
 
 
     #
-    # Command: update
+    # Command: config
     #
     cparser = subparsers.add_parser(
-        'update',
+        'config',
         epilog=_update.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Update project information')
     cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default='project.json',
+                         default=config_filename,
                          help='Project configure file')
     cparser.add_argument('--name')
     cparser.add_argument('--title')
@@ -402,7 +373,7 @@ def main(args):
         help='Show project information'
     )
     cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default='project.json',
+                         default=config_filename,
                          help='Project path or configure file')
     # cparser.add_argument('-a', '--all', action='store_true',
     #                          help='Show all of project information')
@@ -422,7 +393,7 @@ def main(args):
     cparser = subparsers.add_parser('check',
                                     help='Check consistency of project')
     cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default='project.json',
+                         default=config_filename,
                          help='Project configure file')
     cparser.set_defaults(func=_check)
 
@@ -435,7 +406,7 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Build project, obfuscate all the scripts in the project')
     cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default='project.json',
+                         default=config_filename,
                          help='Project path or configure file')
     cparser.add_argument('-B', '--force', action='store_true',
                          help='Obfuscate all scripts even if it\'s not updated')
@@ -468,7 +439,7 @@ def main(args):
     # Command: license
     #
     cparser = subparsers.add_parser(
-        'license',
+        'licenses',
         help='Manage licenses for project'
     )
     cparser.add_argument('code', nargs='+', metavar='CODE',
@@ -491,7 +462,7 @@ def main(args):
     cparser.add_argument('-P', '--project', required=True, default='',
                                 help='Project path or configure file')
 
-    cparser.set_defaults(func=_license)
+    cparser.set_defaults(func=_licenses)
 
     #
     # Command: hdinfo
@@ -543,6 +514,8 @@ def main(args):
     cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE)
     cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE)
+    cparser.add_argument('--match-mode', choices=Project.FILE_MATCH_MODE)
+    cparser.add_argument('--config', metavar='PATH')
     cparser.add_argument('--src', required=True, help='Base path for file patterns')
     cparser.set_defaults(func=_obfuscate)
 

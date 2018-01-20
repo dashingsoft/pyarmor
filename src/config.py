@@ -59,3 +59,17 @@ exec_file('%s')
 entry_code = '''from pytransform import pyarmor_runtime
 pyarmor_runtime(%s)
 '''
+
+config_filename = '.pyarmor_config'
+
+capsule_filename = '.pyarmor_capsule.zip'
+
+default_output_path = 'dist'
+
+default_match_mode = 'manifest'
+
+default_match_template = 'global-include *.py'
+
+default_obf_module_mode = 'des'
+
+default_obf_code_mode = 'des'

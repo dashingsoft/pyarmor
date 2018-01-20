@@ -23,7 +23,6 @@
 #
 #  All the routines of pytransform.
 #
-import glob
 import logging
 import os
 import shutil
@@ -57,7 +56,7 @@ except Exception:
     search_pytransform(PYARMOR_PATH)
     pytransform.pyarmor_init()
 
-def make_capsule(filename='project.zip'):
+def make_capsule(filename):
     path = PYARMOR_PATH
     logging.info('Pyarmor install path: %s', path)
 
@@ -143,32 +142,10 @@ def make_project_license(capsule, code, output):
 def show_hd_info():
     pytransform.show_hd_info()
 
-def build_filelist(patterns, path=''):
-    filelist = []
-    n = len(path) + 1
-    for x in patterns:
-        for name in glob.glob(os.path.join(path, x)):
-            filelist.append((name, name[n:]))
-    return filelist
-
-def build_filepairs(filelist, output):
-    pairs = []
-    dirs = []
-    for src, dst in filelist:
-        d = os.path.join(output, dst)
-        dirs.append(os.path.dirname(d))
-        pairs.append((src, d))
-
-    for d in set(dirs):
-        if not os.path.exists(d):
-            os.makedirs(d)
-    
-    return pairs
-
 def build_path(path, relpath):
     return path if os.path.isabs(path) else os.path.join(relpath, path)
 
-def make_pyarmor_command(platform, python, pyarmor, output):    
+def make_command(platform, python, pyarmor, output):
     script = os.path.abspath(pyarmor)
     if platform.startswith('win'):
         filename = os.path.join(output, 'pyarmor.bat')
