@@ -254,13 +254,18 @@ def _licenses(args):
             os.mkdir(output)
 
         licfile = os.path.join(output, license_filename)
-        logging.info('Generate license: %s', fmt + rcode)
-        make_project_license(capsule, fmt + rcode, licfile)
+        licode = fmt + rcode
+        txtcode = licode.replace('\n', r'\n')
+        if args.expired:
+            txtcode = '"Expired:%s%s"' % (args.expired,
+                                          txtcode[txtcode.find(r'\n')+2:])
+        logging.info('Generate license: %s', txtcode)
+        make_project_license(capsule, licode, licfile)
         logging.info('Write license file: %s', licfile)
 
-        logging.info('Write human information to file: "README"')
-        with open(os.path.join(output, 'README'), 'w') as f:
-            f.write('%s\n%s' % (args, rcode))
+        logging.info('Write human information to "%s.txt"', licfile)
+        with open(os.path.join(licfile + '.txt'), 'w') as f:
+            f.write(txtcode)
 
     logging.info('Generate %d licenses OK.', len(args.codes))
 
