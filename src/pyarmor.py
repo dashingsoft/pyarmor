@@ -397,7 +397,7 @@ Available options:
                                 7     Obfuscate code object of module,
                                       output wrapper scripts
                                 8     Obfuscate both code object and bytecode,
-                                      output wrapper scripts    
+                                      output wrapper scripts
                               Mode 0, 1, 2 is deprecated from v3.2.0, this
                               option can be ignored in general.
 
@@ -746,10 +746,11 @@ if __name__ == '__main__':
                    'init', 'obfuscate', 'build', 'check', 'licenses'):
         from pyarmor2 import main as main2
         main2(sys.argv[1:])
+        sys.exit(0)
 
     pytransform = _import_pytransform()
     if pytransform is None:
-        sys.exit(1)    
+        sys.exit(1)
 
     if 'help'.startswith(command) or sys.argv[1].startswith('-h'):
         try:

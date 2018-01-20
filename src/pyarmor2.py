@@ -314,6 +314,8 @@ def _check(args):
 @armorcommand
 def _benchmark(args):
     logging.info('Start benchmark test ...')
+    logging.info('Obfuscate module mode: %s', args.obf_module_mode)
+    logging.info('Obfuscate bytecode mode: %s', args.obf_code_mode)
 
     logging.info('Benchmark bootstrap ...')
     mode = Project.map_obfuscate_mode(args.obf_module_mode,
@@ -498,10 +500,10 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Run benchmark test in current machine'
     )
-    cparser.add_argument('--obf-module-mode',
+    cparser.add_argument('-m', '--obf-module-mode',
                          choices=Project.OBF_MODULE_MODE,
                          default=default_obf_module_mode)
-    cparser.add_argument('--obf-code-mode',
+    cparser.add_argument('-c', '--obf-code-mode',
                          choices=Project.OBF_CODE_MODE,
                          default=default_obf_code_mode)
     cparser.set_defaults(func=_benchmark)
