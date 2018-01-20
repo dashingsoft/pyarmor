@@ -174,7 +174,7 @@ def _build(args):
 
     if project.entry:
         for x in project.entry.split(','):
-            filename = os.path.join(output, x)
+            filename = os.path.join(output, x.strip())
             logging.info('Update entry script %s', filename)
             make_entry(filename, project.runtime_path)
     else:
@@ -279,9 +279,8 @@ def _obfuscate(args):
         logging.info('Generate capsule %s', capsule)
         make_capsule(capsule)
 
-    entries = args.entry.split(',') if args.entry else []
     output = args.output
-    files = Project.build_globfiles(args.patterns + entries, path)
+    files = Project.build_globfiles(args.patterns, path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
     mode = Project.map_obfuscate_mode(default_obf_module_mode,
@@ -296,8 +295,8 @@ def _obfuscate(args):
     logging.info('Make runtime files')
     make_runtime(capsule, output)
 
-    for entry in entries:
-        filename = os.path.join(output, entry)
+    for entry in args.entry.split(','):
+        filename = os.path.join(output, entry.strip())
         logging.info('Update entry script %s', filename)
         make_entry(filename)
 
