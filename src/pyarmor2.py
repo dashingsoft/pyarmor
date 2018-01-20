@@ -287,15 +287,15 @@ def _obfuscate(args):
         make_capsule(capsule)
 
     entries = args.entry.split(',') if args.entry else []
-    output = project.output
+    output = args.output
     files = Project.build_globfiles(args.patterns + entries, path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
     mode = Project.map_obfuscate_mode(default_obf_module_mode,
                                       default_obf_code_mode)
 
-    logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
-    logging.info('Save obfuscated scripts to %s', output)
+    logging.info('Obfuscate scripts with mode %s', mode)
+    logging.info('Save obfuscated scripts to "%s"', output)
     for a, b in filepairs:
         logging.info('\t%s -> %s', a, b)
     obfuscate_scripts(filepairs, mode, capsule, output)
@@ -308,7 +308,7 @@ def _obfuscate(args):
         logging.info('Update entry script %s', filename)
         make_entry(filename)
 
-    logging.info('Obfuscate scripts OK.')
+    logging.info('Obfuscate %d scripts OK.', len(files))
 
 @armorcommand
 def _check(args):
@@ -509,7 +509,7 @@ def main(args):
     cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
     cparser.add_argument('--src', required=True,
                          help='Base path for matching python scripts')
-    cparser.add_argument('patterns', nargs='*', defaults=('*.py',),
+    cparser.add_argument('patterns', nargs='*', default=['*.py'],
                          help='File patterns, default is *.py')
     cparser.set_defaults(func=_obfuscate)
 
