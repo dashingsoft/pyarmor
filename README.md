@@ -112,7 +112,7 @@ Obfuscate package **pybench**, save all extra files to another path
     python pybench.py
 ```
 
-More usage, refer to [Usage](src/usage.md)
+More usage, refer to [User Guide](src/user-guide.md)
 
 ## License
 
