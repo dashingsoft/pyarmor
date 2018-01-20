@@ -54,10 +54,10 @@ of pyarmor.
 Obfuscate package **pybench** directly:
 
 ```
-    python pyarmor.py obfuscate --src examples/pybench --entry pybench.py
+    python pyarmor.py obfuscate --src examples/pybench --entry pybench.py \
                                 "*.py" "package/*.py"
 
-    # This command will create a extra file .pyarmor_capsule.zip in the
+    # This command will create an extra file .pyarmor_capsule.zip in the
     # --src path, and save all the obfuscated scripts to default output
     # path "dist" in the current path
     #
