@@ -8,7 +8,7 @@
 #                                                           #
 #      pyarmor                                              #
 #                                                           #
-#      Version: 1.7.0 - 3.2.0                               #
+#      Version: 1.7.0 - 3.4.0                               #
 #                                                           #
 #############################################################
 #
@@ -169,12 +169,12 @@ def main():
 
     logging.info('')
 
-    output = 'test-bench'
+    output = '.benchtest'
     name = 'bfoo'
     filename = os.path.join(output, name + '.py')
 
     mode = sys.argv[2] if len(sys.argv) > 2 else '8'
-    ext = '' if mode in ('7', '8') else 'c'
+    ext = '' if mode in ('7', '8', '9', '10', '11', '12') else 'e'
 
     obname = 'obfoo'
     obfilename = os.path.join(output, obname + '.py' + ext)

@@ -23,25 +23,9 @@
 #
 #   A tool used to import or run obfuscated python scripts.
 #
-'''See "pyarmor.py <command> -h" for more information on a specific command.
 
-Basic steps to obfuscate python scripts by Pyarmor:
+'''See "pyarmor.py <command> -h" for more information on a specific command.'''
 
-* Create a project to include all .py files in "examples/pybench"
-
-    python pyarmor.py init --src=examples/pybench --entry=pybench.py projects/myproject
-
-* Build project, it will obfuscate all .py files and save them in
-  default output path "build"
-
-    python pyarmor.py build projects/myproject
-
-* Run obfuscated script in the output path "build"
-
-    cd build
-    python pybench.py
-
-'''
 import json
 import logging
 import os
@@ -77,9 +61,9 @@ def armorcommand(func):
 
 @armorcommand
 def _init(args):
-    '''Create an empty repository or reinitialize an existing one
+    '''Create an empty project or reinitialize an existing one
 
-This command creates an empty repository in the specified path -
+This command creates an empty project in the specified path -
 basically a configure file .pyarmor_config, a project capsule
 .pyarmor_capsule.zip, and a shell script "pyarmor" will be created.
 
@@ -91,7 +75,9 @@ after obfuscated.
 
 EXAMPLES
 
-    python pyarmor.py init --src=examples projects/myproject
+    python pyarmor.py init --src=examples --entry=queens.py project1
+    cd project1/
+    ./pyarmor info
 
     '''
     path = args.project
@@ -328,9 +314,20 @@ def _check(args):
 @armorcommand
 def _benchmark(args):
     logging.info('Start benchmark test ...')
-    mode = Project.map_obfuscate_mode(args.obf_module_mode, obf_code_mode)
-    p = subprocess.Popen([sys.executable, 'benchmark.py', str(mode)])
+
+    logging.info('Benchmark bootstrap ...')
+    mode = Project.map_obfuscate_mode(args.obf_module_mode,
+                                      args.obf_code_mode)
+    p = subprocess.Popen(
+        [sys.executable, 'benchmark.py', 'bootstrap', str(mode)],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
+    logging.info('Benchmark bootstrap OK.')
+
+    logging.info('Run benchmark test ...')
+    p = subprocess.Popen([sys.executable, 'benchmark.py'], cwd='.benchtest')
+    p.wait()    
+
     logging.info('Finish benchmark test.')
 
 @armorcommand
