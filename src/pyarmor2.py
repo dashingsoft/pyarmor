@@ -8,7 +8,7 @@
 #                                                           #
 #      pyarmor                                              #
 #                                                           #
-#      Version: 4.0.1 -                                     #
+#      Version: 3.4.0 -                                     #
 #                                                           #
 #############################################################
 #
@@ -128,7 +128,7 @@ def _update(args):
     '''Update project information. '''
     project = Project()
     project.open(args.project)
-    logging.info('Update project %s ...', project._path)
+    logging.info('Update project %s ...', args.project)
 
     if args.src is not None:
         args.src = os.path.abspath(args.src)
@@ -159,6 +159,8 @@ def _build(args):
         filepairs = [(os.path.join(src, x), os.path.join(output, x))
                      for x in files]
 
+        logging.info('%s increment build',
+                     'Disable' if args.force else 'Enable')
         logging.info('Search scripts from %s', src)
         logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
         logging.info('Save obfuscated scripts to %s', output)
@@ -177,7 +179,8 @@ def _build(args):
         #         except Exception:
         #             os.makedirs(os.path.dirname(dst))
         #             shutil.copy2(src, dst)
-        project.build_time = time.time()
+        project['build_time'] = time.time()
+        project.save(args.project)
 
     if not args.no_runtime:
         logging.info('Make runtime files')
@@ -314,7 +317,7 @@ def _check(args):
     project = Project()
     project.open(args.project)
     logging.info('Check project %s ...', args.project)
-    project._check()
+    project._check(args.project)
     logging.info('Check project OK.')
 
 @armorcommand
@@ -382,7 +385,7 @@ def main(args):
                          choices=Project.OBF_MODULE_MODE)
     cparser.add_argument('--obf-code-mode',
                          choices=Project.OBF_CODE_MODE)
-    cparser.add_argument('--runtime-path')
+    cparser.add_argument('--runtime-path', metavar="RPATH")
     cparser.set_defaults(func=_update)
 
     #
@@ -464,8 +467,7 @@ def main(args):
                        help='Bind license to ipv6 addr')
     group.add_argument('-m', '--bind-mac', metavar='x:x:x:x',
                        help='Bind license to mac addr')
-    cparser.add_argument('-P', '--project', required=True, default='',
-                         help='Project path')
+    cparser.add_argument('-P', '--project', default='', help='Project path')
     cparser.set_defaults(func=_licenses)
 
     #

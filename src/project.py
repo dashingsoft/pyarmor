@@ -157,7 +157,7 @@ class Project(dict):
         finally:
             if oldpath is not None:
                 os.chdir(oldpath)
-        return filelist.files
+        return set(filelist.files)
 
     @classmethod
     def build_globfiles(cls, patterns, path=''):
