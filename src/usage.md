@@ -1,4 +1,4 @@
-# DEPRECATED from v3.3
+# DEPRECATED from v3.3, see user-guide.md for new version.
 
 # Basic Usages
 

@@ -47,6 +47,9 @@ Obfuscate package **pybench**
     python pyarmor.py obfuscate --src examples/pybench --entry pybench.py \
                                 "*.py" "package/*.py"
 
+    # Note that quotation mark is required for file patterns, otherwise
+    # it will expand base on current path by shell.
+    # 
     # This command will create a extra file .pyarmor_capsule.zip in the
     # --src path, and save all the obfuscated scripts to default output
     # path "dist" in the current path
