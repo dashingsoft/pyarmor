@@ -96,7 +96,7 @@ def make_entry(filename, rpath=None):
             return
     with open(filename, 'w') as f:
         f.write(''.join(lines[:n]))
-        f.write(entry_code % repr(rpath))
+        f.write(entry_code % ('' if rpath is None else repr(rpath)))
         f.write(''.join(lines[n:]))
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
