@@ -85,10 +85,19 @@ def make_capsule(filename):
 
 def make_entry(filename, rpath=None):
     with open(filename, 'r') as f:
-        source = f.read()
+        lines = f.readlines()
+    # Fix empty file issue
+    n = 0
+    for n in range(len(lines)):
+        if not lines[n][0] == '#':
+            break
+    for line in lines[n:]:
+        if line.strip() == 'from pytransform import pyarmor_runtime':
+            return
     with open(filename, 'w') as f:
+        f.write(''.join(lines[:n]))
         f.write(entry_code % repr(rpath))
-        f.write(source)
+        f.write(''.join(lines[n:]))
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
     if not os.path.exists(output):
@@ -164,3 +173,6 @@ def get_registration_code():
     except Exception:
         code = ''
     return code
+
+if __name__ == '__main__':
+    make_entry(sys.argv[1])
