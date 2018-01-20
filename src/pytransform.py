@@ -189,8 +189,12 @@ def _load_library(path=None):
         raise PytransformError('Could not load library _pytransform.')
 
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
+
+    # # Deprecated from v3.4
     # m.set_option('enable_encrypt_generator'.encode(), c_char_p(1))
+    # # Deprecated from v3.4
     # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
+
     if not os.path.abspath('.') == os.path.abspath(path):
         m.set_option('pyshield_path'.encode(), path.encode())
     return m
