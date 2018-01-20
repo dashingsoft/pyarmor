@@ -1,6 +1,6 @@
 # How to Obfuscate Python Script by Pyarmor
 
-From Pyarmor 3.3.0, a new mode is introduced. By this way, no import
+From Pyarmor 3.3, a new mode is introduced. By this way, no import
 hooker, no setprofile, no settrace. The performance of running or
 importing obfuscation python script has been remarkably improved.
 
@@ -86,51 +86,29 @@ know
 - After function call, the last instruction is to jump to
   offset 0. The really bytecode now is executed.
 
-## Usage
+## Implementation
 
-In Pyarmor 3.3, there are 2 modes to obfucate python scripts:
-
-* mode 7: only code object of python module is obfuscated, it's almost
-  quickly as no obfuscated module.
+From Pyarmor 3.4, use the following commands:
   
 ```
-    python pyarmor.py --with-capsule=project.zip --output=dist --mode=7 foo.py
+    # First create a project to manage obfuscated scripts
+    python pyarmor.py init --src=/PATH/TO/SCRIPTS projects/myproject
+    cd projects/myproject
     
+    # Second, specify mode for module and bytecode by options:
+    #
+    #    --obf-module-mode 'des' is default. 'none' means no obfuscate.
+    #
+    #    --obf-code-mode   'des' is default. 'fast' is faster then des.
+    #
+    # In windows, run ./pyarmor.bat other than ./pyarmor
+    ./pyarmor config --obf-module-mode {none,des}
+                     --obf-code-mode {none,des,fast}
+    
+    # Finally, obfuscate scripts as project config by command 'build'
+    ./pyarmor build
+
 ```
-
-* mode 8: both code object and bytecode are obfuscated, it's slower
-  but more secure. It's the default mode.
-
-```
-    python pyarmor.py --with-capsule=project.zip --output=dist --mode=8 foo.py
-
-```
-
-### Change Obfuscated Algorithm
-
-For mode 8, there is another option which could reduce the elapsed
-time
-
-```
-    # First change to src path of pyarmor
-    cd ..
-    
-    # Edit pytransform.py
-    vi pytransform.py
-    
-    # Uncomment line 187
-    
-        # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
-    
-    # Change to
-    
-        m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
-        
-```
-
-By default, bytecode will be encrypted by DES algorithm. If it's
-disabled, another simple algorithm is applied, it's fater than DES
-remarkably.
 
 ## Performance Analaysis
 
@@ -143,51 +121,50 @@ to run or import obfuscated bytecode:
 - Restore obfuscated code object of python module
 - Restore obfuscated bytecode when code object is called first time
 
-There is a script "benchmark.py" in the package of Pyarmor used to
-check performance. First run it to prepare test data
+There is command "benchmark" used to run benchmark test
 
 ```
-    python benchmark.py bootstrap MODE
-
-```
-
-**MODE** could be 7, 8, and the default value is 8
-
-For example,
-
-```
-    python benchmark.py bootstrap
-```
-
-It will create directory "test-bench", change to this directory, and
-run benchmark.py again. In my laptop, the output is
-
-```
-    cd test-bench
+    usage: pyarmor.py benchmark [-h] [--obf-module-mode {none,des}]
+                                [--obf-code-mode {none,des,fast}]
     
-    # Run this command more times to check the results
-    python benchmark.py
+    optional arguments:
+      -h, --help            show this help message and exit
+      -m, --obf-module-mode {none,des}
+      -c, --obf-code-mode {none,des,fast}
+```
+
+For example, run test in default mode
+
+```
+    python pyarmor.py benchmark
     
-    load_pytransform: 1.93544151561 ms
-    init_pytransform: 1.29848905378 ms
-    verify_license: 0.727187393929 ms
+    INFO     Start benchmark test ...
+    INFO     Obfuscate module mode: des
+    INFO     Obfuscate bytecode mode: des
+    INFO     Benchmark bootstrap ...
+    INFO     Benchmark bootstrap OK.
+    INFO     Run benchmark test ...
+    load_pytransform: 6.35248334635 ms
+    init_pytransform: 3.85942906151 ms
+    verify_license: 0.730260410192 ms
     
     Test script: bfoo.py
     Obfuscated script: obfoo.py
     Start test with mode 8
     --------------------------------------
     
-    import_no_obfuscated_module: 0.315403214654 ms
-    import_obfuscated_module: 1.37224144409 ms
+    import_no_obfuscated_module: 10.3613727443 ms
+    import_obfuscated_module: 8.09683912341 ms
     
-    run_empty_no_obfuscated_code_object: 0.00474920695228 ms
-    run_empty_obfuscated_code_object: 0.0441396881447 ms
+    run_empty_no_obfuscated_code_object: 0.00502857206712 ms
+    run_empty_obfuscated_code_object: 0.0433015928002 ms
     
-    run_one_thousand_no_obfuscated_bytecode: 0.00502857206712 ms
-    run_one_thousand_obfuscated_bytecode: 0.117333348233 ms
+    run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+    run_one_thousand_obfuscated_bytecode: 0.11426033197 ms
     
-    run_ten_thousand_no_obfuscated_bytecode: 0.00642539764132 ms
-    run_ten_thousand_obfuscated_bytecode: 0.726908028814 ms
+    run_ten_thousand_no_obfuscated_bytecode: 0.00474920695228 ms
+    run_ten_thousand_obfuscated_bytecode: 0.72383501255 ms
+    INFO     Finish benchmark test.
     
 ```
 
@@ -208,39 +185,40 @@ In obfuscated mode, it's about 0.1 ms for 1K bytecoe, and 0.7~0.8 ms
 for 10K bytecode in my laptop. It's mainly consumed by restoring
 obfuscated bytecodes.
 
-Now let's test mode 7
+See another mode, only module obfuscated
 
 ```
-    cd ..
-    python benchmark.py bootstrap 7
-    
-    cd test-bench
-    python benchmark.py
-    
-    load_pytransform: 1.74212085614 ms
-    init_pytransform: 1.29625413286 ms
-    verify_license: 0.757079461216 ms
+    python pyarmor.py benchmark --obf-code-mode=none
+    INFO     Start benchmark test ...
+    INFO     Obfuscate module mode: des
+    INFO     Obfuscate bytecode mode: none
+    INFO     Benchmark bootstrap ...
+    INFO     Benchmark bootstrap OK.
+    INFO     Run benchmark test ...
+    load_pytransform: 7.96721371012 ms
+    init_pytransform: 3.8571941406 ms
+    verify_license: 0.728025489273 ms
     
     Test script: bfoo.py
     Obfuscated script: obfoo.py
     Start test with mode 7
     --------------------------------------
     
-    import_no_obfuscated_module: 0.325739723903 ms
-    import_obfuscated_module: 1.32474937457 ms
+    import_no_obfuscated_module: 10.7399124749 ms
+    import_obfuscated_module: 8.19601373918 ms
     
-    run_empty_no_obfuscated_code_object: 0.00446984183744 ms
-    run_empty_obfuscated_code_object: 0.00363174649292 ms
+    run_empty_no_obfuscated_code_object: 0.00530793718196 ms
+    run_empty_obfuscated_code_object: 0.00391111160776 ms
     
-    run_one_thousand_no_obfuscated_bytecode: 0.00502857206712 ms
-    run_one_thousand_obfuscated_bytecode: 0.00363174649292 ms
+    run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+    run_one_thousand_obfuscated_bytecode: 0.00391111160776 ms
     
-    run_ten_thousand_no_obfuscated_bytecode: 0.006984127871 ms
+    run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
     run_ten_thousand_obfuscated_bytecode: 0.00391111160776 ms
-    
+    INFO     Finish benchmark test.
+        
 ```
-Notice it almost spends same time with no obfuscate scripts. Because
-bytecode of each code object isn't obfuscated.
+It's even faster than no obfuscated scripts!
 
 # DEPRECATED Mode
 

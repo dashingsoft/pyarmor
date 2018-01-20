@@ -24,13 +24,6 @@ Support Platforms
 
 - Embeded Platform: Raspberry Pi, Banana Pi, ts-4600
 
-The core of Pyarmor is written by C, the only dependency is libc. So
-it's easy to build for any other platform, even for embeded
-system. Contact <jondy.zhao@gmail.com> if you'd like to run obfuscated
-scripts in other platform.
-
-The latest platform-depentent library could be found `here <http://pyarmor.dashingsoft.com/downloads/platforms>`_
-
 Installation
 ------------
 
@@ -49,16 +42,14 @@ The following examples show how to obfuscate a python package
 **pybench**, which locates in the **examples/pybench** in the source
 of pyarmor.
 
-Obfuscate package **pybench** first time
+Obfuscate package **pybench**
 
-    python pyarmor.py obfuscate --src examples/pybench --entry pybench.py
+    python pyarmor.py obfuscate --src examples/pybench --entry pybench.py \
+                                "*.py" "package/*.py"
 
-    # This command will create 2 files in the path specified by --src:
-    #
-    #    .pyarmor_config, .pyarmor_capsule.zip
-    #
-    # And save all the obfuscated scripts to output path "dist" in the
-    # current path
+    # This command will create a extra file .pyarmor_capsule.zip in the
+    # --src path, and save all the obfuscated scripts to default output
+    # path "dist" in the current path
     #
     cd dist
 
@@ -68,20 +59,14 @@ Obfuscate package **pybench** first time
     # Run obfuscated script
     python pybench.py
 
-
-Once any script of package **pybench** changed, run the following
-command to obfuscate those updated scripts
-
-    python pyarmor.py obfuscate --src examples/pybench
-
-
-Obfuscate package **pybench**, save all extra files to another path
+Use project to manage obfuscated scripts:
 
     mkdir projects
-    python pyarmor.py init --path projects/pybench \
-                           --src examples/pybench --entry pybench.py
+    python pyarmor.py init --src examples/pybench --entry pybench.py \
+                           projects/pybench
 
-    # All the extra files will be saved to --path
+    # This command will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
+    # in the project path "projects/pybench"
     cd projects/pybench
 
     # And there is a shell script "pyarmor" is created at the same time.
