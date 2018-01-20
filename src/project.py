@@ -116,10 +116,10 @@ class Project(dict):
         return Project.map_obfuscate_mode(mode, comode)
 
     def get_build_files(self, force=False):
-        s = self.manifest
-        if self.entry:
-            s = s + ',include ' + self.entry.replace(',', ' ')
-        files = self.build_manifest(s.split(','), self.src)
+        # s = self.manifest
+        # if self.entry:
+        #     s = s + ',include ' + self.entry.replace(',', ' ')
+        files = self.build_manifest(self.manifest.split(','), self.src)
 
         if force:
             return files
