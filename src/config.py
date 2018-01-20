@@ -64,11 +64,11 @@ config_filename = '.pyarmor_config'
 
 capsule_filename = '.pyarmor_capsule.zip'
 
+license_filename = 'license.lic'
+
 default_output_path = 'dist'
 
-default_match_mode = 'manifest'
-
-default_match_template = 'global-include *.py'
+default_manifest_template = 'global-include *.py'
 
 default_obf_module_mode = 'des'
 

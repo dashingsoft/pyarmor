@@ -12,7 +12,7 @@
 #                                                           #
 #############################################################
 #
-#  DEPRECATED from v3.4. It will be replaced with pyarmor2.py
+#  DEPRECATED from v3.4. It will be replaced by pyarmor2.py
 #  from v4.
 #
 #  @File: pyarmor.py

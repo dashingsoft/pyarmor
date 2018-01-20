@@ -29,8 +29,7 @@ Basic steps to obfuscate python scripts by Pyarmor:
 
 * Create a project to include all .py files in "examples/pybench"
 
-    python pyarmor.py init --path=projects/myproject
-                           --src=examples/pybench --entry=pybench.py
+    python pyarmor.py init --src=examples/pybench --entry=pybench.py projects/myproject
 
 * Build project, it will obfuscate all .py files and save them in
   default output path "build"
@@ -59,7 +58,8 @@ except ImportError:
 
 from config import  version, version_info, trial_info, \
                     platform, dll_ext, dll_name, \
-                    config_filename, capsule_filename
+                    default_obf_module_mode, default_obf_code_mode, \
+                    config_filename, capsule_filename, license_filename
 
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
@@ -79,9 +79,9 @@ def armorcommand(func):
 def _init(args):
     '''Create an empty repository or reinitialize an existing one
 
-This command creates an empty repository in the PATH - basically a
-configure file .pyarmor_config, a project capsule .pyarmor_capsule.zip
-will be created.
+This command creates an empty repository in the specified path -
+basically a configure file .pyarmor_config, a project capsule
+.pyarmor_capsule.zip, and a shell script "pyarmor" will be created.
 
 Option --src specifies where to find python source files. By default,
   all .py files in this directory will be included in this project.
@@ -91,19 +91,22 @@ after obfuscated.
 
 EXAMPLES
 
-    python pyarmor.py init --src=examples --path=projects/myproject
+    python pyarmor.py init --src=examples projects/myproject
 
     '''
-    path = args.path
-    name = os.path.basename(os.path.abspath(path))
+    path = args.project
     logging.info('Create project in %s ...', path)
 
     if not os.path.exists(path):
         logging.info('Make project directory %s', path)
         os.makedirs(path)
 
-    project = Project(name=name, title=name.capitalize(),
-                      src=os.path.abspath(args.src), entry=args.entry)
+    src = os.path.abspath(args.src)
+    logging.info('Python scripts base path: %s', src)
+
+    name = os.path.basename(os.path.abspath(path))
+    project = Project(name=name, src=src, entry=args.entry)
+
     logging.info('Create configure file ...')
     filename = os.path.join(path, config_filename)
     project.save(path)
@@ -114,10 +117,9 @@ EXAMPLES
     make_capsule(filename)
     logging.info('Project capsule %s created', filename)
 
-    if args.make_command:
-        logging.info('Create pyarmor command ...')
-        script = make_command(platform, sys.executable, sys.argv[0], path)
-        logging.info('Pyarmor command %s created', script)
+    logging.info('Create pyarmor command ...')
+    script = make_command(platform, sys.executable, sys.argv[0], path)
+    logging.info('Pyarmor command %s created', script)
 
     logging.info('Project init successfully.')
 
@@ -141,8 +143,7 @@ def _info(args):
     project = Project()
     project.open(args.project)
     logging.info('Show project %s ...', args.project)
-
-    logging.info('\n%s', json.dumps(project, indent=2))
+    logging.info('\n%s', project.info())
 
 @armorcommand
 def _build(args):
@@ -151,58 +152,54 @@ def _build(args):
     logging.info('Build project %s ...', args.project)
     capsule = build_path(project.capsule, args.project)
 
-    if args.target is None:
-        targets = [ '' ]
-        targets.extend(project.targets)
-    else:
-        targets = args.target.split(',')
-
     if not args.only_runtime:
-        t = targets[0]
-        output = os.path.join(project.output, t)
+        output = project.output
         mode = project.get_obfuscate_mode()
         files = project.get_build_files(args.force)
         src = project.src
-        pairs = [(os.path.join(src, x), os.path.join(output, x)) for x in files]
-        obfuscate_scripts(pairs, mode, capsule, output)
-
-        n = len(output)
-        for x in targets[1:]:
-            output = os.path.join(project.output, x)
-            pairs = [(os.path.join(src, x), os.path.join(output, x))
+        filepairs = [(os.path.join(src, x), os.path.join(output, x))
                      for x in files]
-            for src, dst in pairs:
-                try:
-                    shutil.copy2(src, dst)
-                except Exception:
-                    os.makedirs(os.path.dirname(dst))
-                    shutil.copy2(src, dst)
 
+        logging.info('Search scripts from %s', src)
+        logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
+        logging.info('Save obfuscated scripts to %s', output)
+        for a, b in filepairs:
+            logging.info('\t%s -> %s', a, b)
+
+        obfuscate_scripts(filepairs, mode, capsule, output)
+
+        # for x in targets:
+        #     output = os.path.join(project.output, x)
+        #     pairs = [(os.path.join(src, x), os.path.join(output, x))
+        #              for x in files]
+        #     for src, dst in pairs:
+        #         try:
+        #             shutil.copy2(src, dst)
+        #         except Exception:
+        #             os.makedirs(os.path.dirname(dst))
+        #             shutil.copy2(src, dst)
         project.build_time = time.time()
 
-    if project.entry:
-        for entry in project.entry.split(','):
-            make_entry(os.path.join(output, entry))
-
     if not args.no_runtime:
-        for x in targets:
-            plat, licfile = project.get_target(x)
-            if licfile is not None:
-                licfile = build_path(licfile, args.project)
-            output = os.path.join(project.output, x)
-            make_runtime(capsule, output, licfile, plat)
+        logging.info('Make runtime files')
+        make_runtime(capsule, output)
+
+    if project.entry:
+        for x in project.entry.split(','):
+            filename = os.path.join(output, x)
+            logging.info('Update entry script %s', filename)
+            make_entry(filename, project.runtime_path)
+    else:
+        logging.info('\tIn order to import obfuscated scripts, insert ')
+        logging.info('\t2 lines in entry script:')
+        logging.info('\t\tfrom pytransfrom import pyarmor_runtime')
+        logging.info('\t\tpyarmor_runtime()')
+
+    logging.info('Build project OK.')
 
 @armorcommand
 def _licenses(args):
-    project = Project()
-    project.open(args.project)
-
-    if args.remove:
-        logging.info('Remove licenses from project %s ...', args.project)
-        for c in args.code:
-            project.remove_license(code, args.project)
-        project.save(args.project)
-        return
+    logging.info('Generate licenses for project %s ...', args.project)
 
     if args.expired is None:
         fmt = ''
@@ -237,23 +234,33 @@ def _licenses(args):
     #     else:
     #         raise RuntimeError('Bind file %s not found' % bindfile)
 
+    project = Project()
+    project.open(args.project)
+
     licpath = os.path.join(args.project, 'licenses')
     if not os.path.exists(licpath):
+        logging.info('Make output path of licenses: %s', licpath)
         os.mkdir(licpath)
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
     capsule = build_path(project.capsule, args.project)
-    n = len(args.project)
-    for name in args.code:
-        output = os.path.join(licpath, name)
+    for rcode in args.codes:
+        output = os.path.join(licpath, rcode)
         if not os.path.exists(output):
+            logging.info('Make path: %s', output)
             os.mkdir(output)
-        source = os.path.join(output, 'license.lic')
-        title = fmt + name
-        make_project_license(capsule, title, source)
-        project.add_license(name, title, source[n+1:])
-    project.save(args.project)
+
+        licfile = os.path.join(output, license_filename)
+        logging.info('Generate license: %s', fmt + rcode)
+        make_project_license(capsule, fmt + rcode, licfile)
+        logging.info('Write license file: %s', licfile)
+
+        logging.info('Write human information to file: "README"')
+        with open(os.path.join(output, 'README'), 'w') as f:
+            f.write('%s\n%s' % (args, rcode))
+
+    logging.info('Generate %d licenses OK.', len(args.codes))
 
 @armorcommand
 def _target(args):
@@ -271,14 +278,37 @@ def _target(args):
 
 @armorcommand
 def _obfuscate(args):
-    path = args.src if arg.config is None else arg.config
+    path = args.src
+    logging.info('Obfuscate scripts in path "%s" ...', path)
+
     capsule = os.path.join(path, capsule_filename)
     if not os.path.exists(capsule):
+        logging.info('Generate capsule %s', capsule)
         make_capsule(capsule)
-    mode = Project.map_obfuscate_mode(args.obf_module_mode, args.obf_code_mode)
-    obfuscate_scripts(pairs, mode, capsule, args.output)
+
+    entries = args.entry.split(',') if args.entry else []
+    output = project.output
+    files = Project.build_globfiles(args.patterns + entries, path)
+    filepairs = [(os.path.join(path, x), os.path.join(output, x))
+                 for x in files]
+    mode = Project.map_obfuscate_mode(default_obf_module_mode,
+                                      default_obf_code_mode)
+
+    logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
+    logging.info('Save obfuscated scripts to %s', output)
+    for a, b in filepairs:
+        logging.info('\t%s -> %s', a, b)
+    obfuscate_scripts(filepairs, mode, capsule, output)
+
+    logging.info('Make runtime files')
     make_runtime(capsule, output)
-    os.remove(capsule)
+
+    for entry in entries:
+        filename = os.path.join(output, entry)
+        logging.info('Update entry script %s', filename)
+        make_entry(filename)
+
+    logging.info('Obfuscate scripts OK.')
 
 @armorcommand
 def _check(args):
@@ -286,19 +316,21 @@ def _check(args):
     project.open(args.project)
     logging.info('Check project %s ...', args.project)
     project._check()
+    logging.info('Check project OK.')
 
 @armorcommand
 def _benchmark(args):
+    logging.info('Start benchmark test ...')
     mode = Project.map_obfuscate_mode(args.obf_module_mode, obf_code_mode)
     p = subprocess.Popen([sys.executable, 'benchmark.py', str(mode)])
     p.wait()
+    logging.info('Finish benchmark test.')
 
 @armorcommand
 def _hdinfo(args):
     show_hd_info()
 
 def main(args):
-
     parser = argparse.ArgumentParser(
         prog='pyarmor.py',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -322,18 +354,11 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Create an empty project or reinitialize an existing one'
     )
-    # cparser.add_argument('name', nargs='?', metavar='NAME', default='',
-    #                      help='Project name')
-    cparser.add_argument('-p', '--path', default='',
-                         help='Project path')
-    # cparser.add_argument('-C', '--capsule',
-    #                      help='Capsule filename of another project')
     cparser.add_argument('--entry',
                          help='Entry script of this project')
     cparser.add_argument('--src', required=True,
                          help='Base path of python scripts')
-    cparser.add_argument('--make-command', action='store_true',
-                         help='Create pyarmor command in project path')
+    cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
 
 
@@ -345,14 +370,11 @@ def main(args):
         epilog=_update.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Update project information')
-    cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default=config_filename,
-                         help='Project configure file')
+    cparser.add_argument('project', nargs='?', metavar='PATH',
+                         default='', help='Project path')
     cparser.add_argument('--name')
-    cparser.add_argument('--title')
-    cparser.add_argument('--description')
     cparser.add_argument('--src')
-    cparser.add_argument('--output', metavar='PATH')
+    cparser.add_argument('--output')
     cparser.add_argument('--manifest', metavar='TEMPLATE',
                          help='Manifest template string')
     cparser.add_argument('--entry', metavar='SCRIPT',
@@ -361,6 +383,7 @@ def main(args):
                          choices=Project.OBF_MODULE_MODE)
     cparser.add_argument('--obf-code-mode',
                          choices=Project.OBF_CODE_MODE)
+    cparser.add_argument('--runtime-path')
     cparser.set_defaults(func=_update)
 
     #
@@ -372,19 +395,8 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Show project information'
     )
-    cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default=config_filename,
-                         help='Project path or configure file')
-    # cparser.add_argument('-a', '--all', action='store_true',
-    #                          help='Show all of project information')
-    # cparser.add_argument('-b', '--basic', action='store_true',
-    #                          help='Show project basic information')
-    # cparser.add_argument('-c', '--license', action='store_true',
-    #                          help='Show project license information')
-    # cparser.add_argument('-t', '--target', action='store_true',
-    #                          help='Show project target information')
-    # cparser.add_argument('--verbose', action='store_true',
-    #                          help='Show detail information')
+    cparser.add_argument('project', nargs='?', metavar='PATH',
+                         default='', help='Project path')
     cparser.set_defaults(func=_info)
 
     #
@@ -392,9 +404,8 @@ def main(args):
     #
     cparser = subparsers.add_parser('check',
                                     help='Check consistency of project')
-    cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default=config_filename,
-                         help='Project configure file')
+    cparser.add_argument('project', nargs='?', metavar='PATH',
+                         default='', help='Project path')
     cparser.set_defaults(func=_check)
 
     #
@@ -405,46 +416,44 @@ def main(args):
         epilog=_build.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Build project, obfuscate all the scripts in the project')
-    cparser.add_argument('project', nargs='?', metavar='PROJECT',
-                         default=config_filename,
-                         help='Project path or configure file')
+    cparser.add_argument('project', nargs='?', metavar='PATH', default='',
+                         help='Project path')
     cparser.add_argument('-B', '--force', action='store_true',
                          help='Obfuscate all scripts even if it\'s not updated')
     cparser.add_argument('-r', '--only-runtime', action='store_true',
                          help='Generate extra runtime files only')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate extra runtime files')
-    cparser.add_argument('-t', '--target',
-                         help='Build these targets only')
     cparser.set_defaults(func=_build)
 
     #
     # Command: target
     #
-    cparser = subparsers.add_parser('target', help='Manage target for project')
-    cparser.add_argument('name', metavar='NAME', nargs=1,
-                         help='Target name')
-    group = cparser.add_argument_group('Target definition')
-    group.add_argument('-p', '--platform', metavar='PLATFORM',
-                       help='Target platform to run obfuscated scripts')
-    group.add_argument('-c', '--license', metavar='CODE',
-                       help='License code for this target')
-    cparser.add_argument('--remove', action='store_true',
-                         help='Remove target from project')
-    cparser.add_argument('-P', '--project', required=True, default='',
-                         help='Project path or configure file')
-    cparser.set_defaults(func=_target)
+    # cparser = subparsers.add_parser('target', help='Manage target for project')
+    # cparser.add_argument('name', metavar='NAME', nargs=1,
+    #                      help='Target name')
+    # group = cparser.add_argument_group('Target definition')
+    # group.add_argument('-p', '--platform', metavar='PLATFORM',
+    #                    help='Target platform to run obfuscated scripts')
+    # group.add_argument('-c', '--license', metavar='CODE',
+    #                    help='License code for this target')
+    # cparser.add_argument('--remove', action='store_true',
+    #                      help='Remove target from project')
+    # cparser.add_argument('-P', '--project', required=True, default='',
+    #                      help='Project path or configure file')
+    # cparser.set_defaults(func=_target)
 
     #
     # Command: license
     #
     cparser = subparsers.add_parser(
         'licenses',
-        help='Manage licenses for project'
+        epilog=_licenses.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Generate batch licenses for project'
     )
-    cparser.add_argument('code', nargs='+', metavar='CODE',
+    cparser.add_argument('codes', nargs='+', metavar='CODE',
                          help='Registration code for this license')
-
     group = cparser.add_argument_group('Bind license to hardware')
     group.add_argument('-e', '--expired', metavar='YYYY-MM-DD',
                        help='Expired date for this license')
@@ -456,12 +465,8 @@ def main(args):
                        help='Bind license to ipv6 addr')
     group.add_argument('-m', '--bind-mac', metavar='x:x:x:x',
                        help='Bind license to mac addr')
-
-    cparser.add_argument('--remove', action='store_true',
-                                help='Remove license from project')
     cparser.add_argument('-P', '--project', required=True, default='',
-                                help='Project path or configure file')
-
+                         help='Project path')
     cparser.set_defaults(func=_licenses)
 
     #
@@ -473,16 +478,6 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Show hardware information'
     )
-    # cparser.add_argument('-a', '--all', action='store_true',
-    #                      help='Show all known hardware information')
-    # cparser.add_argument('-4', '--ipv4', action='store_true',
-    #                      help='Show ipv4 address of this machine')
-    # cparser.add_argument('-6', '--ipv6', action='store_true',
-    #                      help='Show ipv4 address of this machine')
-    # cparser.add_argument('-m', '--mac', action='store_true',
-    #                      help='Show mac address of primary netcard')
-    # cparser.add_argument('-d', '--disk', action='store_true',
-    #                      help='Show serial number of primary harddisk')
     cparser.set_defaults(func=_hdinfo)
 
     #
@@ -495,9 +490,11 @@ def main(args):
         help='Run benchmark test in current machine'
     )
     cparser.add_argument('--obf-module-mode',
-                         choices=Project.OBF_MODULE_MODE, default='DES')
+                         choices=Project.OBF_MODULE_MODE,
+                         default=default_obf_module_mode)
     cparser.add_argument('--obf-code-mode',
-                         choices=Project.OBF_CODE_MODE, default='DES')
+                         choices=Project.OBF_CODE_MODE,
+                         default=default_obf_code_mode)
     cparser.set_defaults(func=_benchmark)
 
     #
@@ -507,16 +504,13 @@ def main(args):
         'obfuscate',
         epilog=_obfuscate.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Obfuscate python scripts without project')
-    cparser.add_argument('patterns', nargs='+', help='File patterns')
-    cparser.add_argument('--manifest', action='store_true')
-    cparser.add_argument('--output', default='build', metavar='PATH')
+        help='Obfuscate python scripts')
+    cparser.add_argument('--output', default='dist', metavar='PATH')
     cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
-    cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE)
-    cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE)
-    cparser.add_argument('--match-mode', choices=Project.FILE_MATCH_MODE)
-    cparser.add_argument('--config', metavar='PATH')
-    cparser.add_argument('--src', required=True, help='Base path for file patterns')
+    cparser.add_argument('--src', required=True,
+                         help='Base path for matching python scripts')
+    cparser.add_argument('patterns', nargs='*', defaults=('*.py',),
+                         help='File patterns, default is *.py')
     cparser.set_defaults(func=_obfuscate)
 
     args = parser.parse_args(args)

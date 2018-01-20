@@ -24,6 +24,7 @@
 #   Define project object.
 #
 import os
+import time
 from distutils.filelist import FileList
 from distutils.text_file import TextFile
 from glob import glob
@@ -31,7 +32,7 @@ from io import StringIO
 from json import dump as json_dump, load as json_load
 
 from config import config_filename, capsule_filename, default_output_path, \
-                   default_match_mode, default_match_template, \
+                   default_manifest_template, \
                    default_obf_module_mode, default_obf_code_mode
 
 
@@ -43,21 +44,18 @@ class Project(dict):
 
     OBF_CODE_MODE = 'none', 'des', 'fast'
 
-    FILE_MATCH_MODE = 'glob', 'manifest', 're'
-
     DEFAULT_VALUE = \
         ( 'version', '.'.join([str(x) for x in VERSION]) ), \
         ( 'name', None ), \
-        ( 'title', None ), \
         ( 'src', None ), \
-        ( 'match_mode', default_match_mode ), \
-        ( 'template', default_match_template ), \
+        ( 'manifest', default_manifest_template ), \
         ( 'entry', None ), \
         ( 'output', default_output_path ), \
         ( 'capsule', capsule_filename ), \
+        ( 'runtime_path', None ), \
         ( 'obf_module_mode', default_obf_module_mode ), \
         ( 'obf_code_mode', default_obf_code_mode ), \
-        ( 'targets', {} )
+        ( 'build_time', 0. )
 
     def __init__(self, *args, **kwargs):
         for k, v in Project.DEFAULT_VALUE:
@@ -122,15 +120,10 @@ class Project(dict):
         return Project.map_obfuscate_mode(mode, comode)
 
     def get_build_files(self, force=False):
-        s = self.template
-        if self.match_mode == 'manifest':
-            if self.entry:
-                s = s + ',include ' + self.entry.replace(',', ' ')
-            files = self.build_manifest(s, self.src)
-        elif self.match_mode == 'glob':
-            if self.entry:
-                s = s + ',' + self.entry
-            filelist = self.build_globfiles(s, self.src)
+        s = self.manifest
+        if self.entry:
+            s = s + ',include ' + self.entry.replace(',', ' ')
+        files = self.build_manifest(s.split(','), self.src)
 
         if force:
             return files
@@ -144,7 +137,7 @@ class Project(dict):
 
     def build_manifest(self, manifest, path=None):
         infile = StringIO()
-        infile.write('\n'.join(manifest.split(',')))
+        infile.write('\n'.join(manifest))
         infile.seek(0)
         template = TextFile(file=infile,
                             strip_comments=1,
@@ -174,23 +167,20 @@ class Project(dict):
     def build_globfiles(cls, patterns, path=''):
         files = []
         n = len(path) + 1
-        for x in patterns.split(','):
+        for x in patterns:
             for name in glob(os.path.join(path, x)):
                 files.append(name[n:])
         return set(files)
 
-    def add_target(self, name, platform=None, licode=None):
-        self.targets[name] = dict(platform=platform, license=licode)
-
-    def get_target(self, name):
-        if name == '' or name is None:
-            return None, None
-        t = self.targets[name]
-        c = t.get('license')
-        return t.get('platform'), None if c is None else self.get_license(c)
-
-    def remove_target(self, name):
-        self.targets.pop(name)
+    def info(self):
+        lines = []
+        for k, v in Project.DEFAULT_VALUE:
+            if k == 'build_time':
+                v = time.asctime(time.gmtime(self[k]))
+            else:
+                v = self[k]
+            lines.append('\t%s: %s' % (k, v))
+        return '\n'.join(lines)
 
 if __name__ == '__main__':
     project = Project()
