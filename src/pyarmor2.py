@@ -163,9 +163,9 @@ def _build(args):
                      'Disable' if args.force else 'Enable')
         logging.info('Search scripts from %s', src)
         logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
+        for x in files:
+            logging.info('\t%s', x)
         logging.info('Save obfuscated scripts to %s', output)
-        for a, b in filepairs:
-            logging.info('\t%s -> %s', a, b)
 
         obfuscate_scripts(filepairs, mode, capsule, output)
 
