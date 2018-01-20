@@ -64,7 +64,7 @@ from config import  version, version_info, trial_info, \
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
-                  build_path, make_command
+                  build_path, make_command, get_registration_code
 
 def armorcommand(func):
     def wrap(*args, **kwargs):
@@ -337,6 +337,12 @@ def _benchmark(args):
 def _hdinfo(args):
     show_hd_info()
 
+def _version_info():
+    if get_registration_code() == '':
+        return 'Pyarmor Trial Version %s\n%s' % (version, trial_info)
+    else:
+        return 'Pyarmor Version %s\n' % version
+
 def main(args):
     parser = argparse.ArgumentParser(
         prog='pyarmor.py',
@@ -345,7 +351,7 @@ def main(args):
         epilog=__doc__,
     )
     parser.add_argument('-v', '--version', action='version',
-                        version='Show version information')
+                        version=_version_info())
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
