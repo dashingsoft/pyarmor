@@ -72,6 +72,14 @@ test: build
 	done
 	make clean
 
+stest:
+	for pyver in  $(VERSIONS) ; do \
+            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash system-test.sh || exit 1; \
+            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+	done
+	make clean
+
 build:
 	rm -rf $(WORKPATH)
 	mkdir -p $(WORKPATH)
@@ -106,4 +114,4 @@ bench:
 	make clean
 
 clean:
-	rm -rf *.pyc *.pyo __pycache__ _pytransform.log $(WORKPATH) __runtest__
+	rm -rf *.pyc *.pyo __pycache__ _pytransform.log $(WORKPATH)
