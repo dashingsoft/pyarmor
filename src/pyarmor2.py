@@ -123,7 +123,7 @@ src path of project.
 Examples,
 
     cd projects/project1
-    ./pyarmor config --entry "main.py, another/main.py" 
+    ./pyarmor config --entry "main.py, another/main.py"
                      --manifest "global-include *.py, exclude test*.py"
 
     '''
@@ -353,7 +353,7 @@ def _benchmark(args):
 
     logging.info('Run benchmark test ...')
     p = subprocess.Popen([sys.executable, 'benchmark.py'], cwd='.benchtest')
-    p.wait()    
+    p.wait()
 
     logging.info('Finish benchmark test.')
 
