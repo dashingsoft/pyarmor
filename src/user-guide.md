@@ -268,7 +268,7 @@ scripts are obfuscated.
     # py2exe can not find dependent modules after they're obfuscated
     #
     cd dist
-    python setup.py py2exe --includei queens --dist-dir ../output
+    python setup.py py2exe --include queens --dist-dir ../output
     
     # Copy runtime files to "output"
     cp pyshield.* product.key license.lic _pytransform.dll ../output
