@@ -297,6 +297,8 @@ def _obfuscate(args):
 
     for entry in args.entry.split(','):
         filename = os.path.join(output, entry.strip())
+        if not os.path.exists(filename):
+            shutil.copy(os.path.join(path, entry.strip()), filename)
         logging.info('Update entry script %s', filename)
         make_entry(filename)
 
