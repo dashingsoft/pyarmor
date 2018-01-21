@@ -49,19 +49,19 @@ Pyarmor
 Import obfuscated moduels in a normal python scripts
 
 ```
-    python pyarmor.py obfuscate --src XXX --entry main.py a.py b.py
+    python pyarmor.py obfuscate --src examples/py2exe --entry hello.py queens.py
     
-    # a.py and b.py are obfuscated.
-    # main.py is not. Only two extra lines are inserted at the begin.
+    # queens.py is obfuscated. Entry hello.py is not. Only two extra lines are
+    # inserted at the begin.
     cd dist
-    cat main.py
+    cat hello.py
       ...
       from pytransform import pyarmor_runtime
       pyarmor_runtime()
       ...
     
-    # Run main.py
-    python main.py
+    # Run hello.py
+    python hello.py
 ```
 
 ### Use Project to Manage Obfuscated Scripts
@@ -257,7 +257,7 @@ scripts are obfuscated.
     
 
     # First run py2exe in original package, so that all the required
-    # python system library files are generated in the ${OUTPUT}
+    # python system library files are generated in the "dist"
     #
     ( cd ../../examples/py2exe; python setup.py py2exe )
     
