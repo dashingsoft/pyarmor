@@ -61,7 +61,7 @@ def make_test_script(filename):
     lines.append('\n  return 10000\n')
 
     with open(filename, 'wb') as f:
-        f.write('\n'.join(lines))
+        f.write('\n'.join(lines).encode())
 
 @metricmethod
 def verify_license(pytransform):
