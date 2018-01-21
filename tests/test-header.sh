@@ -15,7 +15,7 @@ else
     if [[ $(uname) == Darwin ]] ; then
         PLATFORM=macosx_intel
         PKGEXT=tar.bz2
-        DLLEXT=.so
+        DLLEXT=.dylib
         ARMOR=./pyarmor
     else
         if [[ $(arch) == x86_64 ]] ; then
