@@ -204,11 +204,11 @@ def _licenses(args):
     if args.bind_ipv4:
         fmt = '%s*IFIPV4:%s' % (fmt, args.bind_ipv4)
 
-    if args.bind_ipv6:
-        fmt = '%s*IFIPV6:%s' % (fmt, args.bind_ipv6)
+    # if args.bind_ipv6:
+    #     fmt = '%s*IFIPV6:%s' % (fmt, args.bind_ipv6)
 
-    # if args.bind_domain:
-    #     fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
+    if args.bind_domain:
+        fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
 
     # if args.bind_file:
     #     if os.path.exists(args.bind_file):
@@ -472,10 +472,12 @@ def main(args):
                        help='Bind license to serial number of harddisk')
     group.add_argument('-4', '--bind-ipv4', metavar='a.b.c.d',
                        help='Bind license to ipv4 addr')
-    group.add_argument('-6', '--bind-ipv6', metavar='a:b:c:d',
-                       help='Bind license to ipv6 addr')
+    # group.add_argument('-6', '--bind-ipv6', metavar='a:b:c:d',
+    #                    help='Bind license to ipv6 addr')
     group.add_argument('-m', '--bind-mac', metavar='x:x:x:x',
                        help='Bind license to mac addr')
+    group.add_argument('--bind-domain', metavar='DOMAIN',
+                       help='Bind license to domain name')
     cparser.add_argument('-P', '--project', default='', help='Project path')
     cparser.set_defaults(func=_licenses)
 
