@@ -104,8 +104,8 @@ class Project(dict):
 
     @classmethod
     def map_obfuscate_mode(cls, mode, comode):
-        m = Project.OBF_CODE_MODE.index(mode)
-        c = Project.OBF_MODULE_MODE.index(comode)
+        m = Project.OBF_MODULE_MODE.index(mode)
+        c = Project.OBF_CODE_MODE.index(comode)
         return 7 + ( 1 - m ) * 3 + c
 
     def get_obfuscate_mode(self, mode=None, comode=None):
