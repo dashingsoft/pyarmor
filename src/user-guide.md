@@ -253,7 +253,7 @@ scripts are obfuscated.
     ./pyarmor config --runtime-path=''
     
     # Obfuscate scirpts
-    ./pyarmor/build
+    ./pyarmor build
     
 
     # First run py2exe in original package, so that all the required
