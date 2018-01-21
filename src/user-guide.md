@@ -27,42 +27,256 @@ deprecated, and will be removed from v4.
 
 ### Obfuscate Python Scripts
 
-  obfuscate
+Obfuscate a simple script **examples/queens.py** in the source path of
+Pyarmor
 
-### Run Obfuscated Scripts
+```
+    python pyarmor.py obfuscate --src examples --entry queens.py "*.py"
+    
+    # Note that quotation mark is required for file patterns, otherwise
+    # it will be expanded base on current path by shell.
+
+    # Obfuscated scripts are saved in default output path "dist"
+    cd dist
+    cat queens.py
+    
+    # Run obfuscated script
+    python queens.py
+```
 
 ### Import Obfuscated Module
 
+Import obfuscated moduels in a normal python scripts
+
+```
+    python pyarmor.py obfuscate --src XXX --entry main.py a.py b.py
+    
+    # a.py and b.py are obfuscated.
+    # main.py is not. Only two extra lines are inserted at the begin.
+    cd dist
+    cat main.py
+      ...
+      from pytransform import pyarmor_runtime
+      pyarmor_runtime()
+      ...
+    
+    # Run main.py
+    python main.py
+```
+
 ### Use Project to Manage Obfuscated Scripts
 
-  init
-  info
+It's better to obfuscate a complicate python project, there are the
+several advantages:
+
+* Increment build, only updated scripts are obfuscated since last
   build
-  config
-  check
+  
+* Obfuscate scripts by more modes
+
+The following examples show how to obfuscate a python package
+**pybench**, which locates in the **examples/pybench** in the source
+of pyarmor.
+
+```
+    mkdir projects
+    python pyarmor.py init --src examples/pybench --entry pybench.py \
+                           projects/pybench
+
+    # This command will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
+    # in the project path "projects/pybench"
+    cd projects/pybench
+
+    # And there is a shell script "pyarmor" is created at the same time.
+    # (In windows, the name is "pyarmor.bat")
+    
+    # Show project information
+    ./pyarmor info
+    
+    # Now run "pyarmor" to obfuscated all the scripts by subcommand "build"
+    #
+    ./pyarmor build
+
+    # Check obfuscated script
+    cd dist
+    cat pybench.py
+
+    # Run obfuscated script
+    python pybench.py
+
+```
+
+After some source scripts changed, just run **build** again
+
+```
+    cd projects/pybench
+    ./pyarmor build
+```
+
+Obfuscate scripts by other mode, for obfuscation mode, refer to [How to obfuscate python scripts](mechanism.md)
+
+```
+    cd projects/pybench
+    
+    # Only obfuscate whole module, not each code object
+    ./pyarmor config --obf-module-mode=des --obf-code-mode=none
+    
+    # Force rebuild all
+    ./pyarmor build --force
+```
 
 ### Distribute Obfuscated Scripts
 
+First obfuscate all scripts in build machine.
+
+Then copy all the files in output path "dist" to target machine
+
+That's all.
+
+**Note** Python version in build machine must be same as in target
+machine. To be exact, the magic string value used to recognize
+byte-compiled code files (.pyc files) must be same.
+
 #### License of Obfuscated Scripts
 
-  licneses
-  hdinfo
+There is a file **license.lic** in the output path "dist", the default
+one permits the obfuscated scripts run in any machine and never
+expired. Replace it with others can change this behaviour.
+
+For examples, expire obfuscated scripts on some day
+
+```
+    cd project/pybench
+    
+    # Generate a new license.lic
+    ./pyarmor licenses --expired 2018-12-31 Customer-A
+    
+    # New license saved in "licenses/Customer-A/license.lic"
+    # Readable text saved in "licenses/Customer-A/license.lic.txt"
+    cat licenses/Customer-A/license.lic.txt
+    "Expired:2018-12-23*CODE:Customer-A"
+
+    # Replace default license.lic
+    cp licenses/Customer-A/license.lic dist/
+    
+    # Run obfuscated scripts, it will not work after 2018-12-31
+    cd dist
+    python pybench.py
+```
+
+Command **licenses** used to generate new license, note that it's
+plural. It can generate batch licenses.
+
+```
+    cd project/pybench
+    ./pyarmor licenses RCode-1 RCode-2 RCode-3 RCode-4 RCode-5
+    ls licenses/
+    
+```
+
+Bind obfuscated scripts in fixed machine
+
+```
+    # Run command hdinfo to get hardware information
+    ./pyarmor hdinfo
+    
+    # Generate license bind to harddisk serial number
+    ./pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
+    
+    # Generate license bind to ipv4 and mac address
+    ./pyarmor licenses --bind-ipv4 '192.168.121.101' \
+                       --bind-mac '20:c1:d2:2f:a0:96' Customer-John
+                       
+    # Generate license bind to domain name and expire on 2018-12-31
+    ./pyarmor licenses -e 2018-12-31 --bind-domain 'dashingsoft.com' \
+                       Customer-Jondy
+                       
+```
 
 #### Cross Platform
+
+The only difference for cross platform is need to replace
+platform-dependent library **_pytransform** with the right one for
+target machine
+
+All the latest prebuilt platform-dependent library **_pytransform** could be
+found [here](http://pyarmor.dashingsoft.com/downloads/platforms)
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
 it's not difficult to build for any other platform, even for embeded
 system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
 scripts in other platform.
 
-The latest platform-depentent library could be
-found [here](http://pyarmor.dashingsoft.com/downloads/platforms)
-
 ### Examples
 
-#### odoo
+#### obfuscate odoo module
 
-#### py2exe
+There is odoo module "web-login":
+
+```
+    /path/to/web-login
+        __init__.py
+        *.py
+        controller/
+            __init__.py
+            *.py
+```
+
+It's imported by odoo server,
+
+```
+    python pyarmor.py init --src=/path/to/web-login --entry=__init__.py \
+                           projects/odoo
+    cd projects/odoo
+    ./pyarmor config --output=dist/web-login
+    ./pyarmor build
+    
+    # Obfuscated scripts saved in "dist/web-login"
+    # Tell odoo server load "web-login" module from here
+```
+
+#### py2exe with obfuscated scripts
+
+The problem is that all the scripts is in a zip file "library.zip"
+after py2exe packages obfuscated scripts.
+
+Another challange is that py2exe cound not find dependent modules after
+scripts are obfuscated.
+
+```
+    python pyarmor.py init --src=examples/py2exe \
+                           --entry="hello.py,setup.py" \
+                           projects/py2exe
+    cd projects/py2exe
+    
+    # This is the key, change default runtime-path
+    ./pyarmor config --runtime-path=''
+    
+    # Obfuscate scirpts
+    ./pyarmor/build
+    
+
+    # First run py2exe in original package, so that all the required
+    # python system library files are generated in the ${OUTPUT}
+    #
+    ( cd ../../examples/py2exe; python setup.py py2exe )
+    
+    # Move to final output
+    mv ../../examples/py2exe/dist output/
+    
+    # Run py2exe in obfuscated package with "-i" and "-p", because
+    # py2exe can not find dependent modules after they're obfuscated
+    #
+    cd dist
+    python setup.py py2exe --includei queens --dist-dir ../output
+    
+    # Copy runtime files to "output"
+    cp pyshield.* product.key license.lic _pytransform.dll ../output
+    
+    # Now run hello.exe
+    cd ../output
+    ./hello.exe
+```
 
 ## Benchmark Test
 
