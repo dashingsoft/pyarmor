@@ -111,7 +111,22 @@ EXAMPLES
 
 @armorcommand
 def _update(args):
-    '''Update project information. '''
+    '''Update project settings.
+
+Option --manifest is comma-separated list of manifest template
+command, same as MANIFEST.in of Python Distutils. The default value is
+"global-include *.py"
+
+Option --entry is comma-separated list of entry scripts, relative to
+src path of project.
+
+Examples,
+
+    cd projects/project1
+    ./pyarmor config --entry "main.py, another/main.py" 
+                     --manifest "global-include *.py, exclude test*.py"
+
+    '''
     project = Project()
     project.open(args.project)
     logging.info('Update project %s ...', args.project)
@@ -126,12 +141,14 @@ def _update(args):
 
 @armorcommand
 def _info(args):
+    '''Show project information'''
     project = Project()
     project.open(args.project)
     logging.info('Project %s information\n%s', args.project, project.info())
 
 @armorcommand
 def _build(args):
+    '''Build project, obfuscate all files in the project'''
     project = Project()
     project.open(args.project)
     logging.info('Build project %s ...', args.project)
@@ -187,6 +204,10 @@ def _build(args):
 
 @armorcommand
 def _licenses(args):
+    '''Generate licenses for this project.
+
+Use command hdinfo to get hardware information.
+    '''
     logging.info('Generate licenses for project %s ...', args.project)
 
     if args.expired is None:
@@ -271,6 +292,7 @@ def _target(args):
 
 @armorcommand
 def _obfuscate(args):
+    '''Obfuscate scripts without project'''
     path = args.src
     logging.info('Obfuscate scripts in path "%s" ...', path)
 
@@ -306,6 +328,7 @@ def _obfuscate(args):
 
 @armorcommand
 def _check(args):
+    '''Check consistency of project'''
     project = Project()
     project.open(args.project)
     logging.info('Check project %s ...', args.project)
@@ -314,6 +337,7 @@ def _check(args):
 
 @armorcommand
 def _benchmark(args):
+    '''Run benchmark test in current machine'''
     logging.info('Start benchmark test ...')
     logging.info('Obfuscate module mode: %s', args.obf_module_mode)
     logging.info('Obfuscate bytecode mode: %s', args.obf_code_mode)
@@ -359,13 +383,29 @@ def main(args):
     )
 
     #
+    # Command: obfuscate
+    #
+    cparser = subparsers.add_parser(
+        'obfuscate',
+        epilog=_obfuscate.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Obfuscate python scripts')
+    cparser.add_argument('--output', default='dist', metavar='PATH')
+    cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
+    cparser.add_argument('--src', required=True,
+                         help='Base path for matching python scripts')
+    cparser.add_argument('patterns', nargs='*', default=['*.py'],
+                         help='File patterns, default is "*.py"')
+    cparser.set_defaults(func=_obfuscate)
+
+    #
     # Command: init
     #
     cparser = subparsers.add_parser(
         'init',
         epilog=_init.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Create an empty project or reinitialize an existing one'
+        help='Create an empty project to manage obfuscated scripts'
     )
     cparser.add_argument('--entry',
                          help='Entry script of this project')
@@ -415,8 +455,11 @@ def main(args):
     #
     # Command: check
     #
-    cparser = subparsers.add_parser('check',
-                                    help='Check consistency of project')
+    cparser = subparsers.add_parser(
+        'check',
+        epilog=_check.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Check consistency of project')
     cparser.add_argument('project', nargs='?', metavar='PATH',
                          default='', help='Project path')
     cparser.set_defaults(func=_check)
@@ -511,21 +554,6 @@ def main(args):
                          default=default_obf_code_mode)
     cparser.set_defaults(func=_benchmark)
 
-    #
-    # Command: obfuscate
-    #
-    cparser = subparsers.add_parser(
-        'obfuscate',
-        epilog=_obfuscate.__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Obfuscate python scripts')
-    cparser.add_argument('--output', default='dist', metavar='PATH')
-    cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
-    cparser.add_argument('--src', required=True,
-                         help='Base path for matching python scripts')
-    cparser.add_argument('patterns', nargs='*', default=['*.py'],
-                         help='File patterns, default is *.py')
-    cparser.set_defaults(func=_obfuscate)
 
     args = parser.parse_args(args)
     args.func(args)
