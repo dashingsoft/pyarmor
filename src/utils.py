@@ -164,7 +164,7 @@ def make_command(platform, python, pyarmor, output):
         filename = os.path.join(output, 'pyarmor')
         with open(filename, 'w') as f:
             f.write('%s %s $*' % (python, script))
-    os.chmod(filename, 0755)
+    os.chmod(filename, 0o755)
     return filename
 
 def get_registration_code():

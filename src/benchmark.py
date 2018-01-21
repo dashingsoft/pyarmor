@@ -60,7 +60,7 @@ def make_test_script(filename):
     lines.extend(['    i += 1'] * 1000)
     lines.append('\n  return 10000\n')
 
-    with open(filename, 'w') as f:
+    with open(filename, 'wb') as f:
         f.write('\n'.join(lines))
 
 @metricmethod
