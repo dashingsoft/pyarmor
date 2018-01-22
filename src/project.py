@@ -23,6 +23,10 @@
 #
 #   Define project object.
 #
+#  @Change Log:
+#    1.0.0: Initial.
+#    1.0.1: Add title
+#    
 import os
 import time
 from distutils.filelist import FileList
@@ -38,7 +42,7 @@ from config import config_filename, capsule_filename, default_output_path, \
 
 class Project(dict):
 
-    VERSION = 1, 0, 0
+    VERSION = 1, 0, 1
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -47,6 +51,7 @@ class Project(dict):
     DEFAULT_VALUE = \
         ( 'version', '.'.join([str(x) for x in VERSION]) ), \
         ( 'name', None ), \
+        ( 'title', None ), \
         ( 'src', None ), \
         ( 'manifest', default_manifest_template ), \
         ( 'entry', None ), \

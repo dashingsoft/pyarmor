@@ -91,7 +91,7 @@ EXAMPLES
     logging.info('Python scripts base path: %s', src)
 
     name = os.path.basename(os.path.abspath(path))
-    project = Project(name=name, src=src, entry=args.entry)
+    project = Project(name=name, title=name, src=src, entry=args.entry)
 
     logging.info('Create configure file ...')
     filename = os.path.join(path, config_filename)
