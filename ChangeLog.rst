@@ -1,3 +1,31 @@
+3.4.1
+-----
+* Fix README.rst format error.
+
+3.4.0
+-----
+Pyarmor v3.4 introduces a group new commands. For a simple package,
+use command **obfuscate** to obfuscate scripts directly. For
+complicated package, use Project to manage obfuscated scripts.
+
+Project includes 2 files, one configure file and one project
+capsule. Use manifest template string, same as MANIFEST.in of Python
+Distutils, to specify the files to be obfuscated.
+
+To create a project, use command **init**, use command **info** to
+show project information. **config** to update project settings, and
+**build** to obfuscate the scripts in the project.
+
+Other commands, **benchmark** to metric performance, **hdinfo** to
+show hardware information, so that command **licenses** can generate
+license bind to fixed machine.
+
+All the old commands **capsule**, **encrypt**, **license** are
+deprecated, and will be removed from v4.
+
+A new document [src/user-guide.md](src/user-guide.md) is written for
+this new version.
+
 3.3.1
 -----
 * Remove unused files in distribute package
