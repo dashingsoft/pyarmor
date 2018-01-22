@@ -10,9 +10,8 @@ from zipfile import ZipFile
 # pyarmor in the parent path
 sys.path.append('..')
 
-# Hack path of pyarmor
-import utils
-utils.PYARMOR_PATH = os.path.normpath('..')
+# Hack pyarmor path
+os.environ['PYARMOR_PATH'] = os.path.abspath(os.path.normpath('..'))
 
 from config import version, config_filename, capsule_filename
 from utils import get_registration_code, build_path

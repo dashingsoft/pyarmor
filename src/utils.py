@@ -33,8 +33,8 @@ from zipfile import ZipFile
 
 from config import platform, dll_ext, dll_name, entry_code
 
-PYARMOR_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
-
+PYARMOR_PATH = os.getenv('PYARMOR_PYTH',
+                         os.path.dirname(os.path.abspath(sys.argv[0])))
 #
 # Bootstrap
 #
