@@ -15,7 +15,7 @@ import utils
 utils.PYARMOR_PATH = os.path.normpath('..')
 
 from config import version, config_filename, capsule_filename
-from utils import get_registration_code
+from utils import get_registration_code, build_path
 from project import Project
 from pyarmor2 import main as _pyarmor
 
@@ -68,6 +68,7 @@ def newProject(args=None):
 
     project['name'] = name
     project['title'] = name
+    project['output'] = build_path('dist', path)
 
     return dict(project=project, message='Project has been created')
 
@@ -82,6 +83,10 @@ def updateProject(args):
     project = Project()
     project.open(path)
     
+    if args['output']:
+        args['output'] = build_path(args['output'], path)
+    else:
+        args['output'] = os.path.join(path, 'dist')
     project._update(args)
     project.save(path)
 
