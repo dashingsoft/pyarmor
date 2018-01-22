@@ -42,7 +42,7 @@ The following examples show how to obfuscate a python package
 **pybench**, which locates in the **examples/pybench** in the source
 of pyarmor.
 
-Obfuscate package **pybench**
+Obfuscate package **pybench**::
 
     python pyarmor.py obfuscate --src examples/pybench --entry pybench.py \
                                 "*.py" "package/*.py"
@@ -62,7 +62,7 @@ Obfuscate package **pybench**
     # Run obfuscated script
     python pybench.py
 
-Use project to manage obfuscated scripts:
+Use project to manage obfuscated scripts::
 
     mkdir projects
     python pyarmor.py init --src examples/pybench --entry pybench.py \
@@ -86,6 +86,6 @@ Use project to manage obfuscated scripts:
     # Run obfuscated script
     python pybench.py
 
-See user-guide.md for more usage.
+More usage, refer to **user-guide.md**
 
 For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_
