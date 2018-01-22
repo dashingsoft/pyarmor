@@ -34,7 +34,7 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
         function (event) {
             settings.demoFlag = true;
             settings.setDemoInfo();
-            project.initProject();
+            utils.showMessage( 'This web page does not work in local file mode, please run manager.bat or manager.sh.' );
         }
     );
 
