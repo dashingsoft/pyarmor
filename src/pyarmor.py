@@ -733,6 +733,12 @@ if __name__ == '__main__':
         # filemode='w',
     )
 
+    if (len(sys.argv) == 1 or
+        sys.argv[1] not in ('help', 'encrypt', 'capsule', 'license')):
+        from pyarmor2 import main as main2
+        main2(sys.argv[1:])
+        sys.exit(0)
+
     if len(sys.argv) == 1:
         usage()
         sys.exit(0)
@@ -740,12 +746,6 @@ if __name__ == '__main__':
     command = sys.argv[1]
     if len(sys.argv) >= 3 and sys.argv[2] == 'help':
         usage(command)
-        sys.exit(0)
-
-    if command in ('info', 'target', 'benchmark', 'config', 'hdinfo',
-                   'init', 'obfuscate', 'build', 'check', 'licenses'):
-        from pyarmor2 import main as main2
-        main2(sys.argv[1:])
         sys.exit(0)
 
     pytransform = _import_pytransform()
