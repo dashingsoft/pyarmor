@@ -137,9 +137,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             var result = response.result;
-            _project.licenses.push(result);
-
-            utils.showMessage('New license ' + result.title + ' OK.');
+            utils.showMessage('Generate license "' + result.filename + '" OK.');
         }
 
         var args = {};
