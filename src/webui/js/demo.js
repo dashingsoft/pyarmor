@@ -7,7 +7,7 @@ define([], function() {
 
         {
             response.errcode = 1;
-            result = 'Please run start-server.bat or start-server.sh first.'
+            result = 'This web page does not work in local mode, please run manager.bat or manager.sh.'
         }
 
         response.result = result;
