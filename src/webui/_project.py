@@ -174,12 +174,16 @@ def newLicense(args):
     '''
     name = args['name']
     path = os.path.join(project_base_path, name)
+    title = args['rcode'].strip()
 
     params = ['licenses', '--project', path]
-    params.append(args['rcode'])
+    for opt in ('expired', 'bind_disk', 'bind_ipv4', 'bind_mac'):
+        if args[opt]:
+            params.extend(['--%s' % opt, args[opt]])
+    params.append(title)
     _pyarmor(params)
     
-    output = os.path.join(path, 'licenses', args['rcode'], 'license.lic')
+    output = os.path.join(path, 'licenses', title, 'license.lic')
     return dict(title=title, filename=output)
 
 if __name__ == '__main__':
