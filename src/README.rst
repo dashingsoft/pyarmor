@@ -49,7 +49,7 @@ Obfuscate package **pybench**
 
     # Note that quotation mark is required for file patterns, otherwise
     # it will be expanded base on current path by shell.
-    # 
+    #
     # This command will create a extra file .pyarmor_capsule.zip in the
     # --src path, and save all the obfuscated scripts to default output
     # path "dist" in the current path
@@ -86,5 +86,6 @@ Use project to manage obfuscated scripts:
     # Run obfuscated script
     python pybench.py
 
+See user-guide.md for more usage.
 
 For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_
