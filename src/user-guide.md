@@ -49,7 +49,7 @@ Pyarmor
 Import obfuscated moduels in a normal python scripts
 
 ```
-    python pyarmor.py obfuscate --src examples/py2exe --entry hello.py queens.py
+    python pyarmor.py obfuscate --src=examples/py2exe --entry=hello.py queens.py
     
     # queens.py is obfuscated. Entry hello.py is not. Only two extra lines are
     # inserted at the begin.
@@ -66,8 +66,8 @@ Import obfuscated moduels in a normal python scripts
 
 ### Use Project to Manage Obfuscated Scripts
 
-It's better to obfuscate a complicate python project, there are the
-several advantages:
+It's better to create a project to manage these obfuscated scripts,
+there are the several advantages:
 
 * Increment build, only updated scripts are obfuscated since last
   build
@@ -93,7 +93,7 @@ of pyarmor.
     # Show project information
     ./pyarmor info
     
-    # Now run "pyarmor" to obfuscated all the scripts by subcommand "build"
+    # Now run command "build" to obfuscated all the scripts
     #
     ./pyarmor build
 
@@ -174,7 +174,7 @@ plural. It can generate batch licenses.
     
 ```
 
-Bind obfuscated scripts in fixed machine
+Bind obfuscated scripts to fixed machine
 
 ```
     # Run command hdinfo to get hardware information
