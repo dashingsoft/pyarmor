@@ -216,23 +216,32 @@ There is odoo module "web-login":
 ```
     /path/to/web-login
         __init__.py
+        __manifest__.py
         *.py
         controller/
             __init__.py
             *.py
 ```
 
-It's imported by odoo server,
+Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
 ```
+    # Create a project
     python pyarmor.py init --src=/path/to/web-login --entry=__init__.py \
                            projects/odoo
     cd projects/odoo
-    ./pyarmor config --output=dist/web-login
+    
+    # Because __manifest__.py will read by odoo server directly, so it
+    # should keep literal. Exclude it from project files.
+    ./pyarmor config --output=dist/web-login \
+                     --manifest "global-include *.py, exclude __manifest__.py"
     ./pyarmor build
     
-    # Obfuscated scripts saved in "dist/web-login"
-    # Tell odoo server load "web-login" module from here
+    # Obfuscated scripts saved in "dist/web-login", copy all of them and
+    # original __manifest__.py to addon path of odoo server
+    cp -a dist/web-login /path/to/odoo/addons
+    cp /path/to/web-login/__manifest__.py /path/to/odoo/addons/web-login
+    
 ```
 
 #### py2exe with obfuscated scripts
