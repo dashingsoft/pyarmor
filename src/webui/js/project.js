@@ -158,13 +158,13 @@ define(['connector', 'utils'], function(conn, utils) {
                 window.localStorage.clear();
                 return ;
             }
+            $('#navbar-main-tab a[href="#project"]').tab('show');
             result = response.result;
             loadProject(result.project);
         }
 
         var name = window.localStorage.getItem(_key);
         if (name === undefined || name === null || name === '') {
-            $('#navbar-main-tab a[href="#home"]').tab('show');
             conn.newProject(_callback);
         }
         else
