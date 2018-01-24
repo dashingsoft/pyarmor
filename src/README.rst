@@ -94,6 +94,8 @@ Start a webui to manage project::
     # For linux
     webui/manager.sh
 
+Here is online demo `Pyarmor Demo <http://pyarmor.dashingsoft.com>`_
+
 More usage, refer to **user-guide.md** in the source package
 
 For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_
