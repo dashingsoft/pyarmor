@@ -86,6 +86,14 @@ Use project to manage obfuscated scripts::
     # Run obfuscated script
     python pybench.py
 
-More usage, refer to **user-guide.md**
+Start a webui to manage project::
+
+    # For windows
+    webui/manager.bat
+
+    # For linux
+    webui/manager.sh
+
+More usage, refer to **user-guide.md** in the source package
 
 For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_

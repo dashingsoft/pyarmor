@@ -99,6 +99,16 @@ Use project to manage obfuscated scripts:
     python pybench.py
 ```
 
+There is a webui used to manage project easily. Start it 
+
+```
+    # For windows
+    src/webui/manager.bat
+    
+    # For linux
+    src/webui/manager.sh
+```
+
 More usage, refer to [User Guide](src/user-guide.md)
 
 ## License

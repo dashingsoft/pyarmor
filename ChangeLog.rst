@@ -1,5 +1,9 @@
 3.4.1
 -----
+* Add webui to manage project
+
+3.4.1
+-----
 * Fix README.rst format error.
 * Add title attribute to project
 * Print new command help when option is -h, --help
