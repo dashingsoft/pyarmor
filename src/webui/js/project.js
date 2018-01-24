@@ -140,6 +140,11 @@ define(['connector', 'utils'], function(conn, utils) {
             utils.showMessage('Generate license "' + result.filename + '" OK.');
         }
 
+        if (document.getElementById('input_license_rcode').value === '') {
+            utils.showMessage('Registration code can not be empty!');
+            return;
+        }
+            
         var args = {};
         args.expired = document.getElementById('input_expired_date').value;
         args.bind_disk = document.getElementById('input_bind_disk').value;
