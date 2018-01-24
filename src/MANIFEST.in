@@ -4,5 +4,5 @@ recursive-include examples *.py README LINCESE
 graft platforms
 exclude platforms/*.zip platforms/*.sh
 
-include webui/index.html webui/*.js webui/*.py webui/manager.*
+include webui/index*.html webui/*.js webui/*.py webui/manager.*
 include webui/css/*.css webui/js/*.js
