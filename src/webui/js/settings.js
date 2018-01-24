@@ -3,6 +3,7 @@ define([], function() {
     function setDemoInfo() {
         element = document.getElementById('version-info');
         element.innerHTML = 'Pyarmor Demo Version';
+        document.querySelector('.navbar-brand').innerHTML = 'Pyarmor Demo';
     }
 
     function setVersionInfo(data) {
