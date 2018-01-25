@@ -25,6 +25,9 @@ deprecated, and will be removed from v4.
 
 ## Usage
 
+Shell commands will shown for Unix-based systems. Windows has
+analogous commands for each.
+
 ### Obfuscate Python Scripts
 
 Obfuscate a simple script **examples/queens.py** in the source path of
@@ -32,14 +35,14 @@ Pyarmor
 
 ```
     python pyarmor.py obfuscate --src examples --entry queens.py "*.py"
-    
+
     # Note that quotation mark is required for file patterns, otherwise
     # it will be expanded base on current path by shell.
 
     # Obfuscated scripts are saved in default output path "dist"
     cd dist
     cat queens.py
-    
+
     # Run obfuscated script
     python queens.py
 ```
@@ -50,7 +53,7 @@ Import obfuscated moduels in a normal python scripts
 
 ```
     python pyarmor.py obfuscate --src=examples/py2exe --entry=hello.py queens.py
-    
+
     # queens.py is obfuscated. Entry hello.py is not. Only two extra lines are
     # inserted at the begin.
     cd dist
@@ -59,7 +62,7 @@ Import obfuscated moduels in a normal python scripts
       from pytransform import pyarmor_runtime
       pyarmor_runtime()
       ...
-    
+
     # Run hello.py
     python hello.py
 ```
@@ -71,7 +74,7 @@ there are the several advantages:
 
 * Increment build, only updated scripts are obfuscated since last
   build
-  
+
 * Obfuscate scripts by more modes
 
 The following examples show how to obfuscate a python package
@@ -89,10 +92,10 @@ of pyarmor.
 
     # And there is a shell script "pyarmor" is created at the same time.
     # (In windows, the name is "pyarmor.bat")
-    
+
     # Show project information
     ./pyarmor info
-    
+
     # Now run command "build" to obfuscated all the scripts
     #
     ./pyarmor build
@@ -117,10 +120,10 @@ Obfuscate scripts by other mode, for obfuscation mode, refer to [How to obfuscat
 
 ```
     cd projects/pybench
-    
+
     # Only obfuscate whole module, not each code object
     ./pyarmor config --obf-module-mode=des --obf-code-mode=none
-    
+
     # Force rebuild all
     ./pyarmor build --force
 ```
@@ -147,10 +150,10 @@ For examples, expire obfuscated scripts on some day
 
 ```
     cd project/pybench
-    
+
     # Generate a new license.lic
     ./pyarmor licenses --expired 2018-12-31 Customer-A
-    
+
     # New license saved in "licenses/Customer-A/license.lic"
     # Readable text saved in "licenses/Customer-A/license.lic.txt"
     cat licenses/Customer-A/license.lic.txt
@@ -158,7 +161,7 @@ For examples, expire obfuscated scripts on some day
 
     # Replace default license.lic
     cp licenses/Customer-A/license.lic dist/
-    
+
     # Run obfuscated scripts, it will not work after 2018-12-31
     cd dist
     python pybench.py
@@ -171,7 +174,7 @@ plural. It can generate batch licenses.
     cd project/pybench
     ./pyarmor licenses RCode-1 RCode-2 RCode-3 RCode-4 RCode-5
     ls licenses/
-    
+
 ```
 
 Bind obfuscated scripts to fixed machine
@@ -179,18 +182,18 @@ Bind obfuscated scripts to fixed machine
 ```
     # Run command hdinfo to get hardware information
     ./pyarmor hdinfo
-    
+
     # Generate license bind to harddisk serial number
     ./pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
-    
+
     # Generate license bind to ipv4 and mac address
     ./pyarmor licenses --bind-ipv4 '192.168.121.101' \
                        --bind-mac '20:c1:d2:2f:a0:96' Customer-John
-                       
+
     # Generate license bind to domain name and expire on 2018-12-31
     ./pyarmor licenses -e 2018-12-31 --bind-domain 'dashingsoft.com' \
                        Customer-Jondy
-                       
+
 ```
 
 #### Cross Platform
@@ -230,18 +233,18 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
     python pyarmor.py init --src=/path/to/web-login --entry=__init__.py \
                            projects/odoo
     cd projects/odoo
-    
+
     # Because __manifest__.py will read by odoo server directly, so it
     # should keep literal. Exclude it from project files.
     ./pyarmor config --output=dist/web-login \
                      --manifest "global-include *.py, exclude __manifest__.py"
     ./pyarmor build
-    
+
     # Obfuscated scripts saved in "dist/web-login", copy all of them and
     # original __manifest__.py to addon path of odoo server
     cp -a dist/web-login /path/to/odoo/addons
     cp /path/to/web-login/__manifest__.py /path/to/odoo/addons/web-login
-    
+
 ```
 
 #### py2exe with obfuscated scripts
@@ -257,31 +260,31 @@ scripts are obfuscated.
                            --entry="hello.py,setup.py" \
                            projects/py2exe
     cd projects/py2exe
-    
+
     # This is the key, change default runtime-path
     ./pyarmor config --runtime-path=''
-    
+
     # Obfuscate scirpts
     ./pyarmor build
-    
+
 
     # First run py2exe in original package, so that all the required
     # python system library files are generated in the "dist"
     #
     ( cd ../../examples/py2exe; python setup.py py2exe )
-    
+
     # Move to final output
     mv ../../examples/py2exe/dist output/
-    
+
     # Run py2exe in obfuscated package with "-i" and "-p", because
     # py2exe can not find dependent modules after they're obfuscated
     #
     cd dist
     python setup.py py2exe --include queens --dist-dir ../output
-    
+
     # Copy runtime files to "output"
     cp pyshield.* product.key license.lic _pytransform.dll ../output
-    
+
     # Now run hello.exe
     cd ../output
     ./hello.exe
@@ -309,15 +312,15 @@ Project name.
 
 Base path to match files by manifest template string.
 
-Generally it's absolute path. 
+Generally it's absolute path.
 
 ### manifest
 
 A string specifies files to be obfuscated, same as MANIFEST.in of
 Python Distutils, default value is
 
-``` 
-    global-include *.py 
+```
+    global-include *.py
 ```
 
 It means all files anywhere in the **src** tree matching.
@@ -342,7 +345,7 @@ entry:
 
 The entry name is relative to **src**.
 
-Multi entries are separated by comma, for example, 
+Multi entries are separated by comma, for example,
 
 ```
     main.py, another/main.py
@@ -387,7 +390,7 @@ How to obfuscate byte code of each code object:
     Obfuscate byte-code by DES algorithm
 
 * fast
-    
+
     Obfuscate byte-code by a simple algorithm, it's faster than DES
 
 ### runtime_path
