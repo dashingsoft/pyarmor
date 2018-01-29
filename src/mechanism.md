@@ -95,7 +95,7 @@ From Pyarmor 3.4, use the following commands:
     python pyarmor.py init --src=/PATH/TO/SCRIPTS projects/myproject
     cd projects/myproject
 
-    # Second, use command "config" to specify obfuscatation mode:
+    # Second, use command "config" to specify obfuscation mode:
     #
     #    --obf-module-mode 'des' is default. Obfuscate module by DES
     #                      'none' means no obfuscate module object.
