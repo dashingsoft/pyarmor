@@ -299,6 +299,46 @@ How about the performance after scripts are obfuscated, run
     python pyarmor.py benchmark
 ```
 
+## Keypoints of Using Obfuscated Scripts
+
+* Obfuscated script is a normal python script, so it can be seamless
+  to replace original script.
+
+* There is only one thing changed, the following code must be run
+  before using any obfuscated script.
+
+```
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+```
+
+It can be put in any script anywhere, only if it run in the same
+Python interpreter. It will create some builtin function to deal with
+obfuscated code.
+
+* In order to run these extra code, there are several extra files
+  should be distributed with obfuscated scripts. They're called
+  **runtime files**
+
+```
+    pytransform.py _pytransform.so or _pytransform.dll or _pytransform.dylib
+    pyshield.key, pyshield.lic, product.key, license.lic
+```
+
+Generally all of the runtime files will be generated in the output
+path when obfuscate python scripts.
+
+* pytransform.py must be in any Python path in target machine.
+
+* pytransform.py need load dynamic library **_pytransform** it may be
+  **_pytransform.so** in Linux, **_pytransform.dll** in Windows,
+  **_pytransform.dylib** in MacOS. It's dependent-platform, download
+  the right one to the same path of pytransform.py if use obfuscated
+  scripts in any other platform.
+
+All the prebuilt dynamic libraries
+list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
+
 ## Configure File
 
 Each project has a configure file. It's a json file, used to specify
