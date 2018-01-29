@@ -95,14 +95,14 @@ From Pyarmor 3.4, use the following commands:
     python pyarmor.py init --src=/PATH/TO/SCRIPTS projects/myproject
     cd projects/myproject
 
-    # Second, use command "config" to specify mode for module and bytecode:
+    # Second, use command "config" to specify obfuscatation mode:
     #
-    #    --obf-module-mode 'des' is default. Obfuscate code by DES
-    #                      'none' means no obfuscate.
+    #    --obf-module-mode 'des' is default. Obfuscate module by DES
+    #                      'none' means no obfuscate module object.
     #
     #    --obf-code-mode   'des' is default.
-    #                      'fast' is a simple algorithm faster then DES.
-    #                      'none' means no obfuscate.
+    #                      'fast' is a simple algorithm faster than DES.
+    #                      'none' means no obfuscate bytecode.
     #
     # For example (in windows, run ./pyarmor.bat other than ./pyarmor),
     ./pyarmor config --obf-module-mode des
