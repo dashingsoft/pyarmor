@@ -87,7 +87,7 @@ Use project to manage obfuscated scripts:
     # And there is a shell script "pyarmor" is created at the same time.
     # (In windows, the name is "pyarmor.bat")
     #
-    # Now run "pyarmor" to obfuscated all the scripts by subcommand "build"
+    # Now run command "build" to obfuscated all the scripts
     #
     ./pyarmor build
 
@@ -99,12 +99,12 @@ Use project to manage obfuscated scripts:
     python pybench.py
 ```
 
-There is a webui used to manage project easily. Start it 
+There is a webui used to manage project easily. Start it
 
 ```
     # For windows
     src/webui/manager.bat
-    
+
     # For linux
     src/webui/manager.sh
 ```

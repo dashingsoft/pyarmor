@@ -23,15 +23,15 @@ There are 2 ways to protect Python Scripts by Pyarmor:
 
 - Iterate code object, wrap bytecode of each code object as the
   following format
-  
+
 ```
     0   JUMP_ABSOLUTE            n = 3 + len(bytecode)
-    
+
     3
     ...
     ... Here it's obfuscated bytecode
     ...
-    
+
     n   LOAD_GLOBAL              ? (__armor__)
     n+3 CALL_FUNCTION            0
     n+6 POP_TOP
@@ -82,30 +82,33 @@ know
 - At offset n, the instruction is to call a PyCFunction. This function
   will restore those obfuscated bytecode between offset 3 and n, and
   place the original bytecode at offset 0
-  
+
 - After function call, the last instruction is to jump to
   offset 0. The really bytecode now is executed.
 
 ## Implementation
 
 From Pyarmor 3.4, use the following commands:
-  
+
 ```
     # First create a project to manage obfuscated scripts
     python pyarmor.py init --src=/PATH/TO/SCRIPTS projects/myproject
     cd projects/myproject
-    
-    # Second, specify mode for module and bytecode by options:
+
+    # Second, use command "config" to specify mode for module and bytecode:
     #
-    #    --obf-module-mode 'des' is default. 'none' means no obfuscate.
+    #    --obf-module-mode 'des' is default. Obfuscate code by DES
+    #                      'none' means no obfuscate.
     #
-    #    --obf-code-mode   'des' is default. 'fast' is faster then des.
+    #    --obf-code-mode   'des' is default.
+    #                      'fast' is a simple algorithm faster then DES.
+    #                      'none' means no obfuscate.
     #
-    # In windows, run ./pyarmor.bat other than ./pyarmor
-    ./pyarmor config --obf-module-mode {none,des}
-                     --obf-code-mode {none,des,fast}
-    
-    # Finally, obfuscate scripts as project config by command 'build'
+    # For example (in windows, run ./pyarmor.bat other than ./pyarmor),
+    ./pyarmor config --obf-module-mode des
+                     --obf-code-mode none
+
+    # Finally, obfuscate scripts as project configuration by command 'build'
     ./pyarmor build
 
 ```
@@ -126,7 +129,7 @@ There is command "benchmark" used to run benchmark test
 ```
     usage: pyarmor.py benchmark [-h] [--obf-module-mode {none,des}]
                                 [--obf-code-mode {none,des,fast}]
-    
+
     optional arguments:
       -h, --help            show this help message and exit
       -m, --obf-module-mode {none,des}
@@ -137,7 +140,7 @@ For example, run test in default mode
 
 ```
     python pyarmor.py benchmark
-    
+
     INFO     Start benchmark test ...
     INFO     Obfuscate module mode: des
     INFO     Obfuscate bytecode mode: des
@@ -147,25 +150,25 @@ For example, run test in default mode
     load_pytransform: 6.35248334635 ms
     init_pytransform: 3.85942906151 ms
     verify_license: 0.730260410192 ms
-    
+
     Test script: bfoo.py
     Obfuscated script: obfoo.py
     Start test with mode 8
     --------------------------------------
-    
+
     import_no_obfuscated_module: 10.3613727443 ms
     import_obfuscated_module: 8.09683912341 ms
-    
+
     run_empty_no_obfuscated_code_object: 0.00502857206712 ms
     run_empty_obfuscated_code_object: 0.0433015928002 ms
-    
+
     run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
     run_one_thousand_obfuscated_bytecode: 0.11426033197 ms
-    
+
     run_ten_thousand_no_obfuscated_bytecode: 0.00474920695228 ms
     run_ten_thousand_obfuscated_bytecode: 0.72383501255 ms
     INFO     Finish benchmark test.
-    
+
 ```
 
 Here it's a normal license checked by verify_license. If the license
@@ -173,7 +176,7 @@ is bind to fixed machine, for example, mac address, it need more time
 to read hardware information.
 
 import_obfuscated_module will first restore obfuscated code object,
-then import this pre-compiled code object. 
+then import this pre-compiled code object.
 
 The bytecode size of function one_thousand is about 1K, and
 ten_thousand is about 10K. Most of them will not be executed, because
@@ -198,25 +201,25 @@ See another mode, only module obfuscated
     load_pytransform: 7.96721371012 ms
     init_pytransform: 3.8571941406 ms
     verify_license: 0.728025489273 ms
-    
+
     Test script: bfoo.py
     Obfuscated script: obfoo.py
     Start test with mode 7
     --------------------------------------
-    
+
     import_no_obfuscated_module: 10.7399124749 ms
     import_obfuscated_module: 8.19601373918 ms
-    
+
     run_empty_no_obfuscated_code_object: 0.00530793718196 ms
     run_empty_obfuscated_code_object: 0.00391111160776 ms
-    
+
     run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
     run_one_thousand_obfuscated_bytecode: 0.00391111160776 ms
-    
+
     run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
     run_ten_thousand_obfuscated_bytecode: 0.00391111160776 ms
     INFO     Finish benchmark test.
-        
+
 ```
 It's even faster than no obfuscated scripts!
 
