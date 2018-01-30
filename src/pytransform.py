@@ -1,12 +1,6 @@
 # Because ctypes is new from Python 2.5, so pytransform doesn't work
 # before Python 2.5
 #
-# And _pytransform will decrypted bytescode by sys.setprofile and
-# threading.setprofile, so if scripts set its own profile, pytransform
-# maybe doesn't work. Besides, if your python built with Py_DEBUG or
-# Py_TRACE_REFS, _pytransform will not work either in order to protect
-# encrypted bytescode.
-
 from ctypes import cdll, c_char, c_char_p, c_int, c_void_p, \
                    pythonapi, py_object, PYFUNCTYPE
 from ctypes.util import find_library
@@ -186,7 +180,7 @@ def _load_library(path=None):
         else:
             m = cdll.LoadLibrary(os.path.join(path, '_pytransform.dll'))
     except Exception:
-        raise PytransformError('Could not load library _pytransform.')
+        raise PytransformError('Could not load _pytransform from "%s"', path)
 
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
 
