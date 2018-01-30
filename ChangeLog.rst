@@ -44,7 +44,7 @@ this new version.
 -----
 In this version, new obfuscate mode 7 and 8 are introduced. The main
 difference is that obfuscated script now is a normal python file (.py)
-other than compiled script (.pyc), so it can be used as common way. 
+other than compiled script (.pyc), so it can be used as common way.
 
 Refer to https://github.com/dashingsoft/pyarmor/blob/v3.3.0/src/mechanism.md
 
@@ -52,7 +52,7 @@ Refer to https://github.com/dashingsoft/pyarmor/blob/v3.3.0/src/mechanism.md
 * Change default mode from 3 to 8
 * Change benchmark.py to test new mode
 * Update webapp and tutorial
-* Update usage 
+* Update usage
 * Fix issue of py2exe, now py2exe can work with python scripts obfuscated by pyarmor
 * Fix issue of odoo, now odoo can load python modules obfuscated by pyarmor
 
