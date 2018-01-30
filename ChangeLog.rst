@@ -1,3 +1,7 @@
+3.4.3
+-----
+* Fix issue: raise exception when no project entry is obfuscated
+
 3.4.2
 -----
 * Add webui to manage project
