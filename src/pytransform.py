@@ -10,13 +10,34 @@ import imp
 import os
 import sys
 
+#
 # Global
+#
 _pytransform = None
 _get_error_msg = None
 
+#
 # Options
+#
+
+# How to show error message return from dynamic library _pytransform.
+#
+# Each time call a dll function, if something is wrong, _get_error_msg
+# will return the reason.
+#
+# Enable _verbose_mode will print the details got from _get_error_msg.
+# Disable this options will print only a short message.
 _verbose_mode = 1
-_debug_mode = 0
+
+# In debug mode, print trace stack when raise exception.
+# Otherwise only show a short message.
+#
+# Run python with command option "-d", or set environment variable
+# PYTHONDEBUG. For example
+#
+#   python -d pyarmor.py xxxx
+#
+_debug_mode = sys.flags.debug
 
 class PytransformError(Exception):
     def __init__(self, *args, **kwargs):
