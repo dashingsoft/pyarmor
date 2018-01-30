@@ -65,10 +65,11 @@ def _init(args):
 
 This command creates an empty project in the specified path -
 basically a configure file .pyarmor_config, a project capsule
-.pyarmor_capsule.zip, and a shell script "pyarmor" will be created.
+.pyarmor_capsule.zip, and a shell script "pyarmor" will be created (in
+windows, it called "pyarmor.bat").
 
 Option --src specifies where to find python source files. By default,
-  all .py files in this directory will be included in this project.
+all .py files in this directory will be included in this project.
 
 Option --entry specifies main script, which could be run directly
 after obfuscated.
@@ -192,6 +193,8 @@ def _build(args):
     if project.entry:
         for x in project.entry.split(','):
             filename = os.path.join(output, x.strip())
+            if not os.path.exists(filename):
+                shutil.copy(os.path.join(project.src, x.strip()), filename)
             logging.info('Update entry script %s', filename)
             make_entry(filename, project.runtime_path)
     else:
@@ -262,17 +265,17 @@ Use command hdinfo to get hardware information.
 
         licfile = os.path.join(output, license_filename)
         licode = fmt + rcode
-        txtcode = licode.replace('\n', r'\n')
+        txtinfo = licode.replace('\n', r'\n')
         if args.expired:
-            txtcode = '"Expired:%s%s"' % (args.expired,
-                                          txtcode[txtcode.find(r'\n')+2:])
-        logging.info('Generate license: %s', txtcode)
+            txtinfo = '"Expired:%s%s"' % (args.expired,
+                                          txtinfo[txtinfo.find(r'\n')+2:])
+        logging.info('Generate license: %s', txtinfo)
         make_project_license(capsule, licode, licfile)
         logging.info('Write license file: %s', licfile)
 
         logging.info('Write information to %s.txt', licfile)
         with open(os.path.join(licfile + '.txt'), 'w') as f:
-            f.write(txtcode)
+            f.write(txtinfo)
 
     logging.info('Generate %d licenses OK.', len(args.codes))
 
