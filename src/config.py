@@ -5,11 +5,7 @@ version = '3.4.3'
 version_info = '''
 Pyarmor is a tool used to import or run the encrypted python scripts.
 Only by a few extra files, pyarmor can run and imported encrypted
-files in the normal python environments. Here are the basic steps:
-
-- Generate project capsule
-- Encrypt python scripts with project capsule
-- Copy project capsule and encrypted scripts to runtime environments.
+files in the normal python environments.
 
 Pyarmor just likes an enhancement which let python could run or import
 encrypted files.
@@ -37,9 +33,6 @@ help_footer = '''
 For more information, refer to https://github.com/dashingsoft/pyarmor
 '''
 
-# Extra suffix char for encrypted python scripts
-ext_char = 'e'
-
 # The last three components of the filename before the extension are
 # called "compatibility tags." The compatibility tags express the
 # package's basic interpreter requirements and are detailed in PEP
@@ -48,13 +41,9 @@ platform = get_platform().split('-')
 platform = '_'.join(platform if len(platform) < 3 else platform[0:3:2])
 
 dll_ext = '.so' if platform.startswith('linux') else \
-          '.dylib' if platform.startswith('macosx') else '.dll'
+          '.dylib' if platform.startswith('macosx') else \
+          '.dll'
 dll_name = '_pytransform'
-
-wrap_runner = '''import pyimcore
-from pytransform import exec_file
-exec_file('%s')
-'''
 
 entry_code = '''from pytransform import pyarmor_runtime
 pyarmor_runtime(%s)
@@ -73,3 +62,16 @@ default_manifest_template = 'global-include *.py'
 default_obf_module_mode = 'des'
 
 default_obf_code_mode = 'des'
+
+
+#
+# DEPRECATED From v3.4.0, all the follwing lines will be removed from v4
+#
+
+# Extra suffix char for encrypted python scripts
+ext_char = 'e'
+
+wrap_runner = '''import pyimcore
+from pytransform import exec_file
+exec_file('%s')
+'''
