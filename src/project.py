@@ -8,7 +8,7 @@
 #                                                           #
 #      pyarmor                                              #
 #                                                           #
-#      Version: 3.3.0 -                                     #
+#      Version: 3.4.0 -                                     #
 #                                                           #
 #############################################################
 #
@@ -26,7 +26,7 @@
 #  @Change Log:
 #    1.0.0: Initial.
 #    1.0.1: Add title
-#    
+#
 import os
 import time
 from distutils.filelist import FileList
