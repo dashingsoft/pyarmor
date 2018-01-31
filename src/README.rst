@@ -5,8 +5,8 @@ Pyarmor is a command line tool used to import or run obfuscated python
 scripts. Only by a few extra files, pyarmor can run and imported
 obfuscated files in the normal python environments.
 
-Pyarmor just likes an enhancement which let python could run or import
-obfuscated files.
+Pyarmor just likes an enhancement by which python could run or import
+obfuscated scripts.
 
 Main Features
 -------------
