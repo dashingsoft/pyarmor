@@ -75,7 +75,7 @@ Use project to manage obfuscated scripts::
     # And there is a shell script "pyarmor" is created at the same time.
     # (In windows, the name is "pyarmor.bat")
     #
-    # Now run "pyarmor" to obfuscated all the scripts by subcommand "build"
+    # Now run command "build" to obfuscated all the scripts
     #
     ./pyarmor build
 
@@ -96,6 +96,8 @@ Start a webui to manage project::
 
 Here is online demo `Pyarmor Demo <http://pyarmor.dashingsoft.com>`_
 
-More usage, refer to **user-guide.md** in the source package
+More usage, refer to **user-guide.md** in the source package.
+
+How to obfuscate python scripts by Pyarmor, refer to **mechanism.md** in the source package.
 
 For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_
