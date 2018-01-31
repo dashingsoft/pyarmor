@@ -121,11 +121,21 @@ command, same as MANIFEST.in of Python Distutils. The default value is
 Option --entry is comma-separated list of entry scripts, relative to
 src path of project.
 
+Option --runtime-path is used to find _pytransform.dll(.so) in target
+machine when import obfuscated scripts. It's only used in special
+case. For example, use py2exe to package obfuscated scripts. Or use
+many odoo modules which are obfuscated separately. In this case, copy
+pyarmor runtime file to an absolute path, set this option to same path
+when obfuscate each odoo module.
+
 Examples,
 
     cd projects/project1
     ./pyarmor config --entry "main.py, another/main.py"
                      --manifest "global-include *.py, exclude test*.py"
+                     --obf-module-mode des
+                     --obf-code-mode des
+                     --runtime-path "/opt/odoo/pyarmor"
 
     '''
     project = Project()
