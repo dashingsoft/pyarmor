@@ -199,10 +199,10 @@ Bind obfuscated scripts to fixed machine
 #### Cross Platform
 
 The only difference for cross platform is need to replace
-platform-dependent library **_pytransform** with the right one for
+platform-dependent library _**pytransform** with the right one for
 target machine
 
-All the latest prebuilt platform-dependent library **_pytransform** could be
+All the latest prebuilt platform-dependent library _**pytransform** could be
 found [here](http://pyarmor.dashingsoft.com/downloads/platforms)
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
@@ -374,7 +374,7 @@ obfuscated code.
   **runtime files**
 
 ```
-    pytransform.py _pytransform.so or _pytransform.dll or _pytransform.dylib
+    pytransform.py, _pytransform.so or _pytransform.dll or _pytransform.dylib
     pyshield.key, pyshield.lic, product.key, license.lic
 ```
 
@@ -383,21 +383,21 @@ path when obfuscate python scripts.
 
 * pytransform.py must be in any Python path in target machine.
 
-* pytransform.py need load dynamic library **_pytransform** it may be
-  **_pytransform.so** in Linux, **_pytransform.dll** in Windows,
-  **_pytransform.dylib** in MacOS. It's dependent-platform, download
-  the right one to the same path of pytransform.py if use obfuscated
-  scripts in any other platform.
+* pytransform.py need load dynamic library _pytransform it may be
+  _pytransform.so in Linux, _pytransform.dll in Windows,
+  _pytransform.dylib in MacOS. It's dependent-platform, download
+  the right one to the same path of pytransform.py according to target
+  platform.
 
 All the prebuilt dynamic libraries
 list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
 
-* By default pytransform.py search dynamic library **_pytransform** in
+* By default pytransform.py search dynamic library _pytransform in
   the same path. Check pytransform.py!_load_library to find the
   details.
 
 * All the other **runtime files** should in the same path as dynamic
-  library **_pytransform**.
+  library _pytransform.
 
 ## Configure File
 
