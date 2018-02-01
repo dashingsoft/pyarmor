@@ -74,6 +74,9 @@ all .py files in this directory will be included in this project.
 Option --entry specifies main script, which could be run directly
 after obfuscated.
 
+Option --clone specifies another project path. It it is set, no new
+project capsule is generated, just clone capsule from this project.
+
 EXAMPLES
 
     python pyarmor.py init --src=examples --entry=queens.py project1
@@ -81,6 +84,10 @@ EXAMPLES
     ./pyarmor info
 
     '''
+    if args.clone:
+        _clone_project(args)
+        return
+
     path = args.project
     logging.info('Create project in %s ...', path)
 
@@ -103,6 +110,35 @@ EXAMPLES
     filename = os.path.join(path, capsule_filename)
     make_capsule(filename)
     logging.info('Project capsule %s created', filename)
+
+    logging.info('Create pyarmor command ...')
+    script = make_command(platform, sys.executable, sys.argv[0], path)
+    logging.info('Pyarmor command %s created', script)
+
+    logging.info('Project init successfully.')
+
+def _clone(args):
+    path = args.project
+    logging.info('Create project in %s ...', path)
+
+    if not os.path.exists(path):
+        logging.info('Make project directory %s', path)
+        os.makedirs(path)
+
+    src = os.path.abspath(args.src)
+    logging.info('Python scripts base path: %s', src)
+
+    logging.info('Clone project from path: %s', args.clone)
+    for s in (config_filename, capsule_filename):
+        logging.info('\tCopy file "%s"', s)
+        shutil.copy(os.path.join(args.clone, s), os.path.join(path, s))
+
+    logging.info('Init project settings')
+    project = Project()
+    project.open(path)
+    name = os.path.basename(os.path.abspath(path))
+    project._update(name=name, title=name, src=src, entry=args.entry)
+    project.save(path)
 
     logging.info('Create pyarmor command ...')
     script = make_command(platform, sys.executable, sys.argv[0], path)
@@ -424,6 +460,8 @@ def main(args):
                          help='Entry script of this project')
     cparser.add_argument('--src', required=True,
                          help='Base path of python scripts')
+    cparser.add_argument('--clone',
+                         help='Clone project configuration from this path')
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
 
