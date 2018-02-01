@@ -247,6 +247,59 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
 ```
 
+#### obfuscate many odoo modules
+
+Suppose there are 3 odoo modules "web-login1", "web-login2",
+"web-login3", they'll be obfuscated separately, but run in the same
+python interpreter.
+
+First create project1, then clone project1 to project2, project3
+
+```
+    # Create project1
+    python pyarmor.py init --src=/path/to/web-login1 --entry=__init__.py \
+                           projects/odoo/login1
+
+    # Configure project1
+    ./pyarmor config --output=dist \
+                     --manifest "global-include *.py, exclude __manifest__.py" \
+                     projects/odoo/login1
+
+    # Clone to project2
+    python pyarmor.py init --src=/path/to/web-login2 \
+                           --clone=projects/odoo/login1 \
+                           projects/odoo/login2
+
+    # Clone to project2
+    python pyarmor.py init --src=/path/to/web-login3 \
+                           --clone=projects/odoo/login1 \
+                           projects/odoo/login3
+```
+
+Then build 3 projects
+
+```
+    (cd projects/odoo/login1; ./pyarmor build)
+    (cd projects/odoo/login2; ./pyarmor build)
+    (cd projects/odoo/login3; ./pyarmor build)
+```
+
+Finally distribute obfuscated modules
+
+```
+    cp -a projects/odoo/login1/dist /path/to/odoo/addons/web-login1
+    cp /path/to/web-login1/__manifest__.py /path/to/odoo/addons/web-login1
+
+    cp -a projects/odoo/login2/dist /path/to/odoo/addons/web-login2
+    cp /path/to/web-login2/__manifest__.py /path/to/odoo/addons/web-login2
+
+    cp -a projects/odoo/login3/dist /path/to/odoo/addons/web-login3
+    cp /path/to/web-login3/__manifest__.py /path/to/odoo/addons/web-login3
+
+```
+
+Now restart odoo server.
+
 #### py2exe with obfuscated scripts
 
 The problem is that all the scripts is in a zip file "library.zip"
@@ -338,6 +391,13 @@ path when obfuscate python scripts.
 
 All the prebuilt dynamic libraries
 list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
+
+* By default pytransform.py search dynamic library **_pytransform** in
+  the same path. Check pytransform.py!_load_library to find the
+  details.
+
+* All the other **runtime files** should in the same path as dynamic
+  library **_pytransform**.
 
 ## Configure File
 
