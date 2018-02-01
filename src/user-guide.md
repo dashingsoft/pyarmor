@@ -210,6 +210,15 @@ it's not difficult to build for any other platform, even for embeded
 system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
 scripts in other platform.
 
+#### Run Pyarmor with debug mode
+
+By default, pyarmor prints simple message when something is wrong,
+turn on debug mode to print all the trace stack
+
+```
+    python -d pyarmor.py ...
+```
+
 ### Examples
 
 #### obfuscate odoo module
@@ -311,13 +320,17 @@ Finally distribute obfuscated modules
     mkdir -p /opt/odoo/pyarmor
     cp projects/odoo/web-login/dist/* /opt/odoo/pyarmor
 
-    # Copy pytransform.py to each module
+    # Add /opt/odoo/pyarmor to python path in odoo server startup script
+    # so that each module can import pytransform
+    
+    # Or copy pytransform.py to any python path
+    cp projects/odoo/login/dist/pytransform.py /Any/Python/Path
+    
+    # Or copy pytransform.py to each module
     cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login1
     cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login2
     cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login3
 
-    # Or copy pytransform.py to any python path so that each module can import pytransform
-    cp projects/odoo/login/dist/pytransform.py /Any/Python/Path
 ```
 
 Now restart odoo server.
