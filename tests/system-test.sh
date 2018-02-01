@@ -108,6 +108,14 @@ $PYARMOR init --src examples/py2exe --entry "hello.py,setup.py" \
 check_file_exists projects/py2exe/.pyarmor_config
 check_file_exists projects/py2exe/.pyarmor_capsule.zip
 
+csih_inform "Case 2.2: init clone py2exe"
+$PYARMOR init --src examples/py2exe2 --clone projects/py2exe \
+              projects/py2exe-clone >result.log 2>&1
+
+check_return_value
+check_file_exists projects/py2exe-clone/.pyarmor_config
+check_file_exists projects/py2exe-clone/.pyarmor_capsule.zip
+
 echo ""
 echo "-------------------- Test Command init END ---------------------"
 echo ""
@@ -190,7 +198,7 @@ csih_inform "Case 6.1: build pybench"
 output=projects/pybench/dist
 check_file_exists $output/pybench.py
 check_file_content $output/pybench.py 'pyarmor_runtime()'
-check_file_content $output/pybench.py '__pyarmor__(__name__'                                    
+check_file_content $output/pybench.py '__pyarmor__(__name__'
 
 echo ""
 echo "-------------------- Test Command build END --------------------"
