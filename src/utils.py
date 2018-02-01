@@ -125,9 +125,10 @@ def make_runtime(capsule, output, licfile=None, platform=None):
     myzip.extract('pyshield.key', output)
     myzip.extract('pyshield.lic', output)
     myzip.extract('product.key', output)
-    myzip.extract('license.lic', output)
 
-    if licfile is not None:
+    if licfile is None:
+        myzip.extract('license.lic', output)
+    else:
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
     if platform is None:
