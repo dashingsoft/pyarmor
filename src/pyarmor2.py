@@ -75,7 +75,7 @@ Option --entry specifies main script, which could be run directly
 after obfuscated.
 
 Option --clone specifies another project path. It it is set, no new
-project capsule is generated, just clone capsule from this project.
+project capsule is generated, just copy capsule from this project.
 
 EXAMPLES
 
@@ -85,7 +85,7 @@ EXAMPLES
 
     '''
     if args.clone:
-        _clone_project(args)
+        _clone(args)
         return
 
     path = args.project
@@ -137,7 +137,7 @@ def _clone(args):
     project = Project()
     project.open(path)
     name = os.path.basename(os.path.abspath(path))
-    project._update(name=name, title=name, src=src, entry=args.entry)
+    project._update(dict(name=name, title=name, src=src, entry=args.entry))
     project.save(path)
 
     logging.info('Create pyarmor command ...')
@@ -460,7 +460,7 @@ def main(args):
                          help='Entry script of this project')
     cparser.add_argument('--src', required=True,
                          help='Base path of python scripts')
-    cparser.add_argument('--clone',
+    cparser.add_argument('--clone', metavar='PATH',
                          help='Clone project configuration from this path')
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
