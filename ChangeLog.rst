@@ -1,6 +1,6 @@
 3.4.3
 -----
-* Fix issue: raise exception when no project entry is obfuscated
+* Fix issue: raise exception when project entry isn't obfuscated
 
 3.4.2
 -----
