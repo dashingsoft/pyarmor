@@ -253,35 +253,46 @@ Suppose there are 3 odoo modules "web-login1", "web-login2",
 "web-login3", they'll be obfuscated separately, but run in the same
 python interpreter.
 
-First create project1, then clone project1 to project2, project3
+First create common project, then clone to project1, project2, project3
 
 ```
-    # Create project1
-    python pyarmor.py init --src=/path/to/web-login1 --entry=__init__.py \
-                           projects/odoo/login1
+    # Create common project "login"
+    # Here src is any path
+    python pyarmor.py init --src=/opt/odoo/pyarmor --entry=__init__.py \
+                           projects/odoo/login
 
-    # Configure project1
+    # Configure common project, set runtime-path to an absolute path
     ./pyarmor config --output=dist \
+                     --runtime-path=/opt/odoo/pyarmor
                      --manifest "global-include *.py, exclude __manifest__.py" \
-                     projects/odoo/login1
+                     projects/odoo/login
+
+    # Clone to project1
+    python pyarmor.py init --src=/path/to/web-login1 \
+                           --clone=projects/odoo/login \
+                           projects/odoo/login1
 
     # Clone to project2
     python pyarmor.py init --src=/path/to/web-login2 \
-                           --clone=projects/odoo/login1 \
+                           --clone=projects/odoo/login \
                            projects/odoo/login2
 
-    # Clone to project2
+    # Clone to project3
     python pyarmor.py init --src=/path/to/web-login3 \
-                           --clone=projects/odoo/login1 \
+                           --clone=projects/odoo/login \
                            projects/odoo/login3
 ```
 
-Then build 3 projects
+Then build all projects
 
 ```
-    (cd projects/odoo/login1; ./pyarmor build)
-    (cd projects/odoo/login2; ./pyarmor build)
-    (cd projects/odoo/login3; ./pyarmor build)
+    # Only generate runtime files in common project
+    (cd projects/odoo/login; ./pyarmor build --only-runtime)
+
+    # Only obfuscate scripts, no runtime files
+    (cd projects/odoo/login1; ./pyarmor build --no-runtime)
+    (cd projects/odoo/login2; ./pyarmor build --no-runtime)
+    (cd projects/odoo/login3; ./pyarmor build --no-runtime)
 ```
 
 Finally distribute obfuscated modules
@@ -296,6 +307,17 @@ Finally distribute obfuscated modules
     cp -a projects/odoo/login3/dist /path/to/odoo/addons/web-login3
     cp /path/to/web-login3/__manifest__.py /path/to/odoo/addons/web-login3
 
+    # Copy all runtime files to runtime path
+    mkdir -p /opt/odoo/pyarmor
+    cp projects/odoo/web-login/dist/* /opt/odoo/pyarmor
+
+    # Copy pytransform.py to each module
+    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login1
+    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login2
+    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login3
+
+    # Or copy pytransform.py to any python path so that each module can import pytransform
+    cp projects/odoo/login/dist/pytransform.py /Any/Python/Path
 ```
 
 Now restart odoo server.
