@@ -233,15 +233,23 @@ def _build(args):
         project.save(args.project)
 
     if not args.no_runtime:
-        logging.info('Make runtime files')
-        make_runtime(capsule, output)
+        if project.runtime_path is None:
+            logging.info('Make runtime files to %s', output)
+            make_runtime(capsule, output)
+        else:
+            routput = os.path.join(args.project, 'runtimes')
+            if not os.path.exits(routput):
+                logging.info('Make path: %s', routput)
+                os.mkdir(routput)
+            logging.info('Make runtime files to %s', routput)
+            make_runtime(capsule, routput)
 
     if project.entry:
         for x in project.entry.split(','):
             filename = os.path.join(output, x.strip())
             if not os.path.exists(filename):
                 shutil.copy(os.path.join(project.src, x.strip()), filename)
-            logging.info('Update entry script %s', filename)
+            logging.info('Insert bootstrap code to entry script %s', filename)
             make_entry(filename, project.runtime_path)
     else:
         logging.info('\tIn order to import obfuscated scripts, insert ')

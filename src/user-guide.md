@@ -199,11 +199,11 @@ Bind obfuscated scripts to fixed machine
 #### Cross Platform
 
 The only difference for cross platform is need to replace
-platform-dependent library _**pytransform** with the right one for
+platform-dependent library "_pytransform" with the right one for
 target machine
 
-All the latest prebuilt platform-dependent library _**pytransform** could be
-found [here](http://pyarmor.dashingsoft.com/downloads/platforms)
+All the latest prebuilt platform-dependent library "_pytransform"
+list [here](http://pyarmor.dashingsoft.com/downloads/platforms)
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
 it's not difficult to build for any other platform, even for embeded
@@ -217,6 +217,36 @@ turn on debug mode to print all the trace stack
 
 ```
     python -d pyarmor.py ...
+```
+
+#### Use runtime path
+
+There are several extra files should be distributed with obfuscated
+scripts. They're called **runtime files**
+
+```
+    pytransform.py, _pytransform.so or _pytransform.dll or _pytransform.dylib
+    pyshield.key, pyshield.lic, product.key, license.lic
+```
+
+Generally all of the **runtime files** will be generated in the output
+path when obfuscate python scripts.
+
+By default all the **runtime files** locate in the top path of
+obfuscated scripts. Use runtime path to specify where to find
+**runtime files** if they're not in default path.
+
+```
+    cd projects/myproject
+    ./pyarmor config --runtime-path=/path/to/runtime-files
+
+    ./pyarmor build
+
+    # All the runtime files will be generate in path "runtimes"
+    ls ./runtimes
+
+    # Copy all the runtimes to runtime path in target machine
+    cp ./runtimes/* /path/to/runtime-files
 ```
 
 ### Examples
@@ -318,14 +348,14 @@ Finally distribute obfuscated modules
 
     # Copy all runtime files to runtime path
     mkdir -p /opt/odoo/pyarmor
-    cp projects/odoo/web-login/dist/* /opt/odoo/pyarmor
+    cp projects/odoo/web-login/runtimes/* /opt/odoo/pyarmor
 
     # Add /opt/odoo/pyarmor to python path in odoo server startup script
     # so that each module can import pytransform
-    
+
     # Or copy pytransform.py to any python path
-    cp projects/odoo/login/dist/pytransform.py /Any/Python/Path
-    
+    cp projects/odoo/login/runtimes/pytransform.py /Any/Python/Path
+
     # Or copy pytransform.py to each module
     cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login1
     cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login2
@@ -367,14 +397,13 @@ scripts are obfuscated.
     # Run py2exe in obfuscated package with "-i" and "-p", because
     # py2exe can not find dependent modules after they're obfuscated
     #
-    cd dist
-    python setup.py py2exe --include queens --dist-dir ../output
+    ( cd dist; python setup.py py2exe --include queens --dist-dir ../output )
 
     # Copy runtime files to "output"
-    cp pyshield.* product.key license.lic _pytransform.dll ../output
+    cp runtimes/* ../output
 
     # Now run hello.exe
-    cd ../output
+    cd output
     ./hello.exe
 ```
 
@@ -404,28 +433,15 @@ It can be put in any script anywhere, only if it run in the same
 Python interpreter. It will create some builtin function to deal with
 obfuscated code.
 
-* In order to run these extra code, there are several extra files
-  should be distributed with obfuscated scripts. They're called
-  **runtime files**
-
-```
-    pytransform.py, _pytransform.so or _pytransform.dll or _pytransform.dylib
-    pyshield.key, pyshield.lic, product.key, license.lic
-```
-
-Generally all of the runtime files will be generated in the output
-path when obfuscate python scripts.
-
-* pytransform.py must be in any Python path in target machine.
+* The extra runtime file pytransform.py must be in any Python path in
+  target machine.
 
 * pytransform.py need load dynamic library _pytransform it may be
   _pytransform.so in Linux, _pytransform.dll in Windows,
-  _pytransform.dylib in MacOS. It's dependent-platform, download
-  the right one to the same path of pytransform.py according to target
-  platform.
-
-All the prebuilt dynamic libraries
-list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
+  _pytransform.dylib in MacOS. It's dependent-platform, download the
+  right one to the same path of pytransform.py according to target
+  platform. All the prebuilt dynamic libraries
+  list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
 
 * By default pytransform.py search dynamic library _pytransform in
   the same path. Check pytransform.py!_load_library to find the
@@ -433,6 +449,13 @@ list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
 
 * All the other **runtime files** should in the same path as dynamic
   library _pytransform.
+
+* If runtime files locate in some other path, change bootstrap code:
+
+```
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime('/path/to/runtime-files)
+```
 
 ## Configure File
 
