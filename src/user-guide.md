@@ -238,11 +238,14 @@ obfuscated scripts. Use runtime path to specify where to find
 
 ```
     cd projects/myproject
+
+    # Note that runtime path is a directory in target machine, it maybe
+    # doesn't exists in build machine
     ./pyarmor config --runtime-path=/path/to/runtime-files
 
     ./pyarmor build
 
-    # All the runtime files will be generate in path "runtimes"
+    # All the runtime files will be generated in path "runtimes"
     ls ./runtimes
 
     # Copy all the runtimes to runtime path in target machine
