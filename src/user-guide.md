@@ -199,16 +199,58 @@ Bind obfuscated scripts to fixed machine
 #### Cross Platform
 
 The only difference for cross platform is need to replace
-platform-dependent library **_pytransform** with the right one for
+platform-dependent library "_pytransform" with the right one for
 target machine
 
-All the latest prebuilt platform-dependent library **_pytransform** could be
-found [here](http://pyarmor.dashingsoft.com/downloads/platforms)
+All the latest prebuilt platform-dependent library "_pytransform"
+list [here](http://pyarmor.dashingsoft.com/downloads/platforms)
 
 The core of [Pyarmor] is written by C, the only dependency is libc. So
 it's not difficult to build for any other platform, even for embeded
 system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
 scripts in other platform.
+
+#### Run Pyarmor with debug mode
+
+By default, pyarmor prints simple message when something is wrong,
+turn on debug mode to print all the trace stack
+
+```
+    python -d pyarmor.py ...
+```
+
+#### Use runtime path
+
+There are several extra files should be distributed with obfuscated
+scripts. They're called **runtime files**
+
+```
+    pytransform.py, _pytransform.so or _pytransform.dll or _pytransform.dylib
+    pyshield.key, pyshield.lic, product.key, license.lic
+```
+
+Generally all of the **runtime files** will be generated in the output
+path when obfuscate python scripts.
+
+By default all the **runtime files** locate in the top path of
+obfuscated scripts. Use runtime path to specify where to find
+**runtime files** if they're not in default path.
+
+```
+    cd projects/myproject
+
+    # Note that runtime path is a directory in target machine, it maybe
+    # doesn't exists in build machine
+    ./pyarmor config --runtime-path=/path/to/runtime-files
+
+    ./pyarmor build
+
+    # All the runtime files will be generated in path "runtimes"
+    ls ./runtimes
+
+    # Copy all the runtimes to runtime path in target machine
+    cp ./runtimes/* /path/to/runtime-files
+```
 
 ### Examples
 
@@ -247,6 +289,85 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
 ```
 
+#### obfuscate many odoo modules
+
+Suppose there are 3 odoo modules "web-login1", "web-login2",
+"web-login3", they'll be obfuscated separately, but run in the same
+python interpreter.
+
+First create common project, then clone to project1, project2, project3
+
+```
+    # Create common project "login"
+    # Here src is any path
+    python pyarmor.py init --src=/opt/odoo/pyarmor --entry=__init__.py \
+                           projects/odoo/login
+
+    # Configure common project, set runtime-path to an absolute path
+    ./pyarmor config --output=dist \
+                     --runtime-path=/opt/odoo/pyarmor
+                     --manifest "global-include *.py, exclude __manifest__.py" \
+                     projects/odoo/login
+
+    # Clone to project1
+    python pyarmor.py init --src=/path/to/web-login1 \
+                           --clone=projects/odoo/login \
+                           projects/odoo/login1
+
+    # Clone to project2
+    python pyarmor.py init --src=/path/to/web-login2 \
+                           --clone=projects/odoo/login \
+                           projects/odoo/login2
+
+    # Clone to project3
+    python pyarmor.py init --src=/path/to/web-login3 \
+                           --clone=projects/odoo/login \
+                           projects/odoo/login3
+```
+
+Then build all projects
+
+```
+    # Only generate runtime files in common project
+    (cd projects/odoo/login; ./pyarmor build --only-runtime)
+
+    # Only obfuscate scripts, no runtime files
+    (cd projects/odoo/login1; ./pyarmor build --no-runtime)
+    (cd projects/odoo/login2; ./pyarmor build --no-runtime)
+    (cd projects/odoo/login3; ./pyarmor build --no-runtime)
+```
+
+Finally distribute obfuscated modules
+
+```
+    cp -a projects/odoo/login1/dist /path/to/odoo/addons/web-login1
+    cp /path/to/web-login1/__manifest__.py /path/to/odoo/addons/web-login1
+
+    cp -a projects/odoo/login2/dist /path/to/odoo/addons/web-login2
+    cp /path/to/web-login2/__manifest__.py /path/to/odoo/addons/web-login2
+
+    cp -a projects/odoo/login3/dist /path/to/odoo/addons/web-login3
+    cp /path/to/web-login3/__manifest__.py /path/to/odoo/addons/web-login3
+
+    # Copy all runtime files to runtime path
+    mkdir -p /opt/odoo/pyarmor
+    cp projects/odoo/web-login/runtimes/* /opt/odoo/pyarmor
+
+    # Add /opt/odoo/pyarmor to python path in odoo server startup script
+    # so that each module can import pytransform
+
+    # Or copy pytransform.py to any python path
+    cp projects/odoo/login/runtimes/pytransform.py /Any/Python/Path
+
+    # Or copy pytransform.py to each module
+    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login1
+    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login2
+    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login3
+
+```
+
+Now restart odoo server.
+
 #### py2exe with obfuscated scripts
 
 The problem is that all the scripts is in a zip file "library.zip"
@@ -279,14 +400,13 @@ scripts are obfuscated.
     # Run py2exe in obfuscated package with "-i" and "-p", because
     # py2exe can not find dependent modules after they're obfuscated
     #
-    cd dist
-    python setup.py py2exe --include queens --dist-dir ../output
+    ( cd dist; python setup.py py2exe --include queens --dist-dir ../output )
 
     # Copy runtime files to "output"
-    cp pyshield.* product.key license.lic _pytransform.dll ../output
+    cp runtimes/* ../output
 
     # Now run hello.exe
-    cd ../output
+    cd output
     ./hello.exe
 ```
 
@@ -316,28 +436,29 @@ It can be put in any script anywhere, only if it run in the same
 Python interpreter. It will create some builtin function to deal with
 obfuscated code.
 
-* In order to run these extra code, there are several extra files
-  should be distributed with obfuscated scripts. They're called
-  **runtime files**
+* The extra runtime file pytransform.py must be in any Python path in
+  target machine.
+
+* pytransform.py need load dynamic library _pytransform it may be
+  _pytransform.so in Linux, _pytransform.dll in Windows,
+  _pytransform.dylib in MacOS. It's dependent-platform, download the
+  right one to the same path of pytransform.py according to target
+  platform. All the prebuilt dynamic libraries
+  list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
+
+* By default pytransform.py search dynamic library _pytransform in
+  the same path. Check pytransform.py!_load_library to find the
+  details.
+
+* All the other **runtime files** should in the same path as dynamic
+  library _pytransform.
+
+* If runtime files locate in some other path, change bootstrap code:
 
 ```
-    pytransform.py _pytransform.so or _pytransform.dll or _pytransform.dylib
-    pyshield.key, pyshield.lic, product.key, license.lic
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime('/path/to/runtime-files)
 ```
-
-Generally all of the runtime files will be generated in the output
-path when obfuscate python scripts.
-
-* pytransform.py must be in any Python path in target machine.
-
-* pytransform.py need load dynamic library **_pytransform** it may be
-  **_pytransform.so** in Linux, **_pytransform.dll** in Windows,
-  **_pytransform.dylib** in MacOS. It's dependent-platform, download
-  the right one to the same path of pytransform.py if use obfuscated
-  scripts in any other platform.
-
-All the prebuilt dynamic libraries
-list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
 
 ## Configure File
 

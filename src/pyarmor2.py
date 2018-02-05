@@ -74,6 +74,9 @@ all .py files in this directory will be included in this project.
 Option --entry specifies main script, which could be run directly
 after obfuscated.
 
+Option --clone specifies another project path. It it is set, no new
+project capsule is generated, just copy capsule from this project.
+
 EXAMPLES
 
     python pyarmor.py init --src=examples --entry=queens.py project1
@@ -81,6 +84,10 @@ EXAMPLES
     ./pyarmor info
 
     '''
+    if args.clone:
+        _clone(args)
+        return
+
     path = args.project
     logging.info('Create project in %s ...', path)
 
@@ -103,6 +110,35 @@ EXAMPLES
     filename = os.path.join(path, capsule_filename)
     make_capsule(filename)
     logging.info('Project capsule %s created', filename)
+
+    logging.info('Create pyarmor command ...')
+    script = make_command(platform, sys.executable, sys.argv[0], path)
+    logging.info('Pyarmor command %s created', script)
+
+    logging.info('Project init successfully.')
+
+def _clone(args):
+    path = args.project
+    logging.info('Create project in %s ...', path)
+
+    if not os.path.exists(path):
+        logging.info('Make project directory %s', path)
+        os.makedirs(path)
+
+    src = os.path.abspath(args.src)
+    logging.info('Python scripts base path: %s', src)
+
+    logging.info('Clone project from path: %s', args.clone)
+    for s in (config_filename, capsule_filename):
+        logging.info('\tCopy file "%s"', s)
+        shutil.copy(os.path.join(args.clone, s), os.path.join(path, s))
+
+    logging.info('Init project settings')
+    project = Project()
+    project.open(path)
+    name = os.path.basename(os.path.abspath(path))
+    project._update(dict(name=name, title=name, src=src, entry=args.entry))
+    project.save(path)
 
     logging.info('Create pyarmor command ...')
     script = make_command(platform, sys.executable, sys.argv[0], path)
@@ -197,15 +233,23 @@ def _build(args):
         project.save(args.project)
 
     if not args.no_runtime:
-        logging.info('Make runtime files')
-        make_runtime(capsule, output)
+        if project.runtime_path is None:
+            logging.info('Make runtime files to %s', output)
+            make_runtime(capsule, output)
+        else:
+            routput = os.path.join(args.project, 'runtimes')
+            if not os.path.exits(routput):
+                logging.info('Make path: %s', routput)
+                os.mkdir(routput)
+            logging.info('Make runtime files to %s', routput)
+            make_runtime(capsule, routput)
 
     if project.entry:
         for x in project.entry.split(','):
             filename = os.path.join(output, x.strip())
             if not os.path.exists(filename):
                 shutil.copy(os.path.join(project.src, x.strip()), filename)
-            logging.info('Update entry script %s', filename)
+            logging.info('Insert bootstrap code to entry script %s', filename)
             make_entry(filename, project.runtime_path)
     else:
         logging.info('\tIn order to import obfuscated scripts, insert ')
@@ -424,6 +468,8 @@ def main(args):
                          help='Entry script of this project')
     cparser.add_argument('--src', required=True,
                          help='Base path of python scripts')
+    cparser.add_argument('--clone', metavar='PATH',
+                         help='Clone project configuration from this path')
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
 
