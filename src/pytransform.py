@@ -203,6 +203,9 @@ def _load_library(path=None):
     except Exception:
         raise PytransformError('Could not load _pytransform from "%s"', path)
 
+    # Required from Python3.6
+    m.set_option('byteorder'.encode(), sys.byteorder.encode())
+
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
 
     # # Deprecated from v3.4
