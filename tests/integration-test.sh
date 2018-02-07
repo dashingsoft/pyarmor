@@ -67,7 +67,7 @@ case ${PLATFORM} in
         PYTHON=python
         declare -r harddisk_sn='VB85de09d4-23402b07 '
         declare -r ifmac_address=08:00:27:b0:b3:94
-        declare -r ifip_address=220.250.64.20
+        declare -r ifip_address=$(ipconfig getifaddr en0)
         declare -r domain_name=
         ;;
     *)
