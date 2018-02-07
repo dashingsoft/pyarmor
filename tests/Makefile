@@ -49,7 +49,7 @@ ifeq ($(findstring macosx,$(PLATFORM)),macosx)
 TARGET = _pytransform.dylib
 CMDPREFIX =
 PYCMD = python
-VERSIONS := 2.7
+VERSIONS := 2.7 3.6
 else
 TARGET = _pytransform.dll
 CMDPREFIX =
