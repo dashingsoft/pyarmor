@@ -1,3 +1,12 @@
+3.5.0
+-----
+* Fix Python3.6 issue: can not run obfuscated scripts, because it uses a 16-bit wordcode instead of bytecode
+* Fix Python3.7 issue: it adds a flag in pyc header
+* Fix option --obf-module-mode=none failed
+* Add option --clone for command "init"
+* Generate runtime files to separate path “runtimes" when project runtime-path is set
+* Add advanced usages in user-guide
+
 3.4.3
 -----
 * Fix issue: raise exception when project entry isn't obfuscated
