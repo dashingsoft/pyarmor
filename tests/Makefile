@@ -54,7 +54,11 @@ else
 TARGET = _pytransform.dll
 CMDPREFIX =
 PYCMD = C:/PythonXY/python
-VERSIONS := 26 27 30 31 32 33 34
+ifeq ($(ARCH),x86_64)
+    VERSIONS := 26 27 30 31 32 33 34 35 36 37
+else
+    VERSIONS := 26 27 30 31 32 33 34
+endif
 endif
 
 endif
