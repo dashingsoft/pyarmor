@@ -7,11 +7,10 @@ import shutil
 import sys
 from zipfile import ZipFile
 
-# pyarmor in the parent path
-sys.path.append('..')
-
-# Hack pyarmor path
-os.environ['PYARMOR_PATH'] = os.path.abspath(os.path.normpath('..'))
+# Pyarmor in the parent path
+os.environ['PYARMOR_PATH'] = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.environ['PYARMOR_PATH'])
 
 from config import version, config_filename, capsule_filename
 from utils import get_registration_code, build_path
