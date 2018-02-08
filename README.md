@@ -35,10 +35,16 @@ More information refer to [How to obfuscate python scripts](src/mechanism.md)
 
 ### Installation
 
-Got source package from [pypi/pyarmor](https://pypi.python.org/pypi/pyarmor)
+The simple way is pip
+
+```
+    pip install pyarmor
+```
+
+Or get source package from [pypi/pyarmor](https://pypi.python.org/pypi/pyarmor)
 
 Pyarmor is a command line tool, main script is pyarmor.py. After you
-got source package, unpack it to any path, then run paramor.py as
+get source package, unpack it to any path, then run paramor.py as
 common python script
 
 ```
