@@ -82,7 +82,7 @@ setup(
     entry_points={
         'console_scripts': [
             'pyarmor=pyarmor:main',
-            'pyarmor-webui=pyarmor.webui.server:main',
+            'pyarmor-webui=pyarmor.webui:main',
         ],
     },
 )
