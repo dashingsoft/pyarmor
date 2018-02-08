@@ -34,7 +34,7 @@ Obfuscate a simple script **examples/queens.py** in the source path of
 Pyarmor
 
 ```
-    python pyarmor.py obfuscate --src examples --entry queens.py "*.py"
+    python pyarmor.py obfuscate --src=examples/simple --entry=queens.py "*.py"
 
     # Note that quotation mark is required for file patterns, otherwise
     # it will be expanded base on current path by shell.
