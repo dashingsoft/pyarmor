@@ -203,7 +203,7 @@ class HelperHandler(BaseHTTPRequestHandler):
         '.js': 'application/x-javascript',
         }
 
-if __name__ == '__main__':
+def main():
     logging.basicConfig(
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
@@ -220,3 +220,6 @@ if __name__ == '__main__':
     except Exception:
         pass
     server.serve_forever()
+
+if __name__ == '__main__':
+    main()

@@ -1,8 +1,26 @@
-# Build wheel
-# C:/Python34/python setup.py --bdist_wheel \
-#      --plat-name=win32 --python-tag=py2.py3
+#! /bin/sh
+#
+# Build source and wheel distribute
+#
+
+PYTHON=C:/Python34/python
+PLATFORMS="win32 win_amd64 linux_x86_64 linux_i386 macosx_intel"
+
+# Build source, DEPRECATED WAY
+# (cd src &&
+# python setup.py sdist --formats=zip,bztar,gztar &&
+# rm -rf *.pyc __pycache__ *.pyo)
 
 # Build source
-(cd src &&
-python setup.py sdist --formats=zip,bztar,gztar &&
-rm -rf *.pyc __pycache__ *.pyo)
+$PYTHON setup.py sdist
+
+# Build universal wheel
+$PYTHON setup.py bdist_wheel --universal
+
+# Build binary wheel
+# for plat in $PLATFORMS ; do
+#   $PYTHON setup.py bdist_wheel --python-tag=py2.py3 --plat-name=$plat 
+# done
+
+echo Remove build files: pyarmor.egg-info build src/__pycache__
+rm -rf pyarmor.egg-info build src/__pycache__

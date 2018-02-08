@@ -1,3 +1,7 @@
+3.5.1
+-----
+* Support pip install pyarmor
+
 3.5.0
 -----
 * Fix Python3.6 issue: can not run obfuscated scripts, because it uses a 16-bit wordcode instead of bytecode
