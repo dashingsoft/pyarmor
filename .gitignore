@@ -100,5 +100,6 @@ ENV/
 # mypy
 .mypy_cache/
 
-# twine
+# pip
 .pypirc
+pypi-upload.sh
