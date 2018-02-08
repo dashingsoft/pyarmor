@@ -188,7 +188,7 @@ def show_hd_info():
 # Load _pytransform library
 def _load_library(path=None):
     if path is None:
-        path = os.path.dirname(sys.modules['pytransform'].__file__)
+        path = os.path.dirname(__file__)
     try:
         if sys.platform.startswith('linux'):
             if path == '':
