@@ -5,8 +5,6 @@ from ctypes import cdll, c_char, c_char_p, c_int, c_void_p, \
                    pythonapi, py_object, PYFUNCTYPE
 from ctypes.util import find_library
 
-# It seems imp must be imported even if there is no used in module
-import imp
 import os
 import sys
 
