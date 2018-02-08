@@ -1,3 +1,4 @@
+# UNUSED. DEPRECATED from v3.5.1
 include README.rst usage.md mechanism.md user-guide.md
 include pyshield.key pyshield.lic public.key product.key license.lic
 recursive-include examples *.py README LINCESE
