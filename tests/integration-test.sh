@@ -23,13 +23,15 @@ else
     fi
 fi
 
-# version=${1:-2.6.1}
-filename=$(cd ../src/dist; ls -t pyarmor-*.${PKGEXT}) || exit 1
+# From pyarmor 3.5.1, dist is moved to top level
+DIST="../dist"
+[[ -d "../dist" ]] || DIST="../src/dist"
+filename=$(cd ${DIST}; ls -t pyarmor-*.${PKGEXT}) || exit 1
 version=${filename:8:5}
 extchar=${PYARMOR_EXTRA_CHAR:-e}
 workpath=__runtest__
 datafile=$(pwd)/data/pyarmor-data.tar.gz
-pkgfile=$(pwd)/../src/dist/pyarmor-${version}.${PKGEXT}
+pkgfile=$(pwd)/${DIST}/pyarmor-${version}.${PKGEXT}
 
 declare -i _bug_counter=0
 
@@ -325,6 +327,8 @@ cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
+# From pyarmor 3.5.1, main scripts are moved to src
+[[ -d src ]] && mv src/* ./
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
 cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
 

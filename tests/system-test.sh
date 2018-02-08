@@ -20,6 +20,8 @@ cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
+# From pyarmor 3.5.1, main scripts are moved to src
+[[ -d src ]] && mv src/* ./
 
 csih_inform "Prepare for system testing"
 echo ""
@@ -57,7 +59,7 @@ echo "-------------------- Test Command obfuscate --------------------"
 echo ""
 
 csih_inform "Case 1.1: obfuscate script"
-$PYARMOR obfuscate --src examples --entry queens.py --output dist \
+$PYARMOR obfuscate --src examples/simple --entry queens.py --output dist \
                    "*.py"  >result.log 2>&1
 
 check_file_exists dist/queens.py
