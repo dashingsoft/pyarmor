@@ -41,7 +41,7 @@ except ImportError:
     import polyfills.argparse as argparse
 
 from config import version, version_info, trial_info, \
-                   platform, dll_ext, dll_name, \
+                   plat_name, dll_ext, dll_name, \
                    default_obf_module_mode, default_obf_code_mode, \
                    config_filename, capsule_filename, license_filename
 
@@ -112,7 +112,7 @@ EXAMPLES
     logging.info('Project capsule %s created', filename)
 
     logging.info('Create pyarmor command ...')
-    script = make_command(platform, sys.executable, sys.argv[0], path)
+    script = make_command(plat_name, sys.executable, sys.argv[0], path)
     logging.info('Pyarmor command %s created', script)
 
     logging.info('Project init successfully.')
@@ -141,7 +141,7 @@ def _clone(args):
     project.save(path)
 
     logging.info('Create pyarmor command ...')
-    script = make_command(platform, sys.executable, sys.argv[0], path)
+    script = make_command(plat_name, sys.executable, sys.argv[0], path)
     logging.info('Pyarmor command %s created', script)
 
     logging.info('Project init successfully.')

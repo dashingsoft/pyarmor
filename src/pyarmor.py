@@ -45,7 +45,7 @@ except Exception:
     from binascii import a2b_hex as unhexlify
 
 from config import (version, version_info, trial_info, help_footer,
-                    ext_char, platform, dll_ext, dll_name, wrap_runner)
+                    ext_char, plat_name, dll_ext, dll_name, wrap_runner)
 
 def _import_pytransform():
     try:
@@ -56,8 +56,8 @@ def _import_pytransform():
         pass
     logging.info('Searching pytransform library ...')
     path = sys.rootdir
-    platname = platform.replace('i586', 'i386').replace('i686', 'i386')
-    src = os.path.join(path, 'platforms', platname, dll_name + dll_ext)
+    pname = plat_name.replace('i586', 'i386').replace('i686', 'i386')
+    src = os.path.join(path, 'platforms', pname, dll_name + dll_ext)
     if os.path.exists(src):
         logging.info('Find pytransform library "%s"', src)
         logging.info('Copy %s to %s', src, path)
@@ -445,7 +445,7 @@ It's Following the Distutils’ own manifest template
     srcpath = None
     capsule = 'project.zip'
     inplace = False
-    platname = None
+    pname = None
     extfile = None
     mainname = []
     clean = False
@@ -462,7 +462,7 @@ It's Following the Distutils’ own manifest template
         elif o in ('-C', '--with-capsule'):
             capsule = a
         elif o in ('-p', '--plat-name'):
-            platname = a
+            pname = a
         elif o in ('-d', '--clean'):
             clean = True
         elif o in ('-e', '--mode'):
@@ -494,12 +494,12 @@ It's Following the Distutils’ own manifest template
         logging.info('Make output path %s', output)
         os.makedirs(output)
 
-    if platname is None:
+    if pname is None:
         extfile = os.path.join(sys.rootdir, dll_name + dll_ext)
     else:
-        logging.info("Cross publish, target platform is %s", platname)
-        name = dll_name + ('.so' if platname.startswith('linux') else '.dll')
-        extfile = os.path.join(sys.rootdir, 'platforms', platname, name)
+        logging.info("Cross publish, target platform is %s", pname)
+        name = dll_name + ('.so' if pname.startswith('linux') else '.dll')
+        extfile = os.path.join(sys.rootdir, 'platforms', pname, name)
         if not os.path.exists(extfile):
             # Need to download platforms/... from pyarmor homepage
             logging.info('You need download prebuilt library files '

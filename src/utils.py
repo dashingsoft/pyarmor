@@ -31,15 +31,15 @@ import tempfile
 import time
 from zipfile import ZipFile
 
-from config import platform, dll_ext, dll_name, entry_code
+from config import plat_name, dll_ext, dll_name, entry_code
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 #
 # Bootstrap
 #
 def search_pytransform(path):
-    logging.info('Searching %s%s for %s ...', dll_name, dll_ext, platform)
-    name = platform.replace('i586', 'i386').replace('i686', 'i386')
+    logging.info('Searching %s%s for %s ...', dll_name, dll_ext, plat_name)
+    name = plat_name.replace('i586', 'i386').replace('i686', 'i386')
     src = os.path.join(path, 'platforms', name, dll_name + dll_ext)
     if os.path.exists(src):
         logging.info('Find _pytransform library "%s"', src)

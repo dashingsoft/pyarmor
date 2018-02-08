@@ -37,11 +37,11 @@ For more information, refer to https://github.com/dashingsoft/pyarmor
 # called "compatibility tags." The compatibility tags express the
 # package's basic interpreter requirements and are detailed in PEP
 # 425(https://www.python.org/dev/peps/pep-0425).
-platform = get_platform().split('-')
-platform = '_'.join(platform if len(platform) < 3 else platform[0:3:2])
+plat_name = get_platform().split('-')
+plat_name = '_'.join(plat_name if len(plat_name) < 3 else plat_name[0:3:2])
 
-dll_ext = '.so' if platform.startswith('linux') else \
-          '.dylib' if platform.startswith('macosx') else \
+dll_ext = '.so' if plat_name.startswith('linux') else \
+          '.dylib' if plat_name.startswith('macosx') else \
           '.dll'
 dll_name = '_pytransform'
 
