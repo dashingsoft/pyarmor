@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
-from os import path
+from os import listdir, path
 
 from src.config import version
 here = path.abspath(path.dirname(__file__))
@@ -11,14 +11,30 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'src', 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
-pyarmor_data_files = ['pyshield.key', 'pyshield.lic', 'public.key',
-                      'product.key', 'license.lic', 'README.rst',
-                      'user-guide.md', 'mechanism.md',
-                      'platforms/win32/_pytransform.dll',
-                      'platforms/win_amd64/_pytransform.dll',
-                      'platforms/linux_i386/_pytransform.so',
-                      'platforms/linux_x86_64/_pytransform.so',
-                      'platforms/macosx_intel/_pytransform.dylib',]
+pyarmor_data_files = [
+    'pyshield.key', 'pyshield.lic', 'public.key',
+    'product.key', 'license.lic', 'README.rst',
+    'user-guide.md', 'mechanism.md',
+    'platforms/win32/_pytransform.dll',
+    'platforms/win_amd64/_pytransform.dll',
+    'platforms/linux_i386/_pytransform.so',
+    'platforms/linux_x86_64/_pytransform.so',
+    'platforms/macosx_intel/_pytransform.dylib',
+    'examples/simple/*.py', 'examples/py2exe/*.py',
+    'examples/pybench/*.py', 'examples/pybench/package/*.py',]
+
+# def _build_file_list(d):
+#     return [d + '/' + x for x in listdir(d) if path.isfile(x)]
+
+# other_data_files = [
+#     ('docs', ['docs/user-guide.md', 'docs/rationale.md']),
+#     ('examples/simple', _build_file_list('docs/examples/simple')),
+#     ('examples/py2exe', _build_file_list('docs/examples/py2exe')),
+#     ('examples/pybench', _build_file_list('docs/examples/pybench')),
+#     ('examples/pybench/package', _build_file_list('docs/examples/pybench/package')),
+#     ('examples/odoo', _build_file_list('docs/examples/odoo')),
+#     ('examples/odoo/weblogin', _build_file_list('docs/examples/odoo/weblogin')),
+#     ('examples/odoo/weblogin2', _build_file_list('docs/examples/odoo/weblogin2')),]
 
 setup(
     name='pyarmor',
@@ -67,7 +83,6 @@ setup(
     # Note that this is a string of words separated by whitespace, not a list.
     keywords='protect obfuscate encrypt obfuscation distribute',
 
-    # packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.webui'],
     package_dir={'pyarmor': 'src'},
     package_data={
@@ -75,9 +90,7 @@ setup(
         'pyarmor.webui': ['css/*.css', 'js/*.js', '*.html', '*.js', 'manager.*'],
     },
 
-    data_files=[
-        ('docs', ['docs/user-guide.md', 'docs/rationale.md']),
-    ],
+    # data_files=other_data_files,
 
     entry_points={
         'console_scripts': [

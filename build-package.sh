@@ -12,7 +12,7 @@ PLATFORMS="win32 win_amd64 linux_x86_64 linux_i386 macosx_intel"
 # rm -rf *.pyc __pycache__ *.pyo)
 
 # Build source
-$PYTHON setup.py sdist
+$PYTHON setup.py sdist --formats=zip,bztar,gztar
 
 # Build universal wheel
 $PYTHON setup.py bdist_wheel --universal
