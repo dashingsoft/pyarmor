@@ -1,0 +1,2 @@
+# recursive-include docs/examples *.py *.xml README* LICENSE
+# include docs/user-guide.html docs/rationale.html

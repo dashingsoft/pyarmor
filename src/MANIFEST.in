@@ -1,9 +1,0 @@
-# UNUSED. DEPRECATED from v3.5.1
-include README.rst usage.md mechanism.md user-guide.md
-include pyshield.key pyshield.lic public.key product.key license.lic
-recursive-include examples *.py README LINCESE
-graft platforms
-exclude platforms/*.zip platforms/*.sh
-
-include webui/index*.html webui/*.js webui/*.py webui/manager.*
-include webui/css/*.css webui/js/*.js
