@@ -40,10 +40,10 @@ except ImportError:
     # argparse is new in version 2.7
     import polyfills.argparse as argparse
 
-from config import  version, version_info, trial_info, \
-                    platform, dll_ext, dll_name, \
-                    default_obf_module_mode, default_obf_code_mode, \
-                    config_filename, capsule_filename, license_filename
+from config import version, version_info, trial_info, \
+                   platform, dll_ext, dll_name, \
+                   default_obf_module_mode, default_obf_code_mode, \
+                   config_filename, capsule_filename, license_filename
 
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
@@ -615,7 +615,10 @@ def main(args):
 
 
     args = parser.parse_args(args)
-    args.func(args)
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_help()
 
 if __name__ == '__main__':
     logging.basicConfig(
