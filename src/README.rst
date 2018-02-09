@@ -27,7 +27,7 @@ Support Platforms
 Installation
 ------------
 
-The simple way is pip
+The simple way is pip::
 
     pip install pyarmor
 
@@ -35,7 +35,7 @@ Or get source package from `pypi/pyarmor <https://pypi.python.org/pypi/pyarmor>`
 
 Pyarmor is a command line tool, main script is pyarmor.py. After you
 get source package, unpack it to any path, then run paramor.py as
-common python script
+common python script::
 
     python pyarmor.py
 
