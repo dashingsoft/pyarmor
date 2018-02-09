@@ -51,6 +51,12 @@ common python script
     python pyarmor.py
 ```
 
+If Pyarmor is installed  by pip, there is a command will be avaiable in Python script path
+
+```
+    pyarmor
+```
+
 ### Basic Usage
 
 The following examples show how to obfuscate a python package
@@ -113,6 +119,9 @@ There is a webui used to manage project easily. Start it
 
     # For linux
     src/webui/manager.sh
+    
+    # If Pyarmor is installed by pip
+    pyarmor-webui
 ```
 
 Here is online demo [Pyarmor Demo](http://pyarmor.dashingsoft.com)

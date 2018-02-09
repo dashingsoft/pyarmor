@@ -39,6 +39,11 @@ common python script::
 
     python pyarmor.py
 
+If Pyarmor is installed by pip, there is a command will be avaiable in
+Python script path::
+
+    pyarmor
+
 Basic Usage
 -----------
 
@@ -97,6 +102,9 @@ Start a webui to manage project::
 
     # For linux
     webui/manager.sh
+
+    # If Pyarmor is installed by pip
+    pyarmor-webui
 
 Here is online demo `Pyarmor Demo <http://pyarmor.dashingsoft.com>`_
 
