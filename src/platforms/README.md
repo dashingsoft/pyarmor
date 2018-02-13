@@ -4,6 +4,14 @@ Latest version: **3.1.8**
 
 Build date: 2018-2-7
 
+The core of Pyarmor is written by C, the prebuilt dynamic libraries
+include the common platforms and some embeded platforms. It's not
+difficult to build for any other platform, even for embeded system
+(the only dependency is libc).
+
+Contact <jondy.zhao@gmail.com> if you'd like to run encrypted scripts
+in other platform.
+
 ## Change Logs
 
 ## Platforms
