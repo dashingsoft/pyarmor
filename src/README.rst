@@ -22,7 +22,7 @@ Support Platforms
 
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64
 
-- Embeded Platform: Raspberry Pi, Banana Pi, ts-4600
+- Embeded Platform: Raspberry Pi, Banana Pi, TS-4600 / TS-7600
 
 Installation
 ------------

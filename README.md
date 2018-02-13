@@ -29,7 +29,7 @@ More information refer to [How to obfuscate python scripts](src/mechanism.md)
 
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_intel
 
-- Embeded Platform: Raspberry Pi, Banana Pi, ts-4600
+- Embeded Platform: Raspberry Pi, Banana Pi, TS-4600 / TS-7600
 
 ## Quick Start
 
