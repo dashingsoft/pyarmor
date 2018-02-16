@@ -267,11 +267,22 @@ Use command hdinfo to get hardware information.
     '''
     logging.info('Generate licenses for project %s ...', args.project)
 
+    project = Project()
+    project.open(args.project)
+
+    licpath = os.path.join(args.project, 'licenses')
+    if not os.path.exists(licpath):
+        logging.info('Make output path of licenses: %s', licpath)
+        os.mkdir(licpath)
+
     if args.expired is None:
         fmt = ''
     else:
         fmt = '*TIME:%.0f\n' % \
               time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
+
+    if project.get('disable_restrict_moce'):
+        fmt = '%s*FLAGS:%c' % (fmt, 1)
 
     if args.bind_disk:
         fmt = '%s*HARDDISK:%s' % (fmt, args.bind_disk)
@@ -299,14 +310,6 @@ Use command hdinfo to get hardware information.
     #             fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s)
     #     else:
     #         raise RuntimeError('Bind file %s not found' % bindfile)
-
-    project = Project()
-    project.open(args.project)
-
-    licpath = os.path.join(args.project, 'licenses')
-    if not os.path.exists(licpath):
-        logging.info('Make output path of licenses: %s', licpath)
-        os.mkdir(licpath)
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'

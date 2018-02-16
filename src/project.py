@@ -26,6 +26,7 @@
 #  @Change Log:
 #    1.0.0: Initial.
 #    1.0.1: Add title
+#    1.0.2: Add disable_restrict_mode
 #
 import os
 import time
@@ -58,6 +59,7 @@ class Project(dict):
         ( 'output', default_output_path ), \
         ( 'capsule', capsule_filename ), \
         ( 'runtime_path', None ), \
+        ( 'disable_restrict_mode', None ), \
         ( 'obf_module_mode', default_obf_module_mode ), \
         ( 'obf_code_mode', default_obf_code_mode ), \
         ( 'build_time', 0. )
