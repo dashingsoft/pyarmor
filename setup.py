@@ -1,5 +1,9 @@
 # Always prefer setuptools over distutils
-from setuptools import setup, find_packages
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    from distutils.core import setup
+
 # To use a consistent encoding
 from codecs import open
 from os import listdir, path
