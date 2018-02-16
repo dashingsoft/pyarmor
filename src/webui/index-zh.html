@@ -205,6 +205,14 @@
                         <p class="help-block">如何加密每一个 Code Object 里面的 bytecode，默认使用 DES 加密</p>
                       </div>
                       <div class="form-group">
+                        <label for="input_project_disable_restrict_mode">限制模式</label>
+                        <select class="form-control" id="input_project_disable_restrict_mode">
+                          <option value="0" selected>启用</option>
+                          <option value="1">禁用</option>
+                        </select>
+                        <p class="help-block">限制模式启用之后，不允许从没有加密的脚本导入加密模块</p>
+                      </div>
+                      <div class="form-group">
                         <label for="input_project_runtime_path">
                           <div class="checkbox">
                             <label>

@@ -16,6 +16,7 @@ define(['connector', 'utils'], function(conn, utils) {
         document.getElementById('input_project_runtime_path').value = data.runtime_path;
         document.getElementById('input_project_obf_module_mode').value = data.obf_module_mode;
         document.getElementById('input_project_obf_code_mode').value = data.obf_code_mode;
+        document.getElementById('input_project_disable_restrict_mode').value = data.disable_restrict_mode ? '1' : '0';
 
         document.getElementById('input_expired_date').value = '';
         document.getElementById('input_bind_disk').value = '';
@@ -38,6 +39,7 @@ define(['connector', 'utils'], function(conn, utils) {
         _project.runtime_path = document.getElementById('input_project_runtime_path').value;
         _project.obf_module_mode = document.getElementById('input_project_obf_module_mode').value;
         _project.obf_code_mode = document.getElementById('input_project_obf_code_mode').value;
+        _project.disable_restrict_mode = parseInt(document.getElementById('input_project_disable_restrict_mode').value);
     }
 
     function newProject() {
@@ -144,7 +146,7 @@ define(['connector', 'utils'], function(conn, utils) {
             utils.showMessage('Registration code can not be empty!');
             return;
         }
-            
+
         var args = {};
         args.expired = document.getElementById('input_expired_date').value;
         args.bind_disk = document.getElementById('input_bind_disk').value;

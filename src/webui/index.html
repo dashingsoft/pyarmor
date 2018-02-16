@@ -205,6 +205,14 @@
                         <p class="help-block">How to obfuscate byte code of each code object</p>
                       </div>
                       <div class="form-group">
+                        <label for="input_project_disable_restrict_mode">Restrict Mode</label>
+                        <select class="form-control" id="input_project_disable_restrict_mode">
+                          <option value="0" selected>Enabled</option>
+                          <option value="1">Disabled</option>
+                        </select>
+                        <p class="help-block">In restrict mode, obfuscated module can NOT be imported from no obfuscated scripts.</p>
+                      </div>
+                      <div class="form-group">
                         <label for="input_project_runtime_path">
                           <div class="checkbox">
                             <label>

@@ -1,3 +1,7 @@
+3.6.1
+-----
+* Add option "Restrict Mode" in web ui
+
 3.6.0
 -----
 * Introduce restrict mode to avoid obfuscated scripts observed from no obfuscated scripts
