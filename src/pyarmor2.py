@@ -234,8 +234,9 @@ def _build(args):
 
     if not args.no_runtime:
         if project.runtime_path is None:
-            logging.info('Make runtime files to %s', output)
-            make_runtime(capsule, output)
+            routput = output
+            logging.info('Make runtime files to %s', routput)
+            make_runtime(capsule, routput)
         else:
             routput = os.path.join(args.project, 'runtimes')
             if not os.path.exits(routput):
@@ -243,6 +244,11 @@ def _build(args):
                 os.mkdir(routput)
             logging.info('Make runtime files to %s', routput)
             make_runtime(capsule, routput)
+        if project.get('disable_restrict_mode'):
+            licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
+            licfile = os.path.join(routput, license_filename)
+            logging.info('Generate no restrict mode license file: %s', licfile)
+            make_project_license(capsule, licode, licfile)
 
     if project.entry:
         for x in project.entry.split(','):
@@ -494,6 +500,8 @@ def main(args):
                          help='Manifest template string')
     cparser.add_argument('--entry', metavar='SCRIPT',
                          help='Entry script of this project')
+    cparser.add_argument('--disable-restrict-mode', type=int,
+                         choices=(0, 1))
     cparser.add_argument('--obf-module-mode',
                          choices=Project.OBF_MODULE_MODE)
     cparser.add_argument('--obf-code-mode',
