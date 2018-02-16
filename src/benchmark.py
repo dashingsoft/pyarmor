@@ -145,14 +145,14 @@ def obffuscate_python_scripts(output, filename, mode=None):
     if mode is not None:
         args.extend(['--mode', mode])
     args.extend(['-O', output, filename])
-    p = subprocess.Popen(args)
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
 
     # Generate license with no restrict mode
     licfile = os.path.join(output, 'license.lic')
     args = [sys.executable, 'pyarmor.py', 'license',
             '-O', licfile, '*FLAGS:A*CODE:Benchmark' ]
-    p = subprocess.Popen(args)
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
 
 def check_default_capsule():
@@ -163,7 +163,8 @@ def check_default_capsule():
         logging.info('Use capsule: %s', capsule)
         return
 
-    p = subprocess.Popen([sys.executable, 'pyarmor.py', 'capsule'])
+    p = subprocess.Popen([sys.executable, 'pyarmor.py', 'capsule'],
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
 
 def main():
