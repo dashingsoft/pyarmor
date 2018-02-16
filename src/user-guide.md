@@ -252,6 +252,100 @@ obfuscated scripts. Use runtime path to specify where to find
     cp ./runtimes/* /path/to/runtime-files
 ```
 
+#### Restrict Mode
+
+Restrict mode is instroduced from Pyarmor v3.6.
+
+In restrict mode, obfuscated scripts must be one of the following formats:
+
+```
+    __pyarmor__(__name__, b'...')
+
+Or
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, b'...')
+
+Or
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime('...')
+    __pyarmor__(__name__, b'...')
+
+```
+
+And obfuscated script must be run directly by Python interperter. No
+any other statement can be inserted into obfuscated scripts. For
+examples,
+
+```
+    $ cat a.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, b'...')
+
+    $ python a.py
+
+    It works.
+
+    $ cat b.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, b'...')
+    print(__name__)
+
+    $ python b.py
+
+    It doesn't work, because there is an extra "print"
+
+    $ cat c.py
+    __pyarmor__(__name__, b'...')
+
+    $ cat main.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    import c
+
+    $ python main.py
+
+    It doesn't work, because obfuscated script "c.py" can NOT
+    be imported from no obfuscated scripts in restrict mode
+
+    $ cat d.py
+    import c
+    c.hello()
+
+    # Then obfuscate d.py
+    $ cat d.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, b'...')
+
+
+    $ python d.py
+
+    It works.
+```
+
+So restrict mode can avoid obfuscated scripts observed from no
+obfuscated code.
+
+In case to import obfuscated scripts from no obfuscated scripts, for
+example, obfuscated odoo module which will be imported by odoo server.
+Disable restrict mode by the following way
+
+```
+    # Create project at first
+    python pyarmor.py init --src=examples/odoo/weblogin projects/testmod
+
+    # Disable restrict mode by command "config"
+    python pyarmor.py config --disable-restrict-mode=1 projects/testmod
+
+    # Enable restrict mode again
+    python pyarmor.py config --disable-restrict-mode=0 projects/testmod
+```
+
 ### Examples
 
 #### obfuscate odoo module
@@ -278,7 +372,10 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
     # Because __manifest__.py will read by odoo server directly, so it
     # should keep literal. Exclude it from project files.
-    ./pyarmor config --output=dist/web-login \
+    #
+    # And restrict mode should be disabled, otherwise odoo server cann't
+    # import obfuscated modules
+    ./pyarmor config --output=dist/web-login --disable-restrict-mode=1 \
                      --manifest "global-include *.py, exclude __manifest__.py"
     ./pyarmor build
 
@@ -304,7 +401,7 @@ First create common project, then clone to project1, project2, project3
                            projects/odoo/login
 
     # Configure common project, set runtime-path to an absolute path
-    ./pyarmor config --output=dist \
+    ./pyarmor config --output=dist  --disable-restrict-mode=1 \
                      --runtime-path=/opt/odoo/pyarmor
                      --manifest "global-include *.py, exclude __manifest__.py" \
                      projects/odoo/login
@@ -432,9 +529,10 @@ How about the performance after scripts are obfuscated, run
     pyarmor_runtime()
 ```
 
-It can be put in any script anywhere, only if it run in the same
-Python interpreter. It will create some builtin function to deal with
-obfuscated code.
+In restrict mode, it must be in the entry scripts. If restrict mode is
+disabled, it can be put in any script anywhere, only if it run in the
+same Python interpreter. It will create some builtin function to deal
+with obfuscated code.
 
 * The extra runtime file pytransform.py must be in any Python path in
   target machine.
