@@ -3,8 +3,10 @@
 # Build source and wheel distribute
 #
 
-PYTHON=C:/Python34/python
 PLATFORMS="win32 win_amd64 linux_x86_64 linux_i386 macosx_intel"
+
+PYTHON=C:/Python34/python
+test -f $PYTHON || PYTHON=python
 
 # Build source, DEPRECATED WAY
 # (cd src &&
