@@ -68,19 +68,6 @@ check_file_content dist/queens.py '__pyarmor__(__name__'
 ( cd dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions'
 
-csih_inform "Case 1.2: obfuscate module"
-$PYARMOR obfuscate --src examples/py2exe --entry hello.py \
-                   --output dist2 queens.py >result.log 2>&1
-
-check_file_exists dist2/hello.py
-check_file_content dist2/hello.py 'pyarmor_runtime'
-
-check_file_exists dist2/queens.py
-check_file_content dist2/queens.py '__pyarmor__(__name__'
-
-(cd dist2; $PYTHON hello.py >result.log 2>&1 )
-check_file_content dist2/result.log 'Found 92 solutions'
-
 echo ""
 echo "-------------------- Test Command obfuscate END ----------------"
 echo ""
@@ -286,6 +273,37 @@ done
 echo ""
 echo "-------------------- Test Command benchmark END ----------------"
 echo ""
+
+# ======================================================================
+#
+#  Command: Use Cases
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test Use Cases ----------------------------"
+echo ""
+
+csih_inform "Case T1.1: obfuscate module with project"
+$PYARMOR init --src=examples/py2exe --entry=hello.py projects/testmod \
+              >result.log 2>&1
+$PYARMOR config --manifest="include queens.py" --disable-restrict-mode=1 \
+              projects/testmod >result.log 2>&1
+(cd projects/testmod; $ARMOR build >result.log 2>&1)
+
+check_file_exists projects/testmod/dist/hello.py
+check_file_content projects/testmod/dist/hello.py 'pyarmor_runtime'
+
+check_file_exists projects/testmod/dist/queens.py
+check_file_content projects/testmod/dist/queens.py '__pyarmor__(__name__'
+
+(cd projects/testmod/dist; $PYTHON hello.py >result.log 2>&1 )
+check_file_content projects/testmod/dist/result.log 'Found 92 solutions'
+
+echo ""
+echo "-------------------- Test Use Cases END ------------------------"
+echo ""
+
 
 # ======================================================================
 #
