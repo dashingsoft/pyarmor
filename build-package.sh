@@ -21,7 +21,7 @@ $PYTHON setup.py bdist_wheel --universal
 
 # Build binary wheel
 # for plat in $PLATFORMS ; do
-#   $PYTHON setup.py bdist_wheel --python-tag=py2.py3 --plat-name=$plat 
+#   $PYTHON setup.py bdist_wheel --python-tag=py2.py3 --plat-name=$plat
 # done
 
 echo Remove build files: pyarmor.egg-info build src/__pycache__
