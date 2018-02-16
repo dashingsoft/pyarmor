@@ -444,6 +444,8 @@ else
 fi
 
 csih_inform "Case 2.6: verify constant is obfucated"
+# Generate license which disable restrict mode, "A" == 0x41
+$PYTHON pyarmor.py license --with-capsule=project.zip -O license-no-restrict.txt "*FLAGS:A*CODE:TestCode" >result.log 2>&1
 cat << EOF > co_consts.py
 '''Module comment'''
 title = "Hello"
@@ -456,6 +458,7 @@ EOF
 $PYTHON pyarmor.py encrypt --mode=5 -C project.zip -O test_const co_consts.py >result.log 2>&1
 if [[ -f test_const/co_consts.pyc ]] ; then
     cd test_const
+    cp ../license-no-restrict.txt license.lic
     grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.pyc \
         && csih_bug "Case 2.6 FAILED: co_consts still in clear text"
     cat <<EOF > main.py
@@ -476,6 +479,7 @@ csih_inform "Case 2.7: verify mode 6 works"
 $PYTHON pyarmor.py encrypt --mode=6 -C project.zip -O test_mode6 co_consts.py >result.log 2>&1
 if [[ -f test_mode6/co_consts.pyc ]] ; then
     cd test_mode6
+    cp ../license-no-restrict.txt license.lic
     grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.pyc \
         && csih_bug "Case 2.7 FAILED: co_consts still in clear text"
     cat <<EOF > main.py
@@ -496,6 +500,7 @@ csih_inform "Case 2.8: verify mode 7 works"
 $PYTHON pyarmor.py encrypt --mode=7 -C project.zip -O test_mode7 co_consts.py >result.log 2>&1
 if [[ -f test_mode7/co_consts.py ]] ; then
     cd test_mode7
+    cp ../license-no-restrict.txt license.lic
     grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.py \
         && csih_bug "Case 2.8 FAILED: co_consts still in clear text"
     cat <<EOF > main.py
@@ -516,6 +521,7 @@ csih_inform "Case 2.9: verify mode 8 works"
 $PYTHON pyarmor.py encrypt --mode=8 -C project.zip -O test_mode8 co_consts.py >result.log 2>&1
 if [[ -f test_mode8/co_consts.py ]] ; then
     cd test_mode8
+    cp ../license-no-restrict.txt license.lic
     grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.py \
         && csih_bug "Case 2.9 FAILED: co_consts still in clear text"
     cat <<EOF > main.py

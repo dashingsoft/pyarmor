@@ -148,6 +148,13 @@ def obffuscate_python_scripts(output, filename, mode=None):
     p = subprocess.Popen(args)
     p.wait()
 
+    # Generate license with no restrict mode
+    licfile = os.path.join(output, 'license.lic')
+    args = [sys.executable, 'pyarmor.py', 'license',
+            '-O', licfile, '*FLAGS:A*CODE:Benchmark' ]
+    p = subprocess.Popen(args)
+    p.wait()
+
 def check_default_capsule():
     if not os.path.exists('pyarmor.py'):
         return
