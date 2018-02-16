@@ -1,8 +1,8 @@
 # Downlaods for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **3.1.8**
+Latest version: **3.1.9**
 
-Build date: 2018-2-7
+Build date: 2018-2-16
 
 The core of Pyarmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -11,8 +11,6 @@ difficult to build for any other platform, even for embeded system
 
 Contact <jondy.zhao@gmail.com> if you'd like to run encrypted scripts
 in other platform.
-
-## Change Logs
 
 ## Platforms
 
@@ -44,3 +42,11 @@ The name of platform is decomposed from distutils.util.get_platform()
 
     * Apply for ts-4600/ts-7600 https://wiki.embeddedarm.com/wiki/TS-4600 / https://wiki.embeddedarm.com/wiki/TS-7600
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
+
+## Change Logs
+
+### 3.1.9
+
+* DO NOT run obfuscated scripts when Py_InteractiveFlag or Py_InspectFlag is set
+
+* Add restrict mode to avoid obfuscated scripts observed from no obfuscated scripts
