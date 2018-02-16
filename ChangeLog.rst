@@ -1,3 +1,8 @@
+3.6.0
+-----
+* Introduce restrict mode to avoid obfuscated scripts observed from no obfuscated scripts
+* Add option --disable-restrict-mode for command "config"
+
 3.5.1
 -----
 * Support pip install pyarmor
