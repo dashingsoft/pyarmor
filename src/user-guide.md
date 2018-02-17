@@ -30,8 +30,8 @@ analogous commands for each.
 
 ### Obfuscate Python Scripts
 
-Obfuscate a simple script **examples/queens.py** in the source path of
-Pyarmor
+Obfuscate a simple script **examples/simple/queens.py** in the source
+path of Pyarmor
 
 ```
     python pyarmor.py obfuscate --src=examples/simple --entry=queens.py "*.py"
@@ -66,6 +66,10 @@ Import obfuscated moduels in a normal python scripts
     # Run hello.py
     python hello.py
 ```
+
+**It doesn't work from Pyarmor 3.6, refer to [Restrict Mode][restrict-mode]**
+
+[restrict-mode]: #restrict-mode
 
 ### Use Project to Manage Obfuscated Scripts
 
@@ -275,9 +279,8 @@ Or
 
 ```
 
-And obfuscated script must be run directly by Python interperter. No
-any other statement can be inserted into obfuscated scripts. For
-examples,
+And obfuscated script must be imported from obfuscated script. No any
+other statement can be inserted into obfuscated scripts. For examples,
 
 ```
     $ cat a.py
@@ -332,19 +335,36 @@ So restrict mode can avoid obfuscated scripts observed from no
 obfuscated code.
 
 In case to import obfuscated scripts from no obfuscated scripts, for
-example, obfuscated odoo module which will be imported by odoo server.
-Disable restrict mode by the following way
+example, let [Import Obfuscated Module][import-obfuscated-module]
+above work need to disable restrict mode as the following way
 
 ```
     # Create project at first
-    python pyarmor.py init --src=examples/odoo/weblogin projects/testmod
+    python pyarmor.py init --src=examples/py2exe --entry=hello.py projects/testmod
 
     # Disable restrict mode by command "config"
-    python pyarmor.py config --disable-restrict-mode=1 projects/testmod
+    # And only obfuscate queens.py
+    python pyarmor.py config --manifest="include queens.py" --disable-restrict-mode=1 projects/testmod
 
-    # Enable restrict mode again
+    # Obfuscate queens.py
+    cd projects/testmod
+    ./pyarmor build
+
+    # Import obfuscated queens.py from no obfuscated script hello.py
+    cd dist
+    python hello.py
+
+```
+
+Enable restrict mode again
+
+```
     python pyarmor.py config --disable-restrict-mode=0 projects/testmod
 ```
+
+[]: #import-obfuscated-module "Import Obfuscated Module"
+
+[import-obfuscated-module]: #import-obfuscated-module
 
 ### Examples
 
