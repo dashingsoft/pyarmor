@@ -67,9 +67,7 @@ Import obfuscated moduels in a normal python scripts
     python hello.py
 ```
 
-**It doesn't work from Pyarmor 3.6, refer to [Restrict Mode][restrict-mode]**
-
-[restrict-mode]: #restrict-mode
+**It doesn't work from Pyarmor 3.6, refer to [Restrict Mode](#restrict-mode)**
 
 ### Use Project to Manage Obfuscated Scripts
 
@@ -335,7 +333,7 @@ So restrict mode can avoid obfuscated scripts observed from no
 obfuscated code.
 
 In case to import obfuscated scripts from no obfuscated scripts, for
-example, let [Import Obfuscated Module][import-obfuscated-module]
+example, let [Import Obfuscated Module](#import-obfuscated-module)
 above work need to disable restrict mode as the following way
 
 ```
@@ -361,10 +359,6 @@ Enable restrict mode again
 ```
     python pyarmor.py config --disable-restrict-mode=0 projects/testmod
 ```
-
-[]: #import-obfuscated-module "Import Obfuscated Module"
-
-[import-obfuscated-module]: #import-obfuscated-module
 
 ### Examples
 
