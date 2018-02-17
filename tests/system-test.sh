@@ -276,7 +276,7 @@ echo ""
 
 # ======================================================================
 #
-#  Command: Use Cases
+#  Use Cases
 #
 # ======================================================================
 
@@ -284,9 +284,9 @@ echo ""
 echo "-------------------- Test Use Cases ----------------------------"
 echo ""
 
-csih_inform "Case T1.1: obfuscate module with project"
-$PYARMOR init --src=examples/py2exe --entry=hello.py projects/testmod \
-              >result.log 2>&1
+csih_inform "Case T-1.1: obfuscate module with project"
+$PYARMOR init --src=examples/py2exe --entry=hello.py \
+              projects/testmod >result.log 2>&1
 $PYARMOR config --manifest="include queens.py" --disable-restrict-mode=1 \
               projects/testmod >result.log 2>&1
 (cd projects/testmod; $ARMOR build >result.log 2>&1)
