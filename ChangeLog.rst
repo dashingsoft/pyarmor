@@ -1,6 +1,7 @@
 3.6.1
 -----
 * Add option "Restrict Mode" in web ui
+* Document restrict mode in details (user-guide.md)
 
 3.6.0
 -----
