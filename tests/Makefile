@@ -48,7 +48,7 @@ else
 ifeq ($(findstring macosx,$(PLATFORM)),macosx)
 TARGET = _pytransform.dylib
 CMDPREFIX =
-PYCMD = python
+PYCMD = pythonXY
 VERSIONS := 2.7 3.6
 else
 TARGET = _pytransform.dll
@@ -65,7 +65,7 @@ endif
 
 WORKPATH = __runtime__
 
-.PHONY: test unit trial build bench
+.PHONY: test unit trial build
 
 
 test: build
@@ -108,14 +108,6 @@ trial:
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
             make clean; \
 	done
-
-bench:
-	for pyver in  $(VERSIONS) ; do \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash benchmark-test.sh || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
-	done
-	make clean
 
 clean:
 	rm -rf *.pyc *.pyo __pycache__ _pytransform.log $(WORKPATH)
