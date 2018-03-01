@@ -163,7 +163,7 @@ def make_command(platform, python, pyarmor, output):
     else:
         filename = os.path.join(output, 'pyarmor')
         with open(filename, 'w') as f:
-            f.write('%s %s $*' % (python, script))
+            f.write('%s %s "$@"' % (python, script))
     os.chmod(filename, 0o755)
     return filename
 
