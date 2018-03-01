@@ -120,7 +120,9 @@ echo "-------------------- Test Command config -----------------------"
 echo ""
 
 csih_inform "Case 3.1: config py2exe"
-( cd projects/py2exe; $ARMOR config --runtime-path='' >result.log 2>&1 )
+( cd projects/py2exe; $ARMOR config --runtime-path='' \
+    --manifest="global-include *.py, exclude __manifest__.py" \
+    >result.log 2>&1 )
 check_return_value
 
 echo ""
