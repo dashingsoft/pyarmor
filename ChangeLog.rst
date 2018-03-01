@@ -1,3 +1,7 @@
+3.6.2
+-----
+* Fix issue #8 (Linux): option --manifest broken in shell script
+
 3.6.1
 -----
 * Add option "Restrict Mode" in web ui
