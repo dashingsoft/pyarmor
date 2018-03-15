@@ -7,12 +7,15 @@ SCRIPT_OBF=b.py
 mkdir -p $WORKPATH
 (cd $WORKPATH; unzip ../../dist/pyarmor-3.7.0.zip > /dev/null)
 
-REPEAT_CODE_HOLDER="i += 1"
+# Change n to change total size of function body
 let -i n=100
+REPEAT_CODE_HOLDER="i += 1"
 while (( n )) ; do
     REPEAT_CODE_HOLDER=$(echo -e "${REPEAT_CODE_HOLDER}\n        i += 1")
     let n=n-1
 done
+
+REPEAT_CALL_TIMES=1000
 
 cat <<EOF > $WORKPATH/${SCRIPT}
 
@@ -22,7 +25,7 @@ def foo():
         ${REPEAT_CODE_HOLDER}
 
 def main():
-    for i in range(1000):
+    for i in range(${REPEAT_CALL_TIMES}):
         foo()
 
 if __name__ == '__main__':
@@ -63,7 +66,7 @@ def foo():
 
 @wraparmor
 def main():
-    for i in range(1000):
+    for i in range(${REPEAT_CALL_TIMES}):
         foo()
 
 if __name__ == '__main__':
