@@ -1,6 +1,7 @@
 3.7.0
 -----
 * Fix issue #11: use decorator "wraparmor" to obfuscate func_code as soon as function returns.
+* Document usage of decorator "wraparmor",  refer to **src/user-guide.md#use-decorator-to-protect-code-objects-when-disable-restrict-mode**
 
 3.6.2
 -----
