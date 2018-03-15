@@ -360,9 +360,68 @@ Enable restrict mode again
     python pyarmor.py config --disable-restrict-mode=0 projects/testmod
 ```
 
+#### Use decorator to protect code objects when disable restrict mode
+
+When restrict mode is disabled, code object can be accessed out of
+obfuscated scripts. In order to solve this leak, define a decorator
+"wraparmor":
+
+```python
+
+# For Python 2
+from __builtin__ import __wraparmor__
+
+# For Python 3
+from builtins import __wraparmor__
+
+def wraparmor(func):
+    def wrapper(*args, **kwargs):
+         __wraparmor__(func)
+         try:
+             return func(*args, **kwargs)
+         finally:
+             __wraparmor__(func, 1)
+    wrapper.__module__ = func.__module__
+    wrapper.__name__ = func.__name__
+    wrapper.__doc__ = func.__doc__
+    wrapper.__dict__.update(func.__dict__)
+    func.__refcalls__ = 0
+    return wrapper
+
+```
+
+PyCFunction ```__wraparmor__``` will be added into builtins module
+when call **pyarmor_runtime**. The due is to restore func_code before
+function call, and obfuscate func_code after function return.
+
+Add this decorator to any function which intend to be protect, for
+example,
+
+``` python
+
+@wraparmor
+def main():
+    pass
+
+class Queens:
+
+    @wraparmor
+    def __init__(self):
+        pass
+
+    @staticmethod
+    @wraparmor
+    def check(cls):
+        pass
+
+```
+
+Note that source code of decorator "wraparmor" should be in any of
+obfuscated scripts.
+
 ### Examples
 
-#### obfuscate odoo module
+#### Obfuscate odoo module
 
 There is odoo module "web-login":
 
@@ -400,7 +459,7 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
 ```
 
-#### obfuscate many odoo modules
+#### Obfuscate many odoo modules
 
 Suppose there are 3 odoo modules "web-login1", "web-login2",
 "web-login3", they'll be obfuscated separately, but run in the same
@@ -519,6 +578,58 @@ scripts are obfuscated.
     # Now run hello.exe
     cd output
     ./hello.exe
+```
+
+#### Protect module with decorator "wraparmor"
+
+Here is an example **examples/testmod**, entry script is **hello.py**,
+and it's not obfuscated. It will import obfuscated module **queens**,
+and try to disassemble some functions in this module. In order to
+protect those code object, add extra decorator at the begin:
+
+
+``` python
+    try:
+        from builtins import __wraparmor__
+    except Exception:
+        from __builtin__ import __wraparmor__
+    def wraparmor(func):
+        def wrapper(*args, **kwargs):
+             __wraparmor__(func)
+             try:
+                 return func(*args, **kwargs)
+             finally:
+                 __wraparmor__(func, 1)
+        wrapper.__module__ = func.__module__
+        wrapper.__name__ = func.__name__
+        wrapper.__doc__ = func.__doc__
+        wrapper.__dict__.update(func.__dict__)
+        func.__refcalls__ = 0
+        # Only for test
+        wrapper.orig_func = func
+        return wrapper
+```
+
+And decorate all of functions and methods. Refer to
+**examples/testmod/queens.py**
+
+``` bash
+    # Create project
+    python pyarmor.py init --src=examples/testmod --entry=hello.py projects/testmod
+
+    # Change to this project
+    cd projects/testmod
+
+    # Configure this project
+    ./pyarmor config --manifest="include queens.py" --disable-restrict-mode=1
+
+    # Obfuscate queens.py
+    ./pyarmor build
+
+    # Import obfuscated queens.py from hello.py
+    cd dist
+    python hello.py
+
 ```
 
 ## Benchmark Test
