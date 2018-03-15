@@ -78,7 +78,7 @@ EOF
 #
 # Obfuscate script
 #
-$PYARMOR obfuscate --src $WORKPATH --entry ${SCRIPT_OBF} --output=$WORKPATH/dist *.py
+$PYARMOR obfuscate --src $WORKPATH --entry ${SCRIPT_OBF} --output=$WORKPATH/dist ${SCRIPT_OBF}
 
 echo "------------------------------"
 echo Run obfuscated script ${SCRIPT_OBF} with decorator
@@ -92,4 +92,5 @@ echo Run normal script ${SCRIPT}
 $PYTHON $WORKPATH/${SCRIPT}
 
 
+# Clean workpath
 rm -rf ${WORKPATH}
