@@ -24,8 +24,10 @@ pyarmor_data_files = [
     'platforms/linux_i386/_pytransform.so',
     'platforms/linux_x86_64/_pytransform.so',
     'platforms/macosx_intel/_pytransform.dylib',
-    'examples/simple/*.py', 'examples/py2exe/*.py',
-    'examples/pybench/*.py', 'examples/pybench/package/*.py',]
+    'examples/simple/*.py', 'examples/testmod/*.py',
+    'examples/pybench/*.py', 'examples/pybench/package/*.py',
+    'examples/py2exe/*.py',
+]
 
 # def _build_file_list(d):
 #     return [d + '/' + x for x in listdir(d) if path.isfile(x)]
