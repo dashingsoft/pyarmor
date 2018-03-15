@@ -1,3 +1,7 @@
+3.7.0
+-----
+* Fix issue #11: use decorator "wraparmor" to obfuscate func_code as soon as function returns.
+
 3.6.2
 -----
 * Fix issue #8 (Linux): option --manifest broken in shell script

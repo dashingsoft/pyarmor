@@ -1,8 +1,8 @@
 # Downlaods for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **3.1.9**
+Latest version: **3.2.0**
 
-Build date: 2018-2-16
+Build date: 2018-3-15
 
 The core of Pyarmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -44,6 +44,12 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+### 3.2.0
+
+* Clear CO_ENCRYPT flag after byte-code is restored.
+
+* Add builtin ```__wraparmor__``` to obfuscate func_code when function returns.
 
 ### 3.1.9
 
