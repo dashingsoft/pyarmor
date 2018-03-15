@@ -302,6 +302,23 @@ check_file_content projects/testmod/dist/queens.py '__pyarmor__(__name__'
 (cd projects/testmod/dist; $PYTHON hello.py >result.log 2>&1 )
 check_file_content projects/testmod/dist/result.log 'Found 92 solutions'
 
+csih_inform "Case T-1.2: obfuscate module with wraparmor"
+PROPATH=projects/testmod_wrap
+$PYARMOR init --src=examples/testmod --entry=hello.py $PROPATH >result.log 2>&1
+$PYARMOR config --manifest="include queens.py" --disable-restrict-mode=1 \
+              $PROPATH >result.log 2>&1
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+
+check_file_exists $PROPATH/dist/hello.py
+check_file_content $PROPATH/dist/hello.py 'pyarmor_runtime'
+
+check_file_exists $PROPATH/dist/queens.py
+check_file_content $PROPATH/dist/queens.py '__pyarmor__(__name__'
+
+(cd $PROPATH/dist; $PYTHON hello.py >result.log 2>&1 )
+check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
+check_file_content $PROPATH/dist/result.log 'index out of range'
+
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"
 echo ""
