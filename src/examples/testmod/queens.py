@@ -2,11 +2,23 @@
 
 from __future__ import print_function
 
+##
+#  Extra code to define decorator "wraparmor"
+##
+
+#
+# __wraparmor__ will be added to builtins from bootstrap code of pyarmor
+#
+#   from pytransfrom import pyarmor_runtime()
+#   pyarmor_runtime()
+#
 try:
     from builtins import __wraparmor__
 except Exception:
     from __builtin__ import __wraparmor__
+
 def wraparmor(func):
+    func.__refcalls__ = 0
     def wrapper(*args, **kwargs):
          __wraparmor__(func)
          try:
@@ -17,11 +29,13 @@ def wraparmor(func):
     wrapper.__name__ = func.__name__
     wrapper.__doc__ = func.__doc__
     wrapper.__dict__.update(func.__dict__)
-    func.__refcalls__ = 0
     # Only for test
     wrapper.orig_func = func
     return wrapper
 
+##
+#  End of extra code
+##
 
 """
 N queens problem.
@@ -114,6 +128,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    import dis
-    print(dis.dis(Queens))
-    print(dis.dis(main))
