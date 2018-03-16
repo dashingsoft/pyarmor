@@ -5,6 +5,8 @@
 #    bash test-wraparmor.sh
 #
 PYTHON=C:/Python27/python
+test -f $PYTHON || PYTHON=python
+
 WORKPATH=__test_wrapper__
 PYARMOR="$PYTHON $WORKPATH/pyarmor-3.7.0/src/pyarmor.py"
 SCRIPT=a.py
