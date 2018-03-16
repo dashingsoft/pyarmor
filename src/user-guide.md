@@ -261,19 +261,19 @@ Restrict mode is instroduced from Pyarmor v3.6.
 In restrict mode, obfuscated scripts must be one of the following formats:
 
 ```
-    __pyarmor__(__name__, b'...').__file__ = __file__
+    __pyarmor__(__name__, __file__, b'...')
 
 Or
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...').__file__ = __file__
+    __pyarmor__(__name__, __file__, b'...')
 
 Or
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime('...')
-    __pyarmor__(__name__, b'...').__file__ = __file__
+    __pyarmor__(__name__, __file__, b'...')
 
 ```
 
@@ -284,7 +284,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     $ cat a.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...').__file__ = __file__
+    __pyarmor__(__name__, __file__, b'...')
 
     $ python a.py
 
@@ -293,7 +293,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     $ cat b.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...').__file__ = __file__
+    __pyarmor__(__name__, __file__, b'...')
     print(__name__)
 
     $ python b.py
@@ -301,7 +301,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     It doesn't work, because there is an extra "print"
 
     $ cat c.py
-    __pyarmor__(__name__, b'...').__file__ = __file__
+    __pyarmor__(__name__, __file__, b'...')
 
     $ cat main.py
     from pytransform import pyarmor_runtime
@@ -321,7 +321,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     $ cat d.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...').__file__ = __file__
+    __pyarmor__(__name__, __file__, b'...')
 
 
     $ python d.py
@@ -392,9 +392,10 @@ def wraparmor(func):
 
 ```
 
-PyCFunction ```__wraparmor__``` will be added into builtins module
-when call **pyarmor_runtime**. The due is to restore func_code before
-function call, and obfuscate func_code after function return.
+PyCFunction `__wraparmor__` will be added into builtins module when
+call **pyarmor_runtime**. It's allowed to be used in decorator
+`wraparmor` only. The due is to restore func_code before function
+call, and obfuscate func_code after function return.
 
 Add this decorator to any function which intend to be protect, for
 example,

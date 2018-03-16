@@ -23,6 +23,8 @@ def wraparmor(func):
          __wraparmor__(func)
          try:
              return func(*args, **kwargs)
+         except Exception as err:
+             raise err
          finally:
              __wraparmor__(func, 1)
     wrapper.__module__ = func.__module__

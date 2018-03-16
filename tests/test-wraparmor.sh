@@ -1,19 +1,21 @@
 # This script is used to test performance of decorator wraparmor
 #
 # Usage:
-# 
+#
 #    bash test-wraparmor.sh
 #
+VERSION=${1:3.7.1}
+
 PYTHON=C:/Python27/python
 test -f $PYTHON || PYTHON=python
 
 WORKPATH=__test_wrapper__
-PYARMOR="$PYTHON $WORKPATH/pyarmor-3.7.0/src/pyarmor.py"
+PYARMOR="$PYTHON $WORKPATH/pyarmor-${VERSION}/src/pyarmor.py"
 SCRIPT=a.py
 SCRIPT_OBF=b.py
 
 mkdir -p $WORKPATH
-(cd $WORKPATH; unzip ../../dist/pyarmor-3.7.0.zip > /dev/null)
+(cd $WORKPATH; unzip ../../dist/pyarmor-${VERSION}.zip > /dev/null)
 
 # Change n to change total size of function body
 let -i n=100
@@ -53,17 +55,19 @@ except Exception:
    from __builtin__ import __wraparmor__
 
 def wraparmor(func):
+    func.__refcalls__ = 0
     def wrapper(*args, **kwargs):
-         __wraparmor__(func)
-         try:
-             return func(*args, **kwargs)
-         finally:
+        __wraparmor__(func)
+        try:
+            return func(*args, **kwargs)
+        except Exception as err:
+            raise err
+        finally:
              __wraparmor__(func, 1)
     wrapper.__module__ = func.__module__
     wrapper.__name__ = func.__name__
     wrapper.__doc__ = func.__doc__
     wrapper.__dict__.update(func.__dict__)
-    func.__refcalls__ = 0
     return wrapper
 
 @wraparmor
