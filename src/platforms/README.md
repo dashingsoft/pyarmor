@@ -47,13 +47,15 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 ### 3.2.1
 
-* Change armor code, set module attribute ```__file__``` to filename in target machine other than in build machine.
+* Change armor code, set module attribute `__file__` to filename in target machine other than in build machine.
+
+* Builtins function `__wraparmor__` only can be used in the decorator `wraparmor`
 
 ### 3.2.0
 
 * Clear CO_ENCRYPT flag after byte-code is restored.
 
-* Add builtin ```__wraparmor__``` to obfuscate func_code when function returns.
+* Add builtin `__wraparmor__` to obfuscate func_code when function returns.
 
 ### 3.1.9
 
