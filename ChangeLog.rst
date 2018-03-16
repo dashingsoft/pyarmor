@@ -1,6 +1,7 @@
 3.7.1
 -----
 * Fix issue #12: module attribute "__file__" is filename in build machine other than filename in target machine.
+* Builtins function `__wraparmor__` only can be used in the decorator `wraparmor`
 
 3.7.0
 -----
