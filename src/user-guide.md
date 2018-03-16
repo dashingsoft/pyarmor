@@ -261,19 +261,19 @@ Restrict mode is instroduced from Pyarmor v3.6.
 In restrict mode, obfuscated scripts must be one of the following formats:
 
 ```
-    __pyarmor__(__name__, b'...')
+    __pyarmor__(__name__, b'...').__file__ = __file__
 
 Or
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...')
+    __pyarmor__(__name__, b'...').__file__ = __file__
 
 Or
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime('...')
-    __pyarmor__(__name__, b'...')
+    __pyarmor__(__name__, b'...').__file__ = __file__
 
 ```
 
@@ -284,7 +284,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     $ cat a.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...')
+    __pyarmor__(__name__, b'...').__file__ = __file__
 
     $ python a.py
 
@@ -293,7 +293,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     $ cat b.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...')
+    __pyarmor__(__name__, b'...').__file__ = __file__
     print(__name__)
 
     $ python b.py
@@ -301,7 +301,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     It doesn't work, because there is an extra "print"
 
     $ cat c.py
-    __pyarmor__(__name__, b'...')
+    __pyarmor__(__name__, b'...').__file__ = __file__
 
     $ cat main.py
     from pytransform import pyarmor_runtime
@@ -321,7 +321,7 @@ other statement can be inserted into obfuscated scripts. For examples,
     $ cat d.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, b'...')
+    __pyarmor__(__name__, b'...').__file__ = __file__
 
 
     $ python d.py
@@ -375,17 +375,19 @@ from __builtin__ import __wraparmor__
 from builtins import __wraparmor__
 
 def wraparmor(func):
+    func.__refcalls__ = 0
     def wrapper(*args, **kwargs):
          __wraparmor__(func)
          try:
              return func(*args, **kwargs)
+         except Exception as err:
+             raise err
          finally:
              __wraparmor__(func, 1)
     wrapper.__module__ = func.__module__
     wrapper.__name__ = func.__name__
     wrapper.__doc__ = func.__doc__
     wrapper.__dict__.update(func.__dict__)
-    func.__refcalls__ = 0
     return wrapper
 
 ```
@@ -594,6 +596,7 @@ protect those code object, add extra decorator at the begin:
     except Exception:
         from __builtin__ import __wraparmor__
     def wraparmor(func):
+        func.__refcalls__ = 0
         def wrapper(*args, **kwargs):
              __wraparmor__(func)
              try:
@@ -604,7 +607,6 @@ protect those code object, add extra decorator at the begin:
         wrapper.__name__ = func.__name__
         wrapper.__doc__ = func.__doc__
         wrapper.__dict__.update(func.__dict__)
-        func.__refcalls__ = 0
         # Only for test
         wrapper.orig_func = func
         return wrapper
