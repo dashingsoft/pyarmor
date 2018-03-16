@@ -393,9 +393,9 @@ def wraparmor(func):
 ```
 
 PyCFunction `__wraparmor__` will be added into builtins module when
-call **pyarmor_runtime**. It's allowed to be used in decorator
-`wraparmor` only. The due is to restore func_code before function
-call, and obfuscate func_code after function return.
+call **pyarmor_runtime**. It can be used in the decorator `wraparmor`
+only. The due is to restore func_code before function call, and
+obfuscate func_code after function return.
 
 Add this decorator to any function which intend to be protect, for
 example,
