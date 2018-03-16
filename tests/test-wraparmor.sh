@@ -4,7 +4,7 @@
 #
 #    bash test-wraparmor.sh
 #
-VERSION=${1:3.7.1}
+VERSION=$1
 
 PYTHON=C:/Python27/python
 test -f $PYTHON || PYTHON=python
