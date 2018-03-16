@@ -602,6 +602,8 @@ protect those code object, add extra decorator at the begin:
              __wraparmor__(func)
              try:
                  return func(*args, **kwargs)
+             except Exception as err:
+                 raise err
              finally:
                  __wraparmor__(func, 1)
         wrapper.__module__ = func.__module__
