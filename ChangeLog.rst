@@ -1,3 +1,7 @@
+3.7.1
+-----
+* Fix issue #12: module attribute "__file__" is filename in build machine other than filename in target machine.
+
 3.7.0
 -----
 * Fix issue #11: use decorator "wraparmor" to obfuscate func_code as soon as function returns.
