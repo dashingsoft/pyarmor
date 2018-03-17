@@ -320,7 +320,7 @@ check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
 check_file_content $PROPATH/dist/result.log 'index out of range'
 check_file_content $PROPATH/dist/result.log '__wraparmor__ can not be called out of decorator'
 check_file_content $PROPATH/dist/result.log 'The value of __file__ is OK'
-check_file_content $PROPATH/dist/result.log '<frozen \[queens\]>'
+check_file_content $PROPATH/dist/result.log '<frozen queens>'
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"

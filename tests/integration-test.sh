@@ -437,7 +437,7 @@ import pyimcore
 import co_hello
 EOF
     $PYTHON main.py >result.log 2>&1
-    grep -q 'File "<frozen \[co_hello\]>"' result.log || csih_bug "Case 2.5 FAILED: script name isn't right"
+    grep -q 'File "<frozen co_hello>"' result.log || csih_bug "Case 2.5 FAILED: script name isn't right"
     cd ..
 else
     csih_bug "Case 2.5 FAILED: no encrypted script found"
