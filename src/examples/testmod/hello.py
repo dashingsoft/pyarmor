@@ -30,5 +30,10 @@ try:
     from builtins import __wraparmor__
 except Exception:
     from __builtin__ import __wraparmor__
-__wraparmor__(main)
+try:
+  __wraparmor__(main)
+except Exception as e:
+  print(e)
 
+# Check filename in trackback
+queens.test_exception()

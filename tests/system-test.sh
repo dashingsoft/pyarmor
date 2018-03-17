@@ -318,8 +318,9 @@ check_file_content $PROPATH/dist/queens.py '__pyarmor__(__name__'
 (cd $PROPATH/dist; $PYTHON hello.py >result.log 2>&1 )
 check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
 check_file_content $PROPATH/dist/result.log 'index out of range'
-check_file_content $PROPATH/dist/result.log 'SystemError: error return without exception set'
+check_file_content $PROPATH/dist/result.log 'error return without exception set'
 check_file_content $PROPATH/dist/result.log 'The value of __file__ is OK'
+check_file_content $PROPATH/dist/result.log '<frozen [queens]>'
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"

@@ -128,5 +128,9 @@ def main():
     q.solve()
     print("Found", q.nfound, "solutions.")
 
+@wraparmor
+def test_exception():
+    raise Exception('Filename is right or not')
+
 if __name__ == "__main__":
     main()
