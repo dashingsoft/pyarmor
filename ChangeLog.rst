@@ -1,3 +1,7 @@
+3.7.2
+-----
+* Change filename in traceback to `<frozen [modname]>`, other than original filename
+
 3.7.1
 -----
 * Fix issue #12: module attribute `__file__` is filename in build machine other than filename in target machine.
