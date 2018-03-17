@@ -1,3 +1,7 @@
+3.7.3
+-----
+* Remove brackets from filename in traceback, and add dotted prefix.
+
 3.7.2
 -----
 * Change filename in traceback to `<frozen [modname]>`, other than original filename
