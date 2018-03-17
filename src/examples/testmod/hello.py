@@ -33,7 +33,7 @@ except Exception:
 try:
   __wraparmor__(main)
 except Exception as e:
-  print(e)
+  print('__wraparmor__ can not be called out of decorator')
 
 # Check filename in trackback
 queens.test_exception()
