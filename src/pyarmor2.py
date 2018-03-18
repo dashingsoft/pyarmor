@@ -239,7 +239,7 @@ def _build(args):
             make_runtime(capsule, routput)
         else:
             routput = os.path.join(args.project, 'runtimes')
-            if not os.path.exits(routput):
+            if not os.path.exists(routput):
                 logging.info('Make path: %s', routput)
                 os.mkdir(routput)
             logging.info('Make runtime files to %s', routput)
