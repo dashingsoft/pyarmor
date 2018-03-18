@@ -1,3 +1,7 @@
+3.7.5
+-----
+* Remove dotted name from filename in traceback, if it's not a package.
+
 3.7.4
 -----
 * Strip `__init__` from filename in traceback, replace it with package name.

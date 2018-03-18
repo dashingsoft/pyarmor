@@ -1,6 +1,6 @@
 # Downlaods for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **3.2.4**
+Latest version: **3.2.5**
 
 Build date: 2018-3-18
 
@@ -44,6 +44,10 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+### 3.2.5
+
+* Refine frozen module name when obfuscating scripts, remove dotted name if it's not a package.
 
 ### 3.2.4
 
