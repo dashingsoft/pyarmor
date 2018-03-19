@@ -74,7 +74,7 @@ all .py files in this directory will be included in this project.
 Option --entry specifies main script, which could be run directly
 after obfuscated.
 
-Option --clone specifies another project path. It it is set, no new
+Option --clone specifies another project path. If it is set, no new
 project capsule is generated, just copy capsule from this project.
 
 EXAMPLES
@@ -201,8 +201,9 @@ def _build(args):
     logging.info('Build project %s ...', args.project)
     capsule = build_path(project.capsule, args.project)
 
+    output = project.output if args.output is None else args.output
+
     if not args.only_runtime:
-        output = project.output
         mode = project.get_obfuscate_mode()
         files = project.get_build_files(args.force)
         src = project.src
@@ -233,17 +234,15 @@ def _build(args):
         project.save(args.project)
 
     if not args.no_runtime:
-        if project.runtime_path is None:
+        if project.runtime_path is None or args.output is not None:
             routput = output
-            logging.info('Make runtime files to %s', routput)
-            make_runtime(capsule, routput)
         else:
             routput = os.path.join(args.project, 'runtimes')
-            if not os.path.exists(routput):
-                logging.info('Make path: %s', routput)
-                os.mkdir(routput)
-            logging.info('Make runtime files to %s', routput)
-            make_runtime(capsule, routput)
+        if not os.path.exists(routput):
+            logging.info('Make path: %s', routput)
+            os.mkdir(routput)
+        logging.info('Make runtime files to %s', routput)
+        make_runtime(capsule, routput)
         if project.get('disable_restrict_mode'):
             licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
             licfile = os.path.join(routput, license_filename)
@@ -550,6 +549,8 @@ def main(args):
                          help='Generate extra runtime files only')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate extra runtime files')
+    cparser.add_argument('--output',
+                         help='Output path, override project configuration')
     cparser.set_defaults(func=_build)
 
     #
