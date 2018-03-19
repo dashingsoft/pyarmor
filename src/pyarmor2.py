@@ -201,7 +201,8 @@ def _build(args):
     logging.info('Build project %s ...', args.project)
     capsule = build_path(project.capsule, args.project)
 
-    output = project.output if args.output is None else args.output
+    output = build_path(project.output, args.project) if args.output is None \
+             else args.output
 
     if not args.only_runtime:
         mode = project.get_obfuscate_mode()
