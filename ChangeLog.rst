@@ -1,3 +1,7 @@
+3.8.0
+-----
+* Add option `--output` for command `build`, it will override the value in project configuration file.
+
 3.7.5
 -----
 * Remove dotted name from filename in traceback, if it's not a package.
