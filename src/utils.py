@@ -117,6 +117,8 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
     if filepairs:
         pytransform.encrypt_project_files(prokey, tuple(filepairs), mode)
 
+    os.remove(prokey)
+
     return filepairs
 
 def make_runtime(capsule, output, licfile=None, platform=None):
