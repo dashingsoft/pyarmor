@@ -1,6 +1,8 @@
 3.8.0
 -----
 * Add option `--output` for command `build`, it will override the value in project configuration file.
+* Fix issue: defalut project output path isn't relative to project path. 
+* Remove extra file "product.key" after obfuscating scripts.
 
 3.7.5
 -----
