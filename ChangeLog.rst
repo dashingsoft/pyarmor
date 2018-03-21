@@ -1,3 +1,7 @@
+3.8.1
+-----
+* Try to access original func_code out of decorator `wraparmor` is forbidden.
+
 3.8.0
 -----
 * Add option `--output` for command `build`, it will override the value in project configuration file.
