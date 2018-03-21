@@ -5,6 +5,11 @@
 #    bash test-wraparmor.sh
 #
 VERSION=$1
+if [[ "$VERSION" == "" ]] ; then
+    echo "Usage:"
+    echo "  bash test-wraparmor.sh VERSION"
+    exit 1
+fi
 
 PYTHON=C:/Python27/python
 test -f $PYTHON || PYTHON=python
@@ -63,7 +68,7 @@ def wraparmor(func):
         except Exception as err:
             raise err
         finally:
-             __wraparmor__(func, 1)
+            __wraparmor__(func, 1)
     wrapper.__module__ = func.__module__
     wrapper.__name__ = func.__name__
     wrapper.__doc__ = func.__doc__
