@@ -47,7 +47,7 @@ class Project(dict):
 
     OBF_MODULE_MODE = 'none', 'des'
 
-    OBF_CODE_MODE = 'none', 'des', 'fast'
+    OBF_CODE_MODE = 'none', 'des', 'fast', 'wrap'
 
     DEFAULT_VALUE = \
         ( 'version', '.'.join([str(x) for x in VERSION]) ), \
@@ -113,7 +113,10 @@ class Project(dict):
     def map_obfuscate_mode(cls, mode, comode):
         m = Project.OBF_MODULE_MODE.index(mode)
         c = Project.OBF_CODE_MODE.index(comode)
-        return 7 + ( 1 - m ) * 3 + c
+        if comode == 'wrap':
+            return 13 + m
+        else:
+            return 7 + ( 1 - m ) * 3 + c
 
     def get_obfuscate_mode(self, mode=None, comode=None):
         if mode is None:
