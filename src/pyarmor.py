@@ -198,7 +198,7 @@ def encrypt_files(files, prokey, mode=8, output=None):
 
     Return None if sucess, otherwise raise exception
     '''
-    ext = '.py' if mode in (7, 8, 9, 10, 11, 12) else \
+    ext = '.py' if mode in (7, 8, 9, 10, 11, 12, 13, 14) else \
           '.pyc' if mode in (1, 3, 4, 5, 6) else '.py' + ext_char
     if output is None:
         fn = lambda a, b: b[1] + ext
@@ -467,7 +467,8 @@ It's Following the Distutils’ own manifest template
             clean = True
         elif o in ('-e', '--mode'):
             if a not in ('0', '1', '2', '3', '5', '6',
-                         '7', '8', '9', '10', '11', '12'):
+                         '7', '8', '9', '10', '11', '12',
+                         '13', '14'):
                 raise RuntimeError('Invalid mode "%s"' % a)
             mode = int(a)
         elif o in ('-m', '--main'):
@@ -538,7 +539,7 @@ It's Following the Distutils’ own manifest template
         logging.info('Remove private key %s in the output', prikey)
         os.remove(prikey)
 
-    if mode not in (7, 8, 9, 10, 11, 12):
+    if mode not in (7, 8, 9, 10, 11, 12, 13, 14):
         for name in mainname:
             n = name.find(':')
             if n == -1:
@@ -566,7 +567,7 @@ It's Following the Distutils’ own manifest template
             raise RuntimeError('Missing project key %s' % prokey)
         logging.info('Encrypt files ...')
         encrypt_files(filelist, prokey, mode, None if inplace else output)
-        if mode in (7, 8, 9, 10, 11, 12):
+        if mode in (7, 8, 9, 10, 11, 12, 13, 14):
             for name in mainname:
                 script = os.path.join(
                     output, name + ('' if name.endswith('.py') else '.py'))

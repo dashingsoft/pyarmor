@@ -182,7 +182,7 @@ def main():
     filename = os.path.join(output, name + '.py')
 
     mode = sys.argv[2] if len(sys.argv) > 2 else '8'
-    ext = '' if mode in ('7', '8', '9', '10', '11', '12') else 'e'
+    ext = '' if mode in ('7', '8', '9', '10', '11', '12', '13', '14') else 'e'
 
     obname = 'obfoo'
     obfilename = os.path.join(output, obname + '.py' + ext)
@@ -192,7 +192,8 @@ def main():
         logging.info('Generate test script %s ...', filename)
         make_test_script(filename)
         logging.info('Test script %s has been generated.', filename)
-        if mode not in ('3', '5', '6', '7', '8'):
+        if mode not in ('3', '5', '6', '7', '8',
+                        '9', '10', '11', '12', '13', '14'):
             logging.warning('Unsupport mode %s, use default mode 8', mode)
             mode = '8'
         logging.info('Obffuscate test script with mode %s...', mode)
