@@ -324,11 +324,11 @@ check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
 check_file_content $PROPATH/dist/result.log '__wraparmor__ can not be called out of decorator'
 check_file_content $PROPATH/dist/result.log 'The value of __file__ is OK'
 check_file_content $PROPATH/dist/result.log '<frozen queens>'
-# check_file_content $PROPATH/dist/result.log 'Segmentation fault'
+# check_file_content $PROPATH/dist/result.log 'Segmentation fault' not
 
 csih_inform "Case T-1.3: obfuscate module with cwrap mode"
 if ! check_python_version_for_auto_wrap_mode ; then
-PROPATH=projects/testmod_c_wrap
+PROPATH=projects/testmod_auto_wrap
 $PYARMOR init --src=examples/py2exe --entry=queens.py $PROPATH >result.log 2>&1
 $PYARMOR config --obf-code-mode=wrap --disable-restrict-mode=1 \
                 --manifest="include queens.py" $PROPATH >result.log 2>&1
