@@ -84,6 +84,14 @@ stest:
 	done
 	make clean
 
+ftest:
+	for pyver in  $(VERSIONS) ; do \
+            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash function-test.sh || exit 1; \
+            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+	done
+	make clean
+
 build:
 	rm -rf $(WORKPATH)
 	mkdir -p $(WORKPATH)
