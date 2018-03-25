@@ -347,3 +347,15 @@ check_return_value()
 {
     (( $? )) && csih_bug "command return non-zero value"
 }
+
+# ======================================================================
+# Routine: check_python_version_for_cwrap_mode
+#   Return 0 if cwrap mode doesn't work in this version
+# Example: check_python_version_for_cwrap_mode && continue
+# ======================================================================
+check_python_version_for_cwrap_mode()
+{
+    $PYTHON --version 2>&1 \
+        | grep -q "\(Python 3.0\|Python 3.1\|Python 3.2\)" \
+        && csih_warning "The cwrap mode doesn't work for $PYTHON"
+}
