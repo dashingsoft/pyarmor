@@ -357,5 +357,5 @@ check_python_version_for_cwrap_mode()
 {
     $PYTHON --version 2>&1 \
         | grep -q "\(Python 3.0\|Python 3.1\|Python 3.2\)" \
-        && csih_warning "The cwrap mode doesn't work for $PYTHON"
+        && csih_inform "The cwrap mode doesn't work for $PYTHON"
 }
