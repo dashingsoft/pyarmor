@@ -7,6 +7,8 @@ from ctypes.util import find_library
 
 import os
 import sys
+import platform
+import struct
 
 #
 # Global
@@ -187,19 +189,27 @@ def show_hd_info():
 def _load_library(path=None):
     if path is None:
         path = os.path.dirname(__file__)
+    libpath = path
     try:
-        if sys.platform.startswith('linux'):
-            if path == '':
+        plat = platform.system().lower()
+        bitness = struct.calcsize('P'.encode()) * 8
+        libpath = os.path.join(libpath, 'platforms', '%s%s' % (plat, bitness))
+        if not os.path.isdir(libpath):
+            libpath = path
+        if plat == 'linux':
+            if libpath == '':
                 m = cdll.LoadLibrary(os.path.abspath('_pytransform.so'))
             else:
-                m = cdll.LoadLibrary(os.path.join(path, '_pytransform.so'))
+                m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.so'))
             m.set_option('libc'.encode(), find_library('c').encode())
-        elif sys.platform.startswith('darwin'):
-            m = cdll.LoadLibrary(os.path.join(path, '_pytransform.dylib'))
+        elif plat == 'darwin':
+            m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.dylib'))
+        elif plat == 'windows':
+            m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.dll'))
         else:
-            m = cdll.LoadLibrary(os.path.join(path, '_pytransform.dll'))
+            raise RuntimeError('OS not supported')
     except Exception:
-        raise PytransformError('Could not load _pytransform from "%s"', path)
+        raise PytransformError('Could not load _pytransform from "%s"', libpath)
 
     # Required from Python3.6
     m.set_option('byteorder'.encode(), sys.byteorder.encode())
