@@ -189,13 +189,12 @@ def show_hd_info():
 def _load_library(path=None):
     if path is None:
         path = os.path.dirname(__file__)
-    libpath = path
+    plat = platform.system().lower()
+    bitness = struct.calcsize('P'.encode()) * 8
+    libpath = os.path.join(path, 'platforms', '%s%s' % (plat, bitness))
+    if not os.path.isdir(libpath):
+        libpath = path
     try:
-        plat = platform.system().lower()
-        bitness = struct.calcsize('P'.encode()) * 8
-        libpath = os.path.join(libpath, 'platforms', '%s%s' % (plat, bitness))
-        if not os.path.isdir(libpath):
-            libpath = path
         if plat == 'linux':
             if libpath == '':
                 m = cdll.LoadLibrary(os.path.abspath('_pytransform.so'))
@@ -207,7 +206,7 @@ def _load_library(path=None):
         elif plat == 'windows':
             m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.dll'))
         else:
-            raise RuntimeError('OS not supported')
+            raise RuntimeError('Platform not supported')
     except Exception:
         raise PytransformError('Could not load _pytransform from "%s"', libpath)
 
