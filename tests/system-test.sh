@@ -261,9 +261,9 @@ for obf_module_mode in none des ; do
   csih_inform "obf_module_mode: $obf_module_mode"
   for obf_code_mode in none des fast wrap ; do
     csih_inform "obf_code_mode: $obf_code_mode"
-    # c-wrap mode is not stable in Python3.0/3.1/3.2
+    # auto-wrap mode is not stable in Python3.0/3.1/3.2
     if [[ $obf_code_mode == "wrap" ]] ; then
-        check_python_version_for_cwrap_mode && continue
+        check_python_version_for_auto_wrap_mode && continue
     fi
     logfile="result_${obf_module_mode}_${obf_code_mode}.log"
     $PYARMOR benchmark --obf-module-mode $obf_module_mode \
@@ -327,9 +327,9 @@ check_file_content $PROPATH/dist/result.log '<frozen queens>'
 # check_file_content $PROPATH/dist/result.log 'Segmentation fault'
 
 csih_inform "Case T-1.3: obfuscate module with cwrap mode"
-if ! check_python_version_for_cwrap_mode ; then
+if ! check_python_version_for_auto_wrap_mode ; then
 PROPATH=projects/testmod_c_wrap
-$PYARMOR init --src=examples/testmod --entry=queens.py $PROPATH >result.log 2>&1
+$PYARMOR init --src=examples/py2exe --entry=queens.py $PROPATH >result.log 2>&1
 $PYARMOR config --obf-code-mode=wrap --disable-restrict-mode=1 \
                 --manifest="include queens.py" $PROPATH >result.log 2>&1
 (cd $PROPATH; $ARMOR build >result.log 2>&1)

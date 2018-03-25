@@ -349,13 +349,17 @@ check_return_value()
 }
 
 # ======================================================================
-# Routine: check_python_version_for_cwrap_mode
-#   Return 0 if cwrap mode doesn't work in this version
-# Example: check_python_version_for_cwrap_mode && continue
+# Routine: check_python_version_for_auto_wrap_mode
+#   Return 0 if auto wrap mode doesn't work in this version
+# Example:
+#   check_python_version_for_auto_wrap_mode && echo "No auto wrap"
+#   if ! check_python_version_for_auto_wrap_mode ; then
+#     echo "Auto wrap mode works"
+#   fi
 # ======================================================================
-check_python_version_for_cwrap_mode()
+check_python_version_for_auto_wrap_mode()
 {
     $PYTHON --version 2>&1 \
         | grep -q "\(Python 3.0\|Python 3.1\|Python 3.2\)" \
-        && csih_inform "The cwrap mode doesn't work for $PYTHON"
+        && csih_inform "The auto wrap mode doesn't work for $PYTHON"
 }
