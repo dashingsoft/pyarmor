@@ -259,8 +259,12 @@ echo ""
 csih_inform "Case 9.1: run benchmark test"
 for obf_module_mode in none des ; do
   csih_inform "obf_module_mode: $obf_module_mode"
-  for obf_code_mode in none des fast ; do
+  for obf_code_mode in none des fast; do
     csih_inform "obf_code_mode: $obf_code_mode"
+    # cwrap mode is not stable in Python3.0/3.1/3.2
+    # if [[ $obf_code_mode == "wrap" ]] ; then
+    #     check_python_version_for_cwrap_mode && continue
+    # fi
     logfile="result_${obf_module_mode}_${obf_code_mode}.log"
     $PYARMOR benchmark --obf-module-mode $obf_module_mode \
                        --obf-code-mode $obf_code_mode \
@@ -321,6 +325,10 @@ check_file_content $PROPATH/dist/result.log '__wraparmor__ can not be called out
 check_file_content $PROPATH/dist/result.log 'The value of __file__ is OK'
 check_file_content $PROPATH/dist/result.log '<frozen queens>'
 # check_file_content $PROPATH/dist/result.log 'Segmentation fault'
+
+# csih_inform "Case T-1.3: obfuscate module with cwrap mode"
+# if ! check_python_version_for_cwrap_mode ; then
+# fi
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"
