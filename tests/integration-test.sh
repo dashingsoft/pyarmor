@@ -561,8 +561,8 @@ else
     csih_bug "Case 2.12 FAILED: no test_mode8/empty2.py found"
 fi
 
-csih_inform "Case 2.13: test obfuscate scripts with mode 9, 10, 11, 12"
-for mode in 9 10 11 12 ; do
+csih_inform "Case 2.13: test obfuscate scripts with mode 9, 10, 11, 12, 13, 14"
+for mode in 9 10 11 12 13 14 ; do
   $PYTHON pyarmor.py encrypt --mode=$mode -C project.zip -O test_mode$mode foo.py >result.log 2>&1
   if [[ -f test_mode${mode}/foo.py ]] ; then
       grep -q "__pyarmor__" test_mode${mode}/foo.py \
