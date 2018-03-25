@@ -1,3 +1,7 @@
+3.8.2
+-----
+* Change module filename to `<frozen modname>` in traceback, set attribute `__file__` to real filename when running obfuscated scripts.
+
 3.8.1
 -----
 * Try to access original func_code out of decorator `wraparmor` is forbidden.

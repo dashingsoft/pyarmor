@@ -1,8 +1,8 @@
 # Downlaods for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **3.2.6**
+Latest version: **3.2.7**
 
-Build date: 2018-3-21
+Build date: 2018-3-25
 
 The core of Pyarmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -44,6 +44,10 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+### 3.2.7
+
+* Set `__file__` to real filename when importing obfuscated scripts, keep co_filename as `<frozen modname>`
 
 ### 3.2.6
 
