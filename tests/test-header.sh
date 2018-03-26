@@ -359,6 +359,9 @@ check_return_value()
 # ======================================================================
 check_python_version_for_auto_wrap_mode()
 {
+    # Now, all of python versions support auto wrap mode
+    return 1
+
     $PYTHON --version 2>&1 \
         | grep -q "\(Python 3.0\|Python 3.1\|Python 3.2\)" \
         && csih_inform "The auto wrap mode doesn't work for $PYTHON"
