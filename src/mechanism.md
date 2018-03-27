@@ -4,12 +4,18 @@ From Pyarmor 3.3, a new mode is introduced. By this way, no import
 hooker, no setprofile, no settrace. The performance of running or
 importing obfuscation python script has been remarkably improved.
 
-## Mechanism
-
 There are 2 ways to protect Python Scripts by Pyarmor:
 
 * Obfuscate byte code of each code object
 * Obfuscate whole code object of python module
+
+## Mechanism in Restrict Mode
+
+In restrict mode, obfuscated scripts can't be imported out of
+obfuscated scripts. Pyarmor will be restored obfuscated code object
+when it called first time, and not obfuscated it again. It's efficient
+and enough, because code object can't be accessed from any other
+scripts, except obfuscated scripts.
 
 ### Obfuscate Python Scripts
 
@@ -222,6 +228,52 @@ See another mode, only module obfuscated
 
 ```
 It's even faster than no obfuscated scripts!
+
+## Mechanism Without Restrict Mode
+
+Without restrict mode, it means obfuscated scripts can be imported
+from any other scripts. So every code object must be obfuscated again
+as soon as it returns. Pyarmor insert a `try...finally` block in each
+code object, it will modify each code object as the following way:
+
+* Add wrap header to call `__armor_enter__` before run this code object
+
+```
+    LOAD_GLOBALS    N (__armor_enter__)
+    CALL_FUNCTION   0
+    POP_TOP
+    SETUP_FINALLY   M
+
+```
+
+* Copy original byte-code after the header, and increase offset of
+  each absolute jump instruction. For example, `JUMP_ABSOLUE`
+
+* Change last 2 instructions in original code object if it like this
+
+```
+    LOAD_CONST     N
+    RETURN_VALUE
+```
+
+Replace with
+
+```
+    POP_BLOCK
+    LOAD_CONST    X (None)
+```
+
+* Append the wrap footer to call `__armor_exit__`
+
+```
+ *      LOAD_GLOBALS    X (__armor_exit__)
+ *      CALL_FUNCTION   0
+ *      POP_TOP
+ *      END_FINALLY
+ *      LOAD_CONST      N
+ *      RETURN_VALUE
+
+```
 
 # DEPRECATED Mode
 
