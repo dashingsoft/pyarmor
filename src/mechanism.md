@@ -12,10 +12,10 @@ There are 2 ways to protect Python Scripts by Pyarmor:
 ## Mechanism in Restrict Mode
 
 In restrict mode, obfuscated scripts can't be imported out of
-obfuscated scripts. Pyarmor will be restored obfuscated code object
-when it called first time, and not obfuscated it again. It's efficient
-and enough, because code object can't be accessed from any other
-scripts, except obfuscated scripts.
+obfuscated scripts. Pyarmor will restore obfuscated code object when
+it called first time, and not obfuscate it again. It's efficient and
+enough, because code object can't be accessed from any other scripts,
+except obfuscated scripts.
 
 ### Obfuscate Python Scripts
 
@@ -231,23 +231,24 @@ It's even faster than no obfuscated scripts!
 
 ## Mechanism Without Restrict Mode
 
-Without restrict mode, it means obfuscated scripts can be imported
-from any other scripts. So every code object must be obfuscated again
-as soon as it returns. Pyarmor insert a `try...finally` block in each
-code object, it will modify each code object as the following way:
+When restrict mode is disabled, it means obfuscated scripts can be
+imported from any other scripts. So every code object must be
+obfuscated again as soon as it returns. Pyarmor insert a
+`try...finally` block in each code object, it will modify each code
+object as the following way:
 
 * Add wrap header to call `__armor_enter__` before run this code object
 
 ```
-    LOAD_GLOBALS    N (__armor_enter__)
+    LOAD_GLOBALS    X (__armor_enter__)
     CALL_FUNCTION   0
     POP_TOP
-    SETUP_FINALLY   M
+    SETUP_FINALLY   X
 
 ```
 
-* Copy original byte-code after the header, and increase offset of
-  each absolute jump instruction. For example, `JUMP_ABSOLUE`
+* Copy original byte-code following the header, and increase offset of
+  each absolute jump instruction.
 
 * Change last 2 instructions in original code object if it like this
 
@@ -263,17 +264,24 @@ Replace with
     LOAD_CONST    X (None)
 ```
 
+And pass original constant index `N` to wrap footer as real return
+value.
+
 * Append the wrap footer to call `__armor_exit__`
 
 ```
- *      LOAD_GLOBALS    X (__armor_exit__)
- *      CALL_FUNCTION   0
- *      POP_TOP
- *      END_FINALLY
- *      LOAD_CONST      N
- *      RETURN_VALUE
+    LOAD_GLOBALS    X (__armor_exit__)
+    CALL_FUNCTION   0
+    POP_TOP
+    END_FINALLY
+    LOAD_CONST      N or None
+    RETURN_VALUE
 
 ```
+
+When code object is executed, `__armor_enter__` will restore original
+byte-code first. Before it returns, call `__armor_exit__` to obfuscate
+original byte-code again.
 
 # DEPRECATED Mode
 
