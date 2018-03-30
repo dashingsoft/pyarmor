@@ -231,6 +231,8 @@ It's even faster than no obfuscated scripts!
 
 ## Mechanism Without Restrict Mode
 
+This feature will be introuced from v3.9.0
+
 When restrict mode is disabled, it means obfuscated scripts can be
 imported from any other scripts. So every code object must be
 obfuscated again as soon as it returns. Pyarmor insert a
@@ -247,8 +249,9 @@ object as the following way:
 
 ```
 
-* Copy original byte-code following the header, and increase offset of
-  each absolute jump instruction.
+* Following the header it's original byte-code.
+
+* Increase target of each absolute jump instruction.
 
 * Change last 2 instructions in original code object if it like this
 
