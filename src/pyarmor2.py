@@ -287,7 +287,7 @@ Use command hdinfo to get hardware information.
         fmt = '*TIME:%.0f\n' % \
               time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
 
-    if project.get('disable_restrict_moce'):
+    if project.get('disable_restrict_mode'):
         fmt = '%s*FLAGS:%c' % (fmt, 1)
 
     if args.bind_disk:
