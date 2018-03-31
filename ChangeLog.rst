@@ -1,3 +1,8 @@
+3.8.3
+-----
+* Fix issue: option `--disable-restrict-mode` doesn't work in command `licenses`
+* Remove freevar `func` from `frame.f_locals` when raise exception in decorator `wraparmor`
+
 3.8.2
 -----
 * Change module filename to `<frozen modname>` in traceback, set attribute `__file__` to real filename when running obfuscated scripts.

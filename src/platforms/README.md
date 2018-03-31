@@ -1,8 +1,8 @@
 # Downlaods for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **3.2.7**
+Latest version: **3.2.8**
 
-Build date: 2018-3-25
+Build date: 2018-4-1
 
 The core of Pyarmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -44,6 +44,12 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+### 3.2.8
+
+* Fix fast mode crashed problem in linux occasionally, because of copying overlapped memory.
+* Remove freevar `func` from `frame.f_locals` when raise exception in `__wraparmor__`
+* Set exception attribute `__traceback__` to `None` for Python3 when raise exception in `__wraparmor__`
 
 ### 3.2.7
 
