@@ -480,7 +480,7 @@ $PYTHON pyarmor.py encrypt --mode=6 -C project.zip -O test_mode6 co_consts.py >r
 if [[ -f test_mode6/co_consts.pyc ]] ; then
     cd test_mode6
     cp ../license-no-restrict.txt license.lic
-    grep -q "\(Module comment\|Hello\|Function comment\|jondy\|bob\|time\)" co_consts.pyc \
+    grep -q "\(Module comment\|Hello\|Function comment\|jondy\|time\)" co_consts.pyc \
         && csih_bug "Case 2.7 FAILED: co_consts still in clear text"
     cat <<EOF > main.py
 import pyimcore
