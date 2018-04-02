@@ -1,3 +1,7 @@
+3.8.4
+-----
+* Do not touch `frame.f_locals` when raise exception, let decorator `wraparmor` to control everything.
+
 3.8.3
 -----
 * Fix issue: option `--disable-restrict-mode` doesn't work in command `licenses`
@@ -14,7 +18,7 @@
 3.8.0
 -----
 * Add option `--output` for command `build`, it will override the value in project configuration file.
-* Fix issue: defalut project output path isn't relative to project path. 
+* Fix issue: defalut project output path isn't relative to project path.
 * Remove extra file "product.key" after obfuscating scripts.
 
 3.7.5
