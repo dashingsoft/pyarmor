@@ -600,12 +600,14 @@ protect those code object, add extra decorator at the begin:
         func.__refcalls__ = 0
         def wrapper(*args, **kwargs):
              __wraparmor__(func)
+             tb = None
              try:
                  return func(*args, **kwargs)
-             except Exception as err:
-                 raise err
+             except Exception:
+                 tb = sys.exc_info()[2]
+                 raise
              finally:
-                 __wraparmor__(func, 1)
+                 __wraparmor__(func, tb, 1)
         wrapper.__module__ = func.__module__
         wrapper.__name__ = func.__name__
         wrapper.__doc__ = func.__doc__
