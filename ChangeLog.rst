@@ -1,3 +1,8 @@
+3.8.5
+-----
+* The `frame.f_locals` of all frames will always return an empty dictionary to protect runtime data.
+* Add extra argument `tb` when call `__wraparmor__` in decorator `wraparmor`, pass None if no exception.
+
 3.8.4
 -----
 * Do not touch `frame.f_locals` when raise exception, let decorator `wraparmor` to control everything.
