@@ -131,7 +131,8 @@ def main():
     print("Found", q.nfound, "solutions.")
 
 @wraparmor
-def test_exception():
+def test_exception(filename='queens.py'):
+    n = 1
     raise Exception('Filename is right or not')
 
 if __name__ == "__main__":

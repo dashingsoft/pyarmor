@@ -37,10 +37,10 @@ except Exception:
   import inspect
   for exc_tb in inspect.trace():
     frame = exc_tb[0]
-    # Access frame.f_locals will be crashed before Python34
-    if sys.version_info.major > 2 and sys.version_info.minor > 3:
-      if frame.f_locals.get('func'):
-        print('Got original func from frame.f_locals')
+    if frame.f_locals.get('func') \
+       or frame.f_locals.get('filename') \
+       or frame.f_locals.get('n'):
+      print('Got data from frame.f_locals')
 
 # Access original func_code will crash: Segmentation fault
 # print(dis.dis(main.orig_func))
