@@ -1,3 +1,7 @@
+3.8.6
+-----
+* The `frame.f_locals` of `wrapper` and wrapped function return an empty dictionary, all the other frames still return original value.
+
 3.8.5
 -----
 * The `frame.f_locals` of all frames will always return an empty dictionary to protect runtime data.

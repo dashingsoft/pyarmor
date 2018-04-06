@@ -1,8 +1,8 @@
 # Downlaods for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **3.3.0**
+Latest version: **3.3.1**
 
-Build date: 2018-4-4
+Build date: 2018-4-6
 
 The core of Pyarmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -44,6 +44,11 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+### 3.3.1
+
+* `__wraparmor__` only clears frame of `wrapper` and wrapped function when exception raised.
+* Refine setter of `frame.f_locals`, only `wrapper` and wrapped function return empty dictionary.
 
 ### 3.3.0
 
