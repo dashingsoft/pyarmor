@@ -130,10 +130,14 @@ def main():
     q.solve()
     print("Found", q.nfound, "solutions.")
 
+def foo(k):
+    k += 1
+    raise Exception('Filename is right or not')
+
 @wraparmor
 def test_exception(filename='queens.py'):
-    n = 1
-    raise Exception('Filename is right or not')
+    n = 2
+    foo(n)
 
 if __name__ == "__main__":
     main()

@@ -37,6 +37,7 @@ except Exception:
   import inspect
   for exc_tb in inspect.trace():
     frame = exc_tb[0]
+    print('Found frame of function %s' % exc_tb[3])
     if frame.f_locals.get('func') \
        or frame.f_locals.get('filename') \
        or frame.f_locals.get('n'):
