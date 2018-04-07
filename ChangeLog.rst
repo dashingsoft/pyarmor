@@ -1,3 +1,7 @@
+3.8.8
+-----
+* Fix bug: the `frame.f_locals` still can be accessed in callback function
+
 3.8.7
 -----
 * The `frame.f_locals` of `wrapper` and wrapped function will return an empty dictionary once `__wraparmor__` is called.
