@@ -1,3 +1,7 @@
+3.8.9
+-----
+* Clear frame as long as `tb` is not `Py_None` when call `__wraparmor__`
+
 3.8.8
 -----
 * Fix bug: the `frame.f_locals` still can be accessed in callback function
