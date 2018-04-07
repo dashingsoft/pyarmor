@@ -139,5 +139,10 @@ def test_exception(filename='queens.py'):
     n = 2
     foo(n)
 
+@wraparmor
+def test_callback(callback):
+    msg = 'test callback'
+    callback()
+
 if __name__ == "__main__":
     main()

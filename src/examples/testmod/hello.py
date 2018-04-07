@@ -43,6 +43,14 @@ except Exception:
        or frame.f_locals.get('n'):
       print('Got data from frame.f_locals')
 
+# Check callback
+def mycallback():
+  frame = sys._getframe(1)
+  if len(frame.f_locals) == 0:
+    print('Got empty from callback')
+queens.test_callback(mycallback)
+
+  
 # Access original func_code will crash: Segmentation fault
 # print(dis.dis(main.orig_func))
 # print(dis.dis(Queens.solve.orig_func))
