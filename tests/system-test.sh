@@ -321,7 +321,7 @@ check_file_content $PROPATH/dist/result.log '__wraparmor__ can not be called out
 check_file_content $PROPATH/dist/result.log 'The value of __file__ is OK'
 check_file_content $PROPATH/dist/result.log '<frozen queens>'
 check_file_content $PROPATH/dist/result.log 'Found frame of function foo'
-check_file_content $PROPATH/dist/result.log 'Got data from frame.f_locals' not
+check_file_content $PROPATH/dist/result.log 'Can not get data from frame.f_locals'
 check_file_content $PROPATH/dist/result.log 'Got empty from callback'
 
 csih_inform "Case T-1.3: obfuscate module with auto-wrap mode"

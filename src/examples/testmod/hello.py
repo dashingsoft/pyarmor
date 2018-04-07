@@ -38,10 +38,10 @@ except Exception:
   for exc_tb in inspect.trace():
     frame = exc_tb[0]
     print('Found frame of function %s' % exc_tb[3])
-    if frame.f_locals.get('func') \
-       or frame.f_locals.get('filename') \
-       or frame.f_locals.get('n'):
-      print('Got data from frame.f_locals')
+    if frame.f_locals.get('func') is None
+       and frame.f_locals.get('filename') is None \
+       and frame.f_locals.get('n') is None:
+      print('Can not get data from frame.f_locals')
 
 # Check callback
 def mycallback():
