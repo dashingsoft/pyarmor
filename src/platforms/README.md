@@ -1,6 +1,6 @@
 # Downlaods for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **3.3.1**
+Latest version: **3.3.2**
 
 Build date: 2018-4-6
 
@@ -44,6 +44,10 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+### 3.3.2
+
+* Init getter of `frame.f_locals` on first time `__wraparmor__` is called
 
 ### 3.3.1
 

@@ -1,3 +1,7 @@
+3.8.7
+-----
+* The `frame.f_locals` of `wrapper` and wrapped function will return an empty dictionary once `__wraparmor__` is called.
+
 3.8.6
 -----
 * The `frame.f_locals` of `wrapper` and wrapped function return an empty dictionary, all the other frames still return original value.
