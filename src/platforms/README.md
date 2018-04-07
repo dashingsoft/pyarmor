@@ -47,7 +47,7 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 ### 3.3.4
 
-* Clear frame even if `__refcalls__` is not equal to 1 in `__wraparmor__`.
+* Clear frame as long as `tb` is not `Py_None` in `__wraparmor__`.
 
 ### 3.3.3
 
