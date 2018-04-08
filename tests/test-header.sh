@@ -33,7 +33,10 @@ fi
 DIST="../dist"
 [[ -d "../dist" ]] || DIST="../src/dist"
 filename=$(cd ${DIST}; ls -t pyarmor-*.${PKGEXT}) || exit 1
-version=${filename:8:5}
+version=${filename:8:6}
+if [[ "${version:5:1}" == "." ]] ; then
+    version=${filename:8:5}
+fi
 workpath=__runtest2__
 pkgfile=$(pwd)/${DIST}/pyarmor-${version}.${PKGEXT}
 
