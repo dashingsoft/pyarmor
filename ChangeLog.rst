@@ -1,3 +1,7 @@
+3.8.10
+------
+* Fix shared code object issue in `__wraparmor__`
+
 3.8.9
 -----
 * Clear frame as long as `tb` is not `Py_None` when call `__wraparmor__`
