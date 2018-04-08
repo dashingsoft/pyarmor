@@ -323,6 +323,7 @@ check_file_content $PROPATH/dist/result.log '<frozen queens>'
 check_file_content $PROPATH/dist/result.log 'Found frame of function foo'
 check_file_content $PROPATH/dist/result.log 'Can not get data from frame.f_locals'
 check_file_content $PROPATH/dist/result.log 'Got empty from callback'
+check_file_content $PROPATH/dist/result.log 'Generator works well'
 
 csih_inform "Case T-1.3: obfuscate module with auto-wrap mode"
 PROPATH=projects/testmod_auto_wrap

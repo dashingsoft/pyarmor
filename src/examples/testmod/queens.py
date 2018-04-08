@@ -144,5 +144,10 @@ def test_callback(callback):
     msg = 'test callback'
     callback()
 
+@wraparmor
+def simple_generator(n):
+    for i in range(n):
+        yield i
+
 if __name__ == "__main__":
     main()

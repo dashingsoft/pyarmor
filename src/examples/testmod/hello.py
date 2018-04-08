@@ -38,7 +38,7 @@ except Exception:
   for exc_tb in inspect.trace():
     frame = exc_tb[0]
     print('Found frame of function %s' % exc_tb[3])
-    if frame.f_locals.get('func') is None
+    if frame.f_locals.get('func') is None \
        and frame.f_locals.get('filename') is None \
        and frame.f_locals.get('n') is None:
       print('Can not get data from frame.f_locals')
@@ -50,6 +50,10 @@ def mycallback():
     print('Got empty from callback')
 queens.test_callback(mycallback)
 
+# Check generator
+a = list(queens.simple_generator(10))
+if len(a) == 10:
+  print('Generator works well')
   
 # Access original func_code will crash: Segmentation fault
 # print(dis.dis(main.orig_func))
