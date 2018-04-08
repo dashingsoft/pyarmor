@@ -149,5 +149,12 @@ def simple_generator(n):
     for i in range(n):
         yield i
 
+def factory():
+    @wraparmor
+    def nestedfunc(f=None):
+        if f:
+            f()
+    return nestedfunc
+
 if __name__ == "__main__":
     main()

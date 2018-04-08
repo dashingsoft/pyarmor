@@ -54,6 +54,12 @@ queens.test_callback(mycallback)
 a = list(queens.simple_generator(10))
 if len(a) == 10:
   print('Generator works well')
+
+# Check nested
+func1 = queens.factory()
+func2 = queens.factory()
+func1(func2)
+print('Shared code object works well')
   
 # Access original func_code will crash: Segmentation fault
 # print(dis.dis(main.orig_func))
