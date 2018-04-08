@@ -1,6 +1,7 @@
 3.8.9
 -----
 * Clear frame as long as `tb` is not `Py_None` when call `__wraparmor__`
+* Generator will not be obfucated in `__wraparmor__`
 
 3.8.8
 -----

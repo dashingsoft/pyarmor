@@ -47,7 +47,8 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 ### 3.3.4
 
-* Clear frame as long as `tb` is not `Py_None` in `__wraparmor__`.
+* Clear frame as long as `tb` is not `Py_None` in `__wraparmor__`
+* Generator will not be obfucated in `__wraparmor__`
 
 ### 3.3.3
 
