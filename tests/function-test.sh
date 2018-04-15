@@ -68,8 +68,6 @@ echo ""
 
 csih_inform "Case F-1: run obfuscated scripts with auto-wrap mode"
 
-if ! check_python_version_for_auto_wrap_mode ; then
-
 for mod_mode in none des ; do
 
 csih_inform "Test obf-module-mode is ${mod_mode} ..."
@@ -94,8 +92,6 @@ check_file_content $PROPATH/dist/result.log 'Segmentation fault' not
 
 csih_inform "Test obf-module-mode is ${mod_mode} END"
 done
-
-fi
 
 
 echo ""
