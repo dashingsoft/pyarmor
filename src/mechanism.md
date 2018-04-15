@@ -242,45 +242,28 @@ object as the following way:
 * Add wrap header to call `__armor_enter__` before run this code object
 
 ```
-    LOAD_GLOBALS    X (__armor_enter__)
+    LOAD_GLOBALS    N (__armor_enter__)
     CALL_FUNCTION   0
     POP_TOP
-    SETUP_FINALLY   X
+    SETUP_FINALLY   T
 
 ```
 
 * Following the header it's original byte-code.
 
-* Increase target of each absolute jump instruction.
-
-* Change last 2 instructions in original code object if it like this
-
-```
-    LOAD_CONST     N
-    RETURN_VALUE
-```
-
-Replace with
-
-```
-    POP_BLOCK
-    LOAD_CONST    X (None)
-```
-
-And pass original constant index `N` to wrap footer as real return
-value.
+* Increase oparg of each absolute jump instruction.
 
 * Append the wrap footer to call `__armor_exit__`
 
 ```
-    LOAD_GLOBALS    X (__armor_exit__)
+    LOAD_GLOBALS    N + 1 (__armor_exit__)
     CALL_FUNCTION   0
     POP_TOP
     END_FINALLY
-    LOAD_CONST      N or None
-    RETURN_VALUE
 
 ```
+
+* The `co->stacksize` of code object is increased by 2
 
 When code object is executed, `__armor_enter__` will restore original
 byte-code first. Before it returns, call `__armor_exit__` to obfuscate
