@@ -288,8 +288,10 @@ other statement can be inserted into obfuscated scripts. For examples,
 
     $ python a.py
 
-    It works.
+```
+It works.
 
+```
     $ cat b.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
@@ -298,8 +300,10 @@ other statement can be inserted into obfuscated scripts. For examples,
 
     $ python b.py
 
-    It doesn't work, because there is an extra "print"
+```
+It doesn't work, because there is an extra code "print"
 
+```
     $ cat c.py
     __pyarmor__(__name__, __file__, b'...')
 
@@ -310,9 +314,13 @@ other statement can be inserted into obfuscated scripts. For examples,
 
     $ python main.py
 
-    It doesn't work, because obfuscated script "c.py" can NOT
-    be imported from no obfuscated scripts in restrict mode
+``` 
 
+It doesn't work, because obfuscated script "c.py" can NOT be imported
+from no obfuscated scripts in restrict mode
+
+
+```
     $ cat d.py
     import c
     c.hello()
@@ -326,8 +334,8 @@ other statement can be inserted into obfuscated scripts. For examples,
 
     $ python d.py
 
-    It works.
 ```
+It works.
 
 So restrict mode can avoid obfuscated scripts observed from no
 obfuscated code.
@@ -341,8 +349,10 @@ above work need to disable restrict mode as the following way
     python pyarmor.py init --src=examples/py2exe --entry=hello.py projects/testmod
 
     # Disable restrict mode by command "config"
+    # Use 'wrap' mode to obfuscate code objects
     # And only obfuscate queens.py
-    python pyarmor.py config --manifest="include queens.py" --disable-restrict-mode=1 projects/testmod
+    python pyarmor.py config --manifest="include queens.py" --disable-restrict-mode=1 \
+                      --obf-code-mode=wrap projects/testmod
 
     # Obfuscate queens.py
     cd projects/testmod
@@ -354,10 +364,15 @@ above work need to disable restrict mode as the following way
 
 ```
 
+The mode `wrap` is introduced from v3.9.0, it will obfuscate code
+object again as soon as this code object returns.
+
+Refer to [Mechanism Without Restrict Mode](mechanism.md#mechanism-without-restrict-mode)
+
 Enable restrict mode again
 
 ```
-    python pyarmor.py config --disable-restrict-mode=0 projects/testmod
+    python pyarmor.py config --disable-restrict-mode=0 --obf-code-mode=des projects/testmod
 ```
 
 #### Use decorator to protect code objects when disable restrict mode
@@ -375,15 +390,16 @@ from __builtin__ import __wraparmor__
 from builtins import __wraparmor__
 
 def wraparmor(func):
-    func.__refcalls__ = 0
     def wrapper(*args, **kwargs):
          __wraparmor__(func)
+         tb = None
          try:
              return func(*args, **kwargs)
          except Exception as err:
+             tb = sys.exc_info()[2]
              raise err
          finally:
-             __wraparmor__(func, 1)
+             __wraparmor__(func, tb, 1)
     wrapper.__module__ = func.__module__
     wrapper.__name__ = func.__name__
     wrapper.__doc__ = func.__doc__
@@ -452,6 +468,7 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
     # And restrict mode should be disabled, otherwise odoo server cann't
     # import obfuscated modules
     ./pyarmor config --output=dist/web-login --disable-restrict-mode=1 \
+                     --obf-code-mode=wrap \
                      --manifest "global-include *.py, exclude __manifest__.py"
     ./pyarmor build
 
@@ -478,7 +495,7 @@ First create common project, then clone to project1, project2, project3
 
     # Configure common project, set runtime-path to an absolute path
     ./pyarmor config --output=dist  --disable-restrict-mode=1 \
-                     --runtime-path=/opt/odoo/pyarmor
+                     --obf-code-mode=wrap --runtime-path=/opt/odoo/pyarmor
                      --manifest "global-include *.py, exclude __manifest__.py" \
                      projects/odoo/login
 
@@ -597,7 +614,6 @@ protect those code object, add extra decorator at the begin:
     except Exception:
         from __builtin__ import __wraparmor__
     def wraparmor(func):
-        func.__refcalls__ = 0
         def wrapper(*args, **kwargs):
              __wraparmor__(func)
              tb = None
