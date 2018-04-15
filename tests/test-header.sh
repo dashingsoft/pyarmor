@@ -362,21 +362,7 @@ check_return_value()
 # ======================================================================
 check_python_version_for_auto_wrap_mode()
 {
-    # Linux: python 3.0, fixed, but it's not perfect
-    #
-    #        Py_IncRef(frame) in __carmor__
-    # 
-    # Linux32: python 3.0/3.1/3.2/3.3 run ftest failed,
-    # 
-    #          3.0 PyArea_Free in pythonrun.c +1644
-    #          3.1/3.2
-    #          3.3 @staticmethod C.test
-    #          
-    # Win32: python 3.1/3.2/3.4 run ftest failed
-    #
-    #        3.1/3.4   foo4   only const
-    #        3.2       foo5   raise exception
-    #        
+    # unused, now all python versions work in auto-wrap mode
     $PYTHON --version 2>&1 \
         | grep -q "\(Python 3.0\|Python 3.1\|Python 3.2\)" \
         && csih_inform "The auto wrap mode doesn't work for $PYTHON"
