@@ -1,3 +1,12 @@
+3.9.0
+-----
+This version introduces a new way `auto-wrap` to protect python code when it's imported by outer scripts. 
+
+Refer to [Mechanism Without Restrict Mode](src/mechanism.md#mechanism-without-restrict-mode)
+
+* Add new mode `wrap` for `--obf-code-mode` 
+* Remove `func.__refcalls__` in `__wraparmor__`
+
 3.8.10
 ------
 * Fix shared code object issue in `__wraparmor__`
