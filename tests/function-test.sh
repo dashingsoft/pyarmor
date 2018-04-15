@@ -87,8 +87,7 @@ check_file_content $PROPATH/dist/wrapcase.py '__pyarmor__(__name__'
 check_return_value
 check_file_content $PROPATH/dist/result.log 'recursive call return solved'
 check_file_content $PROPATH/dist/result.log 'auto wrap mode exception'
-# It doesn't work, because result.log is empty when crash
-check_file_content $PROPATH/dist/result.log 'Segmentation fault' not
+check_file_content $PROPATH/dist/result.log 'second test decorator return OK'
 
 csih_inform "Test obf-module-mode is ${mod_mode} END"
 done

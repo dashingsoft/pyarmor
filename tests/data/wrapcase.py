@@ -31,6 +31,15 @@ def solve(n):
     return 'solved'
   return solve(n - 1)
 
+def wraparmor(func):
+  def wrapper(*args, **kwargs):
+    return func(*args, **kwargs)
+  return wrapper
+
+@wraparmor
+def test_wrapper():
+  return 'OK'
+
 print('hello')
 print(foo())
 print(foo2())
@@ -39,6 +48,8 @@ print('only const %s' % foo4())
 print(C.name)
 print(C.test())
 print('recursive call return %s' % solve(5))
+print('first test decorator return %s' % test_wrapper())
+print('second test decorator return %s' % test_wrapper())
 # foo5()
 try:
   foo5()
