@@ -19,7 +19,6 @@ except Exception:
     from __builtin__ import __wraparmor__
 
 def wraparmor(func):
-    func.__refcalls__ = 0
     def wrapper(*args, **kwargs):
          __wraparmor__(func)
          tb = None
