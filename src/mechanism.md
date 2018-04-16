@@ -282,7 +282,7 @@ From Pyarmor 3.9.0, there are 2 ways
     # Here is a simple case, show how to import obfuscated module
     # 'queens.py' from clear script 'hello.py'
    
-    # Obfuscate module with command 'init'
+    # Obfuscate module with command 'obfuscate'
     # The key is option 'disable-restrict-mode'
     python pyarmor.py obfuscate --src=examples/simple \
                                 --disable-restrict-mode=1 \
@@ -305,8 +305,8 @@ From Pyarmor 3.9.0, there are 2 ways
     
 
 ```
-    # Here is a typical case, show how outer script 'main.py' will
-    # import obfuscated package 'mypkg'
+    # Here is a typical case, show how clear script 'main.py'
+    # imports obfuscated package 'mypkg'
     
     # First create a project
     python pyarmor.py init --src=/PATH/TO/mypkg \
@@ -318,7 +318,7 @@ From Pyarmor 3.9.0, there are 2 ways
     cd projects/mypkg
     
     # If there is no __init__.py in the src path, use command 'config'
-    # to configure project as a package
+    # to configure project as a package, uncomment the following line
     # ./pyarmor config --obf-code-mode=wrap --is-package=1
     
     # Now obfuscate scripts
