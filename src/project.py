@@ -82,6 +82,7 @@ class Project(dict):
             if value is not None:
                 self[name] = value
                 result.append(name)
+        self['build_time'] = 0.
         return result
 
     def _check(self, path):
