@@ -82,7 +82,7 @@ def make_capsule(filename):
         myzip.close()
     logging.info('Write capsule OK.')
 
-def make_entry(filename, rpath=None):
+def _make_entry(filename, rpath=None):
     with open(filename, 'r') as f:
         lines = f.readlines()
     # Fix empty file issue
@@ -97,6 +97,15 @@ def make_entry(filename, rpath=None):
         f.write(''.join(lines[:n]))
         f.write(entry_code % ('' if rpath is None else repr(rpath)))
         f.write(''.join(lines[n:]))
+
+def make_entry(entris, path, output, rpath=None):
+    for entry in entris.split(','):
+        src = build_path(entry.strip(), path)
+        filename = os.path.join(output, os.path.basename(src))
+        if not os.path.exists(filename):
+            shutil.copy(src, filename)
+        logging.info('Insert bootstrap code to entry script %s', filename)
+        _make_entry(filename, rpath)
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
     if not os.path.exists(output):

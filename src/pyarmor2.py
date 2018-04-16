@@ -261,12 +261,7 @@ def _build(args):
             make_project_license(capsule, licode, licfile)
 
     if project.entry:
-        for x in project.entry.split(','):
-            filename = os.path.join(output, x.strip())
-            if not os.path.exists(filename):
-                shutil.copy(os.path.join(project.src, x.strip()), filename)
-            logging.info('Insert bootstrap code to entry script %s', filename)
-            make_entry(filename, project.runtime_path)
+        make_entry(project.entry, project.src, output, project.runtime_path)
     else:
         logging.info('\tIn order to import obfuscated scripts, insert ')
         logging.info('\t2 lines in entry script:')
@@ -403,13 +398,7 @@ def _obfuscate(args):
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
-    for entry in args.entry.split(','):
-        filename = os.path.join(output, entry.strip())
-        if not os.path.exists(filename):
-            shutil.copy(os.path.join(path, entry.strip()), filename)
-        logging.info('Update entry script %s', filename)
-        make_entry(filename)
-
+    make_entry(args.entry, path, output)
     logging.info('Obfuscate %d scripts OK.', len(files))
 
 @armorcommand
