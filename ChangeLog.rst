@@ -6,6 +6,13 @@ Refer to [Mechanism Without Restrict Mode](src/mechanism.md#mechanism-without-re
 
 * Add new mode `wrap` for `--obf-code-mode` 
 * Remove `func.__refcalls__` in `__wraparmor__`
+* Add new project attribute `is_package`
+* Add option `--is-package` in command `config`
+* Add option `--disable-restrict-mode` in command `obfuscate`
+* Reset `build_time` when project configuration is changed
+* Change output path when `is_package` is set in command `build`
+* Change default value of project when find `__init__.py` in comand `init`
+* Project attribute `entry` supports absolute path
 
 3.8.10
 ------
