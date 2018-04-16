@@ -217,7 +217,7 @@ def _build(args):
         files = project.get_build_files(args.force)
         src = project.src
         soutput = os.path.join(output, os.path.basename(src)) \
-                  if project.get('is_pakcage') else output
+                  if project.get('is_package') else output
         filepairs = [(os.path.join(src, x), os.path.join(soutput, x))
                      for x in files]
 
