@@ -68,6 +68,20 @@ check_file_content dist/queens.py '__pyarmor__(__name__'
 ( cd dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions'
 
+csih_inform "Case 1.2: obfuscate script with disable-restrict-mode"
+$PYARMOR obfuscate --src examples/py2exe --entry hello.py --output dist2 \
+                   --disable-restrict-mode=1 queens.py  >result.log 2>&1
+
+check_return_value
+check_file_exists dist2/hello.py
+check_file_content dist2/hello.py 'pyarmor_runtime()'
+check_file_exists dist2/queens.py
+check_file_content dist2/queens.py '__pyarmor__(__name__'
+
+( cd dist2; $PYTHON hello.py >result.log 2>&1 )
+check_return_value
+check_file_content dist2/result.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Test Command obfuscate END ----------------"
 echo ""
@@ -104,6 +118,18 @@ $PYARMOR init --src examples/py2exe2 --clone projects/py2exe \
 check_return_value
 check_file_exists projects/py2exe-clone/.pyarmor_config
 check_file_exists projects/py2exe-clone/.pyarmor_capsule.zip
+
+csih_inform "Case 2.3: init package"
+$PYARMOR init --src examples/testpkg/mypkg --entry "../main.py" \
+              projects/testpkg >result.log 2>&1
+
+check_return_value
+
+$PYARMOR info projects/testpkg >result.log 2>&1
+
+check_return_value
+check_file_content result.log 'disable_restrict_mode: 1'
+check_file_content result.log 'is_package: 1'
 
 echo ""
 echo "-------------------- Test Command init END ---------------------"
@@ -190,6 +216,16 @@ output=projects/pybench/dist
 check_file_exists $output/pybench.py
 check_file_content $output/pybench.py 'pyarmor_runtime()'
 check_file_content $output/pybench.py '__pyarmor__(__name__'
+
+csih_inform "Case 6.2: build package"
+( cd projects/testpkg; $ARMOR build >result.log 2>&1 )
+
+output=projects/testpkg/dist
+check_file_exists $output/main.py
+check_file_content $output/main.py 'pyarmor_runtime()'
+check_file_exists $output/mypkg/__init__.py
+check_file_exists $output/mypkg/foo.py
+check_file_content $output/mypkg/foo.py '__pyarmor__(__name__'
 
 echo ""
 echo "-------------------- Test Command build END --------------------"
@@ -339,6 +375,20 @@ check_file_content $PROPATH/dist/queens.py '__pyarmor__(__name__'
 
 (cd $PROPATH/dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
+
+csih_inform "Case T-1.4: obfuscate package with auto-wrap mode"
+PROPATH=projects/testpkg_auto_wrap
+$PYARMOR init --src=examples/testpkg/mypkg \
+              --entry="../main.py" $PROPATH >result.log 2>&1
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+
+check_file_exists $PROPATH/dist/main.py
+check_file_content $PROPATH/dist/main.py 'pyarmor_runtime'
+check_file_exists $PROPATH/dist/mypkg/__init__.py
+check_file_content $PROPATH/dist/mypkg/__init__.py '__pyarmor__(__name__'
+
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1 )
+check_file_content $PROPATH/dist/result.log 'Hello! Pyarmor Test Case'
 
 
 echo ""
