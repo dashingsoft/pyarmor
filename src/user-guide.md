@@ -52,8 +52,12 @@ path of Pyarmor
 Import obfuscated moduels in a normal python scripts
 
 ```
-    python pyarmor.py obfuscate --src=examples/py2exe --entry=hello.py queens.py
+    python pyarmor.py obfuscate --src=examples/py2exe --entry=hello.py \
+                                --disable-restrict-mode=1 queens.py
 
+    # Option --disable-restrict-mode=1 is required, otherwise outer scripts
+    # can not import obfuscated module
+    #
     # queens.py is obfuscated. Entry hello.py is not. Only two extra lines are
     # inserted at the begin.
     cd dist
@@ -67,8 +71,6 @@ Import obfuscated moduels in a normal python scripts
     python hello.py
 ```
 
-**It doesn't work from Pyarmor 3.6, refer to [Restrict Mode](#restrict-mode)**
-
 ### Use Project to Manage Obfuscated Scripts
 
 It's better to create a project to manage these obfuscated scripts,
@@ -79,7 +81,9 @@ there are the several advantages:
 
 * Obfuscate scripts by more modes
 
-The following examples show how to obfuscate a python package
+#### Standalone Package
+
+The next example show how to obfuscate a standalone python package
 **pybench**, which locates in the **examples/pybench** in the source
 of pyarmor.
 
@@ -118,7 +122,7 @@ After some source scripts changed, just run **build** again
     ./pyarmor build
 ```
 
-Obfuscate scripts by other mode, for obfuscation mode, refer to [How to obfuscate python scripts](mechanism.md)
+Obfuscate scripts by other mode, for obfuscation mode, refer to [How to obfuscate python scripts](mechanism.md#mechanism-in-restrict-mode)
 
 ```
     cd projects/pybench
@@ -128,6 +132,46 @@ Obfuscate scripts by other mode, for obfuscation mode, refer to [How to obfuscat
 
     # Force rebuild all
     ./pyarmor build --force
+```
+
+#### Package Used by Other scripts
+
+In above example, all the python scripts are obfuscated, it's a
+standalone package. Here is another common case, obfuscated package
+used by other clear scripts.
+
+The next example show how to obfuscate a package
+`examples/testpkg/mypkg`, it used by script `examples/testpkg/main.py`
+
+```
+    # First create project with command 'init'
+    #
+    # This command will create a project configured as package,
+    # because there is '__init__.py' in the src 'examples/testpkg/mypkg'
+
+    python pyarmor.py init --src examples/testpkg/mypkg \
+                           --entry /path/to/pyarmor/examples/testpkg/main.py \
+                           projects/testpkg
+
+    # Show project information
+    #
+    # Note that 'is_package' and 'disable_restrict_mode' set to 1
+
+    cd projects/testpkg
+    ./pyarmor info
+
+    # Obfuscate package 'mypkg'
+    #
+    # This command will obfuscate 'mypkg' and save to 'dist/mypkg'
+    # Bootstrap code will be inserted into 'main.py' and save to 'dist'
+    # All the runtime files will be saved to 'dist'
+
+    ./pyarmor build
+
+    # Now run main.py to import obfuscated package 'mypkg'
+
+    cd dist
+    python main.py
 ```
 
 ### Distribute Obfuscated Scripts
@@ -314,7 +358,7 @@ It doesn't work, because there is an extra code "print"
 
     $ python main.py
 
-``` 
+```
 
 It doesn't work, because obfuscated script "c.py" can NOT be imported
 from no obfuscated scripts in restrict mode
@@ -337,12 +381,12 @@ from no obfuscated scripts in restrict mode
 ```
 It works.
 
-So restrict mode can avoid obfuscated scripts observed from no
-obfuscated code.
+So restrict mode can avoid obfuscated scripts observed from no obfuscated code.
 
 In case to import obfuscated scripts from no obfuscated scripts, for
-example, let [Import Obfuscated Module](#import-obfuscated-module)
-above work need to disable restrict mode as the following way
+example, a package used by other scripts. If this package is
+obfuscated in restrict mode, other scripts can't import it. So let it
+work need to disable restrict mode, and set `obf-code-mode` to `wrap`
 
 ```
     # Create project at first
@@ -351,11 +395,12 @@ above work need to disable restrict mode as the following way
     # Disable restrict mode by command "config"
     # Use 'wrap' mode to obfuscate code objects
     # And only obfuscate queens.py
-    python pyarmor.py config --manifest="include queens.py" --disable-restrict-mode=1 \
-                      --obf-code-mode=wrap projects/testmod
+
+    cd projects/testmod
+    ./pyarmor config --manifest="include queens.py" --disable-restrict-mode=1 \
+                     --obf-code-mode=wrap projects/testmod
 
     # Obfuscate queens.py
-    cd projects/testmod
     ./pyarmor build
 
     # Import obfuscated queens.py from no obfuscated script hello.py
@@ -465,10 +510,10 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
     # Because __manifest__.py will read by odoo server directly, so it
     # should keep literal. Exclude it from project files.
     #
-    # And restrict mode should be disabled, otherwise odoo server cann't
+    # And restrict mode should be disabled, otherwise odoo server can't
     # import obfuscated modules
-    ./pyarmor config --output=dist/web-login --disable-restrict-mode=1 \
-                     --obf-code-mode=wrap \
+    #
+    ./pyarmor config --output=dist \
                      --manifest "global-include *.py, exclude __manifest__.py"
     ./pyarmor build
 
@@ -738,6 +783,31 @@ Multi manifest template commands are spearated by comma, for example
     global-include *.py, exclude test*.py
 ```
 
+### is_package
+
+Available values: 0, 1, None
+
+When it's set to 1, the basename of `src` will be appended to `output`
+as the final path to save obfuscated scripts, and runtime files are
+still in the path `output`
+
+When init a project, if there is `__init__.py` in the path `src`, it
+will be set to 1, otherwise it's None or 0.
+
+### disable_restrict_mode
+
+Available values: 0, 1, None
+
+When it's None or 0, obfuscated scripts can not be imported from outer
+scripts. Generally it's apply to a standalone application.
+
+When protected python files are module or package, it means obfuscated
+scripts is allowed to be imported by outer scripts, it must be set to
+1.
+
+When init a project, if there is `__init__.py` in the path `src`, it
+will be set to 1, otherwise it's None or 0.
+
 ### entry
 
 A string includes one or many entry scripts.
@@ -750,12 +820,12 @@ entry:
     pyarmor_runtime()
 ```
 
-The entry name is relative to **src**.
+The entry name is relative to **src**, or filename with absolute path.
 
 Multi entries are separated by comma, for example,
 
 ```
-    main.py, another/main.py
+    main.py, another/main.py, /usr/local/myapp/main.py
 ```
 
 Note that entry may be NOT obfuscated, if **manifest** does not
@@ -784,6 +854,8 @@ How to obfuscate whole code object of module:
 
     Obfuscate whole code object by DES algorithm
 
+The default value is `des`
+
 ### obf_code_mode
 
 How to obfuscate byte code of each code object:
@@ -799,6 +871,18 @@ How to obfuscate byte code of each code object:
 * fast
 
     Obfuscate byte-code by a simple algorithm, it's faster than DES
+
+* wrap
+
+    The wrap code is different from `des` and `fast`. In this mode,
+    when code object start to execute, byte-code is restored. As soon
+    as code object completed execution, byte-code will be obfuscated
+    again.
+
+    Refer to [Mechanism Without Restrict Mode](mechanism.md#mechanism-without-restrict-mode)
+
+When init a project, if there is `__init__.py` in the path `src`, it
+will be set to `wrap`, otherwise it's `des`.
 
 ### runtime_path
 

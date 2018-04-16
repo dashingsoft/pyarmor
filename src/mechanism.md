@@ -92,7 +92,7 @@ know
 - After function call, the last instruction is to jump to
   offset 0. The really bytecode now is executed.
 
-## Implementation
+### Implementation
 
 From Pyarmor 3.4, use the following commands:
 
@@ -119,7 +119,7 @@ From Pyarmor 3.4, use the following commands:
 
 ```
 
-## Performance Analaysis
+### Performance Analaysis
 
 With default configuration, Pyarmor will do the following extra work
 to run or import obfuscated bytecode:
@@ -231,7 +231,7 @@ It's even faster than no obfuscated scripts!
 
 ## Mechanism Without Restrict Mode
 
-This feature will be introuced from v3.9.0
+This feature is introuced from v3.9.0
 
 When restrict mode is disabled, it means obfuscated scripts can be
 imported from any other scripts. So every code object must be
@@ -245,13 +245,15 @@ object as the following way:
     LOAD_GLOBALS    N (__armor_enter__)
     CALL_FUNCTION   0
     POP_TOP
-    SETUP_FINALLY   T
+    SETUP_FINALLY   X (jump to wrap footer)
 
 ```
 
 * Following the header it's original byte-code.
 
-* Increase oparg of each absolute jump instruction.
+* The oparg of each absolute jump instruction is increased by size of wrap header
+
+* Obfuscate the original byte-code
 
 * Append the wrap footer to call `__armor_exit__`
 
@@ -267,7 +269,72 @@ object as the following way:
 
 When code object is executed, `__armor_enter__` will restore original
 byte-code first. Before it returns, call `__armor_exit__` to obfuscate
-original byte-code again.
+original byte-code again. Besides, `__armor_exit__` will clear all the
+locals in this frame.
+
+### Implementation
+
+From Pyarmor 3.9.0, there are 2 ways
+
+* Use Command `obfuscate` with option `--disable-restrict-mode`
+
+```
+    # Here is a simple case, show how to import obfuscated module
+    # 'queens.py' from clear script 'hello.py'
+   
+    # Obfuscate module with command 'init'
+    # The key is option 'disable-restrict-mode'
+    python pyarmor.py obfuscate --src=examples/simple \
+                                --disable-restrict-mode=1 \
+                                --entry=hello.py \
+                                queens.py
+                               
+    # After this command:
+    # 
+    # The runtime files are in the output path 'dist'
+    # Bootstrap code is inserted into hello.py', saved in 'dist'
+    # The obfuscated module 'queens.py' is saved in 'dist'
+    
+    # Now run hello.py to import obfuscated module 'queens'
+    cd dist
+    python hello.py
+    
+```
+
+* Use command `init` to create project configured as package
+    
+
+```
+    # Here is a typical case, show how outer script 'main.py' will
+    # import obfuscated package 'mypkg'
+    
+    # First create a project
+    python pyarmor.py init --src=/PATH/TO/mypkg \
+                           --entry=/ABSOLUTE/PATH/TO/main.py \
+                           projects/testpkg
+    
+    # If there is __init__.py in the src path, the project will
+    # be configured as a package automatically.
+    cd projects/mypkg
+    
+    # If there is no __init__.py in the src path, use command 'config'
+    # to configure project as a package
+    # ./pyarmor config --obf-code-mode=wrap --is-package=1
+    
+    # Now obfuscate scripts
+    ./pyarmor build
+
+    # After build:
+    #
+    # The runtime files are in the output path 'dist'
+    # Bootstrap code is inserted into 'main.py', and saved in 'dist'
+    # The obfuscated scripts of package are in the subpath 'dist/mypkg
+
+    # Run main.py to import obfuscated package 'mypkg'
+    cd dist
+    python main.py
+    
+```
 
 # DEPRECATED Mode
 
