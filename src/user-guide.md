@@ -383,10 +383,10 @@ It works.
 
 So restrict mode can avoid obfuscated scripts observed from no obfuscated code.
 
-In case to import obfuscated scripts from no obfuscated scripts, for
-example, a package used by other scripts. If this package is
-obfuscated in restrict mode, other scripts can't import it. So let it
-work need to disable restrict mode, and set `obf-code-mode` to `wrap`
+Sometimes restrict mode is not suitable, for example, a package used
+by other scripts. Other clear scripts can not import obfuscated
+package in restrict mode. So it need to disable restrict mode, and set
+`obf-code-mode` to `wrap`
 
 ```
     # Create project at first
