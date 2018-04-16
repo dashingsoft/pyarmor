@@ -94,7 +94,7 @@ know
 
 ### Implementation
 
-From Pyarmor 3.4, use the following commands:
+From Pyarmor 3.4, use the following commands to configure obfuscate mode:
 
 ```
     # First create a project to manage obfuscated scripts

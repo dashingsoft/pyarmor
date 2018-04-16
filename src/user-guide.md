@@ -160,6 +160,11 @@ The next example show how to obfuscate a package
     cd projects/testpkg
     ./pyarmor info
 
+    # If there is no '__init__.py' in the src path, run the following command
+    # to configure a project as package
+    
+    # ./pyarmor config --disable-restrict-mode=1 --obf-code-mode=wrap
+
     # Obfuscate package 'mypkg'
     #
     # This command will obfuscate 'mypkg' and save to 'dist/mypkg'
@@ -510,9 +515,6 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
     # Because __manifest__.py will read by odoo server directly, so it
     # should keep literal. Exclude it from project files.
     #
-    # And restrict mode should be disabled, otherwise odoo server can't
-    # import obfuscated modules
-    #
     ./pyarmor config --output=dist \
                      --manifest "global-include *.py, exclude __manifest__.py"
     ./pyarmor build
@@ -521,6 +523,9 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
     # original __manifest__.py to addon path of odoo server
     cp -a dist/web-login /path/to/odoo/addons
     cp /path/to/web-login/__manifest__.py /path/to/odoo/addons/web-login
+    
+    # Copy runtime files
+    cp dist/*pytransform* dist/*.key dist/*.lic /path/to/odoo/addons/web-login
 
 ```
 
@@ -586,7 +591,7 @@ Finally distribute obfuscated modules
 
     # Copy all runtime files to runtime path
     mkdir -p /opt/odoo/pyarmor
-    cp projects/odoo/web-login/runtimes/* /opt/odoo/pyarmor
+    cp projects/odoo/login/runtimes/* /opt/odoo/pyarmor
 
     # Add /opt/odoo/pyarmor to python path in odoo server startup script
     # so that each module can import pytransform
