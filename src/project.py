@@ -54,6 +54,7 @@ class Project(dict):
         ( 'name', None ), \
         ( 'title', None ), \
         ( 'src', None ), \
+        ( 'is_package', None ), \
         ( 'manifest', default_manifest_template ), \
         ( 'entry', None ), \
         ( 'output', default_output_path ), \
