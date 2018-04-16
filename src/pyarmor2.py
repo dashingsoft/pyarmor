@@ -99,7 +99,15 @@ EXAMPLES
     logging.info('Python scripts base path: %s', src)
 
     name = os.path.basename(os.path.abspath(path))
-    project = Project(name=name, title=name, src=src, entry=args.entry)
+    if os.path.exists(os.path.join(src, '__init__.py')):
+        logging.info('Found __init__.py in src path,'
+                     'project is configured as package')
+        project = Project(name=name, title=name, src=src, entry=args.entry,
+                          is_package=1, obf_code_mode='wrap',
+                          disable_restrict_mode=1)
+    else:
+        logging.info('Project is configured as standalone application.')
+        project = Project(name=name, title=name, src=src, entry=args.entry)
 
     logging.info('Create configure file ...')
     filename = os.path.join(path, config_filename)
@@ -208,7 +216,9 @@ def _build(args):
         mode = project.get_obfuscate_mode()
         files = project.get_build_files(args.force)
         src = project.src
-        filepairs = [(os.path.join(src, x), os.path.join(output, x))
+        soutput = os.path.join(output, os.path.basename(src)) \
+                  if project.get('is_pakcage') else output
+        filepairs = [(os.path.join(src, x), os.path.join(soutput, x))
                      for x in files]
 
         logging.info('%s increment build',
@@ -217,9 +227,9 @@ def _build(args):
         logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
         for x in files:
             logging.info('\t%s', x)
-        logging.info('Save obfuscated scripts to %s', output)
+        logging.info('Save obfuscated scripts to %s', soutput)
 
-        obfuscate_scripts(filepairs, mode, capsule, output)
+        obfuscate_scripts(filepairs, mode, capsule, soutput)
 
         # for x in targets:
         #     output = os.path.join(project.output, x)
@@ -371,8 +381,13 @@ def _obfuscate(args):
     files = Project.build_globfiles(args.patterns, path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
-    mode = Project.map_obfuscate_mode(default_obf_module_mode,
-                                      default_obf_code_mode)
+    if args.disable_restrict_mode:
+        logging.info('Restrict mode is disabled')
+        mode = Project.map_obfuscate_mode(default_obf_module_mode,
+                                          'wrap')
+    else:
+        mode = Project.map_obfuscate_mode(default_obf_module_mode,
+                                          default_obf_code_mode)
 
     logging.info('Obfuscate scripts with mode %s', mode)
     logging.info('Save obfuscated scripts to "%s"', output)
@@ -382,6 +397,11 @@ def _obfuscate(args):
 
     logging.info('Make runtime files')
     make_runtime(capsule, output)
+    if args.disable_restrict_mode:
+        licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
+        licfile = os.path.join(output, license_filename)
+        logging.info('Generate no restrict mode license file: %s', licfile)
+        make_project_license(capsule, licode, licfile)
 
     for entry in args.entry.split(','):
         filename = os.path.join(output, entry.strip())
@@ -460,6 +480,7 @@ def main(args):
     cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
     cparser.add_argument('--src', required=True,
                          help='Base path for matching python scripts')
+    cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1))
     cparser.add_argument('patterns', nargs='*', default=['*.py'],
                          help='File patterns, default is "*.py"')
     cparser.set_defaults(func=_obfuscate)
@@ -500,12 +521,10 @@ def main(args):
                          help='Manifest template string')
     cparser.add_argument('--entry', metavar='SCRIPT',
                          help='Entry script of this project')
-    cparser.add_argument('--disable-restrict-mode', type=int,
-                         choices=(0, 1))
-    cparser.add_argument('--obf-module-mode',
-                         choices=Project.OBF_MODULE_MODE)
-    cparser.add_argument('--obf-code-mode',
-                         choices=Project.OBF_CODE_MODE)
+    cparser.add_argument('--is-package', type=int, choices=(0, 1))
+    cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1))
+    cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE)
+    cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE)
     cparser.add_argument('--runtime-path', metavar="RPATH")
     cparser.set_defaults(func=_update)
 
