@@ -397,8 +397,9 @@ def _obfuscate(args):
         licfile = os.path.join(output, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
-
-    make_entry(args.entry, path, output)
+    
+    if args.entry:
+        make_entry(args.entry, path, output)
     logging.info('Obfuscate %d scripts OK.', len(files))
 
 @armorcommand
