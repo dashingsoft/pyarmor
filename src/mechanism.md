@@ -10,20 +10,19 @@ Pyarmor protects Python scripts by the following ways:
 * Obfuscate byte code of each code object.
 * Clear f_locals of frame as soon as code object executation completed.
 
-There are 2 cases for Pyarmor to protect Python scripts:
+There are 2 different cases for Pyarmor to protect Python scripts:
 
-* Standalone application
+* Application, also called standalone package
 * Package used by others
 
 In the first case, Pyarmor obfuscates all the Python Scripts belong to
 standalone application, and doesn't allow to import those obfuscated
-scripts from any other clear script. So a simple way can be apply to
-protect Python scripts, It called **Restrict Mode**.
+scripts from any other clear script. So a simple way can be apply, it
+called **Restrict Mode**.
 
 For the second case, things get a little complicated. Any other script
 can import these obfuscated scripts, the frame and code object can be
-accessed in outer scripts. It need more work to protect Python
-scripts.
+accessed in outer. It need more work to protect Python scripts.
 
 ## Mechanism in Restrict Mode
 
@@ -90,7 +89,7 @@ This function accepts 2 parameters: module name and obfuscated code, then
 * Restore obfuscated code
 * Create a code object by original code
 * Import original module **(this will result in a duplicated frame in
-  Traceback)**
+  traceback)**
 
 #### Run or Import Obfuscated Bytecode
 
@@ -296,59 +295,53 @@ From Pyarmor 3.9.0, there are 2 ways
 ```
     # Here is a simple case, show how to import obfuscated module
     # 'queens.py' from clear script 'hello.py'
-   
+
     # Obfuscate module with command 'obfuscate'
     # The key is option 'disable-restrict-mode'
     python pyarmor.py obfuscate --src=examples/simple \
                                 --disable-restrict-mode=1 \
                                 --entry=hello.py \
                                 queens.py
-                               
+
     # After this command:
-    # 
+    #
     # The runtime files are in the output path 'dist'
     # Bootstrap code is inserted into hello.py', saved in 'dist'
     # The obfuscated module 'queens.py' is saved in 'dist'
-    
+
     # Now run hello.py to import obfuscated module 'queens'
     cd dist
     python hello.py
-    
+
 ```
 
 * Use command `init` to create project configured as package
-    
+
 
 ```
     # Here is a typical case, show how clear script 'main.py'
     # imports obfuscated package 'mypkg'
-    
-    # First create a project
-    python pyarmor.py init --src=/PATH/TO/mypkg \
+
+    # First create a project, configure as package
+    python pyarmor.py init --type=package \
+                           --src=/PATH/TO/mypkg \
                            --entry=/ABSOLUTE/PATH/TO/main.py \
                            projects/testpkg
-    
-    # If there is __init__.py in the src path, the project will
-    # be configured as a package automatically.
-    cd projects/mypkg
-    
-    # If there is no __init__.py in the src path, use command 'config'
-    # to configure project as a package, uncomment the following line
-    # ./pyarmor config --obf-code-mode=wrap --is-package=1
-    
+
     # Now obfuscate scripts
+    cd projects/mypkg
     ./pyarmor build
 
     # After build:
     #
     # The runtime files are in the output path 'dist'
     # Bootstrap code is inserted into 'main.py', and saved in 'dist'
-    # The obfuscated scripts of package are in the subpath 'dist/mypkg
+    # The obfuscated scripts of package are in the subpath 'dist/mypkg'
 
     # Run main.py to import obfuscated package 'mypkg'
     cd dist
     python main.py
-    
+
 ```
 
 # DEPRECATED Mode

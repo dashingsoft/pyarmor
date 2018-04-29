@@ -81,19 +81,24 @@ there are the several advantages:
 
 * Obfuscate scripts by more modes
 
-#### Standalone Package
+#### Obfuscate Standalone Package
 
-The next example show how to obfuscate a standalone python package
+This example show how to obfuscate a standalone python package
 **pybench**, which locates in the **examples/pybench** in the source
 of pyarmor.
 
 ```
     mkdir projects
-    python pyarmor.py init --src examples/pybench --entry pybench.py \
-                           projects/pybench
-
-    # This command will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
+    
+    # This command will create a project configured as application.
+    #
+    # It will create 2 files: .pyarmor_config, .pyarmor_capsule.zip 
     # in the project path "projects/pybench"
+    #
+    python pyarmor.py init --type=app --src=examples/pybench \
+                           --entry=pybench.py projects/pybench
+
+
     cd projects/pybench
 
     # And there is a shell script "pyarmor" is created at the same time.
@@ -134,47 +139,47 @@ Obfuscate scripts by other mode, for obfuscation mode, refer to [How to obfuscat
     ./pyarmor build --force
 ```
 
-#### Package Used by Other scripts
+#### Obfuscate Package Used by Other Scripts
 
-In above example, all the python scripts are obfuscated, it's a
-standalone package. Here is another common case, obfuscated package
-used by other clear scripts.
+In above example, all the obfuscated python scripts can not imported
+from other scripts.  It's a standalone package. Here is another common
+case, obfuscated python scripts can be used by other clear scripts.
 
-The next example show how to obfuscate a package
-`examples/testpkg/mypkg`, it used by script `examples/testpkg/main.py`
+This example show how to obfuscate a package `examples/testpkg/mypkg`,
+it used by script `examples/testpkg/main.py`
 
 ```
     # First create project with command 'init'
     #
-    # This command will create a project configured as package,
-    # because there is '__init__.py' in the src 'examples/testpkg/mypkg'
-
-    python pyarmor.py init --src examples/testpkg/mypkg \
-                           --entry /path/to/pyarmor/examples/testpkg/main.py \
+    # This command will create a project configured as package
+    #
+    python pyarmor.py init --type=package --src=examples/testpkg/mypkg \
+                           --entry=/path/to/pyarmor/examples/testpkg/main.py \
                            projects/testpkg
 
     # Show project information
     #
     # Note that 'is_package' and 'disable_restrict_mode' set to 1
-
+    #
     cd projects/testpkg
     ./pyarmor info
 
-    # If there is no '__init__.py' in the src path, run the following command
-    # to configure a project as package
-    
-    # ./pyarmor config --disable-restrict-mode=1 --obf-code-mode=wrap
-
     # Obfuscate package 'mypkg'
     #
-    # This command will obfuscate 'mypkg' and save to 'dist/mypkg'
-    # Bootstrap code will be inserted into 'main.py' and save to 'dist'
-    # All the runtime files will be saved to 'dist'
-
+    # This command will obfuscate 'mypkg'
+    #
+    # Bootstrap code will be inserted into entry script 'main.py'
+    # and save to 'dist'
+    #
+    # All the runtime files will be saved to 'dist', all of these files
+    # are required to import obfuscated scripts
+    #
+    # All the obfuscated package scripts are stored in 'dist/mypkg'
+    #
     ./pyarmor build
 
-    # Now run main.py to import obfuscated package 'mypkg'
-
+    # Now run entry script 'main.py' to import obfuscated package 'mypkg'
+    #
     cd dist
     python main.py
 ```
@@ -183,9 +188,20 @@ The next example show how to obfuscate a package
 
 First obfuscate all scripts in build machine.
 
-Then copy all the files in output path "dist" to target machine
+For standalone package, copy all the files in output path "dist" to target machine
 
-That's all.
+For package which used by other scripts:
+
+* Copy all the runtime files in any python search path. Generally, all
+  the files in the output path `dist` are required in runtime.
+  
+* Add bootstrap code before imported obfuscated package
+
+```
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    
+```
 
 **Note** Python version in build machine must be same as in target
 machine. To be exact, the magic string value used to recognize
