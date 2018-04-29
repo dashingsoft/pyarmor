@@ -467,9 +467,9 @@ def main(args):
         epilog=_obfuscate.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts')
-    cparser.add_argument('--output', default='dist', metavar='PATH')
-    cparser.add_argument('--entry', metavar='SCRIPT', help='Entry script')
-    cparser.add_argument('--src', required=True,
+    cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
+    cparser.add_argument('-E', '--entry', metavar='SCRIPT', help='Entry script')
+    cparser.add_argument('-S', '--src', required=True,
                          help='Base path for matching python scripts')
     cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1))
     cparser.add_argument('patterns', nargs='*', default=['*.py'],
@@ -485,13 +485,13 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Create an empty project to manage obfuscated scripts'
     )
-    cparser.add_argument('--type', default='auto',
+    cparser.add_argument('-T', '--type', default='auto',
                          choices=('auto', 'app', 'package'))
-    cparser.add_argument('--entry',
+    cparser.add_argument('-E', '--entry',
                          help='Entry script of this project')
-    cparser.add_argument('--src', required=True,
+    cparser.add_argument('-S', '--src', required=True,
                          help='Base path of python scripts')
-    cparser.add_argument('--clone', metavar='PATH',
+    cparser.add_argument('-C', '--clone', metavar='PATH',
                          help='Clone project configuration from this path')
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
@@ -562,7 +562,7 @@ def main(args):
                          help='Generate extra runtime files only')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate extra runtime files')
-    cparser.add_argument('--output',
+    cparser.add_argument('-O', '--output',
                          help='Output path, override project configuration')
     cparser.set_defaults(func=_build)
 
