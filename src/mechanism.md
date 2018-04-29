@@ -4,18 +4,33 @@ From Pyarmor 3.3, a new mode is introduced. By this way, no import
 hooker, no setprofile, no settrace. The performance of running or
 importing obfuscation python script has been remarkably improved.
 
-There are 2 ways to protect Python Scripts by Pyarmor:
+Pyarmor protects Python scripts by the following ways:
 
-* Obfuscate byte code of each code object
-* Obfuscate whole code object of python module
+* Obfuscate source file to protect constants and literal strings.
+* Obfuscate byte code of each code object.
+* Clear f_locals of frame as soon as code object executation completed.
+
+There are 2 cases for Pyarmor to protect Python scripts:
+
+* Standalone application
+* Package used by others
+
+In the first case, Pyarmor obfuscates all the Python Scripts belong to
+standalone application, and doesn't allow to import those obfuscated
+scripts from any other clear script. So a simple way can be apply to
+protect Python scripts, It called **Restrict Mode**.
+
+For the second case, things get a little complicated. Any other script
+can import these obfuscated scripts, the frame and code object can be
+accessed in outer scripts. It need more work to protect Python
+scripts.
 
 ## Mechanism in Restrict Mode
 
-In restrict mode, obfuscated scripts can't be imported out of
-obfuscated scripts. Pyarmor will restore obfuscated code object when
-it called first time, and not obfuscate it again. It's efficient and
-enough, because code object can't be accessed from any other scripts,
-except obfuscated scripts.
+In restrict mode, Pyarmor will restore obfuscated byte code when this
+code object is called first time, and not obfuscate it again. It's
+efficient and enough, because code object can't be accessed from any
+other scripts, except obfuscated scripts.
 
 ### Obfuscate Python Scripts
 
