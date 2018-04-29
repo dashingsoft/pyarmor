@@ -89,10 +89,10 @@ of pyarmor.
 
 ```
     mkdir projects
-    
+
     # This command will create a project configured as application.
     #
-    # It will create 2 files: .pyarmor_config, .pyarmor_capsule.zip 
+    # It will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
     # in the project path "projects/pybench"
     #
     python pyarmor.py init --type=app --src=examples/pybench \
@@ -196,14 +196,14 @@ For package which used by other scripts:
 * Copy all the runtime files to any python search path in target
   machine. Generally, all the files in the output path `dist` are
   required in runtime.
-  
+
 * Add 2 extra lines in python script before imported obfuscated
   package in target machine
 
 ```
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    
+
 ```
 
 **Note** Python version in build machine must be same as in target
@@ -542,7 +542,7 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
     # original __manifest__.py to addon path of odoo server
     cp -a dist/web-login /path/to/odoo/addons
     cp /path/to/web-login/__manifest__.py /path/to/odoo/addons/web-login
-    
+
     # Copy runtime files
     cp dist/*pytransform* dist/*.key dist/*.lic /path/to/odoo/addons/web-login
 
@@ -746,33 +746,33 @@ How about the performance after scripts are obfuscated, run
     pyarmor_runtime()
 ```
 
-In restrict mode, it must be in the entry scripts. If restrict mode is
-disabled, it can be put in any script anywhere, only if it run in the
-same Python interpreter. It will create some builtin function to deal
-with obfuscated code.
+* In restrict mode, it must be in the entry scripts. If restrict mode
+  is disabled, it can be put in any script anywhere, only if it run in
+  the same Python interpreter. It will create some builtin function to
+  deal with obfuscated code.
 
-* The extra runtime file pytransform.py must be in any Python path in
-  target machine.
+* The extra runtime file `pytransform.py` must be in any Python path
+  in target machine.
 
-* pytransform.py need load dynamic library _pytransform it may be
-  _pytransform.so in Linux, _pytransform.dll in Windows,
-  _pytransform.dylib in MacOS. It's dependent-platform, download the
-  right one to the same path of pytransform.py according to target
+* `pytransform.py` need load dynamic library `_pytransform`. It may be
+  `_pytransform.so` in Linux, `_pytransform.dll` in Windows,
+  `_pytransform.dylib` in MacOS. It's dependent-platform, download the
+  right one to the same path of `pytransform.py` according to target
   platform. All the prebuilt dynamic libraries
   list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
 
-* By default pytransform.py search dynamic library _pytransform in
-  the same path. Check pytransform.py!_load_library to find the
+* By default `pytransform.py` search dynamic library `_pytransform` in
+  the same path. Check `pytransform.py!_load_library` to find the
   details.
 
 * All the other **runtime files** should in the same path as dynamic
-  library _pytransform.
+  library `_pytransform`.
 
 * If runtime files locate in some other path, change bootstrap code:
 
 ```
     from pytransform import pyarmor_runtime
-    pyarmor_runtime('/path/to/runtime-files)
+    pyarmor_runtime('/path/to/runtime-files')
 ```
 
 ## Configure File
