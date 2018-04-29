@@ -98,7 +98,7 @@ echo "-------------------- Test Command init -------------------------"
 echo ""
 
 csih_inform "Case 2.1: init pybench"
-$PYARMOR init --src examples/pybench --entry pybench.py \
+$PYARMOR init --type=app --src examples/pybench --entry pybench.py \
               projects/pybench >result.log 2>&1
 
 check_file_exists projects/pybench/.pyarmor_config
