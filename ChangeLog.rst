@@ -1,3 +1,8 @@
+3.9.1
+-----
+* Add option `--type` for command `init`
+* Refine document `user-guide.md` and `mechanism.md`
+
 3.9.0
 -----
 This version introduces a new way `auto-wrap` to protect python code when it's imported by outer scripts. 
