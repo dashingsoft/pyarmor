@@ -188,14 +188,17 @@ it used by script `examples/testpkg/main.py`
 
 First obfuscate all scripts in build machine.
 
-For standalone package, copy all the files in output path "dist" to target machine
+For standalone package, copy all the files in output path "dist" to
+target machine
 
 For package which used by other scripts:
 
-* Copy all the runtime files in any python search path. Generally, all
-  the files in the output path `dist` are required in runtime.
+* Copy all the runtime files to any python search path in target
+  machine. Generally, all the files in the output path `dist` are
+  required in runtime.
   
-* Add bootstrap code before imported obfuscated package
+* Add 2 extra lines in python script before imported obfuscated
+  package in target machine
 
 ```
     from pytransform import pyarmor_runtime
