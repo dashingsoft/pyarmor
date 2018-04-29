@@ -99,7 +99,8 @@ EXAMPLES
     logging.info('Python scripts base path: %s', src)
 
     name = os.path.basename(os.path.abspath(path))
-    if os.path.exists(os.path.join(src, '__init__.py')):
+    if (args.type == 'package') or \
+       (args.type === 'auto' and os.path.exists(os.path.join(src, '__init__.py'))):
         logging.info('Found __init__.py in src path,'
                      'project is configured as package')
         project = Project(name=name, title=name, src=src, entry=args.entry,
@@ -484,6 +485,8 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Create an empty project to manage obfuscated scripts'
     )
+    cparser.add_argument('--type', default='auto',
+                         choices=('auto', 'app', 'package'))
     cparser.add_argument('--entry',
                          help='Entry script of this project')
     cparser.add_argument('--src', required=True,
