@@ -100,7 +100,7 @@ EXAMPLES
 
     name = os.path.basename(os.path.abspath(path))
     if (args.type == 'package') or \
-       (args.type === 'auto' and os.path.exists(os.path.join(src, '__init__.py'))):
+       (args.type == 'auto' and os.path.exists(os.path.join(src, '__init__.py'))):
         logging.info('Found __init__.py in src path,'
                      'project is configured as package')
         project = Project(name=name, title=name, src=src, entry=args.entry,
