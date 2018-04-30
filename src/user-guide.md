@@ -40,7 +40,18 @@ path of Pyarmor
     # it will be expanded base on current path by shell.
 
     # Obfuscated scripts are saved in default output path "dist"
+    #
+    # There are some extra files in the "dist":
+    #
+    #    pytransform.py
+    #    _pytransform.*
+    #    *.key
+    #    *.lic
+    #
+    # All of them are required to run obfuscated scripts, called "runtime files"
+    #
     cd dist
+    ls
     cat queens.py
 
     # Run obfuscated script
@@ -49,23 +60,26 @@ path of Pyarmor
 
 ### Import Obfuscated Module
 
-Import obfuscated moduels in a normal python scripts
+Import obfuscated moduels from a clear python script
 
 ```
     python pyarmor.py obfuscate --type=package --src=examples/py2exe \
                                 --entry=hello.py queens.py
 
-    # Option --type=package is required, otherwise outer scripts
-    # can not import obfuscated module
+    # Option --type=package is required, otherwise clear script can not
+    # import obfuscated module
     #
-    # queens.py is obfuscated. Entry hello.py is not. Only two extra lines are
-    # inserted at the begin.
+    # queens.py is obfuscated. Entry hello.py is clear script. Two extra
+    # lines are inserted at the begin of "hello.py"
+    #
+    #    from pytransform import pyarmor_runtime
+    #    pyarmor_runtime()
+    #
+    # They're called "bootstrap code"
+    #
     cd dist
     cat hello.py
-      ...
-      from pytransform import pyarmor_runtime
-      pyarmor_runtime()
-      ...
+    cat queens.py
 
     # Run hello.py
     python hello.py
@@ -76,12 +90,30 @@ Import obfuscated moduels in a normal python scripts
 It's better to create a project to manage these obfuscated scripts,
 there are the several advantages:
 
+* Filter scripts to be obufscated by manifest commands
+
 * Increment build, only updated scripts are obfuscated since last
   build
 
 * Obfuscate scripts by more modes
 
-#### Obfuscate Standalone Package
+* More convenient command
+
+There are 2 project types:
+
+* Application or called Standalone Package
+* Package used by other clear scripts
+
+For standalone package, all the obfuscated python scripts only used by
+package self. Pyarmor uses a simple and efficient way to protect
+Python scripts.
+
+For package used by other clear scripts, things get a little
+complicated. Pyarmor uses a different way to protect Python scripts.
+
+About the details, refer to [How to obfuscate python scripts](mechanism.md)
+
+#### Standalone Package
 
 This example show how to obfuscate a standalone python package
 **pybench**, which locates in the **examples/pybench** in the source
@@ -90,10 +122,14 @@ of pyarmor.
 ```
     mkdir projects
 
-    # This command will create a project configured as application.
+    # Use command 'init' to create a project configured as application.
     #
-    # It will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
-    # in the project path "projects/pybench"
+    # It will create two files in the project path "projects/pybench":
+    #
+    #   .pyarmor_config
+    #   .pyarmor_capsule.zip
+    #
+    # Option --type=app specify the project is standalone package
     #
     python pyarmor.py init --type=app --src=examples/pybench \
                            --entry=pybench.py projects/pybench
@@ -107,7 +143,7 @@ of pyarmor.
     # Show project information
     ./pyarmor info
 
-    # Now run command "build" to obfuscated all the scripts
+    # Now run command "build" to obfuscated all the scripts in the src
     #
     ./pyarmor build
 
@@ -126,35 +162,21 @@ After some source scripts changed, just run **build** again
     cd projects/pybench
     ./pyarmor build
 ```
-
-Obfuscate scripts by other mode, for obfuscation mode, refer to [How to obfuscate python scripts](mechanism.md#mechanism-in-restrict-mode)
-
-```
-    cd projects/pybench
-
-    # Only obfuscate whole module, not each code object
-    ./pyarmor config --obf-module-mode=des --obf-code-mode=none
-
-    # Force rebuild all
-    ./pyarmor build --force
-```
-
-#### Obfuscate Package Used by Other Scripts
-
-In above example, all the obfuscated python scripts can not imported
-from other scripts.  It's a standalone package. Here is another common
-case, obfuscated python scripts can be used by other clear scripts.
+#### Package Used by Other Clear Scripts
 
 This example show how to obfuscate a package `examples/testpkg/mypkg`,
-it used by script `examples/testpkg/main.py`
+it used by clear script `examples/testpkg/main.py`
 
 ```
     # First create project with command 'init'
     #
     # This command will create a project configured as package
     #
+    # Note that option --entry, it uses absolute path. Because package
+    # are used by some other scripts, they may be in different path.
+    #
     python pyarmor.py init --type=package --src=examples/testpkg/mypkg \
-                           --entry=/path/to/pyarmor/examples/testpkg/main.py \
+                           --entry=$(pwd)/examples/testpkg/main.py \
                            projects/testpkg
 
     # Show project information
@@ -166,7 +188,7 @@ it used by script `examples/testpkg/main.py`
 
     # Obfuscate package 'mypkg'
     #
-    # This command will obfuscate 'mypkg'
+    # This command will obfuscate all the scripts in the package 'mypkg'
     #
     # Bootstrap code will be inserted into entry script 'main.py'
     # and save to 'dist'
@@ -178,11 +200,63 @@ it used by script `examples/testpkg/main.py`
     #
     ./pyarmor build
 
-    # Now run entry script 'main.py' to import obfuscated package 'mypkg'
+    # Check entry script
+    cat dist/main.py
+
+    # Check obfuscated script
+    cat dist/mypkg/foo.py
+
+    # Now run clear entry script 'main.py' to import obfuscated
+    # package 'mypkg'
     #
     cd dist
     python main.py
 ```
+
+#### Change Default Project Configuration
+
+* Show project information by command `info`
+
+```
+    cd projects/testpkg
+    ./pyarmor info
+```
+
+* Change project information by command `config`
+
+```
+    cd projects/testpkg
+    ./pyarmor config --title="My Package"
+```
+
+* Filter obfuscated scripts
+
+```
+    cd projects/testpkg
+
+    # Exclude "__init__.py" from project, it will not be obfuscated
+    ./pyarmor config --manifest="global-include *.py, exclude __init__.py"
+
+    # Force rebuild all
+    # Note that pyarmor will not copy "__init__.py" to output path
+    #
+    ./pyarmor build --force
+
+```
+
+* Obfuscate scripts by other modes
+
+```
+    cd projects/pybench
+
+    # Only obfuscate whole module, not each code object
+    ./pyarmor config --obf-module-mode=des --obf-code-mode=none
+
+    # Force rebuild all
+    ./pyarmor build --force
+```
+
+Refer to [Project Configure File](#project-configure-file)
 
 ### Distribute Obfuscated Scripts
 
@@ -194,11 +268,14 @@ target machine
 For package which used by other scripts:
 
 * Copy all the runtime files to any python search path in target
-  machine. Generally, all the files in the output path `dist` are
-  required in runtime.
+  machine.
 
-* Add 2 extra lines in python script before imported obfuscated
-  package in target machine
+* Copy whole obfuscated package path to target machine, generally it
+  locates in `dist/pkgname`
+
+* Add 2 extra lines in main script before imported obfuscated package
+  in target machine. Generally, these lines has been inserted into
+  entry scripts of the project.
 
 ```
     from pytransform import pyarmor_runtime
@@ -266,19 +343,19 @@ Bind obfuscated scripts to fixed machine
 
 ```
 
-#### Cross Platform
+### Cross Platform
 
 The only difference for cross platform is need to replace
-platform-dependent library "_pytransform" with the right one for
+platform-dependent library `_pytransform` with the right one for
 target machine
 
-All the latest prebuilt platform-dependent library "_pytransform"
+All the latest prebuilt platform-dependent library `_pytransform`
 list [here](http://pyarmor.dashingsoft.com/downloads/platforms)
 
-The core of [Pyarmor] is written by C, the only dependency is libc. So
-it's not difficult to build for any other platform, even for embeded
-system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
-scripts in other platform.
+It's written by C, the only dependency is libc. So it's not difficult
+to build for any other platform, even for embeded system. Contact
+<jondy.zhao@gmail.com> if you'd like to run encrypted scripts in other
+platform.
 
 ### Run Pyarmor with debug mode
 
@@ -344,10 +421,14 @@ obfuscated scripts. Use runtime path to specify where to find
   in target machine.
 
 * `pytransform.py` need load dynamic library `_pytransform`. It may be
-  `_pytransform.so` in Linux, `_pytransform.dll` in Windows,
-  `_pytransform.dylib` in MacOS. It's dependent-platform, download the
-  right one to the same path of `pytransform.py` according to target
-  platform. All the prebuilt dynamic libraries
+
+    * `_pytransform.so` in Linux
+    * `_pytransform.dll` in Windows
+    * `_pytransform.dylib` in MacOS
+
+  It's dependent-platform, download the right one to the same path of
+  `pytransform.py` according to target platform. All the prebuilt
+  dynamic libraries
   list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
 
 * By default `pytransform.py` search dynamic library `_pytransform` in
@@ -362,6 +443,15 @@ obfuscated scripts. Use runtime path to specify where to find
 ```
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/runtime-files')
+```
+
+## Benchmark Test
+
+How about the performance after scripts are obfuscated, run
+**benchmark** in target machine
+
+```
+    python pyarmor.py benchmark
 ```
 
 ## Examples
@@ -384,7 +474,8 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
 ```
     # Create a project
-    python pyarmor.py init --src=/path/to/web-login --entry=__init__.py \
+    python pyarmor.py init --type=package --src=/path/to/web-login \
+                           --entry=__init__.py \
                            projects/odoo
     cd projects/odoo
 
@@ -407,8 +498,8 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
 ### Obfuscate many odoo modules
 
-Suppose there are 3 odoo modules "web-login1", "web-login2",
-"web-login3", they'll be obfuscated separately, but run in the same
+Suppose there are 3 odoo modules `web-login1`, `web-login2`,
+`web-login3`, they'll be obfuscated separately, but run in the same
 python interpreter.
 
 First create common project, then clone to project1, project2, project3
@@ -416,12 +507,12 @@ First create common project, then clone to project1, project2, project3
 ```
     # Create common project "login"
     # Here src is any path
-    python pyarmor.py init --src=/opt/odoo/pyarmor --entry=__init__.py \
+    python pyarmor.py init --type=package --src=/opt/odoo/pyarmor \
+                           --entry=__init__.py \
                            projects/odoo/login
 
     # Configure common project, set runtime-path to an absolute path
-    ./pyarmor config --output=dist  --disable-restrict-mode=1 \
-                     --obf-code-mode=wrap --runtime-path=/opt/odoo/pyarmor
+    ./pyarmor config --output=dist --runtime-path=/opt/odoo/pyarmor \
                      --manifest "global-include *.py, exclude __manifest__.py" \
                      projects/odoo/login
 
@@ -456,13 +547,13 @@ Then build all projects
 Finally distribute obfuscated modules
 
 ```
-    cp -a projects/odoo/login1/dist /path/to/odoo/addons/web-login1
+    cp -a projects/odoo/login1/dist/web-login1 /path/to/odoo/addons
     cp /path/to/web-login1/__manifest__.py /path/to/odoo/addons/web-login1
 
-    cp -a projects/odoo/login2/dist /path/to/odoo/addons/web-login2
+    cp -a projects/odoo/login2/dist/web-login2 /path/to/odoo/addons
     cp /path/to/web-login2/__manifest__.py /path/to/odoo/addons/web-login2
 
-    cp -a projects/odoo/login3/dist /path/to/odoo/addons/web-login3
+    cp -a projects/odoo/login3/dist/web-login3 /path/to/odoo/addons
     cp /path/to/web-login3/__manifest__.py /path/to/odoo/addons/web-login3
 
     # Copy all runtime files to runtime path
@@ -474,11 +565,6 @@ Finally distribute obfuscated modules
 
     # Or copy pytransform.py to any python path
     cp projects/odoo/login/runtimes/pytransform.py /Any/Python/Path
-
-    # Or copy pytransform.py to each module
-    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login1
-    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login2
-    cp projects/odoo/login/dist/pytransform.py /path/to/odoo/addons/web-login3
 
 ```
 
@@ -526,19 +612,10 @@ scripts are obfuscated.
     ./hello.exe
 ```
 
-## Benchmark Test
-
-How about the performance after scripts are obfuscated, run
-**benchmark** in target machine
-
-```
-    python pyarmor.py benchmark
-```
-
-## Configure File
+## Project Configure File
 
 Each project has a configure file. It's a json file named
-`.pyarmor_config.json` stored in the project path, used to specify
+`.pyarmor_config` stored in the project path, used to specify
 scripts to be obfuscated, and how to obfuscate etc.
 
 ### name
@@ -568,6 +645,8 @@ Multi manifest template commands are spearated by comma, for example
     global-include *.py, exclude test*.py
 ```
 
+Refer to https://docs.python.org/2/distutils/sourcedist.html#commands
+
 ### is_package
 
 Available values: 0, 1, None
@@ -576,8 +655,8 @@ When it's set to 1, the basename of `src` will be appended to `output`
 as the final path to save obfuscated scripts, and runtime files are
 still in the path `output`
 
-When init a project, if there is `__init__.py` in the path `src`, it
-will be set to 1, otherwise it's None or 0.
+When init a project and no `--type` specified, it will be set to 1 if
+there is `__init__.py` in the path `src`, otherwise it's None.
 
 ### disable_restrict_mode
 
@@ -590,8 +669,8 @@ When protected python files are module or package, it means obfuscated
 scripts is allowed to be imported by outer scripts, it must be set to
 1.
 
-When init a project, if there is `__init__.py` in the path `src`, it
-will be set to 1, otherwise it's None or 0.
+When init a project and no `--type` specified, it will be set to 1 if
+there is `__init__.py` in the path `src`, otherwise it's None.
 
 ### entry
 
@@ -620,8 +699,7 @@ obfuscated modules.
 
 ### output
 
-A path used to save output of build. It's relative to current path of
-process.
+A path used to save output of build. It's relative to project path.
 
 ### capsule
 
@@ -819,9 +897,11 @@ Enable restrict mode again
 
 ### Use Decorator to Protect Code Object
 
-When restrict mode is disabled, code object can be accessed out of
-obfuscated scripts. In order to solve this leak, define a decorator
-"wraparmor":
+When restrict mode is disabled, there is another way to proetect code
+object can not be accessed out of obfuscated scripts:
+
+Use decorator `wraparmor`
+
 
 ```python
 
@@ -934,4 +1014,3 @@ And decorate all of functions and methods. Refer to
     python hello.py
 
 ```
-
