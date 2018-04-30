@@ -262,7 +262,9 @@ def _build(args):
             make_project_license(capsule, licode, licfile)
 
     if project.entry:
-        make_entry(project.entry, project.src, output, project.runtime_path)
+        make_entry(project.entry, project.src, output,
+                   rpath=project.runtime_path,
+                   ispackage=project.get('is_package'))
     else:
         logging.info('\tIn order to import obfuscated scripts, insert ')
         logging.info('\t2 lines in entry script:')
@@ -510,6 +512,7 @@ def main(args):
     cparser.add_argument('project', nargs='?', metavar='PATH',
                          default='', help='Project path')
     cparser.add_argument('--name')
+    cparser.add_argument('--title')
     cparser.add_argument('--src')
     cparser.add_argument('--output')
     cparser.add_argument('--manifest', metavar='TEMPLATE',
