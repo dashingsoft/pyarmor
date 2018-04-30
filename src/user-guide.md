@@ -63,10 +63,10 @@ path of Pyarmor
 Import obfuscated moduels from a clear python script
 
 ```bash
-    python pyarmor.py obfuscate --type=package --src=examples/py2exe \
-                                --entry=hello.py queens.py
+    python pyarmor.py obfuscate --src=examples/py2exe --entry=hello.py \
+                                --no-restrict queens.py
 
-    # Option --type=package is required, otherwise clear script can not
+    # Option --no-restrict is required, otherwise clear script can not
     # import obfuscated module
     #
     # queens.py is obfuscated. Entry hello.py is clear script. Two extra

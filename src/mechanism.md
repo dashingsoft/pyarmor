@@ -108,11 +108,11 @@ know
 
 ### Implementation
 
-* Use Command `obfuscate` with option `--type=app`
+* Use Command `obfuscate`
 
 ```
     # Obfuscated scripts are saved in default output path "dist"
-    python pyarmor.py obfuscate --type=app --src=examples/simple \
+    python pyarmor.py obfuscate --src=examples/simple \
                                 --entry=queens.py "*.py"
     cd dist
     cat queens.py
@@ -323,15 +323,15 @@ locals in this frame.
 
 From Pyarmor 3.9.0, there are 2 ways
 
-* Use Command `obfuscate` with option `--type=package`
+* Use Command `obfuscate` with option `--no-restrict`
 
 ```
     # Here is a simple case, show how to import obfuscated module
     # 'queens.py' from clear script 'hello.py'
 
     # Obfuscate module with command 'obfuscate'
-    # The key is option 'disable-restrict-mode'
-    python pyarmor.py obfuscate --type=package \
+    # The key is option no-restrict
+    python pyarmor.py obfuscate --no-restrict \
                                 --src=examples/simple \
                                 --entry=hello.py \
                                 queens.py

@@ -1,6 +1,6 @@
 3.9.2
 -----
-* Add option `--type` and remove option `--disable-restrict-mode` for command `obfuscate`
+* Replace option `--disable-restrict-mode` with `--no-restrict` in command `obfuscate`
 * Add option `--title` in command `config`
 * Change the output path of entry scripts when entry scripts belong to package
 * Refine document `user-guide.md` and `mechanism.md`
@@ -12,11 +12,11 @@
 
 3.9.0
 -----
-This version introduces a new way `auto-wrap` to protect python code when it's imported by outer scripts. 
+This version introduces a new way `auto-wrap` to protect python code when it's imported by outer scripts.
 
 Refer to [Mechanism Without Restrict Mode](src/mechanism.md#mechanism-without-restrict-mode)
 
-* Add new mode `wrap` for `--obf-code-mode` 
+* Add new mode `wrap` for `--obf-code-mode`
 * Remove `func.__refcalls__` in `__wraparmor__`
 * Add new project attribute `is_package`
 * Add option `--is-package` in command `config`
