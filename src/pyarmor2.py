@@ -377,7 +377,8 @@ def _obfuscate(args):
     files = Project.build_globfiles(args.patterns, path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
-    if args.disable_restrict_mode:
+    is_package = args.type == 'package'
+    if is_package:
         logging.info('Restrict mode is disabled')
         mode = Project.map_obfuscate_mode(default_obf_module_mode,
                                           'wrap')
@@ -393,12 +394,12 @@ def _obfuscate(args):
 
     logging.info('Make runtime files')
     make_runtime(capsule, output)
-    if args.disable_restrict_mode:
+    if is_package:
         licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
         licfile = os.path.join(output, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
-    
+
     if args.entry:
         make_entry(args.entry, path, output)
     logging.info('Obfuscate %d scripts OK.', len(files))
@@ -471,7 +472,8 @@ def main(args):
     cparser.add_argument('-E', '--entry', metavar='SCRIPT', help='Entry script')
     cparser.add_argument('-S', '--src', required=True,
                          help='Base path for matching python scripts')
-    cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1))
+    cparser.add_argument('-T', '--type', default='app',
+                         choices=('app', 'package'))
     cparser.add_argument('patterns', nargs='*', default=['*.py'],
                          help='File patterns, default is "*.py"')
     cparser.set_defaults(func=_obfuscate)
