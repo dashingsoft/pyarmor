@@ -241,8 +241,8 @@ it used by clear script `examples/testpkg/main.py`
     ./pyarmor config --manifest="global-include *.py, exclude __init__.py, prune test"
 
     # Force rebuild all
-    # Note that pyarmor will not copy "__init__.py" to output path,
-    # which has been excluded from project
+    # Note that pyarmor will not copy "__init__.py" to output path, which has
+    # been excluded from project
     #
     ./pyarmor build --force
 
@@ -912,7 +912,7 @@ Enable restrict mode again
 ### Use Decorator to Protect Code Object
 
 When restrict mode is disabled, there is another way to proetect code
-object not be accessed out of obfuscated scripts.
+object not to be accessed from outer clear scripts.
 
 First define decorator `wraparmor`
 

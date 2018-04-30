@@ -166,116 +166,6 @@ Use command `config` to configure other obfuscate modes:
 
 ```
 
-### Performance Analaysis
-
-With default configuration, Pyarmor will do the following extra work
-to run or import obfuscated bytecode:
-
-- Load library _pytransform at startup
-- Initialize library _pytransform at startup
-- Veirfy license at startup
-- Restore obfuscated code object of python module
-- Restore obfuscated bytecode when code object is called first time
-
-There is command "benchmark" used to run benchmark test
-
-```
-    usage: pyarmor.py benchmark [-h] [--obf-module-mode {none,des}]
-                                [--obf-code-mode {none,des,fast}]
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      -m, --obf-module-mode {none,des}
-      -c, --obf-code-mode {none,des,fast}
-```
-
-For example, run test in default mode
-
-```
-    python pyarmor.py benchmark
-
-    INFO     Start benchmark test ...
-    INFO     Obfuscate module mode: des
-    INFO     Obfuscate bytecode mode: des
-    INFO     Benchmark bootstrap ...
-    INFO     Benchmark bootstrap OK.
-    INFO     Run benchmark test ...
-    load_pytransform: 6.35248334635 ms
-    init_pytransform: 3.85942906151 ms
-    verify_license: 0.730260410192 ms
-
-    Test script: bfoo.py
-    Obfuscated script: obfoo.py
-    Start test with mode 8
-    --------------------------------------
-
-    import_no_obfuscated_module: 10.3613727443 ms
-    import_obfuscated_module: 8.09683912341 ms
-
-    run_empty_no_obfuscated_code_object: 0.00502857206712 ms
-    run_empty_obfuscated_code_object: 0.0433015928002 ms
-
-    run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
-    run_one_thousand_obfuscated_bytecode: 0.11426033197 ms
-
-    run_ten_thousand_no_obfuscated_bytecode: 0.00474920695228 ms
-    run_ten_thousand_obfuscated_bytecode: 0.72383501255 ms
-    INFO     Finish benchmark test.
-
-```
-
-Here it's a normal license checked by verify_license. If the license
-is bind to fixed machine, for example, mac address, it need more time
-to read hardware information.
-
-import_obfuscated_module will first restore obfuscated code object,
-then import this pre-compiled code object.
-
-The bytecode size of function one_thousand is about 1K, and
-ten_thousand is about 10K. Most of them will not be executed, because
-they're in False condition for ever. So run_empty, run_one_thousand,
-run_ten_thousand are almost same in non-obfuscated mode, about 0.004
-ms.
-
-In obfuscated mode, it's about 0.1 ms for 1K bytecoe, and 0.7~0.8 ms
-for 10K bytecode in my laptop. It's mainly consumed by restoring
-obfuscated bytecodes.
-
-See another mode, only module obfuscated
-
-```
-    python pyarmor.py benchmark --obf-code-mode=none
-    INFO     Start benchmark test ...
-    INFO     Obfuscate module mode: des
-    INFO     Obfuscate bytecode mode: none
-    INFO     Benchmark bootstrap ...
-    INFO     Benchmark bootstrap OK.
-    INFO     Run benchmark test ...
-    load_pytransform: 7.96721371012 ms
-    init_pytransform: 3.8571941406 ms
-    verify_license: 0.728025489273 ms
-
-    Test script: bfoo.py
-    Obfuscated script: obfoo.py
-    Start test with mode 7
-    --------------------------------------
-
-    import_no_obfuscated_module: 10.7399124749 ms
-    import_obfuscated_module: 8.19601373918 ms
-
-    run_empty_no_obfuscated_code_object: 0.00530793718196 ms
-    run_empty_obfuscated_code_object: 0.00391111160776 ms
-
-    run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
-    run_one_thousand_obfuscated_bytecode: 0.00391111160776 ms
-
-    run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
-    run_ten_thousand_obfuscated_bytecode: 0.00391111160776 ms
-    INFO     Finish benchmark test.
-
-```
-It's even faster than no obfuscated scripts!
-
 ## Mechanism Without Restrict Mode
 
 This feature is introuced from v3.9.0
@@ -376,6 +266,116 @@ From Pyarmor 3.9.0, there are 2 ways
     python main.py
 
 ```
+
+## Performance Analaysis
+
+With default configuration, Pyarmor will do the following extra work
+to run or import obfuscated bytecode:
+
+- Load library _pytransform at startup
+- Initialize library _pytransform at startup
+- Veirfy license at startup
+- Restore obfuscated code object of python module
+- Restore obfuscated bytecode when code object is called first time
+
+There is command "benchmark" used to run benchmark test
+
+```
+    usage: pyarmor.py benchmark [-h] [--obf-module-mode {none,des}]
+                                [--obf-code-mode {none,des,fast}]
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -m, --obf-module-mode {none,des}
+      -c, --obf-code-mode {none,des,fast,wrap}
+```
+
+For example, run test in default mode
+
+```
+    python pyarmor.py benchmark
+
+    INFO     Start benchmark test ...
+    INFO     Obfuscate module mode: des
+    INFO     Obfuscate bytecode mode: des
+    INFO     Benchmark bootstrap ...
+    INFO     Benchmark bootstrap OK.
+    INFO     Run benchmark test ...
+    load_pytransform: 6.35248334635 ms
+    init_pytransform: 3.85942906151 ms
+    verify_license: 0.730260410192 ms
+
+    Test script: bfoo.py
+    Obfuscated script: obfoo.py
+    Start test with mode 8
+    --------------------------------------
+
+    import_no_obfuscated_module: 10.3613727443 ms
+    import_obfuscated_module: 8.09683912341 ms
+
+    run_empty_no_obfuscated_code_object: 0.00502857206712 ms
+    run_empty_obfuscated_code_object: 0.0433015928002 ms
+
+    run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+    run_one_thousand_obfuscated_bytecode: 0.11426033197 ms
+
+    run_ten_thousand_no_obfuscated_bytecode: 0.00474920695228 ms
+    run_ten_thousand_obfuscated_bytecode: 0.72383501255 ms
+    INFO     Finish benchmark test.
+
+```
+
+Here it's a normal license checked by verify_license. If the license
+is bind to fixed machine, for example, mac address, it need more time
+to read hardware information.
+
+import_obfuscated_module will first restore obfuscated code object,
+then import this pre-compiled code object.
+
+The bytecode size of function one_thousand is about 1K, and
+ten_thousand is about 10K. Most of them will not be executed, because
+they're in False condition for ever. So run_empty, run_one_thousand,
+run_ten_thousand are almost same in non-obfuscated mode, about 0.004
+ms.
+
+In obfuscated mode, it's about 0.1 ms for 1K bytecoe, and 0.7~0.8 ms
+for 10K bytecode in my laptop. It's mainly consumed by restoring
+obfuscated bytecodes.
+
+See another mode, only module obfuscated
+
+```
+    python pyarmor.py benchmark --obf-code-mode=none
+    INFO     Start benchmark test ...
+    INFO     Obfuscate module mode: des
+    INFO     Obfuscate bytecode mode: none
+    INFO     Benchmark bootstrap ...
+    INFO     Benchmark bootstrap OK.
+    INFO     Run benchmark test ...
+    load_pytransform: 7.96721371012 ms
+    init_pytransform: 3.8571941406 ms
+    verify_license: 0.728025489273 ms
+
+    Test script: bfoo.py
+    Obfuscated script: obfoo.py
+    Start test with mode 7
+    --------------------------------------
+
+    import_no_obfuscated_module: 10.7399124749 ms
+    import_obfuscated_module: 8.19601373918 ms
+
+    run_empty_no_obfuscated_code_object: 0.00530793718196 ms
+    run_empty_obfuscated_code_object: 0.00391111160776 ms
+
+    run_one_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+    run_one_thousand_obfuscated_bytecode: 0.00391111160776 ms
+
+    run_ten_thousand_no_obfuscated_bytecode: 0.00446984183744 ms
+    run_ten_thousand_obfuscated_bytecode: 0.00391111160776 ms
+    INFO     Finish benchmark test.
+
+```
+It's even faster than no obfuscated scripts!
 
 # DEPRECATED Mode
 
