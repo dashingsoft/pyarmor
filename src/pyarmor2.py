@@ -99,10 +99,9 @@ EXAMPLES
     logging.info('Python scripts base path: %s', src)
 
     name = os.path.basename(os.path.abspath(path))
-    if (args.type == 'package') or \
+    if (args.type == 'package') or (args.type == 'pkg') or \
        (args.type == 'auto' and os.path.exists(os.path.join(src, '__init__.py'))):
-        logging.info('Found __init__.py in src path,'
-                     'project is configured as package')
+        logging.info('Project is configured as package')
         project = Project(name=name, title=name, src=src, entry=args.entry,
                           is_package=1, obf_code_mode='wrap',
                           disable_restrict_mode=1)
@@ -149,6 +148,9 @@ def _clone(args):
     project._update(dict(name=name, title=name, src=src, entry=args.entry))
     project.save(path)
 
+    if args.type != 'auto':
+        logging.info('Option --type is ignored when --clone is specified')
+
     logging.info('Create pyarmor command ...')
     script = make_command(plat_name, sys.executable, sys.argv[0], path)
     logging.info('Pyarmor command %s created', script)
@@ -189,6 +191,7 @@ Examples,
 
     if args.src is not None:
         args.src = os.path.abspath(args.src)
+        logging.info('Change src to absolute path: %s', args.src)
     keys = project._update(dict(args._get_kwargs()))
     logging.info('Changed attributes: %s', keys)
 
@@ -204,14 +207,17 @@ def _info(args):
 
 @armorcommand
 def _build(args):
-    '''Build project, obfuscate all files in the project'''
+    '''Build project, obfuscate all scripts in the project.'''
     project = Project()
     project.open(args.project)
     logging.info('Build project %s ...', args.project)
-    capsule = build_path(project.capsule, args.project)
 
-    output = build_path(project.output, args.project) if args.output is None \
-             else args.output
+    capsule = build_path(project.capsule, args.project)
+    logging.info('Use capsule: %s', capsule)
+
+    output = build_path(project.output, args.project) \
+             if args.output is None else args.output
+    logging.info('Output path is: %s', output)
 
     if not args.only_runtime:
         mode = project.get_obfuscate_mode()
@@ -277,7 +283,29 @@ def _build(args):
 def _licenses(args):
     '''Generate licenses for this project.
 
-Use command hdinfo to get hardware information.
+In order to bind licenses to fixed machine, use command hdinfo to get
+all available hardware information:
+
+    python pyarmor.py hdinfo
+
+Examples,
+
+* Expired license
+
+    python pyarmor.py licenses --project=projects/myproject \
+                               --expired=2018-05-12 Customer-Jordan
+
+* Bind license to fixed harddisk and expired someday
+
+    cd projects/myproject
+    ./pyarmor licenses -e 2018-05-12 \
+                       --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
+
+* Batch expired licenses for many customers
+
+    cd projects/myproject
+    ./pyarmor licenses -e 2018-05-12 Customer-A Customer-B Customer-C
+
     '''
     logging.info('Generate licenses for project %s ...', args.project)
 
@@ -371,7 +399,9 @@ def _obfuscate(args):
     logging.info('Obfuscate scripts in path "%s" ...', path)
 
     capsule = os.path.join(path, capsule_filename)
-    if not os.path.exists(capsule):
+    if os.path.exists(capsule):
+        logging.info('Use cached capsule %s', capsule)
+    else:
         logging.info('Generate capsule %s', capsule)
         make_capsule(capsule)
 
@@ -450,7 +480,7 @@ def main(args):
     parser = argparse.ArgumentParser(
         prog='pyarmor.py',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='pyarmor used to import or run obfuscated python scripts.',
+        description='Pyarmor used to import or run obfuscated python scripts.',
         epilog=__doc__,
     )
     parser.add_argument('-v', '--version', action='version',
@@ -470,8 +500,8 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts')
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
-    cparser.add_argument('-E', '--entry', metavar='SCRIPT', help='Entry script')
-    cparser.add_argument('-S', '--src', required=True,
+    cparser.add_argument('-e', '--entry', metavar='SCRIPT', help='Entry script')
+    cparser.add_argument('-s', '--src', required=True,
                          help='Base path for matching python scripts')
     cparser.add_argument('-d', '--no-restrict', action='store_true',
                          help='Disable restrict mode');
@@ -488,11 +518,11 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Create an empty project to manage obfuscated scripts'
     )
-    cparser.add_argument('-T', '--type', default='auto',
-                         choices=('auto', 'app', 'package'))
-    cparser.add_argument('-E', '--entry',
+    cparser.add_argument('-t', '--type', default='auto',
+                         choices=('auto', 'app', 'package', 'pkg'))
+    cparser.add_argument('-e', '--entry',
                          help='Entry script of this project')
-    cparser.add_argument('-S', '--src', required=True,
+    cparser.add_argument('-s', '--src', required=True,
                          help='Base path of python scripts')
     cparser.add_argument('-C', '--clone', metavar='PATH',
                          help='Clone project configuration from this path')
