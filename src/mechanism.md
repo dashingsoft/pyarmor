@@ -108,7 +108,40 @@ know
 
 ### Implementation
 
-From Pyarmor 3.4, use the following commands to configure obfuscate mode:
+* Use Command `obfuscate` with option `--type=app`
+
+```
+    # Obfuscated scripts are saved in default output path "dist"
+    python pyarmor.py obfuscate --type=app --src=examples/simple \
+                                --entry=queens.py "*.py"
+    cd dist
+    cat queens.py
+
+    # Run obfuscated script
+    python queens.py
+
+```
+
+* Use command `init` to create project configured as application
+
+
+```
+    mkdir projects
+    python pyarmor.py init --type=app --src=/PATH/TO/SCRIPTS \
+                           --entry=main.py projects/myapp
+    cd projects/myapp
+
+    # Now obfuscate scripts
+    cd projects/myapp
+    ./pyarmor build
+
+    # Run obfuscated scripts
+    cd dist
+    python main.py
+
+```
+
+Use command `config` to configure other obfuscate modes:
 
 ```
     # First create a project to manage obfuscated scripts
@@ -290,7 +323,7 @@ locals in this frame.
 
 From Pyarmor 3.9.0, there are 2 ways
 
-* Use Command `obfuscate` with option `--disable-restrict-mode`
+* Use Command `obfuscate` with option `--type=package`
 
 ```
     # Here is a simple case, show how to import obfuscated module
@@ -298,8 +331,8 @@ From Pyarmor 3.9.0, there are 2 ways
 
     # Obfuscate module with command 'obfuscate'
     # The key is option 'disable-restrict-mode'
-    python pyarmor.py obfuscate --src=examples/simple \
-                                --disable-restrict-mode=1 \
+    python pyarmor.py obfuscate --type=package \
+                                --src=examples/simple \
                                 --entry=hello.py \
                                 queens.py
 

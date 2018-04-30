@@ -52,10 +52,10 @@ path of Pyarmor
 Import obfuscated moduels in a normal python scripts
 
 ```
-    python pyarmor.py obfuscate --src=examples/py2exe --entry=hello.py \
-                                --disable-restrict-mode=1 queens.py
+    python pyarmor.py obfuscate --type=package --src=examples/py2exe \
+                                --entry=hello.py queens.py
 
-    # Option --disable-restrict-mode=1 is required, otherwise outer scripts
+    # Option --type=package is required, otherwise outer scripts
     # can not import obfuscated module
     #
     # queens.py is obfuscated. Entry hello.py is not. Only two extra lines are
@@ -210,7 +210,7 @@ For package which used by other scripts:
 machine. To be exact, the magic string value used to recognize
 byte-compiled code files (.pyc files) must be same.
 
-#### License of Obfuscated Scripts
+### License of Obfuscated Scripts
 
 There is a file **license.lic** in the output path "dist", the default
 one permits the obfuscated scripts run in any machine and never
@@ -280,7 +280,7 @@ it's not difficult to build for any other platform, even for embeded
 system. Contact <jondy.zhao@gmail.com> if you'd like to run encrypted
 scripts in other platform.
 
-#### Run Pyarmor with debug mode
+### Run Pyarmor with debug mode
 
 By default, pyarmor prints simple message when something is wrong,
 turn on debug mode to print all the trace stack
@@ -289,7 +289,7 @@ turn on debug mode to print all the trace stack
     python -d pyarmor.py ...
 ```
 
-#### Use runtime path
+### Use runtime path
 
 There are several extra files should be distributed with obfuscated
 scripts. They're called **runtime files**
@@ -322,194 +322,51 @@ obfuscated scripts. Use runtime path to specify where to find
     cp ./runtimes/* /path/to/runtime-files
 ```
 
-#### Restrict Mode
+### Keypoints of Using Obfuscated Scripts
 
-Restrict mode is instroduced from Pyarmor v3.6.
+* Obfuscated script is a normal python script, so it can be seamless
+  to replace original script.
 
-In restrict mode, obfuscated scripts must be one of the following formats:
+* There is only one thing changed, the following code must be run
+  before using any obfuscated script.
 
 ```
-    __pyarmor__(__name__, __file__, b'...')
-
-Or
-
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-    __pyarmor__(__name__, __file__, b'...')
+```
 
-Or
+* In restrict mode, it must be in the entry scripts. If restrict mode
+  is disabled, it can be put in any script anywhere, only if it run in
+  the same Python interpreter. It will create some builtin function to
+  deal with obfuscated code.
 
+* The extra runtime file `pytransform.py` must be in any Python path
+  in target machine.
+
+* `pytransform.py` need load dynamic library `_pytransform`. It may be
+  `_pytransform.so` in Linux, `_pytransform.dll` in Windows,
+  `_pytransform.dylib` in MacOS. It's dependent-platform, download the
+  right one to the same path of `pytransform.py` according to target
+  platform. All the prebuilt dynamic libraries
+  list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
+
+* By default `pytransform.py` search dynamic library `_pytransform` in
+  the same path. Check `pytransform.py!_load_library` to find the
+  details.
+
+* All the other **runtime files** should in the same path as dynamic
+  library `_pytransform`.
+
+* If runtime files locate in some other path, change bootstrap code:
+
+```
     from pytransform import pyarmor_runtime
-    pyarmor_runtime('...')
-    __pyarmor__(__name__, __file__, b'...')
-
+    pyarmor_runtime('/path/to/runtime-files')
 ```
 
-And obfuscated script must be imported from obfuscated script. No any
-other statement can be inserted into obfuscated scripts. For examples,
+## Examples
 
-```
-    $ cat a.py
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-    __pyarmor__(__name__, __file__, b'...')
-
-    $ python a.py
-
-```
-It works.
-
-```
-    $ cat b.py
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-    __pyarmor__(__name__, __file__, b'...')
-    print(__name__)
-
-    $ python b.py
-
-```
-It doesn't work, because there is an extra code "print"
-
-```
-    $ cat c.py
-    __pyarmor__(__name__, __file__, b'...')
-
-    $ cat main.py
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-    import c
-
-    $ python main.py
-
-```
-
-It doesn't work, because obfuscated script "c.py" can NOT be imported
-from no obfuscated scripts in restrict mode
-
-
-```
-    $ cat d.py
-    import c
-    c.hello()
-
-    # Then obfuscate d.py
-    $ cat d.py
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-    __pyarmor__(__name__, __file__, b'...')
-
-
-    $ python d.py
-
-```
-It works.
-
-So restrict mode can avoid obfuscated scripts observed from no obfuscated code.
-
-Sometimes restrict mode is not suitable, for example, a package used
-by other scripts. Other clear scripts can not import obfuscated
-package in restrict mode. So it need to disable restrict mode, and set
-`obf-code-mode` to `wrap`
-
-```
-    # Create project at first
-    python pyarmor.py init --src=examples/py2exe --entry=hello.py projects/testmod
-
-    # Disable restrict mode by command "config"
-    # Use 'wrap' mode to obfuscate code objects
-    # And only obfuscate queens.py
-
-    cd projects/testmod
-    ./pyarmor config --manifest="include queens.py" --disable-restrict-mode=1 \
-                     --obf-code-mode=wrap projects/testmod
-
-    # Obfuscate queens.py
-    ./pyarmor build
-
-    # Import obfuscated queens.py from no obfuscated script hello.py
-    cd dist
-    python hello.py
-
-```
-
-The mode `wrap` is introduced from v3.9.0, it will obfuscate code
-object again as soon as this code object returns.
-
-Refer to [Mechanism Without Restrict Mode](mechanism.md#mechanism-without-restrict-mode)
-
-Enable restrict mode again
-
-```
-    python pyarmor.py config --disable-restrict-mode=0 --obf-code-mode=des projects/testmod
-```
-
-#### Use decorator to protect code objects when disable restrict mode
-
-When restrict mode is disabled, code object can be accessed out of
-obfuscated scripts. In order to solve this leak, define a decorator
-"wraparmor":
-
-```python
-
-# For Python 2
-from __builtin__ import __wraparmor__
-
-# For Python 3
-from builtins import __wraparmor__
-
-def wraparmor(func):
-    def wrapper(*args, **kwargs):
-         __wraparmor__(func)
-         tb = None
-         try:
-             return func(*args, **kwargs)
-         except Exception as err:
-             tb = sys.exc_info()[2]
-             raise err
-         finally:
-             __wraparmor__(func, tb, 1)
-    wrapper.__module__ = func.__module__
-    wrapper.__name__ = func.__name__
-    wrapper.__doc__ = func.__doc__
-    wrapper.__dict__.update(func.__dict__)
-    return wrapper
-
-```
-
-PyCFunction `__wraparmor__` will be added into builtins module when
-call **pyarmor_runtime**. It can be used in the decorator `wraparmor`
-only. The due is to restore func_code before function call, and
-obfuscate func_code after function return.
-
-Add this decorator to any function which intend to be protect, for
-example,
-
-``` python
-
-@wraparmor
-def main():
-    pass
-
-class Queens:
-
-    @wraparmor
-    def __init__(self):
-        pass
-
-    @staticmethod
-    @wraparmor
-    def check(cls):
-        pass
-
-```
-
-Note that source code of decorator "wraparmor" should be in any of
-obfuscated scripts.
-
-### Examples
-
-#### Obfuscate odoo module
+### Obfuscate odoo module
 
 There is odoo module "web-login":
 
@@ -548,7 +405,7 @@ Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
 ```
 
-#### Obfuscate many odoo modules
+### Obfuscate many odoo modules
 
 Suppose there are 3 odoo modules "web-login1", "web-login2",
 "web-login3", they'll be obfuscated separately, but run in the same
@@ -627,7 +484,7 @@ Finally distribute obfuscated modules
 
 Now restart odoo server.
 
-#### py2exe with obfuscated scripts
+### py2exe with obfuscated scripts
 
 The problem is that all the scripts is in a zip file "library.zip"
 after py2exe packages obfuscated scripts.
@@ -669,61 +526,6 @@ scripts are obfuscated.
     ./hello.exe
 ```
 
-#### Protect module with decorator "wraparmor"
-
-Here is an example **examples/testmod**, entry script is **hello.py**,
-and it's not obfuscated. It will import obfuscated module **queens**,
-and try to disassemble some functions in this module. In order to
-protect those code object, add extra decorator at the begin:
-
-
-``` python
-    try:
-        from builtins import __wraparmor__
-    except Exception:
-        from __builtin__ import __wraparmor__
-    def wraparmor(func):
-        def wrapper(*args, **kwargs):
-             __wraparmor__(func)
-             tb = None
-             try:
-                 return func(*args, **kwargs)
-             except Exception:
-                 tb = sys.exc_info()[2]
-                 raise
-             finally:
-                 __wraparmor__(func, tb, 1)
-        wrapper.__module__ = func.__module__
-        wrapper.__name__ = func.__name__
-        wrapper.__doc__ = func.__doc__
-        wrapper.__dict__.update(func.__dict__)
-        # Only for test
-        wrapper.orig_func = func
-        return wrapper
-```
-
-And decorate all of functions and methods. Refer to
-**examples/testmod/queens.py**
-
-``` bash
-    # Create project
-    python pyarmor.py init --src=examples/testmod --entry=hello.py projects/testmod
-
-    # Change to this project
-    cd projects/testmod
-
-    # Configure this project
-    ./pyarmor config --manifest="include queens.py" --disable-restrict-mode=1
-
-    # Obfuscate queens.py
-    ./pyarmor build
-
-    # Import obfuscated queens.py from hello.py
-    cd dist
-    python hello.py
-
-```
-
 ## Benchmark Test
 
 How about the performance after scripts are obfuscated, run
@@ -733,51 +535,10 @@ How about the performance after scripts are obfuscated, run
     python pyarmor.py benchmark
 ```
 
-## Keypoints of Using Obfuscated Scripts
-
-* Obfuscated script is a normal python script, so it can be seamless
-  to replace original script.
-
-* There is only one thing changed, the following code must be run
-  before using any obfuscated script.
-
-```
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-```
-
-* In restrict mode, it must be in the entry scripts. If restrict mode
-  is disabled, it can be put in any script anywhere, only if it run in
-  the same Python interpreter. It will create some builtin function to
-  deal with obfuscated code.
-
-* The extra runtime file `pytransform.py` must be in any Python path
-  in target machine.
-
-* `pytransform.py` need load dynamic library `_pytransform`. It may be
-  `_pytransform.so` in Linux, `_pytransform.dll` in Windows,
-  `_pytransform.dylib` in MacOS. It's dependent-platform, download the
-  right one to the same path of `pytransform.py` according to target
-  platform. All the prebuilt dynamic libraries
-  list [here](http://pyarmor.dashingsoft.com/downloads/platforms/)
-
-* By default `pytransform.py` search dynamic library `_pytransform` in
-  the same path. Check `pytransform.py!_load_library` to find the
-  details.
-
-* All the other **runtime files** should in the same path as dynamic
-  library `_pytransform`.
-
-* If runtime files locate in some other path, change bootstrap code:
-
-```
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime('/path/to/runtime-files')
-```
-
 ## Configure File
 
-Each project has a configure file. It's a json file, used to specify
+Each project has a configure file. It's a json file named
+`.pyarmor_config.json` stored in the project path, used to specify
 scripts to be obfuscated, and how to obfuscate etc.
 
 ### name
@@ -931,3 +692,246 @@ See online document
 ```
     python pyarmor.py <command> --help
 ```
+
+## Appendix
+
+### Restrict Mode
+
+Restrict mode is instroduced from Pyarmor v3.6.
+
+In restrict mode, obfuscated scripts must be one of the following formats:
+
+```
+    __pyarmor__(__name__, __file__, b'...')
+
+Or
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, __file__, b'...')
+
+Or
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime('...')
+    __pyarmor__(__name__, __file__, b'...')
+
+```
+
+And obfuscated script must be imported from obfuscated script. No any
+other statement can be inserted into obfuscated scripts. For examples,
+
+```
+    $ cat a.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, __file__, b'...')
+
+    $ python a.py
+
+```
+It works.
+
+```
+    $ cat b.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, __file__, b'...')
+    print(__name__)
+
+    $ python b.py
+
+```
+It doesn't work, because there is an extra code "print"
+
+```
+    $ cat c.py
+    __pyarmor__(__name__, __file__, b'...')
+
+    $ cat main.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    import c
+
+    $ python main.py
+
+```
+
+It doesn't work, because obfuscated script "c.py" can NOT be imported
+from no obfuscated scripts in restrict mode
+
+
+```
+    $ cat d.py
+    import c
+    c.hello()
+
+    # Then obfuscate d.py
+    $ cat d.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, __file__, b'...')
+
+
+    $ python d.py
+
+```
+It works.
+
+So restrict mode can avoid obfuscated scripts observed from no obfuscated code.
+
+Sometimes restrict mode is not suitable, for example, a package used
+by other scripts. Other clear scripts can not import obfuscated
+package in restrict mode. So it need to disable restrict mode, and set
+`obf-code-mode` to `wrap`
+
+```
+    # Create project at first
+    python pyarmor.py init --src=examples/py2exe --entry=hello.py projects/testmod
+
+    # Disable restrict mode by command "config"
+    # Use 'wrap' mode to obfuscate code objects
+    # And only obfuscate queens.py
+
+    cd projects/testmod
+    ./pyarmor config --manifest="include queens.py" --disable-restrict-mode=1 \
+                     --obf-code-mode=wrap projects/testmod
+
+    # Obfuscate queens.py
+    ./pyarmor build
+
+    # Import obfuscated queens.py from no obfuscated script hello.py
+    cd dist
+    python hello.py
+
+```
+
+The mode `wrap` is introduced from v3.9.0, it will obfuscate code
+object again as soon as this code object returns.
+
+Refer to [Mechanism Without Restrict Mode](mechanism.md#mechanism-without-restrict-mode)
+
+Enable restrict mode again
+
+```
+    python pyarmor.py config --disable-restrict-mode=0 --obf-code-mode=des projects/testmod
+```
+
+### Use Decorator to Protect Code Object
+
+When restrict mode is disabled, code object can be accessed out of
+obfuscated scripts. In order to solve this leak, define a decorator
+"wraparmor":
+
+```python
+
+# For Python 2
+from __builtin__ import __wraparmor__
+
+# For Python 3
+from builtins import __wraparmor__
+
+def wraparmor(func):
+    def wrapper(*args, **kwargs):
+         __wraparmor__(func)
+         tb = None
+         try:
+             return func(*args, **kwargs)
+         except Exception as err:
+             tb = sys.exc_info()[2]
+             raise err
+         finally:
+             __wraparmor__(func, tb, 1)
+    wrapper.__module__ = func.__module__
+    wrapper.__name__ = func.__name__
+    wrapper.__doc__ = func.__doc__
+    wrapper.__dict__.update(func.__dict__)
+    return wrapper
+
+```
+
+PyCFunction `__wraparmor__` will be added into builtins module when
+call **pyarmor_runtime**. It can be used in the decorator `wraparmor`
+only. The due is to restore func_code before function call, and
+obfuscate func_code after function return.
+
+Add this decorator to any function which intend to be protect, for
+example,
+
+``` python
+
+@wraparmor
+def main():
+    pass
+
+class Queens:
+
+    @wraparmor
+    def __init__(self):
+        pass
+
+    @staticmethod
+    @wraparmor
+    def check(cls):
+        pass
+
+```
+
+Note that source code of decorator "wraparmor" should be in any of
+obfuscated scripts.
+
+#### Protect module with decorator "wraparmor"
+
+Here is an example **examples/testmod**, entry script is **hello.py**,
+and it's not obfuscated. It will import obfuscated module **queens**,
+and try to disassemble some functions in this module. In order to
+protect those code object, add extra decorator at the begin:
+
+
+``` python
+    try:
+        from builtins import __wraparmor__
+    except Exception:
+        from __builtin__ import __wraparmor__
+    def wraparmor(func):
+        def wrapper(*args, **kwargs):
+             __wraparmor__(func)
+             tb = None
+             try:
+                 return func(*args, **kwargs)
+             except Exception:
+                 tb = sys.exc_info()[2]
+                 raise
+             finally:
+                 __wraparmor__(func, tb, 1)
+        wrapper.__module__ = func.__module__
+        wrapper.__name__ = func.__name__
+        wrapper.__doc__ = func.__doc__
+        wrapper.__dict__.update(func.__dict__)
+        # Only for test
+        wrapper.orig_func = func
+        return wrapper
+```
+
+And decorate all of functions and methods. Refer to
+**examples/testmod/queens.py**
+
+``` bash
+    # Create project
+    python pyarmor.py init --src=examples/testmod --entry=hello.py projects/testmod
+
+    # Change to this project
+    cd projects/testmod
+
+    # Configure this project
+    ./pyarmor config --manifest="include queens.py" --disable-restrict-mode=1
+
+    # Obfuscate queens.py
+    ./pyarmor build
+
+    # Import obfuscated queens.py from hello.py
+    cd dist
+    python hello.py
+
+```
+
