@@ -1,6 +1,9 @@
 3.9.2
 -----
 * Add option `--type` and remove option `--disable-restrict-mode` for command `obfuscate`
+* Add option `--title` in command `config`
+* Change the output path of entry scripts when entry scripts belong to package
+* Refine document `user-guide.md` and `mechanism.md`
 
 3.9.1
 -----
