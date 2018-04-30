@@ -90,21 +90,21 @@ Import obfuscated moduels from a clear python script
 It's better to create a project to manage these obfuscated scripts,
 there are the several advantages:
 
-* Filter scripts to be obufscated by manifest commands
-
 * Increment build, only updated scripts are obfuscated since last
   build
 
 * Obfuscate scripts by more modes
 
-* More convenient command
+* Filter obfuscated scripts in the src path of project
+
+* More convenient to manage obfuscated scripts
 
 There are 2 project types:
 
-* Application or called Standalone Package
+* Application, or called Standalone Package
 * Package used by other clear scripts
 
-For standalone package, all the obfuscated python scripts only used by
+For application, all the obfuscated python scripts only used by
 package self. Pyarmor uses a simple and efficient way to protect
 Python scripts.
 
@@ -227,18 +227,22 @@ it used by clear script `examples/testpkg/main.py`
 ```bash
     cd projects/testpkg
     ./pyarmor config --title="My Package"
+
+    ./pyarmor config --help
 ```
 
-* Filter obfuscated scripts
+* Use option `--manifest` to specify obfuscated scripts
 
 ```bash
     cd projects/testpkg
 
     # Exclude "__init__.py" from project, it will not be obfuscated
-    ./pyarmor config --manifest="global-include *.py, exclude __init__.py"
+    # Exclude all the files in test
+    ./pyarmor config --manifest="global-include *.py, exclude __init__.py, prune test"
 
     # Force rebuild all
-    # Note that pyarmor will not copy "__init__.py" to output path
+    # Note that pyarmor will not copy "__init__.py" to output path,
+    # which has been excluded from project
     #
     ./pyarmor build --force
 
@@ -256,7 +260,7 @@ it used by clear script `examples/testpkg/main.py`
     ./pyarmor build --force
 ```
 
-Refer to [Project Configure File](#project-configure-file)
+About project configuration information, refer to [Project Configure File](#project-configure-file)
 
 ### Distribute Obfuscated Scripts
 
@@ -646,7 +650,7 @@ It means all files anywhere in the **src** tree matching.
 Multi manifest template commands are spearated by comma, for example
 
 ```
-    global-include *.py, exclude test*.py
+    global-include *.py, exclude __mainfest__.py, prune test
 ```
 
 Refer to https://docs.python.org/2/distutils/sourcedist.html#commands
@@ -748,8 +752,8 @@ How to obfuscate byte code of each code object:
 
     Refer to [Mechanism Without Restrict Mode](mechanism.md#mechanism-without-restrict-mode)
 
-When init a project, if there is `__init__.py` in the path `src`, it
-will be set to `wrap`, otherwise it's `des`.
+The default value is `wrap` when `disable_restrict_mode` is set to 1,
+it's `des` in any other case
 
 ### runtime_path
 
