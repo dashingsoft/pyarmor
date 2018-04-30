@@ -68,9 +68,9 @@ check_file_content dist/queens.py '__pyarmor__(__name__'
 ( cd dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions'
 
-csih_inform "Case 1.2: obfuscate script with disable-restrict-mode"
+csih_inform "Case 1.2: obfuscate script with --type=package"
 $PYARMOR obfuscate --src examples/py2exe --entry hello.py --output dist2 \
-                   --disable-restrict-mode=1 queens.py  >result.log 2>&1
+                   --type=package queens.py  >result.log 2>&1
 
 check_return_value
 check_file_exists dist2/hello.py
