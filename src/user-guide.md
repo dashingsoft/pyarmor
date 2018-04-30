@@ -33,7 +33,7 @@ analogous commands for each.
 Obfuscate a simple script **examples/simple/queens.py** in the source
 path of Pyarmor
 
-```
+```bash
     python pyarmor.py obfuscate --src=examples/simple --entry=queens.py "*.py"
 
     # Note that quotation mark is required for file patterns, otherwise
@@ -62,7 +62,7 @@ path of Pyarmor
 
 Import obfuscated moduels from a clear python script
 
-```
+```bash
     python pyarmor.py obfuscate --type=package --src=examples/py2exe \
                                 --entry=hello.py queens.py
 
@@ -119,7 +119,7 @@ This example show how to obfuscate a standalone python package
 **pybench**, which locates in the **examples/pybench** in the source
 of pyarmor.
 
-```
+```bash
     mkdir projects
 
     # Use command 'init' to create a project configured as application.
@@ -158,7 +158,7 @@ of pyarmor.
 
 After some source scripts changed, just run **build** again
 
-```
+```bash
     cd projects/pybench
     ./pyarmor build
 ```
@@ -167,7 +167,7 @@ After some source scripts changed, just run **build** again
 This example show how to obfuscate a package `examples/testpkg/mypkg`,
 it used by clear script `examples/testpkg/main.py`
 
-```
+```bash
     # First create project with command 'init'
     #
     # This command will create a project configured as package
@@ -217,21 +217,21 @@ it used by clear script `examples/testpkg/main.py`
 
 * Show project information by command `info`
 
-```
+```bash
     cd projects/testpkg
     ./pyarmor info
 ```
 
 * Change project information by command `config`
 
-```
+```bash
     cd projects/testpkg
     ./pyarmor config --title="My Package"
 ```
 
 * Filter obfuscated scripts
 
-```
+```bash
     cd projects/testpkg
 
     # Exclude "__init__.py" from project, it will not be obfuscated
@@ -246,7 +246,7 @@ it used by clear script `examples/testpkg/main.py`
 
 * Obfuscate scripts by other modes
 
-```
+```bash
     cd projects/pybench
 
     # Only obfuscate whole module, not each code object
@@ -277,7 +277,7 @@ For package which used by other scripts:
   in target machine. Generally, these lines has been inserted into
   entry scripts of the project.
 
-```
+```python
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
@@ -295,7 +295,7 @@ expired. Replace it with others can change this behaviour.
 
 For examples, expire obfuscated scripts on some day
 
-```
+```bash
     cd project/pybench
 
     # Generate a new license.lic
@@ -317,7 +317,7 @@ For examples, expire obfuscated scripts on some day
 Command **licenses** used to generate new license, note that it's
 plural. It can generate batch licenses.
 
-```
+```bash
     cd project/pybench
     ./pyarmor licenses RCode-1 RCode-2 RCode-3 RCode-4 RCode-5
     ls licenses/
@@ -326,7 +326,7 @@ plural. It can generate batch licenses.
 
 Bind obfuscated scripts to fixed machine
 
-```
+```bash
     # Run command hdinfo to get hardware information
     ./pyarmor hdinfo
 
@@ -362,7 +362,7 @@ platform.
 By default, pyarmor prints simple message when something is wrong,
 turn on debug mode to print all the trace stack
 
-```
+```bash
     python -d pyarmor.py ...
 ```
 
@@ -383,7 +383,7 @@ By default all the **runtime files** locate in the top path of
 obfuscated scripts. Use runtime path to specify where to find
 **runtime files** if they're not in default path.
 
-```
+```bash
     cd projects/myproject
 
     # Note that runtime path is a directory in target machine, it maybe
@@ -407,7 +407,7 @@ obfuscated scripts. Use runtime path to specify where to find
 * There is only one thing changed, the following code must be run
   before using any obfuscated script.
 
-```
+```python
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
 ```
@@ -440,7 +440,7 @@ obfuscated scripts. Use runtime path to specify where to find
 
 * If runtime files locate in some other path, change bootstrap code:
 
-```
+```python
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/runtime-files')
 ```
@@ -450,7 +450,7 @@ obfuscated scripts. Use runtime path to specify where to find
 How about the performance after scripts are obfuscated, run
 **benchmark** in target machine
 
-```
+```bash
     python pyarmor.py benchmark
 ```
 
@@ -472,7 +472,7 @@ There is odoo module "web-login":
 
 Assume odoo server will load it from **/path/to/odoo/addons/web-login**
 
-```
+```bash
     # Create a project
     python pyarmor.py init --type=package --src=/path/to/web-login \
                            --entry=__init__.py \
@@ -504,7 +504,7 @@ python interpreter.
 
 First create common project, then clone to project1, project2, project3
 
-```
+```bash
     # Create common project "login"
     # Here src is any path
     python pyarmor.py init --type=package --src=/opt/odoo/pyarmor \
@@ -534,7 +534,7 @@ First create common project, then clone to project1, project2, project3
 
 Then build all projects
 
-```
+```bash
     # Only generate runtime files in common project
     (cd projects/odoo/login; ./pyarmor build --only-runtime)
 
@@ -578,7 +578,7 @@ after py2exe packages obfuscated scripts.
 Another challange is that py2exe cound not find dependent modules after
 scripts are obfuscated.
 
-```
+```bash
     python pyarmor.py init --src=examples/py2exe \
                            --entry="hello.py,setup.py" \
                            projects/py2exe
@@ -621,6 +621,10 @@ scripts to be obfuscated, and how to obfuscate etc.
 ### name
 
 Project name.
+
+### title
+
+Project title.
 
 ### src
 
@@ -679,7 +683,7 @@ A string includes one or many entry scripts.
 When build project, insert the following bootstrap code for each
 entry:
 
-```
+```python
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
 ```
@@ -773,13 +777,17 @@ See online document
 
 ## Appendix
 
+### Py_TRACE_REFS or Py_DEBUG
+
+If Py_TRACE_REFS or Py_DEBUG is defined, the size of_PyObject_HEAD_EXTRA will not be 0. In this case, f_code is not right and pytransform will not work.
+
 ### Restrict Mode
 
 Restrict mode is instroduced from Pyarmor v3.6.
 
 In restrict mode, obfuscated scripts must be one of the following formats:
 
-```
+```python
     __pyarmor__(__name__, __file__, b'...')
 
 Or
@@ -799,7 +807,7 @@ Or
 And obfuscated script must be imported from obfuscated script. No any
 other statement can be inserted into obfuscated scripts. For examples,
 
-```
+```bash
     $ cat a.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
@@ -810,7 +818,7 @@ other statement can be inserted into obfuscated scripts. For examples,
 ```
 It works.
 
-```
+```bash
     $ cat b.py
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
@@ -822,7 +830,7 @@ It works.
 ```
 It doesn't work, because there is an extra code "print"
 
-```
+```bash
     $ cat c.py
     __pyarmor__(__name__, __file__, b'...')
 
@@ -839,7 +847,7 @@ It doesn't work, because obfuscated script "c.py" can NOT be imported
 from no obfuscated scripts in restrict mode
 
 
-```
+```bash
     $ cat d.py
     import c
     c.hello()
@@ -863,7 +871,7 @@ by other scripts. Other clear scripts can not import obfuscated
 package in restrict mode. So it need to disable restrict mode, and set
 `obf-code-mode` to `wrap`
 
-```
+```bash
     # Create project at first
     python pyarmor.py init --src=examples/py2exe --entry=hello.py projects/testmod
 
@@ -898,10 +906,9 @@ Enable restrict mode again
 ### Use Decorator to Protect Code Object
 
 When restrict mode is disabled, there is another way to proetect code
-object can not be accessed out of obfuscated scripts:
+object not be accessed out of obfuscated scripts.
 
-Use decorator `wraparmor`
-
+First define decorator `wraparmor`
 
 ```python
 
@@ -935,8 +942,8 @@ call **pyarmor_runtime**. It can be used in the decorator `wraparmor`
 only. The due is to restore func_code before function call, and
 obfuscate func_code after function return.
 
-Add this decorator to any function which intend to be protect, for
-example,
+Then add this decorator to any function which intend to be protect,
+for example,
 
 ``` python
 
