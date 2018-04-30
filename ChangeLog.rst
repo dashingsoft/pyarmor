@@ -1,3 +1,7 @@
+3.9.2
+-----
+* Add option `--type` and remove option `--disable-restrict-mode` for command `obfuscate`
+
 3.9.1
 -----
 * Add option `--type` for command `init`
