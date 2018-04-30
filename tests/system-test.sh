@@ -227,6 +227,17 @@ check_file_exists $output/mypkg/__init__.py
 check_file_exists $output/mypkg/foo.py
 check_file_content $output/mypkg/foo.py '__pyarmor__(__name__'
 
+csih_inform "Case 6.3: build package with entry script in package"
+cp examples/testpkg/main.py examples/testpkg/mypkg
+( cd projects/testpkg; 
+    $ARMOR config --entry=main.py >result.log 2>&1 && 
+    $ARMOR build -B >result.log 2>&1 )
+
+check_return_value
+check_file_exists $output/mypkg/main.py
+check_file_content $output/mypkg/main.py 'pyarmor_runtime()'
+check_file_content $output/mypkg/main.py '__pyarmor__(__name__'
+
 echo ""
 echo "-------------------- Test Command build END --------------------"
 echo ""
