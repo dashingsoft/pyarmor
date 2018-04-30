@@ -777,9 +777,11 @@ See online document
 
 ## Appendix
 
-### Py_TRACE_REFS or Py_DEBUG
+### Limitions
 
-If Py_TRACE_REFS or Py_DEBUG is defined, the size of_PyObject_HEAD_EXTRA will not be 0. In this case, f_code is not right and pytransform will not work.
+* Run pyarmor.py with non-debug Python interpreter. If Python
+  interpreter is compiled with Py_TRACE_REFS or Py_DEBUG, pyarmor will
+  crash.
 
 ### Restrict Mode
 
