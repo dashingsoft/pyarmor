@@ -1,10 +1,10 @@
 # 大道归一，Python 源码保护之路
 
 大约十年前开始用 Python 开发自己的应用的时候，就面临一个发布问题，如何
-不让客户看到自己的源码呢？估计这也是大部分使用 Python 开发非服务器端的
-应用时候会想到的问题。理由当然很多，有时候是保护代码，有时候是为了保护
-数据，有时候甚至是自己的代码不够完美，不想让用户看到。也尝试过一些其他
-工具，例如 `pyinstaller` 等等，最终决定开发一个自己的小工具。
+不让客户看到自己的源码呢？估计这也是很多使用Python开发非服务器端的应用
+时候会想到的问题。理由当然很多，有时候是保护代码，有时候是为了保护数据，
+有时候甚至是自己的代码不够完美，不想让用户看到。也尝试过一些其他工具，
+例如 `pyinstaller` 等等，最终决定开发一个自己的小工具。
 
 最初的实现很简单，就是把源文件加密，然后定义自己的模块导入类，钩挂到
 `sys.meta_path` 里面。这样运行的时候，如果发现导入的模块是加密的（扩展
@@ -69,7 +69,6 @@ sys.meta_path.append(PyshieldImporter())
 ``` c
 
 // 定义 CFunction 类型的跟踪函数，作为 threading.setprofile 的输入参数
-
 static PyMethodDef
 trace_method = {"trace_trampoilne", do_trace_trampoline, METH_VARARGS, NULL};
 
@@ -121,7 +120,7 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
 
 ```
 
-这种方式最大的问题就是对性能的影响太大，因为每一次函数调用都要调用跟踪
+这种方式最大的问题就是对性能的影响太大，因为每一次函数调用都要进入跟踪
 函数。即便是没有加密的系统库的调用，也要进去转一圈。很快通过用户的反馈
 映证了这一点，没有加密之前 0.5 秒运行完的代码，加密之后要 4 秒多，这是
 不可接受的，也迫使我重新思考加密的机制和方法。
@@ -137,9 +136,9 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
   转到真正的函数入口执行
 
 那么，在Python中是不是可以借鉴这种方式，不是在源代码层，而是在可执行文
-件层，直接通过修改汇编指令来进行保护呢？在Python中，汇编指令对应的就是
-伪代码（byte code）。这世界上的事情只有想不到的，没有做不到了。有了这样
-的思路，一种全新的加密机制马上就出来了。模仿`C`代码保护方式的实现方式如
+件层，直接通过修改汇编指令来进行保护呢？这世界上的事情只有想不到的，没
+有做不到了。有了这样的思路，一种全新的加密机制马上就出来了。在Python中，
+汇编指令对应的就是伪代码（byte code），模仿`C`代码保护方式的实现方式如
 下：
 
 1. 首先是编译Python源文件为代码对象（Code Object）
@@ -163,10 +162,10 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
 
         以上是额外增加的包裹头部，调用 __armor_enter__，然后开始一个 try...finally 块
 
-        中间是处理过的原始伪代码，主要进行如下处理
+        中间是处理过的原始伪代码，主要进行了如下处理
 
             修改所有的绝对跳转指令（例如 JUMP_ABSOLUTE）的目标地址，增加包裹头部的大小
-            加密原始伪代码
+            然后加密修改后的伪代码
 
         以下是额外增加的包裹尾部，是 try...finally 块的执行代码，调用 __armor_exit__
 
@@ -217,8 +216,8 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
 加三个自定义的函数到内置模块 `builtins` 里面
 
 * `__pyarmor__`
-* `__armro_enter__`
-* `__armro_exit__`
+* `__armor_enter__`
+* `__armor_exit__`
 
 这样，当加密脚本被Python解释器执行的时候
 
@@ -298,17 +297,18 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
     
     ```
     
-这种Python仿真版的保护机制的性能和安全性方面都有了质的变化，Pyarmor 也
+这种Python仿真版的保护机制在性能和安全性方面都有了质的变化，Pyarmor 也
 终于变得成熟。
 
 从安全级别上来说，使用 Python 语言提供的任何机制是无法突破 Pyarmor 的保
-护的。即便是使用调试器（例如 gdb），设置断点在 `PyEval_EvalFrameEx`，
-Pyarmor 也可以在 `__armor_enter__` 中进行反侦测，一旦发现调试器存在，或
-者Python解释器经过了改造，就拒绝工作。当然，这就是加密和破解两条阵线的
-较量，也是性能和安全之间综合平衡的问题。不管怎么说，这种安全性已经到了
-`C`语言的层面，是和如何保护二进制的可执行文件是相同的了。
+护的，例如，访问出现异常的`traceback`等。即便是使用调试器（例如 `gdb`），
+设置断点在 `PyEval_EvalFrameEx`，Pyarmor 也可以在 `__armor_enter__` 中
+进行反侦测，一旦发现调试器存在，或者Python解释器经过了改造，就拒绝工作。
+当然，如何进行反侦测就是加密和破解两条阵线的较量，也是性能和安全之间综
+合平衡的问题。不管怎么说，这种安全性已经到了`C`语言的层面，是和如何保护
+二进制的可执行文件是相同的了。
 
 回顾**Pyarmor**的发展历程，最终的实现方式和保护`C`代码如此类似，使我想
-到了《老子》中**大道归一**这一句话，有感而写下这篇日志。
+到了《老子》中的一句话 **大道归一**，有感而写下这篇日志。
 
 如果你有保护Python源码方面的需求，Pyarmor可能是你的一个选择： https://github.com/dashingsoft/pyarmor
