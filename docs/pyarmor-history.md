@@ -58,7 +58,7 @@ sys.meta_path.append(PyshieldImporter())
 
 关于 sys.meta_path 的工作原理，参考 http://www.python.org/dev/peps/pep-0302
 
-在使用过程中，有用户发现这种方式其实并不能真正的打开加密的效果。因为一
+在使用过程中，有用户发现这种方式其实并不能真正的达到加密的效果。因为一
 旦模块导入之后，伪代码（byte code) 是可以被访问的，使用反编译模块
 (dis)可以把代码显示出来。为了解决这个问题，当时想到的方法是钩挂
 `sys.setprofile` 和 `threading.setprofile`，定义回调函数，在每一个函数
@@ -133,8 +133,8 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
 * 然后替换二级制文件中的函数代码块，并在每一个函数入口处插入一条跳转指
   令，跳转到自己定义的包裹函数
 
-* 在包裹函数里面，进行反编译侦测，没有问题的话恢复原来的函数代码，并调
-  整到真正的函数入口执行
+* 在包裹函数里面，进行反编译侦测，没有问题的话恢复原来的函数代码，并跳
+  转到真正的函数入口执行
 
 那么，在Python中是不是可以借鉴这种方式，不是在源代码层，而是在可执行文
 件层，直接通过修改汇编指令来进行保护呢？在Python中，汇编指令对应的就是
@@ -298,8 +298,8 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
     
     ```
     
-这种Python仿真版的保护机制的性能和安全性都有了质的变化，Pyarmor 也终于
-变得成熟。
+这种Python仿真版的保护机制的性能和安全性方面都有了质的变化，Pyarmor 也
+终于变得成熟。
 
 从安全级别上来说，使用 Python 语言提供的任何机制是无法突破 Pyarmor 的保
 护的。即便是使用调试器（例如 gdb），设置断点在 `PyEval_EvalFrameEx`，
@@ -309,6 +309,6 @@ Pyarmor 也可以在 `__armor_enter__` 中进行反侦测，一旦发现调试�
 `C`语言的层面，是和如何保护二进制的可执行文件是相同的了。
 
 回顾**Pyarmor**的发展历程，最终的实现方式和保护`C`代码如此类似，使我想
-到了《老子》中“大道归一”这一句话，有感而发。
+到了《老子》中**大道归一**这一句话，有感而写下这篇日志。
 
 如果你有保护Python源码方面的需求，Pyarmor可能是你的一个选择： https://github.com/dashingsoft/pyarmor
