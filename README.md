@@ -15,11 +15,13 @@ obfuscated files.
 
 ## Obfuscation Mechanism
 
-Pyarmor obfuscates python scripts by 2 ways:
+Pyarmor protects Python scripts by the following ways:
 
-* First obfuscate byte code of each code object
+* Obfuscate source file to protect constants and literal strings.
 
-* Then obfuscate whole code object of python script
+* Obfuscate byte code of each code object.
+
+* Clear f_locals of frame as soon as code object executation completed.
 
 More information refer to [How to obfuscate python scripts](src/mechanism.md)
 
@@ -119,7 +121,7 @@ There is a webui used to manage project easily. Start it
 
     # For linux
     src/webui/manager.sh
-    
+
     # If Pyarmor is installed by pip
     pyarmor-webui
 ```
