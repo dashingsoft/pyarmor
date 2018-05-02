@@ -224,13 +224,11 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
 1. `__pyarmor__` 首先被调用，负责导入加密的模块，它的原型和实现如下
 
     ```c
-    int __pyarmor__(char *modname, char *filename, unsigned char *obfuscated_code) {
+    int __pyarmor__(char *modname, char *pathname, unsigned char *obfuscated_code) {
     
         char *original_code = resotre_obfuscated_code( obfuscated_code );
         PyObject *co = marshal.loads( original_code );
-        PyObject *m = PyImport_ExecCodeModule( modname, co );
-    
-        PyObject_SetAttrString(m, "__file__", PyString_FromString(filename));
+        PyObject *m = PyImport_ExecCodeModuleEx( modname, co, pathname );
         
     }
     ```
