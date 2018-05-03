@@ -90,13 +90,10 @@ Import obfuscated moduels from a clear python script
 It's better to create a project to manage these obfuscated scripts,
 there are the several advantages:
 
-* Increment build, only updated scripts are obfuscated since last
-  build
-
+* Increment build, only updated scripts are obfuscated since last build
 * Obfuscate scripts by more modes
-
 * Filter obfuscated scripts in the src path of project
-
+* Expired obfuscated scripts or bind to fixed machine
 * More convenient to manage obfuscated scripts
 
 There are 2 project types:
