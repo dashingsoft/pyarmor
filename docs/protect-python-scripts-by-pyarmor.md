@@ -1,8 +1,7 @@
 # Protect Python Scripts By Pyarmor
 
-Pyarmor is a command line tool used to import or run obfuscated Python scripts.
-
-Pyarmor protects Python scripts by the following ways:
+Pyarmor is a command line tool used to import or run obfuscated Python
+scripts. It protects Python scripts by the following ways:
 
 * Obfuscate source file to protect constants and literal strings.
 * Obfuscate byte code of each code object.
@@ -25,7 +24,7 @@ list in the output path `dist`
 
 ```
 
-`foo.py` is obfuscated scrpit, the content is
+`dist/foo.py` is obfuscated script, the content is
 
 ``` python
     from pytransfrom import pyarmor_runtime
@@ -55,7 +54,7 @@ First compile Python script to code object
 
 ```
 
-Then change the code object as the following way:
+Next change the code object as the following way:
 
 * Wrap byte code `co_code`, insert a `try...finally` block
 
@@ -92,7 +91,7 @@ Then change the code object as the following way:
 
 * Change all code object in the `co_consts` recursively
 
-Next serialize this reformed code object, obfuscate it to protect constants and literal strings:
+Then serialize this reformed code object, obfuscate it to protect constants and literal strings:
 
 ``` c
     char *string_code = marshal.dumps( co );
@@ -100,7 +99,7 @@ Next serialize this reformed code object, obfuscate it to protect constants and 
 
 ```
 
-Finally generate obfuscate script:
+Finally generate obfuscated script:
 
 ``` c
     sprintf( buf, "__pyarmor__(__name__, __file__, b'%s')", obfuscated_code );
@@ -108,7 +107,7 @@ Finally generate obfuscate script:
 
 ```
 
-It looks like this
+The obfuscated script is a normal Python script, It looks like this
 
 ```
     __pyarmor__(__name__, __file__, b'\x01\x0a...')
@@ -136,19 +135,19 @@ When obufscated module is imported by Python interpreter:
 * `__pyarmor__` is called at first, it will import obufscated module
 
 ```c
-    int
+    static PyObject *
     __pyarmor__(char *name, char *pathname, unsigned char *obfuscated_code)
     {
         char *string_code = resotre_obfuscated_code( obfuscated_code );
         PyObject *co = marshal.loads( string_code );
-        PyObject *m = PyImport_ExecCodeModuleEx( name, co, pathname );
+        return PyImport_ExecCodeModuleEx( name, co, pathname );
     }
 ```
 
 * `__armor_enter__` is called as soon as code object is executed
 
 ``` c
-    static PyObject*
+    static PyObject *
     __armor_enter__(PyObject *self, PyObject *args)
     {
         // Got code object
@@ -162,7 +161,7 @@ When obufscated module is imported by Python interpreter:
         // Restore byte code if it's obfuscated
         if (IS_OBFUSCATED(f_code->co_flags)) {
           restore_byte_code(f_code->co_code);
-          clear_obfuscate_flag(f_code);
+          clear_obfuscated_flag(f_code);
         }
 
         Py_RETURN_NONE;
@@ -173,7 +172,7 @@ When obufscated module is imported by Python interpreter:
 * `__armor_exit__` is called so long as code object completed execution
 
 ``` c
-    static PyObject*
+    static PyObject *
     exit_armor(PyObject *self, PyObject *args)
     {
         // Got code object
@@ -187,7 +186,7 @@ When obufscated module is imported by Python interpreter:
         // Obfuscate byte code only if this code object isn't used by any function
         if (refcalls->ob_refcnt == 1) {
           obfuscate_byte_code(f_code->co_code);
-          set_obfuscate_flag(f_code);
+          set_obfuscated_flag(f_code);
         }
 
         // Clear f_locals in this frame
@@ -201,7 +200,7 @@ When obufscated module is imported by Python interpreter:
 ## Expired Obfuscated Script
 
 By default the obfuscated scripts can run in any machine and never expired. This
-behaviour can be changed by replacing runtime file `license.lic` in the output path `dist`
+behaviour can be changed by replacing runtime file `dist/license.lic`
 
 First generate an expired license:
 
