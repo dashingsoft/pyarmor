@@ -138,7 +138,7 @@ When obufscated module is imported by Python interpreter:
     static PyObject *
     __pyarmor__(char *name, char *pathname, unsigned char *obfuscated_code)
     {
-        char *string_code = resotre_obfuscated_code( obfuscated_code );
+        char *string_code = restore_obfuscated_code( obfuscated_code );
         PyObject *co = marshal.loads( string_code );
         return PyImport_ExecCodeModuleEx( name, co, pathname );
     }
