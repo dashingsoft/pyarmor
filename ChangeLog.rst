@@ -1,3 +1,7 @@
+3.9.3
+-----
+* Fix issue: `__file__` is not really path in main code of module when import obfuscated module
+
 3.9.2
 -----
 * Replace option `--disable-restrict-mode` with `--no-restrict` in command `obfuscate`
