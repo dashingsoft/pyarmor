@@ -1,115 +1,198 @@
-Pyarmor
-=======
+Protect Python Scripts By Pyarmor
+=================================
 
-Pyarmor is a command line tool used to import or run obfuscated python
-scripts. Only by a few extra files, pyarmor can run and imported
-obfuscated files in the normal python environments.
+Pyarmor is a command line tool used to import or run obfuscated Python
+scripts. It protects Python scripts by the following ways:
 
-Pyarmor just likes an enhancement by which python could run or import
-obfuscated scripts.
+* Obfuscate source file to protect constants and literal strings.
+* Obfuscate byte code of each code object.
+* Clear f_locals of frame as soon as code object completed execution.
+* Expired obfuscated scripts, or bind to fixed machine.
 
-Main Features
--------------
+Look at what happened after ``foo.py`` is obfuscated by Pyarmor. Here
+are the files list in the output path ``dist``::
 
-- Run obfuscated script or import obfuscated module
-- Expire obfuscated files
-- Bind obfuscated files to harddisk, mac address, ip address etc.
+    foo.py
 
-Support Platforms
------------------
+    pytransform.py
+    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
 
-- Python 2.5, 2.6, 2.7 and Python3
+    pyshield.key
+    pyshield.lic
+    product.key
+    license.lic
 
-- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64
+``dist/foo.py`` is obfuscated script, the content is::
 
-- Embeded Platform: Raspberry Pi, Banana Pi, TS-4600 / TS-7600
+    from pytransfrom import pyarmor_runtime
+    pyarmor_runtime()
 
-Installation
-------------
+    __pyarmor__(__name__, __file__, b'\x06\x0f...')
 
-The simple way is pip::
+All the other extra files called ``Runtime Files``, which are required to run or
+import obfuscated scripts. So long as runtime files are in any Python path,
+obfuscated script ``dist/foo.py`` can be used as normal Python script.
 
-    pip install pyarmor
+Pyarmor protects Python scrpts in 2 phases:
 
-Or get source package from `pypi/pyarmor <https://pypi.python.org/pypi/pyarmor>`_
+* Build obfuscated script
+* Run or import obfuscated script
 
-Pyarmor is a command line tool, main script is pyarmor.py. After you
-get source package, unpack it to any path, then run paramor.py as
-common python script::
+Build Obfuscated Script
+-----------------------
 
-    python pyarmor.py
+First compile Python script to code object::
 
-If Pyarmor is installed by pip, there is a command will be avaiable in
-Python script path::
+    char *filename = "foo.py";
+    char *source = read_file( filename );
+    PyCodeObject *co = Py_CompileString( source, "<frozen foo>", Py_file_input );
 
-    pyarmor
+Next change this code object as the following ways
 
-Basic Usage
------------
+* Wrap byte code ``co_code`` within a ``try...finally`` block::
 
-The following examples show how to obfuscate a python package
-**pybench**, which locates in the **examples/pybench** in the source
-of pyarmor.
+    wrap header:
 
-Obfuscate package **pybench**::
+            LOAD_GLOBALS    N (__armor_enter__)     N = length of co_consts
+            CALL_FUNCTION   0
+            POP_TOP
+            SETUP_FINALLY   X (jump to wrap footer) X = size of original byte code
 
-    python pyarmor.py obfuscate --src examples/pybench --entry pybench.py \
-                                "*.py" "package/*.py"
+    changed original byte code:
 
-    # Note that quotation mark is required for file patterns, otherwise
-    # it will be expanded base on current path by shell.
-    #
-    # This command will create a extra file .pyarmor_capsule.zip in the
-    # --src path, and save all the obfuscated scripts to default output
-    # path "dist" in the current path
-    #
-    cd dist
+            Increase oparg of each absolute jump instruction by the size of wrap header
 
-    # Check obfuscated script
-    cat pybench.py
+            Obfuscate original byte code
 
-    # Run obfuscated script
-    python pybench.py
+            ...
 
-Use project to manage obfuscated scripts::
+    wrap footer:
 
-    mkdir projects
-    python pyarmor.py init --src examples/pybench --entry pybench.py \
-                           projects/pybench
+            LOAD_GLOBALS    N + 1 (__armor_exit__)
+            CALL_FUNCTION   0
+            POP_TOP
+            END_FINALLY
 
-    # This command will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
-    # in the project path "projects/pybench"
-    cd projects/pybench
+* Append function names ``__armor_enter``, ``__armor_exit__`` to ``co_consts``
 
-    # And there is a shell script "pyarmor" is created at the same time.
-    # (In windows, the name is "pyarmor.bat")
-    #
-    # Now run command "build" to obfuscated all the scripts
-    #
-    ./pyarmor build
+* Increase ``co_stacksize`` by 2
 
-    # Check obfuscated script
-    cd dist
-    cat pybench.py
+* Set CO_OBFUSCAED (0x80000000) flag in ``co_flags``
 
-    # Run obfuscated script
-    python pybench.py
+* Change all code objects in the ``co_consts`` recursively
 
-Start a webui to manage project::
+Then serialize this reformed code object, obfuscate it to protect constants and literal strings::
 
-    # For windows
-    webui/manager.bat
+    char *string_code = marshal.dumps( co );
+    char *obfuscated_code = obfuscate_algorithm( string_code  );
 
-    # For linux
-    webui/manager.sh
+Finally generate obfuscated script::
 
-    # If Pyarmor is installed by pip
-    pyarmor-webui
+    sprintf( buf, "__pyarmor__(__name__, __file__, b'%s')", obfuscated_code );
+    save_file( "dist/foo.py", buf );
 
-Here is online demo `Pyarmor Demo <http://pyarmor.dashingsoft.com>`_
+The obfuscated script is a normal Python script, it looks like this::
 
-More usage, refer to **user-guide.md** in the source package.
+    __pyarmor__(__name__, __file__, b'\x01\x0a...')
 
-How to obfuscate python scripts by Pyarmor, refer to **mechanism.md** in the source package.
+Run Obfuscated Script
+---------------------
 
-For more information, refer to `Pyarmor Homepage <https://github.com/dashingsoft/pyarmor>`_
+In order to run obfuscted script ``dist/foo.py`` by common Python Interpreter,
+there are 3 functions need to be added to module ``builtins``:
+
+* ``__pyarmor__``
+* ``__armor_enter__``
+* ``__armor_exit__``
+
+The following 2 lines, which called ``Bootstrap Code``, will fulfil this work::
+
+    from pytransfrom import pyarmor_runtime
+    pyarmor_runtime()
+
+After that:
+
+* ``__pyarmor__`` is called, it will import original module from obfuscated code::
+
+    static PyObject *
+    __pyarmor__(char *name, char *pathname, unsigned char *obfuscated_code)
+    {
+        char *string_code = restore_obfuscated_code( obfuscated_code );
+        PyCodeObject *co = marshal.loads( string_code );
+        return PyImport_ExecCodeModuleEx( name, co, pathname );
+    }
+
+* ``__armor_enter__`` is called as soon as code object is executed::
+
+    static PyObject *
+    __armor_enter__(PyObject *self, PyObject *args)
+    {
+        // Got code object
+        PyFrameObject *frame = PyEval_GetFrame();
+        PyCodeObject *f_code = frame->f_code;
+
+        // Increase refcalls of this code object
+        // Borrow co_names->ob_refcnt as call counter
+        // Generally it will not increased  by Python Interpreter
+        PyObject *refcalls = f_code->co_names;
+        refcalls->ob_refcnt ++;
+
+        // Restore byte code if it's obfuscated
+        if (IS_OBFUSCATED(f_code->co_flags)) {
+            restore_byte_code(f_code->co_code);
+            clear_obfuscated_flag(f_code);
+        }
+
+        Py_RETURN_NONE;
+    }
+
+
+* ``__armor_exit__`` is called so long as code object completed execution::
+
+    static PyObject *
+    __armor_exit__(PyObject *self, PyObject *args)
+    {
+        // Got code object
+        PyFrameObject *frame = PyEval_GetFrame();
+        PyCodeObject *f_code = frame->f_code;
+
+        // Decrease refcalls of this code object
+        PyObject *refcalls = f_code->co_names;
+        refcalls->ob_refcnt --;
+
+        // Obfuscate byte code only if this code object isn't used by any function
+        // In multi-threads or recursive call, one code object may be referened
+        // by many functions at the same time
+        if (refcalls->ob_refcnt == 1) {
+            obfuscate_byte_code(f_code->co_code);
+            set_obfuscated_flag(f_code);
+        }
+
+        // Clear f_locals in this frame
+        clear_frame_locals(frame);
+
+        Py_RETURN_NONE;
+    }
+
+
+Expired Obfuscated Script
+-------------------------
+
+By default the obfuscated scripts can run in any machine and never expired. This
+behaviour can be changed by replacing runtime file ``dist/license.lic``
+
+First generate an expired license::
+
+    python pyarmor.py licenses --expired 2018-12-31 Customer-Jondy
+
+This command will make a new ``license.lic``, replace ``dist/license.lic``
+with this one. The obfuscated script will not work after 2018.
+
+Now generate another license bind to fixed machine::
+
+    python pyarmor.py licenses --bind-hard "100304PBN2081SF3NJ5T"
+                               --bind-mac "70:f1:a1:23:f0:94"
+                               --bind-ipv4 "202.10.2.52"
+                               Customer-Jondy
+
+Interesting? More information visit `https://github.com/dashingsoft/pyarmor <https://github.com/dashingsoft/pyarmor>`_
