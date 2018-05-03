@@ -38,7 +38,7 @@ All the other extra files called `Runtime Files`, which are required to run or
 import obfuscated scripts. So long as runtime files are in any Python path,
 obfuscated script `dist/foo.py` can be used as normal Python script.
 
-There are 2 phases for Pyarmor to protect Python scrpts:
+Pyarmor protects Python scrpts in 2 phases:
 
 * Build obfuscated script
 * Run or import obfuscated script
@@ -116,7 +116,7 @@ The obfuscated script is a normal Python script, it looks like this
 
 ## Run Obfuscated Script
 
-In order to run obfuscted script `dist/foo.py` by common Python interpreter,
+In order to run obfuscted script `dist/foo.py` by common Python Interpreter,
 there are 3 functions need to be added to module `builtins`:
 
 * `__pyarmor__`
@@ -155,8 +155,9 @@ After that:
         PyFrameObject *frame = PyEval_GetFrame();
         PyCodeObject *f_code = frame->f_code;
 
-        // Increase refcalls of this code object, borrow co_names->ob_refcnt as counter
-        // Generally it will not increased by Python Interpreter
+        // Increase refcalls of this code object
+        // Borrow co_names->ob_refcnt as call counter
+        // Generally it will not increased  by Python Interpreter
         PyObject *refcalls = f_code->co_names;
         refcalls->ob_refcnt ++;
 
@@ -186,6 +187,8 @@ After that:
         refcalls->ob_refcnt --;
 
         // Obfuscate byte code only if this code object isn't used by any function
+        // In multi-threads or recursive call, one code object may be referened
+        // by many functions at the same time
         if (refcalls->ob_refcnt == 1) {
             obfuscate_byte_code(f_code->co_code);
             set_obfuscated_flag(f_code);
@@ -214,7 +217,7 @@ First generate an expired license
 This command will make a new `license.lic`, replace `dist/license.lic`
 with this one. The obfuscated script will not work after 2018.
 
-Now generate a license bind to fixed machine
+Now generate another license bind to fixed machine
 
 ``` bash
     python pyarmor.py licenses --bind-hard "100304PBN2081SF3NJ5T"
