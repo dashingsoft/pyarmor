@@ -8,8 +8,8 @@ scripts. It protects Python scripts by the following ways:
 * Clear f_locals of frame as soon as code object completed execution.
 * Expired obfuscated scripts, or bind to fixed machine.
 
-Look at what happened after `foo.py` is obfuscated by Pyarmor. Here it's file
-list in the output path `dist`
+Look at what happened after `foo.py` is obfuscated by Pyarmor. Here
+are the files list in the output path `dist`
 
 ```
     foo.py
@@ -36,7 +36,7 @@ list in the output path `dist`
 
 All the other extra files called `Runtime Files`, which are required to run or
 import obfuscated scripts. So long as runtime files are in any Python path,
-obfuscated script `foo.py` can be used as normal Python script.
+obfuscated script `dist/foo.py` can be used as normal Python script.
 
 There are 2 phases for Pyarmor to protect Python scrpts:
 
@@ -54,17 +54,17 @@ First compile Python script to code object
 
 ```
 
-Next change the code object as the following way:
+Next change this code object as the following ways
 
-* Wrap byte code `co_code`, insert a `try...finally` block
+* Wrap byte code `co_code` within a `try...finally` block
 
 ```
     wrap header:
 
-            LOAD_GLOBALS    N (__armor_enter__)
+            LOAD_GLOBALS    N (__armor_enter__)     N = length of co_consts
             CALL_FUNCTION   0
             POP_TOP
-            SETUP_FINALLY   F (jump to wrap footer, the code of finally block)
+            SETUP_FINALLY   X (jump to wrap footer) X = size of original byte code
 
     changed original byte code:
 
@@ -87,11 +87,11 @@ Next change the code object as the following way:
 
 * Increase `co_stacksize` by 2
 
-* Set CO_OBFUSCAED flag in `co_flags`
+* Set CO_OBFUSCAED (0x80000000) flag in `co_flags`
 
-* Change all code object in the `co_consts` recursively
+* Change all code objects in the `co_consts` recursively
 
-Then serialize this reformed code object, obfuscate it to protect constants and literal strings:
+Then serialize this reformed code object, obfuscate it to protect constants and literal strings
 
 ``` c
     char *string_code = marshal.dumps( co );
@@ -99,7 +99,7 @@ Then serialize this reformed code object, obfuscate it to protect constants and 
 
 ```
 
-Finally generate obfuscated script:
+Finally generate obfuscated script
 
 ``` c
     sprintf( buf, "__pyarmor__(__name__, __file__, b'%s')", obfuscated_code );
@@ -107,7 +107,7 @@ Finally generate obfuscated script:
 
 ```
 
-The obfuscated script is a normal Python script, It looks like this
+The obfuscated script is a normal Python script, it looks like this
 
 ```
     __pyarmor__(__name__, __file__, b'\x01\x0a...')
@@ -116,13 +116,14 @@ The obfuscated script is a normal Python script, It looks like this
 
 ## Run Obfuscated Script
 
-In order to run the obfuscated script, there are 3 functions need to be added to `builtins` module:
+In order to run obfuscted script `dist/foo.py` by common Python interpreter,
+there are 3 functions need to be added to module `builtins`:
 
 * `__pyarmor__`
 * `__armor_enter__`
 * `__armor_exit__`
 
-It can be done by the following lines, which called `Bootstrap Code`
+The following 2 lines, which called `Bootstrap Code`, will fulfil this work
 
 ``` python
     from pytransfrom import pyarmor_runtime
@@ -130,16 +131,16 @@ It can be done by the following lines, which called `Bootstrap Code`
 
 ```
 
-When obufscated module is imported by Python interpreter:
+After that:
 
-* `__pyarmor__` is called at first, it will import obufscated module
+* `__pyarmor__` is called, it will import original module from obfuscated code
 
 ```c
     static PyObject *
     __pyarmor__(char *name, char *pathname, unsigned char *obfuscated_code)
     {
         char *string_code = restore_obfuscated_code( obfuscated_code );
-        PyObject *co = marshal.loads( string_code );
+        PyCodeObject *co = marshal.loads( string_code );
         return PyImport_ExecCodeModuleEx( name, co, pathname );
     }
 ```
@@ -154,14 +155,15 @@ When obufscated module is imported by Python interpreter:
         PyFrameObject *frame = PyEval_GetFrame();
         PyCodeObject *f_code = frame->f_code;
 
-        // Increase refcalls of this code object
+        // Increase refcalls of this code object, borrow co_names->ob_refcnt as counter
+        // Generally it will not increased by Python Interpreter
         PyObject *refcalls = f_code->co_names;
         refcalls->ob_refcnt ++;
 
         // Restore byte code if it's obfuscated
         if (IS_OBFUSCATED(f_code->co_flags)) {
-          restore_byte_code(f_code->co_code);
-          clear_obfuscated_flag(f_code);
+            restore_byte_code(f_code->co_code);
+            clear_obfuscated_flag(f_code);
         }
 
         Py_RETURN_NONE;
@@ -173,7 +175,7 @@ When obufscated module is imported by Python interpreter:
 
 ``` c
     static PyObject *
-    exit_armor(PyObject *self, PyObject *args)
+    __armor_exit__(PyObject *self, PyObject *args)
     {
         // Got code object
         PyFrameObject *frame = PyEval_GetFrame();
@@ -185,8 +187,8 @@ When obufscated module is imported by Python interpreter:
 
         // Obfuscate byte code only if this code object isn't used by any function
         if (refcalls->ob_refcnt == 1) {
-          obfuscate_byte_code(f_code->co_code);
-          set_obfuscated_flag(f_code);
+            obfuscate_byte_code(f_code->co_code);
+            set_obfuscated_flag(f_code);
         }
 
         // Clear f_locals in this frame
@@ -202,17 +204,17 @@ When obufscated module is imported by Python interpreter:
 By default the obfuscated scripts can run in any machine and never expired. This
 behaviour can be changed by replacing runtime file `dist/license.lic`
 
-First generate an expired license:
+First generate an expired license
 
 ``` bash
     python pyarmor.py licenses --expired 2018-12-31 Customer-Jondy
 
 ```
 
-It will make a new `license.lic`, replace `dist/license.lic` with this one. The
-obfuscated script will not work after 2018.
+This command will make a new `license.lic`, replace `dist/license.lic`
+with this one. The obfuscated script will not work after 2018.
 
-Now generate a license bind to fixed machine:
+Now generate a license bind to fixed machine
 
 ``` bash
     python pyarmor.py licenses --bind-hard "100304PBN2081SF3NJ5T"
