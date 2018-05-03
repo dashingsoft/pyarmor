@@ -1,27 +1,14 @@
 # Pyarmor
 
-Pyarmor is a command line tool used to import or run obfuscated python
-scripts. Only by a few extra files, pyarmor can run and imported
-obfuscated files as normal python scripts.
+Pyarmor is a command line tool used to import or run obfuscated Python
+scripts. It protects Python scripts by the following ways:
 
-Pyarmor just likes an enhancement which let python could run or import
-obfuscated files.
+* Obfuscate source file to protect constants and literal strings.
+* Obfuscate byte code of each code object.
+* Clear f_locals of frame as soon as code object completed execution.
+* Expired obfuscated scripts, or bind to fixed machine.
 
-## Main Features
-
-- Run obfuscated script or import obfuscated module
-- Expire obfuscated files
-- Bind obfuscated files to harddisk, mac address, ip address etc.
-
-## Obfuscation Mechanism
-
-Pyarmor protects Python scripts by the following ways:
-
-- Obfuscate source file to protect constants and literal strings.
-- Obfuscate byte code of each code object.
-- Clear f_locals of frame as soon as code object completed execution.
-
-More information refer to [How to obfuscate python scripts](src/mechanism.md)
+Refer to [Protect Python Scripts By Pyarmor](docs/protect-python-scripts-by-pyarmor.md)
 
 ## Support Platforms
 
@@ -124,7 +111,7 @@ There is a webui used to manage project easily. Start it
 
 Here is online demo [Pyarmor Demo](http://pyarmor.dashingsoft.com)
 
-More usage, refer to [User Guide](src/user-guide.md)
+More usage, refer to [User Guide](src/user-guide.md) and [src/mechanism.md](src/mechanism.md)
 
 ## License
 
