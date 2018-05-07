@@ -1,3 +1,7 @@
+3.9.4
+-----
+* Rewrite long description of package in pypi
+
 3.9.3
 -----
 * Fix issue: `__file__` is not really path in main code of module when import obfuscated module
