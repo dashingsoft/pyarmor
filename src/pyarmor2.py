@@ -471,10 +471,11 @@ def _hdinfo(args):
     show_hd_info()
 
 def _version_info():
-    if get_registration_code() == '':
+    rcode = get_registration_code()
+    if rcode == '':
         return 'Pyarmor Trial Version %s\n%s' % (version, trial_info)
     else:
-        return 'Pyarmor Version %s\n' % version
+        return 'Pyarmor Version %s\n\nRegistration code: %s' % (version, rcode)
 
 def main(args):
     parser = argparse.ArgumentParser(

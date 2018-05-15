@@ -1,3 +1,7 @@
+3.9.5
+-----
+* Show registration code when printing version information
+
 3.9.4
 -----
 * Rewrite long description of package in pypi
