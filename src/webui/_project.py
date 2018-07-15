@@ -175,9 +175,9 @@ def newLicense(args):
     title = args['rcode'].strip()
 
     params = ['licenses', '--project', path]
-    for opt in ('expired', 'bind-disk', 'bind-ipv4', 'bind-mac'):
+    for opt in ('expired', 'bind_disk', 'bind_ipv4', 'bind_mac'):
         if args[opt]:
-            params.extend(['--%s' % opt, args[opt]])
+            params.extend(['--%s' % opt.replace('_', '-'), args[opt]])
     params.append(title)
     _pyarmor(params)
     
