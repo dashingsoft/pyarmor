@@ -205,6 +205,8 @@ def _load_library(path=None):
             m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.dylib'))
         elif plat == 'windows':
             m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.dll'))
+        elif plat == 'freebsd':
+            m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.so'))
         else:
             raise RuntimeError('Platform not supported')
     except Exception:
