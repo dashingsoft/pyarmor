@@ -66,7 +66,7 @@ def newProject(args=None):
 
     project['name'] = name
     project['title'] = name
-    project['output'] = build_path('dist', path)
+    project['output'] = 'dist'
 
     return dict(project=project, message='Project has been created')
 
@@ -81,10 +81,9 @@ def updateProject(args):
     project = Project()
     project.open(path)
     
-    if args['output']:
-        args['output'] = build_path(args['output'], path)
-    else:
-        args['output'] = os.path.join(path, 'dist')
+    if ! args['output']:
+        args['output'] = 'dist'
+
     project._update(args)
     project.save(path)
 
