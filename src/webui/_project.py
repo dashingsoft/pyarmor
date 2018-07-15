@@ -81,7 +81,7 @@ def updateProject(args):
     project = Project()
     project.open(path)
     
-    if ! args['output']:
+    if not args['output']:
         args['output'] = 'dist'
 
     project._update(args)
