@@ -1,3 +1,8 @@
+3.9.6
+-----
+* Fix the generated license bind to fixed machine in webui is not correct
+* Fix extra output path issue in webui
+
 3.9.5
 -----
 * Show registration code when printing version information
