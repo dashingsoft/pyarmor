@@ -45,7 +45,7 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 ## Change Logs
 
-### 3.3.7
+### 3.3.8
 
 * Fix windows 10 issue: access violation reading 0x000001ED00000000
 
