@@ -1,3 +1,7 @@
+3.9.8
+-----
+* Add documentation for examples (examples/README.md)
+
 3.9.7
 -----
 * Fix windows 10 issue: access violation reading 0x000001ED00000000

@@ -110,6 +110,8 @@ There is a webui used to manage project easily. Start it
     pyarmor-webui
 ```
 
+A good example is the best teacher. Here are several typical scenarios [src/examples](src/examples)
+
 Here is online demo [Pyarmor Demo](http://pyarmor.dashingsoft.com)
 
 More usage, refer to [User Guide](src/user-guide.md) and [Mechanism](src/mechanism.md)

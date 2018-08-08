@@ -27,7 +27,7 @@ pyarmor_data_files = [
     'examples/simple/*.py', 'examples/testmod/*.py',
     'examples/testpkg/*.py', 'examples/testpkg/mypkg/*.py',
     'examples/pybench/*.py', 'examples/pybench/package/*.py',
-    'examples/py2exe/*.py',
+    'examples/py2exe/*.py', 'examples/README.md',
 ]
 
 # def _build_file_list(d):
