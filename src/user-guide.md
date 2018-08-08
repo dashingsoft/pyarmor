@@ -588,7 +588,7 @@ scripts are obfuscated.
     # This is the key, change default runtime-path
     ./pyarmor config --runtime-path=''
 
-    # Obfuscate scirpts
+    # Obfuscate scripts
     ./pyarmor build
 
 
