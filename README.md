@@ -127,6 +127,8 @@ A registration code is required to generate random project capsule.
 - Personal user: one registration code is enough.
 - Company user: one registration code is only used for one project/product.
 
+Refer to [About license.lic](src/user-guide.md#about-licenselic).
+
 ### Purchase
 
 Click [Purchase](https://shopper.mycommerce.com/checkout/cart/add/55259-1),
