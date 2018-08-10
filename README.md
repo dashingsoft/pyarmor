@@ -149,4 +149,5 @@ registration code only (no newline), then replace the content of
 
 ## [Report issuses](https://github.com/dashingsoft/pyarmor/issues)
 
-Any question feel free email to <jondy.zhao@gmail.com>
+Any question feel free email to <jondy.zhao@gmail.com>, or click here
+to [report an issue](https://github.com/dashingsoft/pyarmor/issues)
