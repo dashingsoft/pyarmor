@@ -813,17 +813,18 @@ In pyarmor, there are 2 types of `license.lic`
   pyarmor. It's required to run Pyarmor.
 
 * `license.lic` of Obfuscated Scripts, which is generated when
-  obfuscating a project or by pyarmor command `licenses`. It's
-  required to run obfuscated scripts.
+  obfuscating scripts or generating new licenses. It's required to run
+  obfuscated scripts.
 
-Each project has a capsule `.pyarmor_capsule.zip` in project
+Each project has its own capsule `.pyarmor_capsule.zip` in project
 path. This capsule is generated when run command `pyarmor init` to
 create a project. And `license.lic` of Pyarmor will be as an input
-file to make project capsule.
+file to make this capsule.
 
-When runing command `pyarmor build` or `pyarmor licenses`, the project
-capsule `.pyarmor_capsule.zip` will be as input file to generate the
-`license.lic` of Obfuscated Scripts.
+When runing command `pyarmor build` or `pyarmor licenses`, it will
+generate a `license.lic` in project output path for obfuscated
+scripts. Here the project capsule `.pyarmor_capsule.zip` will be as
+input file to generate this `license.lic` of Obfuscated Scripts.
 
 So the relation between 2 `license.lic` is
 
