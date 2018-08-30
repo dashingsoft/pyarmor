@@ -1,3 +1,7 @@
+3.9.9
+-----
+* Fix segmentation fault issues for `asyncio`, `typing` modules
+
 3.9.8
 -----
 * Add documentation for examples (examples/README.md)
