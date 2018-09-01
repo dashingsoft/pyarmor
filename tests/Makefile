@@ -99,7 +99,7 @@ ptest:
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
             TESTLIB=$(subst XY,$${pyver},$(PYLIB))/test $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash python-test.sh || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; break;\
+            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
 	done
 	make clean
 
