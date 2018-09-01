@@ -75,7 +75,7 @@ cp dist/test/regrtest.py ../../lib/test
 
 csih_inform "Copy obfuscated scripts to target"
 for s in $(find dist/test -name test_*.py) ; do
-    cp $s ../../lib/test
+    cp $s ${s/dist\/test\//..\/..\/lib\/test\/}
 done
 
 csih_inform "Move ../../lib/test to $TESTLIB"
