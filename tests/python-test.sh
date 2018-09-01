@@ -8,6 +8,7 @@ source test-header.sh
 
 TESTLIB=${TESTLIB:-C:/Python26/Lib/test}
 PYARMOR="${PYTHON} pyarmor2.py"
+TESTROOT=$(pwd)
 
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
@@ -22,9 +23,9 @@ cd ${workpath}
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are moved to src
-[[ -d src ]] && mv src/* ./
+[[ -d src ]] && cd src/
 
-csih_inform "Prepare for python features testing"
+csih_inform "Prepare for python features testing at $(pwd)"
 echo ""
 
 csih_inform "Copy $TESTLIB to lib/test"
@@ -55,10 +56,10 @@ csih_inform "Show help and import pytransform"
 $PYARMOR --help >>result.log 2>&1 || csih_bug "Bootstrap FAILED"
 [[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
 
-csih_inform "Create project at 'projects/pytest'"
+csih_inform "Create project at projects/pytest"
 $PYARMOR init --src=lib/test --entry=regrtest.py projects/pytest >>result.log 2>&1
 
-csih_inform "Change current path to project path"
+csih_inform "Change current path to projects/pytest"
 cd projects/pytest
 
 csih_inform "Config project to obfuscate all test scripts"
@@ -90,17 +91,14 @@ mv $TESTLIB ../../lib/test
 csih_inform "Restore original test scripts"
 mv $TESTLIB.bak $TESTLIB
 
-csih_inform "Change current path to pyarmor source path"
-cd ../..
-
 # ======================================================================
 #
 # Finished and cleanup.
 #
 # ======================================================================
 
-# Return test root
-cd ../..
+csih_inform "Change current path to test root: ${TESTROOT}"
+cd ${TESTROOT}
 
 echo "----------------------------------------------------------------"
 echo ""
