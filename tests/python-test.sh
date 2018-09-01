@@ -36,8 +36,9 @@ csih_inform "Move $TESTLIB to ${TESTLIB}.bak"
 mv $TESTLIB $TESTLIB.bak
 
 csih_inform "Convert scripts to unix format"
+which dos2unix >/dev/null 2>&1 && \
 for s in $(find ./lib/test -name test_*.py) ; do
-  dos2unix $s
+  dos2unix $s >>result.log 2>&1
 done
 
 # ======================================================================
@@ -47,33 +48,32 @@ done
 # ======================================================================
 
 echo ""
-echo "-------------------- Bootstrap ---------------------------------"
+echo "-------------------- Start testing ------------------------------"
 echo ""
 
 csih_inform "Show help and import pytransform"
-$PYARMOR --help >result.log 2>&1 || csih_bug "Bootstrap FAILED"
+$PYARMOR --help >>result.log 2>&1 || csih_bug "Bootstrap FAILED"
 [[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
 
 csih_inform "Create project at 'projects/pytest'"
-$PYARMOR init --src=lib/test --entry=regrtest.py projects/pytest
+$PYARMOR init --src=lib/test --entry=regrtest.py projects/pytest >>result.log 2>&1
 
 csih_inform "Change current path to project path"
 cd projects/pytest
 
 csih_inform "Config project to obfuscate all test scripts"
-$ARMOR config --manifest="global-include test_*.py, exclude doctest_*.py"
+$ARMOR config --manifest="global-include test_*.py, exclude doctest_*.py" >result.log 2>&1
 
 csih_inform "Obfuscate scripts"
-$ARMOR build
+$ARMOR build >>result.log 2>&1
 
-
-csih_inform "Copy runtime files to target"
+csih_inform "Copy runtime files to ../../lib/test"
 cp dist/* ../../lib/test
 
-csih_inform "Copy entry script to target"
+csih_inform "Copy entry script to ../../lib/test"
 cp dist/test/regrtest.py ../../lib/test
 
-csih_inform "Copy obfuscated scripts to target"
+csih_inform "Copy obfuscated scripts to ../../lib/test"
 for s in $(find dist/test -name test_*.py) ; do
     cp $s ${s/dist\/test\//..\/..\/lib\/test\/}
 done
@@ -82,7 +82,7 @@ csih_inform "Move ../../lib/test to $TESTLIB"
 mv ../../lib/test $TESTLIB
 
 csih_inform "Run obfuscated test scripts"
-(cd $TESTLIB; $PYTHON regrtest.py -x test_profilehooks)
+(cd $TESTLIB; $PYTHON regrtest.py -x test_profilehooks) >>result.log 2>&1
 
 csih_inform "Move obfuscated test scripts to ../../lib/test"
 mv $TESTLIB ../../lib/test
