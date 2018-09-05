@@ -85,6 +85,7 @@ EXAMPLES
 
     '''
     if args.clone:
+        logging.info('Warning: option --clone is deprecated, use --capsule instead ')
         _clone(args)
         return
 
@@ -109,15 +110,19 @@ EXAMPLES
         logging.info('Project is configured as standalone application.')
         project = Project(name=name, title=name, src=src, entry=args.entry)
 
+    if args.capsule:
+        logging.info('Share capsule with %s', capsule)
+        project.capsule=capsule
+    else:
+        logging.info('Create project capsule ...')
+        filename = os.path.join(path, capsule_filename)
+        make_capsule(filename)
+        logging.info('Project capsule %s created', filename)
+
     logging.info('Create configure file ...')
     filename = os.path.join(path, config_filename)
     project.save(path)
     logging.info('Configure file %s created', filename)
-
-    logging.info('Create project capsule ...')
-    filename = os.path.join(path, capsule_filename)
-    make_capsule(filename)
-    logging.info('Project capsule %s created', filename)
 
     logging.info('Create pyarmor command ...')
     script = make_command(plat_name, sys.executable, sys.argv[0], path)
@@ -527,6 +532,8 @@ def main(args):
                          help='Base path of python scripts')
     cparser.add_argument('-C', '--clone', metavar='PATH',
                          help='Clone project configuration from this path')
+    cparser.add_argument('--capsule',
+                         help='Use this capsule other than creating new one')
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
 
@@ -545,6 +552,7 @@ def main(args):
     cparser.add_argument('--title')
     cparser.add_argument('--src')
     cparser.add_argument('--output')
+    cparser.add_argument('--capsule', help='Project capsule')
     cparser.add_argument('--manifest', metavar='TEMPLATE',
                          help='Manifest template string')
     cparser.add_argument('--entry', metavar='SCRIPT',
