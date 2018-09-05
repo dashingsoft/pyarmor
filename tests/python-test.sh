@@ -92,7 +92,7 @@ mv ../../lib/test $TESTLIB
 #     Segmentation Fault: test_sys_setprofile
 #     Two many errors: test_sys_settrace
 NOTESTS="test_profilehooks test_argparse test_sys_setprofile test_sys_settrace"
-csih_inform "Run obfuscated test scripts without $NOTEST"
+csih_inform "Run obfuscated test scripts without $NOTESTS"
 (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1
 
 csih_inform "Move obfuscated test scripts to ../../lib/test"
