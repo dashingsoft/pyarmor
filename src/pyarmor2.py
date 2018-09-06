@@ -74,8 +74,8 @@ all .py files in this directory will be included in this project.
 Option --entry specifies main script, which could be run directly
 after obfuscated.
 
-Option --clone specifies another project path. If it is set, no new
-project capsule is generated, just copy capsule from this project.
+Option --capsule specifies project capsule file has been created. If it
+is set, no new project capsule is generated, just link to this capsule.
 
 EXAMPLES
 
@@ -407,7 +407,8 @@ def _obfuscate(args):
     path = args.src
     logging.info('Obfuscate scripts in path "%s" ...', path)
 
-    capsule = os.path.join(path, capsule_filename)
+    capsule = args.capsule if args.capsule else \
+        os.path.join(path, capsule_filename)
     if os.path.exists(capsule):
         logging.info('Use cached capsule %s', capsule)
     else:
@@ -515,6 +516,7 @@ def main(args):
                          help='Base path for matching python scripts')
     cparser.add_argument('-d', '--no-restrict', action='store_true',
                          help='Disable restrict mode');
+    cparser.add_argument('--capsule', help='Use this capsule to obfuscate code')
     cparser.add_argument('patterns', nargs='*', default=['*.py'],
                          help='File patterns, default is "*.py"')
     cparser.set_defaults(func=_obfuscate)
