@@ -81,6 +81,19 @@ $PYARMOR config --capsule=project2.zip projects/test-capsule >result.log 2>&1
 check_return_value
 check_file_content projects/test-capsule/.pyarmor_config "project2.zip"
 
+csih_inform "C-3. Test option --capsule for obfuscate"
+$PYARMOR init --src=examples/simple test-capsule >result.log 2>&1
+$PYARMOR obfuscate --src=examples/simple --output=dist-capsule \
+    --entry=queens.py --capsule=test-capsule/.pyarmor-capsule.zip \
+    >result.log 2>&1
+
+check_file_exists dist-capsule/queens.py
+check_file_content dist-capsule/queens.py '__pyarmor__(__name__'
+
+(cd dist-capsule; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content dist-capsule/result.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
