@@ -91,7 +91,9 @@ class Project(dict):
         assert(self.obf_code_mode in Project.OBF_CODE_MODE)
 
         assert(self.capsule.endswith('.zip'))
-        assert(os.path.exists(os.path.join(path, self.capsule)))
+        capsule = self.capsule if os.path.isabs(self.capsule) \
+            else os.path.join(path, self.capsule)
+        assert(os.path.exists(os.path.normpath(capsule)))
 
     def _dump(self, filename):
         with open(filename, 'w') as f:

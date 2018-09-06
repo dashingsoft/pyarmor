@@ -111,8 +111,9 @@ EXAMPLES
         project = Project(name=name, title=name, src=src, entry=args.entry)
 
     if args.capsule:
+        capsule = os.path.abspath(args.capsule)
         logging.info('Share capsule with %s', capsule)
-        project.capsule=capsule
+        project._update(dict(capsule=capsule))
     else:
         logging.info('Create project capsule ...')
         filename = os.path.join(path, capsule_filename)
@@ -197,6 +198,9 @@ Examples,
     if args.src is not None:
         args.src = os.path.abspath(args.src)
         logging.info('Change src to absolute path: %s', args.src)
+    if args.capsule is not None:
+        args.capsule = os.path.abspath(args.capsule)
+        logging.info('Change capsule to absolute path: %s', args.capsule)
     keys = project._update(dict(args._get_kwargs()))
     logging.info('Changed attributes: %s', keys)
 
