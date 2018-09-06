@@ -30,6 +30,7 @@ csih_inform "Make path test/data"
 mkdir -p test/data
 csih_inform "Copy test files from ${datapath} to ./test/data"
 cp ${datapath}/*.py test/data
+cp ${datapath}/project.zip test/data
 
 csih_inform "Prepare for function testing"
 echo ""
@@ -54,6 +55,34 @@ $PYARMOR --version >result.log 2>&1 || csih_bug "show version FAILED"
 
 echo ""
 echo "-------------------- Bootstrap End -----------------------------"
+echo ""
+
+
+# ======================================================================
+#
+#  Command: init and config
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Command ---------------------------------"
+echo ""
+
+csih_inform "C-1. Test option --capsule for init"
+$PYARMOR init --src=examples/simple --capsule=test/data/project.zip \
+    projects/test-capsule >result.log 2>&1
+check_return_value
+check_file_content projects/test-capsule/.pyarmor_config "project.zip"
+
+csih_inform "C-2. Test option --capsule for config"
+cp test/data/project.zip projects/test-capsule/project2.zip
+$PYARMOR config --capsule=project2.zip projects/test-capsule >result.log 2>&1
+
+check_return_value
+check_file_content projects/test-capsule/.pyarmor_config "project2.zip"
+
+echo ""
+echo "-------------------- Command End -----------------------------"
 echo ""
 
 # ======================================================================
