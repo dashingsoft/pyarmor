@@ -10,7 +10,7 @@ TESTLIB=${TESTLIB:-C:/Python26/Lib/test}
 PYARMOR="${PYTHON} pyarmor2.py"
 TESTROOT=$(pwd)
 
-ALLENTRIES="test_concurrent_futures.py test_weakref.py"
+ALLENTRIES="test_concurrent_futures.py test_multiprocessing_forkserver.py test_weakref.py"
 RUNTIMEFILES="pytransform.py _pytransform.* pyshield.* product.key license.lic"
 
 csih_inform "Python is $PYTHON"
@@ -38,7 +38,7 @@ cp -a $TESTLIB ./lib
 
 csih_inform "Find test entries"
 TESTENTRIES="regrtest.py"
-for s in "$ALLENTRIES" ; do
+for s in $ALLENTRIES ; do
     [[ -f $TESTLIB/$s ]] && TESTENTRIES="$TESTENTRIES,$s"
 done
 echo "$TESTENTRIES"
@@ -88,6 +88,10 @@ cp dist/* $TESTLIB/..
 csih_inform "Copy entry script to ../../lib/test"
 cp dist/test/regrtest.py ../../lib/test
 
+csih_inform "Modify entry script, add extra path"
+BOOSTRAPCODE="import sys\ntry:\n    from pytransform import pyarmor_runtime\nexcept ImportError:\n    sys.path.append(r'$TESTLIB')\n    from pytransform import pyarmor_runtime"
+sed -i -e "s?from pytransform import pyarmor_runtime?$BOOSTRAPCODE?g" ../../lib/test/regrtest.py
+
 csih_inform "Copy obfuscated scripts to ../../lib/test"
 for s in $(find dist/test -name test_*.py) ; do
     cp $s ${s/dist\/test\//..\/..\/lib\/test\/}
@@ -108,6 +112,9 @@ mv ../../lib/test $TESTLIB
 #
 # Python31
 #     Segmentation Fault: test_cprofile
+#
+# Python36 (linux_x86_64)
+#     Segmentation Fault: test_logging.test_compute_rollover_weekly_attime test_platform.test_sys_version test_struct.test_half_float test_time
 #
 NOTESTS="test_argparse test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
 csih_inform "Run obfuscated test scripts without $NOTESTS"
