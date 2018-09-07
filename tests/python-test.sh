@@ -10,6 +10,9 @@ TESTLIB=${TESTLIB:-C:/Python26/Lib/test}
 PYARMOR="${PYTHON} pyarmor2.py"
 TESTROOT=$(pwd)
 
+ALLENTRIES="test_concurrent_futures.py test_weakref.py"
+RUNTIMEFILES="pytransform.py _pytransform.* pyshield.* product.key license.lic"
+
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
 csih_inform "Pyarmor is $PYARMOR"
@@ -33,7 +36,15 @@ csih_inform "Copy $TESTLIB to lib/test"
 mkdir -p ./lib
 cp -a $TESTLIB ./lib
 
+csih_inform "Find test entries"
+TESTENTRIES="regrtest.py"
+for s in "$ALLENTRIES" ; do
+    [[ -f $TESTLIB/$s ]] && TESTENTRIES="$TESTENTRIES,$s"
+done
+echo "$TESTENTRIES"
+
 csih_inform "Move $TESTLIB to ${TESTLIB}.bak"
+[[ -d $TESTLIB.bak ]] && csih_error "$TESTLIB.bak has been exists!"
 mv $TESTLIB $TESTLIB.bak
 
 csih_inform "Convert scripts to unix format"
@@ -57,7 +68,7 @@ $PYARMOR --help >>result.log 2>&1 || csih_bug "Bootstrap FAILED"
 [[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
 
 csih_inform "Create project at projects/pytest"
-$PYARMOR init --src=lib/test --entry=regrtest.py projects/pytest >>result.log 2>&1
+$PYARMOR init --src=lib/test --entry="$TESTENTRIES" projects/pytest >>result.log 2>&1
 
 csih_inform "Change current path to projects/pytest"
 cd projects/pytest
@@ -70,6 +81,9 @@ $ARMOR build >>result.log 2>&1
 
 csih_inform "Copy runtime files to ../../lib/test"
 cp dist/* ../../lib/test
+
+csih_inform "Copy runtime files to $TESTLIB/.."
+cp dist/* $TESTLIB/..
 
 csih_inform "Copy entry script to ../../lib/test"
 cp dist/test/regrtest.py ../../lib/test
@@ -91,7 +105,11 @@ mv ../../lib/test $TESTLIB
 #     Hangup: test_argparse
 #     Segmentation Fault: test_sys_setprofile
 #     Two many errors: test_sys_settrace
-NOTESTS="test_profilehooks test_argparse test_sys_setprofile test_sys_settrace"
+#
+# Python31
+#     Segmentation Fault: test_cprofile
+#
+NOTESTS="test_argparse test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
 csih_inform "Run obfuscated test scripts without $NOTESTS"
 (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1
 
@@ -106,6 +124,9 @@ mv $TESTLIB.bak $TESTLIB
 # Finished and cleanup.
 #
 # ======================================================================
+
+csih_inform "Remove runtime files from $TESTLIB/.."
+(cd ${TESTLIB}/..; rm -f ${RUNTIMEFILES})
 
 csih_inform "Change current path to test root: ${TESTROOT}"
 cd ${TESTROOT}
