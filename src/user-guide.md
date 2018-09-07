@@ -729,7 +729,8 @@ A path used to save output of build. It's relative to project path.
 
 ### capsule
 
-Filename of project capsule.
+Filename of project capsule. It's relative to project path if it's not
+absolute path.
 
 ### obf_module_mode
 
@@ -789,12 +790,371 @@ zip file, will solve this problem.
 
 ## Command Options
 
-Available command: init, config, build, info, check, licenses, hdinfo, benchmark
+Available command: `init`, `config`, `build`, `info`, `check`,
+`licenses`, `hdinfo`, `benchmark`, `obfuscate`
 
 See online document
 
 ```
     python pyarmor.py <command> --help
+```
+
+### benchmark
+
+```
+Usage: pyarmor.py benchmark [-h] [-m {none,des}] [-c {none,des,fast,wrap}]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m {none,des}, --obf-module-mode {none,des}
+  -c {none,des,fast,wrap}, --obf-code-mode {none,des,fast,wrap}
+
+```
+
+Run benchmark test in current machine. This command used to test the
+performaces of obfuscated scripts in different obfuscate mode. For
+examples
+
+
+```
+    # This is the default mode for package
+    python pyarmor.py benchmark --obf-module-mode=des --obf-code-mode=wrap
+
+    # This is the default mode for standalone application
+    python pyarmor.py benchmark --obf-module-mode=des --obf-code-mode=des
+
+```
+
+### build
+
+```
+Usage: pyarmor.py build [-h] [-B] [-r] [-n] [-O OUTPUT] [PATH]
+
+positional arguments:
+  PATH                  Project path
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -B, --force           Obfuscate all scripts even if they're not updated
+  -r, --only-runtime    Generate extra runtime files only
+  -n, --no-runtime      DO NOT generate extra runtime files
+  -O OUTPUT, --output OUTPUT
+                        Output path, override project configuration
+
+```
+
+After the project has been created, use `build` to obfuscate all
+scripts in the project.
+
+```
+    # Obfuscate all scripts specified by the project `projects/myproject`
+    python pyarmor.py build projects/myproject
+
+    # Or build in the project path
+    cd projects/myproject
+    ./pyarmor build
+
+    # Note that there is no scripts will be obfuscated by last build command,
+    # because only updated scripts are obfuscated since last build
+    #
+    # To obfuscate all scripts even if they're not updated
+    #
+    ./pyarmor build --force
+
+    # Do not generate runtime files, only obfuscate scripts
+    ./pyarmor build -B --no-runtime
+
+    # Generate runtime files only
+    ./pyarmor build --only-runtime
+
+    # Save obfuscated scripts in `/opt/pyarmor/dist` other than `dist`
+    ./pyarmor build -B -n --output /opt/pyarmor/dist
+```
+
+### check
+
+```
+usage: pyarmor.py check [-h] [PATH]
+
+positional arguments:
+  PATH        Project path
+
+optional arguments:
+  -h, --help  show this help message and exit
+
+```
+
+Check consistency of project
+
+```
+    python pyarmor.py check projects/myproject
+    cd projects/myproject
+    ./pyarmor check
+
+```
+
+### config
+
+```
+usage: pyarmor.py config [-h] [--name NAME] [--title TITLE] [--src SRC]
+                         [--output OUTPUT] [--capsule CAPSULE]
+                         [--manifest TEMPLATE] [--entry SCRIPT]
+                         [--is-package {0,1}] [--disable-restrict-mode {0,1}]
+                         [--obf-module-mode {none,des}]
+                         [--obf-code-mode {none,des,fast,wrap}]
+                         [--runtime-path RPATH]
+                         [PATH]
+
+positional arguments:
+  PATH                  Project path
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --name NAME
+  --title TITLE
+  --src SRC
+  --output OUTPUT
+  --capsule CAPSULE     Project capsule
+  --manifest TEMPLATE   Manifest template string
+  --entry SCRIPT        Entry script of this project
+  --is-package {0,1}
+  --disable-restrict-mode {0,1}
+  --obf-module-mode {none,des}
+  --obf-code-mode {none,des,fast,wrap}
+  --runtime-path RPATH
+
+```
+
+After the project has been created, use `config` to update project
+settings.
+
+```
+    python pyarmor.py config --name=mypkg projects/myproject
+
+    cd projects/myproject
+    ./pyarmor config  --title="My Package"
+
+```
+
+option `--entry`, `--manifest` are relative to `--src` path
+
+```
+    ./pyarmor config --src=/opt/pyarmor/examples/simple --entry=queens.py
+    ./pyarmor config --entry="main.py, /home/jondy/test/main.py"
+
+    # All the *.py files in src path
+    ./pyarmor config --manifest="global-include *.py"
+
+    # All the *.py files in src path, no any test_*.py no any file in path `test`
+    ./pyarmor config --manifest="global-include *.py, global-exclude test_*.py, prune test"
+
+    # All the *.py files in src path except __init__.py
+    # All the *.py files in the path `packages` except `__manifest__.py`
+    ./pyarmor config --manifest="include *.py, exclude __init__.py, recursive-include packages/ *.py, recursive-exclude packages/ __manifest__.py"
+
+```
+
+option `--output`, `--capsule` are relative to project path
+
+```
+    ./pyarmor config --output=dist2
+    ./pyarmor config --output=/opt/pyarmor/dist
+
+    # Change project capsule
+    ./pyarmor config --capsule=/opt/pyarmor/common/.pyarmor_capsule.zip
+```
+
+See [Project Configure File](project-configure-file) for details.
+
+### hdinfo
+
+```
+Usage: pyarmor.py hdinfo [-h]
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+Run this command in target machine to get hardware information which
+could be used to generate `license.lic` by command `licenses` to bind
+obfuscated scripts to target machine.
+
+```
+    python pyarmor.py hdinfo
+
+```
+
+### info
+
+```
+usage: pyarmor.py info [-h] [PATH]
+
+positional arguments:
+  PATH        Project path
+
+optional arguments:
+  -h, --help  show this help message and exit
+
+```
+
+Show project information
+
+```
+    python pyarmor.py info projects/myproject
+
+    cd projects/myproject
+    ./pyarmor info
+
+```
+
+### init
+
+```
+usage: pyarmor.py init [-h] [-t {auto,app,pkg}] [-e ENTRY] -s SRC
+                       [project]
+
+positional arguments:
+  project               Project path
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t {auto,app,pkg}, --type {auto,app,pkg}
+  -e ENTRY, --entry ENTRY
+                        Entry script of this project
+  -s SRC, --src SRC     Base path of python scripts
+  --capsule CAPSULE     Use this capsule other than creating new one
+
+```
+
+This command creates an empty project in the specified path -
+basically a configure file .pyarmor_config, a project capsule
+.pyarmor_capsule.zip, and a shell script "pyarmor" will be created (in
+windows, it called "pyarmor.bat").
+
+Option --type specifies project type: app or package. If it's pakcage
+type, the obfuscated scripts will be saved in the sub-directory
+`package-name` of output path. `auto` means project type will be set
+to package if there is `__init__.py` in the project src path,
+otherwise `app`.
+
+Option --src specifies where to find python source files. By default,
+all .py files in this directory will be included in this project.
+
+Option --entry specifies main script, which could be run directly
+after obfuscated. Note that entry script maybe isn't obfuscated.
+
+Option --capsule specifies project capsule file which has been
+created. If it is set, no new project capsule is generated, just link
+to this capsule.
+
+```
+    # Create app project
+    python pyarmor.py init --src=example/simple --entry=queens.py projects/simple
+    python pyarmor.py init --type=app --src=example/testpkg --entry=queens.py projects/mypkg
+
+    # Create package project
+    python pyarmor.py init --src=example/testpkg --entry=queens.py projects/mypkg
+    python pyarmor.py init --type=pkg --src=example/testpkg --entry=queens.py projects/mypkg
+
+
+    # Use same capsule with other project, so that obfuscated scripts can be
+    # run in the same process of Python Interpreter.
+    python pyarmor.py init --src=odoo/login --entry=__init__.py projects/login
+    python pyarmor.py init --src=odoo/weblogin --entry=__init__.py \
+                           --capsule=projects/login/.pyarmor_capsule.zip \
+                           projects/weblogin
+```
+
+### licenses
+
+```
+usage: pyarmor.py licenses [-h] [-e YYYY-MM-DD] [-d SN] [-4 a.b.c.d]
+                           [-m x:x:x:x] [--bind-domain DOMAIN] [-P PROJECT]
+                           CODE [CODE ...]
+
+positional arguments:
+  CODE                  Registration code for this license
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -P PROJECT, --project PROJECT
+                        Project path
+
+Bind license to hardware:
+  -e YYYY-MM-DD, --expired YYYY-MM-DD
+                        Expired date for this license
+  -d SN, --bind-disk SN
+                        Bind license to serial number of harddisk
+  -4 a.b.c.d, --bind-ipv4 a.b.c.d
+                        Bind license to ipv4 addr
+  -m x:x:x:x, --bind-mac x:x:x:x
+                        Bind license to mac addr
+  --bind-domain DOMAIN  Bind license to domain name
+
+```
+
+Generate licenses for the project. Note that this command must run in
+some project.
+
+In order to bind licenses to fixed machine, use command hdinfo to get
+all available hardware information:
+
+    python pyarmor.py hdinfo
+
+Then generate licenses
+
+```
+    # Expired license
+    python pyarmor.py licenses --project=projects/myproject \
+        --expired=2018-05-12 Customer-Jordan
+
+    # Bind license to fixed harddisk and expired someday
+    cd projects/myproject
+    ./pyarmor licenses -e 2018-05-12 \
+        --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
+
+    # Batch expired licenses for many customers
+    cd projects/myproject
+    ./pyarmor licenses -e 2018-05-12 Customer-A Customer-B Customer-C
+
+```
+
+### obfuscate
+
+```
+usage: pyarmor.py obfuscate [-h] [-O PATH] [-e SCRIPT] -s SRC [-d]
+                            [--capsule CAPSULE]
+                            [patterns [patterns ...]]
+
+positional arguments:
+  patterns              File patterns, default is "*.py"
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -O PATH, --output PATH
+  -e SCRIPT, --entry SCRIPT
+                        Entry script
+  -s SRC, --src SRC     Base path for matching python scripts
+  -d, --no-restrict     Disable restrict mode
+  --capsule CAPSULE     Use this capsule to obfuscate code
+
+```
+
+Obfuscate scripts without project.
+
+```
+    # Obfuscate all scripts in src path, save obfuscated scripts to `dist`
+    python pyarmor.py --src=examples/test --entry=main.py "*.py"
+
+    # Obfuscate all scripts in src path and sub-directory `package` ,
+    # save obfuscated scripts to `dist2`
+    python pyarmor.py --src=examples/test --entry=main.py --output=dist2 "*.py" "package/*.py"
+
+    # Use /opt/pyarmor/.pyarmor_capsule.zip, other than make new one in the src path
+    python pyarmor.py --src=examples/test --entry=main.py --capsule=/opt/pyarmor/.pyarmor_capsule.zip "*.py"
+
+    # Obfuscate a package with no restrict mode
+    python pyarmor.py --src=examples/mypackage --entry=__init__.py --no-restrict "*.py"
 ```
 
 ## Appendix
