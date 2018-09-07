@@ -1,3 +1,9 @@
+4.0.1
+-----
+* Add option `--capsule` for command `init`, `config` and `obfuscate`
+* Deprecate option `--clone` for command `init`, use `--capsule` instead
+* Fix `sys.settrace` and `sys.setprofile` issues for auto-wrap mode
+
 3.9.9
 -----
 * Fix segmentation fault issues for `asyncio`, `typing` modules
