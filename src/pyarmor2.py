@@ -74,8 +74,9 @@ all .py files in this directory will be included in this project.
 Option --entry specifies main script, which could be run directly
 after obfuscated.
 
-Option --capsule specifies project capsule file has been created. If it
-is set, no new project capsule is generated, just link to this capsule.
+Option --capsule specifies project capsule file which has been
+created. If it is set, no new project capsule is generated, just link
+to this capsule.
 
 EXAMPLES
 
@@ -301,13 +302,13 @@ Examples,
 
 * Expired license
 
-    python pyarmor.py licenses --project=projects/myproject \
+    python pyarmor.py licenses --project=projects/myproject \\
                                --expired=2018-05-12 Customer-Jordan
 
 * Bind license to fixed harddisk and expired someday
 
     cd projects/myproject
-    ./pyarmor licenses -e 2018-05-12 \
+    ./pyarmor licenses -e 2018-05-12 \\
                        --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
 
 * Batch expired licenses for many customers
