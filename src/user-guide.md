@@ -1165,6 +1165,33 @@ Obfuscate scripts without project.
   interpreter is compiled with Py_TRACE_REFS or Py_DEBUG, pyarmor will
   crash.
 
+* The callback function set by `sys.settrace`, `sys.setprofile`,
+  `threading.settrace` and `threading.setprofile` will be ignored when
+  running obfuscated scripts.
+
+### Attribute `__file__`
+
+The `__file__` of code object will be `<frozen name>` other than real
+filename. But `__file__` of moudle is still filename. For example,
+obfuscate the following script `foo.py`
+
+```
+def hello(msg):
+    print(msg)
+```
+
+Then import this obfuscated script:
+
+```
+import foo
+
+# The output will be 'foo.py'
+print(foo.__file__)
+
+# The output will be '<frozen foo>'
+print(foo.hello.__file__)
+```
+
 ### About license.lic
 
 In pyarmor, there are 2 types of `license.lic`
