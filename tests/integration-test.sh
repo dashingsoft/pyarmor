@@ -335,6 +335,10 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
 cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
 
+PYARMOR="$PYTHON pyarmor.py"
+[[ -f pyarmor-deprecated.py ]] && PYARMOR="$PYTHON pyarmor-deprecated.py"
+csih_inform "PYARMOR is $PYARMOR"
+
 csih_inform "Prepare for testing"
 echo ""
 
@@ -355,7 +359,7 @@ csih_inform "Test command: capsule"
 echo ""
 
 csih_inform "Case 1.1: show help and import pytransform"
-$PYTHON pyarmor.py --help >result.log 2>&1 \
+$PYARMOR --help >result.log 2>&1 \
     || csih_bug "Case 1.1 FAILED"
 [[ -f _pytransform.so ]] \
     || [[ -f _pytransform.dll ]] \
@@ -363,25 +367,25 @@ $PYTHON pyarmor.py --help >result.log 2>&1 \
     || csih_error "Case 1.1 FAILED: no pytransform extension found"
 
 csih_inform "Case 1.2: generate anonymous capsule"
-$PYTHON pyarmor.py capsule  >result.log 2>&1 \
+$PYARMOR capsule >result.log 2>&1 \
     || csih_bug "Case 1.2 FAILED: return non-zero code"
 [[ -f project.zip ]] \
     || csih_bug "Case 1.2 FAILED: no project.zip found"
 
 csih_inform "Case 1.3: generate named capsule foo.zip"
-$PYTHON pyarmor.py capsule foo >result.log 2>&1 \
+$PYARMOR capsule foo >result.log 2>&1 \
     || csih_bug "Case 1.3 FAILED: return non-zero code"
 [[ -f foo.zip ]] \
     || csih_bug "Case 1.3 FAILED: no foo.zip found"
 
 csih_inform "Case 1.4: generate capsule with output path"
-$PYTHON pyarmor.py capsule -O dist foo2 >result.log 2>&1 \
+$PYARMOR capsule -O dist foo2 >result.log 2>&1 \
     || csih_bug "Case 1.4 FAILED: return non-zero code"
 [[ -f dist/foo2.zip ]] \
     || csih_bug "Case 1.4 FAILED: no dist/foo2.zip found"
 
 csih_inform "Case 1.5: generate capsule for next tests"
-$PYTHON pyarmor.py capsule foo-key >result.log 2>&1 \
+$PYARMOR capsule foo-key >result.log 2>&1 \
     || csih_bug "Case 1.5 FAILED: return non-zero code"
 [[ -f foo-key.zip ]] \
     || csih_bug "Case 1.5 FAILED: no foo-key.zip found"
@@ -394,14 +398,14 @@ csih_inform "Test command: encrypt"
 echo ""
 
 csih_inform "Case 2.1: encrypt script"
-$PYTHON pyarmor.py encrypt --mode=0 -C project.zip -O dist \
+$PYARMOR encrypt --mode=0 -C project.zip -O dist \
     foo.py >result.log 2>&1 \
     || csih_bug "Case 2.1 FAILED: return non-zero code"
 [[ -f dist/foo.py${extchar} ]] \
     || csih_bug "Case 2.1 FAILED: no dist/foo.py${extchar} found"
 
 csih_inform "Case 2.2: encrypt script with named capsule"
-$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=project.zip \
+$PYARMOR encrypt --mode=0 --with-capsule=project.zip \
     --output=build main.py foo.py >result.log 2>&1 \
     || csih_bug "Case 2.2 FAILED: return non-zero code"
 [[ -f build/main.py${extchar} ]] \
@@ -410,7 +414,7 @@ $PYTHON pyarmor.py encrypt --mode=0 --with-capsule=project.zip \
     || csih_bug "Case 2.2 FAILED: no build/foo.py${extchar} found"
 
 csih_inform "Case 2.3: encrypt script with key capsule"
-$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
+$PYARMOR encrypt --mode=0 --with-capsule=foo-key.zip \
     --output=foo-key foo.py >result.log 2>&1 \
     || csih_bug "Case 2.3 FAILED: return non-zero code"
 [[ -f foo-key/foo.py${extchar} ]] \
@@ -422,7 +426,7 @@ cp foo.py test_in_place/foo.py
 cp foo.py test_in_place/a/foo.py
 echo "test_in_place/foo.py" > filelist.txt
 echo "test_in_place/a/foo.py" >> filelist.txt
-$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
+$PYARMOR encrypt --mode=0 --with-capsule=foo-key.zip \
     --output=foo-key -i @filelist.txt >result.log 2>&1 \
     || csih_bug "Case 2.4 FAILED: return non-zero code"
 [[ -f test_in_place/foo.py${extchar} ]] || [[ -f test_in_place/a/foo.py${extchar} ]] \
@@ -432,7 +436,7 @@ csih_inform "Case 2.5: verify co_filename of code object in encrypt script"
 cat <<EOF > co_hello.py
 i = 1 / 0.
 EOF
-$PYTHON pyarmor.py encrypt --mode=3 -C project.zip -O test_filename co_hello.py  >result.log 2>&1
+$PYARMOR encrypt --mode=3 -C project.zip -O test_filename co_hello.py  >result.log 2>&1
 if [[ -f test_filename/co_hello.pyc ]] ; then
     cd test_filename
     cat <<EOF > main.py
@@ -448,7 +452,7 @@ fi
 
 csih_inform "Case 2.6: verify constant is obfucated"
 # Generate license which disable restrict mode, "A" == 0x41
-$PYTHON pyarmor.py license --with-capsule=project.zip -O license-no-restrict.txt "*FLAGS:A*CODE:TestCode" >result.log 2>&1
+$PYARMOR license --with-capsule=project.zip -O license-no-restrict.txt "*FLAGS:A*CODE:TestCode" >result.log 2>&1
 cat << EOF > co_consts.py
 '''Module comment'''
 title = "Hello"
@@ -458,7 +462,7 @@ def hello(arg="first"):
     users = [ "bob", "time", 3]
     return "%s,%s,%s" % (name, arg, users[0])
 EOF
-$PYTHON pyarmor.py encrypt --mode=5 -C project.zip -O test_const co_consts.py >result.log 2>&1
+$PYARMOR encrypt --mode=5 -C project.zip -O test_const co_consts.py >result.log 2>&1
 if [[ -f test_const/co_consts.pyc ]] ; then
     cd test_const
     cp ../license-no-restrict.txt license.lic
@@ -479,7 +483,7 @@ else
 fi
 
 csih_inform "Case 2.7: verify mode 6 works"
-$PYTHON pyarmor.py encrypt --mode=6 -C project.zip -O test_mode6 co_consts.py >result.log 2>&1
+$PYARMOR encrypt --mode=6 -C project.zip -O test_mode6 co_consts.py >result.log 2>&1
 if [[ -f test_mode6/co_consts.pyc ]] ; then
     cd test_mode6
     cp ../license-no-restrict.txt license.lic
@@ -500,7 +504,7 @@ else
 fi
 
 csih_inform "Case 2.8: verify mode 7 works"
-$PYTHON pyarmor.py encrypt --mode=7 -C project.zip -O test_mode7 co_consts.py >result.log 2>&1
+$PYARMOR encrypt --mode=7 -C project.zip -O test_mode7 co_consts.py >result.log 2>&1
 if [[ -f test_mode7/co_consts.py ]] ; then
     cd test_mode7
     cp ../license-no-restrict.txt license.lic
@@ -521,7 +525,7 @@ else
 fi
 
 csih_inform "Case 2.9: verify mode 8 works"
-$PYTHON pyarmor.py encrypt --mode=8 -C project.zip -O test_mode8 co_consts.py >result.log 2>&1
+$PYARMOR encrypt --mode=8 -C project.zip -O test_mode8 co_consts.py >result.log 2>&1
 if [[ -f test_mode8/co_consts.py ]] ; then
     cd test_mode8
     cp ../license-no-restrict.txt license.lic
@@ -544,20 +548,20 @@ fi
 csih_inform "Case 2.10: obfuscate empty script with mode 7"
 cat <<EOF > empty.py
 EOF
-$PYTHON pyarmor.py encrypt --mode=7 -C project.zip -O test_mode7 empty.py >result.log 2>&1
+$PYARMOR encrypt --mode=7 -C project.zip -O test_mode7 empty.py >result.log 2>&1
 if [[ ! -f test_mode7/empty.py ]] ; then
     csih_bug "Case 2.10 FAILED: no test_mode7/empty.py found"
 fi
 
 csih_inform "Case 2.11: obfuscate empty script with mode 8"
-$PYTHON pyarmor.py encrypt --mode=8 -C project.zip -O test_mode8 empty.py >result.log 2>&1
+$PYARMOR encrypt --mode=8 -C project.zip -O test_mode8 empty.py >result.log 2>&1
 if [[ ! -f test_mode8/empty.py ]] ; then
     csih_bug "Case 2.11 FAILED: no test_mode8/empty.py found"
 fi
 
 csih_inform "Case 2.12: test main script with mode 8"
 cp empty.py empty2.py
-$PYTHON pyarmor.py encrypt --mode=8 -C project.zip -O test_mode8 -m empty2 empty2.py >result.log 2>&1
+$PYARMOR encrypt --mode=8 -C project.zip -O test_mode8 -m empty2 empty2.py >result.log 2>&1
 if [[ -f test_mode8/empty2.py ]] ; then
     grep -q "import pyimcore" test_mode8/empty2.py || csih_bug "Case 2.12 FAILED: no main entry generated"
 else
@@ -566,7 +570,7 @@ fi
 
 csih_inform "Case 2.13: test obfuscate scripts with mode 9, 10, 11, 12, 13, 14"
 for mode in 9 10 11 12 13 14 ; do
-  $PYTHON pyarmor.py encrypt --mode=$mode -C project.zip -O test_mode$mode foo.py >result.log 2>&1
+  $PYARMOR encrypt --mode=$mode -C project.zip -O test_mode$mode foo.py >result.log 2>&1
   if [[ -f test_mode${mode}/foo.py ]] ; then
       grep -q "__pyarmor__" test_mode${mode}/foo.py \
           || csih_bug "Case 2.13 FAILED: no __pyarmor__ found in obfuscated script for mode $mode"
@@ -629,7 +633,7 @@ grep -q "foo.hello(2) = 7" result.log \
 csih_inform "Case 3.4: run encrypted code from __future__"
 echo "from __future__ import with_statement" > foo-future.py
 cat foo.py >> foo-future.py
-$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
+$PYARMOR encrypt --mode=0 --with-capsule=foo-key.zip \
     --output=foo-future foo-future.py >result.log 2>&1 \
     || csih_bug "Case 3.4 FAILED: return non-zero code"
 (cd foo-future ;
@@ -640,7 +644,7 @@ $PYTHON pyarmor.py encrypt --mode=0 --with-capsule=foo-key.zip \
 )
 
 csih_inform "Case 3.5: import encrypted code with mode 1"
-$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=1 \
+$PYARMOR encrypt --with-capsule=project.zip --mode=1 \
     --output=build_m1 foo.py >result.log 2>&1 \
     || csih_bug "Case 3.5 FAILED: return non-zero code"
 (cd build_m1 ;
@@ -653,7 +657,7 @@ grep -q "foo.hello(2) = 7" result.log \
 
 
 csih_inform "Case 3.6: import encrypted code with mode 2"
-$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=2 \
+$PYARMOR encrypt --with-capsule=project.zip --mode=2 \
     --output=build_m2 foo.py >result.log 2>&1 \
     || csih_bug "Case 3.6 FAILED: return non-zero code"
 (cd build_m2 ;
@@ -665,7 +669,7 @@ grep -q "foo.hello(2) = 7" result.log \
     || csih_bug "Case 3.6 FAILED: python script returns unexpected result"
 
 csih_inform "Case 3.7: import encrypted package"
-$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=project.zip --in-place \
+$PYARMOR encrypt --mode=0 --with-capsule=project.zip --in-place \
     --output=build_pkg package/*.py >result.log 2>&1 \
     || csih_bug "Case 3.7 FAILED: return non-zero code"
 (cp -a package build_pkg;
@@ -679,7 +683,7 @@ grep -q "foo.hello(2) = 7" result.log \
     || csih_bug "Case 3.7 FAILED: python script returns unexpected result"
 
 csih_inform "Case 3.8: import encrypted code with mode 3"
-$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=3 \
+$PYARMOR encrypt --with-capsule=project.zip --mode=3 \
     --output=build_m3 foo.py >result.log 2>&1 \
     || csih_bug "Case 3.8 FAILED: return non-zero code"
 (cd build_m3 ;
@@ -692,7 +696,7 @@ grep -q "foo.hello(2) = 7" result.log \
 
 
 csih_inform "Case 3.9: run encrypted code with mode 3"
-$PYTHON pyarmor.py encrypt --with-capsule=project.zip --mode=3 \
+$PYARMOR encrypt --with-capsule=project.zip --mode=3 \
     --output=build_m3a -m main:start.py main.py foo.py >result.log 2>&1 \
     || csih_bug "Case 3.9 FAILED: return non-zero code"
 (cd build_m3a ;
@@ -710,7 +714,7 @@ csih_inform "Test cross publish"
 echo ""
 
 csih_inform "Case 4.1: cross publish for windows"
-$PYTHON pyarmor.py encrypt --mode=0 \
+$PYARMOR encrypt --mode=0 \
     --output=others \
     --plat-name=win_amd64 \
     foo.py  >result.log 2>&1 \
@@ -721,7 +725,7 @@ $PYTHON pyarmor.py encrypt --mode=0 \
     || csih_bug "Case 4.1 FAILED: no others/_pytransform.dll found"
 
 csih_inform "Case 4.2: cross publish for linux"
-$PYTHON pyarmor.py encrypt --mode=0 \
+$PYARMOR encrypt --mode=0 \
     --output=others \
     --plat-name=linux_x86_64 \
     main.py  >result.log 2>&1 \
@@ -739,7 +743,7 @@ csih_inform "Test command: license"
 echo ""
 
 csih_inform "Case 5.1: generate license"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     -O license.txt TESTCODE >result.log 2>&1 \
     || csih_bug "Case 5.1 FAILED: return non-zero code"
 [[ -f license.txt ]] \
@@ -754,7 +758,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.1 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.2: generate license bind to fixed machine"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     --bind-disk="${harddisk_sn}" -O license.txt >result.log 2>&1 \
     || csih_bug "Case 5.2 FAILED: return non-zero code"
 [[ -f license.txt ]] \
@@ -769,7 +773,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.2 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.3: generate period license bind to fixed machine"
-$PYTHON pyarmor.py license --with-capsule=project.zip -e $(next_month) \
+$PYARMOR license --with-capsule=project.zip -e $(next_month) \
     --bind-disk="${harddisk_sn}" -O license1.txt >result.log 2>&1 \
     || csih_bug "Case 5.3 FAILED: return non-zero code"
 [[ -f license1.txt ]] \
@@ -784,7 +788,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.3 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.4: generate expired license"
-$PYTHON pyarmor.py license --with-capsule=project.zip -e 2014-01-01 \
+$PYARMOR license --with-capsule=project.zip -e 2014-01-01 \
     -O license2.txt whoami@unknown.com >result.log 2>&1 \
     || csih_bug "Case 5.4 FAILED: return non-zero code"
 [[ -f license2.txt ]] \
@@ -799,7 +803,7 @@ grep -q "Verify license failed" result.log \
     || csih_bug "Case 5.4 FAILED: expired license still work"
 
 csih_inform "Case 5.5: generate bind file license"
-$PYTHON pyarmor.py license --with-capsule=project.zip --bind-file id_rsa \
+$PYARMOR license --with-capsule=project.zip --bind-file id_rsa \
     -O license3.txt my_id_rsa >result.log 2>&1 \
     || csih_bug "Case 5.5 FAILED: return non-zero code"
 [[ -f license3.txt ]] \
@@ -815,7 +819,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.5 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.6: generate bind file license with expired date"
-$PYTHON pyarmor.py license --with-capsule=project.zip -e $(next_month) \
+$PYARMOR license --with-capsule=project.zip -e $(next_month) \
     --bind-file id_rsa -O license4.txt my_id_rsa >result.log 2>&1 \
     || csih_bug "Case 5.6 FAILED: return non-zero code"
 [[ -f license4.txt ]] \
@@ -831,7 +835,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.6 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.7: generate license bind to mac address"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     --bind-mac="${ifmac_address}" -O license-ifmac.txt >result.log 2>&1 \
     || csih_bug "Case 5.7 FAILED: return non-zero code"
 [[ -f license-ifmac.txt ]] \
@@ -846,7 +850,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.7 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.7-1: generate license bind to other mac address"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     --bind-mac="xx:yy" -O license-ifmac2.txt >result.log 2>&1 \
     || csih_bug "Case 5.7-1 FAILED: return non-zero code"
 [[ -f license-ifmac2.txt ]] \
@@ -861,7 +865,7 @@ grep -q "Verify license failed" result.log \
     || csih_bug "Case 5.7-1 FAILED: no failed message found"
 
 csih_inform "Case 5.8: generate license bind to ip address"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     --bind-ip="${ifip_address}" -O license-ifip.txt >result.log 2>&1 \
     || csih_bug "Case 5.8 FAILED: return non-zero code"
 [[ -f license-ifip.txt ]] \
@@ -876,7 +880,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.8 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.8-1: generate license bind to other ip address"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     --bind-ip="192.188.2.2" -O license-ifip2.txt >result.log 2>&1 \
     || csih_bug "Case 5.8-1 FAILED: return non-zero code"
 [[ -f license-ifip2.txt ]] \
@@ -891,7 +895,7 @@ grep -q "Verify license failed" result.log \
     || csih_bug "Case 5.8-1 FAILED: no failed message found"
 
 csih_inform "Case 5.8-2: generate license bind to both mac and ip address"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     --bind-mac="${ifmac_address}" --bind-ip="${ifip_address}" -O license-macip.txt >result.log 2>&1 \
     || csih_bug "Case 5.8-2 FAILED: return non-zero code"
 [[ -f license-macip.txt ]] \
@@ -906,7 +910,7 @@ grep -q "Result is 10" result.log \
     || csih_bug "Case 5.8-2 FAILED: python script returns unexpected result"
 
 csih_inform "Case 5.9-1: generate license bind to other domain name"
-$PYTHON pyarmor.py license --with-capsule=project.zip \
+$PYARMOR license --with-capsule=project.zip \
     --bind-domain="snsoffice.com" -O license-domain2.txt >result.log 2>&1 \
     || csih_bug "Case 5.9-1 FAILED: return non-zero code"
 [[ -f license-domain2.txt ]] \
@@ -927,7 +931,7 @@ echo ""
 csih_inform "Test crack: ast node / pyc"
 echo ""
 
-$PYTHON pyarmor.py encrypt --mode=0 --with-capsule=project.zip \
+$PYARMOR encrypt --mode=0 --with-capsule=project.zip \
     --output=hole sky.py >result.log 2>&1 \
     || csih_bug "Case 6 FAILED: return non-zero code"
 [[ -f hole/sky.py${extchar} ]] \
@@ -975,13 +979,13 @@ csih_inform "Replace normal license with trial license"
 cp license.tri license.lic
 
 csih_inform "Case T1.1: generate capsule in trial license"
-$PYTHON pyarmor.py capsule >result.log 2>&1 \
+$PYARMOR capsule >result.log 2>&1 \
     || csih_bug "Case T1.1 FAILED: return non-zero code"
 [[ -f project.zip ]] \
     || csih_bug "Case T1.1 FAILED: no project.zip found"
 
 csih_inform "Case T1.2: encrypt script in trial license"
-$PYTHON pyarmor.py encrypt --mode=0 -C project.zip -O dist foo.py >result.log 2>&1 \
+$PYARMOR encrypt --mode=0 -C project.zip -O dist foo.py >result.log 2>&1 \
     || csih_bug "Case T1.2 FAILED: return non-zero code"
 [[ -f dist/foo.py${extchar} ]] \
     || csih_bug "Case T1.2 FAILED: no dist/foo.py${extchar} found"
@@ -1017,14 +1021,14 @@ searchmsg="Check trial license failed"
 
 csih_inform "Case E1.1: generate capsule in expired license"
 rm -rf _pytransform.dll _pytransform.so _pytransform.dylib
-$PYTHON pyarmor.py capsule foo >result.log 2>&1 \
+$PYARMOR capsule foo >result.log 2>&1 \
     && csih_bug "Case E1.1 FAILED: return zero code"
 grep -q "$searchmsg" result.log \
     || csih_bug "Case E1.1 FAILED: unexpected message"
 
 csih_inform "Case E1.2: encrypt script in expired license"
 rm -rf _pytransform.dll _pytransform.so _pytransform.dylib
-$PYTHON pyarmor.py encrypt --mode=0 -O dist foo.py >result.log 2>&1 \
+$PYARMOR encrypt --mode=0 -O dist foo.py >result.log 2>&1 \
     && csih_bug "Case E1.2 FAILED: return zero code"
 grep -q "$searchmsg" result.log \
     || csih_bug "Case E1.2 FAILED: unexpected message"

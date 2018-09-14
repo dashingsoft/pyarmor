@@ -3,776 +3,701 @@
 #
 #############################################################
 #                                                           #
-#      Copyright @ 2013 - 2017 Dashingsoft corp.            #
+#      Copyright @ 2018 -  Dashingsoft corp.                #
 #      All rights reserved.                                 #
 #                                                           #
 #      pyarmor                                              #
 #                                                           #
-#      Version: 1.7.0 - 3.3.0                               #
+#      Version: 3.4.0 -                                     #
 #                                                           #
 #############################################################
 #
-#  DEPRECATED from v3.4. It will be replaced by pyarmor2.py
-#  from v4.
 #
 #  @File: pyarmor.py
 #
 #  @Author: Jondy Zhao(jondy.zhao@gmail.com)
 #
-#  @Create Date: 2013/07/24
+#  @Create Date: 2018/01/17
 #
 #  @Description:
 #
-#   A tool used to import or un encrypted python scripts.
+#   A tool used to import or run obfuscated python scripts.
 #
-from distutils.filelist import FileList
-from distutils.text_file import TextFile
-import fnmatch
-import getopt
-import glob
-import imp
+
+'''See "pyarmor.py <command> -h" for more information on a specific command.'''
+
+import json
 import logging
 import os
 import shutil
+import subprocess
 import sys
-import tempfile
 import time
-from zipfile import ZipFile
 
 try:
-    unhexlify = bytes.fromhex
-except Exception:
-    from binascii import a2b_hex as unhexlify
+    import argparse
+except ImportError:
+    # argparse is new in version 2.7
+    import polyfills.argparse as argparse
 
-from config import (version, version_info, trial_info, help_footer,
-                    ext_char, plat_name, dll_ext, dll_name, wrap_runner)
+from config import version, version_info, trial_info, \
+                   plat_name, dll_ext, dll_name, \
+                   default_obf_module_mode, default_obf_code_mode, \
+                   config_filename, capsule_filename, license_filename
 
-def _import_pytransform():
-    try:
-        m = __import__('pytransform')
-        m.pyarmor_init()
-        return m
-    except Exception:
-        pass
-    logging.info('Searching pytransform library ...')
-    path = sys.rootdir
-    pname = plat_name.replace('i586', 'i386').replace('i686', 'i386')
-    src = os.path.join(path, 'platforms', pname, dll_name + dll_ext)
-    if os.path.exists(src):
-        logging.info('Find pytransform library "%s"', src)
-        logging.info('Copy %s to %s', src, path)
-        shutil.copy(src, path)
-        m = __import__('pytransform')
-        m.pyarmor_init()
-        logging.info('Load pytransform OK.')
-        return m
-    logging.error('No library %s found', src)
+from project import Project
+from utils import make_capsule, obfuscate_scripts, make_runtime, \
+                  make_project_license, make_entry, show_hd_info, \
+                  build_path, make_command, get_registration_code
 
-def _get_registration_code():
-    try:
-        code = pytransform.get_registration_code()
-    except Exception:
-        code = ''
-    return code
-
-def checklicense(func):
-    # Fix python25 no "as" keyword in statement "except"
-    exc_msg = lambda : str(sys.exc_info()[1])
-    def wrap(*arg, **kwargs):
-        code = _get_registration_code()
-        if code == '':
-            sys.stderr.write('Pyarmor Trial Version %s\n' % version)
-            sys.stderr.write(trial_info)
-        else:
-            sys.stderr.write('Pyarmor Version %s\n' % version)
+def armorcommand(func):
+    def wrap(*args, **kwargs):
         try:
-            func(*arg, **kwargs)
-        except RuntimeError:
-            logging.error(exc_msg())
-        except getopt.GetoptError:
-            logging.error(exc_msg())
-        except pytransform.PytransformError:
-            logging.error(exc_msg())
+            return func(*args, **kwargs)
+        except Exception as e:
+            logging.exception(e)
     wrap.__doc__ = func.__doc__
     return wrap
 
-def show_version_info(verbose=True):
-    code = _get_registration_code()
-    trial = ' Trial' if  code == '' else ''
-    print('Pyarmor%s Version %s' % (trial, version))
-    if verbose:
-        print(version_info)
-        if code == '':
-            print(trial_info)
-        print(help_footer)
+@armorcommand
+def _init(args):
+    '''Create an empty project or reinitialize an existing one
 
-def show_hd_info():
-    pytransform.show_hd_info()
+This command creates an empty project in the specified path -
+basically a configure file .pyarmor_config, a project capsule
+.pyarmor_capsule.zip, and a shell script "pyarmor" will be created (in
+windows, it called "pyarmor.bat").
 
-def usage(command=None):
-    '''
-Usage: pyarmor [command name] [options]
+Option --src specifies where to find python source files. By default,
+all .py files in this directory will be included in this project.
 
-Command name can be one of the following list
+Option --entry specifies main script, which could be run directly
+after obfuscated.
 
-  help                Show this usage
-  version             Show version information
-  capsule             Generate project capsule used to encrypted files
-  encrypt             Encrypt the scripts
-  license             Generate registration code
+Option --capsule specifies project capsule file which has been
+created. If it is set, no new project capsule is generated, just link
+to this capsule.
 
-If you want to know the usage of each command, type the
-following command:
+EXAMPLES
 
-  pyarmor help [command name]
-
-and you can type the left match command, such as
-
-   pyarmor c
-or pyarmor cap
-or pyarmor capsule
+    python pyarmor.py init --src=examples --entry=queens.py project1
+    cd project1/
+    ./pyarmor info
 
     '''
-    show_version_info(verbose=False)
+    if args.clone:
+        logging.info('Warning: option --clone is deprecated, use --capsule instead ')
+        _clone(args)
+        return
 
-    if command is None:
-        print(usage.__doc__)
+    path = args.project
+    logging.info('Create project in %s ...', path)
+
+    if not os.path.exists(path):
+        logging.info('Make project directory %s', path)
+        os.makedirs(path)
+
+    src = os.path.abspath(args.src)
+    logging.info('Python scripts base path: %s', src)
+
+    name = os.path.basename(os.path.abspath(path))
+    if (args.type == 'package') or (args.type == 'pkg') or \
+       (args.type == 'auto' and os.path.exists(os.path.join(src, '__init__.py'))):
+        logging.info('Project is configured as package')
+        project = Project(name=name, title=name, src=src, entry=args.entry,
+                          is_package=1, obf_code_mode='wrap',
+                          disable_restrict_mode=1)
     else:
-        funcname = 'do_' + command
-        func = globals().get(funcname, usage)
-        print(func.__doc__)
-    print(help_footer)
+        logging.info('Project is configured as standalone application.')
+        project = Project(name=name, title=name, src=src, entry=args.entry)
 
-def make_capsule(rootdir=None, filename='project.zip'):
-    '''Generate all the files used by running encrypted scripts, pack all
-    of them to a zip file.
-
-    rootdir        pyarmor root dir, where you can find license files,
-                   auxiliary library and pyshield extension module.
-
-    filename       output filename, the default value is project.zip
-
-    Return True if sucess, otherwise False or raise exception
-    '''
-    try:
-        if rootdir is None:
-            rootdir = sys.rootdir
-    except AttributeError:
-        rootdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-    logging.info('Rootdir is %s', rootdir)
-    filelist = 'public.key', 'pyimcore.py', 'pytransform.py'
-    for x in filelist:
-        src = os.path.join(rootdir, x)
-        if not os.path.exists(src):
-            raise RuntimeError('No %s found in the rootdir' % src)
-
-    licfile = os.path.join(rootdir, 'license.lic')
-    if not os.path.exists(licfile):
-        raise RuntimeError('Missing license file %s' % licfile)
-
-    logging.info('Generating project key ...')
-    pri, pubx, capkey, lic = pytransform.generate_project_capsule(licfile)
-    logging.info('Generating project OK.')
-    logging.info('Writing capsule to %s ...', filename)
-    myzip = ZipFile(filename, 'w')
-    try:
-        myzip.write(os.path.join(rootdir, 'public.key'), 'pyshield.key')
-        myzip.writestr('pyshield.lic', capkey)
-        myzip.write(os.path.join(rootdir, 'pyimcore.py'), 'pyimcore.py')
-        myzip.write(os.path.join(rootdir, 'pytransform.py'), 'pytransform.py')
-        myzip.writestr('private.key', pri)
-        myzip.writestr('product.key', pubx)
-        myzip.writestr('license.lic', lic)
-    finally:
-        myzip.close()
-    logging.info('Write project capsule OK.')
-
-def encrypt_files(files, prokey, mode=8, output=None):
-    '''Encrypt all the files, all the encrypted scripts will be plused with
-    a suffix 'e', for example, hello.py -> hello.pye
-
-    files          list all the scripts
-    prokey         project key file used to encrypt scripts
-    output         output directory. If None, the output file will be saved
-                   in the same path as the original script
-
-    Return None if sucess, otherwise raise exception
-    '''
-    ext = '.py' if mode in (7, 8, 9, 10, 11, 12, 13, 14) else \
-          '.pyc' if mode in (1, 3, 4, 5, 6) else '.py' + ext_char
-    if output is None:
-        fn = lambda a, b: b[1] + ext
+    if args.capsule:
+        capsule = os.path.abspath(args.capsule)
+        logging.info('Share capsule with %s', capsule)
+        project._update(dict(capsule=capsule))
     else:
-        # fn = lambda a, b : os.path.join(a, os.path.basename(b) + ch)
-        # fn = lambda a, b: os.path.join(a, b[1] + ext)
-        if not os.path.exists(output):
-            os.makedirs(output)
-        def _get_path(a, b):
-            p = os.path.join(a, b[1] + ext)
-            d = os.path.dirname(p)
-            if not os.path.exists(d):
-                os.makedirs(d)
-            return p
-        fn = _get_path
-    flist = []
-    for x in files:
-        flist.append((x[0], fn(output, x)))
-        logging.info('Encrypt %s to %s', *flist[-1])
+        logging.info('Create project capsule ...')
+        filename = os.path.join(path, capsule_filename)
+        make_capsule(filename)
+        logging.info('Project capsule %s created', filename)
 
-    if len(flist[:1]) == 0:
-        logging.info('No any script specified')
-    else:
-        if not os.path.exists(prokey):
-            raise RuntimeError('Missing project key "%s"' % prokey)
-        pytransform.encrypt_project_files(prokey, tuple(flist), mode)
-        logging.info('Encrypt all scripts OK.')
+    logging.info('Create configure file ...')
+    filename = os.path.join(path, config_filename)
+    project.save(path)
+    logging.info('Configure file %s created', filename)
 
-def make_license(capsule, filename, code):
-    myzip = ZipFile(capsule, 'r')
-    myzip.extract('private.key', tempfile.gettempdir())
-    prikey = os.path.join(tempfile.tempdir, 'private.key')
-    try:
-        pytransform.generate_license_file(filename, prikey, code)
-    finally:
-        os.remove(prikey)
+    logging.info('Create pyarmor command ...')
+    script = make_command(plat_name, sys.executable, sys.argv[0], path)
+    logging.info('Pyarmor command %s created', script)
 
-@checklicense
-def do_capsule(argv):
-    '''Usage: pyarmor capsule [OPTIONS] [NAME]
+    logging.info('Project init successfully.')
 
-Generate a capsule which used to encrypt/decrypt python scripts later,
-it will generate random capsule when run this command again. Note that
-the trial version of Pyarmor will always generate same project capsule
+def _clone(args):
+    path = args.project
+    logging.info('Create project in %s ...', path)
 
-Generately, one project, one capsule.
+    if not os.path.exists(path):
+        logging.info('Make project directory %s', path)
+        os.makedirs(path)
 
-Available options:
+    src = os.path.abspath(args.src)
+    logging.info('Python scripts base path: %s', src)
 
-  -O, --output=DIR        [option] The path used to save license file.
+    logging.info('Clone project from path: %s', args.clone)
+    for s in (config_filename, capsule_filename):
+        logging.info('\tCopy file "%s"', s)
+        shutil.copy(os.path.join(args.clone, s), os.path.join(path, s))
 
-  -f, --force             [option] Overwrite output file even it exists.
+    logging.info('Init project settings')
+    project = Project()
+    project.open(path)
+    name = os.path.basename(os.path.abspath(path))
+    project._update(dict(name=name, title=name, src=src, entry=args.entry))
+    project.save(path)
 
-For example,
+    if args.type != 'auto':
+        logging.info('Option --type is ignored when --clone is specified')
 
- - Generate default capsule "project.zip":
+    logging.info('Create pyarmor command ...')
+    script = make_command(plat_name, sys.executable, sys.argv[0], path)
+    logging.info('Pyarmor command %s created', script)
 
-   pyarmor capsule project
+    logging.info('Project init successfully.')
 
- - Generate a capsule "mycapsules/foo.zip":
+@armorcommand
+def _update(args):
+    '''Update project settings.
 
-   pyarmor capsule --output mycapsules foo
+Option --manifest is comma-separated list of manifest template
+command, same as MANIFEST.in of Python Distutils. The default value is
+"global-include *.py"
+
+Option --entry is comma-separated list of entry scripts, relative to
+src path of project.
+
+Option --runtime-path is used to find _pytransform.dll(.so) in target
+machine when import obfuscated scripts. It's only used in special
+case. For example, use py2exe to package obfuscated scripts. Or use
+many odoo modules which are obfuscated separately. In this case, copy
+pyarmor runtime file to an absolute path, set this option to same path
+when obfuscate each odoo module.
+
+Examples,
+
+    cd projects/project1
+    ./pyarmor config --entry "main.py, another/main.py"
+                     --manifest "global-include *.py, exclude test*.py"
+                     --obf-module-mode des
+                     --obf-code-mode des
+                     --runtime-path "/opt/odoo/pyarmor"
 
     '''
-    opts, args = getopt.getopt(argv, 'fO:', ['force', 'output='])
+    project = Project()
+    project.open(args.project)
+    logging.info('Update project %s ...', args.project)
 
-    output = os.getcwd()
-    overwrite = False
-    for o, a in opts:
-        if o in ('-O', '--output'):
-            output = a
-        elif o in ('-f', '--force'):
-            overwrite = True
+    if args.src is not None:
+        args.src = os.path.abspath(args.src)
+        logging.info('Change src to absolute path: %s', args.src)
+    if args.capsule is not None:
+        args.capsule = os.path.abspath(args.capsule)
+        logging.info('Change capsule to absolute path: %s', args.capsule)
+    keys = project._update(dict(args._get_kwargs()))
+    logging.info('Changed attributes: %s', keys)
 
-    if len(args) == 0:
-        filename = os.path.join(output, 'project.zip')
-    else:
-        filename = os.path.join(output, '%s.zip' % args[0])
+    project.save(args.project)
+    logging.info('Update project OK.')
 
-    if os.path.exists(filename) and not overwrite:
-        logging.info("Specify -f to overwrite it if you really want to do")
-        raise RuntimeError("Capsule %s already exists" % filename)
+@armorcommand
+def _info(args):
+    '''Show project information'''
+    project = Project()
+    project.open(args.project)
+    logging.info('Project %s information\n%s', args.project, project.info())
 
-    if not os.path.exists(output):
-        logging.info("Make output path %s", output)
-        os.makedirs(output)
+@armorcommand
+def _build(args):
+    '''Build project, obfuscate all scripts in the project.'''
+    project = Project()
+    project.open(args.project)
+    logging.info('Build project %s ...', args.project)
 
-    logging.info('Output filename is %s', filename)
-    make_capsule(sys.rootdir, filename)
-    logging.info('Generate capsule OK.')
+    capsule = build_path(project.capsule, args.project)
+    logging.info('Use capsule: %s', capsule)
 
-def _parse_template_file(filename, path=None):
-    template = TextFile(filename,
-                        strip_comments=1,
-                        skip_blanks=1,
-                        join_lines=1,
-                        lstrip_ws=1,
-                        rstrip_ws=1,
-                        collapse_join=1)
-    lines = template.readlines()
+    output = build_path(project.output, args.project) \
+             if args.output is None else args.output
+    logging.info('Output path is: %s', output)
 
-    filelist = FileList()
-    try:
-        if path is not None and not path == os.getcwd():
-            oldpath = os.getcwd()
-            os.chdir(path)
+    if not args.only_runtime:
+        mode = project.get_obfuscate_mode()
+        files = project.get_build_files(args.force)
+        src = project.src
+        soutput = os.path.join(output, os.path.basename(src)) \
+                  if project.get('is_package') else output
+        filepairs = [(os.path.join(src, x), os.path.join(soutput, x))
+                     for x in files]
+
+        logging.info('%s increment build',
+                     'Disable' if args.force else 'Enable')
+        logging.info('Search scripts from %s', src)
+        logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
+        for x in files:
+            logging.info('\t%s', x)
+        logging.info('Save obfuscated scripts to %s', soutput)
+
+        obfuscate_scripts(filepairs, mode, capsule, soutput)
+
+        # for x in targets:
+        #     output = os.path.join(project.output, x)
+        #     pairs = [(os.path.join(src, x), os.path.join(output, x))
+        #              for x in files]
+        #     for src, dst in pairs:
+        #         try:
+        #             shutil.copy2(src, dst)
+        #         except Exception:
+        #             os.makedirs(os.path.dirname(dst))
+        #             shutil.copy2(src, dst)
+        project['build_time'] = time.time()
+        project.save(args.project)
+
+    if not args.no_runtime:
+        if project.runtime_path is None or args.output is not None:
+            routput = output
         else:
-            oldpath = None
+            routput = os.path.join(args.project, 'runtimes')
+        if not os.path.exists(routput):
+            logging.info('Make path: %s', routput)
+            os.mkdir(routput)
+        logging.info('Make runtime files to %s', routput)
+        make_runtime(capsule, routput)
+        if project.get('disable_restrict_mode'):
+            licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
+            licfile = os.path.join(routput, license_filename)
+            logging.info('Generate no restrict mode license file: %s', licfile)
+            make_project_license(capsule, licode, licfile)
 
-        for line in lines:
-            filelist.process_template_line(line)
-    finally:
-        if oldpath is not None:
-            os.chdir(oldpath)
-    return filelist.files
-
-def _parse_file_args(args, srcpath=None):
-    filelist = []
-
-    if srcpath is None:
-        path, n = '', 0
+    if project.entry:
+        make_entry(project.entry, project.src, output,
+                   rpath=project.runtime_path,
+                   ispackage=project.get('is_package'))
     else:
-        path, n = srcpath, len(srcpath) + 1
+        logging.info('\tIn order to import obfuscated scripts, insert ')
+        logging.info('\t2 lines in entry script:')
+        logging.info('\t\tfrom pytransfrom import pyarmor_runtime')
+        logging.info('\t\tpyarmor_runtime()')
 
-    if len(args) == 1 and args[0][0] == '@' and args[0].endswith('MANIFEST.in'):
-        for x in _parse_template_file(args[0][1:], path=srcpath):
-            filelist.append((os.path.join(path, x), os.path.splitext(x)[0]))
-        return filelist
+    logging.info('Build project OK.')
 
-    patterns = []
-    for arg in args:
-        if arg[0] == '@':
-            f = open(arg[1:], 'r')
-            for pattern in f.read().splitlines():
-                if not pattern.strip() == '':
-                    patterns.append(pattern.strip())
-            f.close()
-        else:
-            patterns.append(arg)
+@armorcommand
+def _licenses(args):
+    '''Generate licenses for this project.
 
-    for pat in patterns:
-        for name in glob.glob(os.path.join(path, pat)):
-            p = os.path.splitext(name)
-            filelist.append((name, p[0][n:]))
+In order to bind licenses to fixed machine, use command hdinfo to get
+all available hardware information:
 
-    return filelist
+    python pyarmor.py hdinfo
 
-@checklicense
-def do_encrypt(argv):
-    '''Usage: pyarmor encrypt [OPTIONS] [File Patterns or @Filename]
+Examples,
 
-Encrpty the files list in the command line, you can use a specified
-pattern according to the rules used by the Unix shell. No tilde
-expansion is done, but *, ?, and character ranges expressed with []
-will be correctly matched.
+* Expired license
 
-You can either list file patterns in one file, one pattern one line,
-then add a prefix '@' to the filename.
+    python pyarmor.py licenses --project=projects/myproject \\
+                               --expired=2018-05-12 Customer-Jordan
 
-All the files will be encrypted and saved as orginal file name plus
-'e'. By default, the encrypted scripts and all the auxiliary files
-used to run the encrypted scripts are save in the path "dist".
+* Bind license to fixed harddisk and expired someday
 
-Available options:
+    cd projects/myproject
+    ./pyarmor licenses -e 2018-05-12 \\
+                       --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
 
-  -O, --output=DIR            Output path for runtime files and encrypted
-                              files (if no --in-place)
+* Batch expired licenses for many customers
 
-                              The default value is "build".
-
-  -C, --with-capsule=FILENAME Specify the filename of capsule generated
-                              before.
-
-                              The default value is "project.zip".
-
-  -i, --in-place              [option], the encrypted scripts will be
-                              saved in the original path (same as source).
-                              Otherwise, save to --output specified.
-
-  -s, --src=DIR               [option], the source path of python scripts.
-                              The default value is current path.
-
-  -p, --plat-name             [option] platform name to run encrypted
-                              scripts. Only used when encrypted scripts
-                              will be run in different platform.
-
-  -m, --main=NAME             Generate wrapper file to run encrypted script
-
-  -e, --mode=MODE             Encrypt mode, available value:
-                                0     Encrypt both source and bytecode
-                                1     Encrypt bytecode only.
-                                2     Encrypt source code only.
-                                3     Obfuscate bytecodes.
-                                5     Obfuscate code object of module.
-                                6     Combine mode 3 and 4
-                                7     Obfuscate code object of module,
-                                      output wrapper scripts
-                                8     Obfuscate both code object and bytecode,
-                                      output wrapper scripts
-                              Mode 0, 1, 2 is deprecated from v3.2.0, this
-                              option can be ignored in general.
-
-  -d, --clean                 Clean output path at start.
-
-  --manifest FILENAME         Write file list to FILENAME
-
-For examples:
-
-    - Encrypt a.py and b.py as a.pyx and b.pyx, saved in the path "dist":
-
-      pyarmor encrypt a.py b.py
-
-    - Use file pattern to specify files:
-
-      pyarmor encrypt a.py *.py src/*.py lib/*.pyc
-
-    - Save encrypted files in the directory "/tmp/build" other than "dist":
-
-      pyarmor encrypt --output=/tmp/build a.py
-
-    - Encrypt python scripts by project capsule "project.zip" in the
-      current directory:
-
-      pyarmor encrypt --with-capsule=project.zip src/*.py
-
-    - Encrypt python scripts to run in different platform:
-
-      pyarmor encrypt --plat-name=linux_x86_64 a.py b.py
-
-Use MANIFEST.in to list files
-
-      pyarmor encrypt --with-capsule=project.zip @myproject/MANIFEST.in
-
-It's Following the Distutils’ own manifest template
+    cd projects/myproject
+    ./pyarmor licenses -e 2018-05-12 Customer-A Customer-B Customer-C
 
     '''
-    opts, args = getopt.getopt(
-        argv, 'C:de:im:O:p:s:',
-        ['in-place', 'output=', 'src=', 'with-capsule=', 'plat-name=',
-         'main=', 'clean', 'mode=', 'manifest=']
-    )
+    logging.info('Generate licenses for project %s ...', args.project)
 
-    output = 'build'
-    srcpath = None
-    capsule = 'project.zip'
-    inplace = False
-    pname = None
-    extfile = None
-    mainname = []
-    clean = False
-    mode = 8
-    manifest = None
+    project = Project()
+    project.open(args.project)
 
-    for o, a in opts:
-        if o in ('-O', '--output'):
-            output = a
-        elif o in ('-s', '--src'):
-            srcpath = a
-        elif o in ('-i', '--in-place'):
-            inplace = True
-        elif o in ('-C', '--with-capsule'):
-            capsule = a
-        elif o in ('-p', '--plat-name'):
-            pname = a
-        elif o in ('-d', '--clean'):
-            clean = True
-        elif o in ('-e', '--mode'):
-            if a not in ('0', '1', '2', '3', '5', '6',
-                         '7', '8', '9', '10', '11', '12',
-                         '13', '14'):
-                raise RuntimeError('Invalid mode "%s"' % a)
-            mode = int(a)
-        elif o in ('-m', '--main'):
-            mainname.append(a)
-        elif o in ('--manifest', ):
-            manifest = a
+    licpath = os.path.join(args.project, 'licenses')
+    if not os.path.exists(licpath):
+        logging.info('Make output path of licenses: %s', licpath)
+        os.mkdir(licpath)
 
-    if srcpath is not None and not os.path.exists(srcpath):
-        raise RuntimeError('No found specified source path "%s"' % srcpath)
-
-    if capsule is None or not os.path.exists(capsule):
-        raise RuntimeError('No found capsule file %s' % capsule)
-
-    # Maybe user specify an empty path
-    if output == '':
-        output = 'build'
-
-    logging.info('Output path is %s' % output)
-    if os.path.exists(output) and clean:
-        logging.info('Removing output path %s', output)
-        shutil.rmtree(output)
-        logging.info('Remove output path OK.')
-    if not os.path.exists(output):
-        logging.info('Make output path %s', output)
-        os.makedirs(output)
-
-    if pname is None:
-        extfile = os.path.join(sys.rootdir, dll_name + dll_ext)
-    else:
-        logging.info("Cross publish, target platform is %s", pname)
-        name = dll_name + ('.so' if pname.startswith('linux') else '.dll')
-        extfile = os.path.join(sys.rootdir, 'platforms', pname, name)
-        if not os.path.exists(extfile):
-            # Need to download platforms/... from pyarmor homepage
-            logging.info('You need download prebuilt library files '
-                         'from pyarmor homepage first.')
-            raise RuntimeError('Missing cross platform library %s' % extfile)
-    logging.info('Copy %s to %s' % (extfile, output))
-    shutil.copy(extfile, output)
-
-    logging.info('Extract capsule %s ...', capsule)
-    ZipFile(capsule).extractall(path=output)
-    logging.info('Extract capsule to %s OK.', output)
-
-    if mode >= 3:
-        logging.info('Encrypt mode: %s', mode)
-        with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
-            lines = 'from pytransform import init_runtime', \
-                    'init_runtime(0, 0, 0, 0)', ''
-            f.write('\n'.join(lines))
-    elif mode:
-        logging.info('Encrypt mode: %s', mode)
-        with open(os.path.join(output, 'pyimcore.py'), 'r') as f:
-            lines = f.read()
-        with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
-            i = lines.rfind('\n\n')
-            if i == -1:
-                raise RuntimeError('Invalid pyimcore.py')
-            f.write(lines[:i])
-            if mode == 1:
-                f.write('\n\ninit_runtime()\n')
-            elif mode == 2:
-                f.write('\n\nsys.meta_path.append(PyshieldImporter())\n'
-                        'init_runtime(0, 0, 0, 0)\n')
-
-    prikey = os.path.join(output, 'private.key')
-    if os.path.exists(prikey):
-        logging.info('Remove private key %s in the output', prikey)
-        os.remove(prikey)
-
-    if mode not in (7, 8, 9, 10, 11, 12, 13, 14):
-        for name in mainname:
-            n = name.find(':')
-            if n == -1:
-                script = os.path.join(output, name + '.py')
-            else:
-                script = os.path.join(output, name[n+1:])
-                name = name[:n]
-            logging.info('Writing script wrapper %s ...', script)
-            ch = 'c' if mode == 1 or mode == 3 else ext_char
-            with open(script, 'w') as f:
-                f.write(wrap_runner % (name + '.py' + ch))
-            logging.info('Write script wrapper OK.')
-
-    filelist = _parse_file_args(args, srcpath=srcpath)
-    if manifest is not None:
-        logging.info('Write filelist to %s', manifest)
-        with open(manifest, 'w') as fp:
-            fp.write('\n'.join([x[0] for x in filelist]))
-
-    if len(filelist[:1]) == 0:
-        logging.info('Generate extra files OK.')
-    else:
-        prokey = os.path.join(output, 'product.key')
-        if not os.path.exists(prokey):
-            raise RuntimeError('Missing project key %s' % prokey)
-        logging.info('Encrypt files ...')
-        encrypt_files(filelist, prokey, mode, None if inplace else output)
-        if mode in (7, 8, 9, 10, 11, 12, 13, 14):
-            for name in mainname:
-                script = os.path.join(
-                    output, name + ('' if name.endswith('.py') else '.py'))
-                with open(script, 'r') as f:
-                    source = f.read()
-                logging.info('Patch entry script %s.', script)
-                with open(script, 'w') as f:
-                    f.write('import pyimcore\n')
-                    f.write(source)
-        logging.info('Encrypt files OK.')
-
-@checklicense
-def do_license(argv):
-    '''
-Usage: pyarmor license [Options] [CODE]
-
-Generate a registration code for project capsule, save it to "license.txt"
-by default.
-
-Available options:
-
-  -O, --output=DIR                Path used to save license file.
-
-  -B, --bind-disk="XX"            [optional] Generate license file bind to
-                                  harddisk of one machine.
-
-      --bind-mac="XX:YY"          [optional] Generate license file bind to
-                                  mac address of one machine.
-
-      --bind-ip="a.b.c.d"         [optional] Generate license file bind to
-                                  ipv4 of one machine.
-
-      --bind-domain="domain"      [optional] Generate license file bind to
-                                  domain of one machine.
-
-  -F, --bind-file=FILENAME        [option] Generate license file bind to
-                                  fixed file, for example, ssh private key.
-
-  -e, --expired-date=YYYY-MM-NN   [option] Generate expired license file.
-                                  It could be combined with "--bind"
-
-  -C, --with-capsule=FILENAME     [required] Specify the filename of capsule
-                                  generated before.
-
-For example,
-
-  - Generate a license file "license.lic" for project capsule "project.zip":
-
-    pyarmor license --wth-capsule=project.zip MYPROJECT-0001
-
-  - Generate a license file "license.lic" expired in 05/30/2015:
-
-    pyarmor license --wth-capsule=project.zip -e 2015-05-30 MYPROJECT-0001
-
-  - Generate a license file "license.lic" bind to machine whose harddisk's
-    serial number is "PBN2081SF3NJ5T":
-
-    pyarmor license --wth-capsule=project.zip --bind-disk PBN2081SF3NJ5T
-
-  - Generate a license file "license.lic" bind to ssh key file id_rsa:
-
-    pyarmor license --wth-capsule=project.zip \
-            --bind-file src/id_rsa ~/.ssh/my_id_rsa
-
-    File "src/id_rsa" is in the develop machine, pyarmor will read data
-    from this file when generating license file.
-
-    Argument "~/.ssh/id_rsa" means full path filename in target machine,
-    pyarmor will find this file as key file when decrypting python scripts.
-
-    You shuold copy "license.lic" to target machine, at the same time,
-    copy "src/id_rsa" to target machine as "~/.ssh/my_id_rsa"
-
-    '''
-    opts, args = getopt.getopt(
-        argv, 'B:C:e:F:O:',
-        ['bind-disk=', 'bind-mac=', 'bind-ip=', 'bind-domain=',
-         'expired-date=', 'bind-file=', 'with-capsule=', 'output=']
-    )
-
-    filename = 'license.lic.txt'
-    bindfile = None
-    capsule = 'project.zip'
-    bindfileflag = False
-    binddisk = None
-    bindip = None
-    bindmac = None
-    binddomain = None
-    expired = None
-    for o, a in opts:
-        if o in ('-C', '--with-capsule'):
-            capsule = a
-        elif o in ('-B', '--bind-disk'):
-            binddisk = a
-        elif o in ('-B', '--bind-mac'):
-            bindmac = a
-        elif o in ('-B', '--bind-ip'):
-            bindip = a
-        elif o in ('-B', '--bind-domain'):
-            binddomain = a
-        elif o in ('-F', '--bind-file'):
-            bindfileflag = True
-            bindfile = a
-        elif o in ('-e', '--expired-date'):
-            expired = a
-        elif o in ('-O', '--output'):
-            if os.path.exists(a) and os.path.isdir(a):
-                filename = os.path.join(a, 'license.lic.txt')
-            else:
-                filename = a
-
-    if len(args) == 0:
-        key = 'POWERD-BY-PYARMOR'
-    else:
-        key = args[0]
-
-    if expired is None:
+    if args.expired is None:
         fmt = ''
     else:
-        logging.info('License file expired at %s', expired)
-        fmt = '*TIME:%.0f\n' % time.mktime(time.strptime(expired, '%Y-%m-%d'))
+        fmt = '*TIME:%.0f\n' % \
+              time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
 
-    if binddisk:
-        logging.info('License file bind to harddisk "%s"', binddisk)
-        fmt = '%s*HARDDISK:%s' % (fmt, binddisk)
+    if project.get('disable_restrict_mode'):
+        fmt = '%s*FLAGS:%c' % (fmt, 1)
 
-    if bindmac:
-        logging.info('License file bind to mac addr "%s"', key)
-        fmt = '%s*IFMAC:%s' % (fmt, bindmac)
+    if args.bind_disk:
+        fmt = '%s*HARDDISK:%s' % (fmt, args.bind_disk)
 
-    if bindip:
-        logging.info('License file bind to ip "%s"', key)
-        fmt = '%s*IFIPV4:%s' % (fmt, bindip)
+    if args.bind_mac:
+        fmt = '%s*IFMAC:%s' % (fmt, args.bind_mac)
 
-    if binddomain:
-        logging.info('License file bind to domain "%s"', key)
-        fmt = '%s*DOMAIN:%s' % (fmt, binddomain)
+    if args.bind_ipv4:
+        fmt = '%s*IFIPV4:%s' % (fmt, args.bind_ipv4)
 
-    if bindfileflag:
-        if os.path.exists(bindfile):
-            logging.info('You need copy %s to target machine as %s '
-                         'with license file.', bindfile, key)
-            f = open(bindfile, 'rb')
-            s = f.read()
-            f.close()
-            if sys.version_info[0] == 3:
-                fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s.decode())
-            else:
-                fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s)
-        else:
-            raise RuntimeError('Bind file %s not found' % bindfile)
+    # if args.bind_ipv6:
+    #     fmt = '%s*IFIPV6:%s' % (fmt, args.bind_ipv6)
 
-    logging.info('Output filename is %s', filename)
-    make_license(capsule, filename, fmt if fmt else key)
-    logging.info('Generate license file "%s" OK.', filename)
+    if args.bind_domain:
+        fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
+
+    # if args.bind_file:
+    #     if os.path.exists(args.bind_file):
+    #         f = open(args.bind_file, 'rb')
+    #         s = f.read()
+    #         f.close()
+    #         if sys.version_info[0] == 3:
+    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s.decode())
+    #         else:
+    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s)
+    #     else:
+    #         raise RuntimeError('Bind file %s not found' % bindfile)
+
+    # Prefix of registration code
+    fmt = fmt + '*CODE:'
+    capsule = build_path(project.capsule, args.project)
+    for rcode in args.codes:
+        output = os.path.join(licpath, rcode)
+        if not os.path.exists(output):
+            logging.info('Make path: %s', output)
+            os.mkdir(output)
+
+        licfile = os.path.join(output, license_filename)
+        licode = fmt + rcode
+        txtinfo = licode.replace('\n', r'\n')
+        if args.expired:
+            txtinfo = '"Expired:%s%s"' % (args.expired,
+                                          txtinfo[txtinfo.find(r'\n')+2:])
+        logging.info('Generate license: %s', txtinfo)
+        make_project_license(capsule, licode, licfile)
+        logging.info('Write license file: %s', licfile)
+
+        logging.info('Write information to %s.txt', licfile)
+        with open(os.path.join(licfile + '.txt'), 'w') as f:
+            f.write(txtinfo)
+
+    logging.info('Generate %d licenses OK.', len(args.codes))
+
+@armorcommand
+def _target(args):
+    project = Project()
+    project.open(args.project)
+
+    name = args.name[0]
+    if args.remove:
+        logging.info('Remove target from project %s ...', args.project)
+        project.remove_target(name)
+    else:
+        logging.info('Add target to project %s ...', args.project)
+        project.add_target(name, args.platform, args.license)
+    project.save(args.project)
+
+@armorcommand
+def _obfuscate(args):
+    '''Obfuscate scripts without project'''
+    path = args.src
+    logging.info('Obfuscate scripts in path "%s" ...', path)
+
+    capsule = args.capsule if args.capsule else \
+        os.path.join(path, capsule_filename)
+    if os.path.exists(capsule):
+        logging.info('Use cached capsule %s', capsule)
+    else:
+        logging.info('Generate capsule %s', capsule)
+        make_capsule(capsule)
+
+    output = args.output
+    files = Project.build_globfiles(args.patterns, path)
+    filepairs = [(os.path.join(path, x), os.path.join(output, x))
+                 for x in files]
+    if args.no_restrict:
+        logging.info('Restrict mode is disabled')
+        mode = Project.map_obfuscate_mode(default_obf_module_mode,
+                                          'wrap')
+    else:
+        mode = Project.map_obfuscate_mode(default_obf_module_mode,
+                                          default_obf_code_mode)
+
+    logging.info('Obfuscate scripts with mode %s', mode)
+    logging.info('Save obfuscated scripts to "%s"', output)
+    for a, b in filepairs:
+        logging.info('\t%s -> %s', a, b)
+    obfuscate_scripts(filepairs, mode, capsule, output)
+
+    logging.info('Make runtime files')
+    make_runtime(capsule, output)
+    if args.no_restrict:
+        licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
+        licfile = os.path.join(output, license_filename)
+        logging.info('Generate no restrict mode license file: %s', licfile)
+        make_project_license(capsule, licode, licfile)
+
+    if args.entry:
+        make_entry(args.entry, path, output)
+    logging.info('Obfuscate %d scripts OK.', len(files))
+
+@armorcommand
+def _check(args):
+    '''Check consistency of project'''
+    project = Project()
+    project.open(args.project)
+    logging.info('Check project %s ...', args.project)
+    project._check(args.project)
+    logging.info('Check project OK.')
+
+@armorcommand
+def _benchmark(args):
+    '''Run benchmark test in current machine'''
+    logging.info('Start benchmark test ...')
+    logging.info('Obfuscate module mode: %s', args.obf_module_mode)
+    logging.info('Obfuscate bytecode mode: %s', args.obf_code_mode)
+
+    logging.info('Benchmark bootstrap ...')
+    mode = Project.map_obfuscate_mode(args.obf_module_mode,
+                                      args.obf_code_mode)
+    p = subprocess.Popen(
+        [sys.executable, 'benchmark.py', 'bootstrap', str(mode)],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.wait()
+    logging.info('Benchmark bootstrap OK.')
+
+    logging.info('Run benchmark test ...')
+    p = subprocess.Popen([sys.executable, 'benchmark.py'], cwd='.benchtest')
+    p.wait()
+
+    logging.info('Finish benchmark test.')
+
+@armorcommand
+def _hdinfo(args):
+    show_hd_info()
+
+def _version_info():
+    rcode = get_registration_code()
+    if rcode == '':
+        return 'Pyarmor Trial Version %s\n%s' % (version, trial_info)
+    else:
+        return 'Pyarmor Version %s\n\nRegistration code: %s' % (version, rcode)
+
+def main(args):
+    parser = argparse.ArgumentParser(
+        prog='pyarmor.py',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description='Pyarmor used to import or run obfuscated python scripts.',
+        epilog=__doc__,
+    )
+    parser.add_argument('-v', '--version', action='version',
+                        version=_version_info())
+
+    subparsers = parser.add_subparsers(
+        title='The most commonly used pyarmor commands are',
+        metavar='<command>'
+    )
+
+    #
+    # Command: obfuscate
+    #
+    cparser = subparsers.add_parser(
+        'obfuscate',
+        epilog=_obfuscate.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Obfuscate python scripts')
+    cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
+    cparser.add_argument('-e', '--entry', metavar='SCRIPT', help='Entry script')
+    cparser.add_argument('-s', '--src', required=True,
+                         help='Base path for matching python scripts')
+    cparser.add_argument('-d', '--no-restrict', action='store_true',
+                         help='Disable restrict mode');
+    cparser.add_argument('--capsule', help='Use this capsule to obfuscate code')
+    cparser.add_argument('patterns', nargs='*', default=['*.py'],
+                         help='File patterns, default is "*.py"')
+    cparser.set_defaults(func=_obfuscate)
+
+    #
+    # Command: init
+    #
+    cparser = subparsers.add_parser(
+        'init',
+        epilog=_init.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Create an empty project to manage obfuscated scripts'
+    )
+    cparser.add_argument('-t', '--type', default='auto',
+                         choices=('auto', 'app', 'package', 'pkg'))
+    cparser.add_argument('-e', '--entry',
+                         help='Entry script of this project')
+    cparser.add_argument('-s', '--src', required=True,
+                         help='Base path of python scripts')
+    cparser.add_argument('-C', '--clone', metavar='PATH',
+                         help='Clone project configuration from this path')
+    cparser.add_argument('--capsule',
+                         help='Use this capsule other than creating new one')
+    cparser.add_argument('project', nargs='?', help='Project path')
+    cparser.set_defaults(func=_init)
+
+
+    #
+    # Command: config
+    #
+    cparser = subparsers.add_parser(
+        'config',
+        epilog=_update.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Update project information')
+    cparser.add_argument('project', nargs='?', metavar='PATH',
+                         default='', help='Project path')
+    cparser.add_argument('--name')
+    cparser.add_argument('--title')
+    cparser.add_argument('--src')
+    cparser.add_argument('--output')
+    cparser.add_argument('--capsule', help='Project capsule')
+    cparser.add_argument('--manifest', metavar='TEMPLATE',
+                         help='Manifest template string')
+    cparser.add_argument('--entry', metavar='SCRIPT',
+                         help='Entry script of this project')
+    cparser.add_argument('--is-package', type=int, choices=(0, 1))
+    cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1))
+    cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE)
+    cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE)
+    cparser.add_argument('--runtime-path', metavar="RPATH")
+    cparser.set_defaults(func=_update)
+
+    #
+    # Command: info
+    #
+    cparser = subparsers.add_parser(
+        'info',
+        epilog=_info.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Show project information'
+    )
+    cparser.add_argument('project', nargs='?', metavar='PATH',
+                         default='', help='Project path')
+    cparser.set_defaults(func=_info)
+
+    #
+    # Command: check
+    #
+    cparser = subparsers.add_parser(
+        'check',
+        epilog=_check.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Check consistency of project')
+    cparser.add_argument('project', nargs='?', metavar='PATH',
+                         default='', help='Project path')
+    cparser.set_defaults(func=_check)
+
+    #
+    # Command: build
+    #
+    cparser = subparsers.add_parser(
+        'build',
+        epilog=_build.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Build project, obfuscate all the scripts in the project')
+    cparser.add_argument('project', nargs='?', metavar='PATH', default='',
+                         help='Project path')
+    cparser.add_argument('-B', '--force', action='store_true',
+                         help='Obfuscate all scripts even if it\'s not updated')
+    cparser.add_argument('-r', '--only-runtime', action='store_true',
+                         help='Generate extra runtime files only')
+    cparser.add_argument('-n', '--no-runtime', action='store_true',
+                         help='DO NOT generate extra runtime files')
+    cparser.add_argument('-O', '--output',
+                         help='Output path, override project configuration')
+    cparser.set_defaults(func=_build)
+
+    #
+    # Command: target
+    #
+    # cparser = subparsers.add_parser('target', help='Manage target for project')
+    # cparser.add_argument('name', metavar='NAME', nargs=1,
+    #                      help='Target name')
+    # group = cparser.add_argument_group('Target definition')
+    # group.add_argument('-p', '--platform', metavar='PLATFORM',
+    #                    help='Target platform to run obfuscated scripts')
+    # group.add_argument('-c', '--license', metavar='CODE',
+    #                    help='License code for this target')
+    # cparser.add_argument('--remove', action='store_true',
+    #                      help='Remove target from project')
+    # cparser.add_argument('-P', '--project', required=True, default='',
+    #                      help='Project path or configure file')
+    # cparser.set_defaults(func=_target)
+
+    #
+    # Command: license
+    #
+    cparser = subparsers.add_parser(
+        'licenses',
+        epilog=_licenses.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Generate batch licenses for project'
+    )
+    cparser.add_argument('codes', nargs='+', metavar='CODE',
+                         help='Registration code for this license')
+    group = cparser.add_argument_group('Bind license to hardware')
+    group.add_argument('-e', '--expired', metavar='YYYY-MM-DD',
+                       help='Expired date for this license')
+    group.add_argument('-d', '--bind-disk', metavar='SN',
+                       help='Bind license to serial number of harddisk')
+    group.add_argument('-4', '--bind-ipv4', metavar='a.b.c.d',
+                       help='Bind license to ipv4 addr')
+    # group.add_argument('-6', '--bind-ipv6', metavar='a:b:c:d',
+    #                    help='Bind license to ipv6 addr')
+    group.add_argument('-m', '--bind-mac', metavar='x:x:x:x',
+                       help='Bind license to mac addr')
+    group.add_argument('--bind-domain', metavar='DOMAIN',
+                       help='Bind license to domain name')
+    cparser.add_argument('-P', '--project', default='', help='Project path')
+    cparser.set_defaults(func=_licenses)
+
+    #
+    # Command: hdinfo
+    #
+    cparser = subparsers.add_parser(
+        'hdinfo',
+        epilog=_hdinfo.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Show hardware information'
+    )
+    cparser.set_defaults(func=_hdinfo)
+
+    #
+    # Command: benchmark
+    #
+    cparser = subparsers.add_parser(
+        'benchmark',
+        epilog=_benchmark.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Run benchmark test in current machine'
+    )
+    cparser.add_argument('-m', '--obf-module-mode',
+                         choices=Project.OBF_MODULE_MODE,
+                         default=default_obf_module_mode)
+    cparser.add_argument('-c', '--obf-code-mode',
+                         choices=Project.OBF_CODE_MODE,
+                         default=default_obf_code_mode)
+    cparser.set_defaults(func=_benchmark)
+
+
+    args = parser.parse_args(args)
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_help()
 
 if __name__ == '__main__':
-    sys.rootdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-
     logging.basicConfig(
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
-        # filename=os.path.join(sys.rootdir, 'pyarmor.log'),
-        # filemode='w',
     )
-
-    if (len(sys.argv) == 1 or
-        sys.argv[1] not in ('help', 'encrypt', 'capsule', 'license')):
-        from pyarmor2 import main as main2
-        main2(sys.argv[1:])
-        sys.exit(0)
-
-    if len(sys.argv) == 1:
-        usage()
-        sys.exit(0)
-
-    command = sys.argv[1]
-    if len(sys.argv) >= 3 and sys.argv[2] == 'help':
-        usage(command)
-        sys.exit(0)
-
-    pytransform = _import_pytransform()
-    if pytransform is None:
-        sys.exit(1)
-
-    if 'help'.startswith(command) or sys.argv[1].startswith('-h'):
-        try:
-            usage(sys.argv[2])
-        except IndexError:
-            usage()
-
-    elif 'version'.startswith(command) or sys.argv[1].startswith('-v'):
-        show_version_info()
-
-    elif 'capsule'.startswith(command):
-        do_capsule(sys.argv[2:])
-
-    elif 'encrypt'.startswith(command):
-        do_encrypt(sys.argv[2:])
-
-    elif 'license'.startswith(command):
-        do_license(sys.argv[2:])
-
-    elif 'hdinfo'.startswith(command):
-        show_hd_info()
-
-    else:
-        usage(command)
+    main(sys.argv[1:])

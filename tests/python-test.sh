@@ -7,7 +7,7 @@ source test-header.sh
 # ======================================================================
 
 TESTLIB=${TESTLIB:-C:/Python26/Lib/test}
-PYARMOR="${PYTHON} pyarmor2.py"
+PYARMOR="${PYTHON} pyarmor.py"
 TESTROOT=$(pwd)
 
 ALLENTRIES="test_concurrent_futures.py test_multiprocessing_forkserver.py test_weakref.py"

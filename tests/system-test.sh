@@ -6,7 +6,7 @@ source test-header.sh
 #
 # ======================================================================
 
-PYARMOR="${PYTHON} pyarmor2.py"
+PYARMOR="${PYTHON} pyarmor.py"
 
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
