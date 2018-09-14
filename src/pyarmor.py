@@ -421,6 +421,16 @@ def _target(args):
     project.save(args.project)
 
 @armorcommand
+def _capsule(args):
+    '''Make project capsule used to obfuscate scripts'''
+    capsule = os.path.join(args.path, capsule_filename)
+    logging.info('Generating capsule %s ...', capsule)
+    if os.path.exists(capsule):
+        logging.info('Do nothing, capsule %s has been exists', capsule)
+    else:
+        make_capsule(capsule)
+
+@armorcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project'''
     path = args.src
@@ -520,6 +530,18 @@ def main(args):
         title='The most commonly used pyarmor commands are',
         metavar='<command>'
     )
+
+    #
+    # Command: capsule
+    #
+    cparser = subparsers.add_parser(
+        'capsule',
+        epilog=_capsule.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Make project capsule')
+    cparser.add_argument('path', nargs='?', default='',
+                         help='Path to save capsule, default is current path')
+    cparser.set_defaults(func=_capsule)
 
     #
     # Command: obfuscate
