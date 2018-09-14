@@ -1,3 +1,9 @@
+4.0.2
+-----
+* Rename `pyarmor.py` to `pyarmor-depreted.py`
+* Rename `pyarmor2.py` to `pyarmor.py`
+* Add option `--capsule`, `-disable-restrict-mode` and `--output` for command `licenses`
+
 4.0.1
 -----
 * Add option `--capsule` for command `init`, `config` and `obfuscate`
