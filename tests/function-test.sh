@@ -94,6 +94,33 @@ check_file_content dist-capsule/queens.py '__pyarmor__(__name__'
 check_return_value
 check_file_content dist-capsule/result.log 'Found 92 solutions'
 
+csih_inform "C-4. Test command licenses"
+
+cp test/data/project.zip .pyarmor_capsule.zip
+$PYARMOR licenses --expired=2018-05-12 Customer-Jordan >result.log 2>&1
+check_file_exists licenses/Customer-Jordan/license.lic
+
+$PYARMOR licenses --capsule=test/data/project.zip \
+    --disable-restrict-mode --output=projects \
+    --expired=2018-05-12 Customer-Jordan >result.log 2>&1
+check_file_exists projects/licenses/Customer-Jordan/license.lic
+
+$PYARMOR init --src=examples/simple --entry=queens.py \
+    projects/test-licenses >result.log 2>&1
+$PYARMOR licenses --project=projects/test-licenses \
+    --expired=2018-05-12 Customer-Jordan >result.log 2>&1
+check_file_exists projects/test-licenses/licenses/Customer-Jordan/license.lic
+
+$PYARMOR licenses --project=projects/test-licenses \
+    -e 2018-05-12 --bind-disk '100304PBN2081SF3NJ5T' \
+    Customer-Tom >result.log 2>&1
+
+$PYARMOR licenses --project=projects/test-licenses \
+    -e 2018-05-12 Customer-A Customer-B Customer-C >result.log 2>&1
+check_file_exists projects/test-licenses/licenses/Customer-A/license.lic
+check_file_exists projects/test-licenses/licenses/Customer-B/license.lic
+check_file_exists projects/test-licenses/licenses/Customer-C/license.lic
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
