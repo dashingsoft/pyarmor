@@ -317,13 +317,26 @@ Examples,
     ./pyarmor licenses -e 2018-05-12 Customer-A Customer-B Customer-C
 
     '''
-    logging.info('Generate licenses for project %s ...', args.project)
+    if os.path.exists(os.path.join(args.project, config_filename)):
+        logging.info('Generate licenses for project %s ...', args.project)
+        project = Project()
+        project.open(args.project)
+        capsule = build_path(project.capsule, args.project) \
+            if args.capsule is None else args.capsule
+    else:
+        if args.project != '':
+            logging.warning('Ignore option --project, no project in %s',
+                            args.project)
+        capsule = capsule_filename if args.capsule is None else args.capsule
+        logging.info('Generate licenses for capsule %s ...', capsule)
+        project = {}
 
-    project = Project()
-    project.open(args.project)
-
-    licpath = os.path.join(args.project, 'licenses')
-    if not os.path.exists(licpath):
+    licpath = os.path.join(
+        args.project if args.output is None else args.output,
+        'licenses')
+    if os.path.exists(licpath):
+        logging.info('Output path of licenses: %s', licpath)
+    else:
         logging.info('Make output path of licenses: %s', licpath)
         os.mkdir(licpath)
 
@@ -333,8 +346,13 @@ Examples,
         fmt = '*TIME:%.0f\n' % \
               time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
 
-    if project.get('disable_restrict_mode'):
+    if (args.disable_restrict_mode is None
+        and project.get('disable_restrict_mode')) \
+       or args.disable_restrict_mode == 1:
+        logging.info('The license files generated is in disable restrict mode')
         fmt = '%s*FLAGS:%c' % (fmt, 1)
+    else:
+        logging.info('The license files generated is in restrict mode')
 
     if args.bind_disk:
         fmt = '%s*HARDDISK:%s' % (fmt, args.bind_disk)
@@ -365,7 +383,7 @@ Examples,
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
-    capsule = build_path(project.capsule, args.project)
+
     for rcode in args.codes:
         output = os.path.join(licpath, rcode)
         if not os.path.exists(output):
@@ -658,6 +676,10 @@ def main(args):
     group.add_argument('--bind-domain', metavar='DOMAIN',
                        help='Bind license to domain name')
     cparser.add_argument('-P', '--project', default='', help='Project path')
+    cparser.add_argument('-C', '--capsule', help='Project capsule')
+    cparser.add_argument('-O', '--output', help='Output path')
+    cparser.add_argument('--disable-restrict-mode', action='store_const',
+                         const=1, help='Disable restrict mode')
     cparser.set_defaults(func=_licenses)
 
     #
