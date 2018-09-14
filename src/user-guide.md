@@ -1070,6 +1070,7 @@ to this capsule.
 ```
 usage: pyarmor.py licenses [-h] [-e YYYY-MM-DD] [-d SN] [-4 a.b.c.d]
                            [-m x:x:x:x] [--bind-domain DOMAIN] [-P PROJECT]
+                           [-C CAPSULE] [-O OUTPUT] [--disable-restrict-mode]
                            CODE [CODE ...]
 
 positional arguments:
@@ -1079,6 +1080,12 @@ optional arguments:
   -h, --help            show this help message and exit
   -P PROJECT, --project PROJECT
                         Project path
+  -C CAPSULE, --capsule CAPSULE
+                        Project capsule
+  -O OUTPUT, --output OUTPUT
+                        Output path
+  --disable-restrict-mode
+                        Disable restrict mode
 
 Bind license to hardware:
   -e YYYY-MM-DD, --expired YYYY-MM-DD
@@ -1093,8 +1100,18 @@ Bind license to hardware:
 
 ```
 
-Generate licenses for the project. Note that this command must run in
-some project.
+Generate licenses for obfuscated scripts.
+
+In order to generate license, project capsule must be specified. First
+get capsule from option `--capsule`, if it's None. Then get the
+capsule from project specified by option `--project`. If no project is
+specified, use the default capsule `.pyarmor_capsule.zip` in the
+current path.
+
+If option `--output` is specified, all the generated licenses will be
+saved to `OUTPUT/licenses`. Otherwise `PROJECT/licenses` if
+`--project` is specifed. If both of them are None, the default output
+path is `./licenses`
 
 In order to bind licenses to fixed machine, use command hdinfo to get
 all available hardware information:
@@ -1105,6 +1122,12 @@ Then generate licenses
 
 ```
     # Expired license
+    python pyarmor.py licenses --expired=2018-05-12 Customer-Jordan
+    python pyarmor.py licenses --capsule=project2.zip \
+        --disable-restrict-mode --output=/home/jondy/project2 \
+        --expired=2018-05-12 Customer-Jordan
+
+    # Expired license for project
     python pyarmor.py licenses --project=projects/myproject \
         --expired=2018-05-12 Customer-Jordan
 
