@@ -736,7 +736,7 @@ if __name__ == '__main__':
 
     if (len(sys.argv) == 1 or
         sys.argv[1] not in ('help', 'encrypt', 'capsule', 'license')):
-        from pyarmor2 import main as main2
+        from pyarmor import main as main2
         main2(sys.argv[1:])
         sys.exit(0)
 
