@@ -34,6 +34,8 @@ import time
 from ctypes import cdll, c_int, c_void_p, py_object, pythonapi, PYFUNCTYPE
 from ctypes.util import find_library
 
+PYARMOR = 'pyarmor-deprecated.py'
+
 def metricmethod(func):
     def wrap(*args, **kwargs):
         t1 = time.clock()
@@ -141,7 +143,7 @@ def check_output(output):
         logging.info('Output path: %s', output)
 
 def obffuscate_python_scripts(output, filename, mode=None):
-    args = [sys.executable, 'pyarmor.py', 'encrypt']
+    args = [sys.executable, PYARMOR, 'encrypt']
     if mode is not None:
         args.extend(['--mode', mode])
     args.extend(['-O', output, filename])
@@ -150,20 +152,20 @@ def obffuscate_python_scripts(output, filename, mode=None):
 
     # Generate license with no restrict mode
     licfile = os.path.join(output, 'license.lic')
-    args = [sys.executable, 'pyarmor.py', 'license',
+    args = [sys.executable, PYARMOR, 'license',
             '-O', licfile, '*FLAGS:A*CODE:Benchmark' ]
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
 
 def check_default_capsule():
-    if not os.path.exists('pyarmor.py'):
+    if not os.path.exists(PYARMOR):
         return
     capsule = 'project.zip'
     if os.path.exists(capsule):
         logging.info('Use capsule: %s', capsule)
         return
 
-    p = subprocess.Popen([sys.executable, 'pyarmor.py', 'capsule'],
+    p = subprocess.Popen([sys.executable, PYARMOR, 'capsule'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
 
