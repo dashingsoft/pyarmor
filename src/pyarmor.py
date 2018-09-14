@@ -436,8 +436,7 @@ def _obfuscate(args):
     path = args.src
     logging.info('Obfuscate scripts in path "%s" ...', path)
 
-    capsule = args.capsule if args.capsule else \
-        os.path.join(path, capsule_filename)
+    capsule = args.capsule if args.capsule else capsule_filename
     if os.path.exists(capsule):
         logging.info('Use cached capsule %s', capsule)
     else:
