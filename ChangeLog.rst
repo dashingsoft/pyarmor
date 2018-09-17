@@ -1,3 +1,9 @@
+4.0.3
+-----
+* Add command `capsule`
+* Find default capsule in the current path other than `--src` in command `obfuscate`
+* Fix pip install issue #30
+
 4.0.2
 -----
 * Rename `pyarmor.py` to `pyarmor-depreted.py`
