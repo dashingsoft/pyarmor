@@ -1,3 +1,7 @@
+4.0.4
+-----
+* Fix import `main` from `pyarmor` issue
+
 4.0.3
 -----
 * Add command `capsule`
