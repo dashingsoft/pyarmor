@@ -3,10 +3,10 @@ import logging
 import sys
 import os
 sys.path.append(os.path.dirname(__file__))
-def main():
-    from pyarmor import main as main_entry
+def main_entry():
+    from pyarmor.pyarmor import main
     logging.basicConfig(
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
-    main_entry(sys.argv[1:])
+    main(sys.argv[1:])
