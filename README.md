@@ -59,7 +59,7 @@ Obfuscate package **pybench** directly:
     # it will be expanded base on current path by shell.
     #
     # This command will create an extra file .pyarmor_capsule.zip in the
-    # --src path, and save all the obfuscated scripts to default output
+    # current path, and save all the obfuscated scripts to default output
     # path "dist" in the current path
     #
     cd dist
