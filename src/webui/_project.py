@@ -15,7 +15,7 @@ sys.path.append(os.environ['PYARMOR_PATH'])
 from config import version, config_filename, capsule_filename
 from utils import get_registration_code, build_path
 from project import Project
-from pyarmor2 import main as _pyarmor
+from pyarmor import main as _pyarmor
 
 project_base_path = 'projects'
 project_index_name = 'index.json'
