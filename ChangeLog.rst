@@ -1,3 +1,7 @@
+4.1.2
+-----
+* Add function `show_license_info` in `pytransform.py` to show license information
+
 4.1.1
 -----
 * Fix import `main` from `pyarmor` issue
