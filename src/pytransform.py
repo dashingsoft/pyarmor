@@ -208,6 +208,7 @@ def get_license_info():
         index += len('*FLAGS:') + 1
 
     prev = None
+    start = 0
     for k in ['HARDDISK', 'IFMAC', 'IFIPV4', 'DOMAIN', 'CODE']:
         index = rcode.find('*%s:' % k)
         if index > -1:
