@@ -229,8 +229,8 @@ check_file_content $output/mypkg/foo.py '__pyarmor__(__name__'
 
 csih_inform "Case 6.3: build package with entry script in package"
 cp examples/testpkg/main.py examples/testpkg/mypkg
-( cd projects/testpkg; 
-    $ARMOR config --entry=main.py >result.log 2>&1 && 
+( cd projects/testpkg;
+    $ARMOR config --entry=main.py >result.log 2>&1 &&
     $ARMOR build -B >result.log 2>&1 )
 
 check_return_value
@@ -264,12 +264,43 @@ check_file_exists $output/code1/license.lic.txt
 
 ( cd projects/pybench; $ARMOR licenses \
                               --expired $(next_month) \
-                              --bind-disk '${harddisk_sn}' \
-                              --bind-ipv4 '${ifip_address}' \
-                              --bind-mac '${ifmac_address}' \
+                              --bind-disk "${harddisk_sn}" \
+                              --bind-ipv4 "${ifip_address}" \
+                              --bind-mac "${ifmac_address}" \
                               customer-tom >licenses-result.log 2>&1 )
 check_file_exists $output/customer-tom/license.lic
 check_file_exists $output/customer-tom/license.lic.txt
+
+csih_inform "Case 7.2: Show license info"
+( cd projects/pybench; $ARMOR build >licenses-result.log 2>&1 )
+
+cat <<EOF > projects/pybench/dist/info.py
+from pytransform import pyarmor_runtime, get_license_info
+pyarmor_runtime()
+print(get_license_info())
+EOF
+
+# Remove decorator @dllmethod from get_registration_code
+# It will raise exception if pyarmor is trial version
+sed -i -e "s/def get_registration_code/def _empty(): pass\ndef get_registration_code/g" \
+    projects/pybench/dist/pytransform.py;
+
+( cd projects/pybench/dist;
+    $PYTHON info.py >result.log 2>&1 )
+check_file_content projects/pybench/dist/result.log "'CODE': 'Dashingsoft Pyshield Project'"
+
+cp $output/code1/license.lic projects/pybench/dist
+( cd projects/pybench/dist;
+    $PYTHON info.py >result.log 2>&1 )
+check_file_content projects/pybench/dist/result.log "'CODE': 'code1'"
+
+cp $output/customer-tom/license.lic projects/pybench/dist
+( cd projects/pybench/dist;
+    $PYTHON info.py >result.log 2>&1 )
+check_file_content projects/pybench/dist/result.log "'CODE': 'customer-tom'"
+check_file_content projects/pybench/dist/result.log "'HARDDISK': '${harddisk_sn}'"
+check_file_content projects/pybench/dist/result.log "'IFMAC': '${ifmac_address}'"
+check_file_content projects/pybench/dist/result.log "'IFIPV4': '${ifip_address}'"
 
 echo ""
 echo "-------------------- Test Command licenses END -----------------"
