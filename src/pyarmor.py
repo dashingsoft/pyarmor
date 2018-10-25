@@ -370,14 +370,15 @@ Examples,
         fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
 
     # if args.bind_file:
-    #     if os.path.exists(args.bind_file):
-    #         f = open(args.bind_file, 'rb')
+    #     bind_file, bind_key = args.bind_file.split(';', 2)
+    #     if os.path.exists(bind_file):
+    #         f = open(bind_file, 'rb')
     #         s = f.read()
     #         f.close()
     #         if sys.version_info[0] == 3:
-    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s.decode())
+    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, bind_key, s.decode())
     #         else:
-    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, key, s)
+    #             fmt = '%s*FIXKEY:%s;%s' % (fmt, bind_key, s)
     #     else:
     #         raise RuntimeError('Bind file %s not found' % bindfile)
 
@@ -696,6 +697,8 @@ def main(args):
                        help='Bind license to mac addr')
     group.add_argument('--bind-domain', metavar='DOMAIN',
                        help='Bind license to domain name')
+    # group.add_argument('--bind-file', metavar='filename;target_filename',
+    #                    help='Bind license to fixed file')
     cparser.add_argument('-P', '--project', default='', help='Project path')
     cparser.add_argument('-C', '--capsule', help='Project capsule')
     cparser.add_argument('-O', '--output', help='Output path')
