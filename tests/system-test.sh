@@ -287,20 +287,20 @@ sed -i -e "s/def get_registration_code/def _empty(): pass\ndef get_registration_
 
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'CODE': 'Dashingsoft Pyshield Project'"
+check_file_content projects/pybench/dist/result.log "'Dashingsoft Pyshield Project'"
 
 cp $output/code1/license.lic projects/pybench/dist
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'CODE': 'code1'"
+check_file_content projects/pybench/dist/result.log "'code1'"
 
 cp $output/customer-tom/license.lic projects/pybench/dist
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'CODE': 'customer-tom'"
-check_file_content projects/pybench/dist/result.log "'HARDDISK': '${harddisk_sn}'"
-check_file_content projects/pybench/dist/result.log "'IFMAC': '${ifmac_address}'"
-check_file_content projects/pybench/dist/result.log "'IFIPV4': '${ifip_address}'"
+check_file_content projects/pybench/dist/result.log "'customer-tom'"
+check_file_content projects/pybench/dist/result.log "'${harddisk_sn}'"
+check_file_content projects/pybench/dist/result.log "'${ifmac_address}'"
+check_file_content projects/pybench/dist/result.log "'${ifip_address}'"
 
 echo ""
 echo "-------------------- Test Command licenses END -----------------"

@@ -195,7 +195,7 @@ def get_license_info():
         'DOMAIN': 'Any',
         'CODE': '',
     }
-    rcode = get_registration_code()
+    rcode = get_registration_code().decode()
     index = 0
     if rcode.startswith('*TIME:'):
         from time import ctime
