@@ -60,7 +60,7 @@ echo ""
 
 # ======================================================================
 #
-#  Command: init and config
+#  Command: init, config, licenses
 #
 # ======================================================================
 
@@ -120,6 +120,25 @@ $PYARMOR licenses --project=projects/test-licenses \
 check_file_exists projects/test-licenses/licenses/Customer-A/license.lic
 check_file_exists projects/test-licenses/licenses/Customer-B/license.lic
 check_file_exists projects/test-licenses/licenses/Customer-C/license.lic
+
+csih_inform "C-5. Test option --bind-file for licenses"
+$PYARMOR init --src=examples/simple --entry queens.py \
+    projects/test-bind-file >result.log 2>&1
+check_return_value
+
+cat <<EOF > projects/test-bind-file/id_rsa
+-----BEGIN RSA PRIVATE KEY-----
+-----END RSA PRIVATE KEY-----
+EOF
+
+(cd projects/test-bind-file && $ARMOR build >result.log 2>&1 &&
+  $ARMOR licenses --bind-file="id_rsa;id_rsa" \
+      TESTER >result.log 2>&1 &&
+  cd dist && cp ../id_rsa ./ &&
+  cp ../licenses/TESTER/license.lic ./ &&
+  $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content projects/test-bind-file/dist/result.log 'Found 92 solutions'
 
 echo ""
 echo "-------------------- Command End -----------------------------"
