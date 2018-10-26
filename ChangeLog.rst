@@ -1,3 +1,7 @@
+4.1.3
+-----
+* Fix Python3 issue for `get_license_info`
+
 4.1.2
 -----
 * Add function `get_license_info` in `pytransform.py` to show license information
