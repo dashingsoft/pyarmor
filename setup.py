@@ -49,7 +49,8 @@ setup(
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     version=version,
-    description='A tool used to run or import obfuscated python scritps',
+    description='A tool used to obfuscate python scripts, bind obfuscated' \
+                ' scripts to fixed machine or expire obfuscated scripts.',
     long_description=long_description,
 
     url='https://github.com/dashingsoft/pyarmor',
