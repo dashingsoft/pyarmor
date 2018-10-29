@@ -17,8 +17,8 @@ are the files list in the output path ``dist``::
 
     pytransform.py
     _pytransform.so
-        or _pytransform.dll in Windows
-        or _pytransform.dylib in MacOS
+    or _pytransform.dll in Windows
+    or _pytransform.dylib in MacOS
 
     pyshield.key
     pyshield.lic
@@ -51,14 +51,19 @@ Quick Start
 -----------
 
 Install::
+
     pip install pyarmor
 
 Obfuscate Scripts::
+
     python pyarmor.py obfuscate --src=examples/simple --entry=foo.py "*.py"
 
 Run Obfuscated Scripts::
+
     cd dist
     python foo.py
+
+More usage visit `https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_
 
 Expired Obfuscated Script
 -------------------------
