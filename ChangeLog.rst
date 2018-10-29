@@ -1,3 +1,7 @@
+4.1.4
+-----
+* Rewrite project long description.
+
 4.1.3
 -----
 * Fix Python3 issue for `get_license_info`
