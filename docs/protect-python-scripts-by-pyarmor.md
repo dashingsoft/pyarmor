@@ -1,8 +1,8 @@
 # Protect Python Scripts By Pyarmor
 
-Pyarmor is a command line tool used to import or run obfuscated Python scripts.
-
-It protects Python scripts by the following ways:
+Pyarmor is a command line tool used to obfuscate python scripts, bind
+obfuscated scripts to fixed machine or expire obfuscated scripts. It
+protects Python scripts by the following ways:
 
 * Obfuscate source file to protect constants and literal strings.
 * Obfuscate byte code of each code object.
