@@ -86,7 +86,7 @@ Next change this code object as the following ways
 
 * Append function names `__armor_enter`, `__armor_exit__` to `co_consts`
 
-* Increase `co_stacksize` by 2
+* Increase `co_stacksize` to 4 if it's less than 4
 
 * Set CO_OBFUSCAED (0x80000000) flag in `co_flags`
 
@@ -188,7 +188,7 @@ After that:
         refcalls->ob_refcnt --;
 
         // Obfuscate byte code only if this code object isn't used by any function
-        // In multi-threads or recursive call, one code object may be referened
+        // In multi-threads or recursive call, one code object may be referenced
         // by many functions at the same time
         if (refcalls->ob_refcnt == 1) {
             obfuscate_byte_code(f_code->co_code);
