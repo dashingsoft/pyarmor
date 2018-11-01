@@ -445,9 +445,12 @@ def _obfuscate(args):
         make_capsule(capsule)
 
     output = args.output
-    files = Project.build_manifest([u'global-include *.py'], path) \
-        if args.recursive \
-        else Project.build_globfiles(args.patterns, path)
+    if args.recursive:
+        pat = 'global-include *.py'.decode() if hasattr('', 'decode') \
+            else 'global-include *.py'
+        files = Project.build_manifest([pat], path)
+    else:
+        files = Project.build_globfiles(args.patterns, path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
     if args.no_restrict:
