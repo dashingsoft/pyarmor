@@ -555,7 +555,7 @@ def main(args):
         help='Obfuscate python scripts')
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT', help='Entry script')
-    cparser.add_argument('-r', '--recursive', , action='store_true',
+    cparser.add_argument('-r', '--recursive', action='store_true',
                          help='Match files recursively')
     cparser.add_argument('-s', '--src', required=True,
                          help='Base path for matching python scripts')
