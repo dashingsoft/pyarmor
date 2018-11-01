@@ -82,6 +82,22 @@ check_file_content dist2/queens.py '__pyarmor__(__name__'
 check_return_value
 check_file_content dist2/result.log 'Found 92 solutions'
 
+csih_inform "Case 1.3: run obfuscate script with new license"
+$PYARMOR obfuscate --src examples/simple --entry queens.py \
+    --output dist3 --no-restrict queens.py  >result.log 2>&1
+check_return_value
+check_file_exists dist3/queens.py
+
+$PYARMOR licenses --expired $(next_month) --disable-restrict-mode Jondy \
+    >result.log 2>&1
+check_return_value
+check_file_exists licenses/Jondy/license.lic
+cp licenses/Jondy/license.lic dist3/
+
+( cd dist3; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content dist3/result.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Test Command obfuscate END ----------------"
 echo ""
