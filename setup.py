@@ -70,6 +70,8 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
         'Topic :: Utilities',
+        'Topic :: Security',
+        'Topic :: System :: Software Distribution',
 
         # Pick your license as you wish
         'License :: Free To Use But Restricted',
