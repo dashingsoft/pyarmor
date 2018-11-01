@@ -209,7 +209,7 @@ def get_license_info():
 
     prev = None
     start = 0
-    for k in ['HARDDISK', 'IFMAC', 'IFIPV4', 'DOMAIN', 'CODE']:
+    for k in ['HARDDISK', 'IFMAC', 'IFIPV4', 'DOMAIN', 'FIXKEY', 'CODE']:
         index = rcode.find('*%s:' % k)
         if index > -1:
             if prev is not None:
