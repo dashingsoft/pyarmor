@@ -292,7 +292,7 @@ EOF
 
 # Remove decorator @dllmethod from get_registration_code
 # It will raise exception if pyarmor is trial version
-sed -i -e "s/def get_registration_code/def _empty(): pass\ndef get_registration_code/g" \
+$SED -i -e "s/def get_registration_code/def _empty(): pass\ndef get_registration_code/g" \
     projects/pybench/dist/pytransform.py;
 
 ( cd projects/pybench/dist;

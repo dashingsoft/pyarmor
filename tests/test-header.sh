@@ -1,5 +1,6 @@
 #! /bin/bash
 
+SED=sed
 UNAME=$(uname)
 if [[ ${UNAME:0:5} == Linux ]] ; then
     if [[ $(arch) == x86_64 ]] ; then
@@ -17,6 +18,7 @@ else
         PKGEXT=tar.bz2
         DLLEXT=.dylib
         ARMOR=./pyarmor
+        SED=gsed
     else
         if [[ $(arch) == x86_64 ]] ; then
             PLATFORM=win_amd64
