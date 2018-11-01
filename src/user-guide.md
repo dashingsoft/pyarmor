@@ -1159,6 +1159,7 @@ optional arguments:
                         Entry script
   -s SRC, --src SRC     Base path for matching python scripts
   -d, --no-restrict     Disable restrict mode
+  -r, --recursive       Obfuscate files recursively
   --capsule CAPSULE     Use this capsule to obfuscate code
 
 ```
@@ -1178,6 +1179,9 @@ Obfuscate scripts without project.
 
     # Obfuscate a package with no restrict mode
     python pyarmor.py --src=examples/mypackage --entry=__init__.py --no-restrict "*.py"
+
+    # Obfuscate all the "*.py" files in the path "examples/simple" recursively
+    python pyarmor.py --recursive --src=examples/simple --entry=queens.py
 ```
 
 ## Appendix
