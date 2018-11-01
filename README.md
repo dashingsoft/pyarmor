@@ -15,7 +15,7 @@ Refer to [Protect Python Scripts By Pyarmor](docs/protect-python-scripts-by-pyar
 
 - Python 2.5, 2.6, 2.7 and Python3
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_intel
-- Embeded Platform: Raspberry Pi, Banana Pi, TS-4600 / TS-7600
+- Embedded Platform: Raspberry Pi, Banana Pi, TS-4600 / TS-7600
 
 ## Quick Start
 
