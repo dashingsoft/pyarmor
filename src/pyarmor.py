@@ -445,7 +445,9 @@ def _obfuscate(args):
         make_capsule(capsule)
 
     output = args.output
-    files = Project.build_globfiles(args.patterns, path)
+    files = Project.build_globfiles(args.patterns, path) \
+        if args.recursive is None \
+        else Project.build_manifest(['global-include *.py'], path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
     if args.no_restrict:
@@ -553,6 +555,8 @@ def main(args):
         help='Obfuscate python scripts')
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT', help='Entry script')
+    cparser.add_argument('-r', '--recursive', , action='store_true',
+                         help='Match files recursively')
     cparser.add_argument('-s', '--src', required=True,
                          help='Base path for matching python scripts')
     cparser.add_argument('-d', '--no-restrict', action='store_true',
