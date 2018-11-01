@@ -271,6 +271,16 @@ check_file_exists $output/code1/license.lic.txt
 check_file_exists $output/customer-tom/license.lic
 check_file_exists $output/customer-tom/license.lic.txt
 
+cat <<EOF > projects/pybench/id_rsa
+-----BEGIN RSA PRIVATE KEY-----
+-----END RSA PRIVATE KEY-----
+EOF
+( cd projects/pybench; $ARMOR licenses \
+                              --bind-file "id_rsa;id_rsa" \
+                              fixkey >licenses-result.log 2>&1 )
+check_file_exists $output/fixkey/license.lic
+check_file_exists $output/fixkey/license.lic.txt
+
 csih_inform "Case 7.2: Show license info"
 ( cd projects/pybench; $ARMOR build >licenses-result.log 2>&1 )
 
@@ -301,6 +311,12 @@ check_file_content projects/pybench/dist/result.log "'customer-tom'"
 check_file_content projects/pybench/dist/result.log "'${harddisk_sn}'"
 check_file_content projects/pybench/dist/result.log "'${ifmac_address}'"
 check_file_content projects/pybench/dist/result.log "'${ifip_address}'"
+
+cp $output/fixkey/license.lic projects/pybench/dist
+cp projects/pybench/id_rsa projects/pybench/dist
+( cd projects/pybench/dist;
+    $PYTHON info.py >result.log 2>&1 )
+check_file_content projects/pybench/dist/result.log "'\*FIXKEY\*'"
 
 echo ""
 echo "-------------------- Test Command licenses END -----------------"

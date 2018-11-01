@@ -140,6 +140,16 @@ EOF
 check_return_value
 check_file_content projects/test-bind-file/dist/result.log 'Found 92 solutions'
 
+csih_inform "C-6. Test option --recursive for obfuscate"
+rm .pyarmor_capsule.zip
+$PYARMOR obfuscate --src=examples/simple --entry queens.py --recursive \
+    -O dist-recursive >result.log 2>&1
+check_return_value
+
+(cd dist-recursive; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content dist-recursive/result.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
