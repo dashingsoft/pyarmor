@@ -145,7 +145,8 @@ class Project(dict):
                 results.append(x)
         return results
 
-    def build_manifest(self, manifest, path=None):
+    @classmethod
+    def build_manifest(cls, manifest, path=None):
         infile = StringIO()
         infile.write('\n'.join(manifest))
         infile.seek(0)
