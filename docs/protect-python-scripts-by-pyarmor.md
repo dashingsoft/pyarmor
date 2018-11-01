@@ -4,7 +4,7 @@ Pyarmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
-* Obfuscate source file to protect constants and literal strings.
+* Obfuscate code object to protect constants and literal strings.
 * Obfuscate byte code of each code object.
 * Clear f_locals of frame as soon as code object completed execution.
 * Expired obfuscated scripts, or bind to fixed machine.
