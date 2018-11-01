@@ -1,3 +1,7 @@
+4.2.1
+-----
+* Add option `--recursive` for command `obfuscate`
+
 4.1.4
 -----
 * Rewrite project long description.
