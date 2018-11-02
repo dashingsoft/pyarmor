@@ -1,4 +1,4 @@
-# Downlaods for Pyarmor Prebuilt Dynamic Library #
+# Downloads for Pyarmor Prebuilt Dynamic Library #
 
 Latest version: **3.3.11**
 
