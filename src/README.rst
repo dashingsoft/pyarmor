@@ -80,7 +80,7 @@ with this one. The obfuscated script will not work after 2018.
 
 Now generate another license bind to fixed machine::
 
-    python pyarmor.py licenses --bind-hard "100304PBN2081SF3NJ5T"
+    python pyarmor.py licenses --bind-disk "100304PBN2081SF3NJ5T"
                                --bind-mac "70:f1:a1:23:f0:94"
                                --bind-ipv4 "202.10.2.52"
                                Customer-Jondy
