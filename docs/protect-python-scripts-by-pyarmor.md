@@ -214,8 +214,15 @@ never expired.
 
 If we generate a new license which includes an expired date, or some
 hardware infromation, for examples, serial number of harddisk, mac
-address of network address etc. If any of these conditions isn't
-satisfied in the target machine, obfuscated scripts will be aborted.
+address of network address etc. The obfuscated scripts will be
+aborted, if any of these conditions isn't satisfied in the target
+machine.
+
+Pyarmor has command `hdinfo` to print hardware information in target machine
+
+```bash
+    python pyarmor.py hdinfo
+```
 
 Pyarmor has command `licenses` used to generate new liceses
 
