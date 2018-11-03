@@ -1,0 +1,106 @@
+     END USER LICENSE AGREEMENT
+
+     The following agreement regarding Pyarmor - referred to as "software" - is
+     made between Jondy Zhao - referred to as "licensor" - and anyone who is
+     installing, accessing or in any other way using the software - referred to
+     as "user".
+
+  1. The author and holder of the copyright of the software is Jondy Zhao.
+
+  2. The software is distributed as Free To Use But Restricted. This means that
+     anyone may use the software for non-commercial usage. In free version the
+     python scripts are obfuscated with fixed key, that is to say, everyone uses
+     the same key to obfuscate python scripts in free version. For any
+     commercial usage or to obfuscate python scripts by random key, the user
+     must purchase a license to continue using the software.
+
+  3. There are 2 basic types of licenses issued for the software. These are:
+
+     a. A natural person usage license for home users. The user purchases one
+        license to use the software on his own computer.
+
+        Home users may use their natural person usage license on all computers
+        and embedded devices which are property of the license owner.
+
+     b. A juridical person usage license for business users. The user purchases
+        one license to use the software for one product or one project of an
+        organization.
+
+        Business users may use their juridical person usage license on all
+        computers and embedded devices for one product or project. But they
+        require another license for different product or project.
+
+     A user who purchased a license, is granted a non-exclusive right to use
+     the software on as many computers as defined by the licensing terms above
+     according to the number of licenses purchased, for any legal purpose.
+
+  4. There are no additional license fees, apart from the cost of the license,
+     associated with the creation and distribution of obfuscated python scripts.
+     Owners of a license may use their copies of the software to produce
+     obfuscated python scripts and to distribute those files free of any
+     additional royalties.
+
+  5. To buy a license, please visit the following url
+
+         https://shopper.mycommerce.com/checkout/cart/add/55259-1
+
+     A registration code will be sent to your immediately after
+     payment is completed successfully. After you receive this email,
+     copy registration code only (no newline), then replace the
+     content of "license.lic" within the software. Run the following
+     command to check your registration code
+
+         python pyarmor.py version
+
+     The registration code is valid forever, it can be used permanently. But it
+     may not be rented or leased.
+
+  6. The software's free version may be freely distributed, with exceptions
+     noted below, provided the distribution package is not modified in any way.
+
+     a. Nobody may distribute separate parts of the package, without written
+        permission.
+
+     b. The software's unlicensed free version may not be distributed inside of
+        any other software package without written permission.  The software
+        must remain in the original unmodified installation file for download
+        without any barrier and conditions to the user such as collecting fees
+        for the download or making the download conditional on the user giving
+        his contact data.
+
+     c. The unmodified installation file of Pyarmor must be provided pure and
+        unpaired. Any bundling is interdicted. In particular the use of any
+        install or download software which is providing any kind of download
+        bundles is prohibited unless granted by Jondy Zhao written form.
+
+     d. Hacks/cracks, keys or key generators may not be included, pointed to
+        or referred to by the distributor of the free version.
+
+     e. In case of violation of the precedent conditions the allowance
+        lapses immediately and automatically.
+
+  7. The software is distributed "as is". No warranty of any kind is expressed
+     or implied. You use at your own risk. Neither the author, the licensor
+     nor the agents of the licensor will be liable for data loss, damages,
+     loss of profits or any other kind of loss while using or misusing
+     this software.
+
+  8. You may not use, copy, emulate, clone, rent, lease, sell, modify,
+     decompile, disassemble, otherwise reverse engineer, or transfer the
+     licensed software, or any subset of the licensed software, except as
+     provided for in this agreement. Any such unauthorized use shall result in
+     immediate and automatic termination of this license and may result in
+     criminal and/or civil prosecution.
+
+     Neither Pyarmor binary code, or source code may be used or reverse
+     engineered to re-create the Pyarmor obfuscated algorithm, which is
+     proprietary, without written permission.
+
+  9. The licensor shall be responsible for interpretation of the
+     agreement. Anytime the licensor made any modifications to the agreement,
+     the modified version shall be applicable to the user automatically.
+
+ 10. Installing and using the software signifies acceptance of these terms
+     and conditions of the license. If you do not agree with the terms of this
+     license, you must remove all software files from your storage devices
+     and cease to use the software.
