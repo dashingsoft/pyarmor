@@ -1,11 +1,16 @@
 # Pyarmor
 
+* [Homepage](http://dashingsoft.com)
+* [Examples](src/examples)
+* [Online Demo](http://pyarmor.dashingsoft.com)
+* [Documentation](src/user-guide.md)
+
 Pyarmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
 * Obfuscate code object to protect constants and literal strings.
-* Obfuscate byte code of each code object.
+* Obfuscate byte code of each code object in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
 * Expired obfuscated scripts, or bind to fixed machine.
 
@@ -14,7 +19,7 @@ Refer to [Protect Python Scripts By Pyarmor](docs/protect-python-scripts-by-pyar
 ## Support Platforms
 
 - Python 2.5, 2.6, 2.7 and Python3
-- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_intel
+- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_x86_64
 - Embedded Platform: Raspberry Pi, Banana Pi, TS-4600 / TS-7600
 
 ## Quick Start
@@ -97,24 +102,18 @@ Use project to manage obfuscated scripts:
     python pybench.py
 ```
 
-There is a webui used to manage project easily. Start it
+More usage, refer to [User Guide](src/user-guide.md) and [Mechanism](src/mechanism.md)
+
+## Web UI
+
+There is a webui used to obfuscate script in gui mode. Start it
 
 ```
-    # For windows
-    src/webui/manager.bat
-
-    # For linux
-    src/webui/manager.sh
-
-    # If Pyarmor is installed by pip
     pyarmor-webui
 ```
 
-A good example is the best teacher. Here are several typical scenarios [src/examples](src/examples)
-
-Here is online demo [Pyarmor Demo](http://pyarmor.dashingsoft.com)
-
-More usage, refer to [User Guide](src/user-guide.md) and [Mechanism](src/mechanism.md)
+Note that the webui doesn't include all the features of Pyarmor, it can help you
+to understand Pyarmor quickly.
 
 ## License
 
@@ -127,7 +126,7 @@ A registration code is required to generate random project capsule.
 - Personal user: one registration code is enough.
 - Company user: one registration code is only used for one project/product.
 
-Refer to [About license.lic](src/user-guide.md#about-licenselic).
+For details, refer to [LICENSE](LICENSE).
 
 ### Purchase
 
