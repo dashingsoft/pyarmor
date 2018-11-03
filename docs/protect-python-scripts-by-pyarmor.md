@@ -22,7 +22,6 @@ are the files list in the output path `dist`
     pyshield.lic
     product.key
     license.lic
-
 ```
 
 `dist/foo.py` is obfuscated script, the content is
@@ -32,7 +31,6 @@ are the files list in the output path `dist`
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
-
 ```
 
 All the other extra files called `Runtime Files`, which are required to run or
@@ -51,7 +49,6 @@ First compile Python script to code object
     char *filename = "foo.py";
     char *source = read_file( filename );
     PyCodeObject *co = Py_CompileString( source, "<frozen foo>", Py_file_input );
-
 ```
 
 Next change this code object as the following ways
@@ -80,7 +77,6 @@ Next change this code object as the following ways
             CALL_FUNCTION   0
             POP_TOP
             END_FINALLY
-
 ```
 
 * Append function names `__armor_enter`, `__armor_exit__` to `co_consts`
@@ -96,7 +92,6 @@ Then serialize this reformed code object, obfuscate it to protect constants and 
 ``` c
     char *string_code = marshal.dumps( co );
     char *obfuscated_code = obfuscate_algorithm( string_code  );
-
 ```
 
 Finally generate obfuscated script
@@ -104,14 +99,12 @@ Finally generate obfuscated script
 ``` c
     sprintf( buf, "__pyarmor__(__name__, __file__, b'%s')", obfuscated_code );
     save_file( "dist/foo.py", buf );
-
 ```
 
 The obfuscated script is a normal Python script, it looks like this
 
 ```
     __pyarmor__(__name__, __file__, b'\x01\x0a...')
-
 ```
 
 ## Run Obfuscated Script
@@ -123,7 +116,6 @@ The first 2 lines, which called `Bootstrap Code`
 ``` python
     from pytransfrom import pyarmor_runtime
     pyarmor_runtime()
-
 ```
 
 It will fulfil the following tasks
@@ -180,7 +172,6 @@ After that, in the runtime of this python interpreter
 
         Py_RETURN_NONE;
     }
-
 ```
 
 * `__armor_exit__` is called so long as code object completed
@@ -211,7 +202,6 @@ After that, in the runtime of this python interpreter
 
         Py_RETURN_NONE;
     }
-
 ```
 
 ## License of Obfuscated Scripts
