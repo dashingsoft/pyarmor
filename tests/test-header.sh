@@ -14,7 +14,7 @@ if [[ ${UNAME:0:5} == Linux ]] ; then
 else
 
     if [[ $(uname) == Darwin ]] ; then
-        PLATFORM=macosx_intel
+        PLATFORM=macosx_x86_64
         PKGEXT=tar.bz2
         DLLEXT=.dylib
         ARMOR=./pyarmor
@@ -74,7 +74,7 @@ case ${PLATFORM} in
         declare -r ifip_address=192.168.121.103
         declare -r domain_name=
         ;;
-    macosx_intel)
+    macosx_x86_64)
         PYTHON=python
         declare -r harddisk_sn='VB85de09d4-23402b07 '
         declare -r ifmac_address=08:00:27:b0:b3:94

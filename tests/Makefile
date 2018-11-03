@@ -12,7 +12,7 @@ endif
 else
 
 ifeq ($(findstring Darwin,$(UNAME)),Darwin)
-PLATFORM := macosx_intel
+PLATFORM := macosx_x86_64
 else
 
 ifeq ($(ARCH),x86_64)
@@ -28,7 +28,7 @@ endif
 
 ifndef PLATFORM
 $(info Usage: PLATFORM=XXXX make)
-$(info XXXX coule be win32, win_amd64, linux_i386, linux_x86_64 or macosx_intel)
+$(info XXXX coule be win32, win_amd64, linux_i386, linux_x86_64 or macosx_x86_64)
 $(info )
 $(error PLATFORM IS EMPTY)
 endif

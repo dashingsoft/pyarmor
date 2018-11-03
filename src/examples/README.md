@@ -253,7 +253,7 @@ First get hardware information of customer machine, run the following command in
 
     # All the other support platforms
     #
-    #     http://pyarmor.dashingsoft.com/downloads/platforms/macosx_intel/hdinfo
+    #     http://pyarmor.dashingsoft.com/downloads/platforms/macosx_x86_64/hdinfo
     #     http://pyarmor.dashingsoft.com/downloads/platforms/win32/hdinfo.exe
     #     http://pyarmor.dashingsoft.com/downloads/platforms/linux_i386/hdinfo
 

@@ -24,7 +24,7 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 * [linux_x86_64](http://pyarmor.dashingsoft.com/downloads/platforms/linux_x86_64/_pytransform.so)
 
-* [macosx_intel](http://pyarmor.dashingsoft.com/downloads/platforms/macosx_intel/_pytransform.dylib)
+* [macosx_x86_64](http://pyarmor.dashingsoft.com/downloads/platforms/macosx_x86_64/_pytransform.dylib)
 
 ## Embedded Platforms
 
