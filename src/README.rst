@@ -6,7 +6,7 @@ obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
 * Obfuscate code object to protect constants and literal strings.
-* Obfuscate byte code of each code object.
+* Obfuscate byte code of each code object in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
 * Expired obfuscated scripts, or bind to fixed machine.
 
@@ -16,9 +16,7 @@ are the files list in the output path ``dist``::
     foo.py
 
     pytransform.py
-    _pytransform.so
-    or _pytransform.dll in Windows
-    or _pytransform.dylib in MacOS
+    _pytransform.so, or _pytransform.dll in Windows, or _pytransform.dylib in MacOS
 
     pyshield.key
     pyshield.lic
@@ -38,7 +36,7 @@ obfuscated script ``dist/foo.py`` can be used as normal Python script.
 
 **The original python scripts can be replaced with obfuscated scripts seamlessly.**
 
-For details to visit `https://github.com/dashingsoft/pyarmor/blob/master/docs/protect-python-scripts-by-pyarmor.md <https://github.com/dashingsoft/pyarmor/blob/master/docs/protect-python-scripts-by-pyarmor.md>`_
+For details to visit `protect-python-scripts-by-pyarmor.md <https://github.com/dashingsoft/pyarmor/blob/master/docs/protect-python-scripts-by-pyarmor.md>`_
 
 Support Platforms
 -----------------
@@ -54,35 +52,36 @@ Install::
 
     pip install pyarmor
 
-Obfuscate Scripts::
+Obfuscate scripts::
 
-    python pyarmor.py obfuscate --src=examples/simple --entry=foo.py "*.py"
+    python pyarmor.py obfuscate --src=examples/simple --entry=queens.py "*.py"
 
-Run Obfuscated Scripts::
+Run obfuscated scripts::
 
     cd dist
-    python foo.py
+    python queens.py
 
-More usage visit `https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_
-
-Expired Obfuscated Script
--------------------------
-
-By default the obfuscated scripts can run in any machine and never expired. This
-behaviour can be changed by replacing runtime file ``dist/license.lic``
-
-First generate an expired license::
+Generate an expired license and run obfuscated scripts with new license::
 
     python pyarmor.py licenses --expired 2018-12-31 Customer-Jondy
+    cp licenses/Customer-Jondy/license.lic dist/
 
-This command will make a new ``license.lic``, replace ``dist/license.lic``
-with this one. The obfuscated script will not work after 2018.
+    cd dist/
+    python queens.py
 
-Now generate another license bind to fixed machine::
+There is a webui used to obfuscate script in gui mode. Start it::
 
-    python pyarmor.py licenses --bind-disk "100304PBN2081SF3NJ5T"
-                               --bind-mac "70:f1:a1:23:f0:94"
-                               --bind-ipv4 "202.10.2.52"
-                               Customer-Jondy
+    pyarmor-webui
 
-Interesting? More information visit `https://github.com/dashingsoft/pyarmor <https://github.com/dashingsoft/pyarmor>`_
+Note that the webui doesn't include all the features of Pyarmor, it
+can help you to understand Pyarmor quickly.
+
+More usage visit `User Guide <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_
+
+More Resources
+--------------
+
+- `Website <http://dashingsoft.com>`_
+- `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
+- `Online Demo <http://pyarmor.dashingsoft.com>`_
+- `Source Code <https://github.com/dashingsoft/pyarmor>`_
