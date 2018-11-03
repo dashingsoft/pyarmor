@@ -5,7 +5,7 @@ obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
 * Obfuscate code object to protect constants and literal strings.
-* Obfuscate byte code of each code object.
+* Obfuscate byte code of each code object in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
 * Expired obfuscated scripts, or bind to fixed machine.
 
@@ -37,14 +37,13 @@ are the files list in the output path `dist`
 
 All the other extra files called `Runtime Files`, which are required to run or
 import obfuscated scripts. So long as runtime files are in any Python path,
-obfuscated script `dist/foo.py` can be used as normal Python script.
+obfuscated script `dist/foo.py` can be used as normal Python script. That is to say:
 
-Pyarmor protects Python scripts in 2 phases:
+**The original python scripts can be replaced with obfuscated scripts seamlessly.**
 
-* Build obfuscated script
-* Run or import obfuscated script
+## Obfuscated Python Scripts
 
-## Build Obfuscated Script
+How to obfuscate python scripts by Pyarmor?
 
 First compile Python script to code object
 
@@ -117,14 +116,9 @@ The obfuscated script is a normal Python script, it looks like this
 
 ## Run Obfuscated Script
 
-In order to run obfuscted script `dist/foo.py` by common Python Interpreter,
-there are 3 functions need to be added to module `builtins`:
+How to run obfuscated script `dist/foo.py` by Python Interpreter?
 
-* `__pyarmor__`
-* `__armor_enter__`
-* `__armor_exit__`
-
-The following 2 lines, which called `Bootstrap Code`, will fulfil this work
+The first 2 lines, which called `Bootstrap Code`
 
 ``` python
     from pytransfrom import pyarmor_runtime
@@ -132,9 +126,22 @@ The following 2 lines, which called `Bootstrap Code`, will fulfil this work
 
 ```
 
-After that:
+It will fulfil the following tasks
 
-* `__pyarmor__` is called, it will import original module from obfuscated code
+* Load dynamic library `_pytransform` by `ctypes`
+* Check `dist/license.lic` is valid or not
+* Add 3 cfunctions to module `builtins`
+  * `__pyarmor__`
+  * `__armor_enter__`
+  * `__armor_exit__`
+
+The next code line in `dist/foo.py` is
+
+```
+    __pyarmor__(__name__, __file__, b'\x01\x0a...')
+
+```
+`__pyarmor__` is called, it will import original module from obfuscated code
 
 ```c
     static PyObject *
@@ -146,7 +153,10 @@ After that:
     }
 ```
 
-* `__armor_enter__` is called as soon as code object is executed
+After that, in the runtime of this python interpreter
+
+* `__armor_enter__` is called as soon as code object is executed, it
+  will restore byte-code of this code object
 
 ``` c
     static PyObject *
@@ -173,7 +183,8 @@ After that:
 
 ```
 
-* `__armor_exit__` is called so long as code object completed execution
+* `__armor_exit__` is called so long as code object completed
+  execution, it will obfuscate byte-code again
 
 ``` c
     static PyObject *
@@ -203,28 +214,28 @@ After that:
 
 ```
 
-## Expired Obfuscated Script
+## License of Obfuscated Scripts
 
-By default the obfuscated scripts can run in any machine and never expired. This
-behaviour can be changed by replacing runtime file `dist/license.lic`
+When call `pyarmor_runtime()` in `dist/foo.py`, it will check the file
+`dist/license.lic`. If it's invalid, the python interpreter reports
+error and quits. The default license is generated while obfuscating
+Python scripts. It allows to run obfuscated scripts in any machine and
+never expired.
 
-First generate an expired license
+If we generate a new license which includes an expired date, or some
+hardware infromation, for examples, serial number of harddisk, mac
+address of network address etc. If any of these conditions isn't
+satisfied in the target machine, obfuscated scripts will be aborted.
 
-``` bash
-    python pyarmor.py licenses --expired 2018-12-31 Customer-Jondy
-
-```
-
-This command will make a new `license.lic`, replace `dist/license.lic`
-with this one. The obfuscated script will not work after 2018.
-
-Now generate another license bind to fixed machine
+Pyarmor has command `licenses` used to generate new liceses
 
 ``` bash
-    python pyarmor.py licenses --bind-disk "100304PBN2081SF3NJ5T"
-                               --bind-mac "70:f1:a1:23:f0:94"
-                               --bind-ipv4 "202.10.2.52"
-                               Customer-Jondy
+    python pyarmor.py licenses
+                      --expired 2018-12-31
+                      --bind-disk "100304PBN2081SF3NJ5T"
+                      --bind-mac "70:f1:a1:23:f0:94"
+                      --bind-ipv4 "202.10.2.52"
+                      Customer-Jondy
 ```
 
-Interesting? More information visit https://github.com/dashingsoft/pyarmor
+More information visit [Pyarmor Homepage](http://dashingsoft.com/)
