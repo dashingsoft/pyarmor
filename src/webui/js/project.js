@@ -12,7 +12,7 @@ define(['connector', 'utils'], function(conn, utils) {
         document.getElementById('input_project_entry').value = data.entry;
         document.getElementById('input_project_output').value = data.output;
 
-        document.getElementById('enable_project_runtime_path').value = '';
+        document.getElementById('enable_project_runtime_path').checked = data.runtime_path !== null;
         document.getElementById('input_project_runtime_path').value = data.runtime_path;
         document.getElementById('input_project_obf_module_mode').value = data.obf_module_mode;
         document.getElementById('input_project_obf_code_mode').value = data.obf_code_mode;
@@ -36,7 +36,7 @@ define(['connector', 'utils'], function(conn, utils) {
         _project.manifest = document.getElementById('input_project_manifest').value;
         _project.entry = document.getElementById('input_project_entry').value;
         _project.output = document.getElementById('input_project_output').value;
-        _project.runtime_path = document.getElementById('input_project_runtime_path').value;
+        _project.runtime_path = document.getElementById('enable_project_runtime_path').checked ? document.getElementById('input_project_runtime_path').value : null; 
         _project.obf_module_mode = document.getElementById('input_project_obf_module_mode').value;
         _project.obf_code_mode = document.getElementById('input_project_obf_code_mode').value;
         _project.disable_restrict_mode = parseInt(document.getElementById('input_project_disable_restrict_mode').value);
