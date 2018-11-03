@@ -1,3 +1,7 @@
+4.2.2
+-----
+* Fix webui import error.
+
 4.2.1
 -----
 * Add option `--recursive` for command `obfuscate`
