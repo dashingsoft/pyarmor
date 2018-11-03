@@ -23,7 +23,7 @@ pyarmor_data_files = [
     'platforms/win_amd64/_pytransform.dll',
     'platforms/linux_i386/_pytransform.so',
     'platforms/linux_x86_64/_pytransform.so',
-    'platforms/macosx_intel/_pytransform.dylib',
+    'platforms/macosx_x86_64/_pytransform.dylib',
     'examples/simple/*.py', 'examples/testmod/*.py',
     'examples/testpkg/*.py', 'examples/testpkg/mypkg/*.py',
     'examples/pybench/*.py', 'examples/pybench/package/*.py',
