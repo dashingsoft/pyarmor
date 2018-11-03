@@ -1,3 +1,9 @@
+4.2.3
+-----
+* Fix `pyarmor-webui` can not start issue
+* Fix `runtime-path` issue in webui
+* Rename platform name `macosx_intel` to `macosx_x86_64` (#36)
+
 4.2.2
 -----
 * Fix webui import error.
