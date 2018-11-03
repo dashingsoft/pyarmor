@@ -15,7 +15,10 @@ sys.path.append(os.environ['PYARMOR_PATH'])
 from config import version, config_filename, capsule_filename
 from utils import get_registration_code, build_path
 from project import Project
-from pyarmor import main as _pyarmor
+try:
+    from pyarmor import main as _pyarmor
+except ImportError:
+    from pyarmor.pyarmor import main as _pyarmor
 
 project_base_path = 'projects'
 project_index_name = 'index.json'
@@ -80,7 +83,7 @@ def updateProject(args):
     path = os.path.join(project_base_path, name)
     project = Project()
     project.open(path)
-    
+
     if not args['output']:
         args['output'] = 'dist'
 
@@ -180,7 +183,7 @@ def newLicense(args):
             params.extend(['--%s' % opt.replace('_', '-'), args[opt]])
     params.append(title)
     _pyarmor(params)
-    
+
     output = os.path.join(path, 'licenses', title, 'license.lic')
     return dict(title=title, filename=output)
 
