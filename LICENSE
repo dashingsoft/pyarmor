@@ -50,7 +50,7 @@
      content of "license.lic" within the software. Run the following
      command to check your registration code
 
-         python pyarmor.py version
+         python pyarmor.py --version
 
      The registration code is valid forever, it can be used permanently. But it
      may not be rented or leased.

@@ -30,7 +30,7 @@
      件许可码（一行文本，不包含回车符）拷贝出来，用软件许可码替换本软件包含的文件
      license.lic 的内容。替换完成之后，可以使用下面的命令查看
 
-         python pyarmor.py version
+         python pyarmor.py --version
 
      软件许可码永久有效，可以一直使用，但是不能转接或者租用。
 
