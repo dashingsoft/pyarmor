@@ -203,7 +203,7 @@ class HelperHandler(BaseHTTPRequestHandler):
         '.js': 'application/x-javascript',
         }
 
-def main():
+def main(page=''):
     logging.basicConfig(
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
@@ -216,10 +216,11 @@ def main():
     print("Serving HTTP on %s port %s ..." % server.server_address)
     try:
         from webbrowser import open_new_tab
-        open_new_tab("http://localhost:%d" % server.server_address[1])
+        open_new_tab("http://localhost:%d/%s" % (
+            server.server_address[1], page))
     except Exception:
         pass
     server.serve_forever()
 
 if __name__ == '__main__':
-    main()
+    main(page='project.html')

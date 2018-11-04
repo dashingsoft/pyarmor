@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="A tool used to obfuscate python scripts." />
+  <meta name="Keywords" content="python, obfuscate, obfuscation, obfuscator" />
+  <title>Pyarmor - Obfuscate Python Scripts</title>
+
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <style type="text/css">
+    .toolbar {
+      margin: 10px 15px 10px 15px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .tab-pane > div.content {
+      padding: 0 1em;
+    }
+    #global-message {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50px;
+      z-index: 1;
+    }
+    #project-basic .panel-body { padding-bottom: 5px; }
+  </style>
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script data-main="app" src="js/require.js"></script>
+  <script type="text/javascript">
+  </script>
+</head>
+
+<body role="document">
+  <nav role="navigation" class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main-tab" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://github.com/dashingsoft/pyarmor">Pyarmor</a>
+      </div>
+      <!-- /.navbar-header -->
+      <div class="collapse navbar-collapse" id="navbar-main-tab">
+        <ul class="nav navbar-nav">
+          <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+          <li role="presentation"><a href="#project" aria-controls="project" role="tab" data-toggle="tab">Project</a></li>
+          <!-- <li role="presentation"><a href="#documentation" aria-controls="documentation" role="tab" data-toggle="tab">Tutorial</a></li> -->
+          <li role="presentation"><a href="#purchase" aria-controls="purchase" role="tab" data-toggle="tab">Purchase</a></li>
+          <!-- <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> -->
+          <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">About</a></li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+  </nav>
+
+  <div id="global-message"></div>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="home">
+      <div class="toolbar">
+        <a type="button" class="btn btn-success" href="index-zh.html">中文版</a>
+      </div>
+      <div class="content">
+        <p>Pyarmor is a tool used to import or run obfuscated python scripts.</p>
+        <h4 id="main-features">Main Features</h4>
+        <ul>
+          <li>Run obfuscated script or import obfuscated module</li>
+          <li>Expire obfuscated files</li>
+          <li>Bind obfuscated files to harddisk, mac address, ip address etc.</li>
+        </ul>
+        <h4 id="support-platforms">Support Platforms</h4>
+        <ul>
+          <li><p>Python 2.5, 2.6, 2.7 and Python3</p></li>
+          <li><p>Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, darwin_x86_64, macosx_x86_64</p></li>
+          <li><p>Embeded Platform: Raspberry Pi, Banana Pi, ts-4600</p></li>
+        </ul>
+        <h4 id="quick-start">Quick Start</h4>
+        <ul>
+          <li><p>Download <a href="https://pypi.python.org/pypi/pyarmor">Pyarmor</a></p></li>
+          <li><p>Extract it to any path, for example, <em>/opt</em></p></li>
+          <li><p>Enter <em>/opt/pyarmor/webui</em>, run <strong>manager.bat</strong> or <strong>manager.sh</strong></p></li>
+          <li><p>A webpage will open in web browser at the same time, do the following steps in this web page:</p>
+            <ul>
+              <li>Click tab <strong>Project</strong></li>
+              <li>Click button <strong>New</strong></li>
+              <li>Type absolute path of python source files in <strong>Src</strong>, for example, <em>/opt/pyarmor/examples</em></li>
+              <li>Type <strong>Entry Scripts</strong>, for example, <em>queens.py</em></li>
+              <li>Type <strong>Output</strong>, for example, <em>projects/project-1/dist</em></li>
+              <li>Click button <strong>Build</strong></li>
+              <li>All the obfuscated files would be save in <em>/opt/pyarmor/webui/projects/project-1/dist</em>, enter this path</li>
+            </ul>
+          </li>
+          <li>Run obfuscated script with command: <code>python queens.py</code></li>
+        </ul>
+        <strong>Note that this webui doesn't include all the features of Pyarmor, run pyarmor.py in command line to use
+          <a href="https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md">full features</a></strong>
+      </div>
+    </div>
+    <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane" id="project">
+      <div class="toolbar">
+        <button id="new-project" type="button" class="btn btn-success" title="New project">New</button>
+        <button id="open-project" type="button" class="btn btn-default" title="Open project">Open</button>
+        <button id="save-project" type="button" class="btn btn-default" title="Save project">Save</button>
+        <button id="build-project" type="button" class="btn btn-default" title="Obfuscate all files in project">Build</button>
+        <!-- <button id="demo-button" type="button" class="btn btn-warning hidden">Demo Version</button> -->
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-2">
+            <ul class="nav nav-pills nav-stacked">
+              <li role="presentation" class="active"><a href="#project-basic" aria-controls="project-basic" role="tab" data-toggle="pill">Basic</a></li>
+              <li role="presentation"><a href="#project-advanced" aria-controls="project-advanced" role="tab" data-toggle="pill">Advanced</a></li>
+              <li role="presentation"><a href="#project-licenses" aria-controls="project-licenses" role="tab" data-toggle="pill">Licenses</a></li>
+              <li role="presentation"><a href="#project-console" aria-controls="project-console" role="tab" data-toggle="pill">Console</a></li>
+            </ul>
+          </div>
+          <!-- /.col-sm-2 -->
+          <div class="col-sm-10">
+            <div class="tab-content">
+              <div role="tabpanel" class="tab-pane active" id="project-basic">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Project Infromation</div>
+                  <div class="panel-body">
+                    <form>
+                      <div class="form-group hidden">
+                        <label for="input_project_name">Name</label>
+                        <input type="text" class="form-control" id="input_project_name"/>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_title">Title</label>
+                        <input type="text" class="form-control" id="input_project_title"/>
+                      </div>
+                      <!-- <div class="form-group"> -->
+                      <!--   <label for="input_project_description">Description</label> -->
+                      <!--   <textarea class="form-control" rows="5" id="input_project_description"></textarea> -->
+                      <!-- </div> -->
+                      <div class="form-group">
+                        <label for="input_project_src">Src</label>
+                        <input type="text" class="form-control" id="input_project_src"/>
+                        <p class="help-block">Required. Base path for MANIFEST.in to match files.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_manifest">MANIFEST.in</label>
+                        <textarea class="form-control" rows="3" id="input_project_manifest"></textarea>
+                        <p class="help-block">Required. Refer to Python Distutils’ Manifest template command.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_entry">Entry Scripts</label>
+                        <input type="text" class="form-control" id="input_project_entry"/>
+                        <p class="help-block">Optional. Comma-separated list of entry scripts, relative to Src path</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_output">Output</label>
+                        <input type="text" class="form-control" id="input_project_output"/>
+                        <p class="help-block">Where to save obfuscated scripts and runtime files</p>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+              <div role="tabpanel" class="tab-pane" id="project-advanced">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Obfuscation Mode and Runtime Setting</div>
+                  <div class="panel-body">
+                    <form>
+                      <!-- <div class="has-warning"> -->
+                      <!--   <div class="checkbox"> -->
+                      <!--     <label> -->
+                      <!--       <input type="checkbox" id="input_project_clean" value=""/> -->
+                      <!--       <strong>Remove source files after enrypt successfully.</strong> -->
+                      <!--     </label> -->
+                      <!--     <p class="help-block"></p> -->
+                      <!--   </div> -->
+                      <!-- </div> -->
+                      <div class="form-group">
+                        <label for="input_project_obf_module_mode">Obfuscate Module Mode</label>
+                        <select class="form-control" id="input_project_obf_module_mode">
+                          <option value="none">No</option>
+                          <option value="des" selected>DES</option>
+                        </select>
+                        <p class="help-block">How to obfuscate whole module</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_obf_code_mode">Obfuscate Code Mode</label>
+                        <select class="form-control" id="input_project_obf_code_mode">
+                          <option value="none">No</option>
+                          <option value="des" selected>DES</option>
+                          <option value="fast">Fast</option>
+                          <option value="wrap">Wrap</option>
+                        </select>
+                        <p class="help-block">How to obfuscate byte code of each code object</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_disable_restrict_mode">Restrict Mode</label>
+                        <select class="form-control" id="input_project_disable_restrict_mode">
+                          <option value="0" selected>Enabled</option>
+                          <option value="1">Disabled</option>
+                        </select>
+                        <p class="help-block">In restrict mode, obfuscated module can NOT be imported from no obfuscated scripts.</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_project_runtime_path">
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" id="enable_project_runtime_path" value=""/>Set Runtime Path
+                            </label>
+                          </div>
+                        </label>
+                        <input type="text" class="form-control" id="input_project_runtime_path" disabled />
+                        <p class="help-block">Set runtime path to find _pytransform.dll(.so) in target machine.</p>
+                        <p class="help-block">It's only used in special case. For example, use py2exe to package obfuscated scripts.</p>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+              <div role="tabpanel" class="tab-pane" id="project-licenses">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Generate project license for special user</div>
+                  <div class="panel-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="input_expired_date">Expired Date</label>
+                        <input type="text" class="form-control" id="input_expired_date"/>
+                        <p class="help-block">Expire obfuscated scripts on some day: <em>YYYY-MM-NN</em></p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_bind_disk">Serial Number of Harddisk</label>
+                        <input type="text" class="form-control" id="input_bind_disk"/>
+                        <p class="help-block">Bind obfuscated scripts to fixed harddisk</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_bind_mac">Mac Address</label>
+                        <input type="text" class="form-control" id="input_bind_mac"/>
+                        <p class="help-block">Bind obfuscated scripts to mac address</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_bind_ipv4">IPv4 Address</label>
+                        <input type="text" class="form-control" id="input_bind_ipv4"/>
+                        <p class="help-block">Bind obfuscated scripts to ipv4 address</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="input_license_rcode">Registration Code</label>
+                        <input type="text" class="form-control" id="input_license_rcode"/>
+                        <p class="help-block">Identify string, for example, <em>Customer-Tom</em></p>
+                      </div>
+                      <!-- <div class="form-group"> -->
+                      <!--   <label for="input_available_licenses">Available Licenses</label> -->
+                      <!--   <select class="form-control" id="input_project_licenses" multiple readonly></select> -->
+                      <!-- </div> -->
+                      <!-- <button type="button" class="btn btn-default" id="remove-license">Remove</button> -->
+                      <button type="button" class="btn btn-default pull-right" id="new-license">Generate</button>
+                    </form>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+              <div role="tabpanel" class="tab-pane" id="project-console">
+                <div>
+                  <form>
+                    <div class="form-group">
+                      <!-- <label for="project-log-message">Log message</label> -->
+                      <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
+                    </div>
+                    <a id="clear-log-message" role="button" class="btn btn-default">Clear</a>
+                  </form>
+                </div>
+                <!-- /.panel-default -->
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- /.col-md-10 -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane" id="documentation">
+      <div class="content">tutorial.html</div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="purchase">
+      <div class="content">
+        <p>You're using trail version. Free trial version that never expires, but project capsule generated is fixed by hardcode, so all the encrypted files are encrypted by same key.</p>
+        <p>A registration code is required to generate random project capsule. If Pyarmor is helpful for you, please purchase one by visiting</p>
+        <p><a href="https://shopper.mycommerce.com/checkout/cart/add/55259-1">https://shopper.mycommerce.com/checkout/cart/add/55259-1</a></p>
+        <p>After you have received a registration code, just replace the content of "license.lic" with registration code only (no newline).</p>
+        <p><strong>The registration code is valid forever, it can be used permanently.</strong></p>
+        <p>Enjoy it!</p>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="settings">
+      Settings
+    </div>
+    <div role="tabpanel" class="tab-pane" id="about">
+      <div class="content">
+        <p id="version-info">Pyarmor Version</p>
+        <table class="table">
+          <tr>
+            <td><strong>Homepage:</strong></td>
+            <td><a href="http://pyarmor.dashingsoft.com">http://pyarmor.dashingsoft.com</a></td>
+          </tr>
+          <tr>
+            <td><strong>Source:</strong></td>
+            <td><a href="https://github.com/dashingsoft/pyarmor">https://github.com/dashingsoft/pyarmor</a></td>
+          </tr>
+          <tr>
+            <td><strong>PyPI:</strong></td>
+            <td><a href="https://pypi.python.org/pypi/pyarmor">https://pypi.python.org/pypi/pyarmor</a></td>
+          </tr>
+          <tr>
+            <td><strong>Report Issues:</strong></td>
+            <td><a href="https://github.com/dashingsoft/pyarmor/issues">https://github.com/dashingsoft/pyarmor/issues</a></td>
+          </tr>
+          <tr>
+            <td><strong>Support Email:</strong></td>
+            <td><a href="mailto:jondy.zhao@gmail.com">jondy.zhao@gmail.com</a></td>
+          </tr>
+        </table>
+        <p>Any question feel free to email: <a href="mailto:jondy.zhao@gmail.com">jondy.zhao@gmail.com</a></p>
+      </div>
+      <!-- /.content -->
+    </div>
+    <!-- /.tab-pane -->
+  </div>
+  <!-- /.tab-content -->
+  <div class="modal fade" id="project-manage-modal" tabindex="-1" role="dialog" aria-labelledby="ProjectModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="ProjectModalLabel">Projects</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <select class="form-control" id="project-manage-list" size="9" multiple required></select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" id="project-manage-remove">Remove</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="project-manage-open">Open</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+</body>
+</html>
