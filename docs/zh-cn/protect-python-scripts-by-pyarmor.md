@@ -1,7 +1,7 @@
 # Pyarmor 加密和保护 Python 源代码的方法和机制
 
-Pyarmor 是一个能够加密Python源代码的小工具，能够保护运行时刻的Python二
-进制代码不被泄露，设置加密后Python源代码的有效期限，绑定加密后的Python
+Pyarmor 是一个用于加密和保护 Python 源代码的小工具。它能够在运行时刻保护 Python
+脚本的二进制代码不被泄露，设置加密后 Python 源代码的有效期限，绑定加密后的Python
 源代码到硬盘、网卡等硬件设备。它的保障机制主要包括
 
 * 加密编译后的代码块，保护模块中的字符串和常量
@@ -33,11 +33,9 @@ Pyarmor 是一个能够加密Python源代码的小工具，能够保护运行时
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
 ```
 
-所有其他文件叫做 `运行依赖文件`，它们是运行加密脚本所必须的。并且只要这
-些脚本在任何一个 Python 搜索路径下面，加密脚本 `dist/foo.py` 就可以像正
-常脚本一样被运行。这是 Pyarmor 的一个重要特征：
-
-**Python原始脚本可以被加密后的脚本无缝替换**
+所有其他文件叫做 `运行依赖文件`，它们是运行加密脚本所必须的。并且只要这里面的模块
+`pytransform.py` 能被正常导入进来，加密脚本 `dist/foo.py` 就可以像正常脚本一样被
+运行。这是 Pyarmor 的一个重要特征： **加密脚本无缝替换 Python 源代码**
 
 ## 加密 Python 源代码
 
@@ -79,29 +77,29 @@ Pyarmor 是怎么加密 Python 源代码呢？
             END_FINALLY
 ```
 
-* 添加三个字符串名称 `__armor_enter`, `__armor_exit__` 到 `co_consts`
+* 添加字符串名称 `__armor_enter`, `__armor_exit__` 到 `co_consts`
 
-* 如果 `co_stacksize` 小于 4，那么设置为值 4
+* 如果 `co_stacksize` 小于 4，那么设置为 4
 
 * 在 `co_flags` 设置自定义的标志位 CO_OBFUSCAED (0x80000000)
 
-* 按照上面的方式递归修改 `co_consts` 中的所有代码块
+* 按照上面的方式递归修改 `co_consts` 中的所有类型为代码块的常量
 
-然后把变形后的代码块转换成为字符串，把字符串进行加密，保护其中的常量和字符串
+然后把改装后的代码块转换成为字符串，把字符串进行加密，保护其中的常量和字符串
 
 ``` c
     char *string_code = marshal.dumps( co );
     char *obfuscated_code = obfuscate_algorithm( string_code  );
 ```
 
-最后生成加密后脚本
+最后生成加密后的脚本，写入到磁盘文件
 
 ``` c
     sprintf( buf, "__pyarmor__(__name__, __file__, b'%s')", obfuscated_code );
     save_file( "dist/foo.py", buf );
 ```
 
-加密后的脚本就是一个正常的函数调用语句，长得就像这个样子
+单纯加密后的脚本就是一个正常的函数调用语句，长得就像这个样子
 
 ```
     __pyarmor__(__name__, __file__, b'\x01\x0a...')
