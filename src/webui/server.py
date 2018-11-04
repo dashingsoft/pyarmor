@@ -32,7 +32,8 @@ class HelperHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         """Serve a POST request."""
-        if self.path[1:] not in ('newProject', 'updateProject',
+        if self.path[1:] not in ('obfuscateScripts', 'generateLicenses',
+                                 'newProject', 'updateProject',
                                  'buildProject', 'removeProject',
                                  'queryProject', 'queryVersion',
                                  'newLicense', 'removeLicense'):
@@ -223,4 +224,4 @@ def main(page=''):
     server.serve_forever()
 
 if __name__ == '__main__':
-    main(page='project.html')
+    main()

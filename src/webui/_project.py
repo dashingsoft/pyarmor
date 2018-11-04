@@ -187,11 +187,39 @@ def newLicense(args):
     output = os.path.join(path, 'licenses', title, 'license.lic')
     return dict(title=title, filename=output)
 
+def _runPyarmor(params):
+    try:
+        old = os.getcwd()
+        os.chdir('..')
+        _pyarmor(params)
+    finally:
+        os.chdir(old)
+
 def obfuscateScripts(args):
-    return args
+    params = ['obfuscate', '--recursive']
+    for opt in ('src', 'entry', 'output'):
+        if args[opt]:
+            params.extend(['--%s' % opt, args[opt]])
+
+    _runPyarmor(params)
+
+    output = os.path.abspath(args['output'] if args['output'] else '../dist')
+    return dict(output=output)
 
 def generateLicenses(args):
-    return args
+    output = os.path.abspath('..')
+    params = ['licenses', '--output', output]
+
+    for opt in ('expired', 'bind_disk', 'bind_ipv4', 'bind_mac'):
+        if args[opt]:
+            params.extend(['--%s' % opt.replace('_', '-'), args[opt]])
+
+    rcode = args['rcode'].strip()
+    params.append(rcode)
+
+    _runPyarmor(params)
+
+    return dict(output=os.path.join(output, 'licenses', rcode, 'license.lic'))
 
 if __name__ == '__main__':
     import doctest

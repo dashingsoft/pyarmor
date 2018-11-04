@@ -1,7 +1,7 @@
 define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
 
     function onError(e) {
-        utils.showMessage('Request failed: ' + e);
+        utils.showMessage('Request failed: ' + e + '\nCheck log messages in command console.');
     }
 
     function sendRequest(url, args, callback, onerror) {

@@ -9,6 +9,24 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
         }, false);
         document.getElementById('obfuscate-scripts').addEventListener('click', project.obfuscateScripts, false);
         document.getElementById('generate-licenses').addEventListener('click', project.generateLicenses, false);
+
+        conn.queryVersion(
+            function (response) {
+                settings.demoFlag = false;
+                if (response.errcode)
+                    utils.showMessage(response.result);
+                else if (response.result.rcode) {
+                    document.querySelector('a.navbar-brand > span').textContent = 'V' + response.result.version;
+                }
+            },
+
+            function (event) {
+                settings.demoFlag = true;
+                document.querySelector('a.navbar-brand > span').textContent = 'Demo';
+                utils.showMessage( 'This web page does not work in local file mode, please run command: pyarmor-webui' );
+            }
+        );
+
     }
     
     // Project mode

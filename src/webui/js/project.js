@@ -185,12 +185,19 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             var result = response.result;
-            utils.showMessage('Obfuscate scripts "' + result + '" OK.');
+            utils.showMessage('Obfuscate scripts to "' + result.output + '" OK.');
         };
         var args = {};
         args.src = document.getElementById('input_src').value;
         args.entry = document.getElementById('input_entry').value;
         args.output = document.getElementById('input_output').value;
+
+        if (!args.src) {
+            utils.showMessage('Source Path must NOT be blank.');
+            document.getElementById('input_src').focus();
+            return ;
+        }
+
         conn.obfuscateScripts(args, _callback);
     }
 
@@ -201,7 +208,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             var result = response.result;
-            utils.showMessage('Generate license "' + result + '" OK.');
+            utils.showMessage('Generate license "' + result.output + '" OK.');
         };
         var args = {};
         args.expired = document.getElementById('input_expired_date').value;
@@ -209,12 +216,21 @@ define(['connector', 'utils'], function(conn, utils) {
         args.bind_ipv4 = document.getElementById('input_bind_ipv4').value;
         args.bind_mac = document.getElementById('input_bind_mac').value;
         args.rcode = document.getElementById('input_license_rcode').value;
-        args.name = _project.name;
-        conn.obfuscateScripts(args, _callback);
+
+        if (!args.rcode) {
+            utils.showMessage('Registration Code must NOT be blank.');
+            document.getElementById('input_license_rcode').focus();
+            return ;
+        }
+
+        conn.generateLicenses(args, _callback);
     }
 
     return {
         currentProject: _project,
+
+        obfuscateScripts: obfuscateScripts,
+        generateLicenses: generateLicenses,
 
         loadProject: loadProject,
         initProject: initProject,

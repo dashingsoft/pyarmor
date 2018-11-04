@@ -19,6 +19,9 @@
       top: 50px;
       z-index: 1;
     }
+    input.form-control.required {
+      background-color: #f5f5dc;
+    }
   </style>
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -32,7 +35,7 @@
   <nav role="navigation" class="navbar navbar-inverse">
     <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href="http://dashingsoft.com">Pyarmor</a>
+        <a class="navbar-brand" href="http://dashingsoft.com">Pyarmor <span class="badge">Trial</span></a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main-tab" aria-expanded="false">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
@@ -45,6 +48,7 @@
         <ul class="nav navbar-nav">
           <li role="presentation" class="active"><a href="#tab-scripts" aria-controls="tab-scripts" role="tab" data-toggle="tab">Obfuscate Scripts</a></li>
           <li role="presentation"><a href="#tab-licenses" aria-controls="tab-licenses" role="tab" data-toggle="tab">Generate Licenses</a></li>
+          <li role="presentation"><a href="#obfuscator-console" aria-controls="obfuscator-console" role="tab" data-toggle="tab">View Logs</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li role="presentation"><a class="btn-link" href="https://shopper.mycommerce.com/checkout/cart/add/55259-1">Purchase</a></li>
@@ -67,18 +71,19 @@
           <form>
             <div class="form-group">
               <label for="input_src">Source Path</label>
-              <input type="text" class="form-control" id="input_src"/>
-              <p class="help-block">Required. All the <code>.py</code> files in this path will be obfuscated recursively.</p>
+              <input type="text" class="form-control required" id="input_src" />
+              <p class="help-block">Required. Absolute path, all the <code>.py</code> files in this path will be obfuscated recursively.</p>
             </div>
             <div class="form-group">
               <label for="input_entry">Entry Script</label>
               <input type="text" class="form-control" id="input_entry"/>
-              <p class="help-block">Filename of entry script, relative to Src path</p>
+              <p class="help-block">Optional. Filename of entry script, relative to <strong>Source Path</strong></p>
             </div>
             <div class="form-group">
-              <label for="input_output">Output</label>
+              <label for="input_output">Output Path</label>
               <input type="text" class="form-control" id="input_output"/>
-              <p class="help-block">Where to save obfuscated scripts and runtime files</p>
+              <p class="help-block">Optional. where to save obfuscated scripts and runtime files</p>
+              <p class="help-block">If leave blank, the output path will be <code>dist</code> within Pyarmor package</p>
             </div>
             <button type="button" class="btn btn-primary" id="obfuscate-scripts">Build</button>
           </form>
@@ -90,35 +95,36 @@
     <!-- /.tab-pane -->
     <div role="tabpanel" class="tab-pane" id="tab-licenses">
       <div class="panel panel-default">
-        <div class="panel-heading">Generate different license for obfuscated scripts</div>
+        <div class="panel-heading">Generate special license for obfuscated scripts</div>
         <div class="panel-body">
           <form>
             <div class="form-group">
+              <label for="input_license_rcode">Registration Code</label>
+              <input type="text" class="form-control required" id="input_license_rcode"/>
+              <p class="help-block">Required. Must be identify string, the new license will be saved in the subpath <code>licenses/CODE/liceense.lic</code> within Pyarmor package.</p><p>For example, type <code>Customer-Tom</code> here, will generate license file:<code>licenses/Customer-Tom/license.lic</code></p>
+              <p class="help-block"></p>
+            </div>
+            <div class="form-group">
               <label for="input_expired_date">Expired Date</label>
-              <input type="text" class="form-control" id="input_expired_date"/>
-              <p class="help-block">Expire obfuscated scripts on some day: <em>YYYY-MM-NN</em></p>
+              <input type="text" class="form-control" id="input_expired_date" placeholder="YYYY-MM-DD" />
+              <p class="help-block">Optional. Expire obfuscated scripts on the date: <code>YYYY-MM-NN</code></p>
             </div>
             <div class="form-group">
               <label for="input_bind_disk">Serial Number of Harddisk</label>
               <input type="text" class="form-control" id="input_bind_disk"/>
-              <p class="help-block">Bind obfuscated scripts to fixed harddisk</p>
+              <p class="help-block">Optional. Bind obfuscated scripts to fixed harddisk</p>
             </div>
             <div class="form-group">
               <label for="input_bind_mac">Mac Address</label>
-              <input type="text" class="form-control" id="input_bind_mac"/>
-              <p class="help-block">Bind obfuscated scripts to mac address</p>
+              <input type="text" class="form-control" id="input_bind_mac" placeholder="aa:bb:cc:dd:ee:ff" />
+              <p class="help-block">Optional. Bind obfuscated scripts to mac address</p>
             </div>
             <div class="form-group">
               <label for="input_bind_ipv4">IPv4 Address</label>
-              <input type="text" class="form-control" id="input_bind_ipv4"/>
-              <p class="help-block">Bind obfuscated scripts to ipv4 address</p>
+              <input type="text" class="form-control" id="input_bind_ipv4" placeholder="x.x.x.x" />
+              <p class="help-block">Optional. Bind obfuscated scripts to ipv4 address</p>
             </div>
-            <div class="form-group">
-              <label for="input_license_rcode">Registration Code</label>
-              <input type="text" class="form-control" id="input_license_rcode"/>
-              <p class="help-block">Identify string, for example, <em>Customer-Tom</em></p>
-            </div>
-            <button type="button" class="btn btn-primary" id="generate-license">Generate</button>
+            <button type="button" class="btn btn-primary" id="generate-licenses">Generate</button>
           </form>
         </div>
         <!-- /.panel-body -->
@@ -126,21 +132,21 @@
       <!-- /.panel-default -->
     </div>
     <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane" id="obfuscator-console">
+      <div>
+        <form>
+          <div class="form-group">
+            <!-- <label for="project-log-message">Log message</label> -->
+            <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
+          </div>
+          <a id="clear-log-message" role="button" class="btn btn-primary">Clear</a>
+        </form>
+      </div>
+      <!-- /.panel-default -->
+    </div>
+    <!-- /.tab-pane -->
   </div>
   <!-- /.tab-content -->
-
-  <div class="hidden" id="obfuscator-console">
-    <div class="container">
-      <form>
-        <div class="form-group">
-          <!-- <label for="project-log-message">Log message</label> -->
-          <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
-        </div>
-        <a id="clear-log-message" role="button" class="btn btn-default">Clear</a>
-      </form>
-    </div>
-    <!-- /.panel-default -->
-  </div>
 
 </body>
 </html>
