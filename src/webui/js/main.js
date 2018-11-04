@@ -23,7 +23,6 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
             function (event) {
                 settings.demoFlag = true;
                 document.querySelector('a.navbar-brand > span').textContent = 'Demo';
-                utils.showMessage( 'This web page does not work in local file mode, please run command: pyarmor-webui' );
             }
         );
 
@@ -65,7 +64,7 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
             function (event) {
                 settings.demoFlag = true;
                 settings.setDemoInfo();
-                utils.showMessage( 'This web page does not work in local file mode, please run manager.bat or manager.sh.' );
+                utils.showMessage( 'This web page does not work in local file mode, please run pyarmor-webui' );
             }
         );
     }
