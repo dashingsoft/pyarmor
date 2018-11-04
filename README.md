@@ -48,6 +48,15 @@ If Pyarmor is installed  by pip, there is a command will be avaiable in Python s
     pyarmor
 ```
 
+And there is a `webui` used to obfuscate script in gui mode:
+
+```
+    pyarmor-webui
+```
+
+Note that the `webui` doesn't include all the features of Pyarmor, it
+can help you to understand Pyarmor quickly.
+
 ### Basic Usage
 
 The following examples show how to obfuscate a python package
@@ -103,17 +112,6 @@ Use project to manage obfuscated scripts:
 ```
 
 More usage, refer to [User Guide](src/user-guide.md) and [Mechanism](src/mechanism.md)
-
-## Web UI
-
-There is a webui used to obfuscate script in gui mode. Start it
-
-```
-    pyarmor-webui
-```
-
-Note that the webui doesn't include all the features of Pyarmor, it can help you
-to understand Pyarmor quickly.
 
 ## License
 

@@ -76,8 +76,6 @@ There is a webui used to obfuscate script in gui mode. Start it::
 Note that the webui doesn't include all the features of Pyarmor, it
 can help you to understand Pyarmor quickly.
 
-More usage visit `User Guide <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_
-
 More Resources
 --------------
 
@@ -85,3 +83,4 @@ More Resources
 - `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
 - `Online Demo <http://pyarmor.dashingsoft.com>`_
 - `Source Code <https://github.com/dashingsoft/pyarmor>`_
+- `User Guide <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_
