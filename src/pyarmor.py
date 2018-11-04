@@ -51,13 +51,14 @@ from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   build_path, make_command, get_registration_code
 
 def armorcommand(func):
-    def wrap(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            logging.exception(e)
-    wrap.__doc__ = func.__doc__
-    return wrap
+    return func
+    # def wrap(*args, **kwargs):
+    #     try:
+    #         return func(*args, **kwargs)
+    #     except Exception as e:
+    #         logging.exception(e)
+    # wrap.__doc__ = func.__doc__
+    # return wrap
 
 @armorcommand
 def _init(args):
