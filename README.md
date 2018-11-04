@@ -111,7 +111,7 @@ Use project to manage obfuscated scripts:
     python pybench.py
 ```
 
-More usage, refer to [User Guide](src/user-guide.md) and [Mechanism](src/mechanism.md)
+More usage, refer to [User Guide](src/user-guide.md)
 
 ## License
 
