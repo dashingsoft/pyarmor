@@ -193,7 +193,6 @@ define(['connector', 'utils'], function(conn, utils) {
         args.output = document.getElementById('input_output').value;
 
         if (!args.src) {
-            utils.showMessage('Source Path must NOT be blank.');
             document.getElementById('input_src').focus();
             return ;
         }
@@ -218,7 +217,6 @@ define(['connector', 'utils'], function(conn, utils) {
         args.rcode = document.getElementById('input_license_rcode').value;
 
         if (!args.rcode) {
-            utils.showMessage('Registration Code must NOT be blank.');
             document.getElementById('input_license_rcode').focus();
             return ;
         }
