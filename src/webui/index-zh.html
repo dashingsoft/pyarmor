@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="A tool used to obfuscate python scripts." />
+  <meta name="Keywords" content="Python, 加密, 源代码, 混淆, 保护" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Pyarmor - Python源代码加密器</title>
+
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <style type="text/css">
+    #global-message {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50px;
+      z-index: 1;
+    }
+    input.form-control.required {
+      background-color: #f5f5dc;
+    }
+  </style>
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script data-main="app" src="js/require.js"></script>
+  <script type="text/javascript"></script>
+</head>
+
+<body role="document">
+  <nav role="navigation" class="navbar navbar-inverse">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="http://dashingsoft.com">Pyarmor <span class="badge">试用版</span></a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main-tab" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <!-- /.navbar-header -->
+      <div class="collapse navbar-collapse" id="navbar-main-tab">
+        <ul class="nav navbar-nav">
+          <li role="presentation" class="active"><a href="#tab-scripts" aria-controls="tab-scripts" role="tab" data-toggle="tab">加密脚本</a></li>
+          <li role="presentation"><a href="#tab-licenses" aria-controls="tab-licenses" role="tab" data-toggle="tab">生成许可</a></li>
+          <li role="presentation"><a href="#obfuscator-console" aria-controls="obfuscator-console" role="tab" data-toggle="tab">查看日志</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li role="presentation"><a class="btn-link" href="https://shopper.mycommerce.com/checkout/cart/add/55259-1">购买</a></li>
+          <li role="presentation"><a class="btn-link" href="index.html">English</a></li>
+          <!-- <li role="presentation"><button type="button" class="btn btn-success navbar-btn btn-sm">English</button></li>           -->
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+  </nav>
+
+  <div id="global-message"></div>
+
+  <div class="tab-content container">
+    <div role="tabpanel" class="tab-pane active" id="tab-scripts">
+      <div class="panel panel-default">
+        <div class="panel-heading">加密Python源代码</div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group">
+              <label for="input_src">源文件目录</label>
+              <input type="text" class="form-control required" id="input_src" />
+              <p class="help-block">必须输入一个本机的绝对路径，其中所有的 <code>.py</code> 文件都会被加密，包括递归子目录。</p>
+            </div>
+            <div class="form-group">
+              <label for="input_entry">主脚本</label>
+              <input type="text" class="form-control" id="input_entry"/>
+              <p class="help-block">可选。输入启动脚本的文件名称，必须是相对于 <strong>源文件目录</strong></p>
+            </div>
+            <div class="form-group">
+              <label for="input_output">输出目录</label>
+              <input type="text" class="form-control" id="input_output"/>
+              <p class="help-block">可选。存放加密脚本的目录</p>
+              <p class="help-block">如果不输入的话，默认会存放在 Pyarmor 包所在的路径下面的目录 <code>dist</code></p>
+            </div>
+            <button type="button" class="btn btn-primary" id="obfuscate-scripts">开始加密</button>
+          </form>
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel-default -->
+    </div>
+    <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane" id="tab-licenses">
+      <div class="panel panel-default">
+        <div class="panel-heading">为加密脚本生成受限制的许可文件</div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group">
+              <label for="input_license_rcode">注册码</label>
+              <input type="text" class="form-control required" id="input_license_rcode"/>
+              <p class="help-block">必须输入。标识符字符串，不能包含空格和符号（下划线、连字符和小数点例外），新生成的认证文件存在在 Pyarmor 包所在的路径下面 <code>licenses/CODE/liceense.lic</code></p>
+              <p>例如，注册码 <code>Customer-Tom</code> 生成的认证文件是 <code>licenses/Customer-Tom/license.lic</code></p>
+            </div>
+            <div class="form-group">
+              <label for="input_expired_date">有效期</label>
+              <input type="text" class="form-control" id="input_expired_date" placeholder="YYYY-MM-DD" />
+              <p class="help-block">可选。输入有效日期，超过这个日期之后加密脚本无法在使用</p>
+            </div>
+            <div class="form-group">
+              <label for="input_bind_disk">硬盘序列号</label>
+              <input type="text" class="form-control" id="input_bind_disk"/>
+              <p class="help-block">可选。绑定加密脚本到固定的硬盘</p>
+            </div>
+            <div class="form-group">
+              <label for="input_bind_mac">网卡地址</label>
+              <input type="text" class="form-control" id="input_bind_mac" placeholder="aa:bb:cc:dd:ee:ff" />
+              <p class="help-block">可选。绑定加密脚本到固定网卡</p>
+            </div>
+            <div class="form-group">
+              <label for="input_bind_ipv4">IPv4 地址</label>
+              <input type="text" class="form-control" id="input_bind_ipv4" placeholder="x.x.x.x" />
+              <p class="help-block">可选。绑定加密脚本到 IPv4 地址</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="generate-licenses">开始生成</button>
+          </form>
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel-default -->
+    </div>
+    <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane" id="obfuscator-console">
+      <div>
+        <form>
+          <div class="form-group">
+            <!-- <label for="project-log-message">Log message</label> -->
+            <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
+          </div>
+          <a id="clear-log-message" role="button" class="btn btn-primary"> 清空 </a>
+        </form>
+      </div>
+      <!-- /.panel-default -->
+    </div>
+    <!-- /.tab-pane -->
+  </div>
+  <!-- /.tab-content -->
+
+</body>
+</html>
