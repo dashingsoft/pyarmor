@@ -178,6 +178,41 @@ define(['connector', 'utils'], function(conn, utils) {
             conn.queryProject({ name: name }, _callback);
     }
 
+    function obfuscateScripts() {
+        var _callback = function (response) {
+            if (response.errcode) {
+                utils.showMessage(response.result);
+                return ;
+            }
+            var result = response.result;
+            utils.showMessage('Obfuscate scripts "' + result + '" OK.');
+        };
+        var args = {};
+        args.src = document.getElementById('input_src').value;
+        args.entry = document.getElementById('input_entry').value;
+        args.output = document.getElementById('input_output').value;
+        conn.obfuscateScripts(args, _callback);
+    }
+
+    function generateLicenses() {
+        var _callback = function (response) {
+            if (response.errcode) {
+                utils.showMessage(response.result);
+                return ;
+            }
+            var result = response.result;
+            utils.showMessage('Generate license "' + result + '" OK.');
+        };
+        var args = {};
+        args.expired = document.getElementById('input_expired_date').value;
+        args.bind_disk = document.getElementById('input_bind_disk').value;
+        args.bind_ipv4 = document.getElementById('input_bind_ipv4').value;
+        args.bind_mac = document.getElementById('input_bind_mac').value;
+        args.rcode = document.getElementById('input_license_rcode').value;
+        args.name = _project.name;
+        conn.obfuscateScripts(args, _callback);
+    }
+
     return {
         currentProject: _project,
 

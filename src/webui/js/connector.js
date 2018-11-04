@@ -45,6 +45,14 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
 
     return {
 
+        obfuscateScripts: function (args, callback) {
+            sendRequest('/obfuscateScripts', args, callback);
+        },
+
+        generateLicenses: function (args, callback) {
+            sendRequest('/generateLicenses', args, callback);
+        },
+
         newProject: function (callback) {
             sendRequest('/newProject', {}, callback);
         },

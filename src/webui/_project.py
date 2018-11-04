@@ -187,6 +187,12 @@ def newLicense(args):
     output = os.path.join(path, 'licenses', title, 'license.lic')
     return dict(title=title, filename=output)
 
+def obfuscateScripts(args):
+    return args
+
+def generateLicenses(args):
+    return args
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()

@@ -7,6 +7,8 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
                 && (e.target.parentElement.getAttribute('data-target') !== '#navbar-main-tab'))
                 document.getElementById('navbar-main-tab').classList.remove('in');
         }, false);
+        document.getElementById('obfuscate-scripts').addEventListener('click', project.obfuscateScripts, false);
+        document.getElementById('generate-licenses').addEventListener('click', project.generateLicenses, false);
     }
     
     // Project mode

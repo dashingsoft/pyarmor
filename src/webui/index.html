@@ -66,21 +66,21 @@
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <label for="input_project_src">Src</label>
+              <label for="input_src">Source Path</label>
               <input type="text" class="form-control" id="input_src"/>
-              <p class="help-block">Required. Base path for MANIFEST.in to match files.</p>
+              <p class="help-block">Required. All the <code>.py</code> files in this path will be obfuscated recursively.</p>
             </div>
             <div class="form-group">
-              <label for="input_project_entry">Entry Script</label>
+              <label for="input_entry">Entry Script</label>
               <input type="text" class="form-control" id="input_entry"/>
               <p class="help-block">Filename of entry script, relative to Src path</p>
             </div>
             <div class="form-group">
-              <label for="input_project_output">Output</label>
+              <label for="input_output">Output</label>
               <input type="text" class="form-control" id="input_output"/>
               <p class="help-block">Where to save obfuscated scripts and runtime files</p>
             </div>
-            <button type="button" class="btn btn-primary btn-lg" id="obfuscate-scripts">Build</button>
+            <button type="button" class="btn btn-primary" id="obfuscate-scripts">Build</button>
           </form>
         </div>
         <!-- /.panel-body -->
@@ -118,7 +118,7 @@
               <input type="text" class="form-control" id="input_license_rcode"/>
               <p class="help-block">Identify string, for example, <em>Customer-Tom</em></p>
             </div>
-            <button type="button" class="btn btn-primary pull-right" id="generate-license">Generate</button>
+            <button type="button" class="btn btn-primary" id="generate-license">Generate</button>
           </form>
         </div>
         <!-- /.panel-body -->
