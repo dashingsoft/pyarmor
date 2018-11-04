@@ -7,7 +7,7 @@ define([], function() {
 
         {
             response.errcode = 1;
-            result = 'This web page does not work in local file mode, please run manager.bat or manager.sh.'
+            result = 'This web page does not work in local file mode, please run manager.bat or manager.sh.';
         }
 
         response.result = result;
@@ -17,8 +17,8 @@ define([], function() {
 
     return {
 
-        handleRequest: handleRequest,
+        handleRequest: handleRequest
 
-    }
+    };
 
 });

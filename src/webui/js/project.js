@@ -48,9 +48,9 @@ define(['connector', 'utils'], function(conn, utils) {
                 utils.showMessage(response.result);
                 return ;
             }
-            result = response.result;
+            var result = response.result;
             loadProject(result.project);
-        }
+        };
         conn.newProject(_callback);
     }
 
@@ -61,7 +61,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             utils.showMessage(response.result);
-        }
+        };
 
         _updateProject();
         conn.updateProject(_project, _callback);
@@ -74,7 +74,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             utils.showMessage(response.result);
-        }
+        };
 
         _updateProject();
         conn.buildProject(_project, _callback);
@@ -99,7 +99,7 @@ define(['connector', 'utils'], function(conn, utils) {
             options.sort();
             _projectList.innerHTML = options.join('');
             $('#project-manage-modal').modal('show');
-        }
+        };
         conn.queryProject({}, _callback);
     }
 
@@ -109,9 +109,9 @@ define(['connector', 'utils'], function(conn, utils) {
                 utils.showMessage(response.result);
                 return ;
             }
-            result = response.result;
+            var result = response.result;
             loadProject(result.project);
-        }
+        };
         var index = _projectList.selectedIndex;
         if (index !== -1)
             conn.queryProject({name: _projectList.value}, _callback);
@@ -126,7 +126,7 @@ define(['connector', 'utils'], function(conn, utils) {
             }
             _projectList.remove(index);
             utils.showMessage(response.result);
-        }
+        };
         var index = _projectList.selectedIndex;
         if (index !== -1)
             conn.removeProject({name: _projectList.value}, _callback);
@@ -140,7 +140,7 @@ define(['connector', 'utils'], function(conn, utils) {
             }
             var result = response.result;
             utils.showMessage('Generate license "' + result.filename + '" OK.');
-        }
+        };
 
         if (document.getElementById('input_license_rcode').value === '') {
             utils.showMessage('Registration code can not be empty!');
@@ -166,9 +166,9 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             $('#navbar-main-tab a[href="#project"]').tab('show');
-            result = response.result;
+            var result = response.result;
             loadProject(result.project);
-        }
+        };
 
         var name = window.localStorage.getItem(_key);
         if (name === undefined || name === null || name === '') {
@@ -189,7 +189,7 @@ define(['connector', 'utils'], function(conn, utils) {
         saveProject: saveProject,
         buildProject: buildProject,
         removeProject: removeProject,
-        newLicense: newLicense,
-    }
+        newLicense: newLicense
+    };
 
 });
