@@ -262,10 +262,7 @@ def _build(args):
         project.save(args.project)
 
     if not args.no_runtime:
-        if project.runtime_path is None or args.output is not None:
-            routput = output
-        else:
-            routput = os.path.join(args.project, 'runtimes')
+        routput = output
         if not os.path.exists(routput):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
