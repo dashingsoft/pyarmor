@@ -81,6 +81,6 @@ More Resources
 
 - `Website <http://dashingsoft.com>`_
 - `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
-- `Online Demo <http://pyarmor.dashingsoft.com>`_
+- `Online Demo <http://dashingsoft.com/demo/index.html>`_
 - `Source Code <https://github.com/dashingsoft/pyarmor>`_
 - `User Guide <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_
