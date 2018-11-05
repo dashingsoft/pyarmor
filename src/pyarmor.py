@@ -262,6 +262,11 @@ def _build(args):
         project['build_time'] = time.time()
         project.save(args.project)
 
+        if project.entry:
+            make_entry(project.entry, project.src, output,
+                       rpath=project.runtime_path,
+                       ispackage=project.get('is_package'))
+
     if not args.no_runtime:
         routput = os.path.join(output, os.path.basename(project.src)) \
             if project.get('is_package') else output
@@ -276,10 +281,6 @@ def _build(args):
             logging.info('Generate no restrict mode license file: %s', licfile)
             make_project_license(capsule, licode, licfile)
 
-    if project.entry:
-        make_entry(project.entry, project.src, output,
-                   rpath=project.runtime_path,
-                   ispackage=project.get('is_package'))
     else:
         logging.info('\tIn order to import obfuscated scripts, insert ')
         logging.info('\t2 lines in entry script:')
