@@ -453,17 +453,15 @@ check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
 csih_inform "Case T-1.4: obfuscate package with auto-wrap mode"
 PROPATH=projects/testpkg_auto_wrap
 $PYARMOR init --src=examples/testpkg/mypkg \
-              --entry="../main.py" $PROPATH >result.log 2>&1
+              --entry="__init__.py" $PROPATH >result.log 2>&1
 (cd $PROPATH; $ARMOR build >result.log 2>&1)
 
-check_file_exists $PROPATH/dist/main.py
-check_file_content $PROPATH/dist/main.py 'pyarmor_runtime'
 check_file_exists $PROPATH/dist/mypkg/__init__.py
 check_file_content $PROPATH/dist/mypkg/__init__.py '__pyarmor__(__name__'
 
+cp examples/testpkg/main.py $PROPATH/dist
 (cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1 )
 check_file_content $PROPATH/dist/result.log 'Hello! Pyarmor Test Case'
-
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"
