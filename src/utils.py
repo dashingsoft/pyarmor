@@ -31,7 +31,7 @@ import tempfile
 import time
 from zipfile import ZipFile
 
-from config import plat_name, dll_ext, dll_name, entry_code
+from config import plat_name, dll_ext, dll_name, entry_lines
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 #
@@ -83,6 +83,9 @@ def make_capsule(filename):
     logging.info('Write capsule OK.')
 
 def _make_entry(filename, rpath=None):
+    entry_code = entry_lines[0] % (
+        '.' if os.path.basename(filename) == '__init__.py' else '' )
+
     with open(filename, 'r') as f:
         lines = f.readlines()
     # Fix empty file issue
@@ -91,11 +94,12 @@ def _make_entry(filename, rpath=None):
         if not lines[n][0] == '#':
             break
     for line in lines[n:]:
-        if line.strip() == 'from pytransform import pyarmor_runtime':
-            return
+        if line.strip() == entry_code
+
     with open(filename, 'w') as f:
         f.write(''.join(lines[:n]))
-        f.write(entry_code % ('' if rpath is None else repr(rpath)))
+        f.write(entry_code)
+        f.write(entry_lines[1] % ('' if rpath is None else repr(rpath)))
         f.write(''.join(lines[n:]))
 
 def make_entry(entris, path, output, rpath=None, ispackage=False):

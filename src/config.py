@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '4.2.3'
+version = '4.3.0'
 
 version_info = '''
 Pyarmor is a tool used to import or run the encrypted python scripts.
@@ -45,9 +45,8 @@ dll_ext = '.so' if plat_name.startswith('linux') else \
           '.dll'
 dll_name = '_pytransform'
 
-entry_code = '''from pytransform import pyarmor_runtime
-pyarmor_runtime(%s)
-'''
+entry_lines = 'from %spytransform import pyarmor_runtime', \
+              'pyarmor_runtime(%s)'
 
 config_filename = '.pyarmor_config'
 
