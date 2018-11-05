@@ -263,7 +263,8 @@ def _build(args):
         project.save(args.project)
 
     if not args.no_runtime:
-        routput = output
+        routput = os.path.join(output, os.path.basename(project.src)) \
+            if project.get('is_package') else output
         if not os.path.exists(routput):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
