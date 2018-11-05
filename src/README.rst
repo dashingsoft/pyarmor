@@ -54,7 +54,7 @@ Install::
 
 Obfuscate scripts::
 
-    python pyarmor.py obfuscate --src=examples/simple --entry=queens.py "*.py"
+    python pyarmor.py obfuscate --src=examples/simple --entry=queens.py
 
 Run obfuscated scripts::
 
@@ -80,6 +80,7 @@ More Resources
 --------------
 
 - `Website <http://dashingsoft.com>`_
+  `中文网站 <http://dashingsoft.com/index-zh.html>`_
 - `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
 - `Online Demo <http://dashingsoft.com/demo/index.html>`_
 - `Source Code <https://github.com/dashingsoft/pyarmor>`_

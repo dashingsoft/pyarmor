@@ -45,7 +45,7 @@ called `python`. And Pyarmor has been installed in the
 Shell commands will shown for Unix-based systems. Windows has
 analogous commands for each.
 
-## Obfuscate scripts
+## Example 1: Obfuscate scripts
 
 Learn from this example
 
@@ -57,7 +57,7 @@ Learn from this example
     cd /path/to/pyarmor
 
     # Obfuscate python scripts in the path `examples/simple`
-    python obfuscate --recursive --src examples/simple --entry queens.py
+    python pyarmor.py obfuscate --recursive --src examples/simple --entry queens.py
 
     # Obfuscated scripts saved in the output path `dist`
     cd dist
@@ -70,7 +70,7 @@ Learn from this example
 ```
 
 
-## Obfuscate package
+## Example 2: Obfuscate package
 
 Learn from this example
 
@@ -101,7 +101,7 @@ Learn from this example
     zip -r mypkg-obf.zip mypkg
 ```
 
-## Build with project
+## Example 3: Build with project
 
 Learn from this example
 
@@ -167,7 +167,7 @@ will be distributed to three customers with different licenses:
 
 ```
 
-## Build for py2exe
+## Example 4: Build for py2exe
 
 Learn from this example
 
