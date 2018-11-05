@@ -65,18 +65,39 @@ REM Change to project path, there is a convenient script pyarmor.bat
 cd /D %PROJECT%
 
 REM This is the key, change default runtime path, otherwise dynamic library _pytransform could not be found
-.\pyarmor.bat config --runtime-path=""
+.\pyarmor.bat config --runtime-path="" --disable-restrict-mode=1 --manifest "include queens.py, exclude setup.py"
 
 REM Obfuscate scripts without runtime files, only obfuscated scripts are generated
 .\pyarmor.bat build --no-runtime
 
 IF ERRORLEVEL 1 GOTO END
 
-REM Replace the original python scripts with obfuscated scripts in zip file
-cd dist
-%ZIP% -r %OUTPUT%\library.zip .
+REM Copy pytransform.py and obfuscated entry script to source
+COPY %PYARMOR_PATH%\pytransform.py %SOURCE%
+COPY %SOURCE%\%ENTRY_SCRIPT% %ENTRY_SCRIPT%.bak
+COPY dist\%ENTRY_SCRIPT% %SOURCE%
 
-IF ERRORLEVEL 1 GOTO END
+SETLOCAL
+  CD /D %SOURCE%
+  %PYTHON% setup.py py2exe
+  IF ERRORLEVEL 1 (
+    ECHO Failed to run py2exe
+    GOTO END
+  )
+ENDLOCAL
+
+REM Restore modified entry script
+MOVE %ENTRY_SCRIPT%.bak %SOURCE%
+
+REM Compile obfuscated script .py to .pyc
+$PYTHON -m compileall dist
+
+REM Replace the original python scripts with obfuscated scripts in zip file
+SETLOCAL
+  CD dist
+  %ZIP% -r %OUTPUT%\library.zip *.pyc
+  IF ERRORLEVEL 1 GOTO END
+ENDLOCAL  
 
 REM Generate runtime files only
 .\pyarmor.bat build --only-runtime --output %PROJECT%\runtime-files
