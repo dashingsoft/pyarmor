@@ -1,470 +1,238 @@
 # Exmaples
 
-Content
+[中文版](README-ZH.md)
 
-* [README-ZH.md](README-ZH.md) 中文版
-
-## Sample Shell Scripts
-
-Here are some rich comment shell scripts used to obfuscate Python scripts in
-different cases, `.bat` for Windows, `.sh` for Linux and MacOS. Download one of
-them, edit the variables in it according to actual enviroments, then run it to
-obfuscate your python scripts quickly.
+A good example maybe is the best teacher. There are several sample
+shell scripts distributed with source package of Pyarmor. All of them
+are rich comment used to obfuscate Python scripts in different cases,
+`.bat` for Windows, `.sh` for Linux and MacOS. Find them in the path
+`examples`, edit the variables in it according to actual enviroments,
+then run it to obfuscate your python scripts quickly.
 
 * [obfuscate-app.bat](obfuscate-app.bat) / [obfuscate-app.sh](obfuscate-app.sh)
 
+    This is hello world of pyarmor.
+
 * [obfuscate-pkg.bat](obfuscate-pkg.bat) / [obfuscate-pkg.sh](obfuscate-pkg.sh)
+
+    If Python source files are distributd as a package, for example,
+    an odoo module. The functions in the package are imported from
+    source by end users, this is for you.
 
 * [build-with-project.bat](build-with-project.bat) / [build-with-project.sh](build-with-project.sh)
 
-    Increment build, only updated scripts are obfuscated since last build
-    Advanced filters python scripts in the src path
-    More convenient to manage obfuscated scripts
-    
+    If the above two examples do not meet your needs, try
+    Project. There are several advantages to manage obfuscated scripts
+    by Project
+
+        Increment build, only updated scripts are obfuscated since last build
+        Filter scripts, for example, exclude all the test scripts
+        More convenient command to manage obfuscated scripts
+
 * [build-for-exe.bat](build-for-exe.bat) / [build-for-exe.sh](build-for-exe.sh)
 
-A good example is the best teacher. Here are several typical scenarios
+    The basic usage show how to obfuscate scripts by Pyarmor, then
+    distribute them by py2exe.
 
-* [Obfuscate script](#obfuscate-script)
-* [Obfuscate package](#obfuscate-package)
-* [Bind to fixed machines](#bind-to-fixed-machines)
-* [Work with py2exe](#work-with-py2exe)
+Not only those scripts, but also some really examples are distributed
+with Pyarmor. Just open a command window, follow the instructions in
+this document, learn how to use Pyarmor by these examples.
 
-How to run these examples,
-
-```
-    pip install pyarmor
-    cd /path/to/pyarmor
-    cd examples
-    
-```
-
-In the following sections, assumes that Python is installed, it can be
-called
-
-```
-    python
-```
-Pyarmor has been installed, the installed path is `/path/to/pyarmor`
-
-```
-    # If pyarmor is installed by pip, by default /path/to/pyarmor
-    # would like this
-    #
-    #    C:/Python27/Lib/site-packages/pyarmor  (For most of Windows)
-    #
-    #    /usr/local/lib/python2.7/dist-packages/pyarmor (For Ubuntu)
-    #
-    pip install pyarmor
-
-    # If pyarmor is cloned from github, /path/to/pyarmor would be
-    #    ./pyarmor/src
-    #
-    git clone https://github.com/dashingsoft/pyarmor.git
-```
+In the rest sections, assume that Python is installed, it can be
+called `python`. And Pyarmor has been installed in the
+`/path/to/pyarmor`.
 
 Shell commands will shown for Unix-based systems. Windows has
 analogous commands for each.
 
-## Obfuscate script
+## Obfuscate scripts
 
-This example shows how to obfuscate script `queens.py` which locates
-in the path `examples/simple`, and distribute obfuscated script to
-customer.
+Learn from this example
 
-And how to take registration code effects after purchased one.
+* How to obufscate python scripts in the path `examples/simple`
+* How to run obfuscated scripts
+* How to distribute obfuscated scripts
 
 ```
-    # Change to pyarmor path
     cd /path/to/pyarmor
 
-    # Create projects path
-    mkdir -p projects
+    # Obfuscate python scripts in the path `examples/simple`
+    python obfuscate --recursive --src examples/simple --entry queens.py
 
-    # Use command 'init' to create a project configured as application.
-    #
-    # Option --type specify the project is standalone application
-    #
-    # Option --src specify where to find scripts, it can be absoulte path or relative path
-    #
-    # Option --entry specify which script is main script. It's a script filename relative to `src`
-    #
-    # Last argument is the project path, it will be created if not exits.
-    #
-    # This command create two files in the project path "projects/simple":
-    #
-    #   .pyarmor_config
-    #   .pyarmor_capsule.zip
-    #   pyarmor
-    #
-    #   Here "pyarmor" is a shell script, it's a simple way to call `python pyarmor.py`
-    #   (In windows, the name is "pyarmor.bat")
-    #
-    python pyarmor.py init --type=app \
-                           --src=examples/simple \
-                           --entry=queens.py projects/simple
-
-    # Change path to project path
-    cd projects/simple
-
-    # Obfuscate scripts by command build
-    # This command will obfuscate all the scripts in the `examples/simple` recursively, and
-    # save the obfuscated scripts and all the runtime files in the output path `dist`
-    #
-    ./pyarmor build
-
-    # Check the output
-    ls ./dist
-
-    # Check obfuscate script
-    cat dist/queens.py
-
-    # Zip all the files in the output path `dist` to `simple.zip`, and copy it to customer machine
-    zip simple.zip dist/*
-
-```
-
-Run the following command in the customer machine
-
-```
-    # In customer machine, it's not required to install Pyarmor.
-    # All the required files are packaged in the zip file.
-    #
-    # The only limitation is that the version of Python in the customer machine should be same as
-    # the version used to obfuscate scripts in the build machine.
-    #
-    # Unzip `simple.zip`, then run obfuscated script
-    unzip simple.zip
+    # Obfuscated scripts saved in the output path `dist`
     cd dist
+
+    # Run obfuscated scripts
     python queens.py
 
+    # Zip all the files in the path `dist`, distribute this archive
+    zip queens-obf.zip .
 ```
 
-In the trial version of Pyarmor, the key used to obfuscated scripts is
-fixed. In the normal version of Pyarmor, the key used to obfuscated
-scripts is random. And different project has different key. After got
-a registration code, generally it will be sent to you by email like
-this:
-
-```
-Regcode:
-XABCILAKSDKALSDKFAJFLAJFLAJFDJASDFJAJFASKDJFAJasdkfkASSDASFAFAkaisiidoa
-siSILKaISO28SLFaWIwlifskalsfKKIS5
-```
-
-In order to apply registration code, open the file `license.lic` in
-the pyarmor installed path by any text editor, replace the content
-with the regcode only (one line, no any newline), then save it.
-
-Because the project capsule has been generated by trial pyarmor, so it
-need to be removed, and generate new one by non-trial pyarmor.
-
-```
-    # Change to pyarmor path
-    #
-    cd /path/to/pyarmor
-
-    # Remove old project
-    #
-    rm -rf projects/simple
-
-    # Create project again
-    python pyarmor.py init --type=app \
-                           --src=examples/simple \
-                           --entry=queens.py projects/simple
-
-    ...
-
-```
 
 ## Obfuscate package
 
-This example shows how to obfuscate package `mypkg` which locates in
-the path `examples/testpkg`, and use obfuscated package in another
-machine.
+Learn from this example
+
+* How to obfuscate a python package `mypkg` in the path `examples/testpkg`
+* How to expire this obfuscated package on some day
+* How to import obfuscated package `mypkg` by outer script `main.py`
+* How to distribute obfuscated package to end user
+
 
 ```
-    # Change to pyarmor path
     cd /path/to/pyarmor
 
-    # First create project with command 'init'
-    #
-    # This command will create a project configured as package
-    #
-    # Option --type specify the project is package
-    #
-    # Option --src specify where to find scripts, it can be absoulte path or relative path
-    #
-    # Option --entry specify the `__init__.py` of package
-    #
-    python pyarmor.py init --type=package \
-                           --src=examples/testpkg/mypkg \
-                           --entry=__init__.py \
-                           projects/testpkg
+    # Obfuscate all the python scripts in the package, obfuscated package saved in the path `dist/mypkg`
+    # python pyarmor.py obfuscate --src "examples/testpkg/mypkg" --entry "__init__.py" --output "dist/mypkg"
 
-    # Change to project path
-    cd projects/testpkg
+    # Generate an expired license on 2019-01-01
+    python pyarmor.py licenses --expired 2019-01-01 mypkg2018
 
-    # Obfuscate scripts by command build
-    #
-    # This command will obfuscate the package and generate all the runtime files.
-    #
-    #   The obfuscate package is saved in the path `./dist/mypkg`
-    #   The runtime files are saved in the path `./dist`
-    #
-    ./pyarmor build
+    # Overwrite the default license
+    cp licenses/mypkg2018/license.lic dist/mypkg
 
-    # Check the runtime files
-    ls ./dist
-
-    # Check the obfuscated package
-    ls ./dist/mypkg
-
-    # Check obfuscate script
-    cat dist/mypkg/foo.py
-
-    # Check entry script
-    #
-    #   There are 2 extra line inserted at the begining of this script.
-    #
-    cat dist/mypkg/__init__.py
-
-    # Zip all the files in the output path `dist` to `mypkg.zip`, and copy it to customer machine
-    zip mypkg.zip dist/*
-
-```
-
-In customer machine, the obfuscated package will be imported from `/home/jondy/test/main.py`
-
-```
-    # The content of main.py, it will import function and variable from obfuscated package
-    cat /home/jondy/test/main.py
-
-    from mypkg import title
-    from mypkg.foo import hello
-    hello(title)
-
-    # Unzip `mypkg.zip`
-    unzip mypkg.zip
-    ls ./dist
-
-    # Copy all the runtime files to any python path
-    cp dist/* /home/jondy/test
-
-    # Copy package directory to any python path
-    cp -a dist/mypkg /home/jondy/test
-
-    # Run main.py
-    cd /home/jondy/test
+    # Import functions from obfuscated package
+    cd dist
+    cp ../examples/testpkg/main.py ./
     python main.py
 
+    # Zip the whole path `mypkg`, distribute this archive
+    zip -r mypkg-obf.zip mypkg
 ```
 
-## Bind to fixed machines
+## Build with project
 
-This example shows how to obfuscate script `queens.py` which locates
-in the path `examples/simple`, and how to bind obfuscated script to
-fixed machine of different platforms.
+Learn from this example
 
-There are there customers in different cases:
+* How to use project to manage obfuscated scripts
+* How to bind obfuscated scripts to harddisk, network card
+* How to distribute obfuscated scripts to different platform
+* How to generate license for each user
 
-* John, obfuscated scripts should be expired on May 5, 2019, running on Ubuntu (64-bit)
-* Lily, obfuscated scripts should be bind to fixed machine by serial number of hard disk, running on Windows 10 (64-bit)
-* Tom,  obfuscated scripts should be bind to fixed machine by mac address, and expired on May 5, 2019, running on Raspberry Pi
+In this example, obfuscated script `queens.py` in the path `examples/simple`
+will be distributed to three customers with different licenses:
 
-First get hardware information of customer machine, run the following command in customer machine
-
-```
-    # Download a tool 'hdinfo'
-
-    # For John
-    wget http://pyarmor.dashingsoft.com/downloads/platforms/linux_x86_64/hdinfo
-
-    # For Lily
-    wget http://pyarmor.dashingsoft.com/downloads/platforms/win_amd64/hdinfo.exe
-
-    # All the other support platforms
-    #
-    #     http://pyarmor.dashingsoft.com/downloads/platforms/macosx_x86_64/hdinfo
-    #     http://pyarmor.dashingsoft.com/downloads/platforms/win32/hdinfo.exe
-    #     http://pyarmor.dashingsoft.com/downloads/platforms/linux_i386/hdinfo
-
-    # For Tom, the platform is not supported, use the other way described below
-
-    # Run hdinfo, it will print hardware information.
-    ./hdinfo
-
-    Serial number of first harddisk: '100304PBN2081SF3NJ5T'
-
-    Mac address: '70:f1:a1:23:f0:94'
-
-    Ip address: '192.168.121.101'
-
-    Domain name: ''
+* John, run on any Ubuntu 64, but expired on May 5, 2019
+* Lily, run one Windows 10 (64-bit), the serial number of harddisk is `100304PBN2081SF3NJ5T`
+* Tom,  run on Raspberry Pi, mac address of network card is `70:f1:a1:23:f0:94`, and expired on May 5, 2019
 
 ```
-
-The other way is to install a fresh pyarmor from github or pypi, then run command:
-
-```
-    python pyarmor.py hdinfo
-```
-
-The output is same as `hdinfo`. Note that a fresh pyarmor is enough to
-get hardward information. DO NOT copy the pyarmor in build machine to
-customer machine directly, especially `license.lic` has been replaced
-with registration code of pyarmor.
-
-In build machine,
-
-```
-    # First obfuscate scripts as the first examples
     cd /path/to/pyarmor
-    python pyarmor.py init --type=app \
-                           --src=examples/simple \
-                           --entry=queens.py projects/simple
 
+    # Create a project in the path `projects/simple`
+    python pyarmor.py init --src=examples/simple --entry=queens.py projects/simple
+
+    # Change to project path
     cd projects/simple
+
+    # A shell script "pyarmor" is created here (In windows it is "pyarmor.bat")
+    # Use command `build` to obfuscate all the `.py` in the project
     ./pyarmor build
 
     # Generate licenses for each customer
     #
-    # For John, generate a license for a given period of time
-    ./pyarmor licenses --expired 2019-03-05 john@gmail.com
+    # For John, generate an expired license, new license in "licenses/john/license.lic"
+    ./pyarmor licenses --expired 2019-03-05 john
 
-    # New license saved in "licenses/john@gmail.com/license.lic"
-    cat licenses/john@gmail.com/license.lic
+    # For Lily, generate a license bind to harddisk, new license in "licenses/lily/license.lic"
+    ./pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' lily
 
-    # Readable text saved in "licenses/john@gmail.com/license.lic.txt"
-    cat licenses/john@gmail.com/license.lic.txt
+    # For Tom, generate an expired license bind to mac address, new license in "licenses/tom/license.lic"
+    ./pyarmor licenses --bind-mac '70:f1:a1:23:f0:94' --expired 2019-03-05 tom
 
-    # For Lily, generate a license bind to harddisk
-    ./pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' customer-lily
-    ls licenses/customer-lily/license.lic
-
-    # For Tom, generate a license bind to mac address for a given period of time
-    ./pyarmor licenses --bind-mac '70:f1:a1:23:f0:94' --expired 2019-03-05 VIP-Customer
-    ls licenses/VIP-customer/license.lic
-
-    # Now make distribution package for John
+    # Create distribution package for John
     #
-    # Replace `license.lic`
-    cp licenses/john@gmail.com/license.lic ./dist
+    mkdir -p customers/john
+
+    # Copy obfuscated scripts
+    cp -a dist/ customers/john
+
+    # Replace default license
+    cp licenses/john/license.lic customers/john/dist
 
     # Replace platform-dependent dynamic library `_pytransform`
-    rm -f dist/_pytransform.*
-    wget http://pyarmor.dashingsoft.com/downloads/platforms/linux_x86_64/_pytransform.so
-    mv _pytransform.so ./dist
+    rm -f customer/john/dist/_pytransform.*
+    wget http://pyarmor.dashingsoft.com/downloads/platforms/linux_x86_64/_pytransform.so -O customer/john/dist/_pytransform.so
 
-    # Zip all files in the path `dist`, copy `myapp-for-john.zip` to John
-    zip myapp-for-john.zip dist/*
+    # Zip all files in the path `customer/john/dist`, distribute the archive to John
 
-    # Now make distribution package for Lily
+    # Do the same thing for Lily and Tom, except for platform-dependent dynamic library `_pytransform`
     #
-    cp licenses/customer-lily/license.lic ./dist
-    rm -f dist/_pytransform.*
+    # For Lily
     wget http://pyarmor.dashingsoft.com/downloads/platforms/win_amd64/_pytransform.dll
-    mv _pytransform.dll ./dist
 
-    # Zip all files in the path `dist`, copy `myapp-for-lily.zip` to Lily
-    zip myapp-for-lily.zip dist/*
-
-    # Now make distribution package for Tom
-    #
-    cp licenses/VIP-customer/license.lic ./dist
-    rm -f dist/_pytransform.*
+    # For Tom
     wget http://pyarmor.dashingsoft.com/downloads/platforms/raspberrypi/_pytransform.so
-    mv _pytransform.so ./dist
-
-    # Zip all files in the path `dist`, copy `myapp-for-tom.zip` to Tom
-    zip myapp-for-tom.zip dist/*
 
 ```
 
-Note that `license.lic` generated by different project is **NOT**
-compatible. For example,
+## Build for py2exe
 
-```
-    # Create `license.lic` in another project
-    cd projects/myproject
-    
-    # Generate `license.lic` for customer Jondy
-    ./pyarmor licenses customer-jondy
-    ls licenses/customer-jondy/license.lic
-    
-    # Copy this `license.lic` to project `simple`
-    cp licenses/customer-jondy/license.lic ../../projects/simple/dist
-    
-    # Run obfuscated scripts in project `simple`, it will report error
-    cd ../../projects/simple/dist
-    python queens.py
-    
-```
+Learn from this example
 
-But this is not applied to Pyarmor of trial version. The `license.lic`
-generated by trial Pyarmor can be used to any project created by trial
-Pyarmor.
+* How to change project settings with command `config`
+* How to filter scripts, for example, exclude all the test scripts
+* How to generate runtime files only
+* How to obfuscated scripts only, without runtime files
+* How to work with py2exe (It's same as Py2Installer, py2app, cx_Freeze)
 
-## Work with py2exe
-
-This example shows how to use py2exe with obfuscated scripts. Here is
-a py2exe example, [py2exe/setup.py](py2exe/setup.py). It's very
-simple, the entry script is [py2exe/hello.py](py2exe/hello.py), it
-imports some functions from module [py2exe/queens.py](py2exe/queens.py)
-
-The obfuscated scripts can be taken as normal python scripts, so they
-can be used with any third party tools. But there are still 2
-challanges with py2exe:
-
-* All the scripts are in a zip file "library.zip"
-* After scripts are obfuscated, py2exe cound not find dependent modules
-
+In this example, py2exe and zip need to be installed. In the path
+`examples/py2exe`, py2exe will convert entry script `hello.py` to `hello.exe`,
+package all the other python scripts into the file `library.zip`. Pyarmor need
+to obfuscate all the python scripts, update them into `library.zip`, copy
+runtime files to output path of py2exe.
 
 ```bash
-    # First create project
-    #
     cd /path/to/pyarmor
-    python pyarmor.py init --src=examples/py2exe \
-                           --entry="hello.py,setup.py" \
-                           projects/py2exe
+
+    # Create a project
+    python pyarmor.py init --src=examples/py2exe --entry="hello.py" projects/py2exe
+
+    # Enter project path
     cd projects/py2exe
 
-    # This is the key, change default `runtime-path`. By default, pyarmor will
-    # search dynamic library `_pytransform` in the same path with entry script
-    # `hello.py`. When `hello.py` resides in the `library.zip`, it's failed to
-    # load. By setting `runtime-path` to empty string, tell pyarmor search
-    # dynamic library in the same path of `library.zip`
+    # Change project settings
     #
-    ./pyarmor config --runtime-path=''
+    # Set `--runtime-path` to empty string, let obfuscated scripts search dynamic library
+    # in the same path of `hello.exe`
+    #
+    # Set `--disable-restrict-mode` to 1
+    #
+    # Use `--mantifest` to exclude useless script `setup.py`, more command
+    # Refer to https://docs.python.org/2/distutils/sourcedist.html#commands
+    #
+    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "include *.py, exclude setup.py"
 
-    # Obfuscate scripts, after this command,
-    #
-    #   All the obfuscated scirpts in the path `dist`
-    #   All the runtime files in the path `runtimes`
-    #
-    ./pyarmor build
+    # Obfuscate all the scripts in project, no runtime files generated
+    ./pyarmor build --no-runtime
 
-    # First run py2exe in original package, so that all the required
-    # files are generated in the "../../examples/py2exe/dist"
-    #
+    # Move obfuscated entry script to source path
+    cp ../../examples/py2exe hello.py.bak
+    mv dist/hello.py ../../examples/py2exe
+
+    # Copy required module to source path
+    cp ../../pytransform.py ../../examples/py2exe
+
+    # Run py2exe from source path, generate `hello.exe`, `library.zip` in the `dist`
     ( cd ../../examples/py2exe; python setup.py py2exe )
 
-    # Run py2exe in obfuscated package with "-i" and "-p", because
-    # py2exe can not find dependent modules after they're obfuscated.
-    # For example, `queens.py` will be ignored if no specified by `-i`
-    #
-    # This command will update `../../examples/py2exe/dist/library.zip`,
-    # replace those plan scripts with obfuscated scripts
-    #
-    # The other way is to open `library.zip` directly, then replace
-    # plan scripts with obfuscated scripts manully.
-    #
-    ( cd dist; python setup.py py2exe -i queens -d ../../example/py2exe/dist )
+    # Restore original entry script
+    mv hello.py.bak ../../examples/py2exe
 
-    # Copy runtime files
+    # Compile all obfuscated scripts to .pyc
+    python -m compileall dist
+
+    # Update `library.zip`, replace original scripts with obfuscated scripts
+    ( cd dist; zip -r ../../../examples/py2exe/dist/library.zip *.pyc )
+
+    # Generate runtime files only, save in other path `runtimes`
+    ./pyarmor build --only-runtime --output runtimes
+
+    # Copy them to output path of py2exe
     cp runtimes/* ../../examples/py2exe/dist
 
-    # Now all the distributed files in the `../../examples/py2exe/dist`
+    # Now run `hello.exe`
     cd ../../examples/py2exe/dist
     ./hello.exe
 ```
