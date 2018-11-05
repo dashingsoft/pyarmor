@@ -94,7 +94,8 @@ def _make_entry(filename, rpath=None):
         if not lines[n][0] == '#':
             break
     for line in lines[n:]:
-        if line.strip() == entry_code
+        if line.strip() == entry_code:
+            return
 
     with open(filename, 'w') as f:
         f.write(''.join(lines[:n]))
