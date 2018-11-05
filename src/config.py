@@ -45,8 +45,8 @@ dll_ext = '.so' if plat_name.startswith('linux') else \
           '.dll'
 dll_name = '_pytransform'
 
-entry_lines = 'from %spytransform import pyarmor_runtime', \
-              'pyarmor_runtime(%s)'
+entry_lines = 'from %spytransform import pyarmor_runtime\n', \
+              'pyarmor_runtime(%s)\n'
 
 config_filename = '.pyarmor_config'
 
