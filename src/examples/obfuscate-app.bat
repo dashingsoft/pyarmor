@@ -1,10 +1,16 @@
+REM
+REM Sample script used to obfuscate python scripts.
+REM
+REM Before run it, all TODO variables need to set correctly.
+REM
+
 @ECHO OFF
 SETLOCAL
 
-REM TODO: Fullpath for python installed
+REM TODO: Absolute path for python installed, python.exe should be here
 SET PYPATH=C:\Users\User\AppData\Local\Programs\Python\Python36-32
 
-REM TODO: Fullpath in which all python scripts will be obfuscated
+REM TODO: Absolute path in which all python scripts will be obfuscated
 SET SOURCE=D:\My Workspace\Project\Src
 
 REM TODO: Entry script filename, must be relative to %SOURCE%
@@ -16,7 +22,7 @@ SET OUTPUT=D:\My Workspace\Project\Dist
 REM TODO: Let obfuscated scripts expired on some day, uncomment next line
 REM SET PYARMOR_EXPIRED_DATE=2019-01-01
 
-REM TODO: If want to run obfuscated scripts, uncomment next line
+REM TODO: If try to run obfuscated scripts, uncomment next line
 REM TEST_OBFUSCATED_SCRIPTS=1
 
 REM Check environments
