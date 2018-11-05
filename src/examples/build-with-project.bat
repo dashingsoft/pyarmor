@@ -94,7 +94,7 @@ IF DEFINED LICENSE_CODE (
   IF DEFINE LICENSE_MAC_ADDR SET LICENSE_OPTIONS=%LICENSE_OPTIONS% --bind-mac %LICENSE_MAC_ADDR%
   IF DEFINE LICENSE_IPV4_ADDR SET LICENSE_OPTIONS=%LICENSE_OPTIONS% --bind-ipv4 %LICENSE_IPV4_ADDR%
   
-  ./pyarmor.bat licenses %LICENSE_OPTIONS% %LICENSE_CODE%
+  .\pyarmor.bat licenses %LICENSE_OPTIONS% %LICENSE_CODE%
   IF ERRORLEVEL 1 GOTO END
   
   REM Overwrite default license with this license
@@ -113,13 +113,13 @@ IF "%TEST_OBFUSCATED_FILES%" == "1"  IF DEFINED ENTRY_SCRIPT (
   
   REM Test package
   IF DEFINED PACKAGE_NAME (
-    CD /D %PROJECT%/dist
+    CD /D %PROJECT%\dist
     %PYTHON% -c "import %PACKAGE_NAME%"
   ) 
   
   REM Test script
   ELSE (
-    CD /D %PROJECT%/dist
+    CD /D %PROJECT%\dist
     %PYTHON% %ENTRY_SCRIPT%
   )
   
