@@ -1,11 +1,43 @@
 # Exmaples
 
+Content
+
+* [README-ZH.md](README-ZH.md) 中文版
+
+## Sample Shell Scripts
+
+Here are some rich comment shell scripts used to obfuscate Python scripts in
+different cases, `.bat` for Windows, `.sh` for Linux and MacOS. Download one of
+them, edit the variables in it according to actual enviroments, then run it to
+obfuscate your python scripts quickly.
+
+* [obfuscate-app.bat](obfuscate-app.bat) / [obfuscate-app.sh](obfuscate-app.sh)
+
+* [obfuscate-pkg.bat](obfuscate-pkg.bat) / [obfuscate-pkg.sh](obfuscate-pkg.sh)
+
+* [build-with-project.bat](build-with-project.bat) / [build-with-project.sh](build-with-project.sh)
+
+    Increment build, only updated scripts are obfuscated since last build
+    Advanced filters python scripts in the src path
+    More convenient to manage obfuscated scripts
+    
+* [build-for-exe.bat](build-for-exe.bat) / [build-for-exe.sh](build-for-exe.sh)
+
 A good example is the best teacher. Here are several typical scenarios
 
 * [Obfuscate script](#obfuscate-script)
 * [Obfuscate package](#obfuscate-package)
 * [Bind to fixed machines](#bind-to-fixed-machines)
 * [Work with py2exe](#work-with-py2exe)
+
+How to run these examples,
+
+```
+    pip install pyarmor
+    cd /path/to/pyarmor
+    cd examples
+    
+```
 
 In the following sections, assumes that Python is installed, it can be
 called
