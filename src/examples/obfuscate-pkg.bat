@@ -1,10 +1,10 @@
+@ECHO OFF
 REM
 REM Sample script used to obfuscate a python package.
 REM
 REM Before run it, all TODO variables need to set correctly.
 REM
 
-@ECHO OFF
 SETLOCAL
 
 REM TODO: Absolute path for python installed, python.exe should be here
@@ -20,28 +20,36 @@ REM TODO: Output path for obfuscated package and runtime files
 SET OUTPUT=D:\My Workspace\Project\Dist
 
 REM TODO: Let obfuscated package expired on some day, uncomment next line
-REM SET PYARMOR_EXPIRED_DATE=2019-01-01
+Rem SET LICENSE_EXPIRED_DATE=2019-01-01
 
 REM TODO: If try to test obfuscated package, uncomment next line
-REM TEST_OBFUSCATED_PACKAGE=1
+Rem SET TEST_OBFUSCATED_PACKAGE=1
 
-REM Check environments
-SET PYTHON=%PYPATH%\python.exe
-SET PYARMOR_PATH=%PYPATH%\Lib\site-packages\pyarmor
+REM Check package
 SET PKGPATH=%SOURCE%\%PKGNAME%
-
-IF NOT EXIST "%PYTHON%" (
-  ECHO No python.exe found in %PYPATH%
-  GOTO END
-)
-
-IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
-  ECHO No pyarmor installed, run "pip install pyarmor" to install it first
-  GOTO END
-)
-
 IF NOT EXIST "%PKGPATH%\__init__.py" (
+  ECHO
   ECHO No __init__.py found in package path %PKGPATH%
+  ECHO
+  GOTO END
+)
+
+REM Check Python
+SET PYTHON=%PYPATH%\python.exe
+IF NOT EXIST "%PYTHON%" (
+  ECHO
+  ECHO No python.exe found in %PYPATH%
+  ECHO
+  GOTO END
+)
+
+REM Check Pyarmor
+SET PYARMOR_PATH=%PYPATH%\Lib\site-packages\pyarmor
+IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
+  ECHO
+  ECHO No pyarmor installed, run "pip install pyarmor" to install it first
+  ECHO If pyarmor has been installed other than pip, set variable PYARMOR_PATH to the right path
+  ECHO 
   GOTO END
 )
 
@@ -53,18 +61,18 @@ REM Somehing is wrong
 IF ERRORLEVEL 1 GOTO END
 
 REM Generate an expired license if any
-IF DEFINED EXPIRED_DATE (
-  SET RCODE=expired-%PYARMOR_EXPIRED_DATE%
-  %PYTHON% pyarmor.py obfuscate licenses --expired %PYARMOR_EXPIRED_DATE% %RCODE%
+IF DEFINED LICENSE_EXPIRED_DATE (
+  SET RCODE=expired-%LICENSE_EXPIRED_DATE%
+  %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %RCODE%
   IF ERRORLEVEL 1 GOTO END
   
   REM Overwrite default license with this expired license
-  ECHO The obfuscated scripts will be expired on %PYARMOR_EXPIRED_DATE%
+  ECHO The obfuscated scripts will be expired on %LICENSE_EXPIRED_DATE%
   COPY licenses\%RCODE%\license.lic %OUTPUT%\%PKGNAME%
 )
 
 REM Run obfuscated scripts if 
-IF "TEST_OBFUSCATED_PACKAGE" == "1" (
+IF "%TEST_OBFUSCATED_PACKAGE%" == "1" (
   SETLOCAL
   CD /D %OUTPUT%
   %PYTHON% -c 'import %PKGNAME%'
