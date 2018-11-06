@@ -25,69 +25,66 @@ ENTRY_SCRIPT=__init__.py
 PROJECT=/home/jondy/workspace/project/pyarmor-dist
 
 # TODO: Filter the source files
-#PROJECT_FILTER="global-include *.py, prune: test"
+# PROJECT_FILTER="global-include *.py, prune test"
 
-# TODO: If generate special license for obfuscated scripts, uncomment next line
-#LICENSE_CODE=special-user
+# TODO: If generate new license for obfuscated scripts, uncomment next line
+# LICENSE_CODE=any-identify-string
 
-# Extra information for special license, uncomment the corresponding lines as your demand
-# They're useness if LICENSE_CODE is not set
+# Extra information for new license, uncomment the corresponding lines as your demand
+# They're useless if LICENSE_CODE is not set
 
-#LICENSE_EXPIRED_DATE=2019-01-01
-#LICENSE_HARDDISK_SERIAL_NUMBER=SF210283KN
-#LICENSE_MAC_ADDR=70:38:2a:4d:6f
-#LICENSE_IPV4_ADDR=192.168.121.101
+# LICENSE_EXPIRED_DATE="--expired 2019-01-01"
+# LICENSE_HARDDISK_SERIAL_NUMBER="--bind-disk SF210283KN"
+# LICENSE_MAC_ADDR="--bind-mac 70:38:2a:4d:6f"
+# LICENSE_IPV4_ADDR="--bind-ipv4 192.168.121.101"
 
-# TODO: If try to test obfuscated files, uncomment next line
-#TEST_OBFUSCATED_FILES=1
+# TODO: Comment next line if do not try to test obfuscated project
+TEST_OBFUSCATED_PROJECT=1
 
-# Set PACKAGE_NAME if it's a package
+# Set PKGNAME if it's a package
+PKGNAME=
 if [[ "${ENTRY_SCRIPT}" == "__init__.py" ]] ; then
-    PACKAGE_NAME=$(basename $SOURCE)
+    PKGNAME=$(basename $SOURCE)
 fi
 
 # Create a project
 cd ${PYARMOR_PATH}
-$PYTHON pyarmor.py init --src=$SOURCE --entry=${ENTRY_SCRIPT} $PROJECT
+$PYTHON pyarmor.py init --src=$SOURCE --entry=${ENTRY_SCRIPT} $PROJECT || exit 1
 
 # Change to project path, there is a convenient script pyarmor.bat
 cd $PROJECT
 
 # Filter source files by config project filter
 if [[ -n "${PROJECT_FILTER}" ]] ; then
-  ./pyarmor.sh config --manifest "${PROJECT_FILTER}" || exit 1
+  ./pyarmor config --manifest "${PROJECT_FILTER}" || exit 1
 fi
 
 
 # Obfuscate scripts by command build
-./pyarmor.sh build || exit 1
+./pyarmor build || exit 1
 
 # Generate special license if any
 if [[ -n "${LICENSE_CODE}" ]] ; then
-  LICENSE_OPTIONS=""
-  [[ -n "${LICENSE_EXPIRED_DATE SET}" ]] && LICENSE_OPTIONS="${LICENSE_OPTIONS} --expired %LICENSE_EXPIRED_DATE%"
-  [[ -n "${LICENSE_HARDDISK_SERIAL_NUMBER}" ]] && LICENSE_OPTIONS="${LICENSE_OPTIONS} --bind-disk ${LICENSE_HARDDISK_SERIAL_NUMBER}"
-  [[ -n "${LICENSE_MAC_ADDR}" ]] && LICENSE_OPTIONS="${LICENSE_OPTIONS} --bind-mac ${LICENSE_MAC_ADDR}"
-  [[ -n "${LICENSE_IPV4_ADDR}" ]] && LICENSE_OPTIONS="${LICENSE_OPTIONS} --bind-ipv4 ${LICENSE_IPV4_ADDR}"
-
-  ./pyarmor.sh licenses ${LICENSE_OPTIONS} ${LICENSE_CODE} || exit 1
+  ./pyarmor licenses ${LICENSE_EXPIRED_DATE} ${LICENSE_HARDDISK_SERIAL_NUMBER} \
+      ${LICENSE_MAC_ADDR} ${LICENSE_IPV4_ADDR} ${LICENSE_CODE} || exit 1
 
   # Overwrite default license with this license
-  echo Replace default license with "licenses/${LICENSE_CODE}/license.lic"
-  if [[ -n "${PACKAGE_NAME}" ]] ; then
-    cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist
+  if [[ -n "${PKGNAME}" ]] ; then
+      echo Copy new license to $PROJECT/dist
+      cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist
   else
-    cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist/${PACKAGE_NAME}
+      echo Copy new license to $PROJECT/dist/${PKGNAME}
+      cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist/${PKGNAME}
   fi
 fi
 
 # Run obfuscated scripts if
-if [[ "${TEST_OBFUSCATED_FILES}" == "1"  && -n "${ENTRY_SCRIPT}" ]] ; then
+if [[ "${TEST_OBFUSCATED_PROJECT}" == "1"  && -n "${ENTRY_SCRIPT}" ]] ; then
 
   # Test package
-  if [[ -n "${PACKAGE_NAME}" ]] ; then
+  if [[ -n "${PKGNAME}" ]] ; then
     cd $PROJECT/dist
-    $PYTHON -c "import ${PACKAGE_NAME}"
+    $PYTHON -c "import ${PKGNAME}" && echo -e "\nImport obfuscated package $PKGNAME successfully.\n"
 
   # Test script
   else

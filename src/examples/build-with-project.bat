@@ -34,17 +34,17 @@ REM TODO: Filter the source files, exclude all the scripts in test
 rem SET PROJECT_FILTER=global-include *.py, prune test
 
 REM TODO: If generate new license for obfuscated scripts, uncomment next line
-SET LICENSE_CODE=any-identify-string
+rem SET LICENSE_CODE=any-identify-string
 
 REM Extra information for new license, uncomment the corresponding lines as your demand
 REM They're useless if LICENSE_CODE is not set
-SET LICENSE_EXPIRED_DATE=--expired 2019-01-01
-SET LICENSE_HARDDISK_SERIAL_NUMBER=--bind-disk SF210283KN
-SET LICENSE_MAC_ADDR=--bind-mac 70:38:2a:4d:6f
-SET LICENSE_IPV4_ADDR=--bind-ipv4 192.168.121.101
+rem SET LICENSE_EXPIRED_DATE=--expired 2019-01-01
+rem SET LICENSE_HARDDISK_SERIAL_NUMBER=--bind-disk SF210283KN
+rem SET LICENSE_MAC_ADDR=--bind-mac 70:38:2a:4d:6f
+rem SET LICENSE_IPV4_ADDR=--bind-ipv4 192.168.121.101
 
 REM TODO: Comment next line if do not try to test obfuscated project
-rem SET TEST_OBFUSCATED_PROJECT=1
+SET TEST_OBFUSCATED_PROJECT=1
 
 REM Set PKGNAME if it's a package
 REM It doesn't work

@@ -19,15 +19,17 @@ PKGNAME=foo
 # TODO: Output path for obfuscated package and runtime files
 OUTPUT=/home/jondy/workspace/project/dist
 
-# TODO: Let obfuscated package expired on some day, uncomment next line
-#LICENSE_EXPIRED_DATE=2019-01-01
+# TODO: Comment next line if do not try to test obfuscated package
+TEST_OBFUSCATED_PACKAGE=1
 
-# TODO: If try to test obfuscated package, uncomment next line
-#TEST_OBFUSCATED_PACKAGE=1
+# TODO: Let obfuscated package expired on some day, uncomment next line
+# LICENSE_EXPIRED_DATE=2019-01-01
 
 # Check package
 PKGPATH=$SOURCE/$PKGNAME
-[[ -f "$PKGPATH/__init__.py" ]] || ( echo "No __init__.py found in package path $PKGPATH" && exit 1 )
+[[ -f "$SOURCE" ]] || ( echo "No $SOURCE found, check variable SOURCE" && exit 1 )
+[[ -f "$PKGPATH" ]] || ( echo "No $PKGNAME found, check variable PKGNAME" && exit 1 )
+[[ -f "$PKGPATH/__init__.py" ]] || ( echo "No __init__.py found in $PKGPATH, check variable SOURCE and PKGNAME" && exit 1 )
 
 
 # Obfuscate scripts
@@ -35,17 +37,17 @@ cd ${PYARMOR_PATH}
 $PYTHON pyarmor.py obfuscate --recursive --no-restrict --src "$PKGPATH" --entry "__init__.py" --output "${OUTPUT}/$PKGNAME" || exit 1
 
 # Generate an expired license if any
-if ! [[ "${LICENSE_EXPIRED_DATE}" == "" ]] ; then
-  RCODE="expired-${LICENSE_EXPIRED_DATE}"
-  $PYTHON pyarmor.py licenses --expired ${LICENSE_EXPIRED_DATE} $RCODE || exit 1
+if [[ -n "${LICENSE_EXPIRED_DATE}" ]] ; then
+  LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
+  $PYTHON pyarmor.py licenses --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
 
   # Overwrite default license with this expired license
-  echo "The obfuscated scripts will be expired on ${LICENSE_EXPIRED_DATE}"
-  cp licenses/$RCODE/license.lic ${OUTPUT}/$PKGNAME
+  echo "Copy expired license to ${OUTPUT}/$PKGNAME"
+  cp licenses/${LICENSE_CODE}/license.lic ${OUTPUT}/$PKGNAME
 )
 
 # Run obfuscated scripts if
 if [[ "${TEST_OBFUSCATED_PACKAGE}" == "1" ]] ; then
   cd ${OUTPUT}
-  $PYTHON -c "import $PKGNAME"
+  $PYTHON -c "import $PKGNAME" && echo -e "\nImport obfuscated package $PKGNAME successfully.\n"
 fi
