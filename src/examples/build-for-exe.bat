@@ -87,7 +87,7 @@ SETLOCAL
 ENDLOCAL
 
 REM Restore modified entry script
-MOVE %ENTRY_SCRIPT%.bak %SOURCE%
+MOVE %ENTRY_SCRIPT%.bak %SOURCE%\%ENTRY_SCRIPT%
 
 REM Compile obfuscated script .py to .pyc
 $PYTHON -m compileall dist

@@ -218,7 +218,7 @@ runtime files to output path of py2exe.
     ( cd ../../examples/py2exe; python setup.py py2exe )
 
     # Restore original entry script
-    mv hello.py.bak ../../examples/py2exe
+    mv hello.py.bak ../../examples/py2exe/hello.py
 
     # Compile all obfuscated scripts to .pyc
     python -m compileall dist

@@ -8,7 +8,7 @@
 PYTHON=python
 
 # TODO: Absolute path of pyarmor installed, where to find pyarmor.py
-PYARMOR_PATH=/usr/local/lib/
+PYARMOR_PATH=/usr/local/lib/python2.7/dist-packages/pyarmor
 
 # TODO: Absolute path in which all python scripts will be obfuscated
 SOURCE=/home/jondy/workspace/project/src
