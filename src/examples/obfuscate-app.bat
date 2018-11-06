@@ -29,7 +29,7 @@ REM TODO: If try to run obfuscated scripts, uncomment next line
 rem SET TEST_OBFUSCATED_SCRIPTS=1
 
 REM Check Python
-%PYTHON% --version 
+%PYTHON% --version
 IF NOT ERRORLEVEL 0 (
   ECHO.
   ECHO Python doesn't work, check value of variable PYTHON
@@ -41,7 +41,7 @@ REM Check Pyarmor
 IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
   ECHO.
   ECHO No pyarmor found, check value of variable PYARMOR_PATH
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -49,7 +49,7 @@ REM Check Source
 IF NOT EXIST "%SOURCE%" (
   ECHO.
   ECHO No %SOURCE% found, check value of variable SOURCE
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -65,7 +65,7 @@ SET LICENSE_CODE=expired-%LICENSE_EXPIRED_DATE%
 IF DEFINED LICENSE_EXPIRED_DATE (
   %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
   IF ERRORLEVEL 1 GOTO END
-  
+
   REM Overwrite default license with this expired license
   ECHO.
   ECHO Copy expired license to %OUTPUT%
@@ -77,7 +77,7 @@ REM Test obfuscated scripts
 IF "%TEST_OBFUSCATED_SCRIPTS%" == "1" (
   ECHO Prepare to run obfuscated script %OUTPUT%\%ENTRY_SCRIPT%
   PAUSE
-  
+
   CD /D %OUTPUT%
   %PYTHON% %ENTRY_SCRIPT%
 )

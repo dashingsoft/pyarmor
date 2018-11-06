@@ -29,7 +29,7 @@ REM TODO: Let obfuscated package expired on some day, uncomment next line
 rem SET LICENSE_EXPIRED_DATE=2019-01-01
 
 REM Check Python
-%PYTHON% --version 
+%PYTHON% --version
 IF NOT ERRORLEVEL 0 (
   ECHO.
   ECHO Python doesn't work, check value of variable PYTHON
@@ -41,7 +41,7 @@ REM Check Pyarmor
 IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
   ECHO.
   ECHO No pyarmor found, check value of variable PYARMOR_PATH
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -49,7 +49,7 @@ REM Check Source
 IF NOT EXIST "%SOURCE%" (
   ECHO.
   ECHO No %SOURCE% found, check value of variable SOURCE
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -58,7 +58,7 @@ SET PKGPATH=%SOURCE%\%PKGNAME%
 IF NOT EXIST "%PKGPATH%\__init__.py" (
   ECHO.
   ECHO No %PKGPATH%\__init__.py found, check value of variable PKGNAME
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -84,7 +84,7 @@ IF DEFINED LICENSE_EXPIRED_DATE (
 
 REM Try to import obfuscated package if
 IF "%TEST_OBFUSCATED_PACKAGE%" == "1" (
-  ECHO Prepare to import obfuscated package, run 
+  ECHO Prepare to import obfuscated package, run
   ECHO   python -c "import %PKGNAME%"
   ECHO.
   PAUSE
@@ -93,7 +93,7 @@ IF "%TEST_OBFUSCATED_PACKAGE%" == "1" (
   %PYTHON% -c "import %PKGNAME%"
   ECHO.
   ECHO Import obfuscated package %PKGNAME% finished.
-  ECHO.  
+  ECHO.
 )
 
 :END

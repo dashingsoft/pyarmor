@@ -7,8 +7,8 @@ REM
 
 SETLOCAL
 
-REM TODO:
-SET ZIP=D:\cygwin\bin\zip.exe
+REM TODO: zip used to update library.zip
+SET ZIP=zip
 SET PYTHON=C:\Python34\python.exe
 
 REM TODO: Where to find pyarmor.py
@@ -33,7 +33,7 @@ REM TODO: Comment netx line if not to test obfuscated scripts
 SET TEST_OBFUSCATED_SCRIPTS=1
 
 REM Check Python
-%PYTHON% --version 
+%PYTHON% --version
 IF NOT ERRORLEVEL 0 (
   ECHO.
   ECHO Python doesn't work, check value of variable PYTHON
@@ -54,7 +54,7 @@ REM Check Pyarmor
 IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
   ECHO.
   ECHO No pyarmor found, check value of variable PYARMOR_PATH
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -62,7 +62,7 @@ REM Check Source
 IF NOT EXIST "%SOURCE%" (
   ECHO.
   ECHO No %SOURCE% found, check value of variable SOURCE
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -70,7 +70,7 @@ REM Check entry script
 IF NOT EXIST "%SOURCE%\%ENTRY_SCRIPT%" (
   ECHO.
   ECHO No %ENTRY_SCRIPT% found, check value of variable ENTRY_SCRIPT
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -128,9 +128,9 @@ SETLOCAL
   ECHO.
   CD dist
   %ZIP% -r %OUTPUT%\library.zip *.pyc
-  IF NOT ERRORLEVEL 0 GOTO END
+  IF NOT "%ERRORLEVEL%" == "0" GOTO END
   ECHO.
-ENDLOCAL  
+ENDLOCAL
 
 REM Generate runtime files only
 ECHO.
@@ -149,9 +149,9 @@ REM Test obfuscated scripts
 IF "%TEST_OBFUSCATED_SCRIPTS%" == "1" (
   ECHO Prepare to run %ENTRY_EXE% with obfuscated scripts
   PAUSE
-  
+
   CD /D %OUTPUT%
-  %ENTRY_EXE%  
+  %ENTRY_EXE%
 )
 
 :END
