@@ -585,7 +585,7 @@ def main(args):
     cparser.add_argument('-s', '--src', required=True,
                          help='Base path of python scripts')
     cparser.add_argument('-C', '--clone', metavar='PATH',
-                         help='Clone project configuration from this path')
+                         help='[Deprecated] Clone project')
     cparser.add_argument('--capsule',
                          help='Use this capsule other than creating new one')
     cparser.add_argument('project', nargs='?', help='Project path')
