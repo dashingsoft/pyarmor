@@ -232,4 +232,4 @@ Pyarmor 使用命令 `hdinfo` 来获取目标机器的硬件信息
                       Customer-Jondy
 ```
 
-更多详细信息，请访问 [Pyarmor 网站主页](http://dashingsoft.com/)
+更多详细信息，请访问 [Pyarmor 网站主页](http://pyarmor.dashingsoft.com/index-zh.html)

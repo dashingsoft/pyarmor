@@ -79,9 +79,9 @@ can help you to understand Pyarmor quickly.
 More Resources
 --------------
 
-- `Website <http://dashingsoft.com>`_
-  `中文网站 <http://dashingsoft.com/index-zh.html>`_
+- `Website <http://pyarmor.dashingsoft.com>`_
+  `中文网站 <http://pyarmor.dashingsoft.com/index-zh.html>`_
 - `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
-- `Online Demo <http://dashingsoft.com/demo/index.html>`_
+- `Online Demo <http://pyarmor.dashingsoft.com/demo/index.html>`_
 - `Source Code <https://github.com/dashingsoft/pyarmor>`_
 - `User Guide <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_

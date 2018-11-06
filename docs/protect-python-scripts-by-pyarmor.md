@@ -235,4 +235,4 @@ Pyarmor has command `licenses` used to generate new liceses
                       Customer-Jondy
 ```
 
-More information visit [Pyarmor Homepage](http://dashingsoft.com/)
+More information visit [Pyarmor Homepage](http://pyarmor.dashingsoft.com/)
