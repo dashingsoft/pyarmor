@@ -31,7 +31,7 @@ Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放
 面文档中的说明，一步一步来学习 Pyarmor 的常用功能。
 
 在下面的章节中，假定 Python 已经安装，并且可以使用 `python` 直接调用，
-Pyarmor 的安装路径是 `/path/to/pyarmor`。
+Pyarmor 的安装路径是 `/path/to/pyarmor`
 
 示例命令格式是 Linux 的脚本命令，Windows 上使用需要转换成为对应的命令。
 
@@ -192,7 +192,7 @@ py2exe 的输出路径。
     ./pyarmor build --no-runtime
 
     # 把加密后的启动脚本拷贝到源路径下面，之前先备份一下
-    cp ../../examples/py2exe hello.py.bak
+    cp ../../examples/py2exe/hello.py hello.py.bak
     mv dist/hello.py ../../examples/py2exe
 
     # 拷贝引用到的模块到源路径下面

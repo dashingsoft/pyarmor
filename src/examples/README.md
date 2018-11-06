@@ -208,7 +208,7 @@ runtime files to output path of py2exe.
     ./pyarmor build --no-runtime
 
     # Move obfuscated entry script to source path
-    cp ../../examples/py2exe hello.py.bak
+    cp ../../examples/py2exe/hello.py hello.py.bak
     mv dist/hello.py ../../examples/py2exe
 
     # Copy required module to source path
