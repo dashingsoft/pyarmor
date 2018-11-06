@@ -246,7 +246,7 @@ From Pyarmor 3.9.0, there are 2 ways
     # imports obfuscated package 'mypkg'
 
     # First create a project, configure as package
-    python pyarmor.py init --type=package \
+    python pyarmor.py init --type=pkg \
                            --src=/PATH/TO/mypkg \
                            --entry=/ABSOLUTE/PATH/TO/main.py \
                            projects/testpkg
