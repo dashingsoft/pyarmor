@@ -60,7 +60,7 @@ CD /D %PYARMOR_PATH%
 IF NOT ERRORLEVEL 0 GOTO END
 ECHO.
 
-REM Generate an expired license if any
+REM Generate an expired license if LICENSE_EXPIRED_DATE is set
 SET LICENSE_CODE=expired-%LICENSE_EXPIRED_DATE%
 IF DEFINED LICENSE_EXPIRED_DATE (
   %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
@@ -77,10 +77,9 @@ REM Run obfuscated scripts
 IF "%TEST_OBFUSCATED_SCRIPTS%" == "1" (
   ECHO Prepare to run obfuscated script %OUTPUT%\%ENTRY_SCRIPT%
   PAUSE
-  SETLOCAL
+  
   CD /D %OUTPUT%
   %PYTHON% %ENTRY_SCRIPT%
-  ENDLOCAL
 )
 
 :END

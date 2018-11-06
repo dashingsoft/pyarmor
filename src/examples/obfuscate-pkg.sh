@@ -32,7 +32,7 @@ PKGPATH=$SOURCE/$PKGNAME
 
 # Obfuscate scripts
 cd ${PYARMOR_PATH}
-$PYTHON pyarmor.py obfuscate --recursive --src "$PKGPATH" --entry "__init__.py" --output "${OUTPUT}/$PKGNAME" || exit 1
+$PYTHON pyarmor.py obfuscate --recursive --no-restrict --src "$PKGPATH" --entry "__init__.py" --output "${OUTPUT}/$PKGNAME" || exit 1
 
 # Generate an expired license if any
 if ! [[ "${LICENSE_EXPIRED_DATE}" == "" ]] ; then

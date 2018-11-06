@@ -7,76 +7,93 @@ REM
 
 SETLOCAL
 
-REM TODO: Absolute path for python installed, python.exe should be here
-SET PYPATH=C:\Users\User\AppData\Local\Programs\Python\Python36-32
+REM TODO:
+SET PYTHON=C:\Python34\python.exe
 
-REM TODO: Absolute parent path of package
-SET SOURCE=D:\My Workspace\Project\Src
+REM TODO: Where to find pyarmor.py
+SET PYARMOR_PATH=C:\Python34\Lib\site-packages\pyarmor
+
+REM TODO: Absolute path in which all python scripts will be obfuscated
+SET SOURCE=%PYARMOR_PATH%\examples\testpkg
 
 REM TODO: Package name, __init__.py shoule be in %SOURCE%\%PKGNAME%
-SET PKGNAME=foo
+SET PKGNAME=mypkg
 
 REM TODO: Output path for obfuscated package and runtime files
-SET OUTPUT=D:\My Workspace\Project\Dist
+SET OUTPUT=%PYARMOR_PATH%\examples\pkg-dist
+
+REM TODO: Comment next line if do not try to test obfuscated package
+SET TEST_OBFUSCATED_PACKAGE=1
 
 REM TODO: Let obfuscated package expired on some day, uncomment next line
 Rem SET LICENSE_EXPIRED_DATE=2019-01-01
 
-REM TODO: If try to test obfuscated package, uncomment next line
-Rem SET TEST_OBFUSCATED_PACKAGE=1
-
-REM Check package
-SET PKGPATH=%SOURCE%\%PKGNAME%
-IF NOT EXIST "%PKGPATH%\__init__.py" (
-  ECHO
-  ECHO No __init__.py found in package path %PKGPATH%
-  ECHO
-  GOTO END
-)
-
 REM Check Python
-SET PYTHON=%PYPATH%\python.exe
-IF NOT EXIST "%PYTHON%" (
-  ECHO
-  ECHO No python.exe found in %PYPATH%
-  ECHO
+%PYTHON% --version 
+IF NOT ERRORLEVEL 0 (
+  ECHO.
+  ECHO Python doesn't work, check value of variable PYTHON
+  ECHO.
   GOTO END
 )
 
 REM Check Pyarmor
-SET PYARMOR_PATH=%PYPATH%\Lib\site-packages\pyarmor
 IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
-  ECHO
-  ECHO No pyarmor installed, run "pip install pyarmor" to install it first
-  ECHO If pyarmor has been installed other than pip, set variable PYARMOR_PATH to the right path
-  ECHO 
+  ECHO.
+  ECHO No pyarmor found, check value of variable PYARMOR_PATH
+  ECHO. 
+  GOTO END
+)
+
+REM Check Source
+IF NOT EXIST "%SOURCE%" (
+  ECHO.
+  ECHO No %SOURCE% found, check value of variable SOURCE
+  ECHO. 
+  GOTO END
+)
+
+REM Check package
+SET PKGPATH=%SOURCE%\%PKGNAME%
+IF NOT EXIST "%PKGPATH%\__init__.py" (
+  ECHO.
+  ECHO No %PKGPATH%\__init__.py found, check value of variable PKGNAME
+  ECHO. 
   GOTO END
 )
 
 REM Obfuscate scripts
+ECHO.
 CD /D %PYARMOR_PATH%
-%PYTHON% pyarmor.py obfuscate --recursive --src %PKGPATH% --entry __init__.py --output %OUTPUT%\%PKGNAME%
+%PYTHON% pyarmor.py obfuscate --recursive --no-restrict --src %PKGPATH% --entry __init__.py --output %OUTPUT%\%PKGNAME%
+IF NOT ERRORLEVEL 0 GOTO END
+ECHO.
 
-REM Somehing is wrong
-IF ERRORLEVEL 1 GOTO END
-
-REM Generate an expired license if any
+REM Generate an expired license if LICENSE_EXPIRED_DATE is set
+SET LICENSE_CODE=expired-%LICENSE_EXPIRED_DATE%
 IF DEFINED LICENSE_EXPIRED_DATE (
-  SET RCODE=expired-%LICENSE_EXPIRED_DATE%
-  %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %RCODE%
-  IF ERRORLEVEL 1 GOTO END
-  
+  %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
+  IF NOT ERRORLEVEL 0 GOTO END
+
   REM Overwrite default license with this expired license
-  ECHO The obfuscated scripts will be expired on %LICENSE_EXPIRED_DATE%
-  COPY licenses\%RCODE%\license.lic %OUTPUT%\%PKGNAME%
+  ECHO.
+  ECHO Copy expired license to %OUTPUT%\%PKGNAME%
+  COPY licenses\%LICENSE_CODE%\license.lic %OUTPUT%\%PKGNAME%
+  ECHO.
 )
 
-REM Run obfuscated scripts if 
+REM Try to import obfuscated package if
 IF "%TEST_OBFUSCATED_PACKAGE%" == "1" (
-  SETLOCAL
+  ECHO Prepare to import obfuscated package, run 
+  ECHO   python -c "import %PKGNAME%"
+  ECHO.
+  PAUSE
+
   CD /D %OUTPUT%
-  %PYTHON% -c 'import %PKGNAME%'
-  ENDLOCAL
+  %PYTHON% -c "import %PKGNAME%"
+  ECHO.
+  ECHO Import obfuscated package %PKGNAME% finished.
+  ECHO.  
 )
 
 :END
