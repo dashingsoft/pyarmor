@@ -1,6 +1,6 @@
 # Pyarmor
 
-* [Homepage](http://pyarmor.dashingsoft.com) ([中文版网站](http://pyarmor.dashingsoft.com/zh-cn/index.html))
+* [Homepage](http://pyarmor.dashingsoft.com) ([中文版网站](http://pyarmor.dashingsoft.com/index-zh.html))
 * [Examples](src/examples)
 * [Online Demo](http://pyarmor.dashingsoft.com/demo/index.html)
 * [Documentation](src/user-guide.md)
