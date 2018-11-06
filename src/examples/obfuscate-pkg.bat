@@ -26,7 +26,7 @@ REM TODO: Comment next line if do not try to test obfuscated package
 SET TEST_OBFUSCATED_PACKAGE=1
 
 REM TODO: Let obfuscated package expired on some day, uncomment next line
-Rem SET LICENSE_EXPIRED_DATE=2019-01-01
+rem SET LICENSE_EXPIRED_DATE=2019-01-01
 
 REM Check Python
 %PYTHON% --version 

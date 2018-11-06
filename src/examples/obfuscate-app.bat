@@ -23,10 +23,10 @@ REM TODO: Output path for obfuscated scripts and runtime files
 SET OUTPUT=%PYARMOR_PATH%\examples\dist
 
 REM TODO: Let obfuscated scripts expired on some day, uncomment next line
-Rem SET LICENSE_EXPIRED_DATE=2019-01-01
+rem SET LICENSE_EXPIRED_DATE=2019-01-01
 
 REM TODO: If try to run obfuscated scripts, uncomment next line
-Rem SET TEST_OBFUSCATED_SCRIPTS=1
+rem SET TEST_OBFUSCATED_SCRIPTS=1
 
 REM Check Python
 %PYTHON% --version 
