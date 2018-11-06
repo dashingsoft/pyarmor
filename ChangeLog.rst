@@ -1,3 +1,24 @@
+4.3.0
+-----
+In this version, there are three significant changes:
+
+[Simplified WebUI](http://pyarmor.dashingsoft.com/demo/index.html)
+[Clear Examples](src/examples/README.md), quickly understand the most features of Pyarmor
+[Sample Shell Scripts](src/examples), template scripts to obfuscate python source files
+
+* Simply webui, easy to use, only input one filed to obfuscate python scripts
+* The runtime files will be always saved in the same path with obfuscated scripts
+* Add shell scripts `obfuscate-app`, `obfuscate-pkg`,
+  `build-with-project`, `build-for-2exe` in `src/examples`, so that
+  users can quickly obfuscate their python scripts by these template
+  scripts.
+* If entry script is `__init__.py`, change the first line of bootstrap
+  code `from pytransform import pyarmor runtime` to `from .pytransform
+  import pyarmor runtime`
+* Rewrite examples/README.md, make it clear and easy to understand
+* Do not generate entry scripts if only runtime files are generated
+* Remove choice `package` for option `--type` in command `init`, only `pkg` reserved.
+
 4.2.3
 -----
 * Fix `pyarmor-webui` can not start issue
