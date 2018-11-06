@@ -202,7 +202,7 @@ py2exe 的输出路径。
     ( cd ../../examples/py2exe; python setup.py py2exe )
 
     # 打包之后，恢复主脚本
-    mv hello.py.bak ../../examples/py2exe
+    mv hello.py.bak ../../examples/py2exe/hello.py
 
     # 把所有加密脚本编译成为 .pyc
     python -m compileall dist
