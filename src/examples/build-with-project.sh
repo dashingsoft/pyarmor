@@ -45,7 +45,11 @@ TEST_OBFUSCATED_PROJECT=1
 PKGNAME=
 if [[ "${ENTRY_SCRIPT}" == "__init__.py" ]] ; then
     PKGNAME=$(basename $SOURCE)
+    echo -e "\nPackage name is $PKGNAME\n"
 fi
+
+# Project convenient command
+PYARMOR=./pyarmor
 
 # Create a project
 cd ${PYARMOR_PATH}
@@ -56,40 +60,49 @@ cd $PROJECT
 
 # Filter source files by config project filter
 if [[ -n "${PROJECT_FILTER}" ]] ; then
-  ./pyarmor config --manifest "${PROJECT_FILTER}" || exit 1
+  $PYARMOR config --manifest "${PROJECT_FILTER}" || exit 1
 fi
 
 
 # Obfuscate scripts by command build
-./pyarmor build || exit 1
+$PYARMOR build || exit 1
 
 # Generate special license if any
 if [[ -n "${LICENSE_CODE}" ]] ; then
-  ./pyarmor licenses ${LICENSE_EXPIRED_DATE} ${LICENSE_HARDDISK_SERIAL_NUMBER} \
-      ${LICENSE_MAC_ADDR} ${LICENSE_IPV4_ADDR} ${LICENSE_CODE} || exit 1
+    echo
+    $PYARMOR licenses ${LICENSE_EXPIRED_DATE} ${LICENSE_HARDDISK_SERIAL_NUMBER} \
+        ${LICENSE_MAC_ADDR} ${LICENSE_IPV4_ADDR} ${LICENSE_CODE} || exit 1
+    echo
 
-  # Overwrite default license with this license
-  if [[ -n "${PKGNAME}" ]] ; then
-      echo Copy new license to $PROJECT/dist
-      cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist
-  else
-      echo Copy new license to $PROJECT/dist/${PKGNAME}
-      cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist/${PKGNAME}
-  fi
+    # Overwrite default license with this license
+    if [[ -n "${PKGNAME}" ]] ; then
+        echo Copy new license to $PROJECT/dist
+        cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist/${PKGNAME}
+    else
+        echo Copy new license to $PROJECT/dist/${PKGNAME}
+        cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist
+    fi
 fi
 
 # Run obfuscated scripts if
 if [[ "${TEST_OBFUSCATED_PROJECT}" == "1"  && -n "${ENTRY_SCRIPT}" ]] ; then
 
-  # Test package
-  if [[ -n "${PKGNAME}" ]] ; then
-    cd $PROJECT/dist
-    $PYTHON -c "import ${PKGNAME}" && echo -e "\nImport obfuscated package $PKGNAME successfully.\n"
+    # Test package
+    if [[ -n "${PKGNAME}" ]] ; then
+        echo
+        echo Prepare to import obfuscated package, run
+        echo   python -c "import $PKGNAME"
 
-  # Test script
-  else
-    cd $PROJECT/dist
-    $PYTHON ${ENTRY_SCRIPT}
-  fi
+        cd $PROJECT/dist
+        $PYTHON -c "import ${PKGNAME}" && echo -e "\nImport obfuscated package $PKGNAME successfully.\n"
+        echo
+
+        # Test script
+    else
+        echo
+        cd $PROJECT/dist
+        $PYTHON ${ENTRY_SCRIPT}
+        echo
+    fi
 
 fi
