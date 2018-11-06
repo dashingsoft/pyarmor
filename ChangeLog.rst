@@ -1,3 +1,8 @@
+4.3.1
+-----
+* Fix typos in examples
+* Fix bugs in sample scripts
+
 4.3.0
 -----
 In this version, there are three significant changes:
