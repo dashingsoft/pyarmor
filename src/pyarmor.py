@@ -579,7 +579,7 @@ def main(args):
         help='Create an empty project to manage obfuscated scripts'
     )
     cparser.add_argument('-t', '--type', default='auto',
-                         choices=('auto', 'app', 'package', 'pkg'))
+                         choices=('auto', 'app', 'pkg'))
     cparser.add_argument('-e', '--entry',
                          help='Entry script of this project')
     cparser.add_argument('-s', '--src', required=True,
