@@ -73,7 +73,7 @@ IF DEFINED LICENSE_EXPIRED_DATE (
   ECHO.
 )
 
-REM Run obfuscated scripts
+REM Test obfuscated scripts
 IF "%TEST_OBFUSCATED_SCRIPTS%" == "1" (
   ECHO Prepare to run obfuscated script %OUTPUT%\%ENTRY_SCRIPT%
   PAUSE
