@@ -24,10 +24,12 @@ pyarmor_data_files = [
     'platforms/linux_i386/_pytransform.so',
     'platforms/linux_x86_64/_pytransform.so',
     'platforms/macosx_x86_64/_pytransform.dylib',
+    'examples/README.md', 'examples/README-ZH.md',
+    'examples/*.sh', 'examples/*.bat',
     'examples/simple/*.py', 'examples/testmod/*.py',
     'examples/testpkg/*.py', 'examples/testpkg/mypkg/*.py',
     'examples/pybench/*.py', 'examples/pybench/package/*.py',
-    'examples/py2exe/*.py', 'examples/README.md',
+    'examples/py2exe/*.py', 'examples/cx_Freeze/*.py',
 ]
 
 # def _build_file_list(d):
