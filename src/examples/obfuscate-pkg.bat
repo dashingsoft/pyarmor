@@ -26,7 +26,7 @@ REM TODO: Comment next line if do not try to test obfuscated package
 SET TEST_OBFUSCATED_PACKAGE=1
 
 REM TODO: Let obfuscated package expired on some day, uncomment next line
-rem SET LICENSE_EXPIRED_DATE=2019-01-01
+SET LICENSE_EXPIRED_DATE=2019-01-01
 
 REM Check Python
 %PYTHON% --version
@@ -72,7 +72,7 @@ ECHO.
 REM Generate an expired license if LICENSE_EXPIRED_DATE is set
 SET LICENSE_CODE=expired-%LICENSE_EXPIRED_DATE%
 IF DEFINED LICENSE_EXPIRED_DATE (
-  %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
+  %PYTHON% pyarmor.py licenses --disable-restrict-mode --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
   IF NOT ERRORLEVEL 0 GOTO END
 
   REM Overwrite default license with this expired license

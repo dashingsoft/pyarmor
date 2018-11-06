@@ -27,10 +27,15 @@ TEST_OBFUSCATED_PACKAGE=1
 
 # Check package
 PKGPATH=$SOURCE/$PKGNAME
-[[ -f "$SOURCE" ]] || ( echo "No $SOURCE found, check variable SOURCE" && exit 1 )
-[[ -f "$PKGPATH" ]] || ( echo "No $PKGNAME found, check variable PKGNAME" && exit 1 )
-[[ -f "$PKGPATH/__init__.py" ]] || ( echo "No __init__.py found in $PKGPATH, check variable SOURCE and PKGNAME" && exit 1 )
-
+if ! [[ -d "$SOURCE" ]] ; then
+    echo "No $SOURCE found, check variable SOURCE" && exit 1
+fi
+if ! [[ -d "$PKGPATH" ]] ; then
+    echo "No $PKGNAME found, check variable PKGNAME" && exit 1
+fi
+if ! [[ -f "$PKGPATH/__init__.py" ]] ; then
+    echo "No __init__.py found in $PKGPATH, check variable SOURCE and PKGNAME" && exit 1
+fi
 
 # Obfuscate scripts
 cd ${PYARMOR_PATH}
@@ -38,16 +43,23 @@ $PYTHON pyarmor.py obfuscate --recursive --no-restrict --src "$PKGPATH" --entry 
 
 # Generate an expired license if any
 if [[ -n "${LICENSE_EXPIRED_DATE}" ]] ; then
-  LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
-  $PYTHON pyarmor.py licenses --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
+    echo
+    LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
+    $PYTHON pyarmor.py licenses --disable-restrict-mode --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
+    echo
 
-  # Overwrite default license with this expired license
-  echo "Copy expired license to ${OUTPUT}/$PKGNAME"
-  cp licenses/${LICENSE_CODE}/license.lic ${OUTPUT}/$PKGNAME
-)
+    # Overwrite default license with this expired license
+    echo "Copy expired license to ${OUTPUT}/$PKGNAME"
+    cp licenses/${LICENSE_CODE}/license.lic ${OUTPUT}/$PKGNAME
+fi
 
 # Run obfuscated scripts if
 if [[ "${TEST_OBFUSCATED_PACKAGE}" == "1" ]] ; then
-  cd ${OUTPUT}
-  $PYTHON -c "import $PKGNAME" && echo -e "\nImport obfuscated package $PKGNAME successfully.\n"
+    echo
+    echo Prepare to import obfuscated package, run
+    echo   python -c "import $PKGNAME"
+
+    cd ${OUTPUT}
+    $PYTHON -c "import $PKGNAME" && echo -e "\nImport obfuscated package $PKGNAME successfully.\n"
+    echo
 fi

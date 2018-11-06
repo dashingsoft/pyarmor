@@ -31,15 +31,20 @@ $PYTHON pyarmor.py obfuscate --recursive --src "$SOURCE" --entry "${ENTRY_SCRIPT
 
 # Generate an expired license if any
 if [[ -n "${LICENSE_EXPIRED_DATE}" ]] ; then
-  LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
-  $PYTHON pyarmor.py licenses --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
-  
-  # Overwrite default license with this expired license
-  echo Copy expired license to $OUTPUT
-  cp  licenses\${LICENSE_CODE}\license.lic $OUTPUT
+    echo
+    LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
+    $PYTHON pyarmor.py licenses --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
+    echo
+
+    # Overwrite default license with this expired license
+    echo Copy expired license to $OUTPUT
+    cp  licenses/${LICENSE_CODE}/license.lic $OUTPUT
+fi
 
 # Run obfuscated scripts
 if [[ "${TEST_OBFUSCATED_SCRIPTS}" == "1" ]] ; then
-  cd $OUTPUT
-  $PYTHON ${ENTRY_SCRIPT}
+    echo
+    cd $OUTPUT
+    $PYTHON ${ENTRY_SCRIPT}
+    echo
 fi
