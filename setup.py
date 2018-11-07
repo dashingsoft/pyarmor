@@ -19,11 +19,6 @@ pyarmor_data_files = [
     'pyshield.key', 'pyshield.lic', 'public.key',
     'product.key', 'license.lic', 'README.rst',
     'user-guide.md', 'mechanism.md',
-    'platforms/win32/_pytransform.dll',
-    'platforms/win_amd64/_pytransform.dll',
-    'platforms/linux_i386/_pytransform.so',
-    'platforms/linux_x86_64/_pytransform.so',
-    'platforms/macosx_x86_64/_pytransform.dylib',
     'examples/README.md', 'examples/README-ZH.md',
     'examples/*.sh', 'examples/*.bat',
     'examples/simple/*.py', 'examples/testmod/*.py',
@@ -31,6 +26,26 @@ pyarmor_data_files = [
     'examples/pybench/*.py', 'examples/pybench/package/*.py',
     'examples/py2exe/*.py', 'examples/cx_Freeze/*.py',
 ]
+
+platform_data_files = [
+    'platforms/win32/_pytransform.dll',
+    'platforms/win_amd64/_pytransform.dll',
+    'platforms/linux_i386/_pytransform.so',
+    'platforms/linux_x86_64/_pytransform.so',
+    'platforms/macosx_x86_64/_pytransform.dylib',
+]
+
+from sys import argv
+if argv[1] == 'bdist_wheel':
+    for opt in argv[1:]:
+        if opt.startswith('--plat-name'):
+            name = opt.split('=')[1]
+            for i in range(len(platform_data_files)):
+                if platform_data_files[i].find(name) > -1:
+                    platform_data_files[i] = \
+                        platform_data_files[i].split('/')[-1]
+                    break
+            break
 
 # def _build_file_list(d):
 #     return [d + '/' + x for x in listdir(d) if path.isfile(x)]
@@ -98,7 +113,7 @@ setup(
     packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.webui'],
     package_dir={'pyarmor': 'src'},
     package_data={
-        'pyarmor': pyarmor_data_files,
+        'pyarmor': pyarmor_data_files + platform_data_files,
         'pyarmor.webui': ['css/*.css', 'js/*.js', '*.html', '*.js', 'manager.*'],
     },
 
