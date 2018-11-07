@@ -262,25 +262,24 @@ there are still two challanges for py2exe and cx_Freeze:
 * py2exe and cx_Freeze cound not find dependent system library files after
   scripts are obfuscated
 
-Here is one of workaround, it is suitable for use with py2app and PyInstaller
-eidther.
+Here is one of workaround, it is suitable for py2app and PyInstaller eidther.
 
-1. First edit entry script `hello.py`, insert 2 lines
+1. Edit entry script `hello.py`, insert 2 lines at the beginning
 
         from pytransform import pyarmor_runtime
         pyarmor_runtime()
-        
+
 2. Copy `pytransform.py` to source
 
         cp /path/to/pyarmor/pytransform.py /path/to/src
-        
+
 3. Build with py2exe or cx_Freeze
 
         cd /path/to/src
         python setup.py py2exe
         python setup.py build ( For cx_Freeze )
 
-4. Create a pyarmor project
+4. Create a Pyarmor project
 
         cd /path/to/pyarmor
         python pyarmor.py init --src=/path/to/src myproject
@@ -295,26 +294,24 @@ eidther.
 
         ./pyarmor build --only-runtime
         rm dist/pytransform.py
-        
+
         cp dist/* /path/to/src/dist
         cp dist/* /path/to/src/build/exe.win32-34 ( For cx_Freeze )
 
-7. Obfuscate python scripts
+7. Obfuscate python scripts, compile all the obfuscated scripts to `.pyc`
 
         ./pyarmor build --no-runtime
-
-8. Compile all the obfuscated scripts to `.pyc`
 
         rm -f dist/setup.py dist/hello.py
         python -m compileall -b dist ( Remove option -b before Python 3.2 )
 
-9. Replace python scripts with obfuscated ones in compressed zip file
+8. Replace python scripts with obfuscated ones in compressed zip file
 
         cd dist
         zip -r /path/to/src/dist/library.zip *.pyc
         zip -r /path/to/src/build/exe.win32-3.4/python34.zip *.pyc ( For cx_Freeze )
 
-10. Test it
+9. Test it
 
         cd /path/to/dist
         cd /path/to/build/exe.win32-3.4  ( For cx_Freeze )
