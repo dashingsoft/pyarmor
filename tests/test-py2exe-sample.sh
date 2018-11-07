@@ -14,8 +14,7 @@ cd projects/py2exe
 #
 # Exclude useless script `setup.py`
 #
-$PYARMOR config --runtime-path='' --disable-restrict-mode=1 \
-                --manifest "include queens.py, exclude setup.py, prune dist, prune build"
+$PYARMOR config --runtime-path='' --disable-restrict-mode=1 --manifest "include queens.py"
 
 # Obfuscate all the scripts in project, no runtime files generated
 $PYARMOR build --no-runtime
@@ -39,6 +38,7 @@ mv hello.py.bak ../../examples/py2exe/hello.py
 
 # Generate runtime files only, save in other path `runtimes`
 $PYARMOR build --only-runtime --output runtimes
+rm runtimes/pytransform.py
 cp runtimes/* ../../examples/py2exe/dist
 
 # Now run `hello.exe`
