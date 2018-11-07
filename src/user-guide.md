@@ -255,67 +255,66 @@ it used by clear script `examples/testpkg/main.py`
 
 #### Work with py2exe and cx_Freeze
 
-Although Python source files can be replaced with obfuscated scripts
-seamlessly, there are still two challanges for py2exe and cx_Freeze:
+Although Python source files can be replaced with obfuscated scripts seamlessly,
+there are still two challanges for py2exe and cx_Freeze:
 
 * All the scripts are compressed into a signle zip file
-* py2exe and cx_Freeze cound not find dependent system library files
-  after scripts are obfuscated
+* py2exe and cx_Freeze cound not find dependent system library files after
+  scripts are obfuscated
 
-Here is one of workaround, it is suitable for use with py2app and
-PyInstaller eidther.
+Here is one of workaround, it is suitable for use with py2app and PyInstaller
+eidther.
 
-* Create a project
+1. First edit entry script `hello.py`, insert 2 lines
 
-        python pyarmor.py init --src=/path/to/src --entry=hello.py myproject
-
-* Configure the project, disable restrict mode, and set runtime path,
-  otherwise obfuscated scripts could not find dynamic library
-  `_pytransform`. Besides, do not obfuscate entry script `hello.py`.
-
-        cd myproject
-        ./pyarmor config --disable-restrict-mode --runtime-path='' \
-                         --manifest "global-include *.py, exclude hello.py"
-
-* Obfuscate python scripts
-
-        ./pyarmor build
-
-* Replace entry script with obfuscated one, otherwise obfuscated scripts can not
-  find name `__pyarmor__`. It's better to backup original entry script before
-  overwrite it
-
-        cp /path/to/src/hello.py hello.py.bak
-        mv dist/hello.py /path/to/src
-
-* Copy extra file `pytransform.py` to source path, so that all the dependencies
-  of pyarmor will be package into bundle
+        from pytransform import pyarmor_runtime
+        pyarmor_runtime()
+        
+2. Copy `pytransform.py` to source
 
         cp /path/to/pyarmor/pytransform.py /path/to/src
-
-* Build with py2exe or cx_Freeze, if entry script `hello.py` is obfuscated,
-  the files required by `hello.py` are missed
+        
+3. Build with py2exe or cx_Freeze
 
         cd /path/to/src
         python setup.py py2exe
         python setup.py build ( For cx_Freeze )
 
-* Replace python scripts with obfuscated ones in compressed zip file, before
-  that, compile all the obfuscated scripts to `.pyc`
+4. Create a pyarmor project
+
+        cd /path/to/pyarmor
+        python pyarmor.py init --src=/path/to/src myproject
+
+5. Configure the project, disable restrict mode, and set runtime path, otherwise
+   obfuscated scripts could not find dynamic library `_pytransform`
+
+        cd myproject
+        ./pyarmor config --disable-restrict-mode --runtime-path=''
+
+6. Generate runtime files and copy them to bundle path
+
+        ./pyarmor build --only-runtime
+        rm dist/pytransform.py
+        
+        cp dist/* /path/to/src/dist
+        cp dist/* /path/to/src/build/exe.win32-34 ( For cx_Freeze )
+
+7. Obfuscate python scripts
+
+        ./pyarmor build --no-runtime
+
+8. Compile all the obfuscated scripts to `.pyc`
+
+        rm -f dist/setup.py dist/hello.py
+        python -m compileall -b dist ( Remove option -b before Python 3.2 )
+
+9. Replace python scripts with obfuscated ones in compressed zip file
 
         cd dist
-        python -m compileall -b ./ ( Remove option -b before Python 3.2 )
-
         zip -r /path/to/src/dist/library.zip *.pyc
         zip -r /path/to/src/build/exe.win32-3.4/python34.zip *.pyc ( For cx_Freeze )
 
-* Copy runtime files to bundle path
-
-        cd dist
-        cp pyshield.key pyshield.lic product.key license.lic /path/to/src/dist
-        cp pyshield.key pyshield.lic product.key license.lic /path/to/src/build/exe.win32-34 ( For cx_Freeze )
-
-* Run entry executable to test obfuscated scripts
+10. Test it
 
         cd /path/to/dist
         cd /path/to/build/exe.win32-3.4  ( For cx_Freeze )
