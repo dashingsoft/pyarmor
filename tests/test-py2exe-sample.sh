@@ -15,7 +15,7 @@ cd projects/py2exe
 # Exclude useless script `setup.py`
 #
 $PYARMOR config --runtime-path='' --disable-restrict-mode=1 \
-                --manifest "include queens.py, exclude setup.py"
+                --manifest "include queens.py, exclude setup.py, prune dist, prune build"
 
 # Obfuscate all the scripts in project, no runtime files generated
 $PYARMOR build --no-runtime

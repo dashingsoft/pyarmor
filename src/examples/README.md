@@ -203,7 +203,7 @@ runtime files to output path of py2exe.
     # Use `--mantifest` to exclude useless script `setup.py`, more command
     # Refer to https://docs.python.org/2/distutils/sourcedist.html#commands
     #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "include *.py, exclude setup.py"
+    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude setup.py, prune dist, prunde build"
 
     # Obfuscate all the scripts in project, no runtime files generated
     ./pyarmor build --no-runtime
