@@ -92,6 +92,11 @@ REM This is the key, change default runtime path, otherwise dynamic library _pyt
 Echo.
 Call pyarmor.bat config --runtime-path="" --disable-restrict-mode=1 --manifest "global-include *.py, exclude %ENTRY_SCRIPT% setup.py pytransform.py, prune build, prune dist"
 
+REM Obfuscate scripts without runtime files, only obfuscated scripts are generated
+Echo.
+Call pyarmor.bat build --no-runtime
+If NOT ERRORLEVEL 0 Goto END
+
 REM Copy pytransform.py and modified entry script to source
 Echo.
 Echo Copy pytransform.py to %SOURCE%
@@ -123,11 +128,6 @@ If NOT ERRORLEVEL 0 Goto END
 Echo.
 Echo Copy runtime files to %OUTPUT%
 Copy runtime-files\*.key runtime-files\*.lic runtime-files\_pytransform.dll %OUTPUT%
-
-REM Obfuscate scripts without runtime files, only obfuscated scripts are generated
-Echo.
-Call pyarmor.bat build --no-runtime
-If NOT ERRORLEVEL 0 Goto END
 
 Echo.
 Echo Compile obfuscated script .py to .pyc
