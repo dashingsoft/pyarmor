@@ -186,7 +186,7 @@ py2exe 的输出路径。
     # 使用选项 `--mantifest` 来过滤脚本，排除到没有用的脚本 `setup.py`。关于过滤器的
     # 格式参考 https://docs.python.org/2/distutils/sourcedist.html#commands
     #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "include *.py, exclude setup.py"
+    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude setup.py pytransform.py, prune dist, prunde build"
 
     # 加密工程中指定的所有脚本，不生成运行辅助文件
     ./pyarmor build --no-runtime
