@@ -197,6 +197,11 @@ define(['connector', 'utils'], function(conn, utils) {
             return ;
         }
 
+        if (!args.entry) {
+            document.getElementById('input_entry').focus();
+            return ;
+        }
+
         conn.obfuscateScripts(args, _callback);
     }
 
