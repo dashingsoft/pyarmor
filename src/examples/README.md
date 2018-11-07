@@ -209,12 +209,13 @@ by obfuscated scripts.
     #
     # Note that entry script `hello.py` is excluded, why? see below
     #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
+    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 \
+                     --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
 
     # Obfuscate all the scripts in project, no runtime files generated
     ./pyarmor build --no-runtime
 
-    # Move obfuscated entry script to source path
+    # Move modified entry script to source path
     cp ../../examples/py2exe/hello.py hello.py.bak
     mv dist/hello.py ../../examples/py2exe
 

@@ -106,8 +106,8 @@ COPY %PYARMOR_PATH%\pytransform.py %SOURCE%
 ECHO Backup original %ENTRY_SCRIPT%
 COPY %SOURCE%\%ENTRY_SCRIPT% %ENTRY_SCRIPT%.bak
 
-ECHO Copy obfuscated script %ENTRY_SCRIPT% to %SOURCE%
-COPY dist\%ENTRY_SCRIPT% %SOURCE%
+ECHO Move modified entry script %ENTRY_SCRIPT% to %SOURCE%
+MOVE dist\%ENTRY_SCRIPT% %SOURCE%
 ECHO.
 
 REM Run cx_Freeze setup script

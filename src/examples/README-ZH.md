@@ -196,7 +196,8 @@ py2exe 的输出路径。
     #
     # 至于为什么启动脚本 `hello.py` 也不能被加密，下面会有说明
     #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
+    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 \
+                     --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
 
     # 加密工程中指定的所有脚本，不生成运行辅助文件
     ./pyarmor build --no-runtime
