@@ -20,7 +20,7 @@ This is the documentation for Pyarmor 3.4 and later.
     - [Use runtime path](#use-runtime-path)
     - [Keypoints of Using Obfuscated Scripts](#keypoints-of-using-obfuscated-scripts)
 - [Benchmark Test](#benchmark-test)
-- [Examples](examples/REAME.md)
+- [Examples](examples/README.md)
 - [Project Configure File](#project-configure-file)
     - [name](#name)
     - [title](#title)
@@ -295,11 +295,11 @@ Here is one of workaround, it is suitable for use with py2app and PyInstaller ei
         python setup.py py2exe
         python setup.py build ( For cx_Freeze )
 
-* Replace python scripts with obfuscated scripts in compressed zip file, before
+* Replace python scripts with obfuscated ones in compressed zip file, before
   that, compile all the obfuscated scripts to `.pyc`
 
         cd dist
-        python -m compileall -b .
+        python -m compileall -b ./ ( Remove option -b before Python 3.2 )
 
         zip -r /path/to/src/dist/library.zip *.pyc
         zip -r /path/to/src/build/exe.win32-3.4/python34.zip *.pyc ( For cx_Freeze )
