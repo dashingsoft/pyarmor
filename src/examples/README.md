@@ -184,6 +184,9 @@ package all the other python scripts into the file `library.zip`. Pyarmor need
 to obfuscate all the python scripts, update them into `library.zip`, copy
 runtime files to output path of py2exe.
 
+The main challenge here it's how py2exe can find the modules imported
+by obfuscated scripts.
+
 ```bash
     cd /path/to/pyarmor
 
@@ -195,15 +198,18 @@ runtime files to output path of py2exe.
 
     # Change project settings
     #
-    # Set `--runtime-path` to empty string, let obfuscated scripts search dynamic library
-    # in the same path of `hello.exe`
+    # Set `--runtime-path` to empty string, otherwise obfuscated scripts can
+    # not find dynamic library `_pytransform`
     #
-    # Set `--disable-restrict-mode` to 1
+    # Set `--disable-restrict-mode` to 1, otherewise obfuscated scripts maybe
+    # complain `error return without exception set`
     #
-    # Use `--mantifest` to exclude useless script `setup.py`, more command
+    # Use `--mantifest` to exclude some scripts, about the format
     # Refer to https://docs.python.org/2/distutils/sourcedist.html#commands
     #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude setup.py pytransform.py, prune dist, prunde build"
+    # Note that entry script `hello.py` is excluded, why? see below
+    #
+    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
 
     # Obfuscate all the scripts in project, no runtime files generated
     ./pyarmor build --no-runtime
@@ -212,17 +218,29 @@ runtime files to output path of py2exe.
     cp ../../examples/py2exe/hello.py hello.py.bak
     mv dist/hello.py ../../examples/py2exe
 
-    # Copy required module to source path
+    # Copy extra required module to source path
     cp ../../pytransform.py ../../examples/py2exe
 
+    # Here only entry script `hello.py` are modified, there are 2 lines
+    # inserted at the beginning
+    #
+    #     from pytransform import pyarmor_runtime
+    #     pyarmor_runtime
+    #
+    # So py2exe will package pytransform.py and all the files imported by
+    # pytransform.py, for example, `ctypes`
+    #
+    # Once script is obfuscated, py2exe can not find the dependent moudle.
+    # That's why entry script `hello.py` can not be obfuscated.
+    #
     # Run py2exe from source path, generate `hello.exe`, `library.zip` in the `dist`
     ( cd ../../examples/py2exe; python setup.py py2exe )
 
     # Restore original entry script
     mv hello.py.bak ../../examples/py2exe/hello.py
 
-    # Compile all obfuscated scripts to .pyc
-    python -m compileall dist
+    # Compile all obfuscated scripts to .pyc（Remove option -b before Python 3.2)
+    python -m compileall -b dist
 
     # Update `library.zip`, replace original scripts with obfuscated scripts
     ( cd dist; zip -r ../../../examples/py2exe/dist/library.zip *.pyc )

@@ -168,6 +168,12 @@ Python 源文件编译后生成压缩包 `library.zip`。Pyarmor 则需要加密
 然后用加密脚本替换 `library.zip` 的同名文件，并拷贝运行辅助文件到
 py2exe 的输出路径。
 
+这里面主要面临的问题是，如何让 py2exe 正确找到加密脚本所依赖的系统库，
+包括 Pyarmor 运行需要的库，例如 `ctypes`
+
+因为一旦加密之后，py2exe 就无法知道该模块使用了那些其他的包
+
+
 ```bash
     cd /path/to/pyarmor
 
@@ -179,33 +185,49 @@ py2exe 的输出路径。
 
     # 修改工程设置
     #
-    # 设置 `--runtime-path` 为空字符串，这样运行时候加密脚本会在当前路径下查找动态库
+    # 设置 `--runtime-path` 为空字符串，否则加密脚本找不到动态链接库 `_pytransform`
     #
-    # 设置 `--disable-restrict-mode` 为 1
+    # 设置 `--disable-restrict-mode` 为 1，否则加密脚本可能会报错:
     #
-    # 使用选项 `--mantifest` 来过滤脚本，排除到没有用的脚本 `setup.py`。关于过滤器的
-    # 格式参考 https://docs.python.org/2/distutils/sourcedist.html#commands
+    #     SystemError: error return without exception set
     #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude setup.py pytransform.py, prune dist, prunde build"
+    # 使用选项 `--mantifest` 来过滤脚本，排除到不需要加密的的脚本和相关路径
+    # 关于过滤器的格式参考 https://docs.python.org/2/distutils/sourcedist.html#commands
+    #
+    # 至于为什么启动脚本 `hello.py` 也不能被加密，下面会有说明
+    #
+    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
 
     # 加密工程中指定的所有脚本，不生成运行辅助文件
     ./pyarmor build --no-runtime
 
-    # 把加密后的启动脚本拷贝到源路径下面，之前先备份一下
+    # 把修改后的启动脚本拷贝到源路径下面，之前先备份一下
     cp ../../examples/py2exe/hello.py hello.py.bak
     mv dist/hello.py ../../examples/py2exe
 
     # 拷贝引用到的模块到源路径下面
     cp ../../pytransform.py ../../examples/py2exe
 
+    # 注意这里除了启动脚本被修改过之外，其他的都还没有变，启动脚本的
+    # 最前面插入了两行语句
+    #
+    #     from pytransform import pyarmor_runtime
+    #     pyarmor_runtime
+    #
+    # 这样可以让 py2exe 把模块 pytransform 和其需要的其他系统模块，
+    # 例如 `ctypes` 打到包里面
+    #
+    # 启动脚本也不能加密，主要也是因为加密之后，这个脚本依赖的其他模块
+    # 就都找不到了，这样最后打的包里面可能会缺少很多需要的系统文件
+    #
     # 在源路径里面运行 py2exe，生成 `hello.exe`，`library.zip`，存放在 `dist` 下面
     ( cd ../../examples/py2exe; python setup.py py2exe )
 
     # 打包之后，恢复主脚本
     mv hello.py.bak ../../examples/py2exe/hello.py
 
-    # 把所有加密脚本编译成为 .pyc
-    python -m compileall dist
+    # 把所有加密脚本编译成为 .pyc（Python 3.2 之前不需要 -b 选项）
+    python -m compileall -b dist
 
     # 更新 `library.zip`，使用加密脚本替换原来的脚本
     ( cd dist; zip -r ../../../examples/py2exe/dist/library.zip *.pyc )

@@ -259,19 +259,23 @@ Although Python source files can be replaced with obfuscated scripts
 seamlessly, there are still two challanges for py2exe and cx_Freeze:
 
 * All the scripts are compressed into a signle zip file
-* py2exe and cx_Freeze cound not find dependent system library files after scripts are obfuscated
+* py2exe and cx_Freeze cound not find dependent system library files
+  after scripts are obfuscated
 
-Here is one of workaround, it is suitable for use with py2app and PyInstaller eidther.
+Here is one of workaround, it is suitable for use with py2app and
+PyInstaller eidther.
 
 * Create a project
 
         python pyarmor.py init --src=/path/to/src --entry=hello.py myproject
 
-* Configure the project, disable restrict mode, and set runtime path, otherwise
-  obfuscated scripts could not find dynamic library `_pytransform`
+* Configure the project, disable restrict mode, and set runtime path,
+  otherwise obfuscated scripts could not find dynamic library
+  `_pytransform`. Besides, do not obfuscate entry script `hello.py`.
 
         cd myproject
-        ./pyarmor config --disable-restrict-mode --runtime-path=''
+        ./pyarmor config --disable-restrict-mode --runtime-path='' \
+                         --manifest "global-include *.py, exclude hello.py"
 
 * Obfuscate python scripts
 
@@ -282,14 +286,15 @@ Here is one of workaround, it is suitable for use with py2app and PyInstaller ei
   overwrite it
 
         cp /path/to/src/hello.py hello.py.bak
-        cp dist/hello.py /path/to/src
+        mv dist/hello.py /path/to/src
 
 * Copy extra file `pytransform.py` to source path, so that all the dependencies
   of pyarmor will be package into bundle
 
         cp /path/to/pyarmor/pytransform.py /path/to/src
 
-* Build with py2exe or cx_Freeze
+* Build with py2exe or cx_Freeze, if entry script `hello.py` is obfuscated,
+  the files required by `hello.py` are missed
 
         cd /path/to/src
         python setup.py py2exe
