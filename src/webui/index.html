@@ -8,7 +8,7 @@
   <meta name="Keywords" content="python, obfuscate, obfuscation, obfuscator" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>Pyarmor - Obfuscate Python Scripts</title>
+  <title>Obfuscate Python Scripts</title>
 
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
   <style type="text/css">
@@ -76,13 +76,13 @@
             <div class="form-group">
               <label for="input_entry">Entry Script</label>
               <input type="text" class="form-control required" id="input_entry"/>
-              <p class="help-block">Optional. Filename of entry script, relative to <strong>Source Path</strong></p>
+              <p class="help-block">Required. Filename of entry script, relative to <strong>Source Path</strong>. Type <code>__init__.py</code> for python package</p>
             </div>
             <div class="form-group">
               <label for="input_output">Output Path</label>
               <input type="text" class="form-control" id="input_output"/>
-              <p class="help-block">Optional. where to save obfuscated scripts and runtime files</p>
-              <p class="help-block">If leave blank, the output path will be <code>dist</code> within Pyarmor package</p>
+              <p class="help-block">Optional. In which obfuscated scripts and runtime files are generated</p>
+              <p class="help-block">The default output path is <code>dist</code> within Pyarmor package</p>
             </div>
             <button type="button" class="btn btn-primary" id="obfuscate-scripts">Build</button>
           </form>
@@ -94,20 +94,26 @@
     <!-- /.tab-pane -->
     <div role="tabpanel" class="tab-pane" id="tab-licenses">
       <div class="panel panel-default">
-        <div class="panel-heading">Generate special license for obfuscated scripts</div>
+        <div class="panel-heading">Generate new license for obfuscated scripts</div>
         <div class="panel-body">
           <form>
+            <div class="form-group">
+              <p class="help-block text-muted"><small>While obfuscating scripts the default license file <code>license.lic</code> has been generated. Here it's only for generating new license</small></p>
+            </div>
             <div class="form-group">
               <label for="input_license_rcode">Registration Code</label>
               <input type="text" class="form-control required" id="input_license_rcode"/>
               <p class="help-block">Required. Must be identify string, the new license will be saved in the subpath <code>licenses/CODE/liceense.lic</code> within Pyarmor package.</p>
-              <p>For example, type <code>Customer-Tom</code> here, will generate license file:<code>licenses/Customer-Tom/license.lic</code></p>
             </div>
             <div class="form-group">
               <label for="input_expired_date">Expired Date</label>
               <input type="text" class="form-control" id="input_expired_date" placeholder="YYYY-MM-DD" />
-              <p class="help-block">Optional. Expire obfuscated scripts on the date: <code>YYYY-MM-NN</code></p>
+              <p class="help-block">Optional. Expire obfuscated scripts on the date <code>YYYY-MM-NN</code></p>
             </div>
+            <button type="button" class="btn btn-primary" id="generate-licenses">Generate</button>
+          </form>
+          <hr />
+          <form>
             <div class="form-group">
               <label for="input_bind_disk">Serial Number of Harddisk</label>
               <input type="text" class="form-control" id="input_bind_disk"/>
@@ -121,9 +127,8 @@
             <div class="form-group">
               <label for="input_bind_ipv4">IPv4 Address</label>
               <input type="text" class="form-control" id="input_bind_ipv4" placeholder="x.x.x.x" />
-              <p class="help-block">Optional. Bind obfuscated scripts to ipv4 address</p>
+              <p class="help-block">Optional. Bind obfuscated scripts to IPv4 address</p>
             </div>
-            <button type="button" class="btn btn-primary" id="generate-licenses">Generate</button>
           </form>
         </div>
         <!-- /.panel-body -->

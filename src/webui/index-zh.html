@@ -8,7 +8,7 @@
   <meta name="Keywords" content="Python, 加密, 源代码, 混淆, 保护" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>Pyarmor - Python源代码加密器</title>
+  <title>Python 源代码加密器</title>
 
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
   <style type="text/css">
@@ -65,24 +65,24 @@
   <div class="tab-content container">
     <div role="tabpanel" class="tab-pane active" id="tab-scripts">
       <div class="panel panel-default">
-        <div class="panel-heading">加密Python源代码</div>
+        <div class="panel-heading">加密 Python 源代码</div>
         <div class="panel-body">
           <form>
             <div class="form-group">
               <label for="input_src">源文件目录</label>
               <input type="text" class="form-control required" id="input_src" />
-              <p class="help-block">必须输入一个本机的绝对路径，其中所有的 <code>.py</code> 文件都会被加密，包括递归子目录。</p>
+              <p class="help-block">必填。输入一个本机的绝对路径，里面所有的 <code>.py</code> 文件都会被加密，包括子目录</p>
             </div>
             <div class="form-group">
               <label for="input_entry">主脚本</label>
-              <input type="text" class="form-control" id="input_entry"/>
-              <p class="help-block">可选。输入启动脚本的文件名称，必须是相对于 <strong>源文件目录</strong></p>
+              <input type="text" class="form-control required" id="input_entry"/>
+              <p class="help-block">必填。输入启动脚本的文件名称，必须是相对于 <strong>源文件目录</strong>。对于 Python 包，输入 <code>__init__.py</code></p>
             </div>
             <div class="form-group">
               <label for="input_output">输出目录</label>
               <input type="text" class="form-control" id="input_output"/>
               <p class="help-block">可选。存放加密脚本的目录</p>
-              <p class="help-block">如果不输入的话，默认会存放在 Pyarmor 包所在的路径下面的目录 <code>dist</code></p>
+              <p class="help-block">默认输出目录是 Pyarmor 包所在的路径下面的目录 <code>dist</code></p>
             </div>
             <button type="button" class="btn btn-primary" id="obfuscate-scripts">开始加密</button>
           </form>
@@ -94,20 +94,26 @@
     <!-- /.tab-pane -->
     <div role="tabpanel" class="tab-pane" id="tab-licenses">
       <div class="panel panel-default">
-        <div class="panel-heading">为加密脚本生成受限制的许可文件</div>
+        <div class="panel-heading">生成新的许可文件</div>
         <div class="panel-body">
           <form>
             <div class="form-group">
+              <p class="help-block text-muted"><small>加密脚本的时候会自动生成一个默认的认证文件 <code>license.lic</code>，这里用来生成新的认证文件</small></p>
+            </div>
+            <div class="form-group">
               <label for="input_license_rcode">注册码</label>
               <input type="text" class="form-control required" id="input_license_rcode"/>
-              <p class="help-block">必须输入。标识符字符串，不能包含空格和符号（下划线、连字符和小数点例外），新生成的认证文件存在在 Pyarmor 包所在的路径下面 <code>licenses/CODE/liceense.lic</code></p>
-              <p>例如，注册码 <code>Customer-Tom</code> 生成的认证文件是 <code>licenses/Customer-Tom/license.lic</code></p>
+              <p class="help-block">必填。标识符字符串，不能包含空格和符号（下划线、连字符和小数点例外），新生成的认证文件存放在 Pyarmor 包所在的路径下面 <code>licenses/CODE/liceense.lic</code></p>
             </div>
             <div class="form-group">
               <label for="input_expired_date">有效期</label>
               <input type="text" class="form-control" id="input_expired_date" placeholder="YYYY-MM-DD" />
               <p class="help-block">可选。输入有效日期，超过这个日期之后加密脚本无法在使用</p>
             </div>
+            <button type="button" class="btn btn-primary" id="generate-licenses">开始生成</button>
+          </form>
+          <hr/>
+          <form>
             <div class="form-group">
               <label for="input_bind_disk">硬盘序列号</label>
               <input type="text" class="form-control" id="input_bind_disk"/>
@@ -123,7 +129,6 @@
               <input type="text" class="form-control" id="input_bind_ipv4" placeholder="x.x.x.x" />
               <p class="help-block">可选。绑定加密脚本到 IPv4 地址</p>
             </div>
-            <button type="button" class="btn btn-primary" id="generate-licenses">开始生成</button>
           </form>
         </div>
         <!-- /.panel-body -->
