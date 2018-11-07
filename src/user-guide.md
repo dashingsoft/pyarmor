@@ -11,8 +11,9 @@ This is the documentation for Pyarmor 3.4 and later.
     - [Use Project to Manage Obfuscated Scripts](#use-project-to-manage-obfuscated-scripts)
         - [Standalone Package](#standalone-package)
         - [Package Used by Other Clear Scripts](#package-used-by-other-clear-scripts)
-        - [Change Default Project Configuration](#change-default-project-configuration)
+        - [Work with py2exe and cx_Freeze](#work-with-py2exe-and-cx_freeze)
         - [Many Obfuscated Package Within Same Python Interpreter](#many-obfuscated-package-within-same-python-interpreter)
+        - [Change Default Project Configuration](#change-default-project-configuration)
     - [Distribute Obfuscated Scripts](#distribute-obfuscated-scripts)
     - [License of Obfuscated Scripts](#license-of-obfuscated-scripts)
     - [Cross Platform](#cross-platform)
@@ -252,6 +253,73 @@ it used by clear script `examples/testpkg/main.py`
     python main.py
 ```
 
+#### Work with py2exe and cx_Freeze
+
+Although Python source files can be replaced with obfuscated scripts
+seamlessly, There are still two challanges for py2exe and cx_Freeze:
+
+* All the scripts are compressed into a signle zip file
+* py2exe and cx_Freeze cound not find dependent system library files after scripts are obfuscated
+
+Here is one of workaround, it is suitable for use with py2app and PyInstaller eidther.
+
+* Create a project
+
+    python pyarmor.py init --src=/path/to/src --entry=hello.py myproject
+
+* Configure the project, disable restrict mode, and set runtime path, otherwise
+  obfuscated scripts could not find dynamic library `_pytransform`
+
+    cd myproject
+    ./pyarmor config --disable-restrict-mode --runtime-path=""
+
+* Obfuscate python scripts
+
+    ./pyarmor build
+
+* Replace entry script with obfuscated one, otherwise obfuscated scripts can not
+  find name `__pyarmor__`. It's better to backup original entry script before
+  overwrite it
+
+    cp /path/to/src/hello.py hello.py.bak
+    cp dist/hello.py /path/to/src
+
+* Copy extra file `pytransform.py` to source path, so that all the dependencies
+  of pyarmor will be package into bundle
+
+    cp /path/to/pyarmor/pytransform.py /path/to/src
+
+* Build with py2exe or cx_Freeze
+
+    cd /path/to/src
+    python setup.py py2exe
+    python setup.py build ( For cx_Freeze )
+
+* Replace python scripts with obfuscated scripts in compressed zip file, before
+  that, compile all the obfuscated scripts to `.pyc`
+
+    cd dist
+    python -m compileall -b .
+
+    zip -r /path/to/src/dist/library.zip *.pyc
+    zip -r /path/to/src/build/exe.win32-3.4/python34.zip *.pyc ( For cx_Freeze )
+
+* Copy runtime files to bundle path
+
+    cd dist
+    cp pyshield.key pyshield.lic product.key license.lic /path/to/src/dist
+    cp pyshield.key pyshield.lic product.key license.lic /path/to/src/build/exe.win32-34 ( For cx_Freeze )
+
+* Run entry executable to test obfuscated scripts
+
+    cd /path/to/dist
+    cd /path/to/build/exe.win32-3.4  ( For cx_Freeze )
+
+    hello.exe
+
+There are 2 sample scripts in the `examples`, [build-for-exe.bat](examples/build-for-exe.bat) for py2exe
+and [build-for-freeze.bat](examples/build-for-freeze.bat) for cx_Freeze v5.
+
 #### Many Obfuscated Package Within Same Python Interpreter
 
 Suppose there are 3 odoo modules `web-login1`, `web-login2`,
@@ -280,12 +348,12 @@ use same project capsule.
                            --entry=__init__.py \
                            --capsule=projects/odoo/login1/.pyarmor_capsule.zip \
                            projects/odoo/login3
-                           
+
     # Configure project, exclude `__mainfest__.py`
     ( cd projects/odoo/login1; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
     ( cd projects/odoo/login2; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
     ( cd projects/odoo/login3; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
-                           
+
 ```
 
 Then build all projects
