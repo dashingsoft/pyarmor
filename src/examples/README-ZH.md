@@ -22,10 +22,10 @@ Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放
     当上面的两个脚本都不能满足你的需要的时候，尝试使用 Project 来管理加
     密脚本，Project 提供了更丰富的功能。
 
-* [build-for-exe.bat](build-for-exe.bat)
+* [build-for-exe.bat](build-for-exe.bat) / [build-for-freeze.bat](build-for-freeze.bat)
 
-    这个脚本模板展示了如何使用 py2exe 或者 PyInstaller 等来打包发布被
-    Pyarmor 加密过的脚本。
+    这个脚本模板展示了如何使用 py2exe 或者 cx_Freeze 等来打包发布被 Pyarmor 加密过
+    的脚本。对于 py2app 和 PyInstaller ，也完全可以参考使用。
 
 除了这些脚本之外，这里还有一些真实的例子。现在打开一个命令窗口，按照下
 面文档中的说明，一步一步来学习 Pyarmor 的常用功能。

@@ -29,10 +29,11 @@ then run it to obfuscate your python scripts quickly.
         Filter scripts, for example, exclude all the test scripts
         More convenient command to manage obfuscated scripts
 
-* [build-for-exe.bat](build-for-exe.bat) / [build-for-exe.sh](build-for-exe.sh)
+* [build-for-exe.bat](build-for-exe.bat) / [build-for-freeze.bat](build-for-freeze.bat)
 
     The basic usage show how to obfuscate scripts by Pyarmor, then
-    distribute them by py2exe.
+    distribute them by py2exe or cx_Freeze. It's almost applied to
+    py2app and PyInstaller.
 
 Not only those scripts, but also some really examples are distributed
 with Pyarmor. Just open a command window, follow the instructions in
