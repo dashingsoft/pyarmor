@@ -1,3 +1,8 @@
+4.3.2
+-----
+* Fix `pip` install issue in MacOS
+* Refine sample scripts to make workaround for py2exe/cx_Freeze simple
+
 4.3.1
 -----
 * Fix typos in examples
