@@ -1,3 +1,7 @@
+4.3.3
+-----
+* Fix issue: missing file in wheel
+
 4.3.2
 -----
 * Fix `pip` install issue in MacOS

@@ -40,6 +40,9 @@ if argv[1] == 'bdist_wheel':
     for opt in argv[1:]:
         if opt.startswith('--plat-name'):
             name = opt.split('=')[1]
+            name = 'macosx_x86_64' if name.startswith('macosx_') else \
+                'linux_x86_64' if name == 'manylinux1_x86_64' else \
+                name
             for i in range(len(platform_data_files)):
                 if platform_data_files[i].find(name) > -1:
                     platform_data_files[i] = \
