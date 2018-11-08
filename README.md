@@ -128,7 +128,7 @@ For details, refer to [LICENSE](LICENSE).
 
 ### Purchase
 
-Click [Purchase](https://shopper.mycommerce.com/checkout/cart/add/55259-1),
+Click [Purchase](https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1),
 
 A registration code will be sent to your immediately after payment is completed successfully.
 
