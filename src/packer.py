@@ -32,8 +32,6 @@ import subprocess
 import sys
 import time
 
-from compileall import compile_dir
-from py_compile import compile_file
 from distutils.util import get_platform
 from zipfile import PyZipFile
 
@@ -57,18 +55,14 @@ def packer(args):
         else os.path.relpath(args.entry, args.path)
 
     project = 'build-for-%s' % args.type
-    dist = 'dist'
-    output = os.path.join(src, dist)
-
-    pack_options = [ 'py2exe' ] if args.type == 'py2exe' else \
-        ['build', '--build-exe', dist] if args.type == 'cx_Freeze' else \
-        ['build']
+    packcmd = 'py2exe' if args.type == 'py2exe' else 'build'
     libname = 'library.zip' if args.type == 'py2exe' else \
         'python%s%s.zip' % sys.version_info[:2]
 
-    # For cx_Freeze
-    # dirName = 'exe.%s-%s' % (get_platform(), sys.version[0:3])
-    # fileName = 'python%s%s.zip' % sys.version[0:2])
+    dist = os.path.join('build',
+                        'exe.%s-%s' % (get_platform(), sys.version[0:3])) \
+                        if args.type == 'cx_Freeze' else 'dist'
+    output = os.path.join(src, dist)
 
     options = 'init', '--type', 'app', '--src', src, '--entry', entry, project
     call_armor(options)
@@ -86,14 +80,14 @@ def packer(args):
     shutil.copy(os.path.join(src, entry), '%s.bak' % entry)
     shutil.move(os.path.join(project, 'dist', entry), src)
 
-    p = subprocess.Popen([sys.executable, 'setup.py'] + pack_options, cwd=src)
+    p = subprocess.Popen([sys.executable, 'setup.py', packcmd], cwd=src)
     p.wait()
     shutil.copy('%s.bak' % entry, os.path.join(src, entry))
 
     with ZipFile(os.path.join(output, libname), 'a') as f:
         f.writepy(os.path.join(project, 'dist'))
 
-    options = 'build', '--only-runtime', '-O', 'runtimes', project
+    options = 'build', '--only-runtime', '--output', 'runtimes', project
     call_armor(options)
 
     for s in os.listdir(os.path.join(project, 'runtimes')):
@@ -114,7 +108,7 @@ def main(args):
                         choices=('py2exe', 'py2app', 'cx_Freeze', 'PyInstaller'))
     parser.add_argument('-p', '--path', help='Source path of Python scripts')
     parser.add_argument('-s', '--setup', default='setup.py', help='Setup script')
-    parser.add_argument('entry', metavar='Entry-Script', nargs=1, help='Entry script')
+    parser.add_argument('entry', metavar='Script', nargs=1, help='Entry script')
 
     parser.set_defaults(func=_packer)
 
