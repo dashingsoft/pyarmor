@@ -44,6 +44,7 @@ import sys
 import time
 
 from distutils.util import get_platform
+from py_compile import compile as compile_file
 from zipfile import PyZipFile
 
 try:
@@ -57,14 +58,35 @@ try:
 except ImportError:
     from pyarmor.pyarmor import main as call_armor
 
+def update_library(libzip, dist):
+    # It's simple ,but there is a problem that old .pyc
+    # can not be overwited
+    # with PyZipFile(libzip, 'a') as f:
+    #     f.writepy(dist)
+
+    filelist = []
+    for root, dirs, files in os.walk(dist):
+        filelist.extend([os.path.join(root, s) for s in files])
+
+    with PyZipFile(libzip, 'r') as f:
+        namelist = f.namelist()
+        f.extractall(dist)
+
+    for s in filelist:
+        compile_file(s, s + 'c')
+
+    with PyZipFile(libzip, 'w') as f:
+        for name in namelist:
+            f.write(os.path.join(dist, name), name)
+
 def armorcommand(func):
     def wrap(*args, **kwargs):
-        old = os.getcwd()
-        os.chdir(os.path.dirname(__file__))
+        path = os.getcwd()
+        os.chdir(os.path.abspath(os.path.dirname(__file__)))
         try:
             return func(*args, **kwargs)
         finally:
-            os.chdir(old)
+            os.chdir(path)
     return wrap
 
 @armorcommand
@@ -84,40 +106,48 @@ def _packer(src, entry, setup, packcmd, dist, libname):
                '--manifest', ','.join(filters), project)
     call_armor(options)
 
-    options = 'build', '--no-runtime', project
+    os.chdir(project)
+
+    options = 'build', '--no-runtime', '--output', 'dist'
     call_armor(options)
 
-    shutil.copy('pytransform.py', src)
-    shutil.copy(os.path.join(src, entry), '%s.bak' % entry)
-    shutil.move(os.path.join(project, 'dist', entry), src)
+    shutil.copy(os.path.join('..', '..', 'pytransform.py'), src)
+    shutil.move(os.path.join(src, entry), '%s.bak' % entry)
+    shutil.move(os.path.join('dist', entry), src)
 
     p = subprocess.Popen([sys.executable, script, packcmd], cwd=dest)
     p.wait()
     shutil.move('%s.bak' % entry, os.path.join(src, entry))
+    os.remove(os.path.join(src, 'pytransform.py'))
 
-    with ZipFile(os.path.join(output, libname), 'a') as f:
-        f.writepy(os.path.join(project, 'dist'))
+    update_library(os.path.join(output, libname), 'dist')
 
-    options = 'build', '--only-runtime', '--output', 'runtimes', project
+    options = 'build', '--only-runtime', '--output', 'runtimes'
     call_armor(options)
 
-    for s in os.listdir(os.path.join(project, 'runtimes')):
+    for s in os.listdir('runtimes'):
         if s == 'pytransform.py':
             continue
-        shutil.copy(os.path.join(project, 'runtimes', s), output)
+        shutil.copy(os.path.join('runtimes', s), output)
+
+    os.chdir('..')
+    shutil.rmtree(os.path.basename(project))
 
 def packer(args):
     bintype = 'freeze' if args.type.lower().endswith('freeze') else 'py2exe'
 
-    src = os.path.dirname(args.entry) if args.path is None else args.path
-    entry = os.path.basename(args.entry) if args.path is None \
-        else os.path.relpath(args.entry, args.path)
-    setup = os.path.join(src, 'setup.py') if args.setup is None else args.setup
+    if args.path is None:
+        src = os.path.abspath(os.path.dirname(args.entry[0]))
+        entry = os.path.basename(args.entry[0])
+    else:
+        src = os.path.abspath(args.path)
+        entry = os.path.relpath(args.entry[0], args.path)
+    setup = os.path.join(src, 'setup.py') if args.setup is None \
+        else os.path.abspath(args.setup)
 
     dist = os.path.join(
         'build', 'exe.%s-%s' % (get_platform(), sys.version[0:3])
     ) if bintype == 'freeze' else 'dist'
-
     packcmd = 'py2exe' if bintype == 'py2exe' else 'build'
     libname = 'library.zip' if bintype == 'py2exe' else \
         'python%s%s.zip' % sys.version_info[:2]
@@ -139,7 +169,7 @@ def main(args):
     parser.add_argument('-s', '--setup', help='Setup script')
     parser.add_argument('entry', metavar='Script', nargs=1, help='Entry script')
 
-    parser.set_defaults(func=packer)
+    packer(parser.parse_args(args))
 
 if __name__ == '__main__':
     logging.basicConfig(
