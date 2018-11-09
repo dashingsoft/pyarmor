@@ -25,6 +25,17 @@
 #   tools: py2exe, py2app, cx_Freeze, PyInstaller
 #
 
+'''After the py2exe or cx_Freeze setup script works, this tool let you
+to obfuscate all the python source scripts and package them. The basic
+usage:
+
+    python packer.py --type py2exe /path/to/src/entry.py
+
+It will replace all the original python scripts with obfuscated ones
+in the output path of py2exe or cx_Freeze.
+
+'''
+
 import logging
 import os
 import shutil
