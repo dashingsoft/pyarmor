@@ -23,6 +23,8 @@ clear_build()
 $PYTHON setup.py sdist --formats=zip,bztar,gztar
 clear_build
 
+[[ "$1" == "" ]] && exit
+
 # Build universal wheel
 $PYTHON setup.py bdist_wheel --universal
 clear_build
