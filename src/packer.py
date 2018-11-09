@@ -57,7 +57,7 @@ def armorcommand(func):
     return wrap
 
 @armorcommand
-def _paker(src, entry, setup, packcmd, dist, libname):
+def _packer(src, entry, setup, packcmd, dist, libname):
     dest = os.path.dirname(setup)
     script = os.path.basename(setup)
 
