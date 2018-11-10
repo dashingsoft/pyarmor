@@ -57,7 +57,7 @@ except ImportError:
 def logaction(func):
     def wrap(*args, **kwargs):
         logging.info('')
-        logging.info('%s', func.__name__)        
+        logging.info('%s', func.__name__)
         return func(*args, **kwargs)
     return wrap
 
@@ -107,10 +107,9 @@ setup script to build the bundle.
     shutil.move(tempfile, os.path.join(src, entry))
     os.remove(os.path.join(src, 'pytransform.py'))
 
-    if p.returncode != 0:        
+    if p.returncode != 0:
         logging.error('\n\n%s\n\n', stdoutdata)
-        # raise RuntimeError('Run setup script failed')
-        sys.exit(1)
+        raise RuntimeError('Run setup script failed')
 
 @logaction
 def copy_runtime_files(runtimes, output):
@@ -124,8 +123,8 @@ def call_armor(args):
     logging.info('')
     p = subprocess.Popen([sys.executable, 'pyarmor.py'] + list(args))
     p.wait()
-    if p.returncode != 0:       
-        sys.exit(1)    
+    if p.returncode != 0:
+        raise RuntimeError('Call pyarmor failed')
 
 def pathwrapper(func):
     def wrap(*args, **kwargs):
