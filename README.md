@@ -12,7 +12,7 @@ protects Python scripts by the following ways:
 * Obfuscate code object to protect constants and literal strings.
 * Obfuscate byte code of each code object in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
-* Expired obfuscated scripts, or bind to fixed machine.
+* Verify the license file of obfuscated scripts while running it.
 
 Refer to [Protect Python Scripts By Pyarmor](docs/protect-python-scripts-by-pyarmor.md)
 
@@ -65,16 +65,11 @@ of pyarmor.
 
 Obfuscate package **pybench** directly:
 
-```
-    python pyarmor.py obfuscate --src examples/pybench --entry pybench.py \
-                                "*.py" "package/*.py"
+    python pyarmor.py obfuscate --recursive --src examples/pybench --entry pybench.py
 
-    # Note that quotation mark is required for file patterns, otherwise
-    # it will be expanded base on current path by shell.
-    #
     # This command will create an extra file .pyarmor_capsule.zip in the
     # current path, and save all the obfuscated scripts to default output
-    # path "dist" in the current path
+    # path "dist"
     #
     cd dist
 
@@ -83,14 +78,10 @@ Obfuscate package **pybench** directly:
 
     # Run obfuscated script
     python pybench.py
-```
 
 Use project to manage obfuscated scripts:
 
-```
-    mkdir projects
-    python pyarmor.py init --src examples/pybench --entry pybench.py \
-                           projects/pybench
+    python pyarmor.py init --src examples/pybench --entry pybench.py projects/pybench
 
     # This command will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
     # in the project path "projects/pybench"
@@ -109,7 +100,11 @@ Use project to manage obfuscated scripts:
 
     # Run obfuscated script
     python pybench.py
-```
+
+Pack obfuscated scripts with py2exe, cx_Freeze etc. The setup script
+of py2exe or cx_Freeze must be exists to run this command
+
+    python pyarmor.py pack -t py2exe examples/py2exe/hello.py
 
 More usage, refer to [User Guide](src/user-guide.md)
 

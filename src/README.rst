@@ -8,7 +8,7 @@ protects Python scripts by the following ways:
 * Obfuscate code object to protect constants and literal strings.
 * Obfuscate byte code of each code object in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
-* Expired obfuscated scripts, or bind to fixed machine.
+* Verify the license file of obfuscated scripts while running it.
 
 Look at what happened after ``foo.py`` is obfuscated by Pyarmor. Here
 are the files list in the output path ``dist``::
@@ -54,7 +54,7 @@ Install::
 
 Obfuscate scripts::
 
-    python pyarmor.py obfuscate --src=examples/simple --entry=queens.py
+    python pyarmor.py obfuscate --recursive --src=examples/simple --entry=queens.py
 
 Run obfuscated scripts::
 
@@ -68,6 +68,11 @@ Generate an expired license and run obfuscated scripts with new license::
 
     cd dist/
     python queens.py
+
+Pack obfuscated scripts with py2exe, cx_Freeze etc. The setup script
+of py2exe or cx_Freeze must be exists to run this command::
+
+    python pyarmor.py pack -t py2exe examples/py2exe/hello.py
 
 There is a webui used to obfuscate script in gui mode. Start it::
 

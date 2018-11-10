@@ -7,7 +7,7 @@ protects Python scripts by the following ways:
 * Obfuscate code object to protect constants and literal strings.
 * Obfuscate byte code of each code object in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
-* Expired obfuscated scripts, or bind to fixed machine.
+* Verify the license file of obfuscated scripts while running it.
 
 Look at what happened after `foo.py` is obfuscated by Pyarmor. Here
 are the files list in the output path `dist`
