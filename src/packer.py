@@ -56,7 +56,7 @@ except ImportError:
 try:
     from pyarmor import main as call_armor
 except ImportError:
-    from pyarmor.pyarmor import main as call_armor
+    from .pyarmor import main as call_armor
 
 def update_library(libzip, dist):
     # It's simple ,but there is a problem that old .pyc
