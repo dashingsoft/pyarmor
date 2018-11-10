@@ -44,6 +44,7 @@ import sys
 import time
 
 from distutils.util import get_platform
+from glob import glob
 from py_compile import compile as compile_file
 from zipfile import PyZipFile
 
@@ -78,7 +79,8 @@ the original scripts with obfuscated ones.
         f.extractall(obfdist)
 
     for s in filelist:
-        compile_file(s, s + 'c')
+        if s.lower().endswith('.py'):
+            compile_file(s, s + 'c')
 
     with PyZipFile(libzip, 'w') as f:
         for name in namelist:
@@ -112,10 +114,10 @@ setup script to build the bundle.
 
 @logaction
 def copy_runtime_files(runtimes, output):
-    for s in os.listdir(runtimes):
-        if s == 'pytransform.py':
-            continue
+    for s in 'pyshield.key', 'pyshield.lic', 'product.key', 'license.lic':
         shutil.copy(os.path.join(runtimes, s), output)
+    for s in glob(os.path.join(runtimes, '_pytransform.*')):
+        shutil.copy(s, output)
 
 def call_armor(args):
     logging.info('')
@@ -144,24 +146,20 @@ def _packer(src, entry, setup, packcmd, output, libname):
     options = 'init', '-t', 'app', '--src', src, '--entry', entry, project
     call_armor(options)
 
-    filters = ('global-include *.py', 'prune build, prune dist', 
+    filters = ('global-include *.py', 'prune build, prune dist',
                'exclude %s pytransform.py' % entry)
     options = ('config', '--runtime-path', '', '--disable-restrict-mode', '1',
                '--manifest', ','.join(filters), project)
     call_armor(options)
 
-    options = 'build', '--no-runtime', project
+    options = 'build', project
     call_armor(options)
 
     run_setup_script(src, entry, setup, packcmd, os.path.join(prodist, entry))
 
     update_library(os.path.join(output, libname), prodist)
 
-    runtimes = os.path.join(project, 'runtimes')
-    options = 'build', '--only-runtime', '--output', runtimes, project
-    call_armor(options)
-
-    copy_runtime_files(runtimes, output)
+    copy_runtime_files(prodist, output)
 
     shutil.rmtree(project)
 
