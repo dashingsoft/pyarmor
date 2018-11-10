@@ -47,6 +47,7 @@
         <ul class="nav navbar-nav">
           <li role="presentation" class="active"><a href="#tab-scripts" aria-controls="tab-scripts" role="tab" data-toggle="tab">加密脚本</a></li>
           <li role="presentation"><a href="#tab-licenses" aria-controls="tab-licenses" role="tab" data-toggle="tab">生成许可</a></li>
+          <li role="presentation"><a href="#tab-packer" aria-controls="tab-packer" role="tab" data-toggle="tab">打包</a></li>
           <li role="presentation"><a href="#obfuscator-console" aria-controls="obfuscator-console" role="tab" data-toggle="tab">查看日志</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -136,6 +137,43 @@
       <!-- /.panel-default -->
     </div>
     <!-- /.tab-pane -->
+    <div role="tabpanel" class="tab-pane" id="tab-packer">
+      <div class="panel panel-default">
+        <div class="panel-heading">打包加密脚本</div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group">
+              <p class="help-block">Pyarmor 能够通过第三方工具，例如 py2exe, cx_Freeze 等，把脚本加密之后直接打包发布</p>
+              <p class="help-block">首先要写好 py2exe 或者 cx_Freeze 的安装脚本，并且确保没有加密的脚本已经能够正常打包发布</p>
+              <p class="help-block">然后在这里输入主脚本和安装脚本的本机路径名称，点击打包按钮就可以快速把脚本加密然后打包</p>
+            </div>
+            <div class="form-group">
+              <label for="input_packer_type">打包方式</label>
+              <select class="form-control" id="input_packer_type">
+                <option value="cx_Freeze">cx_Freeze</option>
+                <option value="py2app">py2app</option>
+                <option value="py2exe" selected>py2exe</option>
+                <option value="PyInstaller">PyInstaller</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="input_src">主脚本</label>
+              <input type="text" class="form-control required" id="input_src" />
+              <p class="help-block">必填。绝对路径的脚本名称</p>
+              <p class="help-block">主脚本所在目录下的所有 <code>.py</code> 脚本也会被加密，包括递归子目录</p>
+            </div>
+            <div class="form-group">
+              <label for="input_entry">安装脚本</label>
+              <input type="text" class="form-control" id="input_entry"/>
+              <p class="help-block">可选。默认是 <code>setup.py</code></p>
+            </div>
+            <button type="button" class="btn btn-primary" id="pack-obfuscated-scripts">开始打包</button>
+          </form>
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel-default -->
+    </div>
     <div role="tabpanel" class="tab-pane" id="obfuscator-console">
       <div>
         <form>
