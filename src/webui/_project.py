@@ -18,7 +18,7 @@ from project import Project
 try:
     from pyarmor import main as _pyarmor
 except ImportError:
-    from pyarmor.pyarmor import main as _pyarmor
+    from .pyarmor import main as _pyarmor
 
 project_base_path = 'projects'
 project_index_name = 'index.json'
