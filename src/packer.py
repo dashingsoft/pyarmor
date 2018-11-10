@@ -138,7 +138,7 @@ def pathwrapper(func):
     return wrap
 
 @pathwrapper
-def _packer(src, entry, setup, packcmd, output, libname):
+def _packer(src, entry, setup, packopts, output, libname):
     project = os.path.join('projects', 'build-for-packer-v0.1')
     script = os.path.basename(setup)
 
@@ -156,7 +156,7 @@ def _packer(src, entry, setup, packcmd, output, libname):
     options = 'build', '--no-runtime', '--output', 'dist'
     call_armor(options)
 
-    run_setup_script(src, entry, [script] + packcmd, os.path.dirname(setup))
+    run_setup_script(src, entry, [script] + packopts, os.path.dirname(setup))
 
     update_library(os.path.join(output, libname), 'dist')
 
@@ -194,8 +194,12 @@ def packer(args):
         'python%s%s.zip' % sys.version_info[:2]
 
     logging.info('Prepare to pack obfuscated scripts with %s', args.type)
-    _packer(src, entry, setup, packopts, output, libname)    
-    logging.info('Pack obfuscated scripts successfully.')
+    _packer(src, entry, setup, packopts, output, libname)
+
+    logging.info('')
+    logging.info('Pack obfuscated scripts successfully in the path')
+    logging.info('')
+    logging.info('\t%s', os.path.relpath(output, os.getcwd()))
 
 def add_arguments(parser):
     parser.add_argument('-v', '--version', action='version', version='v0.1')
