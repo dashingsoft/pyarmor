@@ -90,6 +90,7 @@ def checker(func):
 @checker
 def _packer(src, entry, setup, packcmd, output, libname):
     project = os.path.join('projects', 'build-for-packer-v0.1')
+    script = os.path.basename(setup)
 
     options = 'init', '--type', 'app', '--src', src, '--entry', entry, project
     call_armor(options)
@@ -109,9 +110,8 @@ def _packer(src, entry, setup, packcmd, output, libname):
     shutil.move(os.path.join(src, entry), '%s.bak' % entry)
     shutil.move(os.path.join('dist', entry), src)
 
-    dest = os.path.dirname(setup)
-    script = os.path.basename(setup)
-    p = subprocess.Popen([sys.executable, script] + packcmd, cwd=dest)
+    p = subprocess.Popen([sys.executable, script] + packcmd,
+                         cwd=os.path.dirname(setup))
     p.wait()
     shutil.move('%s.bak' % entry, os.path.join(src, entry))
     os.remove(os.path.join(src, 'pytransform.py'))
@@ -148,7 +148,7 @@ def packer(args):
         output = os.path.join(os.path.dirname(setup), dist)
     else:
         output = os.path.abspath(args.output)
-    
+
     packcmd = ['py2exe', '--dist-dir', output] if _type == 'py2exe' \
         else ['build', '--build-exe', output]
     libname = 'library.zip' if _type == 'py2exe' else \
