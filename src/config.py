@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '4.3.4'
+version = '4.4.0'
 
 version_info = '''
 Pyarmor is a tool used to import or run the encrypted python scripts.
@@ -20,7 +20,7 @@ encrypted files are encrypted by same key.
 A registration code is required to generate random project capsule.
 If Pyarmor is helpful for you, please purchase one by visiting
 
-https://shopper.mycommerce.com/checkout/cart/add/55259-1
+  https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
 If you have received a registration code, just replace the content
 of "license.lic" with registration code only (no newline).
