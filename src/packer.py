@@ -145,7 +145,7 @@ def _packer(src, entry, setup, packcmd, output, libname):
 
     filters = ('global-include *.py', 'prune build, prune dist', 
                'exclude %s pytransform.py' % entry)
-    options = ('config', '--runtime-path', '',  '--disable-restrict-mode', '1',
+    options = ('config', '--runtime-path', '', '--disable-restrict-mode', '1',
                '--manifest', ','.join(filters), project)
     call_armor(options)
 
@@ -156,13 +156,12 @@ def _packer(src, entry, setup, packcmd, output, libname):
 
     update_library(os.path.join(output, libname), prodist)
 
-    runtimes = 'packer-runtimes-v0.1'
+    runtimes = os.path.join(project, 'runtimes')
     options = 'build', '--only-runtime', '--output', runtimes, project
     call_armor(options)
 
     copy_runtime_files(runtimes, output)
 
-    shutil.rmtree(runtimes)
     shutil.rmtree(project)
 
 def packer(args):
