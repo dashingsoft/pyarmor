@@ -1,0 +1,73 @@
+source test-header.sh
+
+# ======================================================================
+#
+# Initial setup.
+#
+# ======================================================================
+
+PYARMOR="${PYTHON} pyarmor.py"
+
+csih_inform "Python is $PYTHON"
+csih_inform "Tested Package: $pkgfile"
+csih_inform "Pyarmor is $PYARMOR"
+
+csih_inform "Make workpath ${workpath}"
+rm -rf ${workpath}
+mkdir -p ${workpath} || csih_error "Make workpath FAILED"
+
+cd ${workpath}
+[[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
+[[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
+cd pyarmor-$version || csih_error "Invalid pyarmor package file"
+# From pyarmor 3.5.1, main scripts are in directory "src"
+cd src/
+
+csih_inform "Prepare for system testing"
+echo ""
+
+
+# ======================================================================
+#
+#  Bootstrap
+#
+# ======================================================================
+
+csih_inform "Show help and import pytransform"
+$PYARMOR --help >result.log 2>&1 || csih_error "Pyarmor bootstrap failed"
+[[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
+
+# ======================================================================
+#
+#  Command: pack with py2exe
+#
+# ======================================================================
+
+csih_inform "Case 1: obfuscate script"
+# $PYARMOR pack --type py2exe examples/py2exe/hello.py >result.log 2>&1
+$PYARMOR pack --type py2exe examples/py2exe/hello.py
+
+( cd examples/py2exe/dist; ./hello.exe  >result.log 2>&1 )
+
+check_file_exists examples/py2exe/dist/pyshield.lic
+check_file_content examples/py2exe/dist/result.log 'Found 92 solutions'
+
+# ======================================================================
+#
+# Finished and cleanup.
+#
+# ======================================================================
+
+# Return test root
+cd ../../..
+
+echo "----------------------------------------------------------------"
+echo ""
+csih_inform "Test finished for ${PYTHON}"
+
+(( ${_bug_counter} == 0 )) || csih_error "${_bug_counter} bugs found"
+echo "" && \
+csih_inform "Remove workpath ${workpath}" \
+&& echo "" \
+&& rm -rf ${workpath} \
+&& csih_inform "Congratulations, there is no bug found"
