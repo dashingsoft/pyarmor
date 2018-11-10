@@ -1,3 +1,7 @@
+4.3.4
+-----
+* Fix start pyarmor issue for `pip install` in Python 2
+
 4.3.3
 -----
 * Fix issue: missing file in wheel
