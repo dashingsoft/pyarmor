@@ -49,6 +49,7 @@ from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code
+import packer
 
 def armorcommand(func):
     return func
@@ -576,7 +577,7 @@ def main(args):
         'init',
         epilog=_init.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Create an empty project to manage obfuscated scripts'
+        help='Create a project to manage obfuscated scripts'
     )
     cparser.add_argument('-t', '--type', default='auto',
                          choices=('auto', 'app', 'pkg'))
@@ -650,7 +651,7 @@ def main(args):
         'build',
         epilog=_build.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Build project, obfuscate all the scripts in the project')
+        help='Obfuscate all the scripts in the project')
     cparser.add_argument('project', nargs='?', metavar='PATH', default='',
                          help='Project path')
     cparser.add_argument('-B', '--force', action='store_true',
@@ -687,7 +688,7 @@ def main(args):
         'licenses',
         epilog=_licenses.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Generate batch licenses for project'
+        help='Generate new licenses for obfuscated scripts'
     )
     cparser.add_argument('codes', nargs='+', metavar='CODE',
                          help='Registration code for this license')
@@ -741,6 +742,22 @@ def main(args):
                          default=default_obf_code_mode)
     cparser.set_defaults(func=_benchmark)
 
+
+    #
+    # Command: pack
+    #
+    cparser = subparsers.add_parser(
+        'pack',
+        epilog=packer.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Pack obfuscated scripts with py2exe, cx_Freeze etc.'
+    )
+    cparser.add_argument('-t', '--type', default='py2exe',
+                        choices=('py2exe', 'py2app', 'cx_Freeze', 'PyInstaller'))
+    cparser.add_argument('-p', '--path', help='Source path of Python scripts')
+    cparser.add_argument('-s', '--setup', help='Setup script')
+    cparser.add_argument('entry', metavar='Script', nargs=1, help='Entry script')
+    cparser.set_defaults(func=packer.packer)
 
     args = parser.parse_args(args)
     if hasattr(args, 'func'):
