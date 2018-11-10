@@ -10,8 +10,8 @@ This is the documentation for Pyarmor 3.4 and later.
     - [Import Obfuscated Module](#import-obfuscated-module)
     - [Use Project to Manage Obfuscated Scripts](#use-project-to-manage-obfuscated-scripts)
         - [Standalone Package](#standalone-package)
-        - [Package Used by Other Clear Scripts](#package-used-by-other-clear-scripts)
-        - [Work with py2exe and cx_Freeze](#work-with-py2exe-and-cx_freeze)
+        - [Package Used by Outer Scripts](#package-used-by-outer-scripts)
+        - [Pack Obfuscated Scripts with py2exe and cx_Freeze](#pack-obfuscated-scripts-with-py2exe-and-cx_freeze)
         - [Many Obfuscated Package Within Same Python Interpreter](#many-obfuscated-package-within-same-python-interpreter)
         - [Change Default Project Configuration](#change-default-project-configuration)
     - [Distribute Obfuscated Scripts](#distribute-obfuscated-scripts)
@@ -55,23 +55,23 @@ This is the documentation for Pyarmor 3.4 and later.
 ## Introduction
 
 Pyarmor v3.4 introduces a group new commands. For a simple package,
-use command **obfuscate** to obfuscate scripts directly. For
+use command `obfuscate` to obfuscate scripts directly. For
 complicated package, use Project to manage obfuscated scripts.
 
 Project includes 2 files, one configure file and one project
 capsule. Use manifest template string, same as MANIFEST.in of Python
 Distutils, to specify the files to be obfuscated.
 
-To create a project, use command **init**, use command **info** to
-show project information. **config** to update project settings, and
-**build** to obfuscate the scripts in the project.
+To create a project, use command `init`, use command `info` to
+show project information. `config` to update project settings, and
+`build` to obfuscate the scripts in the project.
 
-Other commands, **benchmark** to metric performance, **hdinfo** to
-show hardware information, so that command **licenses** can generate
+Pyarmor v4.4 introduces a new command `pack`, used to pack obfuscated
+scripts with `py2exe`, `cx_Freeze`, `PyInstaller` etc.
+
+Other commands, `benchmark` to metric performance, `hdinfo` to
+show hardware information, so that command `licenses` can generate
 license bind to fixed machine.
-
-All the old commands **capsule**, **encrypt**, **license** are
-deprecated, and will be removed from v4.
 
 ## Usage
 
@@ -80,7 +80,7 @@ analogous commands for each.
 
 ### Obfuscate Python Scripts
 
-Obfuscate a simple script **examples/simple/queens.py** in the source
+Obfuscate a simple script `examples/simple/queens.py` in the source
 path of Pyarmor
 
 ```bash
@@ -147,7 +147,7 @@ there are the several advantages:
 There are 2 project types:
 
 * Application, or called Standalone Package
-* Package used by other clear scripts
+* Package used by outer scripts
 
 For application, all the obfuscated python scripts only used by
 package self. Pyarmor uses a simple and efficient way to protect
@@ -161,7 +161,7 @@ About the details, refer to [Restrict Mode](#restrict-mode)
 #### Standalone Package
 
 This example show how to obfuscate a standalone python package
-**pybench**, which locates in the **examples/pybench** in the source
+`pybench`, which locates in the `examples/pybench` in the source
 of pyarmor.
 
 ```bash
@@ -201,13 +201,13 @@ of pyarmor.
 
 ```
 
-After some source scripts changed, just run **build** again
+After some source scripts changed, just run `build` again
 
 ```bash
     cd projects/pybench
     ./pyarmor build
 ```
-#### Package Used by Other Clear Scripts
+#### Package Used by Outer Scripts
 
 This example show how to obfuscate a package `examples/testpkg/mypkg`,
 it used by clear script `examples/testpkg/main.py`
@@ -253,7 +253,7 @@ it used by clear script `examples/testpkg/main.py`
     python main.py
 ```
 
-#### Work with py2exe and cx_Freeze
+#### Pack Obfuscated Scripts with py2exe and cx_Freeze
 
 Although Python source files can be replaced with obfuscated scripts seamlessly,
 there are still two challanges for py2exe and cx_Freeze:
@@ -262,64 +262,25 @@ there are still two challanges for py2exe and cx_Freeze:
 * py2exe and cx_Freeze cound not find dependent system library files after
   scripts are obfuscated
 
-Here is one of workaround, it is suitable for py2app and PyInstaller eidther.
+Here is a py2exe setup script `examples/py2exe/setup.py`, it can
+package python scripts in the path `examples/py2exe`
 
-1. Edit entry script `hello.py`, insert 2 lines at the beginning
+    # The output path is `dist`
+    python setup.py py2exe
 
-        from pytransform import pyarmor_runtime
-        pyarmor_runtime()
+After that, use command `pack` to pack obfuscated scripts
 
-2. Copy `pytransform.py` to source
+    python pyarmor.py --type py2exe examples/py2exe/hello.py
 
-        cp /path/to/pyarmor/pytransform.py /path/to/src
+This command will replace original python compiled files in
+`dist/library.zip` with obfuscated ones, and copy runtime files to
+output path.
 
-3. Build with py2exe or cx_Freeze
+For cx_Freeze, py2app and PyInstaller, change the option `--type`
 
-        cd /path/to/src
-        python setup.py py2exe
-        python setup.py build ( For cx_Freeze )
+    python pyarmor.py --type cx_Freeze examples/cx_Freeze/hello.py
 
-4. Create a Pyarmor project
-
-        cd /path/to/pyarmor
-        python pyarmor.py init --src=/path/to/src myproject
-
-5. Configure the project, disable restrict mode, and set runtime path, otherwise
-   obfuscated scripts could not find dynamic library `_pytransform`
-
-        cd myproject
-        ./pyarmor config --disable-restrict-mode --runtime-path=''
-
-6. Generate runtime files and copy them to bundle path
-
-        ./pyarmor build --only-runtime
-        rm dist/pytransform.py
-
-        cp dist/* /path/to/src/dist
-        cp dist/* /path/to/src/build/exe.win32-34 ( For cx_Freeze )
-
-7. Obfuscate python scripts, compile all the obfuscated scripts to `.pyc`
-
-        ./pyarmor build --no-runtime
-
-        rm -f dist/setup.py dist/hello.py
-        python -m compileall -b dist ( Remove option -b before Python 3.2 )
-
-8. Replace python scripts with obfuscated ones in compressed zip file
-
-        cd dist
-        zip -r /path/to/src/dist/library.zip *.pyc
-        zip -r /path/to/src/build/exe.win32-3.4/python34.zip *.pyc ( For cx_Freeze )
-
-9. Test it
-
-        cd /path/to/dist
-        cd /path/to/build/exe.win32-3.4  ( For cx_Freeze )
-
-        hello.exe
-
-There are 2 sample scripts in the `examples`, [build-for-exe.bat](examples/build-for-exe.bat) for py2exe
-and [build-for-freeze.bat](examples/build-for-freeze.bat) for cx_Freeze v5.
+See below to learm more options about command [pack](#pack)
 
 #### Many Obfuscated Package Within Same Python Interpreter
 
@@ -481,7 +442,7 @@ byte-compiled code files (.pyc files) must be same.
 
 ### License of Obfuscated Scripts
 
-There is a file **license.lic** in the output path "dist", the default
+There is a file `license.lic` in the output path "dist", the default
 one permits the obfuscated scripts run in any machine and never
 expired. Replace it with others can change this behaviour.
 
@@ -506,7 +467,7 @@ For examples, expire obfuscated scripts on some day
     python pybench.py
 ```
 
-Command **licenses** used to generate new license, note that it's
+Command `licenses` used to generate new license, note that it's
 plural. It can generate batch licenses.
 
 ```bash
@@ -652,7 +613,7 @@ obfuscated scripts. Use runtime path to specify where to find
 ## Benchmark Test
 
 How about the performance after scripts are obfuscated, run
-**benchmark** in target machine
+`benchmark` in target machine
 
 ```bash
     python pyarmor.py benchmark
@@ -687,7 +648,7 @@ Python Distutils, default value is
     global-include *.py
 ```
 
-It means all files anywhere in the **src** tree matching.
+It means all files anywhere in the `src` tree matching.
 
 Multi manifest template commands are spearated by comma, for example
 
@@ -734,7 +695,7 @@ entry:
     pyarmor_runtime()
 ```
 
-The entry name is relative to **src**, or filename with absolute path.
+The entry name is relative to `src`, or filename with absolute path.
 
 Multi entries are separated by comma, for example,
 
@@ -742,7 +703,7 @@ Multi entries are separated by comma, for example,
     main.py, another/main.py, /usr/local/myapp/main.py
 ```
 
-Note that entry may be NOT obfuscated, if **manifest** does not
+Note that entry may be NOT obfuscated, if `manifest` does not
 specify this entry. In this case, bootstrap code will be inserted into
 the header of entry script either. So that it can import other
 obfuscated modules.
@@ -1208,6 +1169,38 @@ Obfuscate scripts without project.
     python pyarmor.py --recursive --src=examples/simple --entry=queens.py
 ```
 
+### pack
+
+```
+usage: pyarmor.py pack [-h] [-v] [-t {py2exe,py2app,cx_Freeze,PyInstaller}]
+                       [-p PATH] [-s SETUP] [-O OUTPUT]
+                       Entry Script
+
+positional arguments:
+  Entry Script          Entry script
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -t {py2exe,py2app,cx_Freeze,PyInstaller}, --type {py2exe,py2app,cx_Freeze,PyInstaller}
+  -p PATH, --path PATH  Base path, default is the path of entry script
+  -s SETUP, --setup SETUP
+                        Setup script, default is setup.py
+  -O OUTPUT, --output OUTPUT
+                        Directory to put final built distributions in (default
+                        is output path of setup script)
+
+```
+
+After the py2exe or cx_Freeze setup script works, this tool could
+obfuscate all the python scripts and package them again. The basic
+usage:
+
+    python packer.py --type py2exe /path/to/src/hello.py
+
+It will replace all the original python scripts with obfuscated ones
+in the compressed archive generated by py2exe or cx_Freeze.
+
 ## Appendix
 
 ### Limitions
@@ -1464,8 +1457,8 @@ obfuscated scripts.
 
 #### Protect module with decorator "wraparmor"
 
-Here is an example **examples/testmod**, entry script is **hello.py**,
-and it's not obfuscated. It will import obfuscated module **queens**,
+Here is an example `examples/testmod`, entry script is `hello.py`,
+and it's not obfuscated. It will import obfuscated module `queens`,
 and try to disassemble some functions in this module. In order to
 protect those code object, add extra decorator at the begin:
 
@@ -1496,7 +1489,7 @@ protect those code object, add extra decorator at the begin:
 ```
 
 And decorate all of functions and methods. Refer to
-**examples/testmod/queens.py**
+`examples/testmod/queens.py`
 
 ``` bash
     # Create project
