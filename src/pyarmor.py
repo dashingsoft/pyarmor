@@ -752,11 +752,7 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Pack obfuscated scripts with py2exe, cx_Freeze etc.'
     )
-    cparser.add_argument('-t', '--type', default='py2exe',
-                        choices=('py2exe', 'py2app', 'cx_Freeze', 'PyInstaller'))
-    cparser.add_argument('-p', '--path', help='Source path of Python scripts')
-    cparser.add_argument('-s', '--setup', help='Setup script')
-    cparser.add_argument('entry', metavar='Script', nargs=1, help='Entry script')
+    packer.add_arguments(cparser)
     cparser.set_defaults(func=packer.packer)
 
     args = parser.parse_args(args)
