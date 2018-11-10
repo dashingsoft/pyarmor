@@ -43,14 +43,30 @@ $PYARMOR --help >result.log 2>&1 || csih_error "Pyarmor bootstrap failed"
 #
 # ======================================================================
 
-csih_inform "Case 1: obfuscate script"
-# $PYARMOR pack --type py2exe examples/py2exe/hello.py >result.log 2>&1
-$PYARMOR pack --type py2exe examples/py2exe/hello.py
+csih_inform "Case 1-1: Only full path entry script"
+$PYARMOR pack --type py2exe examples/py2exe/hello.py >result.log 2>&1
+check_return_value
 
-( cd examples/py2exe/dist; ./hello.exe  >result.log 2>&1 )
+( cd examples/py2exe/dist; ./hello.exe >result.log 2>&1 )
 
 check_file_exists examples/py2exe/dist/pyshield.lic
 check_file_content examples/py2exe/dist/result.log 'Found 92 solutions'
+
+# ======================================================================
+#
+#  Command: pack with cx_Freeze
+#
+# ======================================================================
+
+csih_inform "Case 2-1: Only full path entry script"
+$PYARMOR pack --type cx_Freeze examples/py2exe/hello.py >result.log 2>&1
+check_return_value
+
+dist=examples/cx_Freeze/build/exe.win32-3.4
+( cd $dist; ./hello.exe  >result.log 2>&1 )
+
+check_file_exists $dist/pyshield.lic
+check_file_content $dist/result.log 'Found 92 solutions'
 
 # ======================================================================
 #
