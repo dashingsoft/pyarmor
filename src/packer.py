@@ -129,6 +129,7 @@ def pathwrapper(func):
     def wrap(*args, **kwargs):
         path = os.getcwd()
         os.chdir(os.path.abspath(os.path.dirname(__file__)))
+        logging.info('Change path to %s', os.getcwd())
         try:
             return func(*args, **kwargs)
         finally:
@@ -140,7 +141,7 @@ def _packer(src, entry, setup, packcmd, output, libname):
     project = os.path.join('projects', 'build-for-packer-v0.1')
     prodist = os.path.join(project, 'dist')
 
-    options = 'init', '-t', 'app', '-src', src, '--entry', entry, project
+    options = 'init', '-t', 'app', '--src', src, '--entry', entry, project
     call_armor(options)
 
     filters = ('global-include *.py', 'prune build, prune dist', 
@@ -195,7 +196,7 @@ def packer(args):
     logging.info('')
     logging.info('Pack obfuscated scripts successfully in the path')
     logging.info('')
-    logging.info('\t%s', os.path.relpath(output, os.getcwd()))
+    logging.info('\t%s', output)
 
 def add_arguments(parser):
     parser.add_argument('-v', '--version', action='version', version='v0.1')
