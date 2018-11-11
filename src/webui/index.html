@@ -65,7 +65,7 @@
 
   <div class="tab-content container">
     <div role="tabpanel" class="tab-pane active" id="tab-scripts">
-      <div class="panel panel-default">
+      <div class="panel panel-info">
         <div class="panel-heading">Obfuscate python scripts</div>
         <div class="panel-body">
           <form>
@@ -94,7 +94,7 @@
     </div>
     <!-- /.tab-pane -->
     <div role="tabpanel" class="tab-pane" id="tab-licenses">
-      <div class="panel panel-default">
+      <div class="panel panel-info">
         <div class="panel-heading">Generate new license for obfuscated scripts</div>
         <div class="panel-body">
           <form>
@@ -138,14 +138,14 @@
     </div>
     <!-- /.tab-pane -->
     <div role="tabpanel" class="tab-pane" id="tab-packer">
-      <div class="panel panel-default">
+      <div class="panel panel-info">
         <div class="panel-heading">Pack obfuscated scripts</div>
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <p class="help-block">Packer could pack obfuscated scripts with py2exe, cx_Freeze etc. </p>
-              <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Packer will call setup script in runtime</p>
-              <p class="help-block">The final output path is same as of the setup script (Packer just updates some files)</p>
+              <p class="help-block">Pyarmor could pack obfuscated scripts with py2exe, cx_Freeze etc. </p>
+              <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Pyarmor will call setup script while packing</p>
+              <p class="help-block">The final output path is same as of the setup script (Pyarmor just updates some files)</p>
             </div>
             <div class="form-group">
               <label for="input_packer_type">Type</label>
@@ -165,7 +165,7 @@
             <div class="form-group">
               <label for="input_packer_setup">Setup Script</label>
               <input type="text" class="form-control" id="input_packer_setup"/>
-              <p class="help-block">Optional. The default is <code>setup.py</code> in the same path of <strong>Entry Script</strong></p>
+              <p class="help-block">Optional. The default is <code>setup.py</code></p>
             </div>
             <button type="button" class="btn btn-primary" id="pack-obfuscated-scripts">Run</button>
           </form>

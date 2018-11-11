@@ -8,7 +8,7 @@ define([], function() {
     var _element = document.getElementById('global-message');
     var showMessage = function (msg) {
         _element.innerHTML =
-            '<div class="alert alert-info alert-dismissible" role="alert">' +
+            '<div class="alert alert-warning alert-dismissible" role="alert">' +
             '  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
             msg +
             '</div>';
