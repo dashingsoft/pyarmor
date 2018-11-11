@@ -54,27 +54,16 @@ except ImportError:
     # argparse is new in version 2.7
     import polyfills.argparse as argparse
 
-DEFAULT_DIST = {
-    'py2app': 'dist',
-    'py2exe': 'dist',
-    'PyInstaller': 'dist',
-    'cx_Freeze': os.path.join(
-        'build', 'exe.%s-%s' % (get_platform(), sys.version[0:3])
-    )
-}
-
-DEFAULT_OPTIONS = {
-    'py2app': ['py2app', '--dist-dir'],
-    'py2exe': ['py2exe', '--dist-dir'],
-    'PyInstaller': ['build', '--dist-dir'],
-    'cx_Freeze': ['build', '--build-exe']
-}
-
-DEFAULT_LIBRARY = {
-    'py2app': 'library.zip',
-    'py2exe': 'library.zip',
-    'PyInstaller': 'library.zip',
-    'cx_Freeze': 'python%s%s.zip' % sys.version_info[:2]
+# Default output path, library name, command options for setup script
+DEFAULT_PACKER = {
+    'py2app': ('dist', 'library.zip', ['py2app', '--dist-dir']),
+    'py2exe': ('dist', 'library.zip', ['py2exe', '--dist-dir']),
+    'pyInstaller': ('dist', 'library.zip', ['build', '--dist-dir']),
+    'cx_Freeze': (
+        os.path.join(
+            'build', 'exe.%s-%s' % (get_platform(), sys.version[0:3])),
+        'python%s%s.zip' % sys.version_info[:2],
+        ['build', '--build-exe'])
 }
 
 def logaction(func):
@@ -115,11 +104,11 @@ def run_setup_script(src, entry, setup, packcmd, obfdist):
 setup script to build the bundle.
 
     '''
-    new_entry = os.path.join(obfdist, entry)
+    obf_entry = os.path.join(obfdist, entry)
 
     tempfile = '%s.armor.bak' % entry
     shutil.move(os.path.join(src, entry), tempfile)
-    shutil.move(new_entry, src)
+    shutil.move(obf_entry, src)
     shutil.copy('pytransform.py', src)
 
     p = subprocess.Popen([sys.executable, setup] + packcmd, cwd=src,
@@ -193,14 +182,14 @@ def packer(args):
         entry = os.path.relpath(args.entry[0], args.path)
 
     if args.output is None:
-        dist = DEFAULT_DIST[args.type]
+        dist = DEFAULT_PACKER[args.type][0]
         output = os.path.normpath(os.path.join(src, dist))
     else:
         output = args.output if os.path.isabs(args.output) \
             else os.path.join(src, args.output)
 
-    packcmd = DEFAULT_OPTIONS[args.type] + [output]
-    libname = DEFAULT_LIBRARY[args.type]
+    libname = DEFAULT_PACKER[args.type][1]
+    packcmd = DEFAULT_PACKER[args.type][2] + [output]
 
     logging.info('Prepare to pack obfuscated scripts with %s', args.type)
     _packer(src, entry, args.setup, packcmd, output, libname)
@@ -214,8 +203,7 @@ def add_arguments(parser):
     parser.add_argument('-v', '--version', action='version', version='v0.1')
 
     parser.add_argument('-t', '--type', default='py2exe',
-                        choices=('py2exe', 'py2app',
-                                 'cx_Freeze', 'PyInstaller'))
+                        choices=DEFAULT_PACKER.keys())
     parser.add_argument('-p', '--path',
                         help='Base path, default is the path of entry script')
     parser.add_argument('-s', '--setup', default='setup.py',
