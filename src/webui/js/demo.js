@@ -17,11 +17,11 @@ define([], function() {
             };
         }
 
-        else if (url === '/packObfuscatedScripts') {
-            result = {
-                output: '[Demo]Pack obfuscated scripts successfully'
-            };
-        }
+        // else if (url === '/packObfuscatedScripts') {
+        //     result = {
+        //         output: '[Demo]/home/project/src/dist'
+        //     };
+        // }
 
         else {
             response.errcode = 1;
