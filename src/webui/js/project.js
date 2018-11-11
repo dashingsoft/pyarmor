@@ -229,11 +229,34 @@ define(['connector', 'utils'], function(conn, utils) {
         conn.generateLicenses(args, _callback);
     }
 
+    function packObfuscatedScripts() {
+        var _callback = function (response) {
+            if (response.errcode) {
+                utils.showMessage(response.result);
+                return ;
+            }
+            var result = response.result;
+            utils.showMessage('Pack obfuscated scripts successfully');
+        };
+        var args = {};
+        args.entry = document.getElementById('input_packer_entry').value;
+        args.setup = document.getElementById('input_packer_setup').value;
+        args.type = document.getElementById('input_packer_type').value;
+
+        if (!args.entry) {
+            document.getElementById('input_packer_entry').focus();
+            return ;
+        }
+
+        conn.packObfuscatedScripts(args, _callback);
+    }
+
     return {
         currentProject: _project,
 
         obfuscateScripts: obfuscateScripts,
         generateLicenses: generateLicenses,
+        packObfuscatedScripts: packObfuscatedScripts,
 
         loadProject: loadProject,
         initProject: initProject,

@@ -33,6 +33,7 @@ class HelperHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         """Serve a POST request."""
         if self.path[1:] not in ('obfuscateScripts', 'generateLicenses',
+                                 'packObfuscatedScripts',
                                  'newProject', 'updateProject',
                                  'buildProject', 'removeProject',
                                  'queryProject', 'queryVersion',

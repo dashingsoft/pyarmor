@@ -146,6 +146,7 @@
               <p class="help-block">Pyarmor 能够通过第三方工具，例如 py2exe, cx_Freeze 等，把脚本加密之后直接打包发布</p>
               <p class="help-block">首先要写好 py2exe 或者 cx_Freeze 的安装脚本，并且确保没有加密的脚本已经能够正常打包发布</p>
               <p class="help-block">然后在这里输入主脚本和安装脚本的本机路径名称，点击打包按钮就可以快速把脚本加密然后打包</p>
+              <p class="help-block">最终的输出路径和 <code>setup.py</code> 是一样的（Pyarmor 会更新其中的一些文件）</p>
             </div>
             <div class="form-group">
               <label for="input_packer_type">打包方式</label>
@@ -157,14 +158,14 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="input_src">主脚本</label>
-              <input type="text" class="form-control required" id="input_src" />
+              <label for="input_packer_entry">主脚本</label>
+              <input type="text" class="form-control required" id="input_packer_path" />
               <p class="help-block">必填。绝对路径的脚本名称</p>
               <p class="help-block">主脚本所在目录下的所有 <code>.py</code> 脚本也会被加密，包括递归子目录</p>
             </div>
             <div class="form-group">
-              <label for="input_entry">安装脚本</label>
-              <input type="text" class="form-control" id="input_entry"/>
+              <label for="input_packer_setup">安装脚本</label>
+              <input type="text" class="form-control" id="input_packer_setup"/>
               <p class="help-block">可选。默认是 <code>setup.py</code></p>
             </div>
             <button type="button" class="btn btn-primary" id="pack-obfuscated-scripts">开始打包</button>

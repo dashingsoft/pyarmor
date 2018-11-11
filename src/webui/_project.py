@@ -221,6 +221,15 @@ def generateLicenses(args):
 
     return dict(output=os.path.join(output, 'licenses', rcode, 'license.lic'))
 
+def packObfuscatedScripts(args):
+    params = ['pack', '--type', args['type'], args['entry']]
+    if args.setup:
+        params[3:3] = ['--setup', args['setup']]
+
+    _runPyarmor(params)
+
+    return dict(output=os.path.dirname(args['entry']))
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()

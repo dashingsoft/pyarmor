@@ -13,7 +13,13 @@ define([], function() {
 
         else if (url === '/generateLicenses') {
             result = {
-                output: '[Demo]/home/jondy/pyarmor/licenses/Customer-Tom\license.lic'
+                output: '[Demo]/home/jondy/pyarmor/licenses/Customer-Tom/license.lic'
+            };
+        }
+
+        else if (url === '/packObfuscatedScripts') {
+            result = {
+                output: '[Demo]Pack obfuscated scripts successfully'
             };
         }
 

@@ -9,6 +9,7 @@ define(['settings', 'utils', 'connector', 'project'], function (settings, utils,
         }, false);
         document.getElementById('obfuscate-scripts').addEventListener('click', project.obfuscateScripts, false);
         document.getElementById('generate-licenses').addEventListener('click', project.generateLicenses, false);
+        document.getElementById('pack-obfuscated-scripts').addEventListener('click', project.packObfuscatedScripts, false);
 
         conn.queryVersion(
             function (response) {

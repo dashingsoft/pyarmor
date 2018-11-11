@@ -53,6 +53,10 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
             sendRequest('/generateLicenses', args, callback);
         },
 
+        PackObfuscatedScripts: function (args, callback) {
+            sendRequest('/PackObfuscatedScripts', args, callback);
+        },
+
         newProject: function (callback) {
             sendRequest('/newProject', {}, callback);
         },
