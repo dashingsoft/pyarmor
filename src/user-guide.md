@@ -1174,10 +1174,10 @@ Obfuscate scripts without project.
 ```
 usage: pyarmor.py pack [-h] [-v] [-t {py2exe,py2app,cx_Freeze,PyInstaller}]
                        [-p PATH] [-s SETUP] [-O OUTPUT]
-                       Entry Script
+                       SCRIPT
 
 positional arguments:
-  Entry Script          Entry script
+  SCRIPT                Entry script
 
 optional arguments:
   -h, --help            show this help message and exit

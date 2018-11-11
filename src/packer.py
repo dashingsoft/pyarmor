@@ -211,7 +211,7 @@ def add_arguments(parser):
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in' \
                         ' (default is output path of setup script)')
-    parser.add_argument('entry', metavar='Entry Script', nargs=1,
+    parser.add_argument('entry', metavar='SCRIPT', nargs=1,
                         help='Entry script')
 
 def main(args):
