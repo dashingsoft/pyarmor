@@ -149,7 +149,7 @@ def pathwrapper(func):
     return wrap
 
 @pathwrapper
-def _packer(src, entry, setup, packcmd, output, libname):
+def _packer(src, entry, build, script, packcmd, output, libname):
     project = os.path.join('projects', 'build-for-packer-v0.1')
     obfdist = os.path.join(project, 'dist')
 
@@ -165,7 +165,7 @@ def _packer(src, entry, setup, packcmd, output, libname):
     args = 'build', project
     call_armor(args)
 
-    run_setup_script(src, entry, setup, packcmd, obfdist)
+    run_setup_script(src, entry, build, script, packcmd, obfdist)
 
     update_library(obfdist, os.path.join(output, libname))
 
@@ -205,8 +205,9 @@ def packer(args):
 def add_arguments(parser):
     parser.add_argument('-v', '--version', action='version', version='v0.1')
 
-    parser.add_argument('-t', '--type', default='py2exe',
-                        choices=DEFAULT_PACKER.keys())
+    parser.add_argument('-t', '--type', default='py2exe', metavar='TYPE',
+                        choices=DEFAULT_PACKER.keys(),
+                        help=', '.join(DEFAULT_PACKER.keys()))
     # parser.add_argument('-p', '--path',
     #                     help='Base path, default is the path of entry script')
     parser.add_argument('-s', '--setup',
