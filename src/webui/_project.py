@@ -28,7 +28,7 @@ def call_armor(args):
                          cwd=PYARMOR_PATH)
     p.wait()
     if p.returncode != 0:
-        raise RuntimeError('Call pyarmor failed')
+        raise RuntimeError('Call pyarmor failed, see the details in console window')
 
 def _check_project_index():
     filename = os.path.join(project_base_path, project_index_name)
