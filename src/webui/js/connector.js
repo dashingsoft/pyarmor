@@ -1,7 +1,34 @@
 define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
 
     function onError(e) {
-        utils.showMessage('Request failed: ' + e + '\nCheck log messages in command console.');
+        utils.showError('Request failed: ' + e + '\nCheck log messages in command console.');
+    }
+
+    function showLoader() {
+        var loader = document.querySelector('.pyarmor-loader');
+        if (loader) {
+            loader.style.display = 'block';
+        }
+        else {
+            var fileref = document.createElement('link');
+            fileref.setAttribute("rel","stylesheet");
+            fileref.setAttribute("type","text/css");
+            fileref.setAttribute("href", 'css/loader.css');
+            if(typeof fileref != "undefined"){
+                document.getElementsByTagName("head")[0].appendChild(fileref);
+            }
+            loader = document.createElement('DIV');
+            loader.className = 'pyarmor-loader modal-backdrop fade in';
+            loader.innerHTML = '<div class="plone-loader"><div class="loader"/></div>';
+            document.body.appendChild(loader);
+        }
+    }
+
+    function hideLoader() {
+        var loader = document.querySelector('.pyarmor-loader');
+        if (loader) {
+            loader.style.display = 'none';
+        }
     }
 
     function sendRequest(url, args, callback, onerror) {
@@ -22,8 +49,8 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
         utils.logMessage('Request ' + url + ': ' + data);
         var request = new XMLHttpRequest();
 
+        request.onloadend = hideLoader;
         request.onerror = (onerror === undefined) ? onError : onerror;
-
         request.onload = function() {
 
             if (request.status != 200) {
@@ -41,6 +68,9 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
 
         request.open('POST', url, true);
         request.send(data);
+
+        if (url !== '/queryVersion')
+            showLoader();
     }
 
     return {
