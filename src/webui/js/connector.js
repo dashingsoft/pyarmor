@@ -21,6 +21,7 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
             loader.className = 'pyarmor-loader modal-backdrop fade in';
             loader.innerHTML = '<div class="plone-loader"><div class="loader"/></div>';
             document.body.appendChild(loader);
+            loader.addEventListener('click', hideLoader, false);
         }
     }
 
