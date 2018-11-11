@@ -28,7 +28,7 @@ import os
 import shutil
 import sys
 import tempfile
-import time
+from time import gmtime, strftime
 from zipfile import ZipFile
 
 from config import plat_name, dll_ext, dll_name, entry_lines
@@ -81,6 +81,17 @@ def make_capsule(filename):
     finally:
         myzip.close()
     logging.info('Write capsule OK.')
+
+def check_capsule(capsule):
+    if os.path.getmtime(capsule) < os.path.getmtime(
+            os.path.join(PYARMOR_PATH, 'license.lic')):
+        logging.info('Capsule %s has been out of date', capsule)
+
+        suffix = strftime('%Y%m%d%H%M%S', gmtime())
+        logging.info('Rename it as %s.%s', capsule, suffix)
+        os.rename(capsule, capsule + '.' + suffix)
+        return False
+    return True
 
 def _make_entry(filename, rpath=None):
     entry_code = entry_lines[0] % (

@@ -48,8 +48,12 @@ from config import version, version_info, trial_info, \
 from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
-                  build_path, make_command, get_registration_code
+                  build_path, make_command, get_registration_code, \
+                  check_capsule
+
 import packer
+
+DEFAULT_CAPSULE = os.path.join(os.path.dirname(__file__), capsule_filename)
 
 def armorcommand(func):
     return func
@@ -328,7 +332,7 @@ Examples,
         if args.project != '':
             logging.warning('Ignore option --project, no project in %s',
                             args.project)
-        capsule = capsule_filename if args.capsule is None else args.capsule
+        capsule = DEFAULT_CAPSULE if args.capsule is None else args.capsule
         logging.info('Generate licenses for capsule %s ...', capsule)
         project = {}
 
@@ -438,8 +442,8 @@ def _obfuscate(args):
     path = args.src
     logging.info('Obfuscate scripts in path "%s" ...', path)
 
-    capsule = args.capsule if args.capsule else capsule_filename
-    if os.path.exists(capsule):
+    capsule = args.capsule if args.capsule else DEFAULT_CAPSULE
+    if os.path.exists(capsule) and check_capsule(capsule):
         logging.info('Use cached capsule %s', capsule)
     else:
         logging.info('Generate capsule %s', capsule)
