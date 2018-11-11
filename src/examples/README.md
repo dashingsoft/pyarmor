@@ -29,11 +29,10 @@ then run it to obfuscate your python scripts quickly.
         Filter scripts, for example, exclude all the test scripts
         More convenient command to manage obfuscated scripts
 
-* [build-for-exe.bat](build-for-exe.bat) / [build-for-freeze.bat](build-for-freeze.bat)
+* [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
-    The basic usage show how to obfuscate scripts by Pyarmor, then
-    distribute them by py2exe or cx_Freeze. It's almost applied to
-    py2app and PyInstaller.
+    The basic usage show how to pack obfuscated scripts with py2exe,
+    py2app, cx_Freeze or PyInstaller.
 
 Not only those scripts, but also some really examples are distributed
 with Pyarmor. Just open a command window, follow the instructions in
@@ -172,87 +171,28 @@ will be distributed to three customers with different licenses:
 
 Learn from this example
 
-* How to change project settings with command `config`
-* How to filter scripts, for example, exclude all the test scripts
-* How to generate runtime files only
-* How to obfuscated scripts only, without runtime files
-* How to work with py2exe (It's same as Py2Installer, py2app, cx_Freeze)
+* How to pack obfuscated script with py2exe by command `pack`
 
-In this example, py2exe and zip need to be installed. In the path
-`examples/py2exe`, py2exe will convert entry script `hello.py` to `hello.exe`,
-package all the other python scripts into the file `library.zip`. Pyarmor need
-to obfuscate all the python scripts, update them into `library.zip`, copy
-runtime files to output path of py2exe.
+First install py2xe
 
-The main challenge here it's how py2exe can find the modules imported
-by obfuscated scripts.
+    pip install py2exe
 
-```bash
+Then write `setup.py` for py2exe, here is an example
+script [examples/py2exe/setup.py](examples/py2exe/setup.py). There are
+2 scripts in this example, entry script `hello.py` and `queens.py`. To
+be sure `setup.py` works,
+
     cd /path/to/pyarmor
+    cd example/py2exe
+    python setup.py py2exe
 
-    # Create a project
-    python pyarmor.py init --src=examples/py2exe --entry="hello.py" projects/py2exe
+Then run command `pack` to pack obfuscated scripts
 
-    # Enter project path
-    cd projects/py2exe
+    cd ../..
+    python pyarmor.py pack --type py2exe examples/py2exe/hello.py
 
-    # Change project settings
-    #
-    # Set `--runtime-path` to empty string, otherwise obfuscated scripts can
-    # not find dynamic library `_pytransform`
-    #
-    # Set `--disable-restrict-mode` to 1, otherewise obfuscated scripts maybe
-    # complain `error return without exception set`
-    #
-    # Use `--mantifest` to exclude some scripts, about the format
-    # Refer to https://docs.python.org/2/distutils/sourcedist.html#commands
-    #
-    # Note that entry script `hello.py` is excluded, why? see below
-    #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 \
-                     --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
+Check the output path of `examples/py2exe/dist`, the runtime files required by
+obfuscated scripts are copied here, and the `library.zip` is updated, the
+original `queens.pyc` replaced with obfuscated one.
 
-    # Obfuscate all the scripts in project, no runtime files generated
-    ./pyarmor build --no-runtime
-
-    # Move modified entry script to source path
-    cp ../../examples/py2exe/hello.py hello.py.bak
-    mv dist/hello.py ../../examples/py2exe
-
-    # Copy extra required module to source path
-    cp ../../pytransform.py ../../examples/py2exe
-
-    # Here only entry script `hello.py` are modified, there are 2 lines
-    # inserted at the beginning
-    #
-    #     from pytransform import pyarmor_runtime
-    #     pyarmor_runtime
-    #
-    # So py2exe will package pytransform.py and all the files imported by
-    # pytransform.py, for example, `ctypes`
-    #
-    # Once script is obfuscated, py2exe can not find the dependent moudle.
-    # That's why entry script `hello.py` can not be obfuscated.
-    #
-    # Run py2exe from source path, generate `hello.exe`, `library.zip` in the `dist`
-    ( cd ../../examples/py2exe; python setup.py py2exe )
-
-    # Restore original entry script
-    mv hello.py.bak ../../examples/py2exe/hello.py
-
-    # Compile all obfuscated scripts to .pyc（Remove option -b before Python 3.2)
-    python -m compileall -b dist
-
-    # Update `library.zip`, replace original scripts with obfuscated scripts
-    ( cd dist; zip -r ../../../examples/py2exe/dist/library.zip *.pyc )
-
-    # Generate runtime files only, save in other path `runtimes`
-    ./pyarmor build --only-runtime --output runtimes
-
-    # Copy them to output path of py2exe
-    cp runtimes/* ../../examples/py2exe/dist
-
-    # Now run `hello.exe`
-    cd ../../examples/py2exe/dist
-    ./hello.exe
-```
+For cx_Freeze, py2app and PyInstaller, it's almost same as py2exe.

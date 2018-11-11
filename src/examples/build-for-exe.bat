@@ -1,3 +1,7 @@
+REM
+REM DEPRECATED from v3.4, use pack-obfuscated-scripts.bat instead.
+REM
+
 @ECHO OFF
 REM
 REM Sample script used to distribute obfuscated python scripts with py2exe

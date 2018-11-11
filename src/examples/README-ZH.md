@@ -22,10 +22,11 @@ Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放
     当上面的两个脚本都不能满足你的需要的时候，尝试使用 Project 来管理加
     密脚本，Project 提供了更丰富的功能。
 
-* [build-for-exe.bat](build-for-exe.bat) / [build-for-freeze.bat](build-for-freeze.bat)
+* [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
-    这个脚本模板展示了如何使用 py2exe 或者 cx_Freeze 等来打包发布被 Pyarmor 加密过
-    的脚本。对于 py2app 和 PyInstaller ，也完全可以参考使用。
+    使用这个脚本模板通过第三方工具 (py2exe, py2app, cx_Freeze,
+    PyInstaller) 来打包加密的脚本。
+
 
 除了这些脚本之外，这里还有一些真实的例子。现在打开一个命令窗口，按照下
 面文档中的说明，一步一步来学习 Pyarmor 的常用功能。
@@ -156,90 +157,32 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
 
 从这个例子中，可以学习到
 
-* 如何修改工程的配置
-* 如何过滤工程中的脚本，例如，所有的测试脚本都不需要加密
-* 如何只生成运行需要的辅助文件
-* 如何只加密脚本，不生成额外的运行辅助文件
-* 如何使用 py2exe 打包加密脚本（其他类似工具例如 PyInstaller, cx_Freeze 基本也适用）
+* 如何使用第三方工具 `py2exe` 来打包加密的脚本
 
-运行这个例子，需要安装 py2exe 和 zip。在 `examples/py2exe` 下面，
-py2exe 会把启动脚本 `hello.py` 生成 `hello.exe`，然后把该目录下的其他
-Python 源文件编译后生成压缩包 `library.zip`。Pyarmor 则需要加密所有脚本，
-然后用加密脚本替换 `library.zip` 的同名文件，并拷贝运行辅助文件到
-py2exe 的输出路径。
+首先安装 `py2exe`
 
-这里面主要面临的问题是，如何让 py2exe 正确找到加密脚本所依赖的系统库，
-包括 Pyarmor 运行需要的库，例如 `ctypes`
+    pip install py2exe
 
-因为一旦加密之后，py2exe 就无法知道该模块使用了那些其他的包
+然后需要编写 `py2exe` 的安装脚本 `setup.py`, 这儿有一个实
+例 [examples/py2exe/setup.py](examples/py2exe/setup.py)。这个例子包含一个主脚本
+`hello.py` 和另外一个模块 `queens.py`。首先要确定没有加密之前能够正常打包
 
-
-```bash
     cd /path/to/pyarmor
 
-    # 创建一个工程
-    python pyarmor.py init --src=examples/py2exe --entry="hello.py" projects/py2exe
+    cd example/py2exe
+    python setup.py py2exe
 
-    # 切换到该工程
-    cd projects/py2exe
+    # 输出文件在这里
+    ls dist/
 
-    # 修改工程设置
-    #
-    # 设置 `--runtime-path` 为空字符串，否则加密脚本找不到动态链接库 `_pytransform`
-    #
-    # 设置 `--disable-restrict-mode` 为 1，否则加密脚本可能会报错:
-    #
-    #     SystemError: error return without exception set
-    #
-    # 使用选项 `--mantifest` 来过滤脚本，排除到不需要加密的的脚本和相关路径
-    # 关于过滤器的格式参考 https://docs.python.org/2/distutils/sourcedist.html#commands
-    #
-    # 至于为什么启动脚本 `hello.py` 也不能被加密，下面会有说明
-    #
-    ./pyarmor config --runtime-path='' --disable-restrict-mode=1 \
-                     --manifest "global-include *.py, exclude hello.py setup.py pytransform.py, prune dist, prunde build"
+之后运行命令 `pack` 来打包加密脚本
 
-    # 加密工程中指定的所有脚本，不生成运行辅助文件
-    ./pyarmor build --no-runtime
+    cd ../..
+    python pyarmor.py pack --type py2exe examples/py2exe/hello.py
 
-    # 把修改后的启动脚本拷贝到源路径下面，之前先备份一下
-    cp ../../examples/py2exe/hello.py hello.py.bak
-    mv dist/hello.py ../../examples/py2exe
+检查一下输出路径 `examples/py2exe/dist`，发现多个几个文件，这些是运行加密脚本需要
+的辅助文件，另外 `library.zip` 也被修改了，里面的 `queens.pyc` 被替换成为了加密后
+的脚本
 
-    # 拷贝引用到的模块到源路径下面
-    cp ../../pytransform.py ../../examples/py2exe
-
-    # 注意这里除了启动脚本被修改过之外，其他的都还没有变，启动脚本的
-    # 最前面插入了两行语句
-    #
-    #     from pytransform import pyarmor_runtime
-    #     pyarmor_runtime
-    #
-    # 这样可以让 py2exe 把模块 pytransform 和其需要的其他系统模块，
-    # 例如 `ctypes` 打到包里面
-    #
-    # 启动脚本也不能加密，主要也是因为加密之后，这个脚本依赖的其他模块
-    # 就都找不到了，这样最后打的包里面可能会缺少很多需要的系统文件
-    #
-    # 在源路径里面运行 py2exe，生成 `hello.exe`，`library.zip`，存放在 `dist` 下面
-    ( cd ../../examples/py2exe; python setup.py py2exe )
-
-    # 打包之后，恢复主脚本
-    mv hello.py.bak ../../examples/py2exe/hello.py
-
-    # 把所有加密脚本编译成为 .pyc（Python 3.2 之前不需要 -b 选项）
-    python -m compileall -b dist
-
-    # 更新 `library.zip`，使用加密脚本替换原来的脚本
-    ( cd dist; zip -r ../../../examples/py2exe/dist/library.zip *.pyc )
-
-    # 生成运行需要的辅助文件，保存在 `runtimes`
-    ./pyarmor build --only-runtime --output runtimes
-
-    # 拷贝运行辅助文件到 py2exe 的输出路径
-    cp runtimes/* ../../examples/py2exe/dist
-
-    # 现在，运行 `hello.exe`
-    cd ../../examples/py2exe/dist
-    ./hello.exe
-```
+对于其他打包工具 `cx_Freeze`, `py2app`, `PyInstaller`, 基本使用方法和 `py2exe` 很
+类似。
