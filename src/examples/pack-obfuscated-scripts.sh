@@ -12,11 +12,10 @@ PYARMOR=pyarmor
 # TODO: Entry script
 ENTRY_SCRIPT=/home/jondy/workspace/project/src/main.py
 
-# TODO: Default is setup.py
+# Default is setup.py
 SETUP_SCRIPT=
 
-# TODO: Output path for final built distributions
-#       Default is the output path of setup script
+# Default is same as the output path of setup script
 OUTPUT=
 
 OPTIONS=

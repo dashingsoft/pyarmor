@@ -15,11 +15,10 @@ Set PYARMOR=C:\Python34\Scripts\pyarmor.exe
 REM TODO: Entry script
 Set ENTRY_SCRIPT=C:\Python34\Lib\site-packages\pyarmor\examples\py2exe\hello.py
 
-REM TODO: Default is setup.py
+REM Default is setup.py
 Set SETUP_SCRIPT=
 
-REM TODO: Output path for final built distributions
-REM       Default is the output path of setup script
+REM Default is same as the output path of setup script
 OUTPUT=
 
 Set OPTIONS=
