@@ -10,8 +10,8 @@ from zipfile import ZipFile
 # Pyarmor in the parent path
 PYARMOR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 os.environ['PYARMOR_PATH'] = PYARMOR_PATH
+sys.path.insert(0, PYARMOR_PATH)
 
-sys.path[0:0] = PYARMOR_PATH
 from config import version, config_filename, capsule_filename
 from utils import get_registration_code
 from project import Project
