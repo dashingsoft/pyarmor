@@ -265,27 +265,26 @@ First install py2xe
 
 Then write `setup.py` for py2exe, here is an example script
 `examples/py2exe/setup.py`. There are 2 scripts in this example, entry script
-`hello.py` and `queens.py`, to be sure it works
+`hello.py` and `queens.py`. To be sure it works
 
     cd examples/py2exe
     python setup.py py2exe
 
 After that, run command `pack` to pack obfuscated scripts
 
-    python pyarmor.py --type py2exe examples/py2exe/hello.py
+    python pyarmor.py pack --type py2exe examples/py2exe/hello.py
 
 Check the output path of `examples/py2exe/dist`, the runtime files required by
 obfuscated scripts are copied here, and the `library.zip` is updated, the
 original `queens.pyc` replaced with obfuscated one.
 
-For cx_Freeze, py2app and PyInstaller, it's almost same as py2exe.
+For cx_Freeze, py2app and PyInstaller, it's almost same as py2exe. Learn more
+options about command [pack](#pack)
 
 Quick start from the following template scripts
 
 * [pack-obfuscated-scripts.bat](examples/pack-obfuscated-scripts.bat) for Windows
 * [pack-obfuscated-scripts.sh](examples/pack-obfuscated-scripts.sh) for most of others
-
-Learn more options about command [pack](#pack)
 
 #### Many Obfuscated Package Within Same Python Interpreter
 
