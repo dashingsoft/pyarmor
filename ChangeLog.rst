@@ -1,3 +1,20 @@
+4.4.0
+-----
+
+* Pack obfuscated scripts by command `pack`
+
+In this version, introduces a new command `pack` used to pack
+obfuscated scripts with `py2exe` and `cx_Freeze`. Once the setup
+script of `py2exe` or `cx_Freeze` can bundle clear python scripts,
+`pack` could pack obfuscated scripts by single command: `pyarmor
+pack --type cx_Freeze /path/to/src/main.py`
+
+* Pack obfuscated scripts by WebUI packer
+
+WebUI is well reformed, simple and easy to use.
+
+http://pyarmor.dashingsoft.com/demo/index.html
+
 4.3.4
 -----
 * Fix start pyarmor issue for `pip install` in Python 2
