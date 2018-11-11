@@ -99,7 +99,7 @@ the original scripts with obfuscated ones.
             f.write(os.path.join(obfdist, name), name)
 
 @logaction
-def run_setup_script(src, entry, setup, packcmd, obfdist):
+def run_setup_script(src, entry, build, script, packcmd, obfdist):
     '''Update entry script, copy pytransform.py to source path, then run
 setup script to build the bundle.
 
@@ -111,7 +111,7 @@ setup script to build the bundle.
     shutil.move(obf_entry, src)
     shutil.copy('pytransform.py', src)
 
-    p = subprocess.Popen([sys.executable, setup] + packcmd, cwd=src,
+    p = subprocess.Popen([sys.executable, script] + packcmd, cwd=build,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdoutdata, _ = p.communicate()
 
@@ -174,25 +174,28 @@ def _packer(src, entry, setup, packcmd, output, libname):
     shutil.rmtree(project)
 
 def packer(args):
-    if args.path is None:
-        src = os.path.abspath(os.path.dirname(args.entry[0]))
-        entry = os.path.basename(args.entry[0])
+    src = os.path.abspath(os.path.dirname(args.entry[0]))
+    entry = os.path.basename(args.entry[0])
+
+    if args.setup is None:
+        build = src
+        script = 'setup.py'
     else:
-        src = os.path.abspath(args.path)
-        entry = os.path.relpath(args.entry[0], args.path)
+        build = os.path.abspath(os.path.dirname(args.setup))
+        script = os.path.basename(args.setup)
 
     if args.output is None:
         dist = DEFAULT_PACKER[args.type][0]
-        output = os.path.normpath(os.path.join(src, dist))
+        output = os.path.normpath(os.path.join(build, dist))
     else:
         output = args.output if os.path.isabs(args.output) \
-            else os.path.join(src, args.output)
+            else os.path.join(build, args.output)
 
     libname = DEFAULT_PACKER[args.type][1]
     packcmd = DEFAULT_PACKER[args.type][2] + [output]
 
     logging.info('Prepare to pack obfuscated scripts with %s', args.type)
-    _packer(src, entry, args.setup, packcmd, output, libname)
+    _packer(src, entry, build, script, packcmd, output, libname)
 
     logging.info('')
     logging.info('Pack obfuscated scripts successfully in the path')
@@ -204,9 +207,9 @@ def add_arguments(parser):
 
     parser.add_argument('-t', '--type', default='py2exe',
                         choices=DEFAULT_PACKER.keys())
-    parser.add_argument('-p', '--path',
-                        help='Base path, default is the path of entry script')
-    parser.add_argument('-s', '--setup', default='setup.py',
+    # parser.add_argument('-p', '--path',
+    #                     help='Base path, default is the path of entry script')
+    parser.add_argument('-s', '--setup',
                         help='Setup script, default is setup.py')
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in' \
