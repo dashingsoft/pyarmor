@@ -1,0 +1,27 @@
+#
+# Sample script used to pack obfuscated scripts with
+#
+#    py2exe, py2app, PyInstaller, cx_Freeze
+#
+# Before run it, all TODO variables need to set correctly.
+#
+
+# TODO:
+PYARMOR=pyarmor
+
+# TODO: Entry script
+ENTRY_SCRIPT=/home/jondy/workspace/project/src/main.py
+
+# TODO: Default is setup.py
+SETUP_SCRIPT=
+
+# TODO: Output path for final built distributions
+#       Default is the output path of setup script
+OUTPUT=
+
+OPTIONS=
+[[ -n "${SETUP_SCRIPT}" ]] && OPTIONS="$OPTIONS --setup ${SETUP_SCRIPT}"
+[[ -n "$OUTPUT" ]] && OPTIONS="$OPTIONS --setup $OUTPUT"    
+
+$PYARMOR pack $OPTIONS "${ENTRY_SCRIPT}"
+
