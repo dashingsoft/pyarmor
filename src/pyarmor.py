@@ -761,9 +761,12 @@ def main(args):
     else:
         parser.print_help()
 
-if __name__ == '__main__':
+def main_entry():
     logging.basicConfig(
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
     main(sys.argv[1:])
+
+if __name__ == '__main__':
+    main_entry()
