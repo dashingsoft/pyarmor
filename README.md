@@ -24,89 +24,36 @@ Refer to [Protect Python Scripts By Pyarmor](docs/protect-python-scripts-by-pyar
 
 ## Quick Start
 
-### Installation
+Installation
 
-The simple way is pip
-
-```
     pip install pyarmor
-```
 
-Or get source package from [pypi/pyarmor](https://pypi.python.org/pypi/pyarmor)
+Obfuscate scripts::
 
-Pyarmor is a command line tool, main script is pyarmor.py. After you
-get source package, unpack it to any path, then run paramor.py as
-common python script
+    pyarmor obfuscate --recursive --src=examples/simple --entry=queens.py
 
-```
-    python pyarmor.py
-```
+Run obfuscated scripts::
 
-If Pyarmor is installed  by pip, there is a command will be avaiable in Python script path
+    cd dist
+    python queens.py
 
-```
-    pyarmor
-```
+Pack obfuscated scripts with py2exe, cx_Freeze etc.::
 
-And there is a `webui` used to obfuscate script in gui mode:
+    pyarmor pack -t py2exe examples/py2exe/hello.py
 
-```
+Generate an expired license and run obfuscated scripts with new license::
+
+    pyarmor licenses --expired 2018-12-31 Customer-Jondy
+    cp licenses/Customer-Jondy/license.lic dist/
+
+    cd dist/
+    python queens.py
+
+Start webui, open web page in browser for basic usage of Pyarmor::
+
     pyarmor-webui
-```
 
-Note that the `webui` doesn't include all the features of Pyarmor, it
-can help you to understand Pyarmor quickly.
-
-### Basic Usage
-
-The following examples show how to obfuscate a python package
-**pybench**, which locates in the **examples/pybench** in the source
-of pyarmor.
-
-Obfuscate package **pybench** directly:
-
-    python pyarmor.py obfuscate --recursive --src examples/pybench --entry pybench.py
-
-    # This command will create an extra file .pyarmor_capsule.zip in the
-    # current path, and save all the obfuscated scripts to default output
-    # path "dist"
-    #
-    cd dist
-
-    # Check obfuscated script
-    cat pybench.py
-
-    # Run obfuscated script
-    python pybench.py
-
-Use project to manage obfuscated scripts:
-
-    python pyarmor.py init --src examples/pybench --entry pybench.py projects/pybench
-
-    # This command will create 2 files: .pyarmor_config, .pyarmor_capsule.zip
-    # in the project path "projects/pybench"
-    cd projects/pybench
-
-    # And there is a shell script "pyarmor" is created at the same time.
-    # (In windows, the name is "pyarmor.bat")
-    #
-    # Now run command "build" to obfuscated all the scripts
-    #
-    ./pyarmor build
-
-    # Check obfuscated script
-    cd dist
-    cat pybench.py
-
-    # Run obfuscated script
-    python pybench.py
-
-Pack obfuscated scripts with py2exe, cx_Freeze etc. The setup script
-of py2exe or cx_Freeze must be exists to run this command
-
-    python pyarmor.py pack -t py2exe examples/py2exe/hello.py
-
-More usage, refer to [User Guide](src/user-guide.md)
+More usage, refer to [Examples](src/examples/README.md), [User Guide](src/user-guide.md)
 
 ## License
 
@@ -127,15 +74,12 @@ Click [Purchase](https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3
 
 A registration code will be sent to your immediately after payment is completed successfully.
 
-After you receive the email which includes registration code, copy
-registration code only (no newline), then replace the content of
-"license.lic" with it.
+After you receive the email which includes registration code, copy registration
+code only (no newline), then replace the content of "license.lic" with it.
 
-### Check License
+Check License
 
-```
-    python pyarmor.py --version
-```
+    pyarmor --version
 
 **The registration code is valid forever, it can be used permanently.**
 
