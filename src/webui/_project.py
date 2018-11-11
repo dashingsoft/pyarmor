@@ -4,7 +4,9 @@ import logging
 import json
 import os
 import shutil
+import subprocess
 import sys
+
 from zipfile import ZipFile
 
 # Pyarmor in the parent path
