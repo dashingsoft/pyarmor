@@ -6,9 +6,9 @@ define([], function() {
         };
 
     var _element = document.getElementById('global-message');
-    var showMessage = function (msg) {
+    var showMessage = function (msg, type) {
         _element.innerHTML =
-            '<div class="alert alert-warning alert-dismissible" role="alert">' +
+            '<div class="alert alert-' + (type === 'error' ? 'danger' : 'success') + ' alert-dismissible" role="alert">' +
             '  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
             msg +
             '</div>';
@@ -46,6 +46,7 @@ define([], function() {
     return {
         logMessage: logMessage,
         showMessage: showMessage,
+        showError: function (msg) { showMessage(msg, 'error'); },
         loadPage: loadPage
     };
 

@@ -45,7 +45,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function newProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             var result = response.result;
@@ -57,7 +57,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function saveProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             utils.showMessage(response.result);
@@ -70,7 +70,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function buildProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             utils.showMessage(response.result);
@@ -83,7 +83,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function openProjectModal() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             var result = response.result;
@@ -106,7 +106,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function openProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             var result = response.result;
@@ -121,7 +121,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function removeProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             _projectList.remove(index);
@@ -135,7 +135,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function newLicense() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             var result = response.result;
@@ -143,7 +143,7 @@ define(['connector', 'utils'], function(conn, utils) {
         };
 
         if (document.getElementById('input_license_rcode').value === '') {
-            utils.showMessage('Registration code can not be empty!');
+            utils.showError('Registration code can not be empty!');
             return;
         }
 
@@ -161,7 +161,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function initProject() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result + '<p>Click button New to start');
+                utils.showError(response.result + '<p>Click button New to start');
                 window.localStorage.clear();
                 return ;
             }
@@ -181,7 +181,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function obfuscateScripts() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             var result = response.result;
@@ -208,7 +208,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function generateLicenses() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             var result = response.result;
@@ -232,7 +232,7 @@ define(['connector', 'utils'], function(conn, utils) {
     function packObfuscatedScripts() {
         var _callback = function (response) {
             if (response.errcode) {
-                utils.showMessage(response.result);
+                utils.showError(response.result);
                 return ;
             }
             var result = response.result;

@@ -31,7 +31,7 @@ define(['settings', 'utils', 'demo'], function(settings, utils, demo) {
                     request.onerror();
                     return;
                 }
-                utils.showMessage('Request ' + request.responseURL + ' return : ' + request.status);
+                utils.showError('Request ' + request.responseURL + ' return : ' + request.status);
                 return;
             }
 
