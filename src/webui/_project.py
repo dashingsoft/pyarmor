@@ -8,22 +8,25 @@ import sys
 from zipfile import ZipFile
 
 # Pyarmor in the parent path
-os.environ['PYARMOR_PATH'] = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(os.environ['PYARMOR_PATH'])
+PYARMOR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+os.environ['PYARMOR_PATH'] = PYARMOR_PATH
 
+sys.path[0:0] = PYARMOR_PATH
 from config import version, config_filename, capsule_filename
-from utils import get_registration_code, build_path
+from utils import get_registration_code
 from project import Project
-try:
-    from pyarmor import main as _pyarmor
-except ImportError:
-    from .pyarmor import main as _pyarmor
 
-project_base_path = 'projects'
+project_base_path = os.path.join(PYARMOR_PATH, 'projects')
 project_index_name = 'index.json'
 project_capsule_name = capsule_filename
 project_config_name = config_filename
+
+def call_armor(args):
+    p = subprocess.Popen([sys.executable, 'pyarmor.py'] + list(args),
+                         cwd=PYARMOR_PATH)
+    p.wait()
+    if p.returncode != 0:
+        raise RuntimeError('Call pyarmor failed')
 
 def _check_project_index():
     filename = os.path.join(project_base_path, project_index_name)
@@ -57,7 +60,7 @@ def newProject(args=None):
         os.mkdir(path)
 
     args = ['init', '--src', path, path]
-    _pyarmor(args)
+    call_pyarmor(args)
 
     pindexes['projects'][name] = os.path.abspath(path)
     pindexes['counter'] = counter
@@ -102,7 +105,7 @@ def buildProject(args):
     '''
     name = args['name']
     path = os.path.join(project_base_path, name)
-    _pyarmor(['build', path])
+    call_pyarmor(['build', path])
     return 'Build project OK.'
 
 def removeProject(args):
@@ -182,18 +185,10 @@ def newLicense(args):
         if args[opt]:
             params.extend(['--%s' % opt.replace('_', '-'), args[opt]])
     params.append(title)
-    _pyarmor(params)
+    call_pyarmor(params)
 
     output = os.path.join(path, 'licenses', title, 'license.lic')
     return dict(title=title, filename=output)
-
-def _runPyarmor(params):
-    try:
-        old = os.getcwd()
-        os.chdir('..')
-        _pyarmor(params)
-    finally:
-        os.chdir(old)
 
 def obfuscateScripts(args):
     params = ['obfuscate', '--recursive']
@@ -201,14 +196,14 @@ def obfuscateScripts(args):
         if args[opt]:
             params.extend(['--%s' % opt, args[opt]])
 
-    _runPyarmor(params)
+    call_armor(params)
 
-    output = os.path.abspath(args['output'] if args['output'] else '../dist')
+    output = args['output'] if args['output'] \
+        else os.path.join(PYARMOR_PATH, 'dist')
     return dict(output=output)
 
 def generateLicenses(args):
-    output = os.path.abspath('..')
-    params = ['licenses', '--output', output]
+    params = ['licenses', '--output', PYARMOR_PATH]
 
     for opt in ('expired', 'bind_disk', 'bind_ipv4', 'bind_mac'):
         if args[opt]:
@@ -217,16 +212,17 @@ def generateLicenses(args):
     rcode = args['rcode'].strip()
     params.append(rcode)
 
-    _runPyarmor(params)
+    call_armor(params)
 
-    return dict(output=os.path.join(output, 'licenses', rcode, 'license.lic'))
+    return dict(output=os.path.join(
+        PYARMOR_PATH, 'licenses', rcode, 'license.lic'))
 
 def packObfuscatedScripts(args):
     params = ['pack', '--type', args['type'], args['entry']]
     if args.setup:
         params[3:3] = ['--setup', args['setup']]
 
-    _runPyarmor(params)
+    call_armor(params)
 
     return dict(output=os.path.dirname(args['entry']))
 

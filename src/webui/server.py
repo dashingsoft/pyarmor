@@ -21,9 +21,11 @@ try:
 except ImportError:
     import socketserver
 
-import _project
+from . import _project
 
 __version__ = '0.1'
+
+BASEPATH = os.path.abspath(os.path.dirname(__file__))
 
 class HelperHandler(BaseHTTPRequestHandler):
     '''Based on SimpleHTTPRequestHandler'''
@@ -151,7 +153,7 @@ class HelperHandler(BaseHTTPRequestHandler):
         path = posixpath.normpath(unquote(path))
         words = path.split('/')
         words = filter(None, words)
-        path = os.getcwd()
+        path = BASEPATH
         for word in words:
             drive, word = os.path.splitdrive(word)
             head, word = os.path.split(word)
