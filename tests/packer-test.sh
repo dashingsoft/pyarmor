@@ -59,7 +59,7 @@ check_file_content examples/py2exe/dist/result.log 'Found 92 solutions'
 # ======================================================================
 
 csih_inform "Case 2-1: Only full path entry script"
-$PYARMOR pack --type cx_Freeze examples/py2exe/hello.py >result.log 2>&1
+$PYARMOR pack --type cx_Freeze examples/cx_Freeze/hello.py >result.log 2>&1
 check_return_value
 
 dist=examples/cx_Freeze/build/exe.win32-3.4
