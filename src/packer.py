@@ -54,6 +54,29 @@ except ImportError:
     # argparse is new in version 2.7
     import polyfills.argparse as argparse
 
+DEFAULT_DIST = {
+    'py2app': 'dist',
+    'py2exe': 'dist',
+    'PyInstaller': 'dist',
+    'cx_Freeze': os.path.join(
+        'build', 'exe.%s-%s' % (get_platform(), sys.version[0:3])
+    )
+}
+
+DEFAULT_OPTIONS = {
+    'py2app': ['py2app', '--dist-dir'],
+    'py2exe': ['py2exe', '--dist-dir'],
+    'PyInstaller': ['build', '--dist-dir'],
+    'cx_Freeze': ['build', '--build-exe']
+}
+
+DEFAULT_LIBRARY = {
+    'py2app': 'library.zip',
+    'py2exe': 'library.zip',
+    'PyInstaller': 'library.zip',
+    'cx_Freeze': 'python%s%s.zip' % sys.version_info[:2]
+}
+
 def logaction(func):
     def wrap(*args, **kwargs):
         logging.info('')
@@ -92,8 +115,6 @@ def run_setup_script(src, entry, setup, packcmd, obfdist):
 setup script to build the bundle.
 
     '''
-    cwd = os.path.dirname(setup)
-    script = os.path.basename(setup)
     new_entry = os.path.join(obfdist, entry)
 
     tempfile = '%s.armor.bak' % entry
@@ -101,7 +122,7 @@ setup script to build the bundle.
     shutil.move(new_entry, src)
     shutil.copy('pytransform.py', src)
 
-    p = subprocess.Popen([sys.executable, script] + packcmd, cwd=cwd,
+    p = subprocess.Popen([sys.executable, setup] + packcmd, cwd=src,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdoutdata, _ = p.communicate()
 
@@ -164,32 +185,25 @@ def _packer(src, entry, setup, packcmd, output, libname):
     shutil.rmtree(project)
 
 def packer(args):
-    _type = 'freeze' if args.type.lower().endswith('freeze') else 'py2exe'
-
     if args.path is None:
         src = os.path.abspath(os.path.dirname(args.entry[0]))
         entry = os.path.basename(args.entry[0])
     else:
         src = os.path.abspath(args.path)
         entry = os.path.relpath(args.entry[0], args.path)
-    setup = os.path.join(src, 'setup.py') if args.setup is None \
-        else os.path.abspath(args.setup)
 
     if args.output is None:
-        dist = os.path.join(
-            'build', 'exe.%s-%s' % (get_platform(), sys.version[0:3])
-        ) if _type == 'freeze' else 'dist'
-        output = os.path.join(os.path.dirname(setup), dist)
+        dist = DEFAULT_DIST[args.type]
+        output = os.path.normpath(os.path.join(src, dist))
     else:
-        output = os.path.abspath(args.output)
+        output = args.output if os.path.isabs(args.output) \
+            else os.path.join(src, args.output)
 
-    packcmd = ['py2exe', '--dist-dir', output] if _type == 'py2exe' \
-        else ['build', '--build-exe', output]
-    libname = 'library.zip' if _type == 'py2exe' else \
-        'python%s%s.zip' % sys.version_info[:2]
+    packcmd = DEFAULT_OPTIONS[args.type] + [output]
+    libname = DEFAULT_LIBRARY[args.type]
 
     logging.info('Prepare to pack obfuscated scripts with %s', args.type)
-    _packer(src, entry, setup, packcmd, output, libname)
+    _packer(src, entry, args.setup, packcmd, output, libname)
 
     logging.info('')
     logging.info('Pack obfuscated scripts successfully in the path')
@@ -204,7 +218,7 @@ def add_arguments(parser):
                                  'cx_Freeze', 'PyInstaller'))
     parser.add_argument('-p', '--path',
                         help='Base path, default is the path of entry script')
-    parser.add_argument('-s', '--setup',
+    parser.add_argument('-s', '--setup', default='setup.py',
                         help='Setup script, default is setup.py')
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in' \
