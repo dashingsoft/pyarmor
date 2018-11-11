@@ -221,7 +221,7 @@ def generateLicenses(args):
 
 def packObfuscatedScripts(args):
     params = ['pack', '--type', args['type'], args['entry']]
-    if args.setup:
+    if args['setup']:
         params[3:3] = ['--setup', args['setup']]
 
     call_armor(params)
