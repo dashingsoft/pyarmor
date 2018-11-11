@@ -1,6 +1,6 @@
-REM
-REM DEPRECATED from v3.4, use pack-obfuscated-scripts.bat instead.
-REM
+REM --------------------------------------------------------------
+REM DEPRECATED from v4.4, use pack-obfuscated-scripts.bat instead.
+REM --------------------------------------------------------------
 
 @ECHO OFF
 REM
