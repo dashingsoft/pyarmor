@@ -28,20 +28,20 @@ Installation
 
     pip install pyarmor
 
-Obfuscate scripts::
+Obfuscate scripts
 
     pyarmor obfuscate --recursive --src=examples/simple --entry=queens.py
 
-Run obfuscated scripts::
+Run obfuscated scripts
 
     cd dist
     python queens.py
 
-Pack obfuscated scripts with py2exe, cx_Freeze etc.::
+Pack obfuscated scripts with py2exe, cx_Freeze etc.
 
     pyarmor pack -t py2exe examples/py2exe/hello.py
 
-Generate an expired license and run obfuscated scripts with new license::
+Generate an expired license and run obfuscated scripts with new license
 
     pyarmor licenses --expired 2018-12-31 Customer-Jondy
     cp licenses/Customer-Jondy/license.lic dist/
@@ -49,7 +49,7 @@ Generate an expired license and run obfuscated scripts with new license::
     cd dist/
     python queens.py
 
-Start webui, open web page in browser for basic usage of Pyarmor::
+Start webui, open web page in browser for basic usage of Pyarmor
 
     pyarmor-webui
 

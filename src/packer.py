@@ -22,7 +22,7 @@
 #  @Description:
 #
 #   Pack obfuscated Python scripts with any of third party
-#   tools: py2exe, py2app, cx_Freeze, PyInstaller
+#   tools: py2exe, py2app, cx_Freeze
 #
 
 '''After the py2exe or cx_Freeze setup script works, this tool could
@@ -58,7 +58,6 @@ except ImportError:
 DEFAULT_PACKER = {
     'py2app': ('dist', 'library.zip', ['py2app', '--dist-dir']),
     'py2exe': ('dist', 'library.zip', ['py2exe', '--dist-dir']),
-    'pyInstaller': ('dist', 'library.zip', ['build', '--dist-dir']),
     'cx_Freeze': (
         os.path.join(
             'build', 'exe.%s-%s' % (get_platform(), sys.version[0:3])),

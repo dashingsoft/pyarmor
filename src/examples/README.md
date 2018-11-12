@@ -32,7 +32,7 @@ then run it to obfuscate your python scripts quickly.
 * [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
     The basic usage show how to pack obfuscated scripts with py2exe,
-    py2app, cx_Freeze or PyInstaller.
+    py2app or cx_Freeze.
 
 Not only those scripts, but also some really examples are distributed
 with Pyarmor. Just open a command window, follow the instructions in
@@ -195,4 +195,4 @@ Check the output path of `examples/py2exe/dist`, the runtime files required by
 obfuscated scripts are copied here, and the `library.zip` is updated, the
 original `queens.pyc` replaced with obfuscated one.
 
-For cx_Freeze, py2app and PyInstaller, it's almost same as py2exe.
+For cx_Freeze and py2app, it's almost same as py2exe.

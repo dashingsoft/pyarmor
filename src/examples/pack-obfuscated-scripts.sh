@@ -1,7 +1,7 @@
 #
 # Sample script used to pack obfuscated scripts with
 #
-#    py2exe, py2app, PyInstaller, cx_Freeze
+#    py2exe, py2app, cx_Freeze
 #
 # Before run it, all TODO variables need to set correctly.
 #

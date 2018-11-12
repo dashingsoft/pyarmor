@@ -67,7 +67,7 @@ show project information. `config` to update project settings, and
 `build` to obfuscate the scripts in the project.
 
 Pyarmor v4.4 introduces a new command `pack`, used to pack obfuscated
-scripts with `py2exe`, `cx_Freeze`, `PyInstaller` etc.
+scripts with `py2exe`, `cx_py2app`, `Freeze` etc.
 
 Other commands, `benchmark` to metric performance, `hdinfo` to
 show hardware information, so that command `licenses` can generate
@@ -278,8 +278,8 @@ Check the output path of `examples/py2exe/dist`, the runtime files required by
 obfuscated scripts are copied here, and the `library.zip` is updated, the
 original `queens.pyc` replaced with obfuscated one.
 
-For cx_Freeze, py2app and PyInstaller, it's almost same as py2exe. Learn more
-options about command [pack](#pack)
+For cx_Freeze, py2app, it's almost same as py2exe. Learn more options
+about command [pack](#pack)
 
 Quick start from the following template scripts
 
@@ -1184,7 +1184,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
-  -t TYPE, --type TYPE  py2app, cx_Freeze, pyInstaller, py2exe
+  -t TYPE, --type TYPE  py2app, cx_Freeze, py2exe
   -s SETUP, --setup SETUP
                         Setup script, default is setup.py
 

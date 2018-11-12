@@ -24,8 +24,7 @@ Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放
 
 * [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
-    使用这个脚本模板通过第三方工具 (py2exe, py2app, cx_Freeze,
-    PyInstaller) 来打包加密的脚本。
+    使用这个脚本模板通过第三方工具 (py2exe, py2app, cx_Freeze) 来打包加密的脚本。
 
 
 除了这些脚本之外，这里还有一些真实的例子。现在打开一个命令窗口，按照下
@@ -184,5 +183,4 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
 的辅助文件，另外 `library.zip` 也被修改了，里面的 `queens.pyc` 被替换成为了加密后
 的脚本
 
-对于其他打包工具 `cx_Freeze`, `py2app`, `PyInstaller`, 基本使用方法和 `py2exe` 很
-类似。
+对于其他打包工具 `cx_Freeze`, `py2app`, 基本使用方法和 `py2exe` 很类似。

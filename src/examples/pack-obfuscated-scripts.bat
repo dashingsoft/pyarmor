@@ -2,7 +2,7 @@
 REM
 REM Sample script used to pack obfuscated scripts with
 REM
-REM    py2exe, py2app, PyInstaller, cx_Freeze
+REM    py2exe, py2app, cx_Freeze
 REM
 REM Before run it, all TODO variables need to set correctly.
 REM
