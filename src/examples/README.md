@@ -196,3 +196,44 @@ obfuscated scripts are copied here, and the `library.zip` is updated, the
 original `queens.pyc` replaced with obfuscated one.
 
 For cx_Freeze and py2app, it's almost same as py2exe.
+
+## Example 5: Build for PyInstaller
+
+Here is one of workaround to pack obfuscated scripts with `PyInstaller`, this
+example will distribute a script `hello.py` and moudle file `queens.py`
+
+First obfuscate all the `.py` file in the path `testmod` to `dist/obf`
+
+    pyarmor obfuscate --src testmod --entry hello.py --no-restrict --output dist/obf
+
+Then run pyinstaller to build the bundle to `dist/hello/`, this command will
+generate `hello.spec` either
+
+    cd /path/to/pyarmor/examples
+    pyinstaller testmod/hello.py
+
+Edit `hello.spec`, change `Analysis`, add obfuscated script and date files as
+the following way
+
+    a = Analysis(['testmod/hello.py', 'dist/obf/hello.py'],
+                 datas=[('dist/obf/*.lic', '.'), ('dist/obf/*.key', '.'), ('dist/obf/_pytransform.*', '.')],
+
+After `Analysis`, insert code to replace original python scrips and moudles with
+obfuscated ones
+
+    a.scripts[0] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
+    for i in range(len(a.pure)):
+        if a.pure[i][1].startswith(a.pathex[0]):
+            a.pure[i] = a.pure[i][0], a.pure[i][1].replace('/testmod/', '/dist/obf/'), a.pure[i][2]
+
+Next run pyinstaller with this `hello.spec`
+
+    pyinstaller hello.spec
+
+Finally run exetuable with obfuscated scripts
+
+    dist/hello/hello
+
+    # Check the scripts are obfuscated
+    rm dist/hello/license.lic
+    dist/hello/hello
