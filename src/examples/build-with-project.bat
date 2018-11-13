@@ -14,24 +14,24 @@ SETLOCAL
 REM TODO:
 SET PYTHON=C:\Python34\python.exe
 
-REM TODO: Where to find pyarmor.py
-SET PYARMOR_PATH=C:\Python34\Lib\site-packages\pyarmor
+REM TODO:
+SET PYARMOR=C:\Python34\Scripts\pyarmor.exe
 
-REM TODO: Absolute path in which all python scripts will be obfuscated
-SET SOURCE=%PYARMOR_PATH%\examples\simple
+REM TODO: In which all python scripts will be obfuscated
+SET SOURCE=C:\Python34\Lib\site-packages\pyarmor\examples\simple
 REM TODO: Entry script filename, must be relative to %SOURCE%
 SET ENTRY_SCRIPT=queens.py
 
 REM For package, uncomment the following lines
-rem SET SOURCE=%PYARMOR_PATH%\examples\testpkg\mypkg
+rem SET SOURCE=C:\Python34\Lib\site-packages\pyarmor\examples\testpkg\mypkg
 rem SET PKGNAME=mypkg
 rem SET ENTRY_SCRIPT=__init__.py
 
 REM TODO: output path for saving project config file, and obfuscated scripts
-SET PROJECT=%PYARMOR_PATH%\examples\armor-project
+SET PROJECT=C:\Python34\Lib\site-packages\pyarmor\projects\project1
 
 REM TODO: Filter the source files, exclude all the scripts in test
-rem SET PROJECT_FILTER=global-include *.py, prune test
+rem SET PROJECT_FILTER=global-include *.py, prune test, prune build
 
 REM TODO: If generate new license for obfuscated scripts, uncomment next line
 rem SET LICENSE_CODE=any-identify-string
@@ -55,23 +55,6 @@ rem   ECHO Package name is %PKGNAME%
 rem   ECHO.
 rem )
 
-REM Check Python
-%PYTHON% --version 
-IF NOT ERRORLEVEL 0 (
-  ECHO.
-  ECHO Python doesn't work, check value of variable PYTHON
-  ECHO.
-  GOTO END
-)
-
-REM Check Pyarmor
-IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
-  ECHO.
-  ECHO No pyarmor found, check value of variable PYARMOR_PATH
-  ECHO. 
-  GOTO END
-)
-
 REM Check Source
 IF NOT EXIST "%SOURCE%" (
   ECHO.
@@ -90,8 +73,7 @@ IF NOT EXIST "%SOURCE%\%ENTRY_SCRIPT%" (
 
 REM Create a project
 ECHO.
-CD /D %PYARMOR_PATH%
-%PYTHON% pyarmor.py init --src=%SOURCE% --entry=%ENTRY_SCRIPT% %PROJECT%
+%PYARMOR% init --src=%SOURCE% --entry=%ENTRY_SCRIPT% %PROJECT%
 IF NOT ERRORLEVEL 0 GOTO END
 ECHO.
 

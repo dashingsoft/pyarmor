@@ -10,7 +10,7 @@ SETLOCAL
 REM TODO:
 SET PYTHON=C:\Python34\python.exe
 
-REM TODO: Where to find pyarmor.py
+REM TODO:
 SET PYARMOR=C:\Python34\Scripts\pyarmor.exe
 
 REM TODO: Entry script filename

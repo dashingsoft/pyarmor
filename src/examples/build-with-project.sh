@@ -11,8 +11,8 @@
 # TODO: python interpreter
 PYTHON=python
 
-# TODO: Absolute path of pyarmor installed, where to find pyarmor.py
-PYARMOR_PATH=/usr/local/lib/python2.7/dist-packages/pyarmor
+# TODO:
+PYARMOR=pyarmor
 
 # TODO: Absolute path in which all python scripts will be obfuscated
 SOURCE=/home/jondy/workspace/project/src
@@ -48,29 +48,25 @@ if [[ "${ENTRY_SCRIPT}" == "__init__.py" ]] ; then
     echo -e "\nPackage name is $PKGNAME\n"
 fi
 
-# Project convenient command
-PYARMOR=./pyarmor
-
 # Create a project
-cd ${PYARMOR_PATH}
-$PYTHON pyarmor.py init --src=$SOURCE --entry=${ENTRY_SCRIPT} $PROJECT || exit 1
+$PYARMOR init --src=$SOURCE --entry=${ENTRY_SCRIPT} $PROJECT || exit 1
 
 # Change to project path, there is a convenient script pyarmor.bat
 cd $PROJECT
 
 # Filter source files by config project filter
 if [[ -n "${PROJECT_FILTER}" ]] ; then
-  $PYARMOR config --manifest "${PROJECT_FILTER}" || exit 1
+  ./pyarmor config --manifest "${PROJECT_FILTER}" || exit 1
 fi
 
 
 # Obfuscate scripts by command build
-$PYARMOR build || exit 1
+./pyarmor build || exit 1
 
 # Generate special license if any
 if [[ -n "${LICENSE_CODE}" ]] ; then
     echo
-    $PYARMOR licenses ${LICENSE_EXPIRED_DATE} ${LICENSE_HARDDISK_SERIAL_NUMBER} \
+    ./pyarmor licenses ${LICENSE_EXPIRED_DATE} ${LICENSE_HARDDISK_SERIAL_NUMBER} \
         ${LICENSE_MAC_ADDR} ${LICENSE_IPV4_ADDR} ${LICENSE_CODE} || exit 1
     echo
 

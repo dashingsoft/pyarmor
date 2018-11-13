@@ -10,69 +10,51 @@ SETLOCAL
 REM TODO:
 SET PYTHON=C:\Python34\python.exe
 
-REM TODO: Where to find pyarmor.py
-SET PYARMOR_PATH=C:\Python34\Lib\site-packages\pyarmor
+REM TODO:
+SET PYARMOR=C:\Python34\Scripts\pyarmor.exe
 
-REM TODO: Absolute path in which all python scripts will be obfuscated
-SET SOURCE=%PYARMOR_PATH%\examples\testpkg
+REM TODO: Package path
+SET PKGPATH=C:\Python34\Lib\site-packages\pyarmor\examples\testpkg
 
-REM TODO: Package name, __init__.py shoule be in %SOURCE%\%PKGNAME%
+REM TODO: Package name, __init__.py shoule be in %PKGPATH%\%PKGNAME%
 SET PKGNAME=mypkg
+SET ENTRY_SCRIPT=%PKGPATH%\%PKGNAME%\__init__.py 
 
 REM TODO: Output path for obfuscated package and runtime files
-SET OUTPUT=%PYARMOR_PATH%\examples\pkg-dist
+SET OUTPUT=C:\Python34\Lib\site-packages\pyarmor\examples\dist
 
 REM TODO: Comment next line if do not try to test obfuscated package
 SET TEST_OBFUSCATED_PACKAGE=1
 
 REM TODO: Let obfuscated package expired on some day, uncomment next line
-SET LICENSE_EXPIRED_DATE=2019-01-01
+rem SET LICENSE_EXPIRED_DATE=2019-01-01
 
-REM Check Python
-%PYTHON% --version
-IF NOT ERRORLEVEL 0 (
+REM Check Package
+IF NOT EXIST "%PKGPATH%" (
   ECHO.
-  ECHO Python doesn't work, check value of variable PYTHON
+  ECHO No %PKGPATH% found, check value of variable PKGPATH
   ECHO.
   GOTO END
 )
 
-REM Check Pyarmor
-IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
+REM Check entry script
+IF NOT EXIST "%ENTRY_SCRIPT%" (
   ECHO.
-  ECHO No pyarmor found, check value of variable PYARMOR_PATH
-  ECHO.
-  GOTO END
-)
-
-REM Check Source
-IF NOT EXIST "%SOURCE%" (
-  ECHO.
-  ECHO No %SOURCE% found, check value of variable SOURCE
-  ECHO.
-  GOTO END
-)
-
-REM Check package
-SET PKGPATH=%SOURCE%\%PKGNAME%
-IF NOT EXIST "%PKGPATH%\__init__.py" (
-  ECHO.
-  ECHO No %PKGPATH%\__init__.py found, check value of variable PKGNAME
+  ECHO No %ENTRY_SCRIPT% found, check value of variable PKGNAME
   ECHO.
   GOTO END
 )
 
 REM Obfuscate scripts
 ECHO.
-CD /D %PYARMOR_PATH%
-%PYTHON% pyarmor.py obfuscate --recursive --no-restrict --src %PKGPATH% --entry __init__.py --output %OUTPUT%\%PKGNAME%
+%PYARMOR% obfuscate --recursive --output %OUTPUT%\%PKGNAME% %ENTRY_SCRIPT%
 IF NOT ERRORLEVEL 0 GOTO END
 ECHO.
 
 REM Generate an expired license if LICENSE_EXPIRED_DATE is set
 SET LICENSE_CODE=expired-%LICENSE_EXPIRED_DATE%
 IF DEFINED LICENSE_EXPIRED_DATE (
-  %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
+  %PYARMOR% licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
   IF NOT ERRORLEVEL 0 GOTO END
 
   REM Overwrite default license with this expired license
