@@ -11,59 +11,38 @@ REM TODO:
 SET PYTHON=C:\Python34\python.exe
 
 REM TODO: Where to find pyarmor.py
-SET PYARMOR_PATH=C:\Python34\Lib\site-packages\pyarmor
+SET PYARMOR=C:\Python34\Scripts\pyarmor.exe
 
-REM TODO: Absolute path in which all python scripts will be obfuscated
-SET SOURCE=%PYARMOR_PATH%\examples\simple
-
-REM TODO: Entry script filename, must be relative to %SOURCE%
-SET ENTRY_SCRIPT=queens.py
+REM TODO: Entry script filename
+SET ENTRY_SCRIPT=C:\Python34\Lib\site-packages\pyarmor\examples\simple\queens.py
 
 REM TODO: Output path for obfuscated scripts and runtime files
-SET OUTPUT=%PYARMOR_PATH%\examples\dist
+SET OUTPUT=C:\Python34\Lib\site-packages\pyarmor\examples\simple\dist
 
 REM TODO: Let obfuscated scripts expired on some day, uncomment next line
-rem SET LICENSE_EXPIRED_DATE=2019-01-01
+SET LICENSE_EXPIRED_DATE=2019-01-01
 
 REM TODO: If try to run obfuscated scripts, uncomment next line
-rem SET TEST_OBFUSCATED_SCRIPTS=1
+SET TEST_OBFUSCATED_SCRIPTS=1
 
-REM Check Python
-%PYTHON% --version
-IF NOT ERRORLEVEL 0 (
+REM Check entry script
+IF NOT EXIST "%ENTRY_SCRIPT%" (
   ECHO.
-  ECHO Python doesn't work, check value of variable PYTHON
-  ECHO.
-  GOTO END
-)
-
-REM Check Pyarmor
-IF NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
-  ECHO.
-  ECHO No pyarmor found, check value of variable PYARMOR_PATH
-  ECHO.
-  GOTO END
-)
-
-REM Check Source
-IF NOT EXIST "%SOURCE%" (
-  ECHO.
-  ECHO No %SOURCE% found, check value of variable SOURCE
+  ECHO No %ENTRY_SCRIPT% found, check value of variable ENTRY_SCRIPT
   ECHO.
   GOTO END
 )
 
 REM Obfuscate all the ".py" files
 ECHO.
-CD /D %PYARMOR_PATH%
-%PYTHON% pyarmor.py obfuscate --recursive --src %SOURCE% --entry %ENTRY_SCRIPT% --output %OUTPUT%
+%PYARMOR% obfuscate --recursive --output %OUTPUT% %ENTRY_SCRIPT% 
 IF NOT ERRORLEVEL 0 GOTO END
 ECHO.
 
 REM Generate an expired license if LICENSE_EXPIRED_DATE is set
 SET LICENSE_CODE=expired-%LICENSE_EXPIRED_DATE%
 IF DEFINED LICENSE_EXPIRED_DATE (
-  %PYTHON% pyarmor.py licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
+  %PYARMOR% licenses --expired %LICENSE_EXPIRED_DATE% %LICENSE_CODE%
   IF ERRORLEVEL 1 GOTO END
 
   REM Overwrite default license with this expired license
@@ -75,11 +54,11 @@ IF DEFINED LICENSE_EXPIRED_DATE (
 
 REM Test obfuscated scripts
 IF "%TEST_OBFUSCATED_SCRIPTS%" == "1" (
-  ECHO Prepare to run obfuscated script %OUTPUT%\%ENTRY_SCRIPT%
+  ECHO Prepare to run obfuscated script
   PAUSE
 
   CD /D %OUTPUT%
-  %PYTHON% %ENTRY_SCRIPT%
+  FOR %%I IN ( %ENTRY_SCRIPT% ) DO %PYTHON% %%~nI.py
 )
 
 :END

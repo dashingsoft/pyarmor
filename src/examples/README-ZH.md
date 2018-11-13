@@ -1,6 +1,4 @@
-# 示例
-
-[English Version](README.md)
+# 示例（[English Version](README.md)）
 
 好的示例就是最好的老师，是最快的学习方式。在 Pyarmor 发布的包里面，就包
 含了针对不同使用场景的脚本模板。这些脚本里面的注释很详细，按照里面的说
@@ -47,7 +45,7 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
     cd /path/to/pyarmor
 
     # 使用 pyarmor 提供的命令 obfuscate 加密路径下 `examples/simple` 的所有脚本
-    python pyarmor.py obfuscate --recursive --src examples/simple --entry queens.py
+    pyarmor obfuscate --recursive examples/simple/queens.py
 
     # 加密后的脚本存放在 `dist`
     cd dist
@@ -72,10 +70,10 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
     cd /path/to/pyarmor
 
     # 使用 pyarmor 提供的命令 obfuscate 去加密包，加密后的脚本存放在 `dist/mypkg`
-    # python pyarmor.py obfuscate --src "examples/testpkg/mypkg" --entry "__init__.py" --output "dist/mypkg"
+    pyarmor obfuscate --output=dist/mypkg examples/testpkg/mypkg/__init__.py
 
     # 使用命令 license 生成一个有效期到 2019-01-01 的授权文件
-    python pyarmor.py licenses --expired 2019-01-01 mypkg2018
+    pyarmor licenses --expired 2019-01-01 mypkg2018
 
     # 使用新的授权文件覆盖默认的授权文件
     cp licenses/mypkg2018/license.lic dist/mypkg
@@ -109,7 +107,7 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
     cd /path/to/pyarmor
 
     # 使用命令 init 创建一个工程
-    python pyarmor.py init --src=examples/simple --entry=queens.py projects/simple
+    pyarmor init --src=examples/simple --entry=queens.py projects/simple
 
     # 切换到新创建的工程
     cd projects/simple

@@ -1,6 +1,4 @@
-# Exmaples
-
-[中文版](README-ZH.md)
+# Exmaples ([中文版](README-ZH.md))
 
 A good example maybe is the best teacher. There are several sample
 shell scripts distributed with source package of Pyarmor. All of them
@@ -57,7 +55,7 @@ Learn from this example
     cd /path/to/pyarmor
 
     # Obfuscate python scripts in the path `examples/simple`
-    python pyarmor.py obfuscate --recursive --src examples/simple --entry queens.py
+    pyarmor obfuscate --recursive examples/simple/queens.py
 
     # Obfuscated scripts saved in the output path `dist`
     cd dist
@@ -84,10 +82,10 @@ Learn from this example
     cd /path/to/pyarmor
 
     # Obfuscate all the python scripts in the package, obfuscated package saved in the path `dist/mypkg`
-    # python pyarmor.py obfuscate --src "examples/testpkg/mypkg" --entry "__init__.py" --output "dist/mypkg"
+    pyarmor obfuscate --output=dist/mypkg examples/testpkg/mypkg/__init__.py
 
     # Generate an expired license on 2019-01-01
-    python pyarmor.py licenses --expired 2019-01-01 mypkg2018
+    pyarmor licenses --expired 2019-01-01 mypkg2018
 
     # Overwrite the default license
     cp licenses/mypkg2018/license.lic dist/mypkg
@@ -121,7 +119,7 @@ will be distributed to three customers with different licenses:
     cd /path/to/pyarmor
 
     # Create a project in the path `projects/simple`
-    python pyarmor.py init --src=examples/simple --entry=queens.py projects/simple
+    pyarmor init --src=examples/simple --entry=queens.py projects/simple
 
     # Change to project path
     cd projects/simple
