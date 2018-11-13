@@ -59,8 +59,7 @@ echo "-------------------- Test Command obfuscate --------------------"
 echo ""
 
 csih_inform "Case 1.1: obfuscate script"
-$PYARMOR obfuscate --src examples/simple --entry queens.py --output dist \
-                   "*.py"  >result.log 2>&1
+$PYARMOR obfuscate --output dist examples/simple/queens.py >result.log 2>&1
 
 check_file_exists dist/queens.py
 check_file_content dist/queens.py '__pyarmor__(__name__'
@@ -68,9 +67,9 @@ check_file_content dist/queens.py '__pyarmor__(__name__'
 ( cd dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions'
 
-csih_inform "Case 1.2: obfuscate script with --no-restrict"
-$PYARMOR obfuscate --src examples/py2exe --entry hello.py --output dist2 \
-                   --no-restrict queens.py  >result.log 2>&1
+csih_inform "Case 1.2: obfuscate script with --recursive and --restrict"
+$PYARMOR obfuscate --recursive --restrict --output dist2 \
+                    examples/py2exe/hello.py >result.log 2>&1
 
 check_return_value
 check_file_exists dist2/hello.py
