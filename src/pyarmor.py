@@ -456,7 +456,7 @@ def _obfuscate(args):
     output = args.output
     pat = '%sinclude *.py' % ('global-' if args.recursive else '')
     files = Project.build_manifest(
-        [pat.decode if hasattr('', 'decode') else pat], path)
+        [pat.decode() if hasattr('', 'decode') else pat], path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
 
