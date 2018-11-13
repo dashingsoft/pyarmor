@@ -254,7 +254,7 @@ def packer(args):
     packcmd = DEFAULT_PACKER[_type][2] + [output]
 
     logging.info('Prepare to pack obfuscated scripts with %s', _type)
-    if _type === 'PyInstaller':
+    if _type == 'PyInstaller':
         _pyinstaller(src, entry, packcmd, output)
     else:
         _packer(src, entry, build, script, packcmd, output, libname)
