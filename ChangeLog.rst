@@ -1,3 +1,9 @@
+4.4.1
+-----
+* Support Py2Installer by a simple way
+* For command `obfuscate`, get default `src` and `entry` from first argument, `--src` is not required.
+* Set no restrict mode as default for new project and command `obfuscate`, `licenses`
+
 4.4.0
 -----
 
