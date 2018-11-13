@@ -83,7 +83,7 @@ check_file_content dist2/result.log 'Found 92 solutions'
 
 csih_inform "Case 1.3: run obfuscate script with new license"
 $PYARMOR obfuscate --src examples/simple --entry queens.py \
-    --output dist3 --no-restrict queens.py  >result.log 2>&1
+    --output dist3 queens.py  >result.log 2>&1
 check_return_value
 check_file_exists dist3/queens.py
 
@@ -311,7 +311,7 @@ $SED -i -e "s/def get_registration_code/def _empty(): pass\ndef get_registration
 
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'Dashingsoft Pyshield Project'"
+check_file_content projects/pybench/dist/result.log "'Pyarmor-Project'"
 
 cp $output/code1/license.lic projects/pybench/dist
 ( cd projects/pybench/dist;
