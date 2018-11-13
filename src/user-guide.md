@@ -24,15 +24,15 @@ This is the documentation for Pyarmor 3.4 and later.
     - [obfuscate](#obfuscate)
     - [licenses](#licenses)
     - [pack](#pack)
-    - Project Commands
-        - [init](#init)
-        - [config](#config)
-        - [build](#build)
-        - [info](#info)
-        - [check](#check)
-    - Other Commands
-        - [hdinfo](#hdinfo)
-        - [benchmark](#benchmark)
+    
+    - [init](#init)
+    - [config](#config)
+    - [build](#build)
+    - [info](#info)
+    
+    - [check](#check)
+    - [hdinfo](#hdinfo)
+    - [benchmark](#benchmark)
 - [Appendix](#appendix)
     - [Limitions](#limitions)
     - [About license.lic](#about-license.lic)
@@ -575,22 +575,19 @@ zip file, will solve this problem.
 
 ## Command Options
 
-* Favorate commands
-    - [obfuscate](#obfuscate)
-    - [licenses](#licenses)
-    - [pack](#pack)
-* Project Commands
-        - [init](#init)
-        - [config](#config)
-        - [build](#build)
-        - [info](#info)
-        - [check](#check)
-* Other Commands
-    - [hdinfo](#hdinfo)
-    - [benchmark](#benchmark)
+Available commands
 
-Available command: `init`, `config`, `build`, `info`, `check`,
-`licenses`, `hdinfo`, `benchmark`, `obfuscate`
+- [obfuscate](#obfuscate)
+- [licenses](#licenses)
+- [pack](#pack)
+- Project Commands
+    - [init](#init)
+    - [config](#config)
+    - [build](#build)
+    - [info](#info)
+    - [check](#check)
+- [hdinfo](#hdinfo)
+- [benchmark](#benchmark)
 
 See online document
 
