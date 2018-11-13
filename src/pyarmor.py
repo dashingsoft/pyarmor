@@ -107,12 +107,11 @@ EXAMPLES
     logging.info('Python scripts base path: %s', src)
 
     name = os.path.basename(os.path.abspath(path))
-    if (args.type == 'package') or (args.type == 'pkg') or \
+    if (args.type == 'pkg') or \
        (args.type == 'auto' and os.path.exists(os.path.join(src, '__init__.py'))):
         logging.info('Project is configured as package')
         project = Project(name=name, title=name, src=src, entry=args.entry,
-                          is_package=1, obf_code_mode='wrap',
-                          disable_restrict_mode=1)
+                          is_package=1, obf_code_mode='wrap')
     else:
         logging.info('Project is configured as standalone application.')
         project = Project(name=name, title=name, src=src, entry=args.entry)
@@ -334,7 +333,9 @@ Examples,
                             args.project)
         capsule = DEFAULT_CAPSULE if args.capsule is None else args.capsule
         logging.info('Generate licenses for capsule %s ...', capsule)
-        project = {}
+        project = {
+            'disable_restrict_mode': 0 if args.restrict else 1,
+        }
 
     licpath = os.path.join(
         args.project if args.output is None else args.output,
@@ -351,9 +352,7 @@ Examples,
         fmt = '*TIME:%.0f\n' % \
               time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
 
-    if (args.disable_restrict_mode is None
-        and project.get('disable_restrict_mode')) \
-       or args.disable_restrict_mode == 1:
+    if project.get('disable_restrict_mode'):
         logging.info('The license files generated is in disable restrict mode')
         fmt = '%s*FLAGS:%c' % (fmt, 1)
     else:
@@ -443,10 +442,8 @@ def _obfuscate(args):
         raise RuntimeError('No entry script')
 
     entry = args.entry or args.scripts[0]
-    if args.src is None:
-        path = os.path.abspath(os.path.dirname(entry))
-    else:
-        path = os.path.abspath(args.src)
+    path = os.path.abspath(os.path.dirname(entry) if args.src is None
+                           else args.src)
     logging.info('Obfuscate scripts in path "%s" ...', path)
 
     capsule = args.capsule if args.capsule else DEFAULT_CAPSULE
@@ -725,8 +722,8 @@ def main(args):
     cparser.add_argument('-P', '--project', default='', help='Project path')
     cparser.add_argument('-C', '--capsule', help='Project capsule')
     cparser.add_argument('-O', '--output', help='Output path')
-    cparser.add_argument('--disable-restrict-mode', action='store_const',
-                         const=1, help='Disable restrict mode')
+    cparser.add_argument('--restrict', action='store_const',
+                         const=1, help='Generate a license for restrict mode')
     cparser.set_defaults(func=_licenses)
 
     #

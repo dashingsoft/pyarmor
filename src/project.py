@@ -60,7 +60,7 @@ class Project(dict):
         ( 'output', default_output_path ), \
         ( 'capsule', capsule_filename ), \
         ( 'runtime_path', None ), \
-        ( 'disable_restrict_mode', None ), \
+        ( 'disable_restrict_mode', 1 ), \
         ( 'obf_module_mode', default_obf_module_mode ), \
         ( 'obf_code_mode', default_obf_code_mode ), \
         ( 'build_time', 0. )
