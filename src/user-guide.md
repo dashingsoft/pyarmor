@@ -14,8 +14,7 @@ This is the documentation for Pyarmor 3.4 and later.
         - [Many Obfuscated Package Within Same Python Interpreter](#many-obfuscated-package-within-same-python-interpreter)
         - [Change Default Project Configuration](#change-default-project-configuration)
     - [Distribute Obfuscated Scripts](#distribute-obfuscated-scripts)
-      - [Pack Obfuscated Scripts with py2exe and cx_Freeze](#pack-obfuscated-scripts-with-py2exe-and-cx_freeze)
-      - [Pack Obfuscated Scripts with PyInstaller](#pack-obfuscated-scripts-with-pyinstaller)
+        - [Pack Obfuscated Scripts into bundle](#pack-obfuscated-scripts-into-bundle)
     - [License of Obfuscated Scripts](#license-of-obfuscated-scripts)
     - [Cross Platform](#cross-platform)
     - [Use runtime path](#use-runtime-path)
@@ -386,56 +385,56 @@ About project configuration information, refer to [Project Configure File](#proj
 
 ### Distribute Obfuscated Scripts
 
-First obfuscate all scripts in build machine.
-
-For standalone package, copy all the files in output path "dist" to
-target machine
-
-For package which used by other scripts:
-
-* Copy all the runtime files to any python search path in target
-  machine.
-
-* Copy whole obfuscated package path to target machine, generally it
-  locates in `dist/pkgname`
-
-* Add 2 extra lines in main script before imported obfuscated package
-  in target machine. Generally, these lines has been inserted into
-  entry scripts of the project.
-
-```python
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-
-```
+It's simple to distribute obfuscated scripts, just copy all the files
+in output path `dist` to target machine
 
 **Note** Python version in build machine must be same as in target
 machine. To be exact, the magic string value used to recognize
 byte-compiled code files (.pyc files) must be same.
 
-#### Pack Obfuscated Scripts with py2exe and cx_Freeze
+#### Pack Obfuscated Scripts Into Bundle
 
-From v4.4, introduces a command `pack` to pack obfuscated scripts with py2exe,
-cx_Freeze etc.
+From v4.4, introduces a command `pack` to pack obfuscated scripts with
+`PyInstaller`, `py2exe`, `py2app`, `cx_Freeze` etc.
 
-First install py2xe
+The prefer way is `PyInstaller`, first install `PyInstaller`
 
-    pip install py2exe
+    pip install pyinstaller
 
-Then write `setup.py` for py2exe, here is an example script
-`examples/py2exe/setup.py`. There are 2 scripts in this example, entry script
-`hello.py` and `queens.py`. To be sure it works
+Then run command `pack` to pack obfuscated scripts
+
+    pyarmor pack examples/py2exe/hello.py
+
+Run the final executeable file
+
+    dist/hello/hello
+
+Check they're obfuscated
+
+    rm dist/hello/license.lic
+    dist/hello/hello
+
+For the other tools, before run command `pack`, the setup script must
+be written. For py2exe, here is an example script
+`examples/py2exe/setup.py`. It will pack the entry script `hello.py`
+and `queens.py`. To be sure it works
 
     cd examples/py2exe
     python setup.py py2exe
 
-After that, run command `pack` to pack obfuscated scripts
+Then run command `pack` to pack obfuscated scripts
 
-    python pyarmor.py pack --type py2exe examples/py2exe/hello.py
+     pyarmor pack --type py2exe py2exe/hello.py
 
-Check the output path of `examples/py2exe/dist`, the runtime files required by
-obfuscated scripts are copied here, and the `library.zip` is updated, the
-original `queens.pyc` replaced with obfuscated one.
+Run the final executeable file
+
+    cd py2exe/dist
+    ./hello
+
+Check they're obfuscated
+
+    rm license.lic
+    ./hello
 
 For cx_Freeze, py2app, it's almost same as py2exe. Learn more options
 about command [pack](#pack)
@@ -445,46 +444,6 @@ Quick start from the following template scripts
 * [pack-obfuscated-scripts.bat](examples/pack-obfuscated-scripts.bat) for Windows
 * [pack-obfuscated-scripts.sh](examples/pack-obfuscated-scripts.sh) for most of others
 
-#### Pack Obfuscated Scripts with PyInstaller
-
-Here is one of workaround to pack obfuscated scripts with `PyInstaller`, this
-example will distribute a script `hello.py` and moudle file `queens.py`
-
-First obfuscate all the `.py` file in the path `testmod` to `dist/obf`
-
-    pyarmor obfuscate --src testmod --entry hello.py --no-restrict --output dist/obf
-
-Then run pyinstaller to build the bundle to `dist/hello/`, this command will
-generate `hello.spec` either
-
-    cd /path/to/pyarmor/examples
-    pyinstaller testmod/hello.py
-
-Edit `hello.spec`, change `Analysis`, add obfuscated script and date files as
-the following way
-
-    a = Analysis(['testmod/hello.py', 'dist/obf/hello.py'],
-                 datas=[('dist/obf/*.lic', '.'), ('dist/obf/*.key', '.'), ('dist/obf/_pytransform.*', '.')],
-
-After `Analysis`, insert code to replace original python scrips and moudles with
-obfuscated ones
-
-    a.scripts[0] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
-    for i in range(len(a.pure)):
-        if a.pure[i][1].startswith(a.pathex[0]):
-            a.pure[i] = a.pure[i][0], a.pure[i][1].replace('/testmod/', '/dist/obf/'), a.pure[i][2]
-
-Next run pyinstaller with this `hello.spec`
-
-    pyinstaller hello.spec
-
-Finally run exetuable with obfuscated scripts
-
-    dist/hello/hello
-
-    # Check the scripts are obfuscated 
-    rm dist/hello/license.lic
-    dist/hello/hello
 
 ### License of Obfuscated Scripts
 

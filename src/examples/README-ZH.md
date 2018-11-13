@@ -152,19 +152,37 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
 
 ```
 
-## 实例 4: 使用 py2exe / py2app / cx_Freeze 打包加密脚本
+## 实例 4: 打包加密脚本
 
 从这个例子中，可以学习到
 
-* 如何使用第三方工具 `py2exe` 来打包加密的脚本
+* 如何使用命令 `pack` 来打包加密的脚本
 
-首先安装 `py2exe`
+Pyarmor 需要使用第三方的打包工具，推荐工具是 `PyInstaller`, 首先安装
+
+    pip install pyinstaller
+
+接着就可以运行命令 `pack` 打包加密脚本
+
+    cd /path/to/pyarmor
+    pyarmor pack examples/py2exe/hello.py
+
+运行一下打包好的可执行文件
+
+    dist/hello/hello
+
+确认脚本已经加密
+
+    rm dist/hello/license.lic
+    dist/hello/hello
+
+使用其他工具需要先写一个安装脚本`setup.py`, 这儿有一个 `py2exe` 的实
+例 [examples/py2exe/setup.py](examples/py2exe/setup.py)。这个脚本用来打
+包主脚本`hello.py` 和另外一个模块 `queens.py`。
+
+首先安装 `py2exe`，并确定没有加密之前能够正常打包
 
     pip install py2exe
-
-然后需要编写 `py2exe` 的安装脚本 `setup.py`, 这儿有一个实
-例 [examples/py2exe/setup.py](examples/py2exe/setup.py)。这个例子包含一个主脚本
-`hello.py` 和另外一个模块 `queens.py`。首先要确定没有加密之前能够正常打包
 
     cd /path/to/pyarmor
 
@@ -176,62 +194,10 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
 
 之后运行命令 `pack` 来打包加密脚本
 
-    cd ../..
-    python pyarmor.py pack --type py2exe examples/py2exe/hello.py
+    pyarmor pack --type py2exe hello.py
 
-检查一下输出路径 `examples/py2exe/dist`，发现多个几个文件，这些是运行加密脚本需要
-的辅助文件，另外 `library.zip` 也被修改了，里面的 `queens.pyc` 被替换成为了加密后
-的脚本
+检查一下输出路径 `dist`，发现多个几个文件，这些是运行加密脚本需要的辅助
+文件，另外 `library.zip` 也被修改了，里面的 `queens.pyc` 被替换成为了加
+密后的脚本
 
 对于其他打包工具 `cx_Freeze`, `py2app`, 基本使用方法和 `py2exe` 很类似。
-
-## 实例 5: 使用 PyInstaller 打包加密脚本
-
-从这个例子中，可以学习到
-
-* 如何使用第三方工具 `PyInstaller` 来打包加密的脚本
-
-如果没有安装 `pyinstaller`, 运行下面的命令进行安装
-
-    pip install pyinstaller
-    
-这个例子会使用 `PyInstaller` 来发布加密脚本，并最终生成一个可执行文件。
-主脚本是位于 `examples/testmod` 的 [hello.py](testmod/hello.py)。
-
-首先把目录 `testmod` 下面的所有 `.py` 文件加密，存放到 `dist/obf`
-
-    pyarmor obfuscate --src testmod --entry hello.py --no-restrict --output dist/obf
-
-接着先运行 `pyinsntaller` 打包没有加密的脚本到目录 `dist/hello`，这条命
-令同时会生成相应的 `hello.spec`文件
-
-    cd /path/to/pyarmor/examples
-    pyinstaller testmod/hello.py
-
-编辑文件 `hello.spec`, 修改里面的 `Analysis` 对象 `a`，增加加密脚本和运
-行加密脚本需要的辅助文件到数据文件里面
-
-    a = Analysis(['testmod/hello.py', 'dist/obf/hello.py'],
-                 pathex=['/path/to/pyarmor/examples],
-                 datas=[('dist/obf/*.lic', '.'), ('dist/obf/*.key', '.'), ('dist/obf/_pytransform.*', '.')],
-
-在 `Analysis` 之后，在插入一段代码，告诉 `PyInstaller` 把加密后的脚本打
-进包里面，不要使用原来的脚本
-
-    a.scripts[0] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
-    for i in range(len(a.pure)):
-        if a.pure[i][1].startswith(a.pathex[0]):
-            a.pure[i] = a.pure[i][0], a.pure[i][1].replace('/testmod/', '/dist/obf/'), a.pure[i][2]
-
-使用修正版 `hello.spec` 重新运行 `pyinstaller` 进行打包
-
-    pyinstaller hello.spec
-
-最后运行打包好的可执行文件，把 `license.lic` 删除之后看看能否运行，确保
-打包的是加密脚本
-
-    dist/hello/hello
-
-    rm dist/hello/license.lic
-    dist/hello/hello
-
