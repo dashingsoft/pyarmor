@@ -37,7 +37,7 @@ Run obfuscated scripts
     cd dist
     python queens.py
 
-Pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc.
+Pack obfuscated scripts with `PyInstaller`, `py2exe`, `cx_Freeze` etc.
 
     pip install pyinstaller
     pyarmor pack examples/py2exe/hello.py
@@ -76,7 +76,7 @@ Click [Purchase](https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3
 A registration code will be sent to your immediately after payment is completed successfully.
 
 After you receive the email which includes registration code, copy registration
-code only (no newline), then replace the content of "license.lic" with it.
+code only (no newline), then replace the content of `license.lic` with it.
 
 Check License
 
