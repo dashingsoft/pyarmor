@@ -498,7 +498,7 @@ def _version_info():
 
 def main(args):
     parser = argparse.ArgumentParser(
-        prog='pyarmor.py',
+        prog='pyarmor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description='Pyarmor is a command line tool used to obfuscate ' \
                     'python scripts, bind obfuscated scripts to fixed ' \
