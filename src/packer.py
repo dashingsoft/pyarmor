@@ -58,6 +58,7 @@ except ImportError:
 DEFAULT_PACKER = {
     'py2app': ('dist', 'library.zip', ['py2app', '--dist-dir']),
     'py2exe': ('dist', 'library.zip', ['py2exe', '--dist-dir']),
+    'PyInstaller': ('dist', '', ['-m', 'PyInstaller', '--distpath']),
     'cx_Freeze': (
         os.path.join(
             'build', 'exe.%s-%s' % (get_platform(), sys.version[0:3])),
@@ -172,7 +173,66 @@ def _packer(src, entry, build, script, packcmd, output, libname):
 
     shutil.rmtree(project)
 
+@logaction
+def run_pyi_makespec(project, obfdist, src, entry):
+    datas = [['--add-data', '%s%s.' % (os.path.join(project, pat), os.pathsep)]
+             for pat in ('*.lic',  '*.key', '_pytransform.*')]
+    scripts = [os.path.join(src, entry), os.path.join(obfdist, script)]
+    p = subprocess.Popen(
+        [sys.executable] + packcmd + ['--specpath', project] + datas + scripts,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdoutdata, _ = p.communicate()
+
+@logaction
+def update_specfile(project, obfdist, src, entry, specfile):
+    with open(specfile) as f:
+        lines = f.readlines()
+
+    patched_lines = (
+    "a.scripts[0] = '%s', '%s', 'PYSOURCE'" % (
+        entry[:-3], os.path.join(obfdist, entry)),
+    "for i in range(len(a.pure)):",
+    "    if a.pure[i][1].startswith(a.pathex[0]):",
+    "        a.pure[i] = a.pure[i][0], a.pure[i][1].replace(a.pathex[0], '%s'), a.pure[i][2]" % obfdist,
+    "")
+
+    for i in range(len(lines)):
+        if lines[i].startswith("pyz = PYZ(a.pure"):
+            break
+    lines[i:i] = '\n'.join(patched_lines)
+
+    patched_specfile = specfile[:-5] + '_patch.spec'
+    with open(patched_specfile) as f:
+        f.writelines(lines)
+
+    return patched_specfile
+
+@logaction
+def run_pyinstaller(project, src, entry, specfile):
+    p = subprocess.Popen(
+        [sys.executable] + packcmd + [specfile],
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdoutdata, _ = p.communicate()
+
+@pathwrapper
+def _pyinstaller(src, entry, packcmd, output):
+    project = os.path.join('projects', 'pyinstaller')
+    obfdist = os.path.join(project, 'dist')
+    specfile = os.path.basename(entry)[:-3] + '.spec'
+
+    args = 'obfuscate', '-r', '--src', src, '--entry', entry, '-O', obfdist
+    call_armor(args)
+
+    run_pyi_makespec(project, obfdist, src, entry)
+
+    patched_specfile = update_specfile(project, src, entry, specfile)
+
+    run_pyinstaller(project, src, entry, patched_specfile)
+
+    shutil.rmtree(project)
+
 def packer(args):
+    _type = args.type
     src = os.path.abspath(os.path.dirname(args.entry[0]))
     entry = os.path.basename(args.entry[0])
 
@@ -184,17 +244,20 @@ def packer(args):
         script = os.path.basename(args.setup)
 
     if args.output is None:
-        dist = DEFAULT_PACKER[args.type][0]
+        dist = DEFAULT_PACKER[_type][0]
         output = os.path.normpath(os.path.join(build, dist))
     else:
         output = args.output if os.path.isabs(args.output) \
             else os.path.join(build, args.output)
 
-    libname = DEFAULT_PACKER[args.type][1]
-    packcmd = DEFAULT_PACKER[args.type][2] + [output]
+    libname = DEFAULT_PACKER[_type][1]
+    packcmd = DEFAULT_PACKER[_type][2] + [output]
 
-    logging.info('Prepare to pack obfuscated scripts with %s', args.type)
-    _packer(src, entry, build, script, packcmd, output, libname)
+    logging.info('Prepare to pack obfuscated scripts with %s', _type)
+    if _type === 'PyInstaller':
+        _pyinstaller(src, entry, packcmd, output)
+    else:
+        _packer(src, entry, build, script, packcmd, output, libname)
 
     logging.info('')
     logging.info('Pack obfuscated scripts successfully in the path')
@@ -210,7 +273,8 @@ def add_arguments(parser):
     # parser.add_argument('-p', '--path',
     #                     help='Base path, default is the path of entry script')
     parser.add_argument('-s', '--setup',
-                        help='Setup script, default is setup.py')
+                        help='Setup script, default is setup.py, ' \
+                             'or ENTRY.spec for PyInstaller')
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in' \
                         ' (default is output path of setup script)')
