@@ -194,6 +194,8 @@ must be written. For py2exe, here is an example script
 `examples/py2exe/setup.py`. It will pack the entry script `hello.py`
 and `queens.py`. To be sure it works
 
+    cd /path/to/pyarmor
+
     # Install py2exe at first
     pip install py2exe
 
@@ -202,11 +204,11 @@ and `queens.py`. To be sure it works
 
 Then run command `pack` to pack obfuscated scripts
 
-     pyarmor pack --type py2exe py2exe/hello.py
+     pyarmor pack --type py2exe hello.py
 
 Run the final executeable file
 
-    cd py2exe/dist
+    cd ./dist/
     ./hello
 
 Check they're obfuscated

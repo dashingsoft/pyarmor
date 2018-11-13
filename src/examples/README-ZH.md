@@ -22,7 +22,8 @@ Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放
 
 * [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
-    使用这个脚本模板通过第三方工具 (py2exe, py2app, cx_Freeze) 来打包加密的脚本。
+    使用这个脚本模板通过第三方工具 (PyInstaller, py2exe, py2app,
+    cx_Freeze) 来打包加密的脚本。
 
 
 除了这些脚本之外，这里还有一些真实的例子。现在打开一个命令窗口，按照下
@@ -44,7 +45,7 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
 ```
     cd /path/to/pyarmor
 
-    # 使用 pyarmor 提供的命令 obfuscate 加密路径下 `examples/simple` 的所有脚本
+    # 使用 obfuscate 加密路径 `examples/simple` 的下面的所有脚本
     pyarmor obfuscate --recursive examples/simple/queens.py
 
     # 加密后的脚本存放在 `dist`
@@ -69,10 +70,10 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
 ```
     cd /path/to/pyarmor
 
-    # 使用 pyarmor 提供的命令 obfuscate 去加密包，加密后的脚本存放在 `dist/mypkg`
+    # 使用 obfuscate 去加密包，加密后的脚本存放在 `dist/mypkg`
     pyarmor obfuscate --output=dist/mypkg examples/testpkg/mypkg/__init__.py
 
-    # 使用命令 license 生成一个有效期到 2019-01-01 的授权文件
+    # 使用命令 licenses 生成一个有效期到 2019-01-01 的授权文件
     pyarmor licenses --expired 2019-01-01 mypkg2018
 
     # 使用新的授权文件覆盖默认的授权文件
