@@ -194,9 +194,10 @@ def newLicense(args):
 
 def obfuscateScripts(args):
     params = ['obfuscate', '--recursive']
-    for opt in ('src', 'entry', 'output'):
+    for opt in ['output']:
         if args[opt]:
             params.extend(['--%s' % opt, args[opt]])
+    params.append(args['entry'])
 
     call_armor(params)
 

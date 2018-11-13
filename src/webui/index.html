@@ -69,7 +69,7 @@
         <div class="panel-heading">Obfuscate python scripts</div>
         <div class="panel-body">
           <form>
-            <div class="form-group">
+            <div class="form-group" style="display: none;">
               <label for="input_src">Source Path</label>
               <input type="text" class="form-control required" id="input_src" />
               <p class="help-block">Required. Absolute path, all the <code>.py</code> files in this path will be obfuscated recursively.</p>
@@ -77,7 +77,8 @@
             <div class="form-group">
               <label for="input_entry">Entry Script</label>
               <input type="text" class="form-control required" id="input_entry"/>
-              <p class="help-block">Required. Filename of entry script, relative to <strong>Source Path</strong>. Type <code>__init__.py</code> for python package</p>
+              <p class="help-block">Required. Absolute path of entry script. Type full path <code>__init__.py</code> for Package</p>
+              <p class="help-block">All the <code>.py</code> files in this path will be obfuscated</p>
             </div>
             <div class="form-group">
               <label for="input_output">Output Path</label>
@@ -111,10 +112,6 @@
               <input type="text" class="form-control" id="input_expired_date" placeholder="YYYY-MM-DD" />
               <p class="help-block">Optional. Expire obfuscated scripts on the date <code>YYYY-MM-NN</code></p>
             </div>
-            <button type="button" class="btn btn-primary" id="generate-licenses">Generate</button>
-          </form>
-          <hr />
-          <form>
             <div class="form-group">
               <label for="input_bind_disk">Serial Number of Harddisk</label>
               <input type="text" class="form-control" id="input_bind_disk"/>
@@ -125,11 +122,12 @@
               <input type="text" class="form-control" id="input_bind_mac" placeholder="aa:bb:cc:dd:ee:ff" />
               <p class="help-block">Optional. Bind obfuscated scripts to mac address</p>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="display: none;">
               <label for="input_bind_ipv4">IPv4 Address</label>
               <input type="text" class="form-control" id="input_bind_ipv4" placeholder="x.x.x.x" />
               <p class="help-block">Optional. Bind obfuscated scripts to IPv4 address</p>
             </div>
+            <button type="button" class="btn btn-primary" id="generate-licenses">Generate</button>
           </form>
         </div>
         <!-- /.panel-body -->
@@ -143,7 +141,7 @@
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <p class="help-block">Pyarmor could pack obfuscated scripts with py2exe, cx_Freeze etc. </p>
+              <p class="help-block">Pyarmor could pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc. </p>
               <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Pyarmor will call setup script while packing</p>
               <p class="help-block">The final output path is same as of the setup script (Pyarmor just updates some files)</p>
             </div>
@@ -152,8 +150,8 @@
               <select class="form-control" id="input_packer_type">
                 <option value="cx_Freeze">cx_Freeze</option>
                 <option value="py2app">py2app</option>
-                <option value="py2exe" selected>py2exe</option>
-                <option value="PyInstaller">PyInstaller</option>
+                <option value="py2exe">py2exe</option>
+                <option value="PyInstaller" selected>PyInstaller</option>
               </select>
             </div>
             <div class="form-group">
@@ -165,7 +163,7 @@
             <div class="form-group">
               <label for="input_packer_setup">Setup Script</label>
               <input type="text" class="form-control" id="input_packer_setup"/>
-              <p class="help-block">Optional. The default is <code>setup.py</code>, or <code>ENTRY.spec</code> for PyInstaller</p> 
+              <p class="help-block">Optional. The default is <code>setup.py</code></p> 
             </div>
             <button type="button" class="btn btn-primary" id="pack-obfuscated-scripts">Run</button>
           </form>

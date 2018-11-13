@@ -192,10 +192,10 @@ define(['connector', 'utils'], function(conn, utils) {
         args.entry = document.getElementById('input_entry').value;
         args.output = document.getElementById('input_output').value;
 
-        if (!args.src) {
-            document.getElementById('input_src').focus();
-            return ;
-        }
+        // if (!args.src) {
+        //     document.getElementById('input_src').focus();
+        //     return ;
+        // }
 
         if (!args.entry) {
             document.getElementById('input_entry').focus();
