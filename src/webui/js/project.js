@@ -236,7 +236,7 @@ define(['connector', 'utils'], function(conn, utils) {
                 return ;
             }
             var result = response.result;
-            utils.showMessage('Pack obfuscated scripts successfully');
+            utils.showMessage('Pack obfuscated scripts into "' + result.output + '" successfully');
         };
         var args = {};
         args.entry = document.getElementById('input_packer_entry').value;

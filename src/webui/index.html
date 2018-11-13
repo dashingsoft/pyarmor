@@ -140,11 +140,11 @@
         <div class="panel-heading">Pack obfuscated scripts</div>
         <div class="panel-body">
           <form>
-            <div class="form-group">
-              <p class="help-block">Pyarmor could pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc. </p>
-              <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Pyarmor will call setup script while packing</p>
-              <p class="help-block">The final output path is same as of the setup script (Pyarmor just updates some files)</p>
-            </div>
+            <!-- <div class="form-group"> -->
+            <!--   <p class="help-block">Pyarmor could pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc. </p> -->
+            <!--   <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Pyarmor will call setup script while packing</p> -->
+            <!--   <p class="help-block">The final output path is same as of the setup script (Pyarmor just updates some files)</p> -->
+            <!-- </div> -->
             <div class="form-group">
               <label for="input_packer_type">Type</label>
               <select class="form-control" id="input_packer_type">
@@ -153,12 +153,14 @@
                 <option value="py2exe">py2exe</option>
                 <option value="PyInstaller" selected>PyInstaller</option>
               </select>
+              <p class="help-block">This selected package must be installed</p>
+              <p class="help-block">The prefer way is PyInstaller, it's enough to set <strong>Entry Script</strong>. For other tools, the setup script is required, Pyarmor will call this script while packing</p>
+              <p class="help-block">The final output path is depend on the selected type</p> 
             </div>
             <div class="form-group">
               <label for="input_packer_entry">Entry Script</label>
               <input type="text" class="form-control required" id="input_packer_entry" />
-              <p class="help-block">Required. Absolute path of entry script.</p>
-              <p class="help-block">All the <code>.py</code> files in the path of this script will be obfuscated recursively.</p>
+              <p class="help-block">Required. Absolute path of entry script</p>
             </div>
             <div class="form-group">
               <label for="input_packer_setup">Setup Script</label>

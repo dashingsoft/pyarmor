@@ -193,7 +193,7 @@ def newLicense(args):
     return dict(title=title, filename=output)
 
 def obfuscateScripts(args):
-    params = ['obfuscate', '--recursive']
+    params = ['obfuscate']
     for opt in ['output']:
         if args[opt]:
             params.extend(['--%s' % opt, args[opt]])
@@ -221,13 +221,15 @@ def generateLicenses(args):
         PYARMOR_PATH, 'licenses', rcode, 'license.lic'))
 
 def packObfuscatedScripts(args):
-    params = ['pack', '--type', args['type'], args['entry']]
+    output = os.path.join(os.path.dirname(args['entry']), 'dist')
+    params = ['pack', '--type', args['type'],
+              '--output', output, args['entry']]
     if args['setup']:
         params[3:3] = ['--setup', args['setup']]
 
     call_armor(params)
 
-    return dict(output=os.path.dirname(args['entry']))
+    return dict(output=output)
 
 if __name__ == '__main__':
     import doctest
