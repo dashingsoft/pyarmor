@@ -5,7 +5,7 @@ obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
 * Obfuscate code object to protect constants and literal strings.
-* Obfuscate byte code of each code object in runtime.
+* Obfuscate co_code of each function (code object) in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
 * Verify the license file of obfuscated scripts while running it.
 
@@ -221,18 +221,18 @@ machine.
 Pyarmor has command `hdinfo` to print hardware information in target machine
 
 ```bash
-    python pyarmor.py hdinfo
+    pyarmor hdinfo
 ```
 
 Pyarmor has command `licenses` used to generate new liceses
 
 ``` bash
-    python pyarmor.py licenses
-                      --expired 2018-12-31
-                      --bind-disk "100304PBN2081SF3NJ5T"
-                      --bind-mac "70:f1:a1:23:f0:94"
-                      --bind-ipv4 "202.10.2.52"
-                      Customer-Jondy
+    pyarmor licenses
+            --expired 2018-12-31
+            --bind-disk "100304PBN2081SF3NJ5T"
+            --bind-mac "70:f1:a1:23:f0:94"
+            --bind-ipv4 "202.10.2.52"
+            Customer-Jondy
 ```
 
 More information visit [Pyarmor Homepage](http://pyarmor.dashingsoft.com/)

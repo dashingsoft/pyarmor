@@ -5,7 +5,7 @@ Pyarmor 是一个用于加密和保护 Python 源代码的小工具。它能够�
 源代码到硬盘、网卡等硬件设备。它的保障机制主要包括
 
 * 加密编译后的代码块，保护模块中的字符串和常量
-* 在脚本运行时候动态加密和解密代码块的二进制代码
+* 在脚本运行时候动态加密和解密每一个函数（代码块）的二进制代码
 * 代码块执行完成之后清空堆栈局部变量
 * 通过授权文件限制加密后脚本的有效期和设备环境
 
@@ -218,18 +218,18 @@ Pyarmor 是怎么加密 Python 源代码呢？
 Pyarmor 使用命令 `hdinfo` 来获取目标机器的硬件信息
 
 ```bash
-    python pyarmor.py hdinfo
+    pyarmor hdinfo
 ```
 
 然后使用命令 `licenses` 来生成新的授权文件
 
 ``` bash
-    python pyarmor.py licenses
-                      --expired 2018-12-31
-                      --bind-disk "100304PBN2081SF3NJ5T"
-                      --bind-mac "70:f1:a1:23:f0:94"
-                      --bind-ipv4 "202.10.2.52"
-                      Customer-Jondy
+    pyarmor licenses
+            --expired 2018-12-31
+            --bind-disk "100304PBN2081SF3NJ5T"
+            --bind-mac "70:f1:a1:23:f0:94"
+            --bind-ipv4 "202.10.2.52"
+            Customer-Jondy
 ```
 
 更多详细信息，请访问 [Pyarmor 网站主页](http://pyarmor.dashingsoft.com/index-zh.html)
