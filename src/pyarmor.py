@@ -108,9 +108,11 @@ EXAMPLES
 
     name = os.path.basename(os.path.abspath(path))
     if (args.type == 'pkg') or \
-       (args.type == 'auto' and os.path.exists(os.path.join(src, '__init__.py'))):
+       (args.type == 'auto' and os.path.exists(os.path.join(src,
+                                                            '__init__.py'))):
         logging.info('Project is configured as package')
-        project = Project(name=name, title=name, src=src, entry=args.entry,
+        project = Project(name=name, title=name, src=src,
+                          entry=args.entry if args.entry else '__init__.py',
                           is_package=1, obf_code_mode='wrap')
     else:
         logging.info('Project is configured as standalone application.')
