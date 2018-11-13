@@ -11,7 +11,6 @@ This is the documentation for Pyarmor 3.4 and later.
     - [Use Project to Manage Obfuscated Scripts](#use-project-to-manage-obfuscated-scripts)
         - [Standalone Package](#standalone-package)
         - [Package Used by Outer Scripts](#package-used-by-outer-scripts)
-        - [Many Obfuscated Package Within Same Python Interpreter](#many-obfuscated-package-within-same-python-interpreter)
         - [Change Default Project Configuration](#change-default-project-configuration)
     - [Distribute Obfuscated Scripts](#distribute-obfuscated-scripts)
         - [Pack Obfuscated Scripts into bundle](#pack-obfuscated-scripts-into-bundle)
@@ -51,6 +50,7 @@ This is the documentation for Pyarmor 3.4 and later.
     - [Use Decorator to Protect Code Object](#use-decorator-to-protect-code-object)
     - [Take Registration Code Effect](#take-registration-code-effect)
     - [Get Hardware Information](#get-hardware-information)
+    - [Many Obfuscated Package Within Same Python Interpreter](#many-obfuscated-package-within-same-python-interpreter)
 
 ## Introduction
 
@@ -66,74 +66,82 @@ To create a project, use command `init`, use command `info` to
 show project information. `config` to update project settings, and
 `build` to obfuscate the scripts in the project.
 
-Pyarmor v4.4 introduces a new command `pack`, used to pack obfuscated
-scripts with `py2exe`, `cx_py2app`, `Freeze` etc.
+Pyarmor v4.4 introduces a new command `pack`, used to pack obfuscated scripts
+with `PyInstaller`, `py2exe`, `cx_py2app`, `Freeze` etc.
 
-Other commands, `benchmark` to metric performance, `hdinfo` to
-show hardware information, so that command `licenses` can generate
-license bind to fixed machine.
+Other commands, `benchmark` to metric performance, `hdinfo` to show hardware
+information, so that command `licenses` can generate license bind to fixed
+machine.
+
+## Installation
+
+The simple way is pip
+
+    pip install pyarmor
+
+After that, there is a command will be avaiable in Python script path
+
+    pyarmor -h
+
+And there is a web ui for Pyarmor:
+
+    pyarmor-webui
+
+It will start a light weight web server in localhost, and open a page in web
+browser. Note that the `webui` doesn't include all the features of Pyarmor, it's
+only for basic usage, full features still need shell command way.
+
+Or get source package from [pypi/pyarmor](https://pypi.python.org/pypi/pyarmor)
+
+After you get source package, unpack it to any path, then run paramor.py as
+common python script
+
+    python pyarmor.py -h
+
 
 ## Usage
 
-Shell commands will shown for Unix-based systems. Windows has
-analogous commands for each.
+Shell commands will shown for Unix-based systems. Windows has analogous commands
+for each.
 
 ### Obfuscate Python Scripts
 
-Obfuscate a simple script `examples/simple/queens.py` in the source
-path of Pyarmor
+Obfuscate a simple script `examples/simple/queens.py` in the source path of
+Pyarmor
 
-```bash
-    python pyarmor.py obfuscate --src=examples/simple --entry=queens.py
+    pyarmor obfuscate examples/simple/queens.py
 
-    # Obfuscated scripts are saved in default output path "dist"
-    #
-    # There are some extra files in the "dist":
-    #
-    #    pytransform.py
-    #    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    #
-    #    pyshield.key
-    #    pyshield.lic
-    #    product.key
-    #    license.lic
-    #
-    # All of them are required to run obfuscated scripts, called "runtime files"
-    #
-    cd dist
-    ls
-    cat queens.py
+Obfuscated scripts are saved in default output path `dist`, the content of
+obfuscated script like this
 
-    # Run obfuscated script
+``` python
+    from pytransfrom import pyarmor_runtime
+    pyarmor_runtime()
+
+    __pyarmor__(__name__, __file__, b'\x06\x0f...')
+```
+
+The first 2 lines are called `Bootstrap Code`, it's only inserted into the entry
+script. For the other obfuscated scripts, there is only last line. The bootstrap
+code must be called before to use any obfuscated scripts.
+
+And there are some extra files in the `dist`
+
+    pytransform.py
+    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+
+    pyshield.key
+    pyshield.lic
+    product.key
+    license.lic
+
+All of them are required to run obfuscated scripts, called `runtime files`.
+
+Run obfuscated script, or import it
+
+    cat dist/
     python queens.py
-```
-
-### Import Obfuscated Module
-
-Import obfuscated moduels from a clear python script
-
-```bash
-    python pyarmor.py obfuscate --src=examples/py2exe --entry=hello.py \
-                                --no-restrict queens.py
-
-    # Option --no-restrict is required, otherwise clear script can not
-    # import obfuscated module
-    #
-    # queens.py is obfuscated. Entry hello.py is clear script. Two extra
-    # lines are inserted at the begin of "hello.py"
-    #
-    #    from pytransform import pyarmor_runtime
-    #    pyarmor_runtime()
-    #
-    # They're called "bootstrap code"
-    #
-    cd dist
-    cat hello.py
-    cat queens.py
-
-    # Run hello.py
-    python hello.py
-```
+    python -c 'import queens'
 
 ### Use Project to Manage Obfuscated Scripts
 
@@ -141,247 +149,114 @@ It's better to create a project to manage these obfuscated scripts,
 there are the several advantages:
 
 * Increment build, only updated scripts are obfuscated since last build
-* Filter obfuscated scripts in the project, for example, exclude all the test scripts
+* Filter obfuscated scripts in the project, exclude some scripts
 * More convenient to manage obfuscated scripts
 
-There are 2 project types:
+Use command `init` to create a project,
 
-* Application, or called Standalone Package
-* Package used by outer scripts
+    pyarmor init --src=examples/pybench --entry=pybench.py projects/pybench
 
-For application, all the obfuscated python scripts only used by
-package self. Pyarmor uses a simple and efficient way to protect
-Python scripts.
+The project path `projects/pybench` will be created, and ther are 3 files in it:
 
-For package used by other clear scripts, things get a little
-complicated. Pyarmor uses a different way to protect Python scripts.
+    .pyarmor_config
+    .pyarmor_capsule.zip
+    pyarmor.bat or pyarmor
 
-About the details, refer to [Restrict Mode](#restrict-mode)
+The first file is a json format to save project configuration.
 
-#### Standalone Package
+The second file called `Projct Capsule`, it includes important data used to
+obfuscate scripts and generate the license file for obfuscated scripts in the
+project. There is a global capsule for the command `obfuscate`, but for project,
+it has local capsule. So the license file generated by one project doesn't work
+in another project.
 
-This example show how to obfuscate a standalone python package
-`pybench`, which locates in the `examples/pybench` in the source
-of pyarmor.
-
-```bash
-    mkdir projects
-
-    # Use command 'init' to create a project configured as application.
-    #
-    # It will create two files in the project path "projects/pybench":
-    #
-    #   .pyarmor_config
-    #   .pyarmor_capsule.zip
-    #
-    # Option --type=app specify the project is standalone package
-    #
-    python pyarmor.py init --type=app --src=examples/pybench \
-                           --entry=pybench.py projects/pybench
-
+The last file is a link to `pyarmor` command. The common usage for project is to
+run commands in project path.
 
     cd projects/pybench
 
-    # And there is a shell script "pyarmor" is created at the same time.
-    # (In windows, the name is "pyarmor.bat")
+Show project information
 
-    # Show project information
     ./pyarmor info
 
-    # Now run command "build" to obfuscated all the scripts in the src
-    #
+Obfuscate all the scripts in this project
+
     ./pyarmor build
 
-    # Check obfuscated script
+By default, all the `.py` files in the `src` path will be obfuscated, they're
+saved in the path `dist`. However if there is a `__init__.py` in the `src` path,
+the output path will be `dist/pkgname`.
+
+Run obfuscated script,
+
     cd dist
-    cat pybench.py
-
-    # Run obfuscated script
     python pybench.py
-
-```
 
 After some source scripts changed, just run `build` again
 
-```bash
     cd projects/pybench
     ./pyarmor build
-```
-
-#### Package Used by Outer Scripts
-
-This example show how to obfuscate a package `examples/testpkg/mypkg`,
-it used by clear script `examples/testpkg/main.py`
-
-```bash
-    # First create project with command 'init'
-    #
-    # This command will create a project configured as package
-    #
-    python pyarmor.py init --type=pkg --src=examples/testpkg/mypkg \
-                           --entry=__init__.py \
-                           projects/testpkg
-
-    # Show project information
-    #
-    # Note that 'is_package' and 'disable_restrict_mode' set to 1
-    #
-    cd projects/testpkg
-    ./pyarmor info
-
-    # Obfuscate package 'mypkg'
-    #
-    # This command will obfuscate all the scripts in the package 'mypkg'
-    #
-    # Bootstrap code will be inserted into entry script 'main.py'
-    # and save to 'dist'
-    #
-    # All the obfuscated package scripts and runtime files are stored in 'dist/mypkg'
-    #
-    ./pyarmor build
-
-    # Check entry script
-    cat dist/mypkg/__init__.py
-
-    # Check obfuscated script
-    cat dist/mypkg/foo.py
-
-    # Now run clear entry script 'main.py' to import obfuscated
-    # package 'mypkg'
-    #
-    cp ../../examples/testpkg/main.py ./dist
-    cd dist
-    python main.py
-```
-
-#### Many Obfuscated Package Within Same Python Interpreter
-
-Suppose there are 3 odoo modules `web-login1`, `web-login2`,
-`web-login3`, they'll be obfuscated separately, but run in the same
-python interpreter.
-
-Because these packages will run in same Python interpreter, so they must
-use same project capsule.
-
-```bash
-    # Create project for "login1"
-    python pyarmor.py init --type=pkg --src=/path/to/web-login1 \
-                           --entry=__init__.py \
-                           projects/odoo/login1
-
-    # Create project for others
-    #
-    # Other than create new capsule for project, just clone the capsule
-    # specified by option `--capsule`
-    #
-    python pyarmor.py init --type=pkg --src=/path/to/web-login2 \
-                           --entry=__init__.py \
-                           --capsule=projects/odoo/login1/.pyarmor_capsule.zip \
-                           projects/odoo/login2
-    python pyarmor.py init --type=pkg --src=/path/to/web-login3 \
-                           --entry=__init__.py \
-                           --capsule=projects/odoo/login1/.pyarmor_capsule.zip \
-                           projects/odoo/login3
-
-    # Configure project, exclude `__mainfest__.py`
-    ( cd projects/odoo/login1; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
-    ( cd projects/odoo/login2; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
-    ( cd projects/odoo/login3; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
-
-```
-
-Then build all projects
-
-```bash
-    # Only obfuscate scripts, no runtime files
-    (cd projects/odoo/login1; ./pyarmor build --no-runtime)
-    (cd projects/odoo/login2; ./pyarmor build --no-runtime)
-    (cd projects/odoo/login3; ./pyarmor build --no-runtime)
-```
-
-Distribute obfuscated modules
-
-```
-    cp -a projects/odoo/login1/dist/web-login1 /path/to/odoo/addons
-    cp /path/to/web-login1/__manifest__.py /path/to/odoo/addons/web-login1
-
-    cp -a projects/odoo/login2/dist/web-login2 /path/to/odoo/addons
-    cp /path/to/web-login2/__manifest__.py /path/to/odoo/addons/web-login2
-
-    cp -a projects/odoo/login3/dist/web-login3 /path/to/odoo/addons
-    cp /path/to/web-login3/__manifest__.py /path/to/odoo/addons/web-login3
-
-```
-
-Add bootstrap code to launch script of odoo server, so that it knows
-how to import obfuscated module. Suppose launch script is
-`/path/to/odoo-server/python/launch.py`
-
-```
-    # Only generate runtime files to `projects/odoo/runtimes`
-    (cd projects/odoo/login1; ./pyarmor build --only-runtime --output ../runtimes)
-
-    # Because project capsules are same, it's same with proect login2 or login3 to
-    # generate runtime files
-
-    # Copy all runtime files to odoo server
-    cp projects/odoo/runtimes/* /path/to/odoo-server/python
-
-    # Edit `launch.py`, insert two lines
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-```
-
-Now restart odoo server.
 
 #### Change Default Project Configuration
 
-* Show project information by command `info`
+Change project information by command `config`
 
-```bash
-    cd projects/testpkg
-    ./pyarmor info
-```
-
-* Change project information by command `config`
-
-```bash
-    cd projects/testpkg
     ./pyarmor config --title="My Package"
-
     ./pyarmor config --help
-```
 
-* Use option `--manifest` to specify obfuscated scripts
+Use option `--manifest` to filter obfuscated scripts. For example, exclude
+`__init__.py` and folder `test` from project
 
-```bash
-    cd projects/testpkg
-
-    # Exclude "__init__.py" from project, it will not be obfuscated
-    # Exclude all the files in test
     ./pyarmor config --manifest="global-include *.py, exclude __init__.py, prune test"
 
-    # Force rebuild all
-    # Note that pyarmor will not copy "__init__.py" to output path, which has
-    # been excluded from project
-    #
-    ./pyarmor build --force
+Obfuscate scripts by other modes, for example, only obfuscate whole module, not
+each code object
 
-```
-
-* Obfuscate scripts by other modes
-
-```bash
-    cd projects/pybench
-
-    # Only obfuscate whole module, not each code object
     ./pyarmor config --obf-module-mode=des --obf-code-mode=none
 
-    # Force rebuild all
+Force rebuild all
+
     ./pyarmor build --force
-```
 
 About project configuration information, refer to [Project Configure File](#project-configure-file)
+
+### License of Obfuscated Scripts
+
+There is a file `license.lic` in the output path `dist`, it's generated while
+obfuscating scripts, it allows obfuscated scripts run in any machine and never
+expired. 
+
+Command `licenses` used to generate new license, it will take `Project Capsule`
+to generate license file. Run it in project path, the licenses generated only
+for this project. In other path not a project, the geneated licenses are used
+for command `obfuscate`
+
+Note that this is not applied to trial version Pyarmor. The license generated by
+trial Pyarmor can be used to any project
+
+Generate expired license for the obfuscated scripts
+
+    cd /path/to/not-project
+    pyarmor obfuscate src/hello.py
+    pyarmor licenses --expired 2018-12-31 pro-01
+    cp licenses/pro-01/license.lic dist/
+
+Generate batch licenses for a project
+
+    cd projects/pybench
+    ./pyarmor licenses RCode-1 RCode-2 RCode-3 RCode-4 RCode-5
+    ls licenses/
+
+Bind obfuscated scripts to fixed machine, first get hardware information
+
+    pyarmor hdinfo
+
+Then generate license bind to harddisk serial number, or mac address
+
+    pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' 
+                     --bind-mac '20:c1:d2:2f:a0:96' 
+                     Customer-John
+
 
 ### Distribute Obfuscated Scripts
 
@@ -443,84 +318,6 @@ Quick start from the following template scripts
 
 * [pack-obfuscated-scripts.bat](examples/pack-obfuscated-scripts.bat) for Windows
 * [pack-obfuscated-scripts.sh](examples/pack-obfuscated-scripts.sh) for most of others
-
-
-### License of Obfuscated Scripts
-
-There is a file `license.lic` in the output path "dist", the default
-one permits the obfuscated scripts run in any machine and never
-expired. Replace it with others can change this behaviour.
-
-For examples, expire obfuscated scripts on some day
-
-```bash
-    cd projects/pybench
-
-    # Generate a new license.lic
-    ./pyarmor licenses --expired 2018-12-31 Customer-A
-
-    # New license saved in "licenses/Customer-A/license.lic"
-    # Readable text saved in "licenses/Customer-A/license.lic.txt"
-    cat licenses/Customer-A/license.lic.txt
-    "Expired:2018-12-23*CODE:Customer-A"
-
-    # Replace default license.lic
-    cp licenses/Customer-A/license.lic dist/
-
-    # Run obfuscated scripts, it will not work after 2018-12-31
-    cd dist
-    python pybench.py
-```
-
-Command `licenses` used to generate new license, note that it's
-plural. It can generate batch licenses.
-
-```bash
-    cd projects/pybench
-    ./pyarmor licenses RCode-1 RCode-2 RCode-3 RCode-4 RCode-5
-    ls licenses/
-
-```
-
-Bind obfuscated scripts to fixed machine
-
-```bash
-    # Run command hdinfo to get hardware information
-    ./pyarmor hdinfo
-
-    # Generate license bind to harddisk serial number
-    ./pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
-
-    # Generate license bind to ipv4 and mac address
-    ./pyarmor licenses --bind-ipv4 '192.168.121.101' \
-                       --bind-mac '20:c1:d2:2f:a0:96' Customer-John
-
-    # Generate license bind to domain name and expire on 2018-12-31
-    ./pyarmor licenses -e 2018-12-31 --bind-domain 'dashingsoft.com' \
-                       Customer-Jondy
-
-```
-
-Note that `license.lic` generated by different project is **NOT**
-compatible. For example,
-
-```
-    # Create `license.lic` in another project
-    cd projects/myproject
-    ./pyarmor licenses customer-jondy
-    ls licenses/customer-jondy/license.lic
-
-    # Copy this `license.lic` to project pybench
-    cp licenses/customer-jondy/license.lic ../../projects/pybench/dist
-
-    # Run obfuscated scripts in project pybench, it will report error
-    cd ../../projects/pybench/dist
-    python pybench.py
-
-```
-But this is not applied to Pyarmor of trial version. The `license.lic`
-generated by trial Pyarmor can be used to any project created by trial
-Pyarmor.
 
 ### Cross Platform
 
@@ -1582,3 +1379,83 @@ The output is same as `hdinfo`. Note that a fresh pyarmor is enough to
 get hardward information. DO NOT copy the pyarmor in build machine to
 customer machine directly, especially `license.lic` has been replaced
 with registration code of pyarmor.
+
+### Many Obfuscated Package Within Same Python Interpreter
+
+Suppose there are 3 odoo modules `web-login1`, `web-login2`,
+`web-login3`, they'll be obfuscated separately, but run in the same
+python interpreter.
+
+Because these packages will run in same Python interpreter, so they must
+use same project capsule.
+
+```bash
+    # Create project for "login1"
+    python pyarmor.py init --type=pkg --src=/path/to/web-login1 \
+                           --entry=__init__.py \
+                           projects/odoo/login1
+
+    # Create project for others
+    #
+    # Other than create new capsule for project, just clone the capsule
+    # specified by option `--capsule`
+    #
+    python pyarmor.py init --type=pkg --src=/path/to/web-login2 \
+                           --entry=__init__.py \
+                           --capsule=projects/odoo/login1/.pyarmor_capsule.zip \
+                           projects/odoo/login2
+    python pyarmor.py init --type=pkg --src=/path/to/web-login3 \
+                           --entry=__init__.py \
+                           --capsule=projects/odoo/login1/.pyarmor_capsule.zip \
+                           projects/odoo/login3
+
+    # Configure project, exclude `__mainfest__.py`
+    ( cd projects/odoo/login1; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
+    ( cd projects/odoo/login2; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
+    ( cd projects/odoo/login3; ./pyarmor config --manifest "global-include *.py, exclude __manifest__.py" )
+
+```
+
+Then build all projects
+
+```bash
+    # Only obfuscate scripts, no runtime files
+    (cd projects/odoo/login1; ./pyarmor build --no-runtime)
+    (cd projects/odoo/login2; ./pyarmor build --no-runtime)
+    (cd projects/odoo/login3; ./pyarmor build --no-runtime)
+```
+
+Distribute obfuscated modules
+
+```
+    cp -a projects/odoo/login1/dist/web-login1 /path/to/odoo/addons
+    cp /path/to/web-login1/__manifest__.py /path/to/odoo/addons/web-login1
+
+    cp -a projects/odoo/login2/dist/web-login2 /path/to/odoo/addons
+    cp /path/to/web-login2/__manifest__.py /path/to/odoo/addons/web-login2
+
+    cp -a projects/odoo/login3/dist/web-login3 /path/to/odoo/addons
+    cp /path/to/web-login3/__manifest__.py /path/to/odoo/addons/web-login3
+
+```
+
+Add bootstrap code to launch script of odoo server, so that it knows
+how to import obfuscated module. Suppose launch script is
+`/path/to/odoo-server/python/launch.py`
+
+```
+    # Only generate runtime files to `projects/odoo/runtimes`
+    (cd projects/odoo/login1; ./pyarmor build --only-runtime --output ../runtimes)
+
+    # Because project capsules are same, it's same with proect login2 or login3 to
+    # generate runtime files
+
+    # Copy all runtime files to odoo server
+    cp projects/odoo/runtimes/* /path/to/odoo-server/python
+
+    # Edit `launch.py`, insert two lines
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+```
+
+Now restart odoo server.
