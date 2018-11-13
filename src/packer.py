@@ -158,7 +158,7 @@ def _packer(src, entry, build, script, packcmd, output, libname):
 
     filters = ('global-include *.py', 'prune build, prune dist',
                'exclude %s pytransform.py' % entry)
-    args = ('config', '--runtime-path', '', 
+    args = ('config', '--runtime-path', '',
             '--manifest', ','.join(filters), project)
     call_armor(args)
 
@@ -174,14 +174,27 @@ def _packer(src, entry, build, script, packcmd, output, libname):
     shutil.rmtree(project)
 
 @logaction
-def run_pyi_makespec(project, obfdist, src, entry):
-    datas = [['--add-data', '%s%s.' % (os.path.join(project, pat), os.pathsep)]
-             for pat in ('*.lic',  '*.key', '_pytransform.*')]
-    scripts = [os.path.join(src, entry), os.path.join(obfdist, script)]
-    p = subprocess.Popen(
-        [sys.executable] + packcmd + ['--specpath', project] + datas + scripts,
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+def run_pyi_makespec(project, obfdist, src, entry, packcmd):
+    s = os.pathsep
+    d = os.path.relpath(obfdist, project)
+    datas = [
+        '--add-data', '%s%s.' % (os.path.join(d, '*.lic'), s),
+        '--add-data', '%s%s.' % (os.path.join(d, '*.key'), s),
+        '--add-data', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
+    ]
+    scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
+
+    options = ['-y', '--specpath', project]
+    options.extend(datas)
+    options.extend(scripts)
+
+    p = subprocess.Popen([sys.executable] + packcmd + options,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdoutdata, _ = p.communicate()
+
+    if p.returncode != 0:
+        logging.error('\n\n%s\n\n', stdoutdata)
+        raise RuntimeError('Make specfile failed')
 
 @logaction
 def update_specfile(project, obfdist, src, entry, specfile):
@@ -189,45 +202,53 @@ def update_specfile(project, obfdist, src, entry, specfile):
         lines = f.readlines()
 
     patched_lines = (
+    "", "# Patched by Pyarmor",
     "a.scripts[0] = '%s', '%s', 'PYSOURCE'" % (
         entry[:-3], os.path.join(obfdist, entry)),
     "for i in range(len(a.pure)):",
     "    if a.pure[i][1].startswith(a.pathex[0]):",
-    "        a.pure[i] = a.pure[i][0], a.pure[i][1].replace(a.pathex[0], '%s'), a.pure[i][2]" % obfdist,
-    "")
+    "        a.pure[i] = a.pure[i][0], a.pure[i][1].replace(" \
+    "a.pathex[0], '%s'), a.pure[i][2]" % os.path.abspath(obfdist),
+    "# Patch end.", "", "")
 
     for i in range(len(lines)):
         if lines[i].startswith("pyz = PYZ(a.pure"):
             break
+    else:
+        raise RuntimeError('Unsupport specfile, no PYZ line found')
     lines[i:i] = '\n'.join(patched_lines)
 
-    patched_specfile = specfile[:-5] + '_patch.spec'
-    with open(patched_specfile) as f:
+    patched_file = specfile[:-5] + '-patched.spec'
+    with open(patched_file, 'w') as f:
         f.writelines(lines)
 
-    return patched_specfile
+    return patched_file
 
 @logaction
-def run_pyinstaller(project, src, entry, specfile):
+def run_pyinstaller(project, src, entry, specfile, packcmd):
     p = subprocess.Popen(
-        [sys.executable] + packcmd + [specfile],
+        [sys.executable] + packcmd + ['-y', specfile],
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdoutdata, _ = p.communicate()
+
+    if p.returncode != 0:
+        logging.error('\n\n%s\n\n', stdoutdata)
+        raise RuntimeError('Run pyinstaller failed')
 
 @pathwrapper
 def _pyinstaller(src, entry, packcmd, output):
     project = os.path.join('projects', 'pyinstaller')
     obfdist = os.path.join(project, 'dist')
-    specfile = os.path.basename(entry)[:-3] + '.spec'
+    spec = os.path.join(project, os.path.basename(entry)[:-3] + '.spec')
 
     args = 'obfuscate', '-r', '--src', src, '--entry', entry, '-O', obfdist
     call_armor(args)
 
-    run_pyi_makespec(project, obfdist, src, entry)
+    run_pyi_makespec(project, obfdist, src, entry, packcmd)
 
-    patched_specfile = update_specfile(project, src, entry, specfile)
+    patched = update_specfile(project, obfdist, src, entry, spec)
 
-    run_pyinstaller(project, src, entry, patched_specfile)
+    run_pyinstaller(project, src, entry, patched, packcmd)
 
     shutil.rmtree(project)
 
@@ -267,7 +288,7 @@ def packer(args):
 def add_arguments(parser):
     parser.add_argument('-v', '--version', action='version', version='v0.1')
 
-    parser.add_argument('-t', '--type', default='py2exe', metavar='TYPE',
+    parser.add_argument('-t', '--type', default='PyInstaller', metavar='TYPE',
                         choices=DEFAULT_PACKER.keys(),
                         help=', '.join(DEFAULT_PACKER.keys()))
     # parser.add_argument('-p', '--path',
