@@ -21,15 +21,18 @@ This is the documentation for Pyarmor 3.4 and later.
 - [Examples](examples/README.md)
 - [Project Configure File](#project-configure-file)
 - [Command Options](#command-options)
-    - [benchmark](#benchmark)
-    - [build](#build)
-    - [check](#check)
-    - [config](#config)
-    - [hdinfo](#hdinfo)
-    - [info](#info)
-    - [init](#init)
-    - [licenses](#licenses)
     - [obfuscate](#obfuscate)
+    - [licenses](#licenses)
+    - [pack](#pack)
+    - Project Commands
+        - [init](#init)
+        - [config](#config)
+        - [build](#build)
+        - [info](#info)
+        - [check](#check)
+    - Other Commands
+        - [hdinfo](#hdinfo)
+        - [benchmark](#benchmark)
 - [Appendix](#appendix)
     - [Limitions](#limitions)
     - [About license.lic](#about-license.lic)
@@ -571,6 +574,20 @@ pyshield.key, pyshield.lic, product.key, license.lic to same path of
 zip file, will solve this problem.
 
 ## Command Options
+
+* Favorate commands
+    - [obfuscate](#obfuscate)
+    - [licenses](#licenses)
+    - [pack](#pack)
+* Project Commands
+        - [init](#init)
+        - [config](#config)
+        - [build](#build)
+        - [info](#info)
+        - [check](#check)
+* Other Commands
+    - [hdinfo](#hdinfo)
+    - [benchmark](#benchmark)
 
 Available command: `init`, `config`, `build`, `info`, `check`,
 `licenses`, `hdinfo`, `benchmark`, `obfuscate`
