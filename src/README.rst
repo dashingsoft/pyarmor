@@ -6,7 +6,7 @@ obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
 * Obfuscate code object to protect constants and literal strings.
-* Obfuscate byte code of each code object in runtime.
+* Obfuscate co_code of each function (code object) in runtime.
 * Clear f_locals of frame as soon as code object completed execution.
 * Verify the license file of obfuscated scripts while running it.
 
@@ -54,16 +54,17 @@ Install::
 
 Obfuscate scripts::
 
-    pyarmor obfuscate --recursive --src=examples/simple --entry=queens.py
+    pyarmor obfuscate examples/simple/queens.py
 
 Run obfuscated scripts::
 
     cd dist
     python queens.py
 
-Pack obfuscated scripts with py2exe, cx_Freeze etc.::
+Pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc.::
 
-    pyarmor pack -t py2exe examples/py2exe/hello.py
+    pip install pyinstaller
+    pyarmor pack examples/py2exe/hello.py
 
 Generate an expired license and run obfuscated scripts with new license::
 
