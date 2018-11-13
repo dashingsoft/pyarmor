@@ -69,27 +69,9 @@ def armorcommand(func):
 def _init(args):
     '''Create an empty project or reinitialize an existing one
 
-This command creates an empty project in the specified path -
-basically a configure file .pyarmor_config, a project capsule
-.pyarmor_capsule.zip, and a shell script "pyarmor" will be created (in
-windows, it called "pyarmor.bat").
-
-Option --src specifies where to find python source files. By default,
-all .py files in this directory will be included in this project.
-
-Option --entry specifies main script, which could be run directly
-after obfuscated.
-
-Option --capsule specifies project capsule file which has been
-created. If it is set, no new project capsule is generated, just link
-to this capsule.
-
 EXAMPLES
 
-    python pyarmor.py init --src=examples --entry=queens.py project1
-    cd project1/
-    ./pyarmor info
-
+    pyarmor init --src=examples/simple --entry=queens.py project1
     '''
     if args.clone:
         logging.info('Warning: option --clone is deprecated, use --capsule instead ')
@@ -181,13 +163,6 @@ command, same as MANIFEST.in of Python Distutils. The default value is
 
 Option --entry is comma-separated list of entry scripts, relative to
 src path of project.
-
-Option --runtime-path is used to find _pytransform.dll(.so) in target
-machine when import obfuscated scripts. It's only used in special
-case. For example, use py2exe to package obfuscated scripts. Or use
-many odoo modules which are obfuscated separately. In this case, copy
-pyarmor runtime file to an absolute path, set this option to same path
-when obfuscate each odoo module.
 
 Examples,
 
@@ -297,31 +272,19 @@ def _build(args):
 
 @armorcommand
 def _licenses(args):
-    '''Generate licenses for this project.
-
-In order to bind licenses to fixed machine, use command hdinfo to get
-all available hardware information:
-
-    python pyarmor.py hdinfo
+    '''Generate licenses for obfuscated scripts.
 
 Examples,
 
-* Expired license
+* Expired license for global capsule
 
-    python pyarmor.py licenses --project=projects/myproject \\
-                               --expired=2018-05-12 Customer-Jordan
+    pyarmor licenses --expired=2018-05-12 Customer-Jordan
 
-* Bind license to fixed harddisk and expired someday
+* Bind license to fixed harddisk and expired someday for project
 
     cd projects/myproject
     ./pyarmor licenses -e 2018-05-12 \\
-                       --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
-
-* Batch expired licenses for many customers
-
-    cd projects/myproject
-    ./pyarmor licenses -e 2018-05-12 Customer-A Customer-B Customer-C
-
+              --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
     '''
     if os.path.exists(os.path.join(args.project, config_filename)):
         logging.info('Generate licenses for project %s ...', args.project)
@@ -429,7 +392,7 @@ def _target(args):
 
 @armorcommand
 def _capsule(args):
-    '''Make project capsule used to obfuscate scripts'''
+    '''Make capsule separately'''
     capsule = os.path.join(args.path, capsule_filename)
     logging.info('Generating capsule %s ...', capsule)
     if os.path.exists(capsule):
@@ -537,7 +500,9 @@ def main(args):
     parser = argparse.ArgumentParser(
         prog='pyarmor.py',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='Pyarmor used to import or run obfuscated python scripts.',
+        description='Pyarmor is a command line tool used to obfuscate ' \
+                    'python scripts, bind obfuscated scripts to fixed ' \
+                    'machine or expire obfuscated scripts.',
         epilog=__doc__,
     )
     parser.add_argument('-v', '--version', action='version',
@@ -555,7 +520,7 @@ def main(args):
         'capsule',
         epilog=_capsule.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Make project capsule')
+        help='Make capsule separately')
     cparser.add_argument('path', nargs='?', default='',
                          help='Path to save capsule, default is current path')
     cparser.set_defaults(func=_capsule)
@@ -764,7 +729,7 @@ def main(args):
         'pack',
         epilog=packer.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Pack obfuscated scripts with py2exe, cx_Freeze etc.'
+        help='Pack obfuscated scripts to one bundle'
     )
     packer.add_arguments(cparser)
     cparser.set_defaults(func=packer.packer)
