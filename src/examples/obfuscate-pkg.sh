@@ -45,7 +45,7 @@ $PYTHON pyarmor.py obfuscate --recursive --no-restrict --src "$PKGPATH" --entry 
 if [[ -n "${LICENSE_EXPIRED_DATE}" ]] ; then
     echo
     LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
-    $PYTHON pyarmor.py licenses --disable-restrict-mode --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
+    $PYTHON pyarmor.py licenses --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
     echo
 
     # Overwrite default license with this expired license

@@ -87,8 +87,7 @@ $PYARMOR obfuscate --src examples/simple --entry queens.py \
 check_return_value
 check_file_exists dist3/queens.py
 
-$PYARMOR licenses --expired $(next_month) --disable-restrict-mode Jondy \
-    >result.log 2>&1
+$PYARMOR licenses --expired $(next_month) Jondy >result.log 2>&1
 check_return_value
 check_file_exists licenses/Jondy/license.lic
 cp licenses/Jondy/license.lic dist3/

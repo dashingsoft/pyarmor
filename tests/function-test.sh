@@ -100,8 +100,7 @@ cp test/data/project.zip .pyarmor_capsule.zip
 $PYARMOR licenses --expired=2018-05-12 Customer-Jordan >result.log 2>&1
 check_file_exists licenses/Customer-Jordan/license.lic
 
-$PYARMOR licenses --capsule=test/data/project.zip \
-    --disable-restrict-mode --output=projects \
+$PYARMOR licenses --capsule=test/data/project.zip --output=projects \
     --expired=2018-05-12 Customer-Jordan >result.log 2>&1
 check_file_exists projects/licenses/Customer-Jordan/license.lic
 

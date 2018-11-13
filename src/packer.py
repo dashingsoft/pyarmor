@@ -158,8 +158,8 @@ def _packer(src, entry, build, script, packcmd, output, libname):
 
     filters = ('global-include *.py', 'prune build, prune dist',
                'exclude %s pytransform.py' % entry)
-    args = ('config', '--runtime-path', '', '--disable-restrict-mode', '1',
-               '--manifest', ','.join(filters), project)
+    args = ('config', '--runtime-path', '', 
+            '--manifest', ','.join(filters), project)
     call_armor(args)
 
     args = 'build', project

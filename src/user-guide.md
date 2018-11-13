@@ -1101,7 +1101,7 @@ to this capsule.
 ```
 usage: pyarmor.py licenses [-h] [-e YYYY-MM-DD] [-d SN] [-4 a.b.c.d]
                            [-m x:x:x:x] [--bind-domain DOMAIN] [-P PROJECT]
-                           [-C CAPSULE] [-O OUTPUT] [--disable-restrict-mode]
+                           [-C CAPSULE] [-O OUTPUT] [--restrict]
                            CODE [CODE ...]
 
 positional arguments:
@@ -1115,8 +1115,8 @@ optional arguments:
                         Project capsule
   -O OUTPUT, --output OUTPUT
                         Output path
-  --disable-restrict-mode
-                        Disable restrict mode
+  --restrict
+                        Generate license for restrict mode
 
 Bind license to hardware:
   -e YYYY-MM-DD, --expired YYYY-MM-DD
@@ -1155,7 +1155,7 @@ Then generate licenses
     # Expired license
     python pyarmor.py licenses --expired=2018-05-12 Customer-Jordan
     python pyarmor.py licenses --capsule=project2.zip \
-        --disable-restrict-mode --output=/home/jondy/project2 \
+        --output=/home/jondy/project2 \
         --expired=2018-05-12 Customer-Jordan
 
     # Expired license for project
