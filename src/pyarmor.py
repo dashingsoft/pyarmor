@@ -439,7 +439,14 @@ def _capsule(args):
 @armorcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project'''
-    path = args.src
+    if args.src is None and args.entry is None and not args.scripts:
+        raise RuntimeError('No entry script')
+
+    entry = args.entry or args.scripts[0]
+    if args.src is None:
+        path = os.path.abspath(os.path.dirname(entry))
+    else:
+        path = os.path.abspath(args.src)
     logging.info('Obfuscate scripts in path "%s" ...', path)
 
     capsule = args.capsule if args.capsule else DEFAULT_CAPSULE
@@ -450,21 +457,20 @@ def _obfuscate(args):
         make_capsule(capsule)
 
     output = args.output
-    if args.recursive:
-        pat = 'global-include *.py'.decode() if hasattr('', 'decode') \
-            else 'global-include *.py'
-        files = Project.build_manifest([pat], path)
-    else:
-        files = Project.build_globfiles(args.patterns, path)
+    pat = '%sinclude *.py' % ('global-' if args.recursive else '')
+    files = Project.build_manifest(
+        [pat.decode if hasattr('', 'decode') else pat], path)
     filepairs = [(os.path.join(path, x), os.path.join(output, x))
                  for x in files]
-    if args.no_restrict:
-        logging.info('Restrict mode is disabled')
-        mode = Project.map_obfuscate_mode(default_obf_module_mode,
-                                          'wrap')
+
+    if args.restrict:
+        logging.info('Restrict mode is eanbled')
+        mode = Project.map_obfuscate_mode(
+            default_obf_module_mode, default_obf_code_mode)
     else:
-        mode = Project.map_obfuscate_mode(default_obf_module_mode,
-                                          default_obf_code_mode)
+        logging.info('Restrict mode is disabled')
+        mode = Project.map_obfuscate_mode(
+            default_obf_module_mode, 'wrap')
 
     logging.info('Obfuscate scripts with mode %s', mode)
     logging.info('Save obfuscated scripts to "%s"', output)
@@ -474,14 +480,16 @@ def _obfuscate(args):
 
     logging.info('Make runtime files')
     make_runtime(capsule, output)
-    if args.no_restrict:
+    if not args.restrict:
         licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
         licfile = os.path.join(output, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
-    if args.entry:
-        make_entry(args.entry, path, output)
+    make_entry(os.path.basename(entry), path, output)
+    for script in args.scripts[1:]:
+        make_entry(os.path.basename(script), path, output)
+
     logging.info('Obfuscate %d scripts OK.', len(files))
 
 @armorcommand
@@ -562,16 +570,19 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts')
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
-    cparser.add_argument('-e', '--entry', metavar='SCRIPT', help='Entry script')
+    cparser.add_argument('-e', '--entry', metavar='SCRIPT',
+                         help='Entry script [DEPRECATED]')
     cparser.add_argument('-r', '--recursive', action='store_true',
                          help='Match files recursively')
-    cparser.add_argument('-s', '--src', required=True,
-                         help='Base path for matching python scripts')
+    cparser.add_argument('-s', '--src', metavar='PATH',
+                         help='Base path for search python scripts')
     cparser.add_argument('-d', '--no-restrict', action='store_true',
-                         help='Disable restrict mode');
+                         help='Disable restrict mode [DEPRECATED]');
+    cparser.add_argument('--restrict', action='store_true',
+                         help='Enable restrict mode');
     cparser.add_argument('--capsule', help='Use this capsule to obfuscate code')
-    cparser.add_argument('patterns', nargs='*', default=['*.py'],
-                         help='File patterns, default is "*.py"')
+    cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
+                         help='Scripts to obfuscted')
     cparser.set_defaults(func=_obfuscate)
 
     #
