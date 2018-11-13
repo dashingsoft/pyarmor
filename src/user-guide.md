@@ -5,6 +5,7 @@ This is the documentation for Pyarmor 3.4 and later.
 ## Tab of Content
 
 - [Introduction](#introduction)
+- [Installation](#installation)
 - [Usage](#usage)
     - [Obfuscate Python Scripts](#obfuscate-python-scripts)
     - [Import Obfuscated Module](#import-obfuscated-module)
@@ -19,18 +20,6 @@ This is the documentation for Pyarmor 3.4 and later.
 - [Benchmark Test](#benchmark-test)
 - [Examples](examples/README.md)
 - [Project Configure File](#project-configure-file)
-    - [name](#name)
-    - [title](#title)
-    - [src](#src)
-    - [manifest](#manifest)
-    - [is_package](#is_package)
-    - [disable_restrict_mode](#disable_restrict_mode)
-    - [entry](#entry)
-    - [output](#output)
-    - [capsule](#capsule)
-    - [obf_module_mode](#obf_module_mode)
-    - [obf_code_mode](#obf_code_mode)
-    - [runtime_path](#runtime_path)
 - [Command Options](#command-options)
     - [benchmark](#benchmark)
     - [build](#build)
@@ -419,6 +408,19 @@ How about the performance after scripts are obfuscated, run
 Each project has a configure file. It's a json file named
 `.pyarmor_config` stored in the project path, used to specify
 scripts to be obfuscated, and how to obfuscate etc.
+
+* [name](#name)
+* [title](#title)
+* [src](#src)
+* [manifest](#manifest)
+* [is_package](#is_package)
+* [disable_restrict_mode](#disable_restrict_mode)
+* [entry](#entry)
+* [output](#output)
+* [capsule](#capsule)
+* [obf_module_mode](#obf_module_mode)
+* [obf_code_mode](#obf_code_mode)
+* [runtime_path](#runtime_path)
 
 ### name
 
