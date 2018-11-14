@@ -45,10 +45,10 @@
       <!-- /.navbar-header -->
       <div class="collapse navbar-collapse" id="navbar-main-tab">
         <ul class="nav navbar-nav">
-          <li role="presentation" class="active"><a href="#tab-scripts" aria-controls="tab-scripts" role="tab" data-toggle="tab">Obfuscate Scripts</a></li>
-          <li role="presentation"><a href="#tab-licenses" aria-controls="tab-licenses" role="tab" data-toggle="tab">Generate Licenses</a></li>
+          <li role="presentation" class="active"><a href="#tab-scripts" aria-controls="tab-scripts" role="tab" data-toggle="tab">Obfuscator</a></li>
+          <li role="presentation"><a href="#tab-licenses" aria-controls="tab-licenses" role="tab" data-toggle="tab">Licensor</a></li>
           <li role="presentation"><a href="#tab-packer" aria-controls="tab-packer" role="tab" data-toggle="tab">Packer</a></li>
-          <li role="presentation"><a href="#obfuscator-console" aria-controls="obfuscator-console" role="tab" data-toggle="tab">Logs</a></li>
+          <li role="presentation"><a href="#obfuscator-console" aria-controls="obfuscator-console" role="tab" data-toggle="tab">Help &amp; Logs</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li role="presentation"><a class="btn-link" href="https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1">Purchase</a></li>
@@ -83,8 +83,7 @@
             <div class="form-group">
               <label for="input_output">Output Path</label>
               <input type="text" class="form-control" id="input_output"/>
-              <p class="help-block">Optional. In which obfuscated scripts and runtime files are saved</p>
-              <p class="help-block">The default output path is <code>dist</code> within Pyarmor package</p>
+              <p class="help-block">Optional. The default output path is <code>dist</code> within Pyarmor package</p>
             </div>
             <button type="button" class="btn btn-primary" id="obfuscate-scripts">Build</button>
           </form>
@@ -176,14 +175,22 @@
     </div>
     <!-- /.tab-pane -->
     <div role="tabpanel" class="tab-pane" id="obfuscator-console">
-      <div>
-        <form>
-          <div class="form-group">
-            <!-- <label for="project-log-message">Log message</label> -->
-            <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
-          </div>
-          <a id="clear-log-message" role="button" class="btn btn-primary">Clear</a>
-        </form>
+      <div class="panel panel-info">
+        <div class="panel-heading">View action logs</div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group">
+              <p class="help-block">Run command <code>pyarmor-webui</code> to start Pyarmor WebUi. It will lanuch a light-weight local webserver, and open this page</p>
+              <p class="help-block">It includes basic functions only, for advanced usage, use command <code>pyarmor</code> instead</p>
+              <p class="help-block">About the output of each action, see the console window of the webserver</p>
+            </div>
+            <div class="form-group">
+              <label for="project-log-message">Messages</label>
+              <textarea class="form-control" rows="10" id="project-log-message" readonly></textarea>
+            </div>
+            <a id="clear-log-message" role="button" class="btn btn-primary">Clear</a>
+          </form>
+        </div>
       </div>
       <!-- /.panel-default -->
     </div>

@@ -48,7 +48,7 @@
           <li role="presentation" class="active"><a href="#tab-scripts" aria-controls="tab-scripts" role="tab" data-toggle="tab">加密脚本</a></li>
           <li role="presentation"><a href="#tab-licenses" aria-controls="tab-licenses" role="tab" data-toggle="tab">生成许可</a></li>
           <li role="presentation"><a href="#tab-packer" aria-controls="tab-packer" role="tab" data-toggle="tab">打包</a></li>
-          <li role="presentation"><a href="#obfuscator-console" aria-controls="obfuscator-console" role="tab" data-toggle="tab">日志</a></li>
+          <li role="presentation"><a href="#obfuscator-console" aria-controls="obfuscator-console" role="tab" data-toggle="tab">帮助和日志</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li role="presentation"><a class="btn-link" target="_blank" href="order-zh.html">购买</a></li>
@@ -83,8 +83,7 @@
             <div class="form-group">
               <label for="input_output">输出目录</label>
               <input type="text" class="form-control" id="input_output"/>
-              <p class="help-block">可选。存放加密脚本的目录</p>
-              <p class="help-block">默认输出目录是 Pyarmor 包所在的路径下面的目录 <code>dist</code></p>
+              <p class="help-block">可选。默认输出目录是 Pyarmor 包所在的路径下面的目录 <code>dist</code></p>
             </div>
             <button type="button" class="btn btn-primary" id="obfuscate-scripts">开始加密</button>
           </form>
@@ -162,7 +161,7 @@
               <label for="input_packer_entry">主脚本</label>
               <input type="text" class="form-control required" id="input_packer_path" />
               <p class="help-block">必填。绝对路径的脚本名称</p>
-              <p class="help-block">主脚本所在目录下的所有 <code>.py</code> 脚本也会被加密，包括递归子目录</p>
+              <p class="help-block">主脚本所在目录下的所有 <code>.py</code> 脚本也会被加密</p>
             </div>
             <div class="form-group">
               <label for="input_packer_setup">安装脚本</label>
@@ -177,14 +176,22 @@
       <!-- /.panel-default -->
     </div>
     <div role="tabpanel" class="tab-pane" id="obfuscator-console">
-      <div>
-        <form>
-          <div class="form-group">
-            <!-- <label for="project-log-message">Log message</label> -->
-            <textarea class="form-control" rows="20" id="project-log-message" readonly></textarea>
-          </div>
-          <a id="clear-log-message" role="button" class="btn btn-primary"> 清空 </a>
-        </form>
+      <div class="panel panel-info">
+        <div class="panel-heading">查看操作日志</div>
+        <div class="panel-body">
+          <form>
+            <div class="form-group">
+              <p class="help-block">运行命令 <code>pyarmor-webui</code> 打开 Pyarmor 网页版。它首先启动一个轻量级的 Web 服务器，然后在浏览器中打开这个网页</p>
+              <p class="help-block">网页版只包含最基本的功能，高级用法请使用命令行工具 <code>pyarmor</code></p>
+              <p class="help-block">所有操作的详细输出会显示在 Web 服务器的控制台</p>
+            </div>
+            <div class="form-group">
+              <label for="project-log-message">日志</label>
+              <textarea class="form-control" rows="10" id="project-log-message" readonly></textarea>
+            </div>
+            <a id="clear-log-message" role="button" class="btn btn-primary">清空日志</a>
+          </form>
+        </div>
       </div>
       <!-- /.panel-default -->
     </div>
