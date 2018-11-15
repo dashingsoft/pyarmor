@@ -297,6 +297,8 @@ Check they're obfuscated
 For cx_Freeze, py2app, it's almost same as py2exe. Learn more options
 about command [pack](#pack)
 
+What does command `pack` do? Refer to [pack-obfuscated-scripts.rst](../docs/pack-obfuscated-scripts.rst)
+
 Quick start from the following template scripts
 
 * [pack-obfuscated-scripts.bat](examples/pack-obfuscated-scripts.bat) for Windows
