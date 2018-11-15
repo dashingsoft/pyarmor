@@ -139,13 +139,14 @@
         <div class="panel-heading">打包加密脚本</div>
         <div class="panel-body">
           <form>
-            <!-- <div class="form-group"> -->
-            <!--   <p class="help-block">Pyarmor 能够通过第三方工具，例如 py2exe, cx_Freeze 等，把脚本加密之后直接打包发布</p> -->
-            <!--   <p class="help-block">首先要写好 py2exe 或者 cx_Freeze 的安装脚本，并且确保没有加密的脚本已经能够正常打包发布</p> -->
-            <!--   <p class="help-block">然后在这里输入主脚本和安装脚本的本机路径名称，点击打包按钮就可以快速把脚本加密然后打包</p> -->
-            <!--   <p class="help-block">最终的输出路径和 <code>setup.py</code> 的输出路径是一样的（Pyarmor 会更新其中的一些文件）</p> -->
-            <!-- </div> -->
             <div class="form-group">
+              <p class="help-block">如果 PyInstaller 还没有安装，先运行这个命令进行安装 <code>pip install pyinstaller</code></p>
+              <!-- <p class="help-block">Pyarmor 能够通过第三方工具，例如 py2exe, cx_Freeze 等，把脚本加密之后直接打包发布</p> -->
+              <!-- <p class="help-block">首先要写好 py2exe 或者 cx_Freeze 的安装脚本，并且确保没有加密的脚本已经能够正常打包发布</p> -->
+              <!-- <p class="help-block">然后在这里输入主脚本和安装脚本的本机路径名称，点击打包按钮就可以快速把脚本加密然后打包</p> -->
+              <!-- <p class="help-block">最终的输出路径和 <code>setup.py</code> 的输出路径是一样的（Pyarmor 会更新其中的一些文件）</p> -->
+            </div>
+            <div class="form-group" style="display: none;">
               <label for="input_packer_type">打包方式</label>
               <select class="form-control" id="input_packer_type">
                 <option value="cx_Freeze">cx_Freeze</option>
@@ -161,12 +162,17 @@
               <label for="input_packer_entry">主脚本</label>
               <input type="text" class="form-control required" id="input_packer_path" />
               <p class="help-block">必填。绝对路径的脚本名称</p>
-              <p class="help-block">主脚本所在目录下的所有 <code>.py</code> 脚本也会被加密</p>
+              <!-- <p class="help-block">主脚本所在目录下的所有 <code>.py</code> 脚本也会被加密</p> -->
             </div>
-            <div class="form-group">
+            <div class="form-group" style="display: none;">
               <label for="input_packer_setup">安装脚本</label>
               <input type="text" class="form-control" id="input_packer_setup"/>
               <p class="help-block">可选。默认值是 <code>setup.py</code></p>
+            </div>
+            <div class="form-group">
+              <label for="input_packer_output">输出路径</label>
+              <input type="text" class="form-control" id="input_packer_output"/>
+              <p class="help-block">可选。默认是 <strong>主脚本</strong> 同目录下的 <code>dist</code></p>
             </div>
             <button type="button" class="btn btn-primary" id="pack-obfuscated-scripts">开始打包</button>
           </form>
@@ -181,7 +187,7 @@
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <p class="help-block">运行命令 <code>pyarmor-webui</code> 打开 Pyarmor 网页版，直接在浏览器打开这个网页无法工作</p>
+              <p class="help-block">运行命令 <code>pyarmor-webui</code> 打开 Pyarmor 网页版，不支持直接在浏览器打开网页</p>
               <p class="help-block">一个轻量级的 Web 服务器会在后台运行，服务所有的页面请求，所有操作的详细输出会显示在服务器的控制台</p>
               <p class="help-block">网页版只包含最基本的功能，高级用法请使用命令行工具 <code>pyarmor</code></p>
             </div>

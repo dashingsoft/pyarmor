@@ -139,12 +139,13 @@
         <div class="panel-heading">Pack obfuscated scripts</div>
         <div class="panel-body">
           <form>
-            <!-- <div class="form-group"> -->
-            <!--   <p class="help-block">Pyarmor could pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc. </p> -->
-            <!--   <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Pyarmor will call setup script while packing</p> -->
-            <!--   <p class="help-block">The final output path is same as of the setup script (Pyarmor just updates some files)</p> -->
-            <!-- </div> -->
             <div class="form-group">
+              <p class="help-block">If PyInstaller is not installed, run <code>pip install pyinstaller</code> first</p>
+              <!-- <p class="help-block">Pyarmor could pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc. </p> -->
+              <!-- <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Pyarmor will call setup script while packing</p> -->
+              <!-- <p class="help-block">The final output path is same as of the setup script (Pyarmor just updates some files)</p> -->
+            </div>
+            <div class="form-group" style="display: none;">
               <label for="input_packer_type">Type</label>
               <select class="form-control" id="input_packer_type">
                 <option value="cx_Freeze">cx_Freeze</option>
@@ -161,10 +162,15 @@
               <input type="text" class="form-control required" id="input_packer_entry" />
               <p class="help-block">Required. Absolute path of entry script</p>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="display: none;">
               <label for="input_packer_setup">Setup Script</label>
               <input type="text" class="form-control" id="input_packer_setup"/>
-              <p class="help-block">Optional. The default is <code>setup.py</code></p> 
+              <p class="help-block">Optional. The default is <code>setup.py</code></p>
+            </div>
+            <div class="form-group">
+              <label for="input_packer_output">Output Path</label>
+              <input type="text" class="form-control" id="input_packer_output"/>
+              <p class="help-block">Optional. The default is <code>dist</code> in the path of <strong>Entry Script</strong></p>
             </div>
             <button type="button" class="btn btn-primary" id="pack-obfuscated-scripts">Run</button>
           </form>

@@ -239,9 +239,10 @@ define(['connector', 'utils'], function(conn, utils) {
             utils.showMessage('Pack obfuscated scripts into "' + result.output + '" successfully');
         };
         var args = {};
+        args.type = document.getElementById('input_packer_type').value;
         args.entry = document.getElementById('input_packer_entry').value;
         args.setup = document.getElementById('input_packer_setup').value;
-        args.type = document.getElementById('input_packer_type').value;
+        args.output = document.getElementById('input_packer_output').value;
 
         if (!args.entry) {
             document.getElementById('input_packer_entry').focus();

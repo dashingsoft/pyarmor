@@ -221,9 +221,9 @@ def generateLicenses(args):
         PYARMOR_PATH, 'licenses', rcode, 'license.lic'))
 
 def packObfuscatedScripts(args):
-    output = os.path.join(os.path.dirname(args['entry']), 'dist')
-    params = ['pack', '--type', args['type'],
-              '--output', output, args['entry']]
+    params = ['pack', '--type', args['type'], args['entry']]
+    if args['output']:
+        params[3:3] = ['--output', args['output']]
     if args['setup']:
         params[3:3] = ['--setup', args['setup']]
 
