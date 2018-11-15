@@ -7,7 +7,7 @@ py2exe, py2app, cx_Freeze:
 
 **All the dependencies of obfuscated scripts CAN NOT be found at all**
 
-To solve this problem, the command solution is
+To solve this problem, the common solution is
 
 1. Find all the dependenices by original scripts.
 2. Add runtimes files required by obfuscated scripts to the bundle
@@ -22,6 +22,10 @@ First obfuscate scripts to ``dist/obf``::
 
 Work with PyInstaller
 ---------------------
+
+Install ``pyinstaller``::
+
+    pip install pyinstaller
 
 Generate specfile, add the obfuscated entry script and data files
 required by obfuscated scripts::
@@ -54,10 +58,12 @@ Check obfuscated scripts work::
    # It should not work
    dist/hello/hello.exe
 
-Work with py2exe for Python 3
------------------------------
+Work with py2exe
+----------------
 
-For Python3.3 and later
+For Python3.3 and later::
+
+    pip install py2exe
 
 Build bundle executable to ``dist`` with separated library::
 
@@ -93,23 +99,27 @@ Check obfuscated scripts work::
    # It should not work
    dist/hello.exe
 
+For Python2, write a ``setup.py`` and run ``py2exe`` as the following way::
+
+    python setup.py py2exe hello.py
+
 Work with cx_Freeze 5
 ---------------------
 
-Run ``cxfreeze-quickstart`` to create setup script first::
+Install ``cx_Freeze``::
 
-    cxfreeze-quickstart
+    pip install cx_Freeze
 
 Build bundle executable to ``dist``::
 
-    python setup.py build_exe --build-exe=dist
+    cxfreeze --target-dir=dist hello.py
 
 Build bundle executable with the obfuscated entry to
 ``dist/obf/dist``, all the other obfuscated scripts should be include
-by ``-i name`` or ``-p pkgname``::
+by ``--include-modules NAMES``::
 
     cd dist/obf
-    python setup.py build_exe --build-exe=dist -i queens
+    cxfreeze --target-dir=dist  --include-namex=queens hello.py
 
 Update ``dist/obf/python34.zip``, merge those files only in
 ``dist/python34.zip``. Because the obfuscated scripts in the former,
