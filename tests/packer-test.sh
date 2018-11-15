@@ -43,6 +43,8 @@ $PYARMOR --help >result.log 2>&1 || csih_error "Pyarmor bootstrap failed"
 #
 # ======================================================================
 
+echo -e "\n-------------------- py2exe Test -----------------------------\n"
+
 csih_inform "Case 1-1: Only full path entry script"
 $PYARMOR pack --type py2exe examples/py2exe/hello.py >result.log 2>&1
 check_return_value
@@ -52,11 +54,15 @@ check_return_value
 check_file_exists examples/py2exe/dist/pyshield.lic
 check_file_content examples/py2exe/dist/result.log 'Found 92 solutions'
 
+echo -e "\n-------------------- py2exe End ------------------------------\n"
+
 # ======================================================================
 #
 #  Command: pack with cx_Freeze
 #
 # ======================================================================
+
+echo -e "\n-------------------- cx_Freeze Test --------------------------\n"
 
 csih_inform "Case 2-1: Only full path entry script"
 $PYARMOR pack --type cx_Freeze examples/cx_Freeze/hello.py >result.log 2>&1
@@ -67,6 +73,8 @@ dist=examples/cx_Freeze/build/exe.win32-3.4
 
 check_file_exists $dist/pyshield.lic
 check_file_content $dist/result.log 'Found 92 solutions'
+
+echo -e "\n-------------------- cx_Freeze End ---------------------------\n"
 
 # ======================================================================
 #
