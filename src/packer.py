@@ -174,6 +174,20 @@ def _packer(src, entry, build, script, packcmd, output, libname):
     shutil.rmtree(project)
 
 @logaction
+def check_setup_script(_type, setup):
+    if os.path.exists(setup):
+        return
+
+    logging.info('Please run the following command to generate setup.py')
+    if _type == 'py2exe':
+        logging.info('\tpython -m py2exe.build_exe -W setup.py hello.py')
+    elif _type == 'cx_Freeze':
+        logging.info('\tcxfreeze-quickstart')
+    else:
+        logging.info('\tvi setup.py')
+    raise RuntimeError('No setup script %s found', setup)
+
+@logaction
 def run_pyi_makespec(project, obfdist, src, entry, packcmd):
     s = os.pathsep
     d = os.path.relpath(obfdist, project)
@@ -278,6 +292,7 @@ def packer(args):
     if _type == 'PyInstaller':
         _pyinstaller(src, entry, packcmd, output)
     else:
+        check_setup_script(_type, os.path.join(build, script))
         _packer(src, entry, build, script, packcmd, output, libname)
 
     logging.info('')
