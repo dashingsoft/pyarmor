@@ -2,26 +2,26 @@ Pack Obfuscated Scripts
 =======================
 
 The obfuscated scripts can replace Python scripts seamlessly, but
-there is an issue when packing them into one bundle by [PyInstaller]_,
-[py2exe]_, [py2app]_, [cx_Freeze]_
+there is an issue when packing them into one bundle by PyInstaller,
+py2exe, py2app, cx_Freeze:
 
-* All the dependencies of obfuscated scripts can NOT be found at all
+**All the dependencies of obfuscated scripts CAN NOT be found at all**
 
 To solve this problem, the command solution is
 
 1. Find all the dependenices by original scripts.
 2. Add runtimes files required by obfuscated scripts to the bundle
-3. Update the bundle with obfuscated scripts
+3. Replace original scipts with obfuscated scripts in the bundle
 4. Replace entry scrirpt with obfuscated one
 
 Depend on what tool used, there are different ways.
 
-Work with PyInstaller
----------------------
-
-Obfuscate scripts to ``dist/obf``::
+First obfuscate scripts to ``dist/obf``::
 
     pyarmor obfuscate --output dist/obf hello.py
+
+Work with PyInstaller
+---------------------
 
 Generate specfile, add the obfuscated entry script and data files
 required by obfuscated scripts::
@@ -61,15 +61,11 @@ For Python3.3 and later
 
 Build bundle executable to ``dist`` with separated library::
 
-    python -m py2exe.build_exe --library library-org.zip hello.py
+    python -m py2exe.build_exe --library library.zip hello.py
 
-Obfuscate scripts to ``dist/obf``::
-
-    pyarmor obfuscate --output dist/obf hello.py
-
-Build executable with obfuscated entry script to ``dist/obf/dist``,
-all the other obfuscated scripts should be include by ``-i name`` or
-``-p pkgname``::
+Build bundle executable with the obfuscated entry to
+``dist/obf/dist``, all the other obfuscated scripts should be include
+by ``-i name`` or ``-p pkgname``::
 
     ( cd dist/obf;
       python -m py2exe.build_exe --library library.zip -i queens hello.py )
@@ -100,19 +96,17 @@ Check obfuscated scripts work::
 Work with cx_Freeze 5
 ---------------------
 
-Run ``cxfreeze-quickstart`` to create setup script first.
+Run ``cxfreeze-quickstart`` to create setup script first::
 
-Build bundle executable to ``dist`` with separated library::
+    cxfreeze-quickstart
+
+Build bundle executable to ``dist``::
 
     python setup.py build_exe --build-exe=dist
 
-Obfuscate scripts to ``dist/obf``::
-
-    pyarmor obfuscate --output dist/obf hello.py
-
-Build executable with obfuscated entry script to ``dist/obf/dist``,
-all the other obfuscated scripts should be include by ``-i name`` or
-``-p pkgname``::
+Build bundle executable with the obfuscated entry to
+``dist/obf/dist``, all the other obfuscated scripts should be include
+by ``-i name`` or ``-p pkgname``::
 
     cd dist/obf
     python setup.py build_exe --build-exe=dist -i queens
