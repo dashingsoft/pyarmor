@@ -1,3 +1,10 @@
+4.4.2
+-----
+This patch mainly changes webui, make it simple more:
+
+* WebUI : remove source field in tab Obfuscate, and remove ipv4 field in tab Licenses
+* WebUI Packer: remove setup script, add output path, only support PyInstaller
+
 4.4.1
 -----
 * Support Py2Installer by a simple way
