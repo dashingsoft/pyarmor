@@ -53,7 +53,7 @@ from utils import make_capsule, obfuscate_scripts, make_runtime, \
 
 import packer
 
-DEFAULT_CAPSULE = os.path.join(os.path.dirname(__file__), capsule_filename)
+DEFAULT_CAPSULE = os.path.expanduser(os.path.join('~', capsule_filename))
 
 def armorcommand(func):
     return func
