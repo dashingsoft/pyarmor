@@ -76,9 +76,9 @@ by ``-i name`` or ``-p pkgname``::
     ( cd dist/obf;
       build_exe --library library.zip -i queens hello.py )
 
-Update ``dist/obf/library.zip``, merge those files only in
-``dist/library.zip``. Because the obfuscated scripts in the former,
-all the other dependencies in the latter.
+Update ``dist/obf/library.zip``, which only includes the obfuscated
+scripts, merge all the dependenices files from ``dist/library.zip``
+into it.
 
 Copy all the files to final output::
 
@@ -119,11 +119,11 @@ Build bundle executable with the obfuscated entry to
 by ``--include-modules NAMES``::
 
     cd dist/obf
-    cxfreeze --target-dir=dist --include-namex=queens hello.py
+    cxfreeze --target-dir=dist --include-modules=queens hello.py
 
-Update ``dist/obf/python34.zip``, merge those files only in
-``dist/python34.zip``. Because the obfuscated scripts in the former,
-all the other dependencies in the latter.
+Update ``dist/obf/python34.zip``, which only includes the obfuscated
+scripts, merge all the dependenices files from ``dist/python34.zip``
+into it.
 
 Copy all the files to final output::
 
