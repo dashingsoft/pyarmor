@@ -1,5 +1,9 @@
 4.4.2
 -----
+* Change default capsule to user home other than the source path of `pyarmor`
+
+4.4.2
+-----
 This patch mainly changes webui, make it simple more:
 
 * WebUI : remove source field in tab Obfuscate, and remove ipv4 field in tab Licenses
