@@ -39,7 +39,8 @@ For more information, refer to https://github.com/dashingsoft/pyarmor
 # 425(https://www.python.org/dev/peps/pep-0425).
 plat_name = get_platform().split('-')
 plat_name = '_'.join(plat_name if len(plat_name) < 3 else plat_name[0:3:2])
-
+plat_name = plat_name.replace('i586', 'i386').replace('i686', 'i386') \
+                                             .replace('intel', 'x86_64')
 dll_ext = '.so' if plat_name.startswith('linux') else \
           '.dylib' if plat_name.startswith('macosx') else \
           '.dll'

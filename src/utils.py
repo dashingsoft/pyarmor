@@ -39,21 +39,18 @@ PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 #
 def search_pytransform(path):
     logging.info('Searching %s%s for %s ...', dll_name, dll_ext, plat_name)
-    name = plat_name.replace('i586', 'i386').replace('i686', 'i386')
-    src = os.path.join(path, 'platforms', name, dll_name + dll_ext)
+    src = os.path.join(path, 'platforms', plat_name, dll_name + dll_ext)
     if os.path.exists(src):
         logging.info('Find _pytransform library "%s"', src)
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
     else:
-        raise RuntimeError('No library %s found', src)
+        raise RuntimeError('No library %s found' % src)
+if not os.path.exists(dll_name + dll_ext):
+    search_pytransform(PYARMOR_PATH)
 
 import pytransform
-try:
-    pytransform.pyarmor_init()
-except Exception:
-    search_pytransform(PYARMOR_PATH)
-    pytransform.pyarmor_init()
+pytransform.pyarmor_init()
 
 def make_capsule(filename):
     path = PYARMOR_PATH

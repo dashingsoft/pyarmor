@@ -245,7 +245,7 @@ def _load_library(path=None):
         else:
             raise RuntimeError('Platform not supported')
     except Exception:
-        raise PytransformError('Could not load _pytransform from "%s"', libpath)
+        raise PytransformError('Could not load _pytransform from "%s"' % libpath)
 
     # Required from Python3.6
     m.set_option('byteorder'.encode(), sys.byteorder.encode())
