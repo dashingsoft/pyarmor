@@ -1,3 +1,7 @@
+4.5.0
+-----
+* Add anti-debug code for dynamic library `_pytransform`
+
 4.4.2
 -----
 * Change default capsule to user home other than the source path of `pyarmor`
