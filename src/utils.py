@@ -46,7 +46,7 @@ def search_pytransform(path):
         shutil.copy(src, path)
     else:
         raise RuntimeError('No library %s found' % src)
-if not os.path.exists(dll_name + dll_ext):
+if not os.path.exists(os.path.join(PYARMOR_PATH, dll_name + dll_ext)):
     search_pytransform(PYARMOR_PATH)
 
 import pytransform
