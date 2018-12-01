@@ -297,7 +297,10 @@ Examples,
             logging.warning('Ignore option --project, no project in %s',
                             args.project)
         capsule = DEFAULT_CAPSULE if args.capsule is None else args.capsule
-        logging.info('Generate licenses for capsule %s ...', capsule)
+        if not (os.path.exists(capsule) and check_capsule(capsule)):
+            logging.info('Generate capsule %s', capsule)
+            make_capsule(capsule)
+        logging.info('Generate licenses with capsule %s ...', capsule)
         project = {
             'disable_restrict_mode': 0 if args.restrict else 1,
         }
