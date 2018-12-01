@@ -40,8 +40,7 @@ except ImportError:
     # argparse is new in version 2.7
     import polyfills.argparse as argparse
 
-from config import version, version_info, trial_info, \
-                   plat_name, dll_ext, dll_name, \
+from config import version, plat_name, dll_ext, dll_name, \
                    default_obf_module_mode, default_obf_code_mode, \
                    config_filename, capsule_filename, license_filename
 
@@ -495,7 +494,7 @@ def _hdinfo(args):
 def _version_info():
     rcode = get_registration_code()
     if rcode == '':
-        return 'Pyarmor Trial Version %s\n%s' % (version, trial_info)
+        return 'Pyarmor Trial Version %s\n' % version
     else:
         return 'Pyarmor Version %s\n\nRegistration code: %s' % (version, rcode)
 
