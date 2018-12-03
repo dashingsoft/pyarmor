@@ -83,7 +83,7 @@ More Resources
 
 - `Website <http://pyarmor.dashingsoft.com>`_
   `中文网站 <http://pyarmor.dashingsoft.com/index-zh.html>`_
-- `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
+- `Documentation <https://pyarmor.readthedocs.io/en/latest/>`_
 - `WebUI Demo <http://pyarmor.dashingsoft.com/demo/index.html>`_
 - `Source Code <https://github.com/dashingsoft/pyarmor>`_
-- `User Guide <https://github.com/dashingsoft/pyarmor/blob/master/src/user-guide.md>`_
+- `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_

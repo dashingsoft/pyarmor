@@ -1,9 +1,9 @@
 # Pyarmor
 
 * [Homepage](http://pyarmor.dashingsoft.com) ([中文版网站](http://pyarmor.dashingsoft.com/index-zh.html))
-* [Examples](src/examples)
+* [Documentation](https://pyarmor.readthedocs.io/en/latest/)
 * [WebUI Demo](http://pyarmor.dashingsoft.com/demo/index.html)
-* [Documentation](src/user-guide.md)
+* [Examples](src/examples)
 
 Pyarmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts. It
