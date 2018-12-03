@@ -40,7 +40,7 @@ registration code only (no newline), then replace the content of
 :file:`{pyarmor-folder}/license.lic` with it.
 
 Note that there are 2 types of :file:`license.lic`, this one locates
-in the source path of }PyArmor|. It's used by Pyarmor. The other
+in the source path of |PyArmor|. It's used by |PyArmor|. The other
 locates in the same path as obfuscated scripts, It's used by
 obfuscated scripts.
 
