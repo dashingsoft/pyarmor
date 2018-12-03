@@ -27,7 +27,7 @@ scripts. It protects Python scripts by the following ways:
 |PyArmor| is tested against Windows, Mac OS X, and Linux.
 
 |PyArmor| has been used successfully with FreeBSD and embedded
-platform such as Raspberry Pi, Banana Pi, TS-4600 / TS-7600rasppi etc.
+platform such as Raspberry Pi, Banana Pi, TS-4600 / TS-7600 etc.
 but is not fullly tested against them.
 
 Contents:
