@@ -1,3 +1,12 @@
+4.5.2
+-----
+* Add documentation https://pyarmor.readthedocs.io/en/latest/
+* Exclude `dist`, `build` folder when executing `pyarmor obfuscate --recursive`
+
+4.5.1
+-----
+* Fix #41: can not find dynamic library `_pytransform`
+
 4.5.0
 -----
 * Add anti-debug code for dynamic library `_pytransform`
