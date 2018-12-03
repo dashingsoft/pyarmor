@@ -37,8 +37,9 @@ Contents:
 
    installation
    usage
-   concepts
+   understand-obfuscated-scripts
    how-to-do
+   pack-obfuscated-scripts
    differences
    security
    man

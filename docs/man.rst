@@ -4,32 +4,39 @@
 Man Page
 ========
 
+Pyarmor is a command line tool used to obfuscate python scripts, bind
+obfuscated scripts to fixed machine or expire obfuscated scripts.
+
 The syntax of the ``pyarmor`` command is:
 
     ``pyarmor`` [*command*] [*options*]
 
+The most commonly used pyarmor commands are::
 
-Command ``obfuscate``
----------------------
+    obfuscate    Obfuscate python scripts
+    licenses     Generate new licenses for obfuscated scripts
+    pack         Pack obfuscated scripts to one bundle
+
+See ``pyarmor <command> -h`` for more information on a specific command.
+
+obfuscate
+---------
+
+``pyarmor obfuscate <options> SCRIPT...``
 
 .. _pyarmor obfuscate command options:
-
-
-``pyarmor obfuscate`` <options> SCRIPT...
 
 -O PATH, --output PATH  Output path
 -r, --recursive         Match files recursively
 --restrict              Enable restrict mode
 --capsule CAPSULE       Use this capsule to obfuscate code
 
-Command ``licenses``
---------------------
+licenses
+--------
+
+``pyarmor licenses <options> CODE``
 
 .. _pyarmor licenses command options:
-
-
-``pyarmor licenses`` <options> CODE
-
 
 -C CAPSULE, --capsule CAPSULE
                       Use this capsule other than default capsule
@@ -46,13 +53,12 @@ Command ``licenses``
                       Bind license to mac addr
 
 
-Command ``pack``
-----------------
+pack
+----
+
+``pyarmor pack <options> SCRIPT``
 
 .. _pyarmor pack command options:
-
-
-``pyarmor pack`` <options> SCRIPT
 
 
 -t TYPE, --type TYPE  cx_Freeze, py2exe, py2app, PyInstaller
