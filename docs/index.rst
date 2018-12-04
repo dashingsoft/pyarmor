@@ -41,6 +41,7 @@ Contents:
    how-to-do
    pack-obfuscated-scripts
    differences
+   advanced
    security
    man
    license
