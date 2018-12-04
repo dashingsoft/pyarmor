@@ -18,8 +18,8 @@ For examples, obfuscate :file:`foo.py` in restrict mode::
 
     pyarmor obfuscate --restrict foo.py
 
-In restrict mode, each function is obfuscated before it's called. Once
-it's executed, it will not be obfuscated again.
+Each function is obfuscated before it's called. Once it's executed, it
+will not be obfuscated again.
 
 And if adding ``print`` in the obfuscated script::
 
