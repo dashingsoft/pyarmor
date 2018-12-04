@@ -8,7 +8,7 @@ Restrict Mode
 
 |PyArmor| can obfuscate the scripts in restrict mode.
 
-If the script is obfuscated in restrict mode::
+If the script is obfuscated in restrict mode:
 
 * Each function (code object) will not be obfuscated again in runtime
 * Any other code can not be insert into the obfuscated scripts
