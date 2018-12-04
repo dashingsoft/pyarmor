@@ -36,7 +36,7 @@ In a short word, the obfuscated script in restrict mode runs quickly,
 but maybe less security.
 
 If the scripts is obfuscated in restrict mode, you should enable
-restrict mode either when generating new liceses for it::
+restrict mode either as generating new licenses for it::
 
     pyarmor licenses --restrict --expired 2019-01-01 mycode
 
