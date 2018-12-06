@@ -24,10 +24,10 @@ scripts. It protects Python scripts by the following ways:
 
 |PyArmor| supports Python 2.6, 2.7 and Python 3.
 
-|PyArmor| is tested against Windows, Mac OS X, and Linux.
+|PyArmor| is tested against ``Windows``, ``Mac OS X``, and ``Linux``.
 
-|PyArmor| has been used successfully with FreeBSD and embedded
-platform such as Raspberry Pi, Banana Pi, TS-4600 / TS-7600 etc.
+|PyArmor| has been used successfully with ``FreeBSD`` and embedded
+platform such as ``Raspberry Pi``, ``Banana Pi``, ``Orange Pi``, ``TS-4600 / TS-7600`` etc.
 but is not fullly tested against them.
 
 Contents:
