@@ -46,6 +46,10 @@ Show License Information
 Maybe you'd like to show how many days left when you issue an expired
 license for obfuscated scripts.
 
+Use ``get_license_info`` function in the module :file:`pytransform.py`
+of :ref:`Runtime Files` to get license information of obfuscated
+scripts.
+
 Here it's an example which explains how to do. Suppose there is a
 script :file:`foo.py` will be obfuscated and distributed to the
 customer, it will print expired date and license code, then do
@@ -60,17 +64,17 @@ The content of foo.py::
         print('This script is only for %s' % info['CODE]')
         print('This script will expired on %s' % info['expired'])
 
-    show_license_code()
-    do_something()
+    if __name__ == '__main__':
+        show_license_code()
+        do_something()
 
-First obfuscate foo.py::
+Let's obfuscate foo.py at first::
 
   pyarmor obfuscate foo.py
   pyarmor licenses --expired 2019-01-01 Brave-Tom
   cp licenses/Brave-Tom/license.lic dist/license.ic
 
-Then distribute obfuscated scripts in the ``dist`` to end user. When
-your customer runs this script::
+Then run this obfuscated script in the output path ``dist``::
 
   cd dist/
   python foo.py
@@ -80,7 +84,5 @@ The output will be::
   This script is only for Brave-Tom
   This script will expired on 2019-01-01
 
-Refer to the source code ``get_license_info`` in the :ref:`Runtime
-Files` ``pytransform.py`` for more license information.
 
 .. include:: _common_definitions.txt

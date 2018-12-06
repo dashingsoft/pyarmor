@@ -480,8 +480,7 @@ When protected python files are module or package, it means obfuscated
 scripts is allowed to be imported by outer scripts, it must be set to
 1.
 
-When init a project and no `--type` specified, it will be set to 1 if
-there is `__init__.py` in the path `src`, otherwise it's None.
+By default it's set to 1.
 
 ### entry
 
