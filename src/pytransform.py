@@ -15,7 +15,6 @@ import struct
 #
 _pytransform = None
 _get_error_msg = None
-_is_runtime = 0
 
 class PytransformError(Exception):
     pass
@@ -172,37 +171,44 @@ def get_license_info():
     return info
 
 # Load _pytransform library
-def _load_library(path=None):
+def _load_library(path=None, is_runtime=0):
     if path is None:
         path = os.path.dirname(__file__)
+
     plat = platform.system().lower()
-    bitness = struct.calcsize('P'.encode()) * 8
-    libpath = os.path.join(path, 'platforms', '%s%s' % (plat, bitness))
-    if not os.path.isdir(libpath):
-        libpath = path
+    if plat == 'linux':
+        filename = os.path.abspath(os.path.join(path, '_pytransform.so'))
+    elif plat == 'darwin':
+        filename = os.path.join(path, '_pytransform.dylib')
+    elif plat == 'windows':
+        filename = os.path.join(path, '_pytransform.dll')
+    elif plat == 'freebsd':
+        filename = os.path.join(path, '_pytransform.so')
+    else:
+        raise PytransformError('Platform %s not supported' % plat)
+    
+    if not os.path.exists(filename):
+        if is_runtime:
+            raise PytransformError('Could not find "%s"' % filename)
+        bitness = struct.calcsize('P'.encode()) * 8
+        libpath = os.path.join(path, 'platforms', '%s%s' % (plat, bitness))
+        filename = os.path.join(libpath, os.path.dirname(filename))
+        if not os.path.exists(filename):
+            raise PytransformError('Could not find "%s"' % filename)
+
     try:
-        if plat == 'linux':
-            if libpath == '':
-                m = cdll.LoadLibrary(os.path.abspath('_pytransform.so'))
-            else:
-                m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.so'))
-            m.set_option('libc'.encode(), find_library('c').encode())
-        elif plat == 'darwin':
-            m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.dylib'))
-        elif plat == 'windows':
-            m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.dll'))
-        elif plat == 'freebsd':
-            m = cdll.LoadLibrary(os.path.join(libpath, '_pytransform.so'))
-        else:
-            raise RuntimeError('Platform not supported')
-    except Exception:
-        raise PytransformError('Could not load _pytransform from "%s"' % libpath)
+        m = cdll.LoadLibrary(filename)
+    except Exception as e:
+        raise PytransformError(e)
+
+    if plat == 'linux':
+        m.set_option('libc'.encode(), find_library('c').encode())
 
     # Required from Python3.6
     m.set_option('byteorder'.encode(), sys.byteorder.encode())
 
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
-    m.set_option('enable_trial_license'.encode(), c_char_p(not _is_runtime))
+    m.set_option('enable_trial_license'.encode(), c_char_p(not is_runtime))
 
     # # Deprecated from v3.4
     # m.set_option('enable_encrypt_generator'.encode(), c_char_p(1))
@@ -213,11 +219,11 @@ def _load_library(path=None):
         m.set_option('pyshield_path'.encode(), path.encode())
     return m
 
-def pyarmor_init(path=None):
+def pyarmor_init(path=None, is_runtime=0):
     global _pytransform
     global _get_error_msg
     if _pytransform is None:
-        _pytransform = _load_library(path)
+        _pytransform = _load_library(path, is_runtime)
         _get_error_msg = _pytransform.get_error_msg
         _get_error_msg.restype = c_char_p
         try:
@@ -227,6 +233,5 @@ def pyarmor_init(path=None):
             sys.exit(1)
 
 def pyarmor_runtime(path=None):
-    _is_runtime = 1
-    pyarmor_init(path)
+    pyarmor_init(path, is_runtime=1)
     init_runtime(0, 0, 0, 0)
