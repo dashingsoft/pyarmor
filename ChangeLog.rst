@@ -1,3 +1,7 @@
+4.5.3
+-----
+* Print the exact message when checking license failed to run obfuscated scripts.
+
 4.5.2
 -----
 * Add documentation https://pyarmor.readthedocs.io/en/latest/
