@@ -29,26 +29,29 @@ folder you find all the files you distribute to your users::
     product.key
     license.lic
 
-.. _bootstrap code:
-
-Bootstrap Code
---------------
-
 The obfuscated scripts are normal Python scripts.
 
-The module :file:`dist/module.py` would be like this::
+The module :file:`dist/mymodule.py` would be like this::
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
 
-The content of entry script :file:`dist/myscript.py` would be like this::
+The entry script :file:`dist/myscript.py` would be like this::
 
     from pytransfrom import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x0a\x02...')
 
+.. _bootstrap code:
+
+Bootstrap Code
+--------------
+
 The first 2 lines in the entry script called ``Bootstrap Code``. It's
-only in the entry script.
+only in the entry script::
+
+    from pytransfrom import pyarmor_runtime
+    pyarmor_runtime()
 
 .. _runtime files:
 
@@ -59,7 +62,7 @@ Except obfuscated scripts, all the other files are called ``Runtime Files``:
 
 * :file:`pytransform.py`, a normal python module
 * ``_pytransform``, a dynamic library implements core functions
-* Four data files
+* 4 data files
 
 All of them are required to run obfuscated scripts.
 
