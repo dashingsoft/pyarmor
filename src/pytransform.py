@@ -15,61 +15,18 @@ import struct
 #
 _pytransform = None
 _get_error_msg = None
-
-#
-# Options
-#
-
-# How to show error message return from dynamic library _pytransform.
-#
-# Each time call a dll function, if something is wrong, _get_error_msg
-# will return the reason.
-#
-# Enable _verbose_mode will print the details got from _get_error_msg.
-# Disable this options will print only a short message.
-_verbose_mode = 1
-
-# In debug mode, print trace stack when raise exception.
-# Otherwise only show a short message.
-#
-# Run python with command option "-d", or set environment variable
-# PYTHONDEBUG. For example
-#
-#   python -d pyarmor.py xxxx
-#
-_debug_mode = sys.flags.debug
+_is_runtime = 0
 
 class PytransformError(Exception):
-    def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
-        if _debug_mode:
-            self._print_stack()
-
-    @classmethod
-    def _print_stack(self):
-        try:
-            from traceback import print_stack
-        except Exception:
-            _debug_mode = 0
-            sys.stderr.write('Disabled debug mode.\n')
-        else:
-            print_stack()
+    pass
 
 def dllmethod(func):
-    def format_message(msg, *args, **kwargs):
-        if _verbose_mode:
-            s1 = str(args)[:-1]
-            s2 = ', '.join(['%s=%s' % (k, repr(v)) for k, v in kwargs.items()])
-            sep = ', ' if (s1 and s2) else ''
-            line = 'Call with arguments: %s%s%s)' % (s1, sep, s2)
-            return msg
-        return msg.split('\n')[-1]
     def wrap(*args, **kwargs):
         args = [(s.encode() if isinstance(s, str) else s) for s in args]
         result = func(*args, **kwargs)
         errmsg = _get_error_msg()
         if errmsg:
-            raise PytransformError(format_message(errmsg, *args, **kwargs))
+            raise PytransformError(errmsg)
         return result
     return wrap
 
@@ -91,21 +48,15 @@ def init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
 
 @dllmethod
 def import_module(modname, filename):
-    global _import_module
-    if _import_module is None:
-        prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
-        _import_module = prototype(('import_module', _pytransform))
+    prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
+    _import_module = prototype(('import_module', _pytransform))
     return _import_module(modname, filename)
-_import_module = None
 
 @dllmethod
 def exec_file(filename):
-    global _exec_file
-    if _exec_file is None:
-        prototype = PYFUNCTYPE(c_int, c_char_p)
-        _exec_file = prototype(('exec_file', _pytransform))
+    prototype = PYFUNCTYPE(c_int, c_char_p)
+    _exec_file = prototype(('exec_file', _pytransform))
     return _exec_file(filename)
-_exec_file = None
 
 @dllmethod
 def encrypt_project_files(proname, filelist, mode=0):
@@ -251,6 +202,7 @@ def _load_library(path=None):
     m.set_option('byteorder'.encode(), sys.byteorder.encode())
 
     # m.set_option('enable_trace_log'.encode(), c_char_p(1))
+    m.set_option('enable_trial_license'.encode(), c_char_p(not _is_runtime))
 
     # # Deprecated from v3.4
     # m.set_option('enable_encrypt_generator'.encode(), c_char_p(1))
@@ -268,8 +220,13 @@ def pyarmor_init(path=None):
         _pytransform = _load_library(path)
         _get_error_msg = _pytransform.get_error_msg
         _get_error_msg.restype = c_char_p
-        init_pytransform()
+        try:
+            init_pytransform()
+        except PytransformError as e:
+            print(e)
+            sys.exit(1)
 
 def pyarmor_runtime(path=None):
+    _is_runtime = 1
     pyarmor_init(path)
     init_runtime(0, 0, 0, 0)
