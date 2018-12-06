@@ -38,6 +38,11 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Apply for BPI serials http://www.banana-pi.com/eindex.asp
     * Cross compile by https://github.com/BPI-SINOVOIP/BPI-M3-bsp.git
 
+* [Orange Pi](http://pyarmor.dashingsoft.com/downloads/platforms/orangepi/_pytransform.so)
+
+    * Apply for OPI serials http://www.orangepi.org/
+    * Cross compile by https://github.com/orangepi-xunlong/OrangePiH5_toolchain
+
 * [TS-4600/TS-7600](http://pyarmor.dashingsoft.com/downloads/platforms/ts-4600/_pytransform.so)
 
     * Apply for ts-4600/ts-7600 https://wiki.embeddedarm.com/wiki/TS-4600 / https://wiki.embeddedarm.com/wiki/TS-7600
