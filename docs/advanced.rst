@@ -40,4 +40,47 @@ restrict mode either as generating new licenses for it::
 
     pyarmor licenses --restrict --expired 2019-01-01 mycode
 
+Show License Information
+------------------------
+
+Maybe you'd like to show how many days left when you issue an expired
+license for obfuscated scripts.
+
+Here it's an example which explains how to do. Suppose there is a
+script :file:`foo.py` will be obfuscated and distributed to the
+customer, it will print expired date and license code, then do
+something.
+
+The content of foo.py::
+
+    def show_license_code():
+        from pytransfrom import get_license_info
+
+        info = get_license_info()
+        print('This script is only for %s' % info['CODE]')
+        print('This script will expired on %s' % info['expired'])
+
+    show_license_code()
+    do_something()
+
+First obfuscate foo.py::
+
+  pyarmor obfuscate foo.py
+  pyarmor licenses --expired 2019-01-01 Brave-Tom
+  cp licenses/Brave-Tom/license.lic dist/license.ic
+
+Then distribute obfuscated scripts in the ``dist`` to end user. When
+your customer runs this script::
+
+  cd dist/
+  python foo.py
+
+The output will be::
+
+  This script is only for Brave-Tom
+  This script will expired on 2019-01-01
+
+Refer to the source code ``get_license_info`` in the :ref:`Runtime
+Files` ``pytransform.py`` for more license information.
+
 .. include:: _common_definitions.txt
