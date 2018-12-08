@@ -31,7 +31,7 @@ def call_armor(args):
 
 def _check_trial_license():
     filename = os.path.join(PYARMOR_PATH, 'license.lic')
-    return os.path.getsize(filanem) == 256
+    return os.path.getsize(filename) == 256
 
 def _check_project_index():
     filename = os.path.join(project_base_path, project_index_name)
