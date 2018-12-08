@@ -222,17 +222,16 @@ def _load_library(path=None, is_runtime=0):
 def pyarmor_init(path=None, is_runtime=0):
     global _pytransform
     global _get_error_msg
-    if _pytransform is not None:
-        return
-    try:
+    if _pytransform is None:
         _pytransform = _load_library(path, is_runtime)
         _get_error_msg = _pytransform.get_error_msg
         _get_error_msg.restype = c_char_p
         init_pytransform()
+
+def pyarmor_runtime(path=None):
+    try:
+        pyarmor_init(path, is_runtime=1)
     except PytransformError as e:
         print(e)
         sys.exit(1)
-
-def pyarmor_runtime(path=None):
-    pyarmor_init(path, is_runtime=1)
     init_runtime(0, 0, 0, 0)

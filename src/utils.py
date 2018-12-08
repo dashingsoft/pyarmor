@@ -31,26 +31,29 @@ import tempfile
 from time import gmtime, strftime
 from zipfile import ZipFile
 
+import pytransform
 from config import plat_name, dll_ext, dll_name, entry_lines
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 #
 # Bootstrap
 #
-def search_pytransform(path):
-    logging.info('Searching %s%s for %s ...', dll_name, dll_ext, plat_name)
-    src = os.path.join(path, 'platforms', plat_name, dll_name + dll_ext)
-    if os.path.exists(src):
+def bootstrap_pytransform(path):
+    libname = dll_name + dll_ext
+    if not os.path.exists(os.path.join(path, libname)):
+        logging.info('Searching %s for %s ...', libname, plat_name)
+        src = os.path.join(path, 'platforms', plat_name, libname)
+        if not os.path.exists(src):
+            raise RuntimeError('No available library for this platform')
         logging.info('Find _pytransform library "%s"', src)
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
-    else:
-        raise RuntimeError('No library %s found' % src)
-if not os.path.exists(os.path.join(PYARMOR_PATH, dll_name + dll_ext)):
-    search_pytransform(PYARMOR_PATH)
-
-import pytransform
-pytransform.pyarmor_init()
+    pytransform.pyarmor_init()
+try:
+    bootstrap_pytransform(PYARMOR_PATH)
+except Exception as e:
+    logging.info("%s", e)
+    sys.exit(1)
 
 def make_capsule(filename):
     path = PYARMOR_PATH
