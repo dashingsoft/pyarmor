@@ -734,11 +734,11 @@ if __name__ == '__main__':
         # filemode='w',
     )
 
-    if (len(sys.argv) == 1 or
-        sys.argv[1] not in ('help', 'encrypt', 'capsule', 'license')):
-        from pyarmor import main as main2
-        main2(sys.argv[1:])
-        sys.exit(0)
+    # if (len(sys.argv) == 1 or
+    #     sys.argv[1] not in ('help', 'encrypt', 'capsule', 'license')):
+    #     from pyarmor import main as main2
+    #     main2(sys.argv[1:])
+    #     sys.exit(0)
 
     if len(sys.argv) == 1:
         usage()
