@@ -15,7 +15,6 @@ os.environ['PYARMOR_PATH'] = PYARMOR_PATH
 sys.path.insert(0, PYARMOR_PATH)
 
 from config import version, config_filename, capsule_filename
-from utils import get_registration_code
 from project import Project
 
 project_base_path = os.path.join(PYARMOR_PATH, 'projects')
@@ -29,6 +28,10 @@ def call_armor(args):
     p.wait()
     if p.returncode != 0:
         raise RuntimeError('Call pyarmor failed, see the details in console window')
+
+def _check_trial_license():
+    filename = os.path.join(PYARMOR_PATH, 'license.lic')
+    return os.path.getsize(filanem) == 256
 
 def _check_project_index():
     filename = os.path.join(project_base_path, project_index_name)
@@ -166,7 +169,7 @@ def queryVersion(args=None):
     >>> r['rcode'] == ''
     True
     '''
-    rcode = get_registration_code()
+    rcode = '' if _check_trial_license() else 'PyArmor'
     return dict(version=version, rcode=rcode)
 
 def newLicense(args):
