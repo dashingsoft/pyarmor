@@ -66,7 +66,7 @@ def call_pyarmor(args):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
 
-def obffuscate_python_scripts(output, filename, module_mode, code_mode):
+def obffuscate_scripts(output, filename, module_mode, code_mode):
     project = os.path.join(output, 'project')
     if os.path.exists(project):
         shutil.rmtree(project)
@@ -198,8 +198,8 @@ def main():
 
         logging.info('Obffuscate test script ...')
         shutil.copy(filename, obfilename)
-        obffuscate_python_scripts(output, os.path.basename(obfilename),
-                                  obf_module_mode, obf_code_mode)
+        obffuscate_scripts(output, os.path.basename(obfilename),
+                           obf_module_mode, obf_code_mode)
         if not os.path.exists(obfilename):
             logging.info('Something is wrong to obsfucate the script')
             return
