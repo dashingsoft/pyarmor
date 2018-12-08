@@ -172,8 +172,8 @@ def get_license_info():
 
 # Load _pytransform library
 def _load_library(path=None, is_runtime=0):
-    if path is None:
-        path = os.path.dirname(__file__)
+    path = os.path.dirname(__file__) if path is None \
+        else os.path.normpath(path)
 
     plat = platform.system().lower()
     if plat == 'linux':
@@ -186,20 +186,20 @@ def _load_library(path=None, is_runtime=0):
         filename = os.path.join(path, '_pytransform.so')
     else:
         raise PytransformError('Platform %s not supported' % plat)
-    
-    if not os.path.exists(filename):
-        if is_runtime:
-            raise PytransformError('Could not find "%s"' % filename)
+
+    if (not os.path.exists(filename)) and is_runtime:
+        raise PytransformError('Could not find "%s"' % filename)
+    else:
         bitness = struct.calcsize('P'.encode()) * 8
         libpath = os.path.join(path, 'platforms', '%s%s' % (plat, bitness))
-        filename = os.path.join(libpath, os.path.dirname(filename))
+        filename = os.path.join(libpath, os.path.basename(filename))
         if not os.path.exists(filename):
             raise PytransformError('Could not find "%s"' % filename)
 
     try:
         m = cdll.LoadLibrary(filename)
     except Exception as e:
-        raise PytransformError(e)
+        raise PytransformError('Load %s failed:\n%s' % (filename, e))
 
     if plat == 'linux':
         m.set_option('libc'.encode(), find_library('c').encode())
@@ -222,15 +222,16 @@ def _load_library(path=None, is_runtime=0):
 def pyarmor_init(path=None, is_runtime=0):
     global _pytransform
     global _get_error_msg
-    if _pytransform is None:
+    if _pytransform is not None:
+        return
+    try:
         _pytransform = _load_library(path, is_runtime)
         _get_error_msg = _pytransform.get_error_msg
         _get_error_msg.restype = c_char_p
-        try:
-            init_pytransform()
-        except PytransformError as e:
-            print(e)
-            sys.exit(1)
+        init_pytransform()
+    except PytransformError as e:
+        print(e)
+        sys.exit(1)
 
 def pyarmor_runtime(path=None):
     pyarmor_init(path, is_runtime=1)
