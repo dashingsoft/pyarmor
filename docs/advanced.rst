@@ -3,6 +3,8 @@
 Advanced Topics
 ===============
 
+.. _restrict mode:
+
 Restrict Mode
 -------------
 
@@ -83,6 +85,5 @@ The output will be::
 
   This script is only for Brave-Tom
   This script will expired on 2019-01-01
-
 
 .. include:: _common_definitions.txt

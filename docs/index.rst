@@ -40,10 +40,12 @@ Contents:
    understand-obfuscated-scripts
    how-to-do
    pack-obfuscated-scripts
+   project
    differences
    advanced
    security
    man
+   questions
    license
 
 Indices and tables
