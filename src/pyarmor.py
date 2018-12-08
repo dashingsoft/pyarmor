@@ -48,7 +48,7 @@ from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code, \
-                  check_capsule
+                  check_capsule, pytransform_bootstrap
 
 import packer
 
@@ -751,6 +751,11 @@ def main_entry():
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
+    try:
+        pytransform_bootstrap()
+    except Exception as e:
+        print(e)
+        sys.exit(1)
     main(sys.argv[1:])
 
 if __name__ == '__main__':

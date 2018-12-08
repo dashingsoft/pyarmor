@@ -35,10 +35,9 @@ import pytransform
 from config import plat_name, dll_ext, dll_name, entry_lines
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
-#
-# Bootstrap
-#
-def bootstrap_pytransform(path):
+
+def pytransform_bootstrap(path=None):
+    path = PYARMOR_PATH if path is None else path
     libname = dll_name + dll_ext
     if not os.path.exists(os.path.join(path, libname)):
         logging.info('Searching %s for %s ...', libname, plat_name)
@@ -49,11 +48,6 @@ def bootstrap_pytransform(path):
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
     pytransform.pyarmor_init()
-try:
-    bootstrap_pytransform(PYARMOR_PATH)
-except Exception as e:
-    logging.info("%s", e)
-    sys.exit(1)
 
 def make_capsule(filename):
     path = PYARMOR_PATH
