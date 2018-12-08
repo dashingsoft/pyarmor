@@ -34,16 +34,13 @@ import time
 from ctypes import cdll, c_int, c_void_p, py_object, pythonapi, PYFUNCTYPE
 from ctypes.util import find_library
 
-PYARMOR = 'pyarmor-deprecated.py'
+import pytransform
 
-def metricmethod(func):
-    def wrap(*args, **kwargs):
-        t1 = time.clock()
-        result = func(*args, **kwargs)
-        t2 = time.clock()
-        logging.info('%s: %s ms', func.__name__, (t2 - t1) * 1000)
-        return result
-    return wrap
+OBF_MODULE_MODE = 'none', 'des'
+OBF_CODE_MODE = 'none', 'des', 'fast', 'wrap'
+
+PYARMOR_PATH = os.path.dirname(__file__)
+PYARMOR = 'pyarmor.py'
 
 def make_test_script(filename):
     lines = [
@@ -65,11 +62,46 @@ def make_test_script(filename):
     with open(filename, 'wb') as f:
         f.write('\n'.join(lines).encode())
 
+def call_pyarmor(args):
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.wait()
+
+def obffuscate_python_scripts(output, filename, module_mode, code_mode):
+    project = os.path.join(output, 'project')
+    if os.path.exists(project):
+        shutil.rmtree(project)
+
+    args = [sys.executable, PYARMOR, 'init', '--src', output,
+            '--entry', filename, project]
+    call_pyarmor(args)
+
+    args = [sys.executable, PYARMOR, 'config',
+            '--manifest', 'include %s' % filename,
+            '--obf-module-mode', module_mode,
+            '--obf-code-mode', code_mode,
+            project]
+    call_pyarmor(args)
+
+    args = [sys.executable, PYARMOR, 'build', project]
+    call_pyarmor(args)
+
+    for s in os.listdir(os.path.join(project, 'dist')):
+        shutil.copy(os.path.join(project, 'dist', s), output)
+
+def metricmethod(func):
+    def wrap(*args, **kwargs):
+        t1 = time.clock()
+        result = func(*args, **kwargs)
+        t2 = time.clock()
+        logging.info('%s: %s ms', func.__name__, (t2 - t1) * 1000)
+        return result
+    return wrap
+
 @metricmethod
-def verify_license(pytransform):
+def verify_license(m):
     try:
         prototype = PYFUNCTYPE(py_object)
-        dlfunc = prototype(('get_registration_code', pytransform))
+        dlfunc = prototype(('get_registration_code', m))
         code = dlfunc()
     except Exception:
         logging.warning('Verify license failed')
@@ -77,31 +109,21 @@ def verify_license(pytransform):
     return code
 
 @metricmethod
-def init_pytransform(pytransform):
+def init_pytransform(m):
     major, minor = sys.version_info[0:2]
     # Python2.5 no sys.maxsize but sys.maxint
     # bitness = 64 if sys.maxsize > 2**32 else 32
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_void_p)
-    init_module = prototype(('init_module', pytransform))
+    init_module = prototype(('init_module', m))
     init_module(major, minor, pythonapi._handle)
 
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int)
-    init_runtime = prototype(('init_runtime', pytransform))
+    init_runtime = prototype(('init_runtime', m))
     init_runtime(0, 0, 0, 0)
 
 @metricmethod
 def load_pytransform():
-    try:
-        if sys.platform.startswith('linux'):
-            m = cdll.LoadLibrary(os.path.abspath('_pytransform.so'))
-            m.set_option('libc'.encode(), find_library('c').encode())
-        elif sys.platform.startswith('darwin'):
-            m = cdll.LoadLibrary('_pytransform.dylib')
-        else:
-            m = cdll.LoadLibrary('_pytransform.dll')
-    except Exception:
-        raise RuntimeError('Could not load library _pytransform.')
-    return m
+    return pytransform._load_library(PYARMOR_PATH)
 
 @metricmethod
 def import_no_obfuscated_module(name):
@@ -135,47 +157,15 @@ def run_one_thousand_no_obfuscated_bytecode(foo):
 def run_ten_thousand_no_obfuscated_bytecode(foo):
     return foo.ten_thousand()
 
-def check_output(output):
-    if not os.path.exists(output):
-        logging.info('Create output path: %s', output)
-        os.makedirs(output)
-    else:
-        logging.info('Output path: %s', output)
-
-def obffuscate_python_scripts(output, filename, mode=None):
-    args = [sys.executable, PYARMOR, 'encrypt']
-    if mode is not None:
-        args.extend(['--mode', mode])
-    args.extend(['-O', output, filename])
-    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.wait()
-
-    # Generate license with no restrict mode
-    licfile = os.path.join(output, 'license.lic')
-    args = [sys.executable, PYARMOR, 'license',
-            '-O', licfile, '*FLAGS:A*CODE:Benchmark' ]
-    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.wait()
-
-def check_default_capsule():
-    if not os.path.exists(PYARMOR):
-        return
-    capsule = 'project.zip'
-    if os.path.exists(capsule):
-        logging.info('Use capsule: %s', capsule)
-        return
-
-    p = subprocess.Popen([sys.executable, PYARMOR, 'capsule'],
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.wait()
-
 def main():
-    check_default_capsule()
+    if not os.path.exists('benchmark.py'):
+        logging.warning('Please change current path to %s', PYARMOR_PATH)
+        return
 
     time.clock()
-    pytransform = load_pytransform()
-    init_pytransform(pytransform)
-    verify_license(pytransform)
+    m = load_pytransform()
+    init_pytransform(m)
+    verify_license(m)
 
     logging.info('')
 
@@ -183,35 +173,41 @@ def main():
     name = 'bfoo'
     filename = os.path.join(output, name + '.py')
 
-    mode = sys.argv[2] if len(sys.argv) > 2 else '8'
-    ext = '' if mode in ('7', '8', '9', '10', '11', '12', '13', '14') else 'e'
-
     obname = 'obfoo'
-    obfilename = os.path.join(output, obname + '.py' + ext)
+    obfilename = os.path.join(output, obname + '.py')
 
     if len(sys.argv) > 1 and 'bootstrap'.startswith(sys.argv[1]):
-        check_output(output)
+        if len(sys.argv) < 4:
+            sys.argv.extend(['des', 'des'])
+        obf_module_mode, obf_code_mode = sys.argv[2:4]
+        if obf_module_mode not in OBF_MODULE_MODE:
+            logging.warning('Unsupport module mode %s', obf_module_mode)
+            return
+        if obf_code_mode not in OBF_CODE_MODE:
+            logging.warning('Unsupport code mode %s', obf_code_mode)
+            return
+
+        if not os.path.exists(output):
+            logging.info('Create output path: %s', output)
+            os.makedirs(output)
+        else:
+            logging.info('Output path: %s', output)
+
         logging.info('Generate test script %s ...', filename)
         make_test_script(filename)
-        logging.info('Test script %s has been generated.', filename)
-        if mode not in ('3', '5', '6', '7', '8',
-                        '9', '10', '11', '12', '13', '14'):
-            logging.warning('Unsupport mode %s, use default mode 8', mode)
-            mode = '8'
-        logging.info('Obffuscate test script with mode %s...', mode)
-        obffuscate_python_scripts(output, filename, mode)
-        if not os.path.exists(os.path.join(output, filename + ext)):
-            logging.info('Something is wrong to obsfucate %s.', filename)
+
+        logging.info('Obffuscate test script ...')
+        shutil.copy(filename, obfilename)
+        obffuscate_python_scripts(output, os.path.basename(obfilename),
+                                  obf_module_mode, obf_code_mode)
+        if not os.path.exists(obfilename):
+            logging.info('Something is wrong to obsfucate the script')
             return
-        shutil.move(os.path.join(output, filename + ext), obfilename)
         logging.info('Generate obffuscated script %s', obfilename)
 
         logging.info('Copy benchmark.py to %s', output)
-        with open('benchmark.py') as f:
-            lines = f.read()
-        with open(os.path.join(output, 'benchmark.py'), 'w') as f:
-            f.write(lines.replace("else '8'", "else '%s'" % mode))
-        # shutil.copy('benchmark.py', output)
+        shutil.copy('benchmark.py', output)
+
         logging.info('')
         logging.info('Now change to "%s"', output)
         logging.info('Run "%s benchmark.py".', sys.executable)
@@ -231,7 +227,7 @@ def main():
         logging.info('Run "%s benchmark.py bootstrap" first.', sys.executable)
         return
 
-    logging.info('Start test with mode %s', mode)
+    logging.info('Start test')
     logging.info('--------------------------------------')
 
     logging.info('')

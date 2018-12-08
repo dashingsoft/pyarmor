@@ -477,18 +477,22 @@ def _benchmark(args):
     logging.info('Obfuscate bytecode mode: %s', args.obf_code_mode)
 
     logging.info('Benchmark bootstrap ...')
-    mode = Project.map_obfuscate_mode(args.obf_module_mode,
-                                      args.obf_code_mode)
+    path = os.path.normpath(os.path.dirname(__file__))
     p = subprocess.Popen(
-        [sys.executable, 'benchmark.py', 'bootstrap', str(mode)],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        [sys.executable, 'benchmark.py', 'bootstrap',
+         args.obf_module_mode, args.obf_code_mode],
+        cwd=path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
     logging.info('Benchmark bootstrap OK.')
 
     logging.info('Run benchmark test ...')
-    p = subprocess.Popen([sys.executable, 'benchmark.py'], cwd='.benchtest')
+    benchtest = '.benchtest'
+    p = subprocess.Popen([sys.executable, 'benchmark.py'],
+                         cwd=os.path.join(path, benchtest))
     p.wait()
 
+    logging.info('Remove test path: %s', benchtest)
+    shutil.rmtree(benchtest)
     logging.info('Finish benchmark test.')
 
 @armorcommand
