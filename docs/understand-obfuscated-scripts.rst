@@ -74,7 +74,7 @@ which generated as executing ``pyarmor obfuscate``, allows obfuscated
 scripts run in any machine and never expired.
 
 To change this behaviour, use command ``pyarmor licenses`` to generate
-new :file:`license.lic` to overwrite the default one.
+new :file:`license.lic` and overwrite the default one.
 
 Running Obfuscated Scripts
 --------------------------
