@@ -187,9 +187,9 @@ def _load_library(path=None, is_runtime=0):
     else:
         raise PytransformError('Platform %s not supported' % plat)
 
-    if (not os.path.exists(filename)) and is_runtime:
-        raise PytransformError('Could not find "%s"' % filename)
-    else:
+    if not os.path.exists(filename):
+        if is_runtime:
+            raise PytransformError('Could not find "%s"' % filename)
         bitness = struct.calcsize('P'.encode()) * 8
         libpath = os.path.join(path, 'platforms', '%s%s' % (plat, bitness))
         filename = os.path.join(libpath, os.path.basename(filename))
