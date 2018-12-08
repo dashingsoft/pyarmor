@@ -27,13 +27,22 @@ pyarmor_data_files = [
     'examples/py2exe/*.py', 'examples/cx_Freeze/*.py',
 ]
 
-platform_data_files = [
-    'platforms/win32/_pytransform.dll',
-    'platforms/win_amd64/_pytransform.dll',
-    'platforms/linux_i386/_pytransform.so',
-    'platforms/linux_x86_64/_pytransform.so',
-    'platforms/macosx_x86_64/_pytransform.dylib',
-]
+if path.exists(path.join('src', 'platforms', 'windows32')):
+    platform_data_files = [
+        'platforms/windows32/_pytransform.dll',
+        'platforms/windows64/_pytransform.dll',
+        'platforms/linux32/_pytransform.so',
+        'platforms/linux64/_pytransform.so',
+        'platforms/darwin64/_pytransform.dylib',
+    ]
+else:
+    platform_data_files = [
+        'platforms/win32/_pytransform.dll',
+        'platforms/win_amd64/_pytransform.dll',
+        'platforms/linux_i386/_pytransform.so',
+        'platforms/linux_x86_64/_pytransform.so',
+        'platforms/macosx_x86_64/_pytransform.dylib',
+    ]
 
 from sys import argv
 if argv[1] == 'bdist_wheel':

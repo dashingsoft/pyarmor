@@ -40,13 +40,17 @@ def pytransform_bootstrap(path=None):
     path = PYARMOR_PATH if path is None else path
     libname = dll_name + dll_ext
     if not os.path.exists(os.path.join(path, libname)):
-        logging.info('Searching %s for %s ...', libname, plat_name)
-        src = os.path.join(path, 'platforms', plat_name, libname)
-        if not os.path.exists(src):
-            raise RuntimeError('No available library for this platform')
-        logging.info('Find _pytransform library "%s"', src)
-        logging.info('Copy %s to %s', src, path)
-        shutil.copy(src, path)
+        libpath = os.path.join(path, 'platforms')
+        sysname = pytransform.format_platname()
+        if not os.path.exists(os.path.join(libpath, sysname, libname)):
+            logging.info('Searching %s for %s ...', libname, plat_name)
+            src = os.path.join(libpath, plat_name, libname)
+            if not os.path.exists(src):
+                raise RuntimeError('No available library for this platform')
+            logging.info('Found: "%s"', src)
+            logging.info('Copy to %s', path)
+            shutil.copy(src, path)
+            logging.info('Bootstrap OK.\n')
     pytransform.pyarmor_init()
 
 def make_capsule(filename):
@@ -157,7 +161,13 @@ def make_runtime(capsule, output, licfile=None, platform=None):
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
     if platform is None:
-        shutil.copy2(os.path.join(PYARMOR_PATH, dll_name + dll_ext), output)
+        libname = dll_name + dll_ext
+        libfile = os.path.join(PYARMOR_PATH, libname)
+        if not os.path.exists(libfile):
+            sysname = pytransform.format_platname()
+            libpath = os.path.join(PYARMOR_PATH, 'platforms')
+            libfile = os.path.join(libpath, sysname, libname)
+        shutil.copy2(libfile, output)
     else:
         path = os.path.join(PYARMOR_PATH, 'platforms', platform)
         for x in os.listdir(path):
