@@ -12,11 +12,25 @@ clear_build()
 {
     echo Remove build files: pyarmor.egg-info build src/__pycache__
     rm -rf pyarmor.egg-info build src/__pycache__
+}
 
+clear_platform_files()
+{
     echo Remove platforms files
     rm -rf src/platforms/windows32 src/platforms/windows64
     rm -rf src/platforms/linux32 src/platforms/linux64
     rm -rf src/platforms/darwin64
+}
+
+make_platform_files()
+{
+    (cd src/platforms;
+        cp -a win32 windows32;
+        cp -a win_amd64 windows64;
+        cp -a linux_i386 linux32;
+        cp -a linux_x86_64 linux64;
+        cp -a macosx_x86_64 darwin64;
+    )
 }
 
 # Build source, DEPRECATED WAY
@@ -25,13 +39,7 @@ clear_build()
 # rm -rf *.pyc __pycache__ *.pyo)
 
 if ! [[ "$1" == "whl" ]] ; then
-    (cd src/platforms;
-        cp -a win32 windows32;
-        cp -a win_amd64 windows64;
-        cp -a linux_i386 linux32;
-        cp -a linux_x86_64 linux64;
-        cp -a macosx_x86_64 darwin64;
-    )
+    make_platform_files
 fi
 
 # Build source
@@ -41,6 +49,7 @@ clear_build
 # Build universal wheel
 $PYTHON setup.py bdist_wheel --universal
 clear_build
+clear_platform_files
 
 [[ "$1" == "whl" ]] || exit 0
 
