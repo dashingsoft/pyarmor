@@ -335,6 +335,17 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
 cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
 
+# From pyarmor 4.5.4, platform name is renamed
+if [[ -d platforms/windows32 ]] ; then
+    csih_inform "Restore the name of platforms"
+    (cd platforms;
+        mv windows32 win32;
+        mv windows64 win_amd64;
+        mv linux32 linux_i386;
+        mv linux64 linux_x86_64;
+        mv darwin64 macosx_x86_64;)
+fi
+
 PYARMOR="$PYTHON pyarmor.py"
 [[ -f pyarmor-deprecated.py ]] && PYARMOR="$PYTHON pyarmor-deprecated.py"
 csih_inform "PYARMOR is $PYARMOR"

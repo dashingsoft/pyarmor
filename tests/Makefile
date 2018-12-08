@@ -71,7 +71,7 @@ WORKPATH = __runtime__
 .PHONY: test unit trial build
 
 
-test: build
+test: 
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
             $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash integration-test.sh || exit 1; \

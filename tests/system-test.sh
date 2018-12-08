@@ -20,8 +20,16 @@ cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
+
 # From pyarmor 3.5.1, main scripts are moved to src
 [[ -d src ]] && mv src/* ./
+
+# From pyarmor 4.5.4, platform name is renamed
+if [[ -d platforms/windows32 ]] ; then
+    csih_inform "Add execute permission to dynamic library"    
+    chmod +x platforms/windows32/_pytransform.dll
+    chmod +x platforms/windows64/_pytransform.dll
+fi
 
 csih_inform "Prepare for system testing"
 echo ""
@@ -39,7 +47,6 @@ echo ""
 
 csih_inform "Case 0.1: show help and import pytransform"
 $PYARMOR --help >result.log 2>&1 || csih_bug "Case 1.1 FAILED"
-[[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
 
 csih_inform "Case 0.2: show version information"
 $PYARMOR --version >result.log 2>&1 || csih_bug "show version FAILED"
