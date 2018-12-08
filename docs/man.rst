@@ -35,6 +35,12 @@ obfuscate
 
 Obfuscate python scripts.
 
+SYNOPSIS::
+
+    pyarmor obfuscate <options> SCRIPT...
+
+DESCRIPTION
+
 |PyArmor| first checks whether :file:`.pyarmor_capsule.zip` exists in
 the ``HOME`` path. If not, make it.
 
@@ -45,10 +51,6 @@ Next generate default :file:`license.lic` for obfuscated scripts and
 make all the other :ref:`Runtime Files` in the `dist` path.
 
 Finally insert :ref:`Bootstrap Code` into each entry script.
-
-SYNOPSIS::
-
-    pyarmor obfuscate <options> SCRIPT...
 
 .. _pyarmor obfuscate command options:
 
@@ -98,11 +100,8 @@ SYNOPSIS::
 OPTIONS:
 
 -t TYPE, --type TYPE  cx_Freeze, py2exe, py2app, PyInstaller(default).
--s SETUP, --setup SETUP
-                      Setup script, default is setup.py.
 -O OUTPUT, --output OUTPUT
-                      Directory to put final built distributions in (default
-                      is output path of setup script)
+                      Directory to put final built distributions in.
 
 hdinfo
 ------
