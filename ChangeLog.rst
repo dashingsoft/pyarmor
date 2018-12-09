@@ -1,3 +1,7 @@
+4.5.4
+-----
+* Refine platform name to search dynamic library `_pytransform`
+
 4.5.3
 -----
 * Print the exact message when checking license failed to run obfuscated scripts.
