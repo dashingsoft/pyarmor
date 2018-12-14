@@ -1,3 +1,7 @@
+4.5.5
+-----
+* Fix stack overflow issue
+
 4.5.4
 -----
 * Refine platform name to search dynamic library `_pytransform`
