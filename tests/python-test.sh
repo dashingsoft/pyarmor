@@ -28,6 +28,11 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are moved to src
 [[ -d src ]] && cd src/
 
+# From pyarmor 4.5.4, platform name is renamed
+csih_inform "Add execute permission to dynamic library"    
+[[ -d platforms/windows32 ]] && chmod +x platforms/windows32/_pytransform.dll
+[[ -d platforms/windows64 ]] && chmod +x platforms/windows64/_pytransform.dll
+
 csih_inform "Prepare for python features testing at $(pwd)"
 echo ""
 
@@ -64,8 +69,7 @@ echo "-------------------- Start testing ------------------------------"
 echo ""
 
 csih_inform "Show help and import pytransform"
-$PYARMOR --help >>result.log 2>&1 || csih_bug "Bootstrap FAILED"
-[[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
+$PYARMOR --help >>result.log 2>&1 || csih_error "Bootstrap FAILED"
 
 csih_inform "Create project at projects/pytest"
 $PYARMOR init --src=lib/test --entry="$TESTENTRIES" projects/pytest >>result.log 2>&1
@@ -80,7 +84,7 @@ csih_inform "Obfuscate scripts"
 $ARMOR build >>result.log 2>&1
 
 csih_inform "Copy runtime files to ../../lib/test"
-cp dist/* ../../lib/test
+cp dist/test/* ../../lib/test
 
 csih_inform "Copy runtime files to $TESTLIB/.."
 cp dist/* $TESTLIB/..
@@ -120,9 +124,10 @@ mv ../../lib/test $TESTLIB
 # Python36 (linux_x86_64)
 #     Segmentation Fault: test_logging.test_compute_rollover_weekly_attime test_platform.test_sys_version test_struct.test_half_float test_time.test_FromSecondsObject
 #
-NOTESTS="test_argparse test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
+NOTESTS="test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
 csih_inform "Run obfuscated test scripts without $NOTESTS"
-(cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1
+# (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1
+(cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS)
 
 csih_inform "Move obfuscated test scripts to ../../lib/test"
 mv $TESTLIB ../../lib/test
