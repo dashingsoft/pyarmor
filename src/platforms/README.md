@@ -1,6 +1,6 @@
 # Downloads for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **4.0.3**
+Latest version: **4.0.4**
 
 Build date: 2018-12-15
 
@@ -49,6 +49,10 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+## 4.0.4
+
+* Fix stack overflow issue for special code object
 
 ## 4.0.3
 

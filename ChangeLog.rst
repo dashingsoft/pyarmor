@@ -1,3 +1,7 @@
+4.5.6
+-----
+* Fix stack overflow issue for special code object
+
 4.5.5
 -----
 * Fix stack overflow issue
