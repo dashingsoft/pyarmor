@@ -81,7 +81,7 @@ Next change this code object as the following ways
 
 * Append function names `__armor_enter`, `__armor_exit__` to `co_consts`
 
-* Increase `co_stacksize` to 4 if it's less than 4
+* Increase `co_stacksize` by 2
 
 * Set CO_OBFUSCAED (0x80000000) flag in `co_flags`
 
