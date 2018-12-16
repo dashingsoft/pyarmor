@@ -106,25 +106,10 @@ mv ../../lib/test $TESTLIB
 
 # Failed Tests:
 #
-# Python26
-#     Hangup: test_urllib2_localnet (linux_x86_64)
-#     Segmentation Fault: test_profilehooks
-#
 # Python27
-#     Hangup: test_argparse (win32)
-#     Segmentation Fault: test_sys_setprofile
-#     Two many errors: test_sys_settrace
-#
-# Python31
-#     Segmentation Fault: test_cprofile
-#
-# Python32 (linux_x86_64)
-#     Hangup: test_urllib2_localnet
+#     Hangup: test_argparse.TestFileTypeR* (win32)
 #     
-# Python36 (linux_x86_64)
-#     Segmentation Fault: test_logging.test_compute_rollover_weekly_attime test_platform.test_sys_version test_struct.test_half_float test_time.test_FromSecondsObject
-#
-NOTESTS="test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
+NOTESTS="test_argparse test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
 csih_inform "Run obfuscated test scripts without $NOTESTS"
 # (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1
 (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS)
