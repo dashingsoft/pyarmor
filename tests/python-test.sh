@@ -52,11 +52,14 @@ csih_inform "Move $TESTLIB to ${TESTLIB}.bak"
 [[ -d $TESTLIB.bak ]] && csih_error "$TESTLIB.bak has been exists!"
 mv $TESTLIB $TESTLIB.bak
 
-csih_inform "Convert scripts to unix format"
-which dos2unix >/dev/null 2>&1 && \
-for s in $(find ./lib/test -name test_*.py) ; do
-  dos2unix $s >>result.log 2>&1
-done
+# Only for windows and python26, need to convert to unix format
+if [[ "$PLATFORM" == win* && "$PYTHON" == *Python26* ]] ; then
+  csih_inform "Convert scripts to unix format"
+  which dos2unix >/dev/null 2>&1 && \
+  for s in $(find ./lib/test -name test_*.py) ; do
+    dos2unix $s >>result.log 2>&1
+  done
+fi
 
 # ======================================================================
 #
