@@ -1,6 +1,6 @@
-4.5.6
+4.6.0
 -----
-* Fix stack overflow issue for special code object
+* Fix crash issue for special code object in Python 3.6
 
 4.5.5
 -----

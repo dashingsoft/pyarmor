@@ -2,7 +2,7 @@
 
 Latest version: **4.0.4**
 
-Build date: 2018-12-15
+Build date: 2018-12-16
 
 The core of Pyarmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -52,7 +52,7 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 ## 4.0.4
 
-* Fix stack overflow issue for special code object
+* Fix EXTENDED_ARG instruction crash issue for Python3.6
 
 ## 4.0.3
 
