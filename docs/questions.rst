@@ -50,7 +50,7 @@ implicitly, otherwise :ref:`Global Capsule`.
 The :ref:`Global Capsule` will be changed if the trial license file of
 |PyArmor| is replaced with normal one, or it's deleted occasionally
 (which will be generated implicitly as running command `pyarmor
-obfuscate` next time). 
+obfuscate` next time).
 
 The project capsule is overwrited when running command `pyarmor init`
 in the project path created before.
@@ -59,5 +59,35 @@ In any cases, generating new license file with the different capsule
 will not work for the obfuscated scripts before. If the old capsule is
 gone, one solution is to obfuscate these scripts by the new capsule
 again.
+
+Two types of `license.lic`
+--------------------------
+
+In pyarmor, there are 2 types of `license.lic`
+
+* `license.lic` of |PyArmor|, which locates in the source path of
+  |PyArmor|. It's required to run `pyarmor`
+
+* `license.lic` of Obfuscated Scripts, which is generated as
+  obfuscating scripts or generating new licenses. It's required to run
+  obfuscated scripts.
+
+Each project has its own capsule `.pyarmor_capsule.zip` in project
+path. This capsule is generated when run command `pyarmor init` to
+create a project. And `license.lic` of }PyArmor| will be as an input
+file to make this capsule.
+
+When runing command `pyarmor build` or `pyarmor licenses`, it will
+generate a `license.lic` in project output path for obfuscated
+scripts. Here the project capsule `.pyarmor_capsule.zip` will be as
+input file to generate this `license.lic` of Obfuscated Scripts.
+
+So the relation between 2 `license.lic` is::
+
+    license.lic of PyArmor --> .pyarmor_capsule.zip --> license.lic of Obfuscated Scripts
+
+If obfuscate scripts by command `pyarmor obfuscate` other than
+project, :ref:`Global Capsule` is used implicitly.
+
 
 .. include:: _common_definitions.txt
