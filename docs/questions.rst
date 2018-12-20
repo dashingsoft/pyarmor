@@ -55,7 +55,7 @@ obfuscate` next time).
 The project capsule is overwrited when running command `pyarmor init`
 in the project path created before.
 
-In any cases, generating new license file with the changed capsule
+In any cases, generating new license file with the different capsule
 will not work for the obfuscated scripts before. If the old capsule is
 gone, one solution is to obfuscate these scripts by the new capsule
 again.
