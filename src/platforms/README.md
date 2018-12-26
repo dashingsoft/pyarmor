@@ -28,6 +28,21 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 ## Embedded Platforms
 
+* [Armv7](http://pyarmor.dashingsoft.com/downloads/platforms/armv7/_pytransform.so)
+
+    * 32-bit Armv7 Cortex-A, hard-float, little-endian
+    * Cross compile by https://releases.linaro.org/components/toolchain/binaries/latest-7/arm-linux-gnueabihf/gcc-linaro-7.3.1-2018.05-x86_64_arm-linux-gnueabihf.tar.xz
+    
+* [Armv8 32-bit](http://pyarmor.dashingsoft.com/downloads/platforms/armv8.32-bit/_pytransform.so)
+
+    * 32-bit Armv8 Cortex-A, hard-float, little-endian
+    * Cross compile by https://releases.linaro.org/components/toolchain/binaries/latest-7/armv8l-linux-gnueabihf/gcc-linaro-7.3.1-2018.05-x86_64_armv8l-linux-gnueabihf.tar.xz
+    
+* [Armv8 64-bit](http://pyarmor.dashingsoft.com/downloads/platforms/armv8.64-bit/_pytransform.so)
+
+    * 64-bit Armv8 Cortex-A, little-endian
+    * Cross compile by https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+    
 * [Raspberry Pi](http://pyarmor.dashingsoft.com/downloads/platforms/raspberrypi/_pytransform.so)
 
     * Apply for RPI serials https://www.raspberrypi.org
@@ -42,6 +57,12 @@ The name of platform is decomposed from distutils.util.get_platform()
 
     * Apply for OPI serials http://www.orangepi.org/
     * Cross compile by https://github.com/orangepi-xunlong/OrangePiH5_toolchain
+
+* [NVIDIA Jetson](http://pyarmor.dashingsoft.com/downloads/platforms/nvidia_jetson/_pytransform.so)
+
+    * Quad ARM® A57/2 MB L2
+    * Cross compile by https://developer.nvidia.com/embedded/dlc/l4t-gcc-toolchain-64-bit-31-1-0
+    * Not https://developer.nvidia.com/embedded/dlc/l4t-gcc-toolchain-32-bit-28-2-ga
 
 * [TS-4600/TS-7600](http://pyarmor.dashingsoft.com/downloads/platforms/ts-4600/_pytransform.so)
 
