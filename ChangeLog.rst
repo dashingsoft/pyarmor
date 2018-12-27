@@ -1,3 +1,7 @@
+4.6.1
+-----
+* Fix license issue in 64-bit embedded platform
+
 4.6.0
 -----
 * Fix crash issue for special code object in Python 3.6

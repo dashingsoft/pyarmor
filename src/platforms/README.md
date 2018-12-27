@@ -1,8 +1,8 @@
 # Downloads for Pyarmor Prebuilt Dynamic Library #
 
-Latest version: **4.0.4**
+Latest version: **4.0.5**
 
-Build date: 2018-12-16
+Build date: 2018-12-27
 
 The core of Pyarmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -42,6 +42,7 @@ The name of platform is decomposed from distutils.util.get_platform()
 
     * 64-bit Armv8 Cortex-A, little-endian
     * Cross compile by https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
+    * NVIDIA Jetson TX 1/2
     
 * [Raspberry Pi](http://pyarmor.dashingsoft.com/downloads/platforms/raspberrypi/_pytransform.so)
 
@@ -58,18 +59,16 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Apply for OPI serials http://www.orangepi.org/
     * Cross compile by https://github.com/orangepi-xunlong/OrangePiH5_toolchain
 
-* [NVIDIA Jetson](http://pyarmor.dashingsoft.com/downloads/platforms/nvidia_jetson/_pytransform.so)
-
-    * Quad ARM® A57/2 MB L2
-    * Cross compile by https://developer.nvidia.com/embedded/dlc/l4t-gcc-toolchain-64-bit-31-1-0
-    * Not https://developer.nvidia.com/embedded/dlc/l4t-gcc-toolchain-32-bit-28-2-ga
-
 * [TS-4600/TS-7600](http://pyarmor.dashingsoft.com/downloads/platforms/ts-4600/_pytransform.so)
 
     * Apply for ts-4600/ts-7600 https://wiki.embeddedarm.com/wiki/TS-4600 / https://wiki.embeddedarm.com/wiki/TS-7600
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+## 4.0.5
+
+* Remove memcpy wrapper for linux platform
 
 ## 4.0.4
 
