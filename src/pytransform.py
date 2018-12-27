@@ -206,8 +206,9 @@ def _load_library(path=None, is_runtime=0):
     except Exception as e:
         raise PytransformError('Load %s failed:\n%s' % (filename, e))
 
-    if plat == 'linux':
-        m.set_option('libc'.encode(), find_library('c').encode())
+    # Removed from v4.6.1
+    # if plat == 'linux':
+    #     m.set_option('libc'.encode(), find_library('c').encode())
 
     # Required from Python3.6
     m.set_option('byteorder'.encode(), sys.byteorder.encode())
