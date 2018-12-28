@@ -99,7 +99,7 @@ After that:
 * Call `__enter_armor__` to restore code object of function before executing each function
 * Call `__exit_armor__` to obfuscate code object of function after each function return
 
-See :ref:`How to Obfuscate Scripts`
+More information, refer to :ref:`How to Obfuscate Scripts` and :ref:`How to Run Obfuscated Scripts`
 
 Key Points to Use Obfuscated Scripts
 ------------------------------------
