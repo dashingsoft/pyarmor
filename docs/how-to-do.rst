@@ -2,7 +2,7 @@
  How |PyArmor| Does It
 =======================
 
-Look at what happened after ``foo.py`` is obfuscated by Pyarmor. Here
+Look at what happened after ``foo.py`` is obfuscated by PyArmor. Here
 are the files list in the output path :file:`dist`::
 
     foo.py
