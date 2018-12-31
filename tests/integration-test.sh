@@ -1019,36 +1019,39 @@ echo ""
 echo "-------------------- End Trial License Test --------------------"
 echo ""
 
+
 # ======================================================================
 # Test functions in expired trial license.  PART 5
+# 
+# DEPRECATED from v4.6.1, no trial license
 #
 # ======================================================================
-echo ""
-echo "-------------------- Start Expired License Test --------------------"
-echo ""
+# echo ""
+# echo "-------------------- Start Expired License Test --------------------"
+# echo ""
 
-csih_inform "Replace trial license with expired trial license"
-cp expired-license.tri license.lic
+# csih_inform "Replace trial license with expired trial license"
+# cp expired-license.tri license.lic
 
-searchmsg="Check trial license failed"
+# searchmsg="Check trial license failed"
 
-csih_inform "Case E1.1: generate capsule in expired license"
-rm -rf _pytransform.dll _pytransform.so _pytransform.dylib
-$PYARMOR capsule foo >result.log 2>&1 \
-    && csih_bug "Case E1.1 FAILED: return zero code"
-grep -q "$searchmsg" result.log \
-    || csih_bug "Case E1.1 FAILED: unexpected message"
+# csih_inform "Case E1.1: generate capsule in expired license"
+# rm -rf _pytransform.dll _pytransform.so _pytransform.dylib
+# $PYARMOR capsule foo >result.log 2>&1 \
+#     && csih_bug "Case E1.1 FAILED: return zero code"
+# grep -q "$searchmsg" result.log \
+#     || csih_bug "Case E1.1 FAILED: unexpected message"
 
-csih_inform "Case E1.2: encrypt script in expired license"
-rm -rf _pytransform.dll _pytransform.so _pytransform.dylib
-$PYARMOR encrypt --mode=0 -O dist foo.py >result.log 2>&1 \
-    && csih_bug "Case E1.2 FAILED: return zero code"
-grep -q "$searchmsg" result.log \
-    || csih_bug "Case E1.2 FAILED: unexpected message"
+# csih_inform "Case E1.2: encrypt script in expired license"
+# rm -rf _pytransform.dll _pytransform.so _pytransform.dylib
+# $PYARMOR encrypt --mode=0 -O dist foo.py >result.log 2>&1 \
+#     && csih_bug "Case E1.2 FAILED: return zero code"
+# grep -q "$searchmsg" result.log \
+#     || csih_bug "Case E1.2 FAILED: unexpected message"
 
-echo ""
-echo "-------------------- End Expired License Test --------------------"
-echo ""
+# echo ""
+# echo "-------------------- End Expired License Test --------------------"
+# echo ""
 
 # return test root
 cd ../..
