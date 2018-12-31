@@ -812,7 +812,7 @@ cp license2.txt build/license.lic
     $PYTHON bootstrap.py >../result.log 2>&1 \
         && csih_bug "Case 5.4 FAILED: return zero code when license is expired"
 )
-grep -q "Verify license failed" result.log \
+grep -q "Initialize pytransform failed" result.log \
     || csih_bug "Case 5.4 FAILED: expired license still work"
 
 csih_inform "Case 5.5: generate bind file license"
@@ -874,7 +874,7 @@ cp license-ifmac2.txt build/license.lic
     $PYTHON bootstrap.py >../result.log 2>&1 \
         && csih_bug "Case 5.7-1 FAILED: return 0 when run script by invalid license"
 )
-grep -q "Verify license failed" result.log \
+grep -q "Initialize pytransform failed" result.log \
     || csih_bug "Case 5.7-1 FAILED: no failed message found"
 
 csih_inform "Case 5.8: generate license bind to ip address"
@@ -904,7 +904,7 @@ cp license-ifip2.txt build/license.lic
     $PYTHON bootstrap.py >../result.log 2>&1 \
         && csih_bug "Case 5.8-1 FAILED: return 0 when run script by invalid license"
 )
-grep -q "Verify license failed" result.log \
+grep -q "Initialize pytransform failed" result.log \
     || csih_bug "Case 5.8-1 FAILED: no failed message found"
 
 csih_inform "Case 5.8-2: generate license bind to both mac and ip address"
@@ -934,7 +934,7 @@ cp license-domain2.txt build/license.lic
     $PYTHON bootstrap.py >../result.log 2>&1 \
         && csih_bug "Case 5.9-1 FAILED: return 0 when run script by invalid license"
 )
-grep -q "Verify license failed" result.log \
+grep -q "Initialize pytransform failed" result.log \
     || csih_bug "Case 5.9-1 FAILED: no failed message found"
 
 #
