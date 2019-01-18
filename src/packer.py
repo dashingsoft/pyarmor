@@ -46,7 +46,7 @@ import time
 from distutils.util import get_platform
 from glob import glob
 from py_compile import compile as compile_file
-from shutil import split
+from shlex import split
 from zipfile import PyZipFile
 
 try:
@@ -237,7 +237,7 @@ def update_specfile(project, obfdist, src, entry, specfile):
     with open(patched_file, 'w') as f:
         f.writelines(lines)
 
-    return patched_file
+    return os.path.normpath(patched_file)
 
 @logaction
 def run_pyinstaller(project, src, entry, specfile, packcmd):
@@ -261,9 +261,9 @@ def _pyinstaller(src, entry, packcmd, output):
 
     run_pyi_makespec(project, obfdist, src, entry, packcmd)
 
-    patched = update_specfile(project, obfdist, src, entry, spec)
+    patched_spec = update_specfile(project, obfdist, src, entry, spec)
 
-    run_pyinstaller(project, src, entry, patched, packcmd)
+    run_pyinstaller(project, src, entry, patched_spec, packcmd)
 
     shutil.rmtree(project)
 
@@ -282,10 +282,11 @@ def packer(args):
 
     if args.output is None:
         dist = DEFAULT_PACKER[_type][0]
-        output = os.path.normpath(os.path.join(build, dist))
+        output = os.path.join(build, dist)
     else:
         output = args.output if os.path.isabs(args.output) \
             else os.path.join(build, args.output)
+    output = os.path.normpath(output)
 
     libname = DEFAULT_PACKER[_type][1]
     packcmd = DEFAULT_PACKER[_type][2] + [output] + extra_options
