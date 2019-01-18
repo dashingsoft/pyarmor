@@ -760,7 +760,13 @@ def main_entry():
     except Exception as e:
         print(e)
         sys.exit(1)
-    main(sys.argv[1:])
+    try:
+        main(sys.argv[1:])
+    except Exception as e:
+        if sys.flags.debug:
+            raise
+        print(e)
+        sys.exit(1)
 
 if __name__ == '__main__':
     main_entry()

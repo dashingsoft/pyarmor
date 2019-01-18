@@ -337,4 +337,10 @@ if __name__ == '__main__':
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
-    main(sys.argv[1:])
+    try:
+        main(sys.argv[1:])
+    except Exception as e:
+        if sys.flags.debug:
+            raise
+        print(e)
+        sys.exit(1)
