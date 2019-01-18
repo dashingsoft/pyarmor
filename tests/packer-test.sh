@@ -23,6 +23,9 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are in directory "src"
 cd src/
 
+chmod +x platforms/windows32/_pytransform$DLLEXT
+chmod +x platforms/windows64/_pytransform$DLLEXT
+
 csih_inform "Prepare for system testing"
 echo ""
 
@@ -35,7 +38,6 @@ echo ""
 
 csih_inform "Show help and import pytransform"
 $PYARMOR --help >result.log 2>&1 || csih_error "PyArmor bootstrap failed"
-[[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
 
 # ======================================================================
 #
