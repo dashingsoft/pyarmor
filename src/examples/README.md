@@ -1,7 +1,7 @@
 # Exmaples ([中文版](README-ZH.md))
 
 A good example maybe is the best teacher. There are several sample
-shell scripts distributed with source package of Pyarmor. All of them
+shell scripts distributed with source package of PyArmor. All of them
 are rich comment used to obfuscate Python scripts in different cases,
 `.bat` for Windows, `.sh` for Linux and MacOS. Find them in the path
 `examples`, edit the variables in it according to actual enviroments,
@@ -33,11 +33,11 @@ then run it to obfuscate your python scripts quickly.
     `PyInstaller`, `py2exe`, `py2app` or `cx_Freeze`.
 
 Not only those scripts, but also some really examples are distributed
-with Pyarmor. Just open a command window, follow the instructions in
-this document, learn how to use Pyarmor by these examples.
+with PyArmor. Just open a command window, follow the instructions in
+this document, learn how to use PyArmor by these examples.
 
 In the rest sections, assume that Python is installed, it can be
-called `python`. And Pyarmor has been installed in the
+called `python`. And PyArmor has been installed in the
 `/path/to/pyarmor`.
 
 Shell commands will shown for Unix-based systems. Windows has

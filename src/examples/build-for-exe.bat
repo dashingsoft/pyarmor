@@ -31,7 +31,7 @@ Set ENTRY_NAME=hello
 Set ENTRY_SCRIPT=%ENTRY_NAME%.py
 Set ENTRY_EXE=%ENTRY_NAME%.exe
 
-REM TODO: Pyarmor project path to save project config file
+REM TODO: PyArmor project path to save project config file
 Set PROJECT=C:\Python34\Lib\site-packages\pyarmor\build-for-py2exe
 
 REM TODO: Comment next line if not to test obfuscated scripts
@@ -59,7 +59,7 @@ If NOT ERRORLEVEL 0 (
     Goto END
 )
 
-REM Check Pyarmor
+REM Check PyArmor
 If NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
     Echo.
     Echo No pyarmor found, check value of variable PYARMOR_PATH

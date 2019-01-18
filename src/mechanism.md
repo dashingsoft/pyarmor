@@ -1,21 +1,21 @@
-# How to Obfuscate Python Script by Pyarmor
+# How to Obfuscate Python Script by PyArmor
 
-From Pyarmor 3.3, a new mode is introduced. By this way, no import
+From PyArmor 3.3, a new mode is introduced. By this way, no import
 hooker, no setprofile, no settrace. The performance of running or
 importing obfuscation python script has been remarkably improved.
 
-Pyarmor protects Python scripts by the following ways:
+PyArmor protects Python scripts by the following ways:
 
 * Obfuscate source file to protect constants and literal strings.
 * Obfuscate byte code of each code object.
 * Clear f_locals of frame as soon as code object completed execution.
 
-There are 2 different cases for Pyarmor to protect Python scripts:
+There are 2 different cases for PyArmor to protect Python scripts:
 
 * Application, also called standalone package
 * Package used by others
 
-In the first case, Pyarmor obfuscates all the Python Scripts belong to
+In the first case, PyArmor obfuscates all the Python Scripts belong to
 standalone application, and doesn't allow to import those obfuscated
 scripts from any other clear script. So a simple way can be apply, it
 called **Restrict Mode**.
@@ -26,7 +26,7 @@ accessed in outer. It need more work to protect Python scripts.
 
 ## Mechanism in Restrict Mode
 
-In restrict mode, Pyarmor will restore obfuscated byte code when this
+In restrict mode, PyArmor will restore obfuscated byte code when this
 code object is called first time, and not obfuscate it again. It's
 efficient and enough, because code object can't be accessed from any
 other scripts, except obfuscated scripts.
@@ -172,7 +172,7 @@ This feature is introuced from v3.9.0
 
 When restrict mode is disabled, it means obfuscated scripts can be
 imported from any other scripts. So every code object must be
-obfuscated again as soon as it returns. Pyarmor insert a
+obfuscated again as soon as it returns. PyArmor insert a
 `try...finally` block in each code object, it will modify each code
 object as the following way:
 
@@ -211,7 +211,7 @@ locals in this frame.
 
 ### Implementation
 
-From Pyarmor 3.9.0, there are 2 ways
+From PyArmor 3.9.0, there are 2 ways
 
 * Use Command `obfuscate` with option `--no-restrict`
 
@@ -269,7 +269,7 @@ From Pyarmor 3.9.0, there are 2 ways
 
 ## Performance Analaysis
 
-With default configuration, Pyarmor will do the following extra work
+With default configuration, PyArmor will do the following extra work
 to run or import obfuscated bytecode:
 
 - Load library _pytransform at startup
@@ -379,7 +379,7 @@ It's even faster than no obfuscated scripts!
 
 # DEPRECATED Mode
 
-The following modes are used by Pyarmor before v3.2.0. It requires
+The following modes are used by PyArmor before v3.2.0. It requires
 import hooker, for example, sys.meta_path, and sys.setprofile or
 sys.settrace. Especially the latter, it could dramatically effect
 performance.

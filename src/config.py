@@ -3,11 +3,11 @@ from distutils.util import get_platform
 version = '4.6.2'
 
 version_info = '''
-Pyarmor is a tool used to import or run the encrypted python scripts.
+PyArmor is a tool used to import or run the encrypted python scripts.
 Only by a few extra files, pyarmor can run and imported encrypted
 files in the normal python environments.
 
-Pyarmor just likes an enhancement which let python could run or import
+PyArmor just likes an enhancement which let python could run or import
 encrypted files.
 
 '''
@@ -18,7 +18,7 @@ but project capsule generated is fixed by hardcode, so all the
 encrypted files are encrypted by same key.
 
 A registration code is required to generate random project capsule.
-If Pyarmor is helpful for you, please purchase one by visiting
+If PyArmor is helpful for you, please purchase one by visiting
 
   https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 

@@ -1,7 +1,7 @@
-Protect Python Scripts By Pyarmor
+Protect Python Scripts By PyArmor
 =================================
 
-Pyarmor is a command line tool used to obfuscate python scripts, bind
+PyArmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
@@ -10,7 +10,7 @@ protects Python scripts by the following ways:
 * Clear f_locals of frame as soon as code object completed execution.
 * Verify the license file of obfuscated scripts while running it.
 
-Look at what happened after ``foo.py`` is obfuscated by Pyarmor. Here
+Look at what happened after ``foo.py`` is obfuscated by PyArmor. Here
 are the files list in the output path ``dist``::
 
     foo.py
@@ -74,7 +74,7 @@ Generate an expired license and run obfuscated scripts with new license::
     cd dist/
     python queens.py
 
-Start webui, open web page in browser for basic usage of Pyarmor::
+Start webui, open web page in browser for basic usage of PyArmor::
 
     pyarmor-webui
 

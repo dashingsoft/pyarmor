@@ -81,10 +81,10 @@ def checklicense(func):
     def wrap(*arg, **kwargs):
         code = _get_registration_code()
         if code == '':
-            sys.stderr.write('Pyarmor Trial Version %s\n' % version)
+            sys.stderr.write('PyArmor Trial Version %s\n' % version)
             sys.stderr.write(trial_info)
         else:
-            sys.stderr.write('Pyarmor Version %s\n' % version)
+            sys.stderr.write('PyArmor Version %s\n' % version)
         try:
             func(*arg, **kwargs)
         except RuntimeError:
@@ -99,7 +99,7 @@ def checklicense(func):
 def show_version_info(verbose=True):
     code = _get_registration_code()
     trial = ' Trial' if  code == '' else ''
-    print('Pyarmor%s Version %s' % (trial, version))
+    print('PyArmor%s Version %s' % (trial, version))
     if verbose:
         print(version_info)
         if code == '':
@@ -242,7 +242,7 @@ def do_capsule(argv):
 
 Generate a capsule which used to encrypt/decrypt python scripts later,
 it will generate random capsule when run this command again. Note that
-the trial version of Pyarmor will always generate same project capsule
+the trial version of PyArmor will always generate same project capsule
 
 Generately, one project, one capsule.
 

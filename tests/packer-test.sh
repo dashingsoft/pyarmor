@@ -10,7 +10,7 @@ PYARMOR="${PYTHON} pyarmor.py"
 
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
-csih_inform "Pyarmor is $PYARMOR"
+csih_inform "PyArmor is $PYARMOR"
 
 csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
@@ -34,7 +34,7 @@ echo ""
 # ======================================================================
 
 csih_inform "Show help and import pytransform"
-$PYARMOR --help >result.log 2>&1 || csih_error "Pyarmor bootstrap failed"
+$PYARMOR --help >result.log 2>&1 || csih_error "PyArmor bootstrap failed"
 [[ -f _pytransform$DLLEXT ]] || csih_error "no pytransform extension found"
 
 # ======================================================================

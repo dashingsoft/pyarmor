@@ -1,1 +1,1 @@
-title = 'Pyarmor Test Case'
+title = 'PyArmor Test Case'

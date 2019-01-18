@@ -10,7 +10,7 @@ PYARMOR="${PYTHON} pyarmor.py"
 
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
-csih_inform "Pyarmor is $PYARMOR"
+csih_inform "PyArmor is $PYARMOR"
 
 csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
@@ -318,7 +318,7 @@ $SED -i -e "s/def get_registration_code/def _empty(): pass\ndef get_registration
 
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'Pyarmor-Project'"
+check_file_content projects/pybench/dist/result.log "'PyArmor-Project'"
 
 cp $output/code1/license.lic projects/pybench/dist
 ( cd projects/pybench/dist;
@@ -466,7 +466,7 @@ check_file_content $PROPATH/dist/mypkg/__init__.py '__pyarmor__(__name__'
 
 cp examples/testpkg/main.py $PROPATH/dist
 (cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1 )
-check_file_content $PROPATH/dist/result.log 'Hello! Pyarmor Test Case'
+check_file_content $PROPATH/dist/result.log 'Hello! PyArmor Test Case'
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"

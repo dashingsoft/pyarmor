@@ -216,7 +216,7 @@ def update_specfile(project, obfdist, src, entry, specfile):
         lines = f.readlines()
 
     patched_lines = (
-    "", "# Patched by Pyarmor",
+    "", "# Patched by PyArmor",
     "a.scripts[0] = '%s', '%s', 'PYSOURCE'" % (
         entry[:-3], os.path.join(obfdist, entry)),
     "for i in range(len(a.pure)):",

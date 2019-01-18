@@ -55,7 +55,7 @@ def pytransform_bootstrap(path=None):
 
 def make_capsule(filename):
     path = PYARMOR_PATH
-    logging.info('Pyarmor install path: %s', path)
+    logging.info('PyArmor install path: %s', path)
 
     for a in 'public.key', 'license.lic':
         x = os.path.join(path, a)

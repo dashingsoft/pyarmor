@@ -2,14 +2,14 @@
 
 # Basic Usages
 
-Here are some exampes to show basic usage of [Pyarmor].
+Here are some exampes to show basic usage of [PyArmor].
 
 All of first,
 
-- Open a command box, enter the path of [Pyarmor] installed
+- Open a command box, enter the path of [PyArmor] installed
 - Run pyarmor.py with your favor python
 
-Then following the steps below to learn how to use [Pyarmor]
+Then following the steps below to learn how to use [PyArmor]
 
 ## Run and Import encrypted module
 
@@ -87,7 +87,7 @@ All of the .py files here are obfuscated like this:
 ## Bind encrypted script to fix machine or expired it
 
 Maybe you want to import encrypted scripts only in some special
-machine, or expired it at some point. Pyarmor command "license" is
+machine, or expired it at some point. PyArmor command "license" is
 just for this case.
 
 Command "encrypt" generates some extra files include "license.lic". In
@@ -162,7 +162,7 @@ There is a odoo module "odoo_web_login":
       
 ```
 
-Now run the following command in the src path of Pyarmor:
+Now run the following command in the src path of PyArmor:
 
 ```
     # Generate capsule at first
@@ -290,4 +290,4 @@ or pyarmor capsule
 
 ```
 
-[Pyarmor]: https://github.com/dashingsoft/pyarmor
+[PyArmor]: https://github.com/dashingsoft/pyarmor

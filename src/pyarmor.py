@@ -116,7 +116,7 @@ EXAMPLES
 
     logging.info('Create pyarmor command ...')
     script = make_command(plat_name, sys.executable, sys.argv[0], path)
-    logging.info('Pyarmor command %s created', script)
+    logging.info('PyArmor command %s created', script)
 
     logging.info('Project init successfully.')
 
@@ -148,7 +148,7 @@ def _clone(args):
 
     logging.info('Create pyarmor command ...')
     script = make_command(plat_name, sys.executable, sys.argv[0], path)
-    logging.info('Pyarmor command %s created', script)
+    logging.info('PyArmor command %s created', script)
 
     logging.info('Project init successfully.')
 
@@ -256,7 +256,7 @@ def _build(args):
         logging.info('Make runtime files to %s', routput)
         make_runtime(capsule, routput)
         if project.get('disable_restrict_mode'):
-            licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
+            licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
             licfile = os.path.join(routput, license_filename)
             logging.info('Generate no restrict mode license file: %s', licfile)
             make_project_license(capsule, licode, licfile)
@@ -449,7 +449,7 @@ def _obfuscate(args):
     logging.info('Make runtime files')
     make_runtime(capsule, output)
     if not args.restrict:
-        licode = '*FLAGS:%c*CODE:Pyarmor-Project' % chr(1)
+        licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
         licfile = os.path.join(output, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
@@ -502,15 +502,15 @@ def _hdinfo(args):
 def _version_info():
     rcode = get_registration_code()
     if rcode == '':
-        return 'Pyarmor Trial Version %s\n' % version
+        return 'PyArmor Trial Version %s\n' % version
     else:
-        return 'Pyarmor Version %s\n\nRegistration code: %s' % (version, rcode)
+        return 'PyArmor Version %s\n\nRegistration code: %s' % (version, rcode)
 
 def main(args):
     parser = argparse.ArgumentParser(
         prog='pyarmor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='Pyarmor is a command line tool used to obfuscate ' \
+        description='PyArmor is a command line tool used to obfuscate ' \
                     'python scripts, bind obfuscated scripts to fixed ' \
                     'machine or expire obfuscated scripts.',
         epilog=__doc__,

@@ -1,6 +1,6 @@
 # 示例（[English Version](README.md)）
 
-好的示例就是最好的老师，是最快的学习方式。在 Pyarmor 发布的包里面，就包
+好的示例就是最好的老师，是最快的学习方式。在 PyArmor 发布的包里面，就包
 含了针对不同使用场景的脚本模板。这些脚本里面的注释很详细，按照里面的说
 明进行正确的设置，就可以快速加密 Python 脚本。扩展名为 `.bat` 在
 Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放在子目录
@@ -27,10 +27,10 @@ Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放
 
 
 除了这些脚本之外，这里还有一些真实的例子。现在打开一个命令窗口，按照下
-面文档中的说明，一步一步来学习 Pyarmor 的常用功能。
+面文档中的说明，一步一步来学习 PyArmor 的常用功能。
 
 在下面的章节中，假定 Python 已经安装，并且可以使用 `python` 直接调用，
-Pyarmor 的安装路径是 `/path/to/pyarmor`
+PyArmor 的安装路径是 `/path/to/pyarmor`
 
 示例命令格式是 Linux 的脚本命令，Windows 上使用需要转换成为对应的命令。
 
@@ -157,7 +157,7 @@ Pyarmor 的安装路径是 `/path/to/pyarmor`
 
 * 如何使用命令 `pack` 来打包加密的脚本
 
-Pyarmor 需要使用第三方的打包工具，推荐工具是 `PyInstaller`, 首先安装
+PyArmor 需要使用第三方的打包工具，推荐工具是 `PyInstaller`, 首先安装
 
     pip install pyinstaller
 

@@ -58,7 +58,7 @@ If NOT ERRORLEVEL 0 (
     Goto END
 )
 
-REM Check Pyarmor
+REM Check PyArmor
 If NOT EXIST "%PYARMOR_PATH%\pyarmor.py" (
     Echo.
     Echo No pyarmor found, check value of variable PYARMOR_PATH

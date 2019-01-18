@@ -15,7 +15,7 @@ RUNTIMEFILES="pytransform.py _pytransform.* pyshield.* product.key license.lic"
 
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
-csih_inform "Pyarmor is $PYARMOR"
+csih_inform "PyArmor is $PYARMOR"
 
 csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}

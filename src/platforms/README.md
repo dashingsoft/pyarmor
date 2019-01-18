@@ -1,10 +1,10 @@
-# Downloads for Pyarmor Prebuilt Dynamic Library #
+# Downloads for PyArmor Prebuilt Dynamic Library #
 
 Latest version: **4.0.5**
 
 Build date: 2018-12-27
 
-The core of Pyarmor is written by C, the prebuilt dynamic libraries
+The core of PyArmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
 difficult to build for any other platform, even for embeded system
 (the only dependency is libc).
