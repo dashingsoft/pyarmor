@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '4.6.2'
+version = '4.6.3'
 
 version_info = '''
 PyArmor is a tool used to import or run the encrypted python scripts.
