@@ -120,7 +120,7 @@ setup script to build the bundle.
     os.remove(os.path.join(src, 'pytransform.py'))
 
     if p.returncode != 0:
-        logging.error('\n\n%s\n\n', stdoutdata)
+        logging.error('\n\n%s\n\n', stdoutdata.decode())
         raise RuntimeError('Run setup script failed')
 
 @logaction
@@ -208,7 +208,7 @@ def run_pyi_makespec(project, obfdist, src, entry, packcmd):
     stdoutdata, _ = p.communicate()
 
     if p.returncode != 0:
-        logging.error('\n\n%s\n\n', stdoutdata)
+        logging.error('\n\n%s\n\n', stdoutdata.decode())
         raise RuntimeError('Make specfile failed')
 
 @logaction
@@ -247,8 +247,8 @@ def run_pyinstaller(project, src, entry, specfile, packcmd):
     stdoutdata, _ = p.communicate()
 
     if p.returncode != 0:
-        logging.error('\n\n%s\n\n', stdoutdata)
-        raise RuntimeError('Run pyinstaller failed')
+        logging.error('\n\n%s\n\n', stdoutdata.decode())
+        raise RuntimeError('Run pyinstller failed')
 
 @pathwrapper
 def _pyinstaller(src, entry, packcmd, output):
