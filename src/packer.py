@@ -46,6 +46,7 @@ import time
 from distutils.util import get_platform
 from glob import glob
 from py_compile import compile as compile_file
+from shutil import split
 from zipfile import PyZipFile
 
 try:
@@ -270,6 +271,7 @@ def packer(args):
     _type = args.type
     src = os.path.abspath(os.path.dirname(args.entry[0]))
     entry = os.path.basename(args.entry[0])
+    extra_options = [] if args.options is None else split(args.options)
 
     if args.setup is None:
         build = src
@@ -286,7 +288,7 @@ def packer(args):
             else os.path.join(build, args.output)
 
     libname = DEFAULT_PACKER[_type][1]
-    packcmd = DEFAULT_PACKER[_type][2] + [output]
+    packcmd = DEFAULT_PACKER[_type][2] + [output] + extra_options
 
     logging.info('Prepare to pack obfuscated scripts with %s', _type)
     if _type == 'PyInstaller':
@@ -314,6 +316,8 @@ def add_arguments(parser):
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in' \
                         ' (default is output path of setup script)')
+    parser.add_argument('-e', '--options',
+                        help='Extra options to run pack command')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
                         help='Entry script')
 
