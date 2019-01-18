@@ -19,7 +19,7 @@ execution path. To verify this, enter the command::
 
     pyarmor --version
 
-The result should show ``Pyarmor Version X.Y.Z`` or ``Pyarmor Trial Version X.Y.Z``.
+The result should show ``PyArmor Version X.Y.Z`` or ``PyArmor Trial Version X.Y.Z``.
 
 If the command is not found, make sure the execution path includes the
 proper directory.

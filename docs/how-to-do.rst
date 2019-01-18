@@ -34,7 +34,7 @@ obfuscated script `dist/foo.py` can be used as normal Python script. That is to 
 How to Obfuscate Python Scripts
 ===============================
 
-How to obfuscate python scripts by Pyarmor?
+How to obfuscate python scripts by PyArmor?
 
 
 First compile python script to code object::

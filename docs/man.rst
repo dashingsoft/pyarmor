@@ -4,7 +4,7 @@
 Man Page
 ========
 
-Pyarmor is a command line tool used to obfuscate python scripts, bind
+PyArmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts.
 
 The syntax of the ``pyarmor`` command is::

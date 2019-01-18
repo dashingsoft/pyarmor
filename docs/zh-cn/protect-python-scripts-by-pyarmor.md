@@ -1,6 +1,6 @@
-# Pyarmor 加密和保护 Python 源代码的方法和机制
+# PyArmor 加密和保护 Python 源代码的方法和机制
 
-Pyarmor 是一个用于加密和保护 Python 源代码的小工具。它能够在运行时刻保护 Python
+PyArmor 是一个用于加密和保护 Python 源代码的小工具。它能够在运行时刻保护 Python
 脚本的二进制代码不被泄露，设置加密后 Python 源代码的有效期限，绑定加密后的Python
 源代码到硬盘、网卡等硬件设备。它的保障机制主要包括
 
@@ -35,11 +35,11 @@ Pyarmor 是一个用于加密和保护 Python 源代码的小工具。它能够�
 
 所有其他文件叫做 `运行依赖文件`，它们是运行加密脚本所必须的。并且只要这里面的模块
 `pytransform.py` 能被正常导入进来，加密脚本 `dist/foo.py` 就可以像正常脚本一样被
-运行。这是 Pyarmor 的一个重要特征： **加密脚本无缝替换 Python 源代码**
+运行。这是 PyArmor 的一个重要特征： **加密脚本无缝替换 Python 源代码**
 
 ## 加密 Python 源代码
 
-Pyarmor 是怎么加密 Python 源代码呢？
+PyArmor 是怎么加密 Python 源代码呢？
 
 首先把源代码编译成代码块 `Code Object`
 
@@ -215,7 +215,7 @@ Pyarmor 是怎么加密 Python 源代码呢？
 `pyarmor_runtime()` 就可以检查时间，比对硬件设备，从而确定当前运行环境是否满足条
 件，选择继续运行或者报错退出。
 
-Pyarmor 使用命令 `hdinfo` 来获取目标机器的硬件信息
+PyArmor 使用命令 `hdinfo` 来获取目标机器的硬件信息
 
 ```bash
     pyarmor hdinfo
@@ -232,4 +232,4 @@ Pyarmor 使用命令 `hdinfo` 来获取目标机器的硬件信息
             Customer-Jondy
 ```
 
-更多详细信息，请访问 [Pyarmor 网站主页](http://pyarmor.dashingsoft.com/index-zh.html)
+更多详细信息，请访问 [PyArmor 网站主页](http://pyarmor.dashingsoft.com/index-zh.html)

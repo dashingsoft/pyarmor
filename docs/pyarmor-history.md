@@ -295,18 +295,18 @@ _trace_trampoline(PyObject *self, PyObject *frame, int what, PyObject *arg)
     
     ```
     
-这种Python仿真版的保护机制在性能和安全性方面都有了质的变化，Pyarmor 也
+这种Python仿真版的保护机制在性能和安全性方面都有了质的变化，PyArmor 也
 终于变得成熟。
 
-从安全级别上来说，使用 Python 语言提供的任何机制是无法突破 Pyarmor 的保
+从安全级别上来说，使用 Python 语言提供的任何机制是无法突破 PyArmor 的保
 护的，例如，访问出现异常的`traceback`等。即便是使用调试器（例如 `gdb`），
-设置断点在 `PyEval_EvalFrameEx`，Pyarmor 也可以在 `__armor_enter__` 中
+设置断点在 `PyEval_EvalFrameEx`，PyArmor 也可以在 `__armor_enter__` 中
 进行反侦测，一旦发现调试器存在，或者Python解释器经过了改造，就拒绝工作。
 当然，如何进行反侦测就是加密和破解两条阵线的较量，也是性能和安全之间综
 合平衡的问题。不管怎么说，这种安全性已经到了`C`语言的层面，是和如何保护
 二进制的可执行文件是相同的了。
 
-回顾**Pyarmor**的发展历程，最终的实现方式和保护`C`代码如此类似，使我想
+回顾**PyArmor**的发展历程，最终的实现方式和保护`C`代码如此类似，使我想
 到了《老子》中的一句话 **大道归一**，有感而写下这篇日志。
 
-如果你有保护Python源码方面的需求，Pyarmor可能是你的一个选择： https://github.com/dashingsoft/pyarmor
+如果你有保护Python源码方面的需求，PyArmor可能是你的一个选择： https://github.com/dashingsoft/pyarmor

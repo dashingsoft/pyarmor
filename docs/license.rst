@@ -3,7 +3,7 @@
 License
 =======
 
-Pyarmor is published as shareware. Free trial version never expires,
+PyArmor is published as shareware. Free trial version never expires,
 the limitation is
 
 * :ref:`Global Capsule` in trial version is fixed.
@@ -48,7 +48,7 @@ Check new license works, execute this command::
 
     pyarmor --version
 
-The result should show ``Pyarmor Version X.Y.Z`` and registration code.
+The result should show ``PyArmor Version X.Y.Z`` and registration code.
 
 After new license takes effect, you need obfuscate the scripts again,
 and a random :ref:`Global Capsule` will be generated implicitly when
