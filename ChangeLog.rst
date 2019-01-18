@@ -1,3 +1,8 @@
+4.6.2
+-----
+* Add option `--options` for command `pack`
+* For Python 3, there is no new line in the output when `pack` command fails
+
 4.6.1
 -----
 * Fix license issue in 64-bit embedded platform
