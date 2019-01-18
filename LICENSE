@@ -1,6 +1,6 @@
      END USER LICENSE AGREEMENT
 
-     The following agreement regarding Pyarmor - referred to as "software" - is
+     The following agreement regarding PyArmor - referred to as "software" - is
      made between Jondy Zhao - referred to as "licensor" - and anyone who is
      installing, accessing or in any other way using the software - referred to
      as "user".
@@ -68,7 +68,7 @@
         for the download or making the download conditional on the user giving
         his contact data.
 
-     c. The unmodified installation file of Pyarmor must be provided pure and
+     c. The unmodified installation file of PyArmor must be provided pure and
         unpaired. Any bundling is interdicted. In particular the use of any
         install or download software which is providing any kind of download
         bundles is prohibited unless granted by Jondy Zhao written form.
@@ -92,8 +92,8 @@
      immediate and automatic termination of this license and may result in
      criminal and/or civil prosecution.
 
-     Neither Pyarmor binary code, or source code may be used or reverse
-     engineered to re-create the Pyarmor obfuscated algorithm, which is
+     Neither PyArmor binary code, or source code may be used or reverse
+     engineered to re-create the PyArmor obfuscated algorithm, which is
      proprietary, without written permission.
 
   9. The licensor shall be responsible for interpretation of the

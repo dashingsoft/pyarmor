@@ -9,7 +9,7 @@ import sys
 
 from zipfile import ZipFile
 
-# Pyarmor in the parent path
+# PyArmor in the parent path
 PYARMOR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 os.environ['PYARMOR_PATH'] = PYARMOR_PATH
 sys.path.insert(0, PYARMOR_PATH)

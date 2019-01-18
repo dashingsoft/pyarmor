@@ -34,7 +34,7 @@
   <nav role="navigation" class="navbar navbar-inverse">
     <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href="http://pyarmor.dashingsoft.com">Pyarmor <span class="badge">Trial</span></a>
+        <a class="navbar-brand" href="http://pyarmor.dashingsoft.com">PyArmor <span class="badge">Trial</span></a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main-tab" aria-expanded="false">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
@@ -83,7 +83,7 @@
             <div class="form-group">
               <label for="input_output">Output Path</label>
               <input type="text" class="form-control" id="input_output"/>
-              <p class="help-block">Optional. The default output path is <code>dist</code> within Pyarmor package</p>
+              <p class="help-block">Optional. The default output path is <code>dist</code> within PyArmor package</p>
             </div>
             <button type="button" class="btn btn-primary" id="obfuscate-scripts">Build</button>
           </form>
@@ -105,7 +105,7 @@
               <label for="input_license_rcode">Registration Code</label>
               <input type="text" class="form-control required" id="input_license_rcode"/>
               <p class="help-block">Required. Must be identify string, no space</p>
-              <!-- <p>the new license will be saved as <code>licenses/CODE/liceense.lic</code> within Pyarmor package.</p> -->
+              <!-- <p>the new license will be saved as <code>licenses/CODE/liceense.lic</code> within PyArmor package.</p> -->
             </div>
             <div class="form-group">
               <label for="input_expired_date">Expired Date</label>
@@ -142,9 +142,9 @@
           <form>
             <div class="form-group">
               <p class="help-block">If PyInstaller is not installed, run <code>pip install pyinstaller</code> first</p>
-              <!-- <p class="help-block">Pyarmor could pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc. </p> -->
-              <!-- <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. Pyarmor will call setup script while packing</p> -->
-              <!-- <p class="help-block">The final output path is same as of the setup script (Pyarmor just updates some files)</p> -->
+              <!-- <p class="help-block">PyArmor could pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc. </p> -->
+              <!-- <p class="help-block">Before run it, be sure that the setup script of py2exe or cx_Freeze works. PyArmor will call setup script while packing</p> -->
+              <!-- <p class="help-block">The final output path is same as of the setup script (PyArmor just updates some files)</p> -->
             </div>
             <div class="form-group" style="display: none;">
               <label for="input_packer_type">Type</label>
@@ -155,7 +155,7 @@
                 <option value="PyInstaller" selected>PyInstaller</option>
               </select>
               <p class="help-block">This selected package must be installed</p>
-              <p class="help-block">The prefer way is PyInstaller, it's enough to set <strong>Entry Script</strong>. For other tools, the setup script is required, Pyarmor will call this script while packing</p>
+              <p class="help-block">The prefer way is PyInstaller, it's enough to set <strong>Entry Script</strong>. For other tools, the setup script is required, PyArmor will call this script while packing</p>
               <!-- <p class="help-block">The final output path is depend on the selected type</p>  -->
             </div>
             <div class="form-group">
@@ -187,9 +187,9 @@
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <p class="help-block">Run command <code>pyarmor-webui</code> to start Pyarmor webui. It doesn't work to open this page in the web browser directly</p>
+              <p class="help-block">Run command <code>pyarmor-webui</code> to start PyArmor webui. It doesn't work to open this page in the web browser directly</p>
               <p class="help-block">A light-weight webserver is lanuched in background to serve any request from webui, all the output of each action will be print in the console window of this webserver</p>
-              <p class="help-block">Pyarmor webui includes basic functions only, for advanced usage, use command <code>pyarmor</code> instead</p>
+              <p class="help-block">PyArmor webui includes basic functions only, for advanced usage, use command <code>pyarmor</code> instead</p>
             </div>
             <div class="form-group">
               <label for="project-log-message">Messages</label>

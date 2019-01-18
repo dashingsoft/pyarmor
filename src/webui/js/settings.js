@@ -2,15 +2,15 @@ define([], function() {
 
     function setDemoInfo() {
         var element = document.getElementById('version-info');
-        element.innerHTML = 'Pyarmor Demo Version';
-        document.querySelector('.navbar-brand').innerHTML = 'Pyarmor Demo';
+        element.innerHTML = 'PyArmor Demo Version';
+        document.querySelector('.navbar-brand').innerHTML = 'PyArmor Demo';
     }
 
     function setVersionInfo(data) {
         var version = data.version;
         var rcode = data.rcode;
         var element = document.getElementById('version-info');
-        element.innerHTML = 'Pyarmor ' + (rcode === '' ? 'Trial ' : '') + version;
+        element.innerHTML = 'PyArmor ' + (rcode === '' ? 'Trial ' : '') + version;
         if (rcode !== '') {
             $('#navbar-main-tab a[aria-controls="purchase"]').addClass('hidden');
         }

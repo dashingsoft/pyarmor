@@ -34,7 +34,7 @@
   <nav role="navigation" class="navbar navbar-inverse">
     <div class="container">
       <div class="navbar-header">
-        <a class="navbar-brand" href="http://pyarmor.dashingsoft.com">Pyarmor <span class="badge">试用版</span></a>
+        <a class="navbar-brand" href="http://pyarmor.dashingsoft.com">PyArmor <span class="badge">试用版</span></a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main-tab" aria-expanded="false">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
@@ -83,7 +83,7 @@
             <div class="form-group">
               <label for="input_output">输出目录</label>
               <input type="text" class="form-control" id="input_output"/>
-              <p class="help-block">可选。默认输出目录是 Pyarmor 包所在的路径下面的目录 <code>dist</code></p>
+              <p class="help-block">可选。默认输出目录是 PyArmor 包所在的路径下面的目录 <code>dist</code></p>
             </div>
             <button type="button" class="btn btn-primary" id="obfuscate-scripts">开始加密</button>
           </form>
@@ -105,7 +105,7 @@
               <label for="input_license_rcode">注册码</label>
               <input type="text" class="form-control required" id="input_license_rcode"/>
               <p class="help-block">必填。标识符字符串，不能包含空格</p>
-              <!-- <p>和符号（下划线、连字符和小数点例外），新生成的认证文件存放在 Pyarmor 包所在的路径下面 <code>licenses/CODE/liceense.lic</code></p> -->
+              <!-- <p>和符号（下划线、连字符和小数点例外），新生成的认证文件存放在 PyArmor 包所在的路径下面 <code>licenses/CODE/liceense.lic</code></p> -->
             </div>
             <div class="form-group">
               <label for="input_expired_date">有效期</label>
@@ -142,10 +142,10 @@
           <form>
             <div class="form-group">
               <p class="help-block">如果 PyInstaller 还没有安装，先运行这个命令进行安装 <code>pip install pyinstaller</code></p>
-              <!-- <p class="help-block">Pyarmor 能够通过第三方工具，例如 py2exe, cx_Freeze 等，把脚本加密之后直接打包发布</p> -->
+              <!-- <p class="help-block">PyArmor 能够通过第三方工具，例如 py2exe, cx_Freeze 等，把脚本加密之后直接打包发布</p> -->
               <!-- <p class="help-block">首先要写好 py2exe 或者 cx_Freeze 的安装脚本，并且确保没有加密的脚本已经能够正常打包发布</p> -->
               <!-- <p class="help-block">然后在这里输入主脚本和安装脚本的本机路径名称，点击打包按钮就可以快速把脚本加密然后打包</p> -->
-              <!-- <p class="help-block">最终的输出路径和 <code>setup.py</code> 的输出路径是一样的（Pyarmor 会更新其中的一些文件）</p> -->
+              <!-- <p class="help-block">最终的输出路径和 <code>setup.py</code> 的输出路径是一样的（PyArmor 会更新其中的一些文件）</p> -->
             </div>
             <div class="form-group" style="display: none;">
               <label for="input_packer_type">打包方式</label>
@@ -188,7 +188,7 @@
         <div class="panel-body">
           <form>
             <div class="form-group">
-              <p class="help-block">运行命令 <code>pyarmor-webui</code> 打开 Pyarmor 网页版，不支持直接在浏览器打开网页</p>
+              <p class="help-block">运行命令 <code>pyarmor-webui</code> 打开 PyArmor 网页版，不支持直接在浏览器打开网页</p>
               <p class="help-block">一个轻量级的 Web 服务器会在后台运行，服务所有的页面请求，所有操作的详细输出会显示在服务器的控制台</p>
               <p class="help-block">网页版只包含最基本的功能，高级用法请使用命令行工具 <code>pyarmor</code></p>
             </div>
