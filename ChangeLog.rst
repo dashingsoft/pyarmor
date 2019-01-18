@@ -1,3 +1,8 @@
+4.6.3
+-----
+* Fix backslash issue when running `pack` command with `PyInstaller`
+* When PyArmor fails, if `sys.flags.debug` is not set, only print error message, no traceback printed
+
 4.6.2
 -----
 * Add option `--options` for command `pack`
