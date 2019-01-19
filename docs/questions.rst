@@ -89,5 +89,13 @@ So the relation between 2 `license.lic` is::
 If the scripts are obfuscated by command `pyarmor obfuscate` other
 than by project, :ref:`Global Capsule` is used implicitly.
 
+Work with subprocess and multiprocessing
+----------------------------------------
+
+When creating new process by `Popen` or `Process`, note that
+:ref:`Bootstrap Code` must be called before importing any obfuscated
+code in sub-process. Otherwise it will report::
+
+    NameError: name '__pyarmor__' is not defined
 
 .. include:: _common_definitions.txt
