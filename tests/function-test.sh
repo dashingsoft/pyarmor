@@ -213,37 +213,37 @@ echo ""
 csih_inform "Case M-1: run obfuscated scripts with multiprocessing 1"
 
 PROPATH=projects/test_spec
-$PYARMOR obfuscate -O  --src=test/data --entry=wrapcase.py $PROPATH >result.log 2>&1
 $PYARMOR init --src=test/data --entry=mp.py $PROPATH >result.log 2>&1
 $PYARMOR config --manifest="include mp.py" $PROPATH >result.log 2>&1
 (cd $PROPATH; $ARMOR build >result.log 2>&1)
 
 check_return_value
 check_file_exists $PROPATH/dist/mp.py
-check_file_content $PROPATH/dist/wrapcase.py 'pyarmor_runtime'
-check_file_content $PROPATH/dist/wrapcase.py '__pyarmor__(__name__'
+check_file_content $PROPATH/dist/mp.py 'pyarmor_runtime'
+check_file_content $PROPATH/dist/mp.py '__pyarmor__(__name__'
 
 (cd $PROPATH/dist; $PYTHON mp.py >result.log 2>&1 )
 check_return_value
-check_file_content $PROPATH/dist/result.log 'module name: __mp_main__'
+check_file_content $PROPATH/dist/result.log 'module name: __main__'
 check_file_content $PROPATH/dist/result.log 'function f'
 check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'
 
 csih_inform "Case M-1: run obfuscated scripts with multiprocessing 2"
 
+# sed -i -e "1,2 d" $PROPATH/dist/mp.py
+
 cat <<EOF >> $PROPATH/dist/main.py
-from pytransfrom import pyarmor_runtime
+from pytransform import pyarmor_runtime
 pyarmor_runtime()
 
 import mp
 mp.main()
 EOF
-sed -i -e "1,2 d" $PROPATH/dist/mp.py
 
 (cd $PROPATH/dist; $PYTHON mp.py >result.log 2>&1 )
 check_return_value
-check_file_content $PROPATH/dist/result.log 'module name: __mp_main__'
+check_file_content $PROPATH/dist/result.log 'module name: __main__'
 check_file_content $PROPATH/dist/result.log 'function f'
 check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'

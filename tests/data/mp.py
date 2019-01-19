@@ -3,14 +3,14 @@ import os
 
 def info(title):
     print(title)
-    print('module name:', __name__)
+    print('module name: %s' % __name__)
     if hasattr(os, 'getppid'):  # only available on Unix
-        print('parent process:', os.getppid())
-    print('process id:', os.getpid())
+        print('parent process: %s' % os.getppid())
+    print('process id: %s' % os.getpid())
 
 def f(name):
     info('function f')
-    print('hello', name)
+    print('hello %s' % name)
 
 def main():
     info('main line')
