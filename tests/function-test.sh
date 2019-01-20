@@ -210,6 +210,12 @@ echo ""
 echo "-------------------- Test Feature: __spec__ --------------------"
 echo ""
 
+if [[ "$PLATFORM" == "win32" && "$PYTHON" == C:/Python3[012]/python ]] ; then
+
+csih_inform "This testcase is ignored in this platform"
+
+else
+
 csih_inform "Case M-1: run obfuscated scripts with multiprocessing 1"
 
 PROPATH=projects/test_spec
@@ -247,6 +253,8 @@ check_file_content $PROPATH/dist/result.log 'module name: __main__'
 check_file_content $PROPATH/dist/result.log 'function f'
 check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'
+
+fi
 
 echo ""
 echo "-------------------- Test Feature: __spec__ END ----------------"
