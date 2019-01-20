@@ -210,7 +210,7 @@ echo ""
 echo "-------------------- Test Feature: __spec__ --------------------"
 echo ""
 
-if [[ "$PLATFORM" == "win32" && "$PYTHON" == C:/Python3[012]/python ]] ; then
+if [[ "$PLATFORM" == win[3_]* && "$PYTHON" == C:/Python3[012]/python ]] ; then
 
 csih_inform "This testcase is ignored in this platform"
 
