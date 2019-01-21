@@ -176,7 +176,7 @@ def format_platname():
     mach = platform.machine().lower()
     return os.path.join('%s%s' % (plat, bitness), 'arm') \
         if plat == 'linux' and (mach[:3] == 'arm' or mach[:5] == 'aarch') \
-        else return '%s%s' % (plat, bitness)
+        else '%s%s' % (plat, bitness)
 
 # Load _pytransform library
 def _load_library(path=None, is_runtime=0):
