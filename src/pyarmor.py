@@ -757,10 +757,6 @@ def main_entry():
     )
     try:
         pytransform_bootstrap()
-    except Exception as e:
-        print(e)
-        sys.exit(1)
-    try:
         main(sys.argv[1:])
     except Exception as e:
         if sys.flags.debug:
