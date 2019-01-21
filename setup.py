@@ -32,7 +32,9 @@ if path.exists(path.join('src', 'platforms', 'windows32')):
         'platforms/windows32/_pytransform.dll',
         'platforms/windows64/_pytransform.dll',
         'platforms/linux32/_pytransform.so',
+        'platforms/linux32/arm/_pytransform.so',
         'platforms/linux64/_pytransform.so',
+        'platforms/linux64/arm/_pytransform.so',
         'platforms/darwin64/_pytransform.dylib',
     ]
 else:

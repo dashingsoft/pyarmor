@@ -1,3 +1,19 @@
+5.0.1
+-----
+
+Thanks to GNU lightning, from this version, the core routines are
+protected by JIT technicals. That is to say, there is no binary code
+in static file for core routines, they're generated in runtime.
+
+Besides, the pre-built dynamic library for linux arm32/64 are packed
+into the source package.
+
+Fixed issues:
+
+* The module `multiprocessing` starts new process failed in obfuscated script: 
+
+    `AttributeError: '__main__' object has no attribute 'f'`
+
 4.6.3
 -----
 * Fix backslash issue when running `pack` command with `PyInstaller`

@@ -1,8 +1,8 @@
 # Downloads for PyArmor Prebuilt Dynamic Library #
 
-Latest version: **4.0.5**
+Latest version: **5.0.1**
 
-Build date: 2018-12-27
+Build date: 2019-01-20
 
 The core of PyArmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -65,6 +65,16 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+## 5.0.1
+
+Thanks to GNU lightning, from this version, the core routines are
+protected by JIT technicals. That is to say, there is no binary code
+in static file for core routines, they're generated in runtime.
+
+Fixed issues:
+
+* The module `multiprocessing` starts new process failed: `AttributeError: '__main__' object has no attribute 'f'`
 
 ## 4.0.5
 
