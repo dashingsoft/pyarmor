@@ -4,7 +4,7 @@ The Security and Anti-Debug
 ===========================
 
 |PyArmor| will obfuscate not only the whole module file, but also each
-function. For example, there is a file ``foo.py``::
+function. For example, there is a file `foo.py`::
 
   def hello():
       print('Hello world!')
@@ -12,18 +12,20 @@ function. For example, there is a file ``foo.py``::
   def sum(a, b):
       return a + b
 
-|PyArmor| first obfuscates the function ``hello`` and ``sum``, then
-obfuscates the whole moudle ``foo``. In the runtime, each function is
+|PyArmor| first obfuscates the function `hello` and `sum`, then
+obfuscates the whole moudle `foo`. In the runtime, each function is
 restored only as it's called and will be obfuscated as soon as code
 object completed execution. So even trace code in any ``c`` debugger,
 only a piece of code object could be got one time.
 
-Protect Dynamic Library ``_pytransform``
-----------------------------------------
+Protect Dynamic Library `_pytransform`
+--------------------------------------
 
-The core functions of |PyArmor| are in the ``_pytransform``. In order
-to protect it, add code to verify md5sum of this file in the obfusated
-script. For example::
+The core functions of |PyArmor| are in the `_pytransform`, and it's
+plain. In order to protect it, first get checksum of `_pytransform`,
+then add code to verify the checksum of this file in the obfusated
+script. Assume `md5sum` is `26d6de59a7717690363c430d6f460218`, here
+it's example code::
 
     import os
     from hashlib import md5
@@ -31,10 +33,10 @@ script. For example::
 
     def check_pytransform(filename):
         with open(filename, 'rb') as f:
-            return md5(f.read()).hexdigest() == 'xxxxxxxxxxxxxxxxxx'
+            return md5(f.read()).hexdigest() == '26d6de59a7717690363c430d6f460218'
 
-    if not check_pytransform(libfile):
-        print('%s is modified' % libfile)
+    if not check_pytransform(lib_filename):
+        print('%s is modified' % lib_filename)
         sys.exit(1)
 
 The end user can't change this obfuscated script any more, so these
@@ -49,6 +51,6 @@ scripts to double check there is no unauthorized use. For example::
 
 If you want to hide the code more thoroughly, try to use any other
 tool such as ASProtect_, VMProtect_ to protect dynamic library
-``_pytransform`` which is distributed with obfuscatd scripts.
+`_pytransform` which is distributed with obfuscatd scripts.
 
 .. include:: _common_definitions.txt
