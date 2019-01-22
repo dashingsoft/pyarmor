@@ -65,6 +65,15 @@ recursively, execute this command::
 
     pyarmor obfuscate --recursive myscript.py
 
+Distributing Obfuscated Scripts
+-------------------------------
+
+Except the obfuscated scripts, all the :ref:`runtime files` need to be
+distributed to the end user.
+
+Note that the dynamic library `_pytransfrom` is plain, in order to
+protect it, refer to :ref:`Protect Dynamic Library _pytransform`
+
 Generating License For Obfuscated Scripts
 -----------------------------------------
 

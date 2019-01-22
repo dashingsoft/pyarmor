@@ -61,8 +61,8 @@ Runtime Files
 Except obfuscated scripts, all the other files are called `Runtime Files`:
 
 * `pytransform.py`, a normal python module
-* `_pytransform`, a dynamic library implements core functions
-* 4 data files
+* `_pytransform.so`, or `_pytransform.dll`, or `_pytransform.dylib` a dynamic library implements core functions
+* `pyshield.key`, `pyshield.lic`, `product.key`, `license.lic`, data files
 
 All of them are required to run obfuscated scripts.
 

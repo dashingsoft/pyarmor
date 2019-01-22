@@ -18,6 +18,8 @@ restored only as it's called and will be obfuscated as soon as code
 object completed execution. So even trace code in any ``c`` debugger,
 only a piece of code object could be got one time.
 
+.. _protect dynamic library _pytransform:
+
 Protect Dynamic Library `_pytransform`
 --------------------------------------
 
