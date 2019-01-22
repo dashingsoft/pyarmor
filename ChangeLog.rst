@@ -1,3 +1,32 @@
+5.0.2
+-----
+
+In order to protect dynamic library `_pytransform`, export
+`lib_filename` in the module `pytransform`, then verify the md5sum of
+`_pytransform` in the obfuscated script. For example::
+
+    import os
+    from hashlib import md5
+    from pytransform import lib_filename
+
+    def check_pytransform(filename):
+        with open(filename, 'rb') as f:
+            return md5(f.read()).hexdigest() == 'xxxxxxxxxxxxxxxxxx'
+
+    if not check_pytransform(libfile):
+        print('%s is modified' % libfile)
+        sys.exit(1)
+
+Because the end user can't change the obfuscated scripts any more, so
+these code can keep the dynamic library from hacking.
+
+Besides, you can add any other authentication code in obfuscated
+scripts to double check there is no unauthorized use. For example::
+
+    from datetime import datetime
+    if datetime.now() > datetime(2019, 2, 2):  # expired on 2019-2-2
+        sys.exit(1)
+
 5.0.1
 -----
 
