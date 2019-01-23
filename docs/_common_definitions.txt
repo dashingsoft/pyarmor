@@ -12,3 +12,4 @@
 .. _pip: http://www.pip-installer.org/
 .. _ASProtect: http://www.aspack.com/
 .. _VMProtect: https://vmpsoft.com/
+.. _NTP: http://www.ntp.org

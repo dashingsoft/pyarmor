@@ -120,6 +120,22 @@ Run obfuscated script with new license::
     cd dist/
     python myscript.py
 
+Extending License Type
+----------------------
+
+It's easy to extend any other licese type for obfuscated scripts: just
+add authentication code in the entry script. The script can't be
+changed any more after it is obfuscated, so write what ever you want
+by Python. For example, check expired date by NTP_ server other than
+local time::
+   
+    import ntplib
+    from time import mktime, strptime
+    c = ntplib.NTPClient()
+    response = c.request('europe.pool.ntp.org', version=3)
+    if response.tx_time > mktime(strptime('20190202', '%Y%m%d')):
+        sys.exit(1)
+
 Packing Obfuscated Scripts
 --------------------------
 
