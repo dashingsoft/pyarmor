@@ -19,40 +19,19 @@ HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_IPV6, HT_DOMAIN = range(5)
 # Global
 #
 _pytransform = None
+_get_error_msg = None
 _debug_mode = sys.flags.debug
 
 class PytransformError(Exception):
-
-    @classmethod
-    def error_msg(cls):
-        return sys.pytransform_error if hasattr(sys, 'pytransform_error') \
-            else 'No pytransform error set'
-
-    def __init__(self, msg=None):
-        super(Exception, self).__init__(
-            PytransformError.error_msg() if msg is None else msg
-        )
+    pass
 
 def dllmethod(func):
     def wrap(*args, **kwargs):
         args = [(s.encode() if isinstance(s, str) else s) for s in args]
-        try:
-            result = func(*args, **kwargs)
-        except Exception as e:
-            if _debug_mode:
-                raise
-            print(e)
-            sys.exit(1)
-        if result == None:
-            raise PytransformError()
-        elif isinstance(result, int):
-            if result == 0:
-                pass
-            elif result > 0 or _debug_mode:
-                raise PytransformError()
-            else:
-                print(PytransformError.error_msg())
-                sys.exit(1)
+        result = func(*args, **kwargs)
+        if isinstance(result, int) and result != 0:
+            errmsg = _get_error_msg()
+            raise PytransformError(errmsg)
         return result
     return wrap
 
@@ -63,16 +42,14 @@ def init_pytransform():
     # bitness = 64 if sys.maxsize > 2**32 else 32
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_void_p)
     init_module = prototype(('init_module', _pytransform))
-    init_module(major, minor, pythonapi._handle)
-    return True
+    return init_module(major, minor, pythonapi._handle)
 
 @dllmethod
 def init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
     pyarmor_init(is_runtime=1)  # Only for compitable with PyArmor 3
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
     _init_runtime = prototype(('init_runtime', _pytransform))
-    _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
-    return True
+    return _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
 
 @dllmethod
 def import_module(modname, filename):
@@ -92,6 +69,13 @@ def encrypt_project_files(proname, filelist, mode=0):
     dlfunc = prototype(('encrypt_project_files', _pytransform))
     return dlfunc(proname, filelist, mode)
 
+@dllmethod
+def encrypt_files(key, filelist, mode=0):
+    t_key = c_char * 32
+    prototype = PYFUNCTYPE(c_int, t_key, py_object, c_int)
+    dlfunc = prototype(('encrypt_files', _pytransform))
+    return dlfunc(t_key(*key), filelist, mode)
+
 def generate_project_capsule(licfile):
     prikey, pubkey, prolic = _generate_project_capsule()
     capkey = _encode_capsule_key_file(licfile)
@@ -108,6 +92,13 @@ def _encode_capsule_key_file(licfile):
     prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
     dlfunc = prototype(('encode_capsule_key_file', _pytransform))
     return dlfunc(licfile, None)
+
+@dllmethod
+def generate_module_key(pubname, key):
+    t_key = c_char * 32
+    prototype = PYFUNCTYPE(py_object, c_char_p, t_key, c_char_p)
+    dlfunc = prototype(('generate_module_key', _pytransform))
+    return dlfunc(pubname, t_key(*key), None)
 
 @dllmethod
 def generate_license_file(filename, priname, rcode, start=-1, count=1):
@@ -128,9 +119,15 @@ def get_expired_days():
     return dlfunc()
 
 @dllmethod
-def show_hd_info():
-    prototype = PYFUNCTYPE(c_int)
-    dlfunc = prototype(('show_hd_info', _pytransform))
+def get_trial_days():
+    prototype = PYFUNCTYPE(py_object)
+    dlfunc = prototype(('get_trial_days', _pytransform))
+    return dlfunc()
+
+@dllmethod
+def version_info():
+    prototype = PYFUNCTYPE(py_object)
+    dlfunc = prototype(('version_info', _pytransform))
     return dlfunc()
 
 @dllmethod
@@ -143,8 +140,11 @@ def get_hd_info(hdtype, size=256):
     t_buf = c_char * size
     buf = t_buf()
     if (_pytransform.get_hd_info(hdtype, buf, size) == -1):
-        raise PytransformError()
+        raise PytransformError(_get_error_msg())
     return buf.value.decode()
+
+def show_hd_info():
+    return _pytransform.show_hd_info()
 
 def get_license_info():
     info = {
@@ -236,13 +236,16 @@ def _load_library(path=None, is_runtime=0):
     # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
 
     if not os.path.abspath('.') == os.path.abspath(path):
-        m.set_option('pytransform_path'.encode(), path.encode())
+        m.set_option('pyshield_path'.encode(), path.encode())
     return m
 
 def pyarmor_init(path=None, is_runtime=0):
     global _pytransform
+    global _get_error_msg
     if _pytransform is None:
         _pytransform = _load_library(path, is_runtime)
+        _get_error_msg = _pytransform.get_error_msg
+        _get_error_msg.restype = c_char_p
         init_pytransform()
 
 def pyarmor_runtime(path=None):
