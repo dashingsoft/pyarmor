@@ -357,6 +357,17 @@ csih_inform "Case 8.1: show hardware info"
 $PYARMOR hdinfo >result.log 2>&1
 check_return_value
 
+csih_inform "Case 8.2: get hardware info"
+
+cat <<EOF > test_get_hd_info.py
+from pytransform import pyarmor_init, get_hd_info
+pyarmor_init()
+print(get_hd_info(0))
+EOF
+
+$PYTHON test_get_hd_info.py >result.log 2>&1
+check_file_content result.log "${harddisk_sn}"
+
 echo ""
 echo "-------------------- Test Command hdinfo END -------------------"
 echo ""
