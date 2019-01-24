@@ -28,8 +28,10 @@ class PytransformError(Exception):
         return sys.pytransform_error if hasattr(sys, 'pytransform_error') \
             else 'No pytransform error set'
 
-    def __init__(self):
-        super(Exception, self).__init__(PytransformError.error_msg())
+    def __init__(self, msg=None):
+        super(Exception, self).__init__(
+            PytransformError.error_msg() if msg is None else msg
+        )
 
 def dllmethod(func):
     def wrap(*args, **kwargs):
@@ -61,14 +63,16 @@ def init_pytransform():
     # bitness = 64 if sys.maxsize > 2**32 else 32
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_void_p)
     init_module = prototype(('init_module', _pytransform))
-    return init_module(major, minor, pythonapi._handle)
+    init_module(major, minor, pythonapi._handle)
+    return True
 
 @dllmethod
 def init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
     pyarmor_init(is_runtime=1)  # Only for compitable with PyArmor 3
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
     _init_runtime = prototype(('init_runtime', _pytransform))
-    return _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
+    _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
+    return True
 
 @dllmethod
 def import_module(modname, filename):
@@ -139,7 +143,7 @@ def get_hd_info(hdtype, size=256):
     t_buf = c_char * size
     buf = t_buf()
     if (_pytransform.get_hd_info(hdtype, buf, size) == -1):
-        raise PytransformError(Pytra)
+        raise PytransformError()
     return buf.value.decode()
 
 def get_license_info():
