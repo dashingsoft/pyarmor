@@ -3,6 +3,19 @@
 When Things Go Wrong
 ====================
 
+Turn on debugging output to get more error information::
+
+    python -d pyarmor.py ...
+    PYTHONDEBUG=y pyarmor ...
+
+Segment fault
+-------------
+
+In the following cases, obfuscated scripts will crash
+
+* Running obfuscated script by the debug version Python
+* Obfuscating scripts by Python 2.6 but running the obfuscated scripts by Python 2.7
+
 Could not load `_pytransform`
 -----------------------------
 
@@ -97,5 +110,13 @@ When creating new process by `Popen` or `Process`, note that
 code in sub-process. Otherwise it will report::
 
     NameError: name '__pyarmor__' is not defined
+
+Marshal loads failed when running xxx.py
+----------------------------------------
+
+* The version Python to running scripts is different from the version
+  Python to obfuscated script
+* The capsule used to generated license for obfuscated scripts is
+  different from the capsule used to obfuscate the scripts.
 
 .. include:: _common_definitions.txt
