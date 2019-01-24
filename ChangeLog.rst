@@ -1,3 +1,12 @@
+5.0.3
+-----
+* Add option `--silent`, disable log message when running any PyArmor command
+* Refine runtime error message, make it clear and more helpful
+* Remove function `get_hd_sn` from module `pytransform`, use `get_hd_info` instead
+* Remove useless function `version_info`, `get_trial_days` from module `pytransform`
+* Add new function `get_hd_info` in module `pytransform` to get hardware information
+* Remove attribute `lib_filename` from module `pytransform`, use `_pytransform._name` instead
+
 5.0.2
 -----
 * Export `lib_filename` in the module pytransform in order to protect
@@ -17,7 +26,7 @@ into the source package.
 
 Fixed issues:
 
-* The module `multiprocessing` starts new process failed in obfuscated script: 
+* The module `multiprocessing` starts new process failed in obfuscated script:
 
     `AttributeError: '__main__' object has no attribute 'f'`
 
