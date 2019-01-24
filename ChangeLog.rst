@@ -1,10 +1,10 @@
 5.0.3
 -----
-* Add option `--silent`, disable log message when running any PyArmor command
+* Add option `-q`, `--silent`, disable log message when running any PyArmor command
 * Refine runtime error message, make it clear and more helpful
+* Add new function `get_hd_info` in module `pytransform` to get hardware information
 * Remove function `get_hd_sn` from module `pytransform`, use `get_hd_info` instead
 * Remove useless function `version_info`, `get_trial_days` from module `pytransform`
-* Add new function `get_hd_info` in module `pytransform` to get hardware information
 * Remove attribute `lib_filename` from module `pytransform`, use `_pytransform._name` instead
 
 5.0.2
