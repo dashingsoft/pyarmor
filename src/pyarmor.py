@@ -517,6 +517,8 @@ def main(args):
     )
     parser.add_argument('-v', '--version', action='version',
                         version=_version_info())
+    parser.add_argument('-q', '--silent', action='store_true',
+                        help='Suppress all normal output')
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
@@ -745,6 +747,9 @@ def main(args):
     cparser.set_defaults(func=packer.packer)
 
     args = parser.parse_args(args)
+    if args.silent:
+        logging.getLogger().setLevel(100)
+
     if hasattr(args, 'func'):
         args.func(args)
     else:
