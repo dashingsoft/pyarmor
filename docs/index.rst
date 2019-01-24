@@ -37,13 +37,14 @@ Contents:
 
    installation
    usage
+   pytransform
+   security
    understand-obfuscated-scripts
    how-to-do
    pack-obfuscated-scripts
    project
    differences
    advanced
-   security
    man
    questions
    license
