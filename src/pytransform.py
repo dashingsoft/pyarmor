@@ -44,7 +44,9 @@ def dllmethod(func):
         if result == None:
             raise PytransformError()
         elif isinstance(result, int):
-            if result > 0 or _debug_mode:
+            if result == 0:
+                pass
+            elif result > 0 or _debug_mode:
                 raise PytransformError()
             else:
                 print(PytransformError.error_msg())
@@ -59,14 +61,14 @@ def init_pytransform():
     # bitness = 64 if sys.maxsize > 2**32 else 32
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_void_p)
     init_module = prototype(('init_module', _pytransform))
-    init_module(major, minor, pythonapi._handle)
+    return init_module(major, minor, pythonapi._handle)
 
 @dllmethod
 def init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
     pyarmor_init(is_runtime=1)  # Only for compitable with PyArmor 3
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
     _init_runtime = prototype(('init_runtime', _pytransform))
-    _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
+    return _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
 
 @dllmethod
 def import_module(modname, filename):
