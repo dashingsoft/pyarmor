@@ -119,18 +119,6 @@ def get_expired_days():
     return dlfunc()
 
 @dllmethod
-def get_trial_days():
-    prototype = PYFUNCTYPE(py_object)
-    dlfunc = prototype(('get_trial_days', _pytransform))
-    return dlfunc()
-
-@dllmethod
-def version_info():
-    prototype = PYFUNCTYPE(py_object)
-    dlfunc = prototype(('version_info', _pytransform))
-    return dlfunc()
-
-@dllmethod
 def _get_hd_info(hdtype, buf, size):
     prototype = PYFUNCTYPE(c_int, c_int, c_char_p, c_int)
     dlfunc = prototype(('get_hd_info', _pytransform))
