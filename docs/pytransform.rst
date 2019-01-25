@@ -59,10 +59,10 @@ Show left days of license
 
 .. code-block:: python
 
-   from pytransform import PytransformError, get_license_info, get_trial_days
+   from pytransform import PytransformError, get_license_info, get_expired_days
    try:
-       code = generate_license_info()['CODE']
-       left_days = get_trial_days()
+       code = get_license_info()['CODE']
+       left_days = get_expired_days()
        if left_days == -1:
            print('This license for %s is never expired' % code)
        else:
