@@ -113,16 +113,13 @@ def get_registration_code():
     return dlfunc()
 
 @dllmethod
-def get_expired_days():
-    prototype = PYFUNCTYPE(py_object)
-    dlfunc = prototype(('get_expired_days', _pytransform))
-    return dlfunc()
-
-@dllmethod
 def _get_hd_info(hdtype, buf, size):
     prototype = PYFUNCTYPE(c_int, c_int, c_char_p, c_int)
     dlfunc = prototype(('get_hd_info', _pytransform))
     return dlfunc()
+
+def get_expired_days():
+    return _pytransform.get_expired_days()
 
 def get_hd_info(hdtype, size=256):
     t_buf = c_char * size
