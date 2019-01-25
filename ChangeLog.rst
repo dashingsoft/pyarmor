@@ -1,3 +1,8 @@
+5.0.4
+-----
+* Fix `get_expired_days` issue, remove decorator `dllmethod`
+* Refine output message of `pyarmor -v`
+
 5.0.3
 -----
 * Add option `-q`, `--silent`, suppress all normal output when running any PyArmor command
