@@ -1,14 +1,11 @@
 from distutils.util import get_platform
 
-version = '5.0.3'
+version = '5.0.4'
 
 version_info = '''
 PyArmor is a tool used to import or run the encrypted python scripts.
 Only by a few extra files, pyarmor can run and imported encrypted
 files in the normal python environments.
-
-PyArmor just likes an enhancement which let python could run or import
-encrypted files.
 
 '''
 
