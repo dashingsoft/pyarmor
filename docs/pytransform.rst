@@ -74,6 +74,13 @@ Check internet time by NTP server, expired on `2019-2-2`
 
 .. code-block:: python
 
-    from datetime import datetime
-    if datetime.now() > datetime(2019, 2, 2):
+    from ntplib import NTPClient
+    from time import mktime, strptime
+
+    NTP_SERVER = 'europe.pool.ntp.org'
+    EXPIRED_DATE = '20190202'
+
+    c = NTPClient()
+    response = c.request(NTP_SERVER, version=3)
+    if response.tx_time > mktime(strptime(EXPIRED_DATE, '%Y%m%d')):
         sys.exit(1)
