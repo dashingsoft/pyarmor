@@ -19,6 +19,14 @@ Contents
    This is raised when any pytransform api failed. The argument to the
    exception is a string indicating the cause of the error.
 
+.. function:: get_expired_days()
+
+   Return how many days left for time limitation license.
+
+   0: has been expired
+
+   -1: never expired
+
 .. function:: get_license_info()
 
    Get license information of obfuscated scripts.
@@ -51,13 +59,14 @@ Show left days of license
 
 .. code-block:: python
 
-   from pytransform import PytransformError, get_license_info
+   from pytransform import PytransformError, get_license_info, get_trial_days
    try:
-       left_days = generate_license_info()['expired']
+       code = generate_license_info()['CODE']
+       left_days = get_trial_days()
        if left_days == -1:
-           print('This license is never expired')
+           print('This license for %s is never expired' % code)
        else:
-           print('This license will be expired in %d days' % left_days)
+           print('This license %s will be expired in %d days' % (code, left_days))
    except PytransformError as e:
        print(e)
 
