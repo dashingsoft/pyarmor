@@ -25,6 +25,7 @@ pyarmor_data_files = [
     'examples/testpkg/*.py', 'examples/testpkg/mypkg/*.py',
     'examples/pybench/*.py', 'examples/pybench/package/*.py',
     'examples/py2exe/*.py', 'examples/cx_Freeze/*.py',
+    'examples/helloworld/*.py',
 ]
 
 if path.exists(path.join('src', 'platforms', 'windows32')):
