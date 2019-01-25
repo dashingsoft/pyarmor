@@ -128,9 +128,9 @@ need to inserted into the script. Here is sample code::
                     (lines[2].startswith('__pyarmor__'))):
                 sys.eixt(1)
 
-        # Be sure `pytransform.py` is not changed
+        # Be sure 'pytransform.py' is not changed, maybe __file__ is 'pytransform.pyc'
         check_md5sum(pytransform.__file__, MD5SUM_PYTRANSFORM_PY)
-        # Be sure `_pytransform.so` is not changed
+        # Be sure '_pytransform.so' is not changed
         check_md5sum(pytransform._pytransform._name, MD5SUM_PYTRANSFORM_SO)
 
     if __name__ == '__main__':
