@@ -3,7 +3,7 @@
 PyArmor 的安全性
 ================
 
-|PyArmor| 使用分片式技术来保护 Python 脚本。所谓分片保护，就是单独加密
+PyArmor 使用分片式技术来保护 Python 脚本。所谓分片保护，就是单独加密
 每一个函数， 在运行脚本的时候，只有当前调用的函数被解密，其他函数都没有
 解密。而一旦函数执行完成，就又会重新加密，这是 PyArmor 的特点之一。
 
@@ -19,9 +19,9 @@ PyArmor 的安全性
       hello()
       print('1 + 1 = %d' % sum(1, 1))
 
-|PyArmor| 会首先加密函数 `hello` 和 `sum` ，然后在加密整个模块，进行两
-次加密。当运行加密的 `foo` 中的 `hello` 的时候， `sum` 依旧是加密的。
-`hello` 执行完成之后，会被重新加密，然后才开始解密并执行 `sum` 。
+PyArmor 会首先加密函数 `hello` 和 `sum` ，然后在加密整个模块，进行两次
+加密。当运行加密的 `hello` 的时候， `sum` 依旧是加密的。`hello` 执行完
+成之后，会被重新加密，然后才开始解密并执行 `sum` 。
 
 .. _protect dynamic library _pytransform:
 
@@ -105,12 +105,14 @@ PyArmor 定义了一套自己的指令系统（基于 GNU lightning)，然后把
 代码保护例程:
 
 1. 读取 `functiion 1` 的数据代码，动态生成 `function 1`
-2. 执行 `function 1` 
-   - 检查代码段的校验和，如果不一致，退出
-   - 检查当前是否有调试器，如果发现，退出
-   - 检查执行时间是否太长，如果执行时间太长，退出
-   - 如果可能的话，清除硬件断点寄存器
-   - 恢复下一个函数 `function 2` 的数据代码
+2. 执行 `function 1`::
+
+    检查代码段的校验和，如果不一致，退出
+    检查当前是否有调试器，如果发现，退出
+    检查执行时间是否太长，如果执行时间太长，退出
+    如果可能的话，清除硬件断点寄存器
+    恢复下一个函数 `function 2` 的数据代码
+
 3. 读取 `functiion 2` 的数据代码，动态生成 `function 2`
 4. 重复步骤 2 的操作
 
@@ -123,22 +125,22 @@ PyArmor 定义了一套自己的指令系统（基于 GNU lightning)，然后把
 
     import pytransform
     from hashlib import md5
-    
+
     MD5SUM_PYTRANSFORM_PY = '46995aee690c412c8e65da764b892562'
     MD5SUM_PYTRANSFORM_SO = 'ca202268bbd76ffe7df10c9ef1edcb6c'
-    
+
     # Extra import to check expired date by NTP
     from ntplib import NTPClient
     from time import mktime, strptime
-    
+
     NTP_SERVER = 'europe.pool.ntp.org'
     EXPIRED_DATE = '20190202'
-    
+
     def check_md5sum(filename, expected):
         with open(filename, 'rb') as f:
             if not md5(f.read()).hexdigest() == expected:
                 sys.exit(1)
-    
+
     def protect_pytransform():
         # Be sure obfuscated script is not changed
         with open(__file__, 'r') as f:
@@ -148,12 +150,12 @@ PyArmor 定义了一套自己的指令系统（基于 GNU lightning)，然后把
                     (lines[1].strip() == 'pyarmor_runtime()') and
                     (lines[2].startswith('__pyarmor__'))):
                 sys.eixt(1)
-    
+
         # Be sure `pytransform.py` is not changed
         check_md5sum(pytransform.__file__, MD5SUM_PYTRANSFORM_PY)
         # Be sure `_pytransform.so` is not changed
         check_md5sum(pytransform._pytransform._name, MD5SUM_PYTRANSFORM_SO)
-    
+
     if __name__ == '__main__':
         protect_pytransform()
 
