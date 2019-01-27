@@ -1,12 +1,12 @@
 from distutils.util import get_platform
 
-version = '5.0.4'
+version = '5.0.5'
 
 version_info = '''
-PyArmor is a tool used to import or run the encrypted python scripts.
-Only by a few extra files, pyarmor can run and imported encrypted
-files in the normal python environments.
+PyArmor is a command line tool used to obfuscate python scripts, bind
+obfuscated scripts to fixed machine or expire obfuscated scripts. 
 
+For more information, refer to https://pyarmor.dashingsoft.com
 '''
 
 trial_info = '''
