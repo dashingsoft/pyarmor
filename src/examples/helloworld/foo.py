@@ -118,7 +118,6 @@ def protect_pytransform():
         # Be sure '_pytransform.so' is not changed
         check_lib_pytransform(pytransform._pytransform._name)
     except Exception as e:
-        raise
         print(e)
         sys.exit(1)
 
