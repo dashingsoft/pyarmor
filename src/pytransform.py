@@ -235,12 +235,14 @@ def pyarmor_init(path=None, is_runtime=0):
         _pytransform = _load_library(path, is_runtime)
         _get_error_msg = _pytransform.get_error_msg
         _get_error_msg.restype = c_char_p
-        init_pytransform()
+        return init_pytransform()
 
 def pyarmor_runtime(path=None):
     try:
-        pyarmor_init(path, is_runtime=1)
+        if _pytransform is not None:
+            raise PytransformError('_pytransform can not be loaded twice')
+        if pyarmor_init(path, is_runtime=1) == 0:
+            init_runtime(0, 0, 0, 0)
     except PytransformError as e:
         print(e)
         sys.exit(1)
-    init_runtime(0, 0, 0, 0)
