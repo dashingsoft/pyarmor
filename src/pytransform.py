@@ -45,8 +45,14 @@ def init_pytransform():
     return init_module(major, minor, pythonapi._handle)
 
 @dllmethod
-def init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
-    pyarmor_init(is_runtime=1)  # Only for compitable with PyArmor 3
+def init_runtime():
+    prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
+    _init_runtime = prototype(('init_runtime', _pytransform))
+    return _init_runtime(0, 0, 0, 0)
+
+@dllmethod
+def old_init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
+    pyarmor_init(is_runtime=1)
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
     _init_runtime = prototype(('init_runtime', _pytransform))
     return _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
@@ -242,7 +248,7 @@ def pyarmor_runtime(path=None):
         if _pytransform is not None:
             raise PytransformError('_pytransform can not be loaded twice')
         if pyarmor_init(path, is_runtime=1) == 0:
-            init_runtime(0, 0, 0, 0)
+            init_runtime()
     except PytransformError as e:
         print(e)
         sys.exit(1)

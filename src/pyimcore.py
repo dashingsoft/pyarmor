@@ -3,7 +3,7 @@ from imp import find_module, load_module, new_module, PKG_DIRECTORY
 import os
 import sys
 
-from pytransform import PytransformError, init_runtime, import_module
+from pytransform import PytransformError, old_init_runtime, import_module
 
 _ext = '.py' + os.getenv('PYARMOR_EXTRA_CHAR', 'e')
 
@@ -62,4 +62,4 @@ class PyshieldImporter(object):
         return pkg
 
 sys.meta_path.append(PyshieldImporter())
-init_runtime()
+old_init_runtime()

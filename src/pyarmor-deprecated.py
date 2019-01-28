@@ -516,8 +516,8 @@ It's Following the Distutils’ own manifest template
     if mode >= 3:
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
-            lines = 'from pytransform import init_runtime', \
-                    'init_runtime(0, 0, 0, 0)', ''
+            lines = 'from pytransform import old_init_runtime', \
+                    'old_init_runtime(0, 0, 0, 0)', ''
             f.write('\n'.join(lines))
     elif mode:
         logging.info('Encrypt mode: %s', mode)
@@ -529,10 +529,10 @@ It's Following the Distutils’ own manifest template
                 raise RuntimeError('Invalid pyimcore.py')
             f.write(lines[:i])
             if mode == 1:
-                f.write('\n\ninit_runtime()\n')
+                f.write('\n\nold_init_runtime()\n')
             elif mode == 2:
                 f.write('\n\nsys.meta_path.append(PyshieldImporter())\n'
-                        'init_runtime(0, 0, 0, 0)\n')
+                        'old_init_runtime(0, 0, 0, 0)\n')
 
     prikey = os.path.join(output, 'private.key')
     if os.path.exists(prikey):
