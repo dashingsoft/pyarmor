@@ -12,7 +12,7 @@ from hashlib import md5
 
 MD5SUM_LIB_PYTRANSFORM = {
     'windows32': '156bccd049eb42afe3ae8e1249b4eede',
-    'windows64': 'a7039ba4dfe9b23aa3e284af9691da1a',
+    'windows64': '897444c97d291dd572d0ff5063bca1f6',
     'linux32': '3f194b707001f4132ae144946cc0a914',
     'linux32/arm': '727f9a40ba5ccc72ccc9a530caa35214',
     'linux64': '74aa1e1ee07961f2c42ae8d9af9f7b64',
