@@ -53,14 +53,14 @@ def check_mod_pytransform():
                     'normpath', 'os', 'path', 'platform', 'print',
                     'pyarmor_init', 'pythonapi', 'restype', 'set_option',
                     'str', 'struct', 'sys', 'system', 'version_info'])
-    code = '__code__' if sys.version_info[0] == 3 else 'func_code'
-    closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
 
+    code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     colist = [getattr(pytransform.dllmethod, code).co_consts[1]]
     for name in ('dllmethod', 'init_pytransform', 'init_runtime',
                  '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
         colist.append(getattr(getattr(pytransform, name), code))
 
+    closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
     for name in ('init_pytransform', 'init_runtime'):
         colist.append(getattr(getattr(getattr(pytransform, name),
                                       closure)[0].cell_contents, code))
