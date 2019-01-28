@@ -54,8 +54,9 @@ def check_mod_pytransform():
                     'pyarmor_init', 'pythonapi', 'restype', 'set_option',
                     'str', 'struct', 'sys', 'system', 'version_info'])
 
+    colist = []
+
     code = '__code__' if sys.version_info[0] == 3 else 'func_code'
-    colist = [getattr(pytransform.dllmethod, code).co_consts[1]]
     for name in ('dllmethod', 'init_pytransform', 'init_runtime',
                  '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
         colist.append(getattr(getattr(pytransform, name), code))
@@ -64,6 +65,7 @@ def check_mod_pytransform():
     for name in ('init_pytransform', 'init_runtime'):
         colist.append(getattr(getattr(getattr(pytransform, name),
                                       closure)[0].cell_contents, code))
+    colist.append(getattr(pytransform.dllmethod, code).co_consts[1])
 
     for co in colist:
         print('Check %s ...' % co.co_name)
