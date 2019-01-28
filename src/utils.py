@@ -205,9 +205,9 @@ def make_command(platform, python, pyarmor, output):
 
 def get_registration_code():
     try:
-        code = pytransform.get_registration_code()
+        code = pytransform.get_license_info()['CODE']
     except Exception:
-        code = ''
+        code = None
     return code
 
 if __name__ == '__main__':
