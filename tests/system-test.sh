@@ -46,7 +46,7 @@ echo "-------------------- Bootstrap ---------------------------------"
 echo ""
 
 csih_inform "Case 0.1: show help and import pytransform"
-$PYARMOR --help >result.log 2>&1 || csih_bug "Case 1.1 FAILED"
+$PYARMOR --help >result.log 2>&1 || csih_bug "Case 0.1 FAILED"
 
 csih_inform "Case 0.2: show version information"
 $PYARMOR --version >result.log 2>&1 || csih_bug "show version FAILED"
