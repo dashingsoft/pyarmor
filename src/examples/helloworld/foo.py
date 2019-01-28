@@ -48,11 +48,11 @@ def check_mod_pytransform():
                     '_pytransform', 'abspath', 'basename', 'byteorder',
                     'c_char_p', 'c_int', 'c_void_p', 'calcsize', 'cdll',
                     'dirname', 'encode', 'exists', 'exit',
-                    'format_platname', 'init_pytransform', 'init_runtime',
-                    'int', 'isinstance', 'join', 'lower', 'normpath', 'os',
-                    'path', 'platform', 'print', 'pyarmor_init',
-                    'pythonapi', 'restype', 'set_option', 'str', 'struct',
-                    'sys', 'system', 'version_info'])
+                    'format_platname', 'get_error_msg', 'init_pytransform',
+                    'init_runtime', 'int', 'isinstance', 'join', 'lower',
+                    'normpath', 'os', 'path', 'platform', 'print',
+                    'pyarmor_init', 'pythonapi', 'restype', 'set_option',
+                    'str', 'struct', 'sys', 'system', 'version_info'])
     code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
 

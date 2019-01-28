@@ -112,11 +112,11 @@ need to inserted into the script. Here is sample code::
                             '_pytransform', 'abspath', 'basename', 'byteorder',
                             'c_char_p', 'c_int', 'c_void_p', 'calcsize', 'cdll',
                             'dirname', 'encode', 'exists', 'exit',
-                            'format_platname', 'init_pytransform', 'init_runtime',
-                            'int', 'isinstance', 'join', 'lower', 'normpath', 'os',
-                            'path', 'platform', 'print', 'pyarmor_init',
-                            'pythonapi', 'restype', 'set_option', 'str', 'struct',
-                            'sys', 'system', 'version_info')
+                            'format_platname', 'get_error_msg', 'init_pytransform',
+                            'init_runtime', 'int', 'isinstance', 'join', 'lower',
+                            'normpath', 'os', 'path', 'platform', 'print',
+                            'pyarmor_init', 'pythonapi', 'restype', 'set_option',
+                            'str', 'struct', 'sys', 'system', 'version_info')
 
     def check_lib_pytransform(filename):
         with open(filename, 'rb') as f:
