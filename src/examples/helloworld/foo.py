@@ -11,8 +11,8 @@ import pytransform
 from hashlib import md5
 
 MD5SUM_LIB_PYTRANSFORM = {
-    'windows32': '156bccd049eb42afe3ae8e1249b4eede',
-    'windows64': '897444c97d291dd572d0ff5063bca1f6',
+    'windows32': '0f0f533b2b3568bef4ffbad22d93cec2',
+    'windows64': 'fe454a42cd146bfea7f4c833d863e5fe',
     'linux32': '3f194b707001f4132ae144946cc0a914',
     'linux32/arm': '727f9a40ba5ccc72ccc9a530caa35214',
     'linux64': '74aa1e1ee07961f2c42ae8d9af9f7b64',
