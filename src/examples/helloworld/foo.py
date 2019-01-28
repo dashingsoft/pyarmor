@@ -121,7 +121,8 @@ def show_left_days_of_license():
        if left_days == -1:
            print('This license for %s is never expired' % rcode)
        else:
-           print('This license %s will be expired in %d days' % (rcode, left_days))
+           print('This license for %s will be expired in %d days' % \
+                 (rcode, left_days))
    except Exception as e:
        print(e)
        sys.exit(1)
