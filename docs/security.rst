@@ -104,27 +104,19 @@ need to inserted into the script. Here is sample code::
     from hashlib import md5
 
     MD5SUM_LIB_PYTRANSFORM = 'ca202268bbd76ffe7df10c9ef1edcb6c'
-
     CO_SELF_SIZES = 46, 36
-    CO_DECORATOR_SIZES = 135, 122, 89, 86, 60
-    CO_DLLMETHOD_SIZES = 22, 19, 16
-    CO_LOAD_LIBRARY_SIZES = 662, 648, 646, 634, 628, 456
-    CO_PYARMOR_INIT_SIZES = 58, 56, 40
-    CO_PYARMOR_RUNTIME_SIZES = 146, 144, 138, 127, 121, 108
-    CO_INIT_PYTRANSFORM_SIZES = 83, 80, 58
-    CO_INIT_RUNTIME_SIZES = 74, 52
-
     CO_SELF_NAMES = ('pytransform', 'pyarmor_runtime', '__pyarmor__', '__name__', '__file__')
-    CO_DECORATOR_NAMES = ('isinstance', 'str', 'encode', 'int', '_get_error_msg', 'PytransformError')
-    CO_DLLMETHOD_NAMES = ()
-    CO_LOAD_LIBRARY_NAMES = ('None', 'os', 'path', 'dirname', '__file__', 'normpath', 'platform', 'system',
-                             'lower', 'abspath', 'join', 'PytransformError', 'exists', 'struct', 'calcsize',
-                             'encode', 'format_platname', 'basename', 'cdll', 'LoadLibrary', 'Exception', 'set_option',
-                             'sys', 'byteorder', 'c_char_p', '_debug_mode')
-    CO_PYARMOR_INIT_NAMES = ('_pytransform', 'None', '_load_library', 'get_error_msg', '_get_error_msg', 'c_char_p', 'restype', 'init_pytransform')
-    CO_PYARMOR_RUNTIME_NAMES = ('_pytransform', 'None', 'PytransformError', 'pyarmor_init', 'init_runtime', 'print', 'sys', 'exit')
-    CO_INIT_PYTRANSFORM_NAMES = ('sys', 'version_info', 'PYFUNCTYPE', 'c_int', 'c_void_p', '_pytransform', 'pythonapi', '_handle')
-    CO_INIT_RUNTIME_NAMES = ('pyarmor_init', 'PYFUNCTYPE', 'c_int', '_pytransform')
+    CO_PYTRANSFORM_NAMES = ('Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
+                            'PytransformError', '__file__', '_debug_mode',
+                            '_get_error_msg', '_handle', '_load_library',
+                            '_pytransform', 'abspath', 'basename', 'byteorder',
+                            'c_char_p', 'c_int', 'c_void_p', 'calcsize', 'cdll',
+                            'dirname', 'encode', 'exists', 'exit',
+                            'format_platname', 'init_pytransform', 'init_runtime',
+                            'int', 'isinstance', 'join', 'lower', 'normpath', 'os',
+                            'path', 'platform', 'print', 'pyarmor_init',
+                            'pythonapi', 'restype', 'set_option', 'str', 'struct',
+                            'sys', 'system', 'version_info')
 
     def check_lib_pytransform(filename):
         expected = MD5SUM_LIB_PYTRANSFORM
@@ -132,12 +124,9 @@ need to inserted into the script. Here is sample code::
             if not md5(f.read()).hexdigest() == expected:
                 sys.exit(1)
 
-    def check_code_object(f_code, sizes, names):
-        return set(f_code.co_names) <= set(names) and len(f_code.co_code) in sizes
-
     def check_obfuscated_script():
         co = sys._getframe(3).f_code
-        if not check_code_object(co, CO_SELF_SIZES, CO_SELF_NAMES):
+        if not (set(co.co_names) <= set(CO_SELF_NAMES) and len(f_code.co_code) in CO_SELF_SIZES):
             sys.exit(1)
 
     def check_mod_pytransform():
@@ -145,26 +134,18 @@ need to inserted into the script. Here is sample code::
         closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
 
         co = getattr(pytransform.dllmethod, code).co_consts[1]
-        if not check_code_object(co, CO_DECORATOR_SIZES, CO_DECORATOR_NAMES):
+        if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
             sys.exit(1)
 
-        for item in [
-                ('dllmethod', CO_DLLMETHOD_SIZES, CO_DLLMETHOD_NAMES),
-                ('init_pytransform', CO_DECORATOR_SIZES, CO_DECORATOR_NAMES),
-                ('init_runtime', CO_DECORATOR_SIZES, CO_DECORATOR_NAMES),
-                ('_load_library', CO_LOAD_LIBRARY_SIZES, CO_LOAD_LIBRARY_NAMES),
-                ('pyarmor_init', CO_PYARMOR_INIT_SIZES, CO_PYARMOR_INIT_NAMES),
-                ('pyarmor_runtime', CO_PYARMOR_RUNTIME_SIZES, CO_PYARMOR_RUNTIME_NAMES)]:
-            co = getattr(getattr(pytransform, item[0]), code)
-            if not check_code_object(co, item[1], item[2]):
+        for name in ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
+            co = getattr(getattr(pytransform, name), code)
+            if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
                 sys.exit(1)
 
-        for item in [
-                ('init_pytransform', CO_INIT_PYTRANSFORM_SIZES, CO_INIT_PYTRANSFORM_NAMES),
-                ('init_runtime', CO_INIT_RUNTIME_SIZES, CO_INIT_RUNTIME_NAMES)]:
+        for item in ('init_pytransform', 'init_runtime'):
             co_closures = getattr(getattr(pytransform, item[0]), closure)
             co = getattr(co_closures[0].cell_contents, code)
-            if not check_code_object(co, item[1], item[2]):
+            if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
                 sys.exit(1)
 
     def protect_pytransform():
