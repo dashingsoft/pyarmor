@@ -1,3 +1,7 @@
+5.0.5
+-----
+* Refine `protect_pytransform` to improve security, refer to https://pyarmor.readthedocs.io/en/latest/security.html
+
 5.0.4
 -----
 * Fix `get_expired_days` issue, remove decorator `dllmethod`
