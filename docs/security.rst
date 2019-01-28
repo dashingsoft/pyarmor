@@ -133,19 +133,17 @@ need to inserted into the script. Here is sample code::
         code = '__code__' if sys.version_info[0] == 3 else 'func_code'
         closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
 
-        co = getattr(pytransform.dllmethod, code).co_consts[1]
-        if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
-            sys.exit(1)
+        colist = [getattr(pytransform.dllmethod, code).co_consts[1]]
 
         for name in ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
-            co = getattr(getattr(pytransform, name), code)
-            if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
-                sys.exit(1)
+            colist.append(getattr(getattr(pytransform, name), code))
 
-        for item in ('init_pytransform', 'init_runtime'):
-            co_closures = getattr(getattr(pytransform, item[0]), closure)
-            co = getattr(co_closures[0].cell_contents, code)
-            if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
+        for name in ('init_pytransform', 'init_runtime'):
+            colist.append(getattr(getattr(getattr(pytransform, name),
+                                          closure)[0].cell_contents, code))
+
+       for co in colist:
+           if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
                 sys.exit(1)
 
     def protect_pytransform():
@@ -153,7 +151,7 @@ need to inserted into the script. Here is sample code::
             # Be sure obfuscated script is not changed
             check_obfuscated_script()
 
-            # Be sure 'pytransform.py' is not changed
+            # Be sure '_pytransform._name' in 'pytransform.py' is not changed
             check_mod_pytransform()
 
             # Be sure '_pytransform.so' is not changed
