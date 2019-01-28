@@ -182,4 +182,81 @@ After that, in the runtime of this python interpreter
         Py_RETURN_NONE;
     }
 
+.. _special handling of entry script:
+
+Special Handling of Entry Script
+================================
+
+Before obfuscating entry scipt, if there is line like this::
+
+    if __name__ == '__main__':
+
+PyArmor will patch this entry script, insert some code to protect
+dynamic library before this line::
+
+    def protect_pytransform():
+    
+        import pytransform
+    
+        def check_obfuscated_script():
+            CO_SIZES = 46, 36
+            CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
+                            '__name__', '__file__'])
+            co = pytransform.sys._getframe(3).f_code
+            if not ((set(co.co_names) <= CO_NAMES)
+                    and (len(co.co_code) in CO_SIZES)):
+                raise RuntimeError('Unexpected obfuscated script')
+    
+        def check_mod_pytransform():
+            CO_NAMES = set(['Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
+                            'PytransformError', '__file__', '_debug_mode',
+                            '_get_error_msg', '_handle', '_load_library',
+                            '_pytransform', 'abspath', 'basename', 'byteorder',
+                            'c_char_p', 'c_int', 'c_void_p', 'calcsize', 'cdll',
+                            'dirname', 'encode', 'exists', 'exit',
+                            'format_platname', 'get_error_msg', 'init_pytransform',
+                            'init_runtime', 'int', 'isinstance', 'join', 'lower',
+                            'normpath', 'os', 'path', 'platform', 'print',
+                            'pyarmor_init', 'pythonapi', 'restype', 'set_option',
+                            'str', 'struct', 'sys', 'system', 'version_info'])
+    
+            colist = []
+    
+            for name in ('dllmethod', 'init_pytransform', 'init_runtime',
+                         '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
+                colist.append(getattr(pytransform, name).{code})
+    
+            for name in ('init_pytransform', 'init_runtime'):
+                colist.append(getattr(pytransform, name).{closure}[0].cell_contents.{code})
+            colist.append(pytransform.dllmethod.{code}.co_consts[1])
+    
+            for co in colist:
+                if not (set(co.co_names) < CO_NAMES):
+                    raise RuntimeError('Unexpected pytransform.py')
+    
+        def check_lib_pytransform(filename):
+            size = 0x{size:X}
+            n = size >> 2
+            with open(filename, 'rb') as f:
+                buf = f.read(size)
+            fmt = 'I' * n
+            checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
+            if not checksum == 0x{checksum:X}:
+                raise RuntimeError("Unexpected %s" % filename)
+        try:
+            check_obfuscated_script()
+            check_mod_pytransform()
+            check_lib_pytransform(pytransform._pytransform._name)
+        except Exception as e:
+            print("Protection Fault: %s" % e)
+            pytransform.sys.exit(1)
+    
+    protect_pytransform()
+    
+    if __name__ == '__main__':
+        ...
+
+After the entry script is obfuscated, the :ref:`Bootstrap Code` will
+be inserted at the beginning of the obfuscated script.
+
 .. include:: _common_definitions.txt

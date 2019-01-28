@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '5.0.5'
+version = '5.0.6'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
@@ -51,6 +51,8 @@ config_filename = '.pyarmor_config'
 capsule_filename = '.pyarmor_capsule.zip'
 
 license_filename = 'license.lic'
+
+protect_template = 'protect_code.pt'
 
 default_output_path = 'dist'
 

@@ -98,15 +98,24 @@ proected function is called, it will
 After repeat some times, the real code is called.
 
 In order to protect `_pytransform` in Python script, some extra code
-need to inserted into the script. Here is sample code::
+will be inserted into the entry script before the line `if __name__ ==
+'__main__'` when obfuscating scripts::
 
-    import pytransform
-    from hashlib import md5
+    def protect_pytransform():
 
-    MD5SUM_LIB_PYTRANSFORM = 'ca202268bbd76ffe7df10c9ef1edcb6c'
-    CO_SELF_SIZES = 46, 36
-    CO_SELF_NAMES = ('pytransform', 'pyarmor_runtime', '__pyarmor__', '__name__', '__file__')
-    CO_PYTRANSFORM_NAMES = ('Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
+        import pytransform
+
+        def check_obfuscated_script():
+            CO_SIZES = 46, 36
+            CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
+                            '__name__', '__file__'])
+            co = pytransform.sys._getframe(3).f_code
+            if not ((set(co.co_names) <= CO_NAMES)
+                    and (len(co.co_code) in CO_SIZES)):
+                raise RuntimeError('Unexpected obfuscated script')
+
+        def check_mod_pytransform():
+            CO_NAMES = set(['Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
                             'PytransformError', '__file__', '_debug_mode',
                             '_get_error_msg', '_handle', '_load_library',
                             '_pytransform', 'abspath', 'basename', 'byteorder',
@@ -116,52 +125,43 @@ need to inserted into the script. Here is sample code::
                             'init_runtime', 'int', 'isinstance', 'join', 'lower',
                             'normpath', 'os', 'path', 'platform', 'print',
                             'pyarmor_init', 'pythonapi', 'restype', 'set_option',
-                            'str', 'struct', 'sys', 'system', 'version_info')
+                            'str', 'struct', 'sys', 'system', 'version_info'])
 
-    def check_lib_pytransform(filename):
-        with open(filename, 'rb') as f:
-            if not md5(f.read()).hexdigest() == MD5SUM_LIB_PYTRANSFORM:
-                sys.exit(1)
+            colist = []
 
-    def check_obfuscated_script():
-        co = sys._getframe(3).f_code
-        if not (set(co.co_names) <= set(CO_SELF_NAMES) and len(co.co_code) in CO_SELF_SIZES):
-            sys.exit(1)
+            for name in ('dllmethod', 'init_pytransform', 'init_runtime',
+                         '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
+                colist.append(getattr(pytransform, name).{code})
 
-    def check_mod_pytransform():
-        colist = []
+            for name in ('init_pytransform', 'init_runtime'):
+                colist.append(getattr(pytransform, name).{closure}[0].cell_contents.{code})
+            colist.append(pytransform.dllmethod.{code}.co_consts[1])
 
-        code = '__code__' if sys.version_info[0] == 3 else 'func_code'
-        for name in ('dllmethod', 'init_pytransform', 'init_runtime',
-                     '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
-            colist.append(getattr(getattr(pytransform, name), code))
+            for co in colist:
+                if not (set(co.co_names) < CO_NAMES):
+                    raise RuntimeError('Unexpected pytransform.py')
 
-        colist.append(getattr(pytransform.dllmethod, code).co_consts[1])
-
-        closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
-        for name in ('init_pytransform', 'init_runtime'):
-            colist.append(getattr(getattr(getattr(pytransform, name), closure)[0].cell_contents, code))
-
-       for co in colist:
-           if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
-                sys.exit(1)
-
-    def protect_pytransform():
+        def check_lib_pytransform(filename):
+            size = 0x{size:X}
+            n = size >> 2
+            with open(filename, 'rb') as f:
+                buf = f.read(size)
+            fmt = 'I' * n
+            checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
+            if not checksum == 0x{checksum:X}:
+                raise RuntimeError("Unexpected %s" % filename)
         try:
-            # Be sure obfuscated script is not changed
             check_obfuscated_script()
-
-            # Be sure '_pytransform._name' in 'pytransform.py' is not changed
             check_mod_pytransform()
-
-            # Be sure '_pytransform.so' is not changed
             check_lib_pytransform(pytransform._pytransform._name)
         except Exception as e:
-            print(e)
-            sys.exit(1)
+            print("Protection Fault: %s" % e)
+            pytransform.sys.exit(1)
+
+    protect_pytransform()
 
     if __name__ == '__main__':
-        protect_pytransform()
+        ...
 
 If you want to hide the code more thoroughly, try to use any other
 tool such as ASProtect_, VMProtect_ to protect dynamic library

@@ -48,7 +48,7 @@ from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code, \
-                  check_capsule, pytransform_bootstrap
+                  check_capsule, pytransform_bootstrap, patch_entry_script
 
 import packer
 
@@ -216,8 +216,22 @@ def _build(args):
         src = project.src
         soutput = os.path.join(output, os.path.basename(src)) \
                   if project.get('is_package') else output
-        filepairs = [(os.path.join(src, x), os.path.join(soutput, x))
-                     for x in files]
+
+        tempfiles = []
+        filepairs = []
+        entry = os.path.abspath(project.entry) if project.entry else None
+        for x in files:
+            a, b = os.path.join(src, x), os.path.join(soutput, x)
+            if entry and (os.path.abspath(a) == entry):
+                logging.info('Patch entry script %s ...', entry)
+                patched_filename = patch_entry_script(a)
+                if patched_filename:
+                    a = patched_filename
+                    logging.info('Save patched entry script to %s', a)
+                    tempfiles.append(a)
+                else:
+                    logging.info('Change entry script nothing')
+            filepairs.append((a, b))
 
         logging.info('%s increment build',
                      'Disable' if args.force else 'Enable')
@@ -228,6 +242,10 @@ def _build(args):
         logging.info('Save obfuscated scripts to %s', soutput)
 
         obfuscate_scripts(filepairs, mode, capsule, soutput)
+
+        for x in tempfiles:
+            logging.info('Remove patched entry file %s', x)
+            os.remove(x)
 
         # for x in targets:
         #     output = os.path.join(project.output, x)
@@ -428,8 +446,21 @@ def _obfuscate(args):
         files = Project.build_manifest(pats, path)
     else:
         files = Project.build_globfiles(['*.py'], path)
-    filepairs = [(os.path.join(path, x), os.path.join(output, x))
-                 for x in files]
+
+    tempfiles = []
+    filepairs = []
+    for x in files:
+        a, b = os.path.join(path, x), os.path.join(output, x)
+        if os.path.abspath(a) == os.path.abspath(entry):
+            logging.info('Patch entry script %s ...', entry)
+            patched_filename = patch_entry_script(a)
+            if patched_filename:
+                a = patched_filename
+                logging.info('Save patched entry script to %s', a)
+                tempfiles.append(a)
+            else:
+                logging.info('Change entry script nothing')
+        filepairs.append((a, b))
 
     if args.restrict:
         logging.info('Restrict mode is eanbled')
@@ -445,6 +476,10 @@ def _obfuscate(args):
     for a, b in filepairs:
         logging.info('\t%s -> %s', a, b)
     obfuscate_scripts(filepairs, mode, capsule, output)
+
+    for x in tempfiles:
+        logging.info('Remove patched entry file %s', x)
+        os.remove(x)
 
     logging.info('Make runtime files')
     make_runtime(capsule, output)

@@ -32,7 +32,8 @@ from time import gmtime, strftime
 from zipfile import ZipFile
 
 import pytransform
-from config import plat_name, dll_ext, dll_name, entry_lines
+from config import plat_name, dll_ext, dll_name, entry_lines, \
+                   protect_template
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
@@ -100,6 +101,8 @@ def _make_entry(filename, rpath=None):
     # Fix empty file issue
     n = 0
     for n in range(len(lines)):
+        if lines[n].strip() == '' or lines[n].find('__future__') > 0:
+            continue
         if not lines[n][0] == '#':
             break
     for line in lines[n:]:
@@ -209,6 +212,46 @@ def get_registration_code():
     except Exception:
         code = None
     return code
+
+def make_protect_pytransform(filename=None):
+    if filename is None:
+        filename = pytransform._pytransform._name
+    size = os.path.getsize(filename) & 0xFFFFFFF0
+    n = size >> 2
+    with open(filename, 'rb') as f:
+        buf = f.read(size)
+    fmt = 'I' * n
+    checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
+
+    with open(os.path.join(PYARMOR_PATH, protect_template)) as f:
+        buf = f.read()
+
+    code= '__code__' if sys.version_info[0] == 3 else 'func_code'
+    closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
+    return buf.format(size=size, checksum=checksum, code=code, closure=closure)
+
+def patch_entry_script(filename, libname=None):
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    n = 0
+    for n in range(len(lines)):
+        if lines[n].startswith('def protect_pytransform():'):
+            return
+        if lines[n].startswith("if __name__ == '__main__':"):
+            break
+        if lines[n].startswith('if __name__ == "__main__":'):
+            break
+    else:
+        return
+    patched_filename = os.path.join(tempfile.gettempdir(),
+                                    os.path.basename(filename))
+    patched_lines = make_protect_pytransform(libname)
+    with open(patched_filename, 'w') as f:
+        f.write(''.join(lines[:n]))
+        f.write(patched_lines)
+        f.write('\n')
+        f.write(''.join(lines[n:]))
+    return patched_filename
 
 if __name__ == '__main__':
     make_entry(sys.argv[1])
