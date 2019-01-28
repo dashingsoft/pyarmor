@@ -119,9 +119,8 @@ need to inserted into the script. Here is sample code::
                             'sys', 'system', 'version_info')
 
     def check_lib_pytransform(filename):
-        expected = MD5SUM_LIB_PYTRANSFORM
         with open(filename, 'rb') as f:
-            if not md5(f.read()).hexdigest() == expected:
+            if not md5(f.read()).hexdigest() == MD5SUM_LIB_PYTRANSFORM:
                 sys.exit(1)
 
     def check_obfuscated_script():
@@ -139,8 +138,7 @@ need to inserted into the script. Here is sample code::
             colist.append(getattr(getattr(pytransform, name), code))
 
         for name in ('init_pytransform', 'init_runtime'):
-            colist.append(getattr(getattr(getattr(pytransform, name),
-                                          closure)[0].cell_contents, code))
+            colist.append(getattr(getattr(getattr(pytransform, name), closure)[0].cell_contents, code))
 
        for co in colist:
            if not (set(co.co_names) < set(CO_PYTRANSFORM_NAMES)):
