@@ -1,3 +1,8 @@
+5.1.0
+-----
+* Add extra code to protect dynamic library `_pytransform` when obfuscating entry script
+* Fix compling error when obfuscating scripts in windows for Python 26/30/31 (newline issue)
+
 5.0.5
 -----
 * Refine `protect_pytransform` to improve security, refer to https://pyarmor.readthedocs.io/en/latest/security.html
