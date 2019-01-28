@@ -217,21 +217,16 @@ def _load_library(path=None, is_runtime=0):
 
     # Removed from v4.6.1
     # if plat == 'linux':
-    #     m.set_option('libc'.encode(), find_library('c').encode())
-
-    # Required from Python3.6
-    m.set_option('byteorder'.encode(), sys.byteorder.encode())
-
-    m.set_option('enable_trace_log'.encode(), c_char_p(_debug_mode))
-    m.set_option('enable_trial_license'.encode(), c_char_p(not is_runtime))
-
-    # # Deprecated from v3.4
-    # m.set_option('enable_encrypt_generator'.encode(), c_char_p(1))
-    # # Deprecated from v3.4
-    # m.set_option('disable_obfmode_encrypt'.encode(), c_char_p(1))
+    #     m.set_option(-1, find_library('c').encode())
 
     if not os.path.abspath('.') == os.path.abspath(path):
-        m.set_option('pyshield_path'.encode(), path.encode())
+        m.set_option(1, path.encode())
+
+    # Required from Python3.6
+    m.set_option(2, sys.byteorder.encode())
+    m.set_option(3, c_char_p(_debug_mode))
+    m.set_option(4, c_char_p(not is_runtime))
+
     return m
 
 def pyarmor_init(path=None, is_runtime=0):
