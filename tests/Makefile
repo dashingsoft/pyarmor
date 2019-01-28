@@ -71,7 +71,7 @@ WORKPATH = __runtime__
 .PHONY: test unit trial build
 
 
-test: 
+test:
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
             $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash integration-test.sh || exit 1; \
@@ -91,6 +91,14 @@ ftest:
 	for pyver in  $(VERSIONS) ; do \
             echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
             $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash function-test.sh || exit 1; \
+            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+	done
+	make clean
+
+atest:
+	for pyver in  $(VERSIONS) ; do \
+            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash accept-test.sh || exit 1; \
             echo -e "\n******************** Test Python$${pyver} End.\n" ; \
 	done
 	make clean
