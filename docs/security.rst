@@ -125,7 +125,7 @@ need to inserted into the script. Here is sample code::
 
     def check_obfuscated_script():
         co = sys._getframe(3).f_code
-        if not (set(co.co_names) <= set(CO_SELF_NAMES) and len(f_code.co_code) in CO_SELF_SIZES):
+        if not (set(co.co_names) <= set(CO_SELF_NAMES) and len(co.co_code) in CO_SELF_SIZES):
             sys.exit(1)
 
     def check_mod_pytransform():

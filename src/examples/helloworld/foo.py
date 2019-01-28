@@ -36,7 +36,7 @@ def check_obfuscated_script():
     print('Check obfuscated script %s ...' % __file__)
     co = sys._getframe(3).f_code
     if not ((set(co.co_names) <= CO_NAMES)
-            and (len(f_code.co_code) in CO_SIZES)):
+            and (len(co.co_code) in CO_SIZES)):
         print('Obfuscated script has been changed by others')
         sys.exit(1)
     print('Check OK.')
@@ -53,7 +53,7 @@ def check_mod_pytransform():
                     'path', 'platform', 'print', 'pyarmor_init',
                     'pythonapi', 'restype', 'set_option', 'str', 'struct',
                     'sys', 'system', 'version_info'])
-   code = '__code__' if sys.version_info[0] == 3 else 'func_code'
+    code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
 
     colist = [getattr(pytransform.dllmethod, code).co_consts[1]]
@@ -145,7 +145,8 @@ def main():
 if __name__ == '__main__':
 
     protect_pytransform()
-    check_expired_date_by_ntp()
     show_left_days_of_license()
+
+    # check_expired_date_by_ntp()
 
     main()
