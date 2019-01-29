@@ -27,7 +27,7 @@ class PytransformError(Exception):
 
 def dllmethod(func):
     def wrap(*args, **kwargs):
-        args = [(s.encode() if isinstance(s, str) else s) for s in args]
+        # args = [(s.encode() if isinstance(s, str) else s) for s in args]
         result = func(*args, **kwargs)
         if isinstance(result, int) and result != 0:
             errmsg = _get_error_msg()
@@ -63,20 +63,20 @@ def import_module(modname, filename):
     '''Only for old version, before PyArmor 3'''
     prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
     _import_module = prototype(('import_module', _pytransform))
-    return _import_module(modname, filename)
+    return _import_module(modname.enode(), filename.encode())
 
 @dllmethod
 def exec_file(filename):
     '''Only for old version, before PyArmor 3'''
     prototype = PYFUNCTYPE(c_int, c_char_p)
     _exec_file = prototype(('exec_file', _pytransform))
-    return _exec_file(filename)
+    return _exec_file(filename.encode())
 
 @dllmethod
 def encrypt_project_files(proname, filelist, mode=0):
     prototype = PYFUNCTYPE(c_int, c_char_p, py_object, c_int)
     dlfunc = prototype(('encrypt_project_files', _pytransform))
-    return dlfunc(proname, filelist, mode)
+    return dlfunc(proname.encode(), filelist, mode)
 
 @dllmethod
 def encrypt_files(key, filelist, mode=0):
@@ -106,31 +106,25 @@ def _generate_project_capsule():
 def _encode_capsule_key_file(licfile):
     prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
     dlfunc = prototype(('encode_capsule_key_file', _pytransform))
-    return dlfunc(licfile, None)
+    return dlfunc(licfile.encode(), None)
 
 @dllmethod
 def generate_module_key(pubname, key):
     t_key = c_char * 32
     prototype = PYFUNCTYPE(py_object, c_char_p, t_key, c_char_p)
     dlfunc = prototype(('generate_module_key', _pytransform))
-    return dlfunc(pubname, t_key(*key), None)
+    return dlfunc(pubname.encode(), t_key(*key), None)
 
 @dllmethod
 def generate_license_file(filename, priname, rcode, start=-1, count=1):
     prototype = PYFUNCTYPE(c_int, c_char_p, c_char_p, c_char_p, c_int, c_int)
     dlfunc = prototype(('generate_project_license_files', _pytransform))
-    return dlfunc(filename, priname, rcode, start, count)
+    return dlfunc(filename.encode(), priname.encode(), rcode, start, count)
 
 @dllmethod
 def get_registration_code():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_registration_code', _pytransform))
-    return dlfunc()
-
-@dllmethod
-def _get_hd_info(hdtype, buf, size):
-    prototype = PYFUNCTYPE(c_int, c_int, c_char_p, c_int)
-    dlfunc = prototype(('get_hd_info', _pytransform))
     return dlfunc()
 
 def get_expired_days():
