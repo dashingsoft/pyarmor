@@ -244,8 +244,8 @@ def _build(args):
 
         entry = os.path.abspath(project.entry) if project.entry else None
         for x in files:
-            logging.info('\t%s ...', x)
             a, b = os.path.join(src, x), os.path.join(soutput, x)
+            logging.info('\t%s -> %s', x, b)
             protection = entry and (os.path.abspath(a) == os.path.abspath(entry))
 
             d = os.path.dirname(b)
@@ -254,7 +254,6 @@ def _build(args):
 
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
                            wrap_mode=wrap_mode, protection=protection)
-            logging.info('\t-> %s', b)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
@@ -456,8 +455,8 @@ def _obfuscate(args):
 
     logging.info('Obfuscate scripts with default mode')
     for x in files:
-        logging.info('Obfuscating script %s ...', x)
         a, b = os.path.join(path, x), os.path.join(output, x)
+        logging.info('\t%s -> %s', x, b)
         protection = entry and (os.path.abspath(a) == os.path.abspath(entry))
 
         d = os.path.dirname(b)
@@ -465,7 +464,7 @@ def _obfuscate(args):
             os.makedirs(d)
 
         encrypt_script(prokey, a, b, protection=protection)
-        logging.info('Save obfuscated script to %s', b)
+    logging.info('%d scripts have been obfuscated', len(files))
 
     if args.restrict:
         logging.info('Restrict mode is eanbled')
