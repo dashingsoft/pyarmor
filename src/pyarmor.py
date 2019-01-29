@@ -427,7 +427,7 @@ def _obfuscate(args):
     if args.src is None and args.entry is None and not args.scripts:
         raise RuntimeError('No entry script')
 
-    entry = args.entry or args.scripts[0]
+    entry = args.entry or (args.scripts and args.scripts[0])
     path = os.path.abspath(os.path.dirname(entry) if args.src is None
                            else args.src)
     logging.info('Obfuscate scripts in path "%s"', path)
@@ -459,7 +459,7 @@ def _obfuscate(args):
     for x in files:
         logging.info('Obfuscating script %s ...', x)
         a, b = os.path.join(path, x), os.path.join(output, x)
-        protection = os.path.abspath(a) == os.path.abspath(entry)
+        protection = entry and (os.path.abspath(a) == os.path.abspath(entry))
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
@@ -485,7 +485,8 @@ def _obfuscate(args):
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
-    make_entry(os.path.basename(entry), path, output)
+    if entry:
+        make_entry(os.path.basename(entry), path, output)
     for script in args.scripts[1:]:
         make_entry(os.path.basename(script), path, output)
 
