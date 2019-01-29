@@ -183,7 +183,7 @@ def make_project_license(capsule, code, output):
     myzip.extract('private.key', tempfile.gettempdir())
     prikey = os.path.join(tempfile.tempdir, 'private.key')
     try:
-        pytransform.generate_license_file(output, prikey, code.encode())
+        pytransform.generate_license_file(output, prikey, code)
     finally:
         os.remove(prikey)
 

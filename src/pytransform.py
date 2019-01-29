@@ -71,7 +71,8 @@ def _generate_project_capsule():
 def generate_license_file(filename, priname, rcode, start=-1, count=1):
     prototype = PYFUNCTYPE(c_int, c_char_p, c_char_p, c_char_p, c_int, c_int)
     dlfunc = prototype(('generate_project_license_files', _pytransform))
-    return dlfunc(filename.encode(), priname.encode(), rcode, start, count)
+    return dlfunc(filename.encode(), priname.encode(), rcode.encode(),
+                  start, count)
 
 @dllmethod
 def get_registration_code():
