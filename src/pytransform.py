@@ -248,7 +248,7 @@ def import_module(modname, filename):
     '''Only for old version, before PyArmor 3'''
     prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
     _import_module = prototype(('import_module', _pytransform))
-    return _import_module(modname.enode(), filename.encode())
+    return _import_module(modname.encode(), filename.encode())
 
 @dllmethod
 def exec_file(filename):
