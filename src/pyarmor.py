@@ -48,7 +48,7 @@ from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code, \
-                  check_capsule, pytransform_bootstrap, patch_entry_script
+                  check_capsule, pytransform_bootstrap, encrypt_script, patch_entry_script
 
 import packer
 
@@ -447,20 +447,33 @@ def _obfuscate(args):
     else:
         files = Project.build_globfiles(['*.py'], path)
 
-    tempfiles = []
-    filepairs = []
+    logging.info('Save obfuscated scripts to "%s"', output)
+    if not os.path.exists(output):
+        os.makedirs(output)
+
+    logging.info('Read public key from capsule')
+    keyfile = os.path.join(output, 'product.key')
+    ZipFile(capsule).extract('product.key', path=output)
+    with open(keyfile, 'rb') as f:
+        prokey = f.read()
+    os.remove(keyfile)
+
+    obf_code = 1
+    obf_mod = 1
+    wrap_mode = 1
+    mode = obf_code | obf_mod << 8 | wrap_mode << 16
+    logging.info('Obfuscate scripts with mode %x', mode)
     for x in files:
+        logging.info('Obfuscating script %s ...', a)
         a, b = os.path.join(path, x), os.path.join(output, x)
-        if os.path.abspath(a) == os.path.abspath(entry):
-            logging.info('Patch entry script %s ...', entry)
-            patched_filename = patch_entry_script(a)
-            if patched_filename:
-                a = patched_filename
-                logging.info('Save patched entry script to %s', a)
-                tempfiles.append(a)
-            else:
-                logging.info('Change entry script nothing')
-        filepairs.append((a, b))
+        is_entry = os.path.abspath(a) == os.path.abspath(entry)
+
+        d = os.path.dirname(b)
+        if not os.path.exists(d):
+            os.makedirs(d)
+
+        encrypt_script(prokey, a, b, mode, is_entry)
+        logging.info('Save obfuscated script to %s', b)
 
     if args.restrict:
         logging.info('Restrict mode is eanbled')
@@ -471,16 +484,6 @@ def _obfuscate(args):
         mode = Project.map_obfuscate_mode(
             default_obf_module_mode, 'wrap')
 
-    logging.info('Obfuscate scripts with mode %s', mode)
-    logging.info('Save obfuscated scripts to "%s"', output)
-    for a, b in filepairs:
-        logging.info('\t%s -> %s', a, b)
-    obfuscate_scripts(filepairs, mode, capsule, output)
-
-    for x in tempfiles:
-        logging.info('Remove patched entry file %s', x)
-        os.remove(x)
-
     logging.info('Make runtime files')
     make_runtime(capsule, output)
     if not args.restrict:
@@ -489,9 +492,9 @@ def _obfuscate(args):
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
-    make_entry(os.path.basename(entry), path, output)
-    for script in args.scripts[1:]:
-        make_entry(os.path.basename(script), path, output)
+    # make_entry(os.path.basename(entry), path, output)
+    # for script in args.scripts[1:]:
+    #     make_entry(os.path.basename(script), path, output)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 

@@ -253,5 +253,47 @@ def patch_entry_script(filename, libname=None):
         f.write(''.join(lines[n:]))
     return patched_filename
 
+def _frozen_modname(filename, filename2):
+    names = os.path.normpath(filename).split(os.sep)
+    names2 = os.path.normpath(filename2).split(os.sep)
+    k = -1
+    while True:
+        if names[k] != names2[k]:
+            break
+        k -= 1
+    if names[-1] == '__init__.py':
+        dotnames = names[k:-1]
+    else:
+        names[-1] = names[-1][:-3]
+        dotnames = names[k+1:]
+    return "<frozen %s>" % '.'.join(dotnames)
+
+def encrypt_script(pubkey, filename, destname, flags, is_entry=0):
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    if is_entry:
+        n = 0
+        for line in lines:
+            if line.startswith('def protect_pytransform():'):
+                break
+            elif (line.startswith("if __name__ == '__main__':")
+                  or line.startswith('if __name__ == "__main__":'):
+                logging.info('Patch script with protection code')
+                lines[n:n] = make_protect_pytransform()
+                break
+            n += 1
+
+    modname = _frozen_modname(filename, destname)
+    co = compile('\n'.join(lines), modname, 'exec')
+
+    s = pytransform.encrypt_code_object(pubkey, co, flags)
+
+    with open(destname, 'w') as f:
+        if is_entry:
+            pkg = os.path.basename(filename) == '__init__.py'
+            f.write(entry_lines[0] % ('.' if pkg else ''))
+            f.write(entry_lines[1] % '')
+        f.write(s)
+
 if __name__ == '__main__':
     make_entry(sys.argv[1])
