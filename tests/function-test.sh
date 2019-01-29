@@ -66,7 +66,7 @@ echo ""
 
 # ======================================================================
 #
-#  Command: init, config, licenses
+#  Command: init, config, licenses, obfuscate
 #
 # ======================================================================
 
@@ -154,6 +154,22 @@ check_return_value
 (cd dist-recursive; $PYTHON queens.py >result.log 2>&1 )
 check_return_value
 check_file_content dist-recursive/result.log 'Found 92 solutions'
+
+csih_inform "C-7. Test no entry script for obfuscate"
+$PYARMOR obfuscate --src=examples/simple -O test-no-entry >result.log 2>&1
+check_return_value
+check_file_exists test-no-entry/queens.py
+
+csih_inform "C-8. Test 'gbk' codec for obfuscate"
+mkdir -p test-codec
+cp $datapath/gbk.py test-codec
+$PYARMOR obfuscate -O dist-codec test-codec/gbk.py >result.log 2>&1
+check_return_value
+check_file_exists dist-codec/gbk.py
+
+(cd dist-codec; $PYTHON gbk.py >result.log 2>&1 )
+check_return_value
+check_file_content dist-codec/result.log 'PyArmor'
 
 echo ""
 echo "-------------------- Command End -----------------------------"
