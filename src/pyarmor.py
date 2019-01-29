@@ -218,46 +218,44 @@ def _build(args):
         soutput = os.path.join(output, os.path.basename(src)) \
                   if project.get('is_package') else output
 
-        tempfiles = []
-        filepairs = []
-        entry = os.path.abspath(project.entry) if project.entry else None
-        for x in files:
-            a, b = os.path.join(src, x), os.path.join(soutput, x)
-            if entry and (os.path.abspath(a) == entry):
-                logging.info('Patch entry script %s ...', entry)
-                patched_filename = patch_entry_script(a)
-                if patched_filename:
-                    a = patched_filename
-                    logging.info('Save patched entry script to %s', a)
-                    tempfiles.append(a)
-                else:
-                    logging.info('Change entry script nothing')
-            filepairs.append((a, b))
+        logging.info('Save obfuscated scripts to "%s"', soutput)
+        if not os.path.exists(soutput):
+            os.makedirs(soutput)
+
+        logging.info('Read public key from capsule')
+        prokey = get_product_key(capsule)
 
         logging.info('%s increment build',
                      'Disable' if args.force else 'Enable')
         logging.info('Search scripts from %s', src)
-        logging.info('Obfuscate %d scripts with mode %s', len(files), mode)
+
+        logging.info('Obfuscate %d scripts with mode:', len(files))
+        if project.obf_code_mode == 'wrap':
+            wrap_mode = 1
+            obf_code = 1
+        else:
+            wrap_mode = 0
+            obf_code = 0 if project.obf_code_mode == 'none' else 1
+        obf_mod = project.obf_module_mode == 'des'
+        v = lambda i : 'on' if i else 'off'
+        logging.info('\tObfuscating the whole module is %s' % v(obf_mod )
+        logging.info('\tObfuscating each function is %s' % v(obf_code) )
+        logging.info('\tAuto wrap each code oject is %s' % v(wrap_mode))
+
+        entry = os.path.abspath(project.entry) if project.entry else None
         for x in files:
-            logging.info('\t%s', x)
-        logging.info('Save obfuscated scripts to %s', soutput)
+            logging.info('Obfuscating script %s ...', x)
+            a, b = os.path.join(src, x), os.path.join(soutput, x)
+            protection = entry and (os.path.abspath(a) == os.path.abspath(entry))
 
-        obfuscate_scripts(filepairs, mode, capsule, soutput)
+            d = os.path.dirname(b)
+            if not os.path.exists(d):
+                os.makedirs(d)
 
-        for x in tempfiles:
-            logging.info('Remove patched entry file %s', x)
-            os.remove(x)
+            encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
+                           wrap_mode=wrap_mode, protection=protection)
+            logging.info('Save obfuscated script to %s', b)
 
-        # for x in targets:
-        #     output = os.path.join(project.output, x)
-        #     pairs = [(os.path.join(src, x), os.path.join(output, x))
-        #              for x in files]
-        #     for src, dst in pairs:
-        #         try:
-        #             shutil.copy2(src, dst)
-        #         except Exception:
-        #             os.makedirs(os.path.dirname(dst))
-        #             shutil.copy2(src, dst)
         project['build_time'] = time.time()
         project.save(args.project)
 

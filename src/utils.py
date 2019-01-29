@@ -262,7 +262,7 @@ def _frozen_modname(filename, filename2):
             break
         k -= 1
     if names[-1] == '__init__.py':
-        dotnames = names[k:-1]
+        dotnames = names[k if k == -2 else k + 1:-1]
     else:
         names[-1] = names[-1][:-3]
         dotnames = names[k+1:]
