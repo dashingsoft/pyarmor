@@ -161,6 +161,10 @@ check_return_value
 check_file_exists test-no-entry/queens.py
 
 csih_inform "C-8. Test 'gbk' codec for obfuscate"
+
+if [[ "$PYTHON" == C:/Python30/python || "$PYTHON" == *python3.0 ]] ; then
+csih_inform "This testcase is ignored in Python 3.0"
+else
 mkdir -p test-codec
 cp $datapath/gbk.py test-codec
 $PYARMOR obfuscate -O dist-codec test-codec/gbk.py >result.log 2>&1
@@ -170,6 +174,7 @@ check_file_exists dist-codec/gbk.py
 (cd dist-codec; $PYTHON gbk.py >result.log 2>&1 )
 check_return_value
 check_file_content dist-codec/result.log 'PyArmor'
+fi
 
 echo ""
 echo "-------------------- Command End -----------------------------"
