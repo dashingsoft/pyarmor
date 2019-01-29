@@ -1,3 +1,11 @@
+5.1.1
+-----
+* Refine the procedure of encrypt script
+* Reform module `pytransform.py`
+* Merge runtime files `pyshield.key`, `pyshield.lic` and `product.key` into `pytransform.py`
+* Fix if no entry script, it will raise exception when obfuscating scripts
+* Fix issue: 'gbk' codec can't decode byte 0xa1 in position 28 (#51)
+
 5.1.0
 -----
 * Add extra code to protect dynamic library `_pytransform` when obfuscating entry script
