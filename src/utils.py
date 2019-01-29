@@ -183,7 +183,7 @@ def make_project_license(capsule, code, output):
     myzip.extract('private.key', tempfile.gettempdir())
     prikey = os.path.join(tempfile.tempdir, 'private.key')
     try:
-        pytransform.generate_license_file(output, prikey, code)
+        pytransform.generate_license_file(output, prikey, code.encode())
     finally:
         os.remove(prikey)
 
@@ -277,15 +277,14 @@ def encrypt_script(pubkey, filename, destname, flags, is_entry=0):
             if line.startswith('def protect_pytransform():'):
                 break
             elif (line.startswith("if __name__ == '__main__':")
-                  or line.startswith('if __name__ == "__main__":'):
+                  or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch script with protection code')
                 lines[n:n] = make_protect_pytransform()
                 break
             n += 1
 
     modname = _frozen_modname(filename, destname)
-    co = compile('\n'.join(lines), modname, 'exec')
-
+    co = compile(''.join(lines), modname, 'exec')
     s = pytransform.encrypt_code_object(pubkey, co, flags)
 
     with open(destname, 'w') as f:
@@ -293,7 +292,17 @@ def encrypt_script(pubkey, filename, destname, flags, is_entry=0):
             pkg = os.path.basename(filename) == '__init__.py'
             f.write(entry_lines[0] % ('.' if pkg else ''))
             f.write(entry_lines[1] % '')
-        f.write(s)
+        f.write(s.decode())
+
+def get_product_key(capsule):
+    output = tempfile.gettempdir()
+    keyfile = os.path.join(output, 'product.key')
+    ZipFile(capsule).extract('product.key', path=output)
+    try:
+        with open(keyfile, 'rb') as f:
+            return f.read()
+    finally:
+        os.remove(keyfile)
 
 if __name__ == '__main__':
     make_entry(sys.argv[1])

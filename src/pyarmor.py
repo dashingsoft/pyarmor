@@ -48,7 +48,8 @@ from project import Project
 from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code, \
-                  check_capsule, pytransform_bootstrap, encrypt_script, patch_entry_script
+                  check_capsule, pytransform_bootstrap, encrypt_script, \
+                  get_product_key, patch_entry_script
 
 import packer
 
@@ -429,7 +430,7 @@ def _obfuscate(args):
     entry = args.entry or args.scripts[0]
     path = os.path.abspath(os.path.dirname(entry) if args.src is None
                            else args.src)
-    logging.info('Obfuscate scripts in path "%s" ...', path)
+    logging.info('Obfuscate scripts in path "%s"', path)
 
     capsule = args.capsule if args.capsule else DEFAULT_CAPSULE
     if os.path.exists(capsule) and check_capsule(capsule):
@@ -452,11 +453,7 @@ def _obfuscate(args):
         os.makedirs(output)
 
     logging.info('Read public key from capsule')
-    keyfile = os.path.join(output, 'product.key')
-    ZipFile(capsule).extract('product.key', path=output)
-    with open(keyfile, 'rb') as f:
-        prokey = f.read()
-    os.remove(keyfile)
+    prokey = get_product_key(capsule)
 
     obf_code = 1
     obf_mod = 1
@@ -464,7 +461,7 @@ def _obfuscate(args):
     mode = obf_code | obf_mod << 8 | wrap_mode << 16
     logging.info('Obfuscate scripts with mode %x', mode)
     for x in files:
-        logging.info('Obfuscating script %s ...', a)
+        logging.info('Obfuscating script %s ...', x)
         a, b = os.path.join(path, x), os.path.join(output, x)
         is_entry = os.path.abspath(a) == os.path.abspath(entry)
 
