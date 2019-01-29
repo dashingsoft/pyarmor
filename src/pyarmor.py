@@ -797,7 +797,7 @@ def main_entry():
     except Exception as e:
         if sys.flags.debug:
             raise
-        print(e)
+        logging.error('%s', e)
         sys.exit(1)
 
 if __name__ == '__main__':
