@@ -51,41 +51,6 @@ def init_runtime():
     return _init_runtime(0, 0, 0, 0)
 
 @dllmethod
-def old_init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
-    '''Only for old version, before PyArmor 3'''
-    pyarmor_init(is_runtime=1)
-    prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
-    _init_runtime = prototype(('init_runtime', _pytransform))
-    return _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
-
-@dllmethod
-def import_module(modname, filename):
-    '''Only for old version, before PyArmor 3'''
-    prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
-    _import_module = prototype(('import_module', _pytransform))
-    return _import_module(modname.enode(), filename.encode())
-
-@dllmethod
-def exec_file(filename):
-    '''Only for old version, before PyArmor 3'''
-    prototype = PYFUNCTYPE(c_int, c_char_p)
-    _exec_file = prototype(('exec_file', _pytransform))
-    return _exec_file(filename.encode())
-
-@dllmethod
-def encrypt_project_files(proname, filelist, mode=0):
-    prototype = PYFUNCTYPE(c_int, c_char_p, py_object, c_int)
-    dlfunc = prototype(('encrypt_project_files', _pytransform))
-    return dlfunc(proname.encode(), filelist, mode)
-
-@dllmethod
-def encrypt_files(key, filelist, mode=0):
-    t_key = c_char * 32
-    prototype = PYFUNCTYPE(c_int, t_key, py_object, c_int)
-    dlfunc = prototype(('encrypt_files', _pytransform))
-    return dlfunc(t_key(*key), filelist, mode)
-
-@dllmethod
 def encrypt_code_object(pubkey, co, flags):
     prototype = PYFUNCTYPE(py_object, py_object, py_object, c_int)
     dlfunc = prototype(('encrypt_code_object', _pytransform))
@@ -101,19 +66,6 @@ def _generate_project_capsule():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('generate_project_capsule', _pytransform))
     return dlfunc()
-
-@dllmethod
-def _encode_capsule_key_file(licfile):
-    prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
-    dlfunc = prototype(('encode_capsule_key_file', _pytransform))
-    return dlfunc(licfile.encode(), None)
-
-@dllmethod
-def generate_module_key(pubname, key):
-    t_key = c_char * 32
-    prototype = PYFUNCTYPE(py_object, c_char_p, t_key, c_char_p)
-    dlfunc = prototype(('generate_module_key', _pytransform))
-    return dlfunc(pubname.encode(), t_key(*key), None)
 
 @dllmethod
 def generate_license_file(filename, priname, rcode, start=-1, count=1):
@@ -250,3 +202,58 @@ def pyarmor_runtime(path=None):
     except PytransformError as e:
         print(e)
         sys.exit(1)
+
+#
+# Deprecated functions
+#
+@dllmethod
+def encrypt_project_files(proname, filelist, mode=0):
+    prototype = PYFUNCTYPE(c_int, c_char_p, py_object, c_int)
+    dlfunc = prototype(('encrypt_project_files', _pytransform))
+    return dlfunc(proname.encode(), filelist, mode)
+
+@dllmethod
+def _encode_capsule_key_file(licfile):
+    prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
+    dlfunc = prototype(('encode_capsule_key_file', _pytransform))
+    return dlfunc(licfile.encode(), None)
+
+@dllmethod
+def encrypt_files(key, filelist, mode=0):
+    t_key = c_char * 32
+    prototype = PYFUNCTYPE(c_int, t_key, py_object, c_int)
+    dlfunc = prototype(('encrypt_files', _pytransform))
+    return dlfunc(t_key(*key), filelist, mode)
+
+@dllmethod
+def generate_module_key(pubname, key):
+    t_key = c_char * 32
+    prototype = PYFUNCTYPE(py_object, c_char_p, t_key, c_char_p)
+    dlfunc = prototype(('generate_module_key', _pytransform))
+    return dlfunc(pubname.encode(), t_key(*key), None)
+
+#
+# Compatible for PyArmor v3.0
+#
+@dllmethod
+def old_init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
+    '''Only for old version, before PyArmor 3'''
+    pyarmor_init(is_runtime=1)
+    prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
+    _init_runtime = prototype(('init_runtime', _pytransform))
+    return _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
+
+@dllmethod
+def import_module(modname, filename):
+    '''Only for old version, before PyArmor 3'''
+    prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
+    _import_module = prototype(('import_module', _pytransform))
+    return _import_module(modname.enode(), filename.encode())
+
+@dllmethod
+def exec_file(filename):
+    '''Only for old version, before PyArmor 3'''
+    prototype = PYFUNCTYPE(c_int, c_char_p)
+    _exec_file = prototype(('exec_file', _pytransform))
+    return _exec_file(filename.encode())
+
