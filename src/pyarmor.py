@@ -238,9 +238,9 @@ def _build(args):
             obf_code = 0 if project.obf_code_mode == 'none' else 1
         obf_mod = project.obf_module_mode == 'des'
         v = lambda i : 'on' if i else 'off'
-        logging.info('\tObfuscating the whole module is %s' % v(obf_mod )
-        logging.info('\tObfuscating each function is %s' % v(obf_code) )
-        logging.info('\tAuto wrap each code oject is %s' % v(wrap_mode))
+        logging.info('\tObfuscating the whole module is %s', v(obf_mod))
+        logging.info('\tObfuscating each function is %s', v(obf_code))
+        logging.info('\tAutowrap each code object mode is %s', v(wrap_mode))
 
         entry = os.path.abspath(project.entry) if project.entry else None
         for x in files:
