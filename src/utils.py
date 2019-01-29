@@ -268,30 +268,29 @@ def _frozen_modname(filename, filename2):
         dotnames = names[k+1:]
     return "<frozen %s>" % '.'.join(dotnames)
 
-def encrypt_script(pubkey, filename, destname, flags, is_entry=0):
+def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
+                   obf_mod=1, protection=0):
     with open(filename, 'r') as f:
         lines = f.readlines()
-    if is_entry:
+    if protection:
         n = 0
         for line in lines:
             if line.startswith('def protect_pytransform():'):
                 break
             elif (line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
-                logging.info('Patch script with protection code')
+                logging.info('Patch this script with protection code')
                 lines[n:n] = make_protect_pytransform()
                 break
             n += 1
 
     modname = _frozen_modname(filename, destname)
     co = compile(''.join(lines), modname, 'exec')
+
+    flags = obf_code | obf_mod << 8 | wrap_mode << 16
     s = pytransform.encrypt_code_object(pubkey, co, flags)
 
     with open(destname, 'w') as f:
-        if is_entry:
-            pkg = os.path.basename(filename) == '__init__.py'
-            f.write(entry_lines[0] % ('.' if pkg else ''))
-            f.write(entry_lines[1] % '')
         f.write(s.decode())
 
 def get_product_key(capsule):

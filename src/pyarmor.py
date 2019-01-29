@@ -455,21 +455,17 @@ def _obfuscate(args):
     logging.info('Read public key from capsule')
     prokey = get_product_key(capsule)
 
-    obf_code = 1
-    obf_mod = 1
-    wrap_mode = 1
-    mode = obf_code | obf_mod << 8 | wrap_mode << 16
-    logging.info('Obfuscate scripts with mode %x', mode)
+    logging.info('Obfuscate scripts with default mode')
     for x in files:
         logging.info('Obfuscating script %s ...', x)
         a, b = os.path.join(path, x), os.path.join(output, x)
-        is_entry = os.path.abspath(a) == os.path.abspath(entry)
+        protection = os.path.abspath(a) == os.path.abspath(entry)
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
             os.makedirs(d)
 
-        encrypt_script(prokey, a, b, mode, is_entry)
+        encrypt_script(prokey, a, b, protection=protection)
         logging.info('Save obfuscated script to %s', b)
 
     if args.restrict:
@@ -489,9 +485,9 @@ def _obfuscate(args):
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
-    # make_entry(os.path.basename(entry), path, output)
-    # for script in args.scripts[1:]:
-    #     make_entry(os.path.basename(script), path, output)
+    make_entry(os.path.basename(entry), path, output)
+    for script in args.scripts[1:]:
+        make_entry(os.path.basename(script), path, output)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
