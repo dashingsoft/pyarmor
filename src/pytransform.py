@@ -56,16 +56,22 @@ def encrypt_code_object(pubkey, co, flags):
     dlfunc = prototype(('encrypt_code_object', _pytransform))
     return dlfunc(pubkey, co, flags)
 
-def generate_project_capsule(licfile):
+def generate_capsule(licfile):
     prikey, pubkey, prolic = _generate_project_capsule()
-    capkey = _encode_capsule_key_file(licfile)
-    return prikey, pubkey, capkey, prolic
+    capkey, newkey = _generate_pytransform_key(licfile, pubkey)
+    return prikey, pubkey, capkey, newkey, prolic
 
 @dllmethod
 def _generate_project_capsule():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('generate_project_capsule', _pytransform))
     return dlfunc()
+
+@dllmethod
+def _generate_pytransform_key(licfile, pubkey):
+    prototype = PYFUNCTYPE(py_object, c_char_p, py_object)
+    dlfunc = prototype(('generate_pytransform_key', _pytransform))
+    return dlfunc(licfile.encode(), pubkey)
 
 @dllmethod
 def generate_license_file(filename, priname, rcode, start=-1, count=1):
@@ -205,13 +211,18 @@ def pyarmor_runtime(path=None):
         sys.exit(1)
 
 #
-# Deprecated functions
+# Deprecated functions from v5.1
 #
 @dllmethod
 def encrypt_project_files(proname, filelist, mode=0):
     prototype = PYFUNCTYPE(c_int, c_char_p, py_object, c_int)
     dlfunc = prototype(('encrypt_project_files', _pytransform))
     return dlfunc(proname.encode(), filelist, mode)
+
+def generate_project_capsule(licfile):
+    prikey, pubkey, prolic = _generate_project_capsule()
+    capkey = _encode_capsule_key_file(licfile)
+    return prikey, pubkey, capkey, prolic
 
 @dllmethod
 def _encode_capsule_key_file(licfile):
