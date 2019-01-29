@@ -49,7 +49,7 @@ from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code, \
                   check_capsule, pytransform_bootstrap, encrypt_script, \
-                  get_product_key, patch_entry_script
+                  get_product_key
 
 import packer
 
