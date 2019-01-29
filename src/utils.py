@@ -65,7 +65,7 @@ def make_capsule(filename):
     licfile = os.path.join(path, 'license.lic')
 
     logging.info('Generating project key ...')
-    pri, pubx, capkey, lic = pytransform.generate_project_capsule(licfile)
+    pri, pubx, capkey, newkey, lic = pytransform.generate_capsule(licfile)
     logging.info('Generate project key OK.')
 
     logging.info('Writing capsule to %s ...', filename)
@@ -76,6 +76,7 @@ def make_capsule(filename):
         # myzip.write(os.path.join(path, 'pytransform.py'), 'pytransform.py')
         myzip.writestr('private.key', pri)
         myzip.writestr('product.key', pubx)
+        myzip.writestr('pytransform.key', newkey)
         myzip.writestr('license.lic', lic)
     finally:
         myzip.close()
@@ -154,9 +155,12 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
 
 def make_runtime(capsule, output, licfile=None, platform=None):
     myzip = ZipFile(capsule, 'r')
-    myzip.extract('pyshield.key', output)
-    myzip.extract('pyshield.lic', output)
-    myzip.extract('product.key', output)
+    if 'pytransform.key' in myzip.namelist():
+        myzip.extract('pytransform.key', output)
+    else:
+        myzip.extract('pyshield.key', output)
+        myzip.extract('pyshield.lic', output)
+        myzip.extract('product.key', output)
 
     if licfile is None:
         myzip.extract('license.lic', output)
