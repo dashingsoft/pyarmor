@@ -274,10 +274,17 @@ def _frozen_modname(filename, filename2):
     return "<frozen %s>" % '.'.join(dotnames)
 
 def _guess_encoding(filename):
-    with open(filename, 'r') as f:
-        lines = f.readline(), f.readline()
-        m = re.search(r'coding[=:]\s*([-\w.]+)', ''.join(lines))
-        return m and m.group(1)
+    with open(filename, 'rb') as f:
+        line = f.read(80)
+        if line and line[0] == 35:
+            n = line.find(b'\n')
+            if n == -1:
+                n = 80
+            elif n < 60 and line[n+1] == 35:
+                k = line[n+1:].find(b'\n')
+                n += k + 1
+            m = re.search(r'coding[=:]\s*([-\w.]+)', line[:n].decode())
+            return m and m.group(1)
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, protection=0):
@@ -296,7 +303,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 break
             elif (line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
-                logging.info('Patch this script with protection code')
+                logging.info('Patch this entry script with protection code')
                 lines[n:n] = make_protect_pytransform()
                 break
             n += 1
