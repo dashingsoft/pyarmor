@@ -51,7 +51,7 @@ TARGET = _pytransform.dylib
 CMDPREFIX =
 PYCMD = pythonXY
 PYLIB = /usr/lib/pythonXY
-VERSIONS := 2.7 3.6
+VERSIONS := 2.7 3
 else
 TARGET = _pytransform.dll
 CMDPREFIX =

@@ -163,7 +163,7 @@ check_file_exists test-no-entry/queens.py
 csih_inform "C-8. Test 'gbk' codec for obfuscate"
 
 if [[ "$PYTHON" == C:/Python30/python || "$PYTHON" == *python3.0 ||
-      ( "$PLATFORMS" == "macosx_x86_64" && "$PYTHON" == *python2.7 ) ]] ; then
+      ( "$PLATFORM" == "macosx_x86_64" && "$PYTHON" == *python2.7 ) ]] ; then
 csih_inform "This testcase is ignored in Python 3.0, and Python2 in MacOS"
 else
 mkdir -p test-codec
