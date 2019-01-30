@@ -273,17 +273,21 @@ def _frozen_modname(filename, filename2):
         dotnames = names[k+1:]
     return "<frozen %s>" % '.'.join(dotnames)
 
+def _guess_encoding(filename):
+    with open(filename, 'r') as f:
+        lines = f.readline(), f.readline()
+        m = re.search(r'coding[=:]\s*([-\w.]+)', ''.join(lines))
+        return m and m.group(1)
+
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, protection=0):
-    with open(filename, 'r') as f:
-        lines = f.readlines()
-
-    m = re.search(r'coding[=:]\s*([-\w.]+)', ''.join(lines[:2]))
-    if m:
-        encoding = m.group(0)
-        if encoding == sys.getdefaultencoding():
-            n = 2 if lines[0].find(encoding) == -1 else 1
-            lines = ''.join(lines[n:]).encode().decode(encoding).splitlines()
+    if sys.version_info[0] == 2:
+        with open(filename, 'r') as f:
+            lines = f.readlines()
+    else:
+        encoding = _guess_encoding(filename)
+        with open(filename, 'r', encoding=encoding) as f:
+            lines = f.readlines()
 
     if protection:
         n = 0
