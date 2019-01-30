@@ -125,8 +125,10 @@ setup script to build the bundle.
 
 @logaction
 def copy_runtime_files(runtimes, output):
-    for s in 'pyshield.key', 'pyshield.lic', 'product.key', 'license.lic':
-        shutil.copy(os.path.join(runtimes, s), output)
+    for s in glob(os.path.join(runtimes, '*.key')):
+        shutil.copy(s, output)
+    for s in glob(os.path.join(runtimes, '*.lic')):
+        shutil.copy(s, output)
     for dllname in glob(os.path.join(runtimes, '_pytransform.*')):
         shutil.copy(dllname, output)
 

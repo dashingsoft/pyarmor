@@ -53,7 +53,7 @@ check_return_value
 
 ( cd examples/py2exe/dist; ./hello.exe >result.log 2>&1 )
 
-check_file_exists examples/py2exe/dist/pyshield.lic
+check_file_exists examples/py2exe/dist/license.lic
 check_file_content examples/py2exe/dist/result.log 'Found 92 solutions'
 
 echo -e "\n-------------------- py2exe End ------------------------------\n"
@@ -73,7 +73,7 @@ check_return_value
 dist=examples/cx_Freeze/build/exe.win32-3.4
 ( cd $dist; ./hello.exe  >result.log 2>&1 )
 
-check_file_exists $dist/pyshield.lic
+check_file_exists $dist/license.lic
 check_file_content $dist/result.log 'Found 92 solutions'
 
 echo -e "\n-------------------- cx_Freeze End ---------------------------\n"
