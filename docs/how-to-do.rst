@@ -7,12 +7,9 @@ are the files list in the output path :file:`dist`::
 
     foo.py
 
-    pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-
-    pyshield.key
-    pyshield.lic
-    product.key
+    pytransform.py
+    pytransform.key
     license.lic
 
 :file:`dist/foo.py` is obfuscated script, the content is::
@@ -256,7 +253,7 @@ dynamic library before this line::
     if __name__ == '__main__':
         ...
 
-After the entry script is obfuscated, the :ref:`Bootstrap Code` will
-be inserted at the beginning of the obfuscated script.
+Besides, after the entry script is obfuscated, the :ref:`Bootstrap
+Code` will be inserted at the beginning of the obfuscated script.
 
 .. include:: _common_definitions.txt

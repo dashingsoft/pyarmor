@@ -31,7 +31,7 @@ Cross Protection for `_pytransform`
 The core functions of |PyArmor| are written by `c` in the dynamic
 library `_pytransform`. `_pytransform` protects itself by JIT
 technical, and the obfuscated scripts is protected by `_pytransform`.
-on the other hand, the dynamic library `_pytransform` is checked in
+On the other hand, the dynamic library `_pytransform` is checked in
 the obfuscated script to be sure it's not changed. This is called
 Cross Protection.
 
@@ -46,7 +46,7 @@ two tasks:
 
 How JIT works?
 
-First the instruction set based on GNU lightning are defined
+First PyArmor defines an instruction set based on GNU lightning.
 
 Then write some core functions by this instruction set in c file, maybe like this::
 
@@ -77,8 +77,33 @@ Then write some core functions by this instruction set in c file, maybe like thi
 Build `_pytransform.so`, calculate the codesum of code segment of
 `_pytransform.so`
 
-Replace some instruction with real codesum got before, and obfuscate
-all the instructions except "function 1" in c file
+Replace the related instructions with real codesum got before, and
+obfuscate all the instructions except "function 1" in c file. The
+updated file maybe likes this::
+
+    t_instruction protect_set_key_iv = {
+        // plain function 1
+        0x80001,
+        0x50020,
+        ...
+
+        // obfuscated function 2
+        0xXXXXX,
+        0xXXXXX,
+        ...
+    }
+
+    t_instruction protect_decrypt_buffer = {
+        // plain function 1
+        0x80021,
+        0x52029,
+        ...
+
+        // obfuscated function 2
+        0xXXXXX,
+        0xXXXXX,
+        ...
+    }
 
 Finally build `_pytransform.so` with this changed c file.
 
@@ -95,16 +120,20 @@ proected function is called, it will
 3. Generate code from `function 2`
 4. Run `function 2`, do same thing as `function 1`
 
-After repeat some times, the real code is called.
+After repeat some times, the real code is called. All of that is to be
+sure there is no breakpoint in protection code.
 
 In order to protect `_pytransform` in Python script, some extra code
-will be inserted into the entry script before the line `if __name__ ==
-'__main__'` when obfuscating scripts::
+will be inserted into the entry script before the line ``if __name__
+== '__main__'`` when obfuscating scripts::
 
     def protect_pytransform():
 
         import pytransform
 
+        #
+        # Be sure the obfuscated script self is not hacked
+        #
         def check_obfuscated_script():
             CO_SIZES = 46, 36
             CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
@@ -114,6 +143,9 @@ will be inserted into the entry script before the line `if __name__ ==
                     and (len(co.co_code) in CO_SIZES)):
                 raise RuntimeError('Unexpected obfuscated script')
 
+        #
+        # Be sure pytransform._pytransform._name isn't hacked here
+        #
         def check_mod_pytransform():
             CO_NAMES = set(['Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
                             'PytransformError', '__file__', '_debug_mode',
@@ -141,6 +173,9 @@ will be inserted into the entry script before the line `if __name__ ==
                 if not (set(co.co_names) < CO_NAMES):
                     raise RuntimeError('Unexpected pytransform.py')
 
+        #
+        # Be sure dynamic library file isn't hacked
+        #
         def check_lib_pytransform(filename):
             size = 0x{size:X}
             n = size >> 2
@@ -150,6 +185,7 @@ will be inserted into the entry script before the line `if __name__ ==
             checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
             if not checksum == 0x{checksum:X}:
                 raise RuntimeError("Unexpected %s" % filename)
+
         try:
             check_obfuscated_script()
             check_mod_pytransform()

@@ -30,14 +30,12 @@ distribute to your users::
 
     myscript.py
 
-    pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    pyshield.key
-    pyshield.lic
-    product.key
+    pytransform.py
+    pytransform.key
     license.lic
 
-The last 6 files called ``Runtime Files``, all of them are required to
+The rest files called ``Runtime Files``, all of them are required to
 run the obfuscated script.
 
 Normally you name one script on the command line. It's entry
@@ -71,8 +69,7 @@ Distributing Obfuscated Scripts
 Except the obfuscated scripts, all the :ref:`runtime files` need to be
 distributed to the end user.
 
-Note that the dynamic library `_pytransfrom` is plain, in order to
-protect it, refer to :ref:`Protect Dynamic Library _pytransform`
+About the security of obfuscated scripts, refer to :ref:`The Security of PyArmor`
 
 Generating License For Obfuscated Scripts
 -----------------------------------------

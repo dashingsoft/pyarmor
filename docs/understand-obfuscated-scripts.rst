@@ -22,11 +22,9 @@ you find all the files you distribute to your users::
     myscript.py
     mymodule.py
 
-    pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    pyshield.key
-    pyshield.lic
-    product.key
+    pytransform.py
+    pytransform.key
     license.lic
 
 The obfuscated scripts are normal Python scripts.
@@ -62,7 +60,8 @@ Except obfuscated scripts, all the other files are called `Runtime Files`:
 
 * `pytransform.py`, a normal python module
 * `_pytransform.so`, or `_pytransform.dll`, or `_pytransform.dylib` a dynamic library implements core functions
-* `pyshield.key`, `pyshield.lic`, `product.key`, `license.lic`, data files
+* `pytransform.key`, data file
+* `license.lic`, the license file for obfuscated scripts
 
 All of them are required to run obfuscated scripts.
 

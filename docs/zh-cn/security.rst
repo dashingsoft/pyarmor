@@ -116,48 +116,85 @@ PyArmor 定义了一套自己的指令系统（基于 GNU lightning)，然后把
 3. 读取 `functiion 2` 的数据代码，动态生成 `function 2`
 4. 重复步骤 2 的操作
 
-这样循环有限次之后，真正受保护的代码才被执行。
+这样循环有限次之后，真正受保护的代码才被执行。总之，主要达到的目的是开
+始执行受保护的代码的时候，不能被调试器中断。
 
-为了在 Python 端保护动态库没有被进行任何修改，需要在 Python 脚本中额外
-增加一些代码。下面是一个示例
+为了在 Python 端保护动态库没有被进行任何修改，在加密主脚本的时候，会在
+``if __name__ == '__main__':`` 前面插入一段代码
 
 .. code-block:: python
 
-    import pytransform
-    from hashlib import md5
-
-    MD5SUM_PYTRANSFORM_PY = '46995aee690c412c8e65da764b892562'
-    MD5SUM_PYTRANSFORM_SO = 'ca202268bbd76ffe7df10c9ef1edcb6c'
-
-    # Extra import to check expired date by NTP
-    from ntplib import NTPClient
-    from time import mktime, strptime
-
-    NTP_SERVER = 'europe.pool.ntp.org'
-    EXPIRED_DATE = '20190202'
-
-    def check_md5sum(filename, expected):
-        with open(filename, 'rb') as f:
-            if not md5(f.read()).hexdigest() == expected:
-                sys.exit(1)
-
     def protect_pytransform():
-        # Be sure obfuscated script is not changed
-        with open(__file__, 'r') as f:
-            lines = f.readlines()
-            if not ((len(lines[:4]) == 3) and
-                    (lines[0].strip() == 'from pytransform import pyarmor_runtime') and
-                    (lines[1].strip() == 'pyarmor_runtime()') and
-                    (lines[2].startswith('__pyarmor__'))):
-                sys.eixt(1)
 
-        # Be sure `pytransform.py` is not changed
-        check_md5sum(pytransform.__file__, MD5SUM_PYTRANSFORM_PY)
-        # Be sure `_pytransform.so` is not changed
-        check_md5sum(pytransform._pytransform._name, MD5SUM_PYTRANSFORM_SO)
+        import pytransform
+
+        #
+        # 检查加密脚本本身是否被其他人修改过
+        #
+        def check_obfuscated_script():
+            CO_SIZES = 46, 36
+            CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
+                            '__name__', '__file__'])
+            co = pytransform.sys._getframe(3).f_code
+            if not ((set(co.co_names) <= CO_NAMES)
+                    and (len(co.co_code) in CO_SIZES)):
+                raise RuntimeError('Unexpected obfuscated script')
+
+        #
+        # 确保 pytransform._pytransform._name 没有被人为修改过
+        #
+        def check_mod_pytransform():
+            CO_NAMES = set(['Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
+                            'PytransformError', '__file__', '_debug_mode',
+                            '_get_error_msg', '_handle', '_load_library',
+                            '_pytransform', 'abspath', 'basename', 'byteorder',
+                            'c_char_p', 'c_int', 'c_void_p', 'calcsize', 'cdll',
+                            'dirname', 'encode', 'exists', 'exit',
+                            'format_platname', 'get_error_msg', 'init_pytransform',
+                            'init_runtime', 'int', 'isinstance', 'join', 'lower',
+                            'normpath', 'os', 'path', 'platform', 'print',
+                            'pyarmor_init', 'pythonapi', 'restype', 'set_option',
+                            'str', 'struct', 'sys', 'system', 'version_info'])
+
+            colist = []
+
+            for name in ('dllmethod', 'init_pytransform', 'init_runtime',
+                         '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
+                colist.append(getattr(pytransform, name).{code})
+
+            for name in ('init_pytransform', 'init_runtime'):
+                colist.append(getattr(pytransform, name).{closure}[0].cell_contents.{code})
+            colist.append(pytransform.dllmethod.{code}.co_consts[1])
+
+            for co in colist:
+                if not (set(co.co_names) < CO_NAMES):
+                    raise RuntimeError('Unexpected pytransform.py')
+
+        #
+        # 确保动态库文件本身没有被任何人修改过
+        #
+        def check_lib_pytransform(filename):
+            size = 0x{size:X}
+            n = size >> 2
+            with open(filename, 'rb') as f:
+                buf = f.read(size)
+            fmt = 'I' * n
+            checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
+            if not checksum == 0x{checksum:X}:
+                raise RuntimeError("Unexpected %s" % filename)
+
+        try:
+            check_obfuscated_script()
+            check_mod_pytransform()
+            check_lib_pytransform(pytransform._pytransform._name)
+        except Exception as e:
+            print("Protection Fault: %s" % e)
+            pytransform.sys.exit(1)
+
+    protect_pytransform()
 
     if __name__ == '__main__':
-        protect_pytransform()
+        ...
 
 当然，你也可以使用第三方保护工具，例如 ASProtect_, VMProtect_ 等来保护动态库。
 

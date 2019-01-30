@@ -89,7 +89,7 @@ Copy all the files to final output::
 Copy runtime files required by obfuscated scripts to finial output::
 
   ( cd dist/obf;
-    cp pyshield.key pyshield.lic product.key license.lic _pytransform.dll ../dist/ )
+    cp *.key *.lic _pytransform.dll ../dist/ )
 
 Check obfuscated scripts work::
 
@@ -134,7 +134,7 @@ Copy all the files to final output::
 Copy runtime files required by obfuscated scripts to finial output::
 
   ( cd dist/obf;
-    cp pyshield.key pyshield.lic product.key license.lic _pytransform.dll ../dist/ )
+    cp *.key *.lic _pytransform.dll ../dist/ )
 
 Check obfuscated scripts work::
 

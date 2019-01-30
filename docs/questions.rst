@@ -119,4 +119,22 @@ Marshal loads failed when running xxx.py
 * The capsule used to generated license for obfuscated scripts is
   different from the capsule used to obfuscate the scripts.
 
+_pytransform can not be loaded twice
+------------------------------------
+
+When the function `pyarmor_runtime` is called twice, it will complaint
+`_pytransform can not be loaded twice`
+
+For example, if an obfuscated module includes the following lines::
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(....)
+    
+When importing this module from entry script, it will say this error.
+
+This limitation is introduced from v5.1, the function pyarmor_runtime
+will check wheter dynamic library is loaded, if it's loaded, raise
+exception.
+
 .. include:: _common_definitions.txt

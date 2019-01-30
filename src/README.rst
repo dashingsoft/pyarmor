@@ -15,12 +15,9 @@ are the files list in the output path ``dist``::
 
     foo.py
 
-    pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, or _pytransform.dylib in MacOS
-
-    pyshield.key
-    pyshield.lic
-    product.key
+    pytransform.py
+    pytransform.key
     license.lic
 
 ``dist/foo.py`` is obfuscated script, the content is::

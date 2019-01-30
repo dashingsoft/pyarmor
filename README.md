@@ -54,7 +54,7 @@ Start webui, open web page in browser for basic usage of PyArmor
 
     pyarmor-webui
 
-More usage, refer to [Examples](src/examples/README.md), [User Guide](src/user-guide.md)
+More usage, refer to [Examples](src/examples/README.md), [Documentation](https://pyarmor.readthedocs.io/en/latest/)
 
 ## License
 
@@ -67,7 +67,7 @@ A registration code is required to generate random project capsule.
 - Personal user: one registration code is enough.
 - Company user: one registration code is only used for one project/product.
 
-For details, refer to [About license.lic](src/user-guide.md#about-licenselic).
+For details, refer to [About License](https://pyarmor.readthedocs.io/en/latest/license.html).
 
 ### Purchase
 

@@ -66,7 +66,7 @@ Show left days of license
        if left_days == -1:
            print('This license for %s is never expired' % code)
        else:
-           print('This license %s will be expired in %d days' % (code, left_days))
+           print('This license for %s will be expired in %d days' % (code, left_days))
    except PytransformError as e:
        print(e)
 

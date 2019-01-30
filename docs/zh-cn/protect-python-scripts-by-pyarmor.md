@@ -15,12 +15,9 @@ PyArmor 是一个用于加密和保护 Python 源代码的小工具。它能够�
 ```
     foo.py
 
-    pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-
-    pyshield.key
-    pyshield.lic
-    product.key
+    pytransform.py
+    pytransform.key
     license.lic
 ```
 

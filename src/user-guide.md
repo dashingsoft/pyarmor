@@ -107,12 +107,9 @@ code must be called before to use any obfuscated scripts.
 
 And there are some extra files in the `dist`
 
-    pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-
-    pyshield.key
-    pyshield.lic
-    product.key
+    pytransform.py
+    pytransform.key
     license.lic
 
 All of them are required to run obfuscated scripts, called `runtime files`.
@@ -325,7 +322,7 @@ scripts. They're called **runtime files**
 
 ```
     pytransform.py, _pytransform.so or _pytransform.dll or _pytransform.dylib
-    pyshield.key, pyshield.lic, product.key, license.lic
+    pytransform.key, license.lic
 ```
 
 Generally all of the **runtime files** will be generated in the output
@@ -568,9 +565,9 @@ path of "pytransform.py".
 
 It's useful when obfuscated scripts are packed into a zip file, for
 example, use py2exe to package obfuscated scripts. Set runtime_path to
-an empty string, and copy runtime files, _pytransform.dll,
-pyshield.key, pyshield.lic, product.key, license.lic to same path of
-zip file, will solve this problem.
+an empty string, and copy runtime files, `_pytransform.dll`,
+`pytransform.key`, `license.lic` to same path of zip file, will solve
+this problem.
 
 ## Command Options
 
