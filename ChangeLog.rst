@@ -2,9 +2,25 @@
 -----
 * Refine the procedure of encrypt script
 * Reform module `pytransform.py`
-* Merge runtime files `pyshield.key`, `pyshield.lic` and `product.key` into `pytransform.py`
 * Fix if no entry script, it will raise exception when obfuscating scripts
 * Fix issue: 'gbk' codec can't decode byte 0xa1 in position 28 (#51)
+* Add option `--upgrade` for command `capsule`
+* Merge runtime files `pyshield.key`, `pyshield.lic` and `product.key` into `pytransform.key`
+
+Upgrade notes:
+
+The capsule in this version includes a new file `pytransform.key`
+which is a replacement for 3 old runtime files: `pyshield.key`,
+`pyshield.lic` and `product.key`.
+
+The old capsule which created in the earlier version still works, it
+stills use the old runtime files. But it's recommended to upgrade the
+old capsule to new version. Just run this command::
+
+    pyarmor capsule --upgrade
+
+Then obfuscating all the scripts again. All the license files
+generated for obfuscated scripts by old capsule still work.
 
 5.1.0
 -----

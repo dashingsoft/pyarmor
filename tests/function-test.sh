@@ -167,7 +167,7 @@ if [[ "$PYTHON" == C:/Python30/python || "$PYTHON" == *python3.0 ||
 csih_inform "This testcase is ignored in Python 3.0, and Python2 in MacOS"
 else
 mkdir -p test-codec
-cp $datapath/gbk.py test-codec
+cp test/data/gbk.py test-codec
 $PYARMOR obfuscate -O dist-codec test-codec/gbk.py >result.log 2>&1
 check_return_value
 check_file_exists dist-codec/gbk.py
@@ -176,6 +176,17 @@ check_file_exists dist-codec/gbk.py
 check_return_value
 check_file_content dist-codec/result.log 'PyArmor'
 fi
+
+csih_inform "C-9. Test --upgrade for capsule"
+mkdir -p test-upgrade
+cp test/data/project.zip test-upgrade/.pyarmor_capsule.zip
+
+$PYARMOR capsule --upgrade ./test-upgrade/ >result.log 2>&1
+check_return_value
+check_file_content result.log "Upgrade capsule OK"
+
+(cd test-upgrade; unzip .pyarmor_capsule.zip >result.log 2>&1)
+check_file_exists test-upgrade/pytransform.key
 
 echo ""
 echo "-------------------- Command End -----------------------------"

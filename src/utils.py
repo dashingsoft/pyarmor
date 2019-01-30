@@ -327,5 +327,28 @@ def get_product_key(capsule):
     finally:
         os.remove(keyfile)
 
+def upgrade_capsule(capsule):
+    myzip = ZipFile(capsule, 'r')
+    try:
+        if 'pytransform.key' in myzip.namelist():
+            logging.info('The capsule is latest, nothing to do')
+            return
+        logging.info('Read product key from old capsule')
+        pubkey = myzip.read('product.key')
+    finally:
+        myzip.close()
+
+    myzip = ZipFile(capsule, 'a')
+    try:
+        logging.info('Generate new key')
+        licfile = os.path.join(PYARMOR_PATH, 'license.lic')
+        _, newkey = pytransform._generate_pytransform_key(licfile, pubkey)
+        logging.info('Write new key pytransform.key to the capsule')
+        myzip.writestr('pytransform.key', newkey)
+    finally:
+        myzip.close()
+
+    logging.info('Upgrade capsule OK.')
+
 if __name__ == '__main__':
     make_entry(sys.argv[1])

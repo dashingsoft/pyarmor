@@ -49,7 +49,7 @@ from utils import make_capsule, obfuscate_scripts, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code, \
                   check_capsule, pytransform_bootstrap, encrypt_script, \
-                  get_product_key
+                  get_product_key, upgrade_capsule
 
 import packer
 
@@ -412,6 +412,13 @@ def _target(args):
 @armorcommand
 def _capsule(args):
     '''Make capsule separately'''
+    if args.upgrade:
+        capsule = os.path.join(args.path, capsule_filename) if args.path \
+            else DEFAULT_CAPSULE
+        logging.info('Preparing to upgrade the capsule %s ...', capsule)
+        upgrade_capsule(capsule)
+        return
+
     capsule = os.path.join(args.path, capsule_filename)
     logging.info('Generating capsule %s ...', capsule)
     if os.path.exists(capsule):
@@ -563,6 +570,8 @@ def main(args):
         epilog=_capsule.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Make capsule separately')
+    cparser.add_argument('--upgrade', action='store_true',
+                         help='Upgrade the capsule to latest version');
     cparser.add_argument('path', nargs='?', default='',
                          help='Path to save capsule, default is current path')
     cparser.set_defaults(func=_capsule)
