@@ -70,6 +70,8 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 * Remove runtime files `pyshield.key`, `pyshield.lic` and `product.key`, use `pytransform.py` instead
 * Refine `set_option`
+* Add new api `generate_pytransform_key`
+* Add new api `encrypt_code_object`
 
 ## 5.0.3
 
