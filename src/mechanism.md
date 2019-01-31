@@ -1,3 +1,5 @@
+# DEPRECATED from v5.0, see https://pyarmor.readthedocs.io/en/latest instead
+
 # How to Obfuscate Python Script by PyArmor
 
 From PyArmor 3.3, a new mode is introduced. By this way, no import

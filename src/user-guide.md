@@ -1,3 +1,5 @@
+# DEPRECATED from v5.0, see https://pyarmor.readthedocs.io/en/latest/ instead
+
 # User Guide For PyArmor v4
 
 This is the documentation for PyArmor 3.4 and later.
