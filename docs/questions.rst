@@ -16,7 +16,7 @@ In the following cases, obfuscated scripts will crash
 * Running obfuscated script by the debug version Python
 * Obfuscating scripts by Python 2.6 but running the obfuscated scripts by Python 2.7
 
-Could not load `_pytransform`
+Could not find `_pytransform`
 -----------------------------
 
 Generally, the dynamic library `_pytransform` is in the same path of
@@ -73,43 +73,16 @@ will not work for the obfuscated scripts before. If the old capsule is
 gone, one solution is to obfuscate these scripts by the new capsule
 again.
 
-Two types of `license.lic`
---------------------------
+NameError: name '__pyarmor__' is not defined
+--------------------------------------------
 
-In pyarmor, there are 2 types of `license.lic`
+No :ref:`Bootstrap Code` are executed before importing obfuscated
+scripts.
 
-* `license.lic` of |PyArmor|, which locates in the source path of
-  |PyArmor|. It's required to run `pyarmor`
-
-* `license.lic` of Obfuscated Scripts, which is generated as
-  obfuscating scripts or generating new licenses. It's required to run
-  obfuscated scripts.
-
-Each project has its own capsule `.pyarmor_capsule.zip` in project
-path. This capsule is generated when run command `pyarmor init` to
-create a project. And `license.lic` of |PyArmor| will be as an input
-file to make this capsule.
-
-When runing command `pyarmor build` or `pyarmor licenses`, it will
-generate a `license.lic` in project output path for obfuscated
-scripts. Here the project capsule `.pyarmor_capsule.zip` will be as
-input file to generate this `license.lic` of Obfuscated Scripts.
-
-So the relation between 2 `license.lic` is::
-
-    license.lic of PyArmor --> .pyarmor_capsule.zip --> license.lic of Obfuscated Scripts
-
-If the scripts are obfuscated by command `pyarmor obfuscate` other
-than by project, :ref:`Global Capsule` is used implicitly.
-
-Work with subprocess and multiprocessing
-----------------------------------------
-
-When creating new process by `Popen` or `Process`, note that
-:ref:`Bootstrap Code` must be called before importing any obfuscated
-code in sub-process. Otherwise it will report::
-
-    NameError: name '__pyarmor__' is not defined
+When creating new process by `Popen` or `Process` in mod `subprocess`
+or `multiprocessing`, to be sure that :ref:`Bootstrap Code` will be
+called before importing any obfuscated code in sub-process. Otherwise
+it will raise this exception.
 
 Marshal loads failed when running xxx.py
 ----------------------------------------
