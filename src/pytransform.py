@@ -3,7 +3,6 @@
 #
 from ctypes import cdll, c_char, c_char_p, c_int, c_void_p, \
                    pythonapi, py_object, PYFUNCTYPE
-from ctypes.util import find_library
 
 import os
 import sys
@@ -186,6 +185,7 @@ def _load_library(path=None, is_runtime=0):
 
     # Required from Python3.6
     m.set_option(2, sys.byteorder.encode())
+
     m.set_option(3, c_char_p(_debug_mode))
     m.set_option(4, c_char_p(not is_runtime))
 
@@ -268,4 +268,3 @@ def exec_file(filename):
     prototype = PYFUNCTYPE(c_int, c_char_p)
     _exec_file = prototype(('exec_file', _pytransform))
     return _exec_file(filename.encode())
-
