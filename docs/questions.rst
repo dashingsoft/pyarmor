@@ -114,10 +114,16 @@ code in sub-process. Otherwise it will report::
 Marshal loads failed when running xxx.py
 ----------------------------------------
 
-* The version Python to running scripts is different from the version
-  Python to obfuscated script
-* The capsule used to generated license for obfuscated scripts is
-  different from the capsule used to obfuscate the scripts.
+1. Check whether the version of Python to run obfuscated scripts is
+   same as the version of Python to obfuscate script
+
+2. Check whether the capsule is generated based on current license of
+   PyArmor. Try to move global capsule `~/.pyarmor_capsule.zip` to any
+   other path, then obfuscate scripts again.
+
+3. Be sure the capsule used to generated the license file is same as
+   the capsule used to obfuscate the scripts. The filename of the
+   capsule will be shown in the console when the command is running.
 
 _pytransform can not be loaded twice
 ------------------------------------
