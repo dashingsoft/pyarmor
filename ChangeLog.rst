@@ -1,3 +1,7 @@
+5.1.2
+-----
+* Improve the security of PyArmor self
+
 5.1.1
 -----
 * Refine the procedure of encrypt script

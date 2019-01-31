@@ -1,8 +1,8 @@
 # Downloads for PyArmor Prebuilt Dynamic Library #
 
-Latest version: **5.1.1**
+Latest version: **5.1.2**
 
-Build date: 2019-01-29
+Build date: 2019-01-31
 
 The core of PyArmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -65,6 +65,10 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
 
 ## Change Logs
+
+## 5.1.2
+
+* Improve security of PyArmor self
 
 ## 5.1.1
 
