@@ -127,12 +127,12 @@ Each project has a configure file. It's a json file named
     Available values: 0, 1, None
 
     When it's None or 0, obfuscated scripts can not be imported from
-    outer scripts. It's more quickly.
+    outer scripts.
 
     When it's set to 1, it the obfuscated scripts are allowed to be
-    imported by outer scripts. It's more security.
+    imported by outer scripts.
 
-    By default it's set to 1.
+    By default it's set to 0.
 
     Refer to :ref:`Restrict Mode`
 

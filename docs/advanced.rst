@@ -6,10 +6,10 @@ Advanced Topics
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 
-:ref:`Obfuscating Scripts With Different Modes`
-
 .. _obfuscating code mode:
 
+Obfuscating Code Mode
+~~~~~~~~~~~~~~~~~~~~~
 In a python module file, generally there are many functions, each
 function has its code object.
 
@@ -24,6 +24,8 @@ different ways depending on wrap mode.
 
 .. _wrap mode:
 
+Wrap Mode
+~~~~~~~~~
 * wrap_mode == 0
 
 When wrap mode is off, the code object of each function will be
@@ -105,6 +107,8 @@ And the final obfuscated scripts would be::
 
     __pyarmor__(__name__, __file__, b'\x02\x0a...', 0)
 
+Refer to :ref:`Obfuscating Scripts With Different Modes`
+
 .. _restrict mode:
 
 Restrict Mode
@@ -128,7 +132,7 @@ obfuscated scripts must be one of the following formats::
     __pyarmor__(__name__, __file__, b'...')
 
 And obfuscated script must be imported from obfuscated script. No any
-other statement can be inserted into obfuscated scripts. 
+other statement can be inserted into obfuscated scripts.
 
 For examples, it works::
 
