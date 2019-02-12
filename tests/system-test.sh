@@ -26,7 +26,7 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 
 # From pyarmor 4.5.4, platform name is renamed
 if [[ -d platforms/windows32 ]] ; then
-    csih_inform "Add execute permission to dynamic library"    
+    csih_inform "Add execute permission to dynamic library"
     chmod +x platforms/windows32/_pytransform.dll
     chmod +x platforms/windows64/_pytransform.dll
 fi
@@ -74,8 +74,8 @@ check_file_content dist/queens.py '__pyarmor__(__name__'
 ( cd dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions'
 
-csih_inform "Case 1.2: obfuscate script with --recursive and --restrict"
-$PYARMOR obfuscate --recursive --restrict --output dist2 \
+csih_inform "Case 1.2-1: obfuscate script with --recursive and --restrict=0"
+$PYARMOR obfuscate --recursive --restrict=0 --output dist2 \
                     examples/py2exe/hello.py >result.log 2>&1
 
 check_return_value
@@ -87,6 +87,20 @@ check_file_content dist2/queens.py '__pyarmor__(__name__'
 ( cd dist2; $PYTHON hello.py >result.log 2>&1 )
 check_return_value
 check_file_content dist2/result.log 'Found 92 solutions'
+
+csih_inform "Case 1.2-2: obfuscate script with --recursive and --restrict=1"
+$PYARMOR obfuscate --recursive --restrict=1 --output dist2-2 \
+                    examples/py2exe/hello.py >result.log 2>&1
+
+check_return_value
+check_file_exists dist2-2/hello.py
+check_file_content dist2-2/hello.py 'pyarmor_runtime()'
+check_file_exists dist2-2/queens.py
+check_file_content dist2-2/queens.py '__pyarmor__(__name__'
+
+( cd dist2-2; $PYTHON hello.py >result.log 2>&1 )
+check_return_value
+check_file_content dist2-2/result.log 'Found 92 solutions'
 
 csih_inform "Case 1.3: run obfuscate script with new license"
 $PYARMOR obfuscate --src examples/simple --entry queens.py \
@@ -123,22 +137,19 @@ $PYARMOR init --type=app --src examples/pybench --entry pybench.py \
               projects/pybench >result.log 2>&1
 
 check_file_exists projects/pybench/.pyarmor_config
-check_file_exists projects/pybench/.pyarmor_capsule.zip
 
 csih_inform "Case 2.1: init py2exe"
 $PYARMOR init --src examples/py2exe --entry "hello.py,setup.py" \
               projects/py2exe >result.log 2>&1
 
 check_file_exists projects/py2exe/.pyarmor_config
-check_file_exists projects/py2exe/.pyarmor_capsule.zip
 
-csih_inform "Case 2.2: init clone py2exe"
-$PYARMOR init --src examples/py2exe2 --clone projects/py2exe \
-              projects/py2exe-clone >result.log 2>&1
-
-check_return_value
-check_file_exists projects/py2exe-clone/.pyarmor_config
-check_file_exists projects/py2exe-clone/.pyarmor_capsule.zip
+# csih_inform "Case 2.2: init clone py2exe"
+# $PYARMOR init --src examples/py2exe2 --clone projects/py2exe \
+#               projects/py2exe-clone >result.log 2>&1
+#
+# check_return_value
+# check_file_exists projects/py2exe-clone/.pyarmor_config
 
 csih_inform "Case 2.3: init package"
 $PYARMOR init --src examples/testpkg/mypkg --entry "../main.py" \
@@ -383,18 +394,18 @@ echo "-------------------- Test Command benchmark --------------------"
 echo ""
 
 csih_inform "Case 9.1: run benchmark test"
-for obf_module_mode in none des ; do
-  csih_inform "obf_module_mode: $obf_module_mode"
-  for obf_code_mode in none des fast wrap ; do
-    csih_inform "obf_code_mode: $obf_code_mode"
-    logfile="result_${obf_module_mode}_${obf_code_mode}.log"
-    $PYARMOR benchmark --obf-module-mode $obf_module_mode \
-                       --obf-code-mode $obf_code_mode \
-                       >$logfile 2>&1
-    check_return_value
-    csih_inform "Write benchmark test results to $logfile"
-    check_file_content $logfile "run_ten_thousand_obfuscated_bytecode"
-    rm -rf .benchtest
+for obf_mod in 0 1 ; do
+  for obf_code in 0 1 ; do
+    for obf_wrap_mode in 0 1 ; do
+      csih_inform "obf_mod: $obf_mod, obf_code: $obf_code, wrap_mode: $obf_wrap_mode"
+      logfile="log_${obf_mod}_${obf_code}_${obf_wrap_mode}.log"
+      $PYARMOR benchmark --obf-mod ${obf_mod} --obf-code ${obf_code} \
+                         --wrap-mode ${obf_wrap_mode} >$logfile 2>&1
+      check_return_value
+      csih_inform "Write benchmark test results to $logfile"
+      check_file_content $logfile "run_ten_thousand_obfuscated_bytecode"
+      rm -rf .benchtest
+    done
   done
 done
 
@@ -432,7 +443,7 @@ csih_inform "Case T-1.2: obfuscate module with wraparmor"
 PROPATH=projects/testmod_wrap
 $PYARMOR init --src=examples/testmod --entry=hello.py $PROPATH >result.log 2>&1
 $PYARMOR config --manifest="include queens.py" --disable-restrict-mode=1 \
-              $PROPATH >result.log 2>&1
+              --wrap-mode=0 $PROPATH >result.log 2>&1
 (cd $PROPATH; $ARMOR build >result.log 2>&1)
 
 check_file_exists $PROPATH/dist/hello.py
