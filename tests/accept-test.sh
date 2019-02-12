@@ -49,7 +49,7 @@ check_return_value
 csih_inform "3. Run obfuscated foo.py"
 (cd dist; $PYTHON foo.py >result.log 2>&1)
 check_return_value
-check_file_content dist/result.log "This license for PyArmor-Project is never expired"
+check_file_content dist/result.log "is never expired"
 check_file_content dist/result.log "Hello world"
 check_file_content dist/result.log "1 + 1 = 2"
 
