@@ -6,6 +6,8 @@ Advanced Topics
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 
+:ref:`Obfuscating Scripts With Different Modes`
+
 .. _obfuscating code mode:
 
 In a python module file, generally there are many functions, each
@@ -108,40 +110,87 @@ And the final obfuscated scripts would be::
 Restrict Mode
 -------------
 
-**DEPRECATED: This concept will be removed soon, use :ref:`Wrap Mode` instead**
+From PyArmor 5.2, Restrict Mode is default setting. In restrict mode,
+obfuscated scripts must be one of the following formats::
 
-|PyArmor| can obfuscate the scripts in restrict mode.
+    __pyarmor__(__name__, __file__, b'...')
 
-If the script is obfuscated in restrict mode:
-
-* Each function (code object) will not be obfuscated again in runtime
-* Any other code can not be insert into the obfuscated scripts
-* The obfuscated module can not be imported from other clear python scripts
-
-For examples, obfuscate :file:`foo.py` in restrict mode::
-
-    pyarmor obfuscate --restrict foo.py
-
-Each function is obfuscated before it's called. Once it's executed, it
-will not be obfuscated again.
-
-And if adding ``print`` in the obfuscated script::
+    Or
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
     __pyarmor__(__name__, __file__, b'...')
-    print('Something')
 
-It will report error as running::
+    Or
 
-    python foo.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime('...')
+    __pyarmor__(__name__, __file__, b'...')
 
-In a short word, the obfuscated script in restrict mode runs quickly,
-but maybe less security.
+And obfuscated script must be imported from obfuscated script. No any
+other statement can be inserted into obfuscated scripts. 
 
-If the scripts is obfuscated in restrict mode, you should enable
-restrict mode either as generating new licenses for it::
+For examples, it works::
 
-    pyarmor licenses --restrict --expired 2019-01-01 mycode
+    $ cat a.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, __file__, b'...')
+
+    $ python a.py
+
+It doesn't work, because there is an extra code "print"::
+
+    $ cat b.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, __file__, b'...')
+    print(__name__)
+
+    $ python b.py
+
+It works, import obfuscated script "c.py" from obfuscated script
+"d.py"::
+
+    $ cat d.py
+    import c
+    c.hello()
+
+    # Then obfuscate d.py
+    $ cat d.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    __pyarmor__(__name__, __file__, b'...')
+
+
+    $ python d.py
+
+It doesn't work, because obfuscated script "c.py" can NOT be imported
+from no obfuscated scripts in restrict mode::
+
+    $ cat c.py
+    __pyarmor__(__name__, __file__, b'...')
+
+    $ cat main.py
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+    import c
+
+    $ python main.py
+
+So restrict mode can avoid obfuscated scripts observed from no
+obfuscated code.
+
+Sometimes restrict mode is not suitable, for example, a package used
+by other scripts. Other clear scripts can not import obfuscated
+package in restrict mode. So it need to disable restrict mode::
+
+    pyarmor obfuscate --restrict=0 foo.py
+
+Besides, if the scripts is obfuscated without restrict mode, you
+should disable restrict mode either when generating new licenses for
+it::
+
+    pyarmor licenses --restrict=0 --expired 2019-01-01 mycode
 
 .. include:: _common_definitions.txt

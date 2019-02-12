@@ -54,7 +54,7 @@ the capsule used to generate licenses.
 
 If obfuscate scripts by command `pyarmor obfuscate`, :ref:`Global
 Capsule` is used implicitly. If obfuscate scripts by command `pyarmor
-build`, the project capsule in the project path is used.
+build`, the project capsule is used.
 
 When generating new licenses for obfuscated scripts, if run command
 `pyarmor licenses` in project path, the project capsule is used
@@ -64,9 +64,6 @@ The :ref:`Global Capsule` will be changed if the trial license file of
 |PyArmor| is replaced with normal one, or it's deleted occasionally
 (which will be generated implicitly as running command `pyarmor
 obfuscate` next time).
-
-The project capsule is overwrited when running command `pyarmor init`
-in the project path created before.
 
 In any cases, generating new license file with the different capsule
 will not work for the obfuscated scripts before. If the old capsule is
@@ -109,11 +106,22 @@ For example, if an obfuscated module includes the following lines::
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
     __pyarmor__(....)
-    
-When importing this module from entry script, it will say this error.
 
-This limitation is introduced from v5.1, the function pyarmor_runtime
-will check wheter dynamic library is loaded, if it's loaded, raise
-exception.
+When importing this module from entry script, it will report this
+error. The first 2 lines should be in the entry script only, not in
+the other module.
+
+This limitation is introduced from v5.1, to disable this check, just
+edit `pytransform.py` and comment these lines in function
+`pyarmor_runtime`::
+
+    if _pytransform is not None:
+        raise PytransformError('_pytransform can not be loaded twice')
+
+Check restrict mode failed
+--------------------------
+
+Use obfuscated scripts in wrong way, for more information, refer to
+:ref:`Restrict Mode`
 
 .. include:: _common_definitions.txt
