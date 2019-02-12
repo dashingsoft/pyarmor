@@ -82,6 +82,8 @@ When this code object is called each time
 
 .. _obfuscating module mode:
 
+Obfuscating module Mode
+~~~~~~~~~~~~~~~~~~~~~~~
 * obf_mod == 1
 
 The final obfuscated scripts would like this::
