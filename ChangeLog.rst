@@ -1,3 +1,14 @@
+5.2.0
+-----
+* Use global capsule as default capsule for project, other than creating new one for each project
+* Add option `--obf-code`, `--obf-mod`, `--wrap-mode`, `--cross-protection` in command `config`
+* Add new attributes for project: `obf_code`, `obf_mod`, `wrap_mode`, `cross_protection`
+* Deprecrated project attributes `obf_code_mode`, `obf_module_mode`, use `obf_code`, `obf_mod`, `wrap_mode` instead
+* Change the behaviours of `restrict mode`, refer to https://pyarmor.readthedocs.io/en/latest/advanced.html#restrict-mode
+* Change option `--restrict` in command `obfuscate` and `licenses`
+* Remove option `--no-restrict` in command `obfuscate`
+* Remove option `--clone` in command `init`
+
 5.1.2
 -----
 * Improve the security of PyArmor self
@@ -6,7 +17,7 @@
 -----
 * Refine the procedure of encrypt script
 * Reform module `pytransform.py`
-* Fix issue: it will raise exception if no entry script when obfuscating scripts 
+* Fix issue: it will raise exception if no entry script when obfuscating scripts
 * Fix issue: 'gbk' codec can't decode byte 0xa1 in position 28 (#51)
 * Add option `--upgrade` for command `capsule`
 * Merge runtime files `pyshield.key`, `pyshield.lic` and `product.key` into `pytransform.key`
