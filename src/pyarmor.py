@@ -73,11 +73,6 @@ EXAMPLES
 
     pyarmor init --src=examples/simple --entry=queens.py project1
     '''
-    if args.clone:
-        logging.info('Warning: option --clone is deprecated, use --capsule instead ')
-        _clone(args)
-        return
-
     path = args.project
     logging.info('Create project in %s ...', path)
 
@@ -102,50 +97,16 @@ EXAMPLES
 
     if args.capsule:
         capsule = os.path.abspath(args.capsule)
-        logging.info('Share capsule with %s', capsule)
-        project._update(dict(capsule=capsule))
+        logging.info('Set project capsule to %s', capsule)
     else:
-        logging.info('Create project capsule ...')
-        filename = os.path.join(path, capsule_filename)
-        make_capsule(filename)
-        logging.info('Project capsule %s created', filename)
+        capsule = os.path.abspath(DEFAULT_CAPSULE)
+        logging.info('Use global capsule as project capsule: %s', capsule)
+    project._update(dict(capsule=capsule))
 
     logging.info('Create configure file ...')
     filename = os.path.join(path, config_filename)
     project.save(path)
     logging.info('Configure file %s created', filename)
-
-    logging.info('Create pyarmor command ...')
-    script = make_command(plat_name, sys.executable, sys.argv[0], path)
-    logging.info('PyArmor command %s created', script)
-
-    logging.info('Project init successfully.')
-
-def _clone(args):
-    path = args.project
-    logging.info('Create project in %s ...', path)
-
-    if not os.path.exists(path):
-        logging.info('Make project directory %s', path)
-        os.makedirs(path)
-
-    src = os.path.abspath(args.src)
-    logging.info('Python scripts base path: %s', src)
-
-    logging.info('Clone project from path: %s', args.clone)
-    for s in (config_filename, capsule_filename):
-        logging.info('\tCopy file "%s"', s)
-        shutil.copy(os.path.join(args.clone, s), os.path.join(path, s))
-
-    logging.info('Init project settings')
-    project = Project()
-    project.open(path)
-    name = os.path.basename(os.path.abspath(path))
-    project._update(dict(name=name, title=name, src=src, entry=args.entry))
-    project.save(path)
-
-    if args.type != 'auto':
-        logging.info('Option --type is ignored when --clone is specified')
 
     logging.info('Create pyarmor command ...')
     script = make_command(plat_name, sys.executable, sys.argv[0], path)
@@ -169,9 +130,6 @@ Examples,
     cd projects/project1
     ./pyarmor config --entry "main.py, another/main.py"
                      --manifest "global-include *.py, exclude test*.py"
-                     --obf-module-mode des
-                     --obf-code-mode des
-                     --runtime-path "/opt/odoo/pyarmor"
 
     '''
     project = Project()
@@ -230,19 +188,27 @@ def _build(args):
         logging.info('Search scripts from %s', src)
 
         logging.info('Obfuscate scripts with mode:')
-        if project.obf_code_mode == 'wrap':
+        if hasattr(project, 'obf_mod'):
+            obf_mod = project.obf_mod
+        else:
+            obf_mod = project.obf_module_mode == 'des'
+        if hasattr(project, 'wrap_mode'):
+            wrap_mode = project.wrap_mode
+            obf_code = project.obf_code
+        elif project.obf_code_mode == 'wrap':
             wrap_mode = 1
             obf_code = 1
         else:
             wrap_mode = 0
             obf_code = 0 if project.obf_code_mode == 'none' else 1
-        obf_mod = project.obf_module_mode == 'des'
         v = lambda t : 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
         logging.info('Obfuscating each function is %s', v(obf_code))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
 
         entry = os.path.abspath(project.entry) if project.entry else None
+        if hasattr(project, 'cross_protection') and project.cross_protection == 0:
+            entry = None
         for x in files:
             a, b = os.path.join(src, x), os.path.join(soutput, x)
             logging.info('\t%s -> %s', x, b)
@@ -473,15 +439,6 @@ def _obfuscate(args):
         encrypt_script(prokey, a, b, protection=protection)
     logging.info('%d scripts have been obfuscated', len(files))
 
-    if args.restrict:
-        logging.info('Restrict mode is eanbled')
-        mode = Project.map_obfuscate_mode(
-            default_obf_module_mode, default_obf_code_mode)
-    else:
-        logging.info('Restrict mode is disabled')
-        mode = Project.map_obfuscate_mode(
-            default_obf_module_mode, 'wrap')
-
     logging.info('Make runtime files')
     make_runtime(capsule, output)
     if not args.restrict:
@@ -510,14 +467,15 @@ def _check(args):
 def _benchmark(args):
     '''Run benchmark test in current machine'''
     logging.info('Start benchmark test ...')
-    logging.info('Obfuscate module mode: %s', args.obf_module_mode)
-    logging.info('Obfuscate bytecode mode: %s', args.obf_code_mode)
+    logging.info('Obfuscate module mode: %s', args.obf_mod)
+    logging.info('Obfuscate bytecode mode: %s', args.obf_code)
+    logging.info('Obfuscate wrap mode: %s', args.wrap_mode)
 
     logging.info('Benchmark bootstrap ...')
     path = os.path.normpath(os.path.dirname(__file__))
     p = subprocess.Popen(
         [sys.executable, 'benchmark.py', 'bootstrap',
-         args.obf_module_mode, args.obf_code_mode],
+         str(args.obf_mod), str(args.obf_code), str(args.wrap_mode)],
         cwd=path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
     logging.info('Benchmark bootstrap OK.')
@@ -591,11 +549,10 @@ def main(args):
                          help='Match files recursively')
     cparser.add_argument('-s', '--src', metavar='PATH',
                          help='Base path for search python scripts')
-    cparser.add_argument('-d', '--no-restrict', action='store_true',
-                         help='Disable restrict mode [DEPRECATED]');
-    cparser.add_argument('--restrict', action='store_true',
-                         help='Enable restrict mode');
-    cparser.add_argument('--capsule', help='Use this capsule to obfuscate code')
+    cparser.add_argument('--restrict', type=int, default=1, choices=(0, 1),
+                         help='Set restrict mode')
+    cparser.add_argument('--capsule',
+                         help='Use this capsule other than global capsule')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
                          help='Scripts to obfuscted')
     cparser.set_defaults(func=_obfuscate)
@@ -615,10 +572,8 @@ def main(args):
                          help='Entry script of this project')
     cparser.add_argument('-s', '--src', required=True,
                          help='Base path of python scripts')
-    cparser.add_argument('-C', '--clone', metavar='PATH',
-                         help='[Deprecated] Clone project')
     cparser.add_argument('--capsule',
-                         help='Use this capsule other than creating new one')
+                         help='Use this capsule other than global capsule')
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
 
@@ -644,8 +599,15 @@ def main(args):
                          help='Entry script of this project')
     cparser.add_argument('--is-package', type=int, choices=(0, 1))
     cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1))
-    cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE)
-    cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE)
+    cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
+                         help='[DEPRECATED] Use --obf-mod instead')
+    cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE,
+                         help='[DEPRECATED] Use --obf-code and --wrap-mode' \
+                              ' instead')
+    cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
+    cparser.add_argument('--obf-code', type=int, choices=(0, 1))
+    cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
+    cparser.add_argument('--cross-protection', type=int, choices=(0, 1))
     cparser.add_argument('--runtime-path', metavar="RPATH")
     cparser.set_defaults(func=_update)
 
@@ -740,8 +702,9 @@ def main(args):
     cparser.add_argument('-P', '--project', default='', help='Project path')
     cparser.add_argument('-C', '--capsule', help='Project capsule')
     cparser.add_argument('-O', '--output', help='Output path')
-    cparser.add_argument('--restrict', action='store_const',
-                         const=1, help='Generate a license for restrict mode')
+    cparser.add_argument('--restrict', type=int, default=1, choices=(0, 1),
+                         help='Generate license for restrict mode')
+
     cparser.set_defaults(func=_licenses)
 
     #
@@ -764,12 +727,12 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Run benchmark test in current machine'
     )
-    cparser.add_argument('-m', '--obf-module-mode',
-                         choices=Project.OBF_MODULE_MODE,
-                         default=default_obf_module_mode)
-    cparser.add_argument('-c', '--obf-code-mode',
-                         choices=Project.OBF_CODE_MODE,
-                         default=default_obf_code_mode)
+    cparser.add_argument('-m', '--obf-mod', choices=(0, 1),
+                         default=1, type=int)
+    cparser.add_argument('-c', '--obf-code', choices=(0, 1),
+                         default=1, type=int)
+    cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
+                         default=1, type=int)
     cparser.set_defaults(func=_benchmark)
 
 

@@ -66,7 +66,7 @@ def call_pyarmor(args):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
 
-def obffuscate_scripts(output, filename, module_mode, code_mode):
+def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
     project = os.path.join(output, 'project')
     if os.path.exists(project):
         shutil.rmtree(project)
@@ -77,8 +77,9 @@ def obffuscate_scripts(output, filename, module_mode, code_mode):
 
     args = [sys.executable, PYARMOR, 'config',
             '--manifest', 'include %s' % filename,
-            '--obf-module-mode', module_mode,
-            '--obf-code-mode', code_mode,
+            '--obf-mod', module_mode,
+            '--obf-code', code_mode,
+            '--wrap-mode', wrap_mode,
             project]
     call_pyarmor(args)
 
@@ -177,15 +178,9 @@ def main():
     obfilename = os.path.join(output, obname + '.py')
 
     if len(sys.argv) > 1 and 'bootstrap'.startswith(sys.argv[1]):
-        if len(sys.argv) < 4:
-            sys.argv.extend(['des', 'des'])
-        obf_module_mode, obf_code_mode = sys.argv[2:4]
-        if obf_module_mode not in OBF_MODULE_MODE:
-            logging.warning('Unsupport module mode %s', obf_module_mode)
-            return
-        if obf_code_mode not in OBF_CODE_MODE:
-            logging.warning('Unsupport code mode %s', obf_code_mode)
-            return
+        if len(sys.argv) < 5:
+            sys.argv.extend(['1', '1', '1'])
+        obf_mod, obf_code, wrap_mode = sys.argv[2:5]
 
         if not os.path.exists(output):
             logging.info('Create output path: %s', output)
@@ -199,7 +194,7 @@ def main():
         logging.info('Obffuscate test script ...')
         shutil.copy(filename, obfilename)
         obffuscate_scripts(output, os.path.basename(obfilename),
-                           obf_module_mode, obf_code_mode)
+                           obf_mod, obf_code, wrap_mode)
         if not os.path.exists(obfilename):
             logging.info('Something is wrong to obsfucate the script')
             return

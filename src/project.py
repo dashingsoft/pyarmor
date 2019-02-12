@@ -43,7 +43,7 @@ from config import config_filename, capsule_filename, default_output_path, \
 
 class Project(dict):
 
-    VERSION = 1, 0, 1
+    VERSION = 1, 0, 2
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -63,6 +63,10 @@ class Project(dict):
         ( 'disable_restrict_mode', 1 ), \
         ( 'obf_module_mode', default_obf_module_mode ), \
         ( 'obf_code_mode', default_obf_code_mode ), \
+        ( 'obf_code', 1 ), \
+        ( 'obf_mod', 1 ), \
+        ( 'wrap_mode', 1 ), \
+        ( 'cross_protection', 1 ), \
         ( 'build_time', 0. )
 
     def __init__(self, *args, **kwargs):
