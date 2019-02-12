@@ -32,18 +32,18 @@ The name of platform is decomposed from distutils.util.get_platform()
 
     * 32-bit Armv7 Cortex-A, hard-float, little-endian
     * Cross compile by https://releases.linaro.org/components/toolchain/binaries/latest-7/arm-linux-gnueabihf/gcc-linaro-7.3.1-2018.05-x86_64_arm-linux-gnueabihf.tar.xz
-    
+
 * [Armv8 32-bit](http://pyarmor.dashingsoft.com/downloads/platforms/armv8.32-bit/_pytransform.so)
 
     * 32-bit Armv8 Cortex-A, hard-float, little-endian
     * Cross compile by https://releases.linaro.org/components/toolchain/binaries/latest-7/armv8l-linux-gnueabihf/gcc-linaro-7.3.1-2018.05-x86_64_armv8l-linux-gnueabihf.tar.xz
-    
+
 * [Armv8 64-bit](http://pyarmor.dashingsoft.com/downloads/platforms/armv8.64-bit/_pytransform.so)
 
     * 64-bit Armv8 Cortex-A, little-endian
     * Cross compile by https://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/gcc-linaro-7.3.1-2018.05-x86_64_aarch64-linux-gnu.tar.xz
     * NVIDIA Jetson TX 1/2
-    
+
 * [Raspberry Pi](http://pyarmor.dashingsoft.com/downloads/platforms/raspberrypi/_pytransform.so)
 
     * Apply for RPI serials https://www.raspberrypi.org
@@ -63,6 +63,13 @@ The name of platform is decomposed from distutils.util.get_platform()
 
     * Apply for ts-4600/ts-7600 https://wiki.embeddedarm.com/wiki/TS-4600 / https://wiki.embeddedarm.com/wiki/TS-7600
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
+
+## Other Platforms
+
+* [Alpine Image](http://pyarmor.dashingsoft.com/downloads/platforms/alpine/_pytransform.so)
+
+    * For alpine image, x86_64, built with musl-1.1.21
+    * Cross compile by https://github.com/richfelker/musl-cross-make
 
 ## Change Logs
 
