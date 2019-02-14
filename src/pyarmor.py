@@ -207,19 +207,20 @@ def _build(args):
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
 
         entry = os.path.abspath(project.entry) if project.entry else None
-        if hasattr(project, 'cross_protection') and project.cross_protection == 0:
-            entry = None
+        protection = project.cross_protection \
+                     if hasattr(project, 'cross_protection') else 1
         for x in files:
             a, b = os.path.join(src, x), os.path.join(soutput, x)
             logging.info('\t%s -> %s', x, b)
-            protection = entry and (os.path.abspath(a) == os.path.abspath(entry))
 
             d = os.path.dirname(b)
             if not os.path.exists(d):
                 os.makedirs(d)
 
+            pcode = entry and (os.path.abspath(a) == entry) and protection
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
-                           wrap_mode=wrap_mode, protection=protection)
+                           wrap_mode=wrap_mode, protection=pcode,
+                           rpath=project.runtime_path)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()

@@ -256,9 +256,10 @@ Each project has a configure file. It's a json file named
         Insert proection code with default template, refer to
         :ref:`Special Handling of Entry Script`
 
-        - String
+        - Filename
 
-        Use customizing template
+        Read the template of protection code from this file other than
+        default template.
 
 * runtime_path
 
