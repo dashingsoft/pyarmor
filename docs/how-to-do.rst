@@ -184,26 +184,40 @@ After that, in the runtime of this python interpreter
 Special Handling of Entry Script
 ================================
 
-Before obfuscating entry scipt, if there is line like this::
+Before obfuscating entry scipt, PyArmor will search the content line
+by line. If there is line like this::
 
-    if __name__ == '__main__':
+    # {PyArmor Protection Code}
 
-PyArmor will patch this entry script, insert some code to protect
-dynamic library before this line::
+PyArmor will replace this line with protection code.
+
+If there is line like this::
+
+    # No PyArmor Protection Code
+
+PyArmor will not patch this script.
+
+If both of lines aren't found, insert protection code before the line::
+
+    if __name__ == '__main__'
+
+Do thing if no `__main__` line found.
+
+Here it's the default template of protection code::
 
     def protect_pytransform():
-    
+
         import pytransform
-    
+
         def check_obfuscated_script():
-            CO_SIZES = 46, 36
+            CO_SIZES = 49, 46, 38, 36
             CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
                             '__name__', '__file__'])
             co = pytransform.sys._getframe(3).f_code
             if not ((set(co.co_names) <= CO_NAMES)
                     and (len(co.co_code) in CO_SIZES)):
                 raise RuntimeError('Unexpected obfuscated script')
-    
+
         def check_mod_pytransform():
             CO_NAMES = set(['Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
                             'PytransformError', '__file__', '_debug_mode',
@@ -216,44 +230,45 @@ dynamic library before this line::
                             'normpath', 'os', 'path', 'platform', 'print',
                             'pyarmor_init', 'pythonapi', 'restype', 'set_option',
                             'str', 'struct', 'sys', 'system', 'version_info'])
-    
+
             colist = []
-    
+
             for name in ('dllmethod', 'init_pytransform', 'init_runtime',
                          '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
                 colist.append(getattr(pytransform, name).{code})
-    
+
             for name in ('init_pytransform', 'init_runtime'):
                 colist.append(getattr(pytransform, name).{closure}[0].cell_contents.{code})
             colist.append(pytransform.dllmethod.{code}.co_consts[1])
-    
+
             for co in colist:
                 if not (set(co.co_names) < CO_NAMES):
                     raise RuntimeError('Unexpected pytransform.py')
-    
-        def check_lib_pytransform(filename):
-            size = 0x{size:X}
+
+        def check_lib_pytransform():
+            filename = pytransform.os.path.join({rpath}, {filename})
+            size = {size}
             n = size >> 2
             with open(filename, 'rb') as f:
                 buf = f.read(size)
             fmt = 'I' * n
             checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
-            if not checksum == 0x{checksum:X}:
+            if not checksum == {checksum}:
                 raise RuntimeError("Unexpected %s" % filename)
         try:
             check_obfuscated_script()
             check_mod_pytransform()
-            check_lib_pytransform(pytransform._pytransform._name)
+            check_lib_pytransform()
         except Exception as e:
             print("Protection Fault: %s" % e)
             pytransform.sys.exit(1)
-    
-    protect_pytransform()
-    
-    if __name__ == '__main__':
-        ...
 
-Besides, after the entry script is obfuscated, the :ref:`Bootstrap
-Code` will be inserted at the beginning of the obfuscated script.
+    protect_pytransform()
+
+All the string template `{xxx}` will be replaced with real value by
+PyArmor.
+
+After the entry script is obfuscated, the :ref:`Bootstrap Code` will
+be inserted at the beginning of the obfuscated script.
 
 .. include:: _common_definitions.txt
