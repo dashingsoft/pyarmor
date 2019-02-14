@@ -235,7 +235,8 @@ def make_protect_pytransform(template=None, filename=None, rpath=None):
 
     code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
-    rpath = 'os.path.dirname(__file__)' if rpath is None else repr(rpath)
+    rpath = 'pytransform.os.path.dirname(__file__)' if rpath is None \
+            else repr(rpath)
     return buf.format(code=code, closure=closure, size=size, checksum=cosum,
                       rpath=rpath, filename=repr(os.path.basename(filename)))
 
