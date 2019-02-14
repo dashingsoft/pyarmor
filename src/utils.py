@@ -218,24 +218,26 @@ def get_registration_code():
         code = None
     return code
 
-def make_protect_pytransform(filename=None, path=None):
+def make_protect_pytransform(template=None, filename=None, rpath=None):
     if filename is None:
         filename = pytransform._pytransform._name
-    if path is None:
-        path = PYARMOR_PATH
+    if template is None:
+        template = os.path.join(PYARMOR_PATH, protect_code_template)
     size = os.path.getsize(filename) & 0xFFFFFFF0
     n = size >> 2
     with open(filename, 'rb') as f:
         buf = f.read(size)
     fmt = 'I' * n
-    checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
+    cosum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
 
-    with open(os.path.join(path, protect_code_template)) as f:
+    with open(template) as f:
         buf = f.read()
 
-    code= '__code__' if sys.version_info[0] == 3 else 'func_code'
+    code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
-    return buf.format(size=size, checksum=checksum, code=code, closure=closure)
+    rpath = 'os.path.dirname(__file__)' if rpath is None else repr(rpath)
+    return buf.format(code=code, closure=closure, size=size, checksum=cosum,
+                      rpath=rpath, filename=repr(os.path.basename(filename)))
 
 def _frozen_modname(filename, filename2):
     names = os.path.normpath(filename).split(os.sep)
@@ -266,7 +268,7 @@ def _guess_encoding(filename):
             return m and m.group(1)
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
-                   obf_mod=1, protection=0):
+                   obf_mod=1, protection=0, rpath=None):
     if sys.version_info[0] == 2:
         with open(filename, 'r') as f:
             lines = f.readlines()
@@ -278,12 +280,14 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     if protection:
         n = 0
         for line in lines:
-            if line.startswith('def protect_pytransform():'):
+            if line.startswith('# No PyArmor Protection Code'):
                 break
-            elif (line.startswith("if __name__ == '__main__':")
+            elif (line.startswith('# {PyArmor Protection Code}')
+                  or line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
-                lines[n:n] = make_protect_pytransform()
+                template = None if protection == 1 else protection
+                lines[n:n] = make_protect_pytransform(template, rpath=rpath)
                 break
             n += 1
 

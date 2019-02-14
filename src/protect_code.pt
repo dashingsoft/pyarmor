@@ -3,7 +3,7 @@ def protect_pytransform():
     import pytransform
 
     def check_obfuscated_script():
-        CO_SIZES = 46, 36
+        CO_SIZES = 49, 46, 38, 36
         CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
                         '__name__', '__file__'])
         co = pytransform.sys._getframe(3).f_code
@@ -38,19 +38,20 @@ def protect_pytransform():
             if not (set(co.co_names) < CO_NAMES):
                 raise RuntimeError('Unexpected pytransform.py')
 
-    def check_lib_pytransform(filename):
-        size = 0x{size:X}
+    def check_lib_pytransform():
+        filename = pytransform.os.path.join({rpath}, {filename})
+        size = {size}
         n = size >> 2
         with open(filename, 'rb') as f:
             buf = f.read(size)
         fmt = 'I' * n
         checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
-        if not checksum == 0x{checksum:X}:
+        if not checksum == {checksum}:
             raise RuntimeError("Unexpected %s" % filename)
     try:
         check_obfuscated_script()
         check_mod_pytransform()
-        check_lib_pytransform(pytransform._pytransform._name)
+        check_lib_pytransform()
     except Exception as e:
         print("Protection Fault: %s" % e)
         pytransform.sys.exit(1)
