@@ -430,7 +430,8 @@ def _obfuscate(args):
     for x in files:
         a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
-        protection = entry and (os.path.abspath(a) == os.path.abspath(entry))
+        protection = args.cross_protection and entry \
+                     and (os.path.abspath(a) == os.path.abspath(entry))
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
@@ -551,6 +552,9 @@ def main(args):
                          help='Base path for search python scripts')
     cparser.add_argument('--restrict', type=int, default=1, choices=(0, 1),
                          help='Set restrict mode')
+    cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
+                         default=1,
+                         help='Enable/disable to insert protection code')
     cparser.add_argument('--capsule',
                          help='Use this capsule other than global capsule')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
@@ -585,7 +589,7 @@ def main(args):
         'config',
         epilog=_update.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Update project information')
+        help='Update project settings')
     cparser.add_argument('project', nargs='?', metavar='PATH',
                          default='', help='Project path')
     cparser.add_argument('--name')
