@@ -1,3 +1,8 @@
+5.2.1
+-----
+* Fix issue: in restrict mode the bootstrap code in `__init__.py` will raise exception.
+* Add option `--cross-protection` in command `obfuscate`
+
 5.2.0
 -----
 * Use global capsule as default capsule for project, other than creating new one for each project
