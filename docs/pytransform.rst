@@ -55,6 +55,9 @@ Contents
 Examples
 --------
 
+Copy those example code to any script, for example `foo.py`, obfuscate
+it, then run the obfuscated script.
+
 Show left days of license
 
 .. code-block:: python
