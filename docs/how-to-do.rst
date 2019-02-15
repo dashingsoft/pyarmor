@@ -201,7 +201,7 @@ If both of lines aren't found, insert protection code before the line::
 
     if __name__ == '__main__'
 
-Do thing if no `__main__` line found.
+Do nothing if no `__main__` line found.
 
 Here it's the default template of protection code::
 
