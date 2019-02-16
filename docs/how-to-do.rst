@@ -184,6 +184,11 @@ After that, in the runtime of this python interpreter
 Special Handling of Entry Script
 ================================
 
+There are 2 extra changes for entry script:
+
+* Before obfuscating, insert protection code to entry script.
+* After obfuscated, insert bootstrap code to obfuscated script.
+
 Before obfuscating entry scipt, PyArmor will search the content line
 by line. If there is line like this::
 
@@ -267,6 +272,11 @@ Here it's the default template of protection code::
 
 All the string template `{xxx}` will be replaced with real value by
 PyArmor.
+
+To prevent PyArmor from inserting this protection code, pass
+`--cross-protection=0` as obfuscating the scripts::
+
+    pyarmor obfuscate --cross-protection=0 foo.py
 
 After the entry script is obfuscated, the :ref:`Bootstrap Code` will
 be inserted at the beginning of the obfuscated script.

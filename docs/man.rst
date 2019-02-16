@@ -22,7 +22,7 @@ The most commonly used pyarmor commands are::
     The commands with project::
 
     init         Create a project to manage obfuscated scripts
-    config       Update project information
+    config       Update project settings
     build        Obfuscate all the scripts in the project
 
     info         Show project information

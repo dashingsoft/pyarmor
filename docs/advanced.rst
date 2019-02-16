@@ -199,4 +199,6 @@ it::
 
     pyarmor licenses --restrict=0 --expired 2019-01-01 mycode
 
+.. customizing protection code:
+
 .. include:: _common_definitions.txt
