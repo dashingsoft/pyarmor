@@ -1,8 +1,8 @@
 # Downloads for PyArmor Prebuilt Dynamic Library #
 
-Latest version: **5.1.3**
+Latest version: **5.1.4**
 
-Build date: 2019-02-15
+Build date: 2019-02-16
 
 The core of PyArmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms. It's not
@@ -28,6 +28,11 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 ## Embedded Platforms
 
+* [Armv5](http://pyarmor.dashingsoft.com/downloads/platforms/armv5/_pytransform.so)
+
+    * 32-bit Armv5 (arm926ej-s)
+    * Cross compile by https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
+    
 * [Armv7](http://pyarmor.dashingsoft.com/downloads/platforms/armv7/_pytransform.so)
 
     * 32-bit Armv7 Cortex-A, hard-float, little-endian
@@ -72,6 +77,10 @@ The name of platform is decomposed from distutils.util.get_platform()
     * Cross compile by https://github.com/richfelker/musl-cross-make
 
 ## Change Logs
+
+## 5.1.4
+
+* Improve the security of dynamic library.
 
 ## 5.1.3
 
