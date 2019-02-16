@@ -1,3 +1,7 @@
+5.2.2
+-----
+* Improve the security of dynamic library.
+
 5.2.1
 -----
 * Fix issue: in restrict mode the bootstrap code in `__init__.py` will raise exception.
