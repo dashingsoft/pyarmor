@@ -112,9 +112,9 @@ Key Points to Use Obfuscated Scripts
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
-* It can be put in any script anywhere, only if it run in the same
-  Python interpreter. It will create some builtin function to deal
-  with obfuscated code.
+  It must in the obfuscated script and only be called one time in the
+  same Python interpreter.  It will create some builtin function to
+  deal with obfuscated code.
 
 * The extra runtime file `pytransform.py` must be in any Python
   path in target machine. `pytransform.py` need load dynamic
@@ -152,8 +152,8 @@ In PyArmor, there are 2 types of `license.lic`
   PyArmor. It's required to run `pyarmor`
 
 * `license.lic` of Obfuscated Scripts, which is generated as
-  obfuscating scripts or generating new licenses. It's required to run
-  obfuscated scripts.
+  obfuscating scripts by the end user of PyArmor. It's required to run
+  the obfuscated scripts.
 
 The relation between 2 `license.lic` is::
 
@@ -161,10 +161,10 @@ The relation between 2 `license.lic` is::
 
 When obfuscating scripts with command `pyarmor obfuscate` or `pyarmor
 build`, the :ref:`Global Capsule` is used implicitly. If there is no
-:ref:`Global Capsule` created, PyArmor will read `license.lic` of
-PyArmor as input to generate the :ref:`Global Capsule`.
+:ref:`Global Capsule`, PyArmor will read `license.lic` of PyArmor as
+input to generate the :ref:`Global Capsule`.
 
-When runing command `pyarmor licenses`, it will generate a
+When runing command `pyarmor licenses`, it will generate a new
 `license.lic` for obfuscated scripts. Here the :ref:`Global Capsule`
 will be as input file to generate this `license.lic` of Obfuscated
 Scripts.

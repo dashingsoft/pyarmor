@@ -154,9 +154,7 @@ Each project has a configure file. It's a json file named
         main.py, another/main.py, /usr/local/myapp/main.py
 
     Note that entry may be NOT obfuscated, if `manifest` does not
-    specify this entry. In this case, bootstrap code will be inserted
-    into the header of entry script either. So that it can import
-    other obfuscated modules.
+    specify this entry.
 
 * output
 
