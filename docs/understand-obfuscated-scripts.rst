@@ -51,6 +51,10 @@ only in the entry script::
     from pytransfrom import pyarmor_runtime
     pyarmor_runtime()
 
+The bootstrap code can only be run once in same Python interpreter,
+otherwise it will raise exception: `_pytransform can not be loaded
+twice`
+
 .. _runtime files:
 
 Runtime Files

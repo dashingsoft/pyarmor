@@ -66,9 +66,9 @@ recursively, execute this command::
 Distributing Obfuscated Scripts
 -------------------------------
 
-Just copy all the files in the output path `dist` to end user. Note
+Just copy all the files in the output path `dist` to end users. Note
 that except the obfuscated scripts, all the :ref:`runtime files` need
-to be distributed to end user.
+to be distributed to end users too.
 
 About the security of obfuscated scripts, refer to :ref:`The Security of PyArmor`
 
