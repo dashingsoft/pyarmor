@@ -1,6 +1,9 @@
 def protect_pytransform():
 
-    import pytransform
+    try:
+        import pytransform
+    except ImportError:
+        from . import pytransform
 
     def check_obfuscated_script():
         CO_SIZES = 49, 46, 38, 36
