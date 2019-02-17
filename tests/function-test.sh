@@ -235,6 +235,44 @@ echo ""
 
 # ======================================================================
 #
+#  Test empty script
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test empty script --------------------"
+echo ""
+
+mkdir test-empty
+echo "" > test-empty/foo.py
+$PYARMOR init --src=test-empty --entry=foo.py projects/empty  > result.log 2>&1
+check_return_value
+
+for obf_mod in 0 1 ; do
+  for obf_code in 0 1 ; do
+    for obf_wrap_mode in 0 1 ; do
+      csih_inform "T-m${obf_mod}-c${obf_code}-w${obf_wrap_mode}"
+      (cd projects/empty &&
+          $ARMOR config --obf-mod ${obf_mod} --obf-code ${obf_code} \
+                        --wrap-mode ${obf_wrap_mode} > result.log 2>&1)
+      check_return_value
+
+      (cd projects/empty && $ARMOR build -B > result.log 2>&1)
+      check_return_value
+      check_file_exists "projects/empty/dist/foo.py"
+
+      (cd projects/empty/dist; $PYTHON foo.py > result.log 2>&1)
+      check_return_value
+    done
+  done
+done
+
+echo ""
+echo "-------------------- Test empty script END ----------------"
+echo ""
+
+# ======================================================================
+#
 #  Test Feture: __spec__ and multiprocessing
 #
 # ======================================================================
