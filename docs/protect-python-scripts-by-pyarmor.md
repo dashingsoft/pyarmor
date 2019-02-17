@@ -15,8 +15,8 @@ are the files list in the output path `dist`
 ```
     foo.py
 
-    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
     pytransform.py
+    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
     pytransform.key
     license.lic
 ```

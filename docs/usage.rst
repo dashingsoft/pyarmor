@@ -30,8 +30,8 @@ files are generated::
 
     myscript.py
 
-    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
     pytransform.py
+    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
     pytransform.key
     license.lic
 
@@ -126,7 +126,7 @@ add authentication code in the entry script. The script can't be
 changed any more after it is obfuscated, so write what ever you want
 by Python. For example, check expired date by NTP_ server other than
 local time::
-   
+
     import ntplib
     from time import mktime, strptime
     c = ntplib.NTPClient()
