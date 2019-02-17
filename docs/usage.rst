@@ -25,8 +25,8 @@ simple case, set the current directory to the location of your program
 * Writes all the obfuscated :file:`*.py` in the same folder as the script in the :file:`dist` folder.
 * Copy runtime files used to run obfuscated scripts to the :file:`dist` folder.
 
-In the :file:`dist` folder you find the obfuscated scripts you
-distribute to your users::
+In the :file:`dist` folder the obfuscated scripts and all the required
+files are generated::
 
     myscript.py
 

@@ -17,7 +17,7 @@ Obfuscated Scripts
 ------------------
 
 After the scripts are obfuscated by |PyArmor|, in the `dist` folder
-you find all the files you distribute to your users::
+you find all the required files to run obfuscated scripts::
 
     myscript.py
     mymodule.py
@@ -27,9 +27,8 @@ you find all the files you distribute to your users::
     pytransform.key
     license.lic
 
-The obfuscated scripts are normal Python scripts.
-
-The module `dist/mymodule.py` would be like this::
+The obfuscated scripts are normal Python scripts. The module
+`dist/mymodule.py` would be like this::
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
 
