@@ -15,7 +15,7 @@ are the files list in the output path :file:`dist`::
 :file:`dist/foo.py` is obfuscated script, the content is::
 
 
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
@@ -101,7 +101,7 @@ How to run obfuscated script ``dist/foo.py`` by Python Interpreter?
 
 The first 2 lines, which called ``Bootstrap Code``::
 
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
 It will fulfil the following tasks

@@ -248,7 +248,7 @@ def _build(args):
     else:
         logging.info('\tIn order to import obfuscated scripts, insert ')
         logging.info('\t2 lines in entry script:')
-        logging.info('\t\tfrom pytransfrom import pyarmor_runtime')
+        logging.info('\t\tfrom pytransform import pyarmor_runtime')
         logging.info('\t\tpyarmor_runtime()')
 
     logging.info('Build project OK.')

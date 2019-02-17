@@ -10,7 +10,7 @@ import sys
 #
 # __wraparmor__ will be added to builtins from bootstrap code of pyarmor
 #
-#   from pytransfrom import pyarmor_runtime()
+#   from pytransform import pyarmor_runtime()
 #   pyarmor_runtime()
 #
 try:

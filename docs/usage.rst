@@ -41,7 +41,7 @@ run the obfuscated script.
 Normally you name one script on the command line. It's entry
 script. The content of :file:`myscript.py` would be like this::
 
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')

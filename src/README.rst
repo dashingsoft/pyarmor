@@ -22,7 +22,7 @@ are the files list in the output path ``dist``::
 
 ``dist/foo.py`` is obfuscated script, the content is::
 
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...', 1)

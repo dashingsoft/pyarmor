@@ -35,7 +35,7 @@ The module `dist/mymodule.py` would be like this::
 
 The entry script `dist/myscript.py` would be like this::
 
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x0a\x02...')
@@ -48,7 +48,7 @@ Bootstrap Code
 The first 2 lines in the entry script called `Bootstrap Code`. It's
 only in the entry script::
 
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
 The bootstrap code can only be run once in same Python interpreter,

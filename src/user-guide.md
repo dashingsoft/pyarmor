@@ -97,7 +97,7 @@ Obfuscated scripts are saved in default output path `dist`, the content of
 obfuscated script like this
 
 ``` python
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')

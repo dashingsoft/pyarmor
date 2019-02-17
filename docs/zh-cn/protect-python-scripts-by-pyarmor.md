@@ -24,7 +24,7 @@ PyArmor 是一个用于加密和保护 Python 源代码的小工具。它能够�
 `dist/foo.py` 是加密后的脚本，它的内容如下
 
 ``` python
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
@@ -109,7 +109,7 @@ PyArmor 是怎么加密 Python 源代码呢？
 上面我们看到 `dist/foo.py` 的前两行是这个样子
 
 ``` python
-    from pytransfrom import pyarmor_runtime
+    from pytransform import pyarmor_runtime
     pyarmor_runtime()
 ```
 
