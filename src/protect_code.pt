@@ -50,13 +50,13 @@ def protect_pytransform():
         fmt = 'I' * n
         checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
         if not checksum == {checksum}:
-            raise RuntimeError("Unexpected %s" % filename)
+            raise RuntimeError('Unexpected %s' % filename)
     try:
         check_obfuscated_script()
         check_mod_pytransform()
         check_lib_pytransform()
     except Exception as e:
-        print("Protection Fault: %s" % e)
+        print('Protection Fault: %s' % e)
         pytransform.sys.exit(1)
 
 protect_pytransform()
