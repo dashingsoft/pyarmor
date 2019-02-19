@@ -1,3 +1,8 @@
+5.2.3
+-----
+* Refine error message
+* Fix issue: protection code raises ImportError in the package file `__init.py__`
+
 5.2.2
 -----
 * Improve the security of dynamic library.
