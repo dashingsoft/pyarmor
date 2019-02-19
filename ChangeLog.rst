@@ -1,6 +1,6 @@
 5.2.3
 -----
-* Refine error message
+* Refine error message when checking license failed
 * Fix issue: protection code raises ImportError in the package file `__init.py__`
 
 5.2.2
