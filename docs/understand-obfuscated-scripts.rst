@@ -1,4 +1,4 @@
-.. _understand obfuscated scripts:
+.. _understanding obfuscated scripts:
 
 Understanding Obfuscated Scripts
 ================================
