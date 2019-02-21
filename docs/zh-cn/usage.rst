@@ -135,8 +135,7 @@ PyArmor 会加密 :file:`myscript.py` 和相同目录下面的所有 :file:`*.py
 
     pyarmor pack myscript.py
 
-PyArmor 加密 :file:`myscript.py` 并将所有需要的文件打包成为一个独立可运
-行的安装包:
+PyArmor 通过以下的步骤将所有需要的文件打包成为一个独立可运行的安装包:
 
 * 执行 ``pyarmor obfuscate`` 加密脚本 :file:`myscript.py` 和同目录下的所有其他脚本
 * 执行 ``pyinstaller myscipt.py`` 创建 :file:`myscript.spec`
