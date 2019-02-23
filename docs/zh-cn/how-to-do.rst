@@ -1,36 +1,33 @@
-PyArmor 的内容工作原理
-======================
+PyArmor 的工作原理
+==================
 
 让我们看看一个普通的 Python 脚本 `foo.py` 加密之后是什么样子。下面是加
-密脚本所在的目录 `dist` 下的所有文件列表
+密脚本所在的目录 `dist` 下的所有文件列表::
 
-```
     foo.py
 
     pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
     pytransform.key
     license.lic
-```
 
-`dist/foo.py` 是加密后的脚本，它的内容如下
+`dist/foo.py` 是加密后的脚本，它的内容如下::
 
-``` python
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
-```
 
-所有其他文件叫做 :ref:`运行辅助文件` ，它们是运行加密脚本所必须的。并且
-只要这里面的模块 `pytransform.py` 能被正常导入进来，加密脚本
-`dist/foo.py` 就可以像正常脚本一样被运行。这是 PyArmor 的一个重要特征：
-**加密脚本无缝替换 Python 源代码**
+所有其他文件叫做 :ref:`运行辅助文件` ，它们是运行加密脚本所必须的。并
+且只要这里面的模块 `pytransform.py` 能被正常导入进来，加密脚本
+`dist/foo.py` 就可以像正常脚本一样被运行。
+
+这是 PyArmor 的一个重要特征： **加密脚本无缝替换 Python 源代码**
 
 .. _如何加密脚本:
 
 如何加密脚本
-============
+------------
 
 PyArmor 是怎么加密 Python 源代码呢？
 
@@ -93,7 +90,7 @@ PyArmor 是怎么加密 Python 源代码呢？
 .. _如何运行加密脚本:
 
 如何运行加密脚本
-================
+----------------
 
 那么，一个普通的 Python 解释器运行加密脚本 `dist/foo.py` 的过程是什么样呢？
 
@@ -186,7 +183,7 @@ PyArmor 是怎么加密 Python 源代码呢？
 .. _对主脚本的特殊处理:
 
 对主脚本的特殊处理
-==================
+------------------
 
 和其他模块不一样，PyArmor 对主脚本有额外的处理:
 
