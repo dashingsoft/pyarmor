@@ -3,8 +3,8 @@
 Using Project
 =============
 
-Project is a folder include its own capsule and configuration file,
-which used to manage obfuscated scripts.
+Project is a folder include its own configuration file, which used to
+manage obfuscated scripts.
 
 There are several advantages to manage obfuscated scripts by Project:
 
