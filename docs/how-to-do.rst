@@ -1,3 +1,5 @@
+.. _how pyarmor does it:
+
  How |PyArmor| Does It
 =======================
 
@@ -28,7 +30,7 @@ obfuscated script `dist/foo.py` can be used as normal Python script. That is to 
 .. _how to obfuscate scripts:
 
 How to Obfuscate Python Scripts
-===============================
+-------------------------------
 
 How to obfuscate python scripts by PyArmor?
 
@@ -94,7 +96,7 @@ The obfuscated script is a normal Python script, it looks like this::
 .. _how to run obfuscated scripts:
 
 How to Run Obfuscated Script
-============================
+----------------------------
 
 How to run obfuscated script ``dist/foo.py`` by Python Interpreter?
 
@@ -181,7 +183,7 @@ After that, in the runtime of this python interpreter
 .. _special handling of entry script:
 
 Special Handling of Entry Script
-================================
+--------------------------------
 
 There are 2 extra changes for entry script:
 
