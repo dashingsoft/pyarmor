@@ -1,7 +1,7 @@
 .. _how pyarmor does it:
 
- How |PyArmor| Does It
-=======================
+How PyArmor Does It
+===================
 
 Look at what happened after ``foo.py`` is obfuscated by PyArmor. Here
 are the files list in the output path :file:`dist`::
