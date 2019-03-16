@@ -96,7 +96,7 @@ def check_capsule(capsule):
 
 def _make_entry(filename, rpath=None):
     entry_code = entry_lines[0] % (
-        '.' if os.path.basename(filename) == '__init__.py' else '' )
+        '.' if os.path.basename(filename) == '__init__.py' else '')
 
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -108,7 +108,7 @@ def _make_entry(filename, rpath=None):
         if not lines[n][0] == '#':
             break
     for line in lines[n:]:
-        if line.strip() == entry_code:
+        if line.strip() == entry_code.strip():
             return
 
     with open(filename, 'w') as f:
