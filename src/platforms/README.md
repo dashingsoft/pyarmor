@@ -26,6 +26,10 @@ The name of platform is decomposed from distutils.util.get_platform()
 
 * [macosx_x86_64](http://pyarmor.dashingsoft.com/downloads/platforms/macosx_x86_64/_pytransform.dylib)
 
+* [ios_arm64](http://pyarmor.dashingsoft.com/downloads/platforms/ios.arm64/_pytransform.dylib)
+
+* [freebsd](http://pyarmor.dashingsoft.com/downloads/platforms/freebsd/_pytransform.so)
+
 ## Embedded Platforms
 
 * [Armv5](http://pyarmor.dashingsoft.com/downloads/platforms/armv5/_pytransform.so)
@@ -68,6 +72,11 @@ The name of platform is decomposed from distutils.util.get_platform()
 
     * Apply for ts-4600/ts-7600 https://wiki.embeddedarm.com/wiki/TS-4600 / https://wiki.embeddedarm.com/wiki/TS-7600
     * Cross compile by https://github.com/embeddedarm/linux-2.6.35.3-imx28
+
+* [ppc64le](http://pyarmor.dashingsoft.com/downloads/platforms/ppc64le/_pytransform.so)
+
+    * Apply for POWER8
+    * Cross compile by `gcc-powerpc64le-linux-gnu`
 
 ## Other Platforms
 

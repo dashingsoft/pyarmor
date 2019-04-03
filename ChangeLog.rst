@@ -1,6 +1,7 @@
 5.2.4
 -----
 * Fix arm64 issue: verify rsa key failed when running the obufscated scripts(#63)
+* Support ios (arm64) and ppc64le for linux
 
 5.2.3
 -----
