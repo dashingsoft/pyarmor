@@ -1,12 +1,10 @@
 from distutils.util import get_platform
 
-version = '5.2.3'
+version = '5.2.4'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
-obfuscated scripts to fixed machine or expire obfuscated scripts. 
-
-For more information, refer to https://pyarmor.dashingsoft.com
+obfuscated scripts to fixed machine or expire obfuscated scripts.
 '''
 
 trial_info = '''
@@ -27,7 +25,7 @@ Enjoy it!
 '''
 
 help_footer = '''
-For more information, refer to https://github.com/dashingsoft/pyarmor
+For more information, refer to http://pyarmor.dashingsoft.com
 '''
 
 # The last three components of the filename before the extension are
