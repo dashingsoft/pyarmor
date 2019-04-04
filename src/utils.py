@@ -245,7 +245,10 @@ def _frozen_modname(filename, filename2):
     names2 = os.path.normpath(filename2).split(os.sep)
     k = -1
     while True:
-        if names[k] != names2[k]:
+        try:
+            if names[k] != names2[k]:
+                break
+        except IndexError:
             break
         k -= 1
     if names[-1] == '__init__.py':
