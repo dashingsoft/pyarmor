@@ -22,6 +22,8 @@ Refer to [Protect Python Scripts By PyArmor](docs/protect-python-scripts-by-pyar
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_x86_64
 - Embedded Platform: Raspberry Pi, Banana Pi, Orange Pi, TS-4600 / TS-7600
 
+Refer to [docs/platforms.rst](docs/platforms.rst)
+
 ## Quick Start
 
 Installation
@@ -84,7 +86,7 @@ Check License
 
 **The registration code is valid forever, it can be used permanently.**
 
-## [Change Log](ChangeLog.rst)
+## [Change Log](docs/ChangeLog.rst)
 
 ## [Report issuses](https://github.com/dashingsoft/pyarmor/issues)
 

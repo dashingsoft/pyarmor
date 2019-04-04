@@ -49,6 +49,7 @@ Contents:
    questions
    license
    platforms
+   change-logs
 
 Indices and tables
 ==================
