@@ -12,7 +12,7 @@ def protect_pytransform():
         co = pytransform.sys._getframe(3).f_code
         if not ((set(co.co_names) <= CO_NAMES)
                 and (len(co.co_code) in CO_SIZES)):
-            raise RuntimeError('Unexpected obfuscated script')
+            raise RuntimeError('unexpected obfuscated script')
 
     def check_mod_pytransform():
         CO_NAMES = set(['Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
@@ -20,7 +20,7 @@ def protect_pytransform():
                         '_get_error_msg', '_handle', '_load_library',
                         '_pytransform', 'abspath', 'basename', 'byteorder',
                         'c_char_p', 'c_int', 'c_void_p', 'calcsize', 'cdll',
-                        'dirname', 'encode', 'exists', 'exit',
+                        'dirname', 'decode', 'encode', 'exists', 'exit',
                         'format_platname', 'get_error_msg', 'init_pytransform',
                         'init_runtime', 'int', 'isinstance', 'join', 'lower',
                         'normpath', 'os', 'path', 'platform', 'print',
@@ -39,7 +39,7 @@ def protect_pytransform():
 
         for co in colist:
             if not (set(co.co_names) < CO_NAMES):
-                raise RuntimeError('Unexpected pytransform.py')
+                raise RuntimeError('unexpected pytransform.py')
 
     def check_lib_pytransform():
         filename = pytransform.os.path.join({rpath}, {filename})
@@ -50,7 +50,7 @@ def protect_pytransform():
         fmt = 'I' * n
         checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
         if not checksum == {checksum}:
-            raise RuntimeError('Unexpected %s' % filename)
+            raise RuntimeError('unexpected %s' % filename)
     try:
         check_obfuscated_script()
         check_mod_pytransform()
