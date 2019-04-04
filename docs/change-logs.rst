@@ -1,3 +1,8 @@
+.. _change logs:
+
+ Change Logs
+=============
+
 5.2.4
 -----
 * Fix arm64 issue: verify rsa key failed when running the obufscated scripts(#63)
