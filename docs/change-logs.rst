@@ -1,7 +1,7 @@
 .. _change logs:
 
- Change Logs
-=============
+Change Logs
+===========
 
 5.2.4
 -----
