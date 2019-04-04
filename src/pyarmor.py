@@ -499,6 +499,7 @@ def _hdinfo(args):
 def _version_info():
     rcode = get_registration_code()
     if rcode:
+        rcode = rcode.replace('-sn-1.txt', '')
         return 'PyArmor Version %s (%s)\n%s' % (version, rcode, version_info)
     else:
         return 'PyArmor Trial Version %s\n%s\n' % (version, version_info)

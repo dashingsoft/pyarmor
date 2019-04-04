@@ -1,30 +1,11 @@
 from distutils.util import get_platform
 
-version = '5.2.4'
+version = '5.2.5'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts.
-'''
 
-trial_info = '''
-You're using trail version. Free trial version that never expires,
-but project capsule generated is fixed by hardcode, so all the
-encrypted files are encrypted by same key.
-
-A registration code is required to generate random project capsule.
-If PyArmor is helpful for you, please purchase one by visiting
-
-  https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
-
-If you have received a registration code, just replace the content
-of "license.lic" with registration code only (no newline).
-
-Enjoy it!
-
-'''
-
-help_footer = '''
 For more information, refer to http://pyarmor.dashingsoft.com
 '''
 
@@ -71,4 +52,25 @@ ext_char = 'e'
 wrap_runner = '''import pyimcore
 from pytransform import exec_file
 exec_file('%s')
+'''
+
+trial_info = '''
+You're using trail version. Free trial version that never expires,
+but project capsule generated is fixed by hardcode, so all the
+encrypted files are encrypted by same key.
+
+A registration code is required to generate random project capsule.
+If PyArmor is helpful for you, please purchase one by visiting
+
+  https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
+
+If you have received a registration code, just replace the content
+of "license.lic" with registration code only (no newline).
+
+Enjoy it!
+
+'''
+
+help_footer = '''
+For more information, refer to http://pyarmor.dashingsoft.com
 '''
