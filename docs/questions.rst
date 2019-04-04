@@ -121,7 +121,20 @@ edit `pytransform.py` and comment these lines in function
 Check restrict mode failed
 --------------------------
 
-Use obfuscated scripts in wrong way, for more information, refer to
-:ref:`Restrict Mode`
+Use obfuscated scripts in wrong way, by default all the obfuscated
+scripts can't be changed any more.
+
+For more information, refer to :ref:`Restrict Mode`
+
+Protection Fault: unexpected xxx
+--------------------------------
+
+Use obfuscated scripts in wrong way, by default, all the runtimes
+cann't be changed any more. Do not touch the following files
+
+* pytransform.py
+* _pytransform.so/.dll/.dylib
+
+For more information, refer to :ref:`Special Handling of Entry Script`
 
 .. include:: _common_definitions.txt
