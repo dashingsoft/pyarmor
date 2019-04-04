@@ -17,10 +17,6 @@ the installed path of PyArmor package.
 Contact jondy.zhao@gmail.com if you'd like to run PyArmor in other
 platform.
 
-Latest version: **5.1.5**
-
-Build date: 2019-02-19
-
 .. list-table:: Table-1. Prebuilt Libraries Distributed with PyArmor
    :widths: 10 10 20 60
    :name: Prebuilt Libraries Distributed with PyArmor
