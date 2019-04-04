@@ -86,7 +86,7 @@ Check License
 
 **The registration code is valid forever, it can be used permanently.**
 
-## [Change Log](docs/ChangeLog.rst)
+## [Change Log](docs/change-logs.rst)
 
 ## [Report issuses](https://github.com/dashingsoft/pyarmor/issues)
 
