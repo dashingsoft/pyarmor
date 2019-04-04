@@ -48,6 +48,7 @@ Contents:
    man
    questions
    license
+   platforms
 
 Indices and tables
 ==================
