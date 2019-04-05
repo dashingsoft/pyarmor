@@ -6,7 +6,7 @@ Change Logs
 5.2.5
 -----
 * Fix issue: raise IndexError if output path is '.' as building project
-* Print error message by string other than bytes as checking license failed
+* For Python3 convert error message from bytes to string as checking license failed
 * Refine version information
 
 5.2.4
