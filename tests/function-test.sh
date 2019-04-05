@@ -219,7 +219,9 @@ PROPATH=projects/test-blank-ouput
 $PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
 check_return_value
 
-(cd $PROPATH; $ARMOR config --output="."; $ARMOR build >result.log 2>&1)
+(cd $PROPATH;
+ $ARMOR config --output="." >result.log 2>&1;
+ $ARMOR build >result.log 2>&1)
 check_return_value
 check_file_exists $PROPATH/queens.py
 check_file_exists $PROPATH/pytransform.py
