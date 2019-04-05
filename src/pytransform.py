@@ -30,7 +30,9 @@ def dllmethod(func):
         result = func(*args, **kwargs)
         if isinstance(result, int) and result != 0:
             errmsg = _get_error_msg()
-            raise PytransformError(errmsg.decode())
+            if not isinstance(errmsg, str):
+                errmsg = errmsg.decode()
+            raise PytransformError(errmsg)
         return result
     return wrap
 
