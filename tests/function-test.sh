@@ -188,8 +188,44 @@ check_file_content result.log "Upgrade capsule OK"
 (cd test-upgrade; unzip .pyarmor_capsule.zip >result.log 2>&1)
 check_file_exists test-upgrade/pytransform.key
 
+csih_inform "C-10. Test output == src for obfuscate"
+$PYARMOR obfuscate --src=abc -O abc >result.log 2>&1
+check_file_content result.log "Output path can not be same as src"
+
+csih_inform "C-10. Test output is sub-directory of src for obfuscate"
+cp -a examples/simple test-subpath
+(cd test-subpath;
+ $PYTHON ../pyarmor.py obfuscate --src=. -O output >result.log 2>&1)
+check_return_value
+check_file_exists test-subpath/output/queens.py
+
+
 echo ""
 echo "-------------------- Command End -----------------------------"
+echo ""
+
+# ======================================================================
+#
+#  Project
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test Project ----------------------------"
+echo ""
+
+csih_inform "Case P-1: project output path is '.'"
+PROPATH=projects/test-blank-ouput
+$PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR config --output="."; $ARMOR build >result.log 2>&1)
+check_return_value
+check_file_exists $PROPATH/queens.py
+check_file_exists $PROPATH/pytransform.py
+
+echo ""
+echo "-------------------- Test Project End ------------------------"
 echo ""
 
 # ======================================================================
