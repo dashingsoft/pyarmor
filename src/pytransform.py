@@ -167,7 +167,6 @@ def _load_library(path=None, is_runtime=0):
     if not os.path.exists(filename):
         if is_runtime:
             raise PytransformError('Could not find "%s"' % filename)
-        bitness = struct.calcsize('P'.encode()) * 8
         libpath = os.path.join(path, 'platforms', format_platname())
         filename = os.path.join(libpath, os.path.basename(filename))
         if not os.path.exists(filename):
