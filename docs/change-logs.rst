@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.2.5
+-----
+* Fix issue: raise IndexError if output path is '.' as building project
+* Print error message by string other than bytes as checking license failed
+* Refine version information
+
 5.2.4
 -----
 * Fix arm64 issue: verify rsa key failed when running the obufscated scripts(#63)
