@@ -91,6 +91,8 @@ class Project(dict):
 
     def _check(self, path):
         assert(os.path.exists(self.src))
+        assert(os.path.isabs(self.src))
+        assert(self.src != os.path.abspath(self.output))
         assert(self.obf_module_mode in Project.OBF_MODULE_MODE)
         assert(self.obf_code_mode in Project.OBF_CODE_MODE)
 

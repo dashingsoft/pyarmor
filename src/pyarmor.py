@@ -412,10 +412,15 @@ def _obfuscate(args):
         make_capsule(capsule)
 
     output = args.output
+    if os.path.abspath(output) == path:
+        raise RuntimeError('Output path can not be same as src')
     if args.recursive:
         pats = ['global-include *.py', 'prune build', 'prune dist']
+        if os.path.abspath(output).startswith(path):
+            x = os.path.abspath(output)[len(path):].strip('/\\')
+            pats.append('prune %s' % x)
         if hasattr('', 'decode'):
-            pats = [p.decode()  for p in pats]
+            pats = [p.decode() for p in pats]
         files = Project.build_manifest(pats, path)
     else:
         files = Project.build_globfiles(['*.py'], path)
