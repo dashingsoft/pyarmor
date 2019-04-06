@@ -27,6 +27,7 @@ import logging
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 from time import gmtime, strftime
@@ -34,9 +35,10 @@ from zipfile import ZipFile
 
 import pytransform
 from config import plat_name, dll_ext, dll_name, entry_lines, \
-                   protect_code_template
+                   protect_code_template, download_url, support_platforms
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
+
 
 def pytransform_bootstrap(path=None):
     path = PYARMOR_PATH if path is None else path
@@ -45,15 +47,31 @@ def pytransform_bootstrap(path=None):
         libpath = os.path.join(path, 'platforms')
         sysname = pytransform.format_platname()
         if not os.path.exists(os.path.join(libpath, sysname, libname)):
-            logging.info('Searching %s for %s ...', libname, plat_name)
-            src = os.path.join(libpath, plat_name, libname)
-            if not os.path.exists(src):
-                raise RuntimeError('No available library for this platform')
-            logging.info('Found: "%s"', src)
-            logging.info('Copy to %s', path)
-            shutil.copy(src, path)
+            download_pytransform(libname)
             logging.info('Bootstrap OK.\n')
     pytransform.pyarmor_init()
+
+
+def download_pytransform(libname):
+    if plat_name not in dict(support_platforms[1]):
+        logging.error('Unsupport platform %s', plat_name)
+        raise RuntimeError('No available library for this platform')
+
+    path = dict(support_platforms[1]).get(plat_name)
+    url = '/'.join([download_url, path, libname])
+    target = os.path.join(PYARMOR_PATH, libname)
+
+    logging.info('Downloading %s by wget ...', url)
+    if not os.access(PYARMOR_PATH, os.W_OK):
+        logging.error('Cound not save target file to %s', PYARMOR_PATH)
+        raise RuntimeError('No write permission for target path')
+
+    p = subprocess.Popen(['wget', '-O', target, url])
+    if p.wait() == 0:
+        logging.info('Save target file to %s', target)
+    else:
+        raise RuntimeError('Download file failed')
+
 
 def make_capsule(filename):
     path = PYARMOR_PATH
