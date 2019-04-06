@@ -35,14 +35,8 @@ make_platform_files()
     )
 }
 
-# Build source, DEPRECATED WAY
-# (cd src &&
-# python setup.py sdist --formats=zip,bztar,gztar &&
-# rm -rf *.pyc __pycache__ *.pyo)
-
-if ! [[ "$1" == "whl" ]] ; then
-    make_platform_files
-fi
+# Make platform files
+make_platform_files
 
 # Build source
 $PYTHON setup.py sdist --formats=zip,bztar,gztar
@@ -53,17 +47,15 @@ $PYTHON setup.py bdist_wheel --universal
 clear_build
 clear_platform_files
 
-[[ "$1" == "whl" ]] || exit 0
-
 # Build binary wheel
-for plat in $PLATFORMS ; do
-    name=$plat
-    [[ "$plat" == "manylinux1_x86_64" ]] && name="linux_x86_64"
-    [[ "$plat" == "macosx_10_11_intel" ]] && name="macosx_x86_64"
-    [[ "$plat" == "macosx_10_11_x86_64" ]] && name="macosx_x86_64"
-    cp src/platforms/$name/_pytransform.* src/
-
-    $PYTHON setup.py bdist_wheel --python-tag=py2.py3 --plat-name=$plat
-    clear_build
-    rm -rf src/_pytransform.*
-done
+# for plat in $PLATFORMS ; do
+#     name=$plat
+#     [[ "$plat" == "manylinux1_x86_64" ]] && name="linux_x86_64"
+#     [[ "$plat" == "macosx_10_11_intel" ]] && name="macosx_x86_64"
+#     [[ "$plat" == "macosx_10_11_x86_64" ]] && name="macosx_x86_64"
+#     cp src/platforms/$name/_pytransform.* src/
+#
+#     $PYTHON setup.py bdist_wheel --python-tag=py2.py3 --plat-name=$plat
+#     clear_build
+#     rm -rf src/_pytransform.*
+# done
