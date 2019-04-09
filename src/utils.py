@@ -102,6 +102,7 @@ def make_capsule(filename):
         myzip.close()
     logging.info('Write capsule OK.')
 
+
 def check_capsule(capsule):
     if os.path.getmtime(capsule) < os.path.getmtime(
             os.path.join(PYARMOR_PATH, 'license.lic')):
@@ -112,6 +113,7 @@ def check_capsule(capsule):
         os.rename(capsule, capsule + '.' + suffix)
         return False
     return True
+
 
 def _make_entry(filename, rpath=None):
     entry_code = entry_lines[0] % (
@@ -136,12 +138,13 @@ def _make_entry(filename, rpath=None):
         f.write(entry_lines[1] % ('' if rpath is None else repr(rpath)))
         f.write(''.join(lines[n:]))
 
+
 def make_entry(entris, path, output, rpath=None, ispackage=False):
     for entry in entris.split(','):
         entry = entry.strip()
         src = build_path(entry, path)
-        if (ispackage
-            and (not os.path.isabs(entry)) and (not entry.startswith('..'))):
+        if ispackage \
+           and (not os.path.isabs(entry)) and (not entry.startswith('..')):
             filename = os.path.join(output, os.path.basename(path), entry)
         else:
             filename = os.path.join(output, os.path.basename(src))
@@ -149,6 +152,7 @@ def make_entry(entris, path, output, rpath=None, ispackage=False):
             shutil.copy(src, filename)
         logging.info('Insert bootstrap code to entry script %s', filename)
         _make_entry(filename, rpath)
+
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
     if not os.path.exists(output):
@@ -170,8 +174,8 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
         pytransform.encrypt_project_files(prokey, tuple(filepairs), mode)
 
     os.remove(prokey)
-
     return filepairs
+
 
 def make_runtime(capsule, output, licfile=None, platform=None):
     myzip = ZipFile(capsule, 'r')
@@ -202,6 +206,7 @@ def make_runtime(capsule, output, licfile=None, platform=None):
 
     shutil.copy2(os.path.join(PYARMOR_PATH, 'pytransform.py'), output)
 
+
 def make_project_license(capsule, code, output):
     myzip = ZipFile(capsule, 'r')
     myzip.extract('private.key', tempfile.gettempdir())
@@ -211,11 +216,14 @@ def make_project_license(capsule, code, output):
     finally:
         os.remove(prikey)
 
+
 def show_hd_info():
     pytransform.show_hd_info()
 
+
 def build_path(path, relpath):
     return path if os.path.isabs(path) else os.path.join(relpath, path)
+
 
 def make_command(platform, python, pyarmor, output):
     script = os.path.abspath(pyarmor)
@@ -230,12 +238,14 @@ def make_command(platform, python, pyarmor, output):
     os.chmod(filename, 0o755)
     return filename
 
+
 def get_registration_code():
     try:
         code = pytransform.get_license_info()['CODE']
     except Exception:
         code = None
     return code
+
 
 def make_protect_pytransform(template=None, filename=None, rpath=None):
     if filename is None:
@@ -259,6 +269,7 @@ def make_protect_pytransform(template=None, filename=None, rpath=None):
     return buf.format(code=code, closure=closure, size=size, checksum=cosum,
                       rpath=rpath, filename=repr(os.path.basename(filename)))
 
+
 def _frozen_modname(filename, filename2):
     names = os.path.normpath(filename).split(os.sep)
     names2 = os.path.normpath(filename2).split(os.sep)
@@ -277,6 +288,7 @@ def _frozen_modname(filename, filename2):
         dotnames = names[k+1:]
     return "<frozen %s>" % '.'.join(dotnames)
 
+
 def _guess_encoding(filename):
     with open(filename, 'rb') as f:
         line = f.read(80)
@@ -291,6 +303,7 @@ def _guess_encoding(filename):
                 n += k + 1
             m = re.search(r'coding[=:]\s*([-\w.]+)', line[:n].decode())
             return m and m.group(1)
+
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, protection=0, rpath=None):
@@ -329,6 +342,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     with open(destname, 'w') as f:
         f.write(s.decode())
 
+
 def get_product_key(capsule):
     output = tempfile.gettempdir()
     keyfile = os.path.join(output, 'product.key')
@@ -338,6 +352,7 @@ def get_product_key(capsule):
             return f.read()
     finally:
         os.remove(keyfile)
+
 
 def upgrade_capsule(capsule):
     myzip = ZipFile(capsule, 'r')
@@ -361,6 +376,7 @@ def upgrade_capsule(capsule):
         myzip.close()
 
     logging.info('Upgrade capsule OK.')
+
 
 if __name__ == '__main__':
     make_entry(sys.argv[1])
