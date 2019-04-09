@@ -30,6 +30,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from codecs import BOM_UTF8
 from time import gmtime, strftime
 from zipfile import ZipFile
 
@@ -279,6 +280,8 @@ def _frozen_modname(filename, filename2):
 def _guess_encoding(filename):
     with open(filename, 'rb') as f:
         line = f.read(80)
+        if line and line[:3] == BOM_UTF8:
+            return 'utf-8'
         if line and line[0] == 35:
             n = line.find(b'\n')
             if n == -1:
@@ -298,6 +301,10 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         encoding = _guess_encoding(filename)
         with open(filename, 'r', encoding=encoding) as f:
             lines = f.readlines()
+        if encoding == 'utf-8' and lines:
+            i = lines[0].find('#')
+            if i > 0:
+                lines[0] = lines[0][i:]
 
     if protection:
         n = 0
