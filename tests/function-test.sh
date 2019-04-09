@@ -192,12 +192,23 @@ csih_inform "C-10. Test output == src for obfuscate"
 $PYARMOR obfuscate --src=abc -O abc >result.log 2>&1
 check_file_content result.log "Output path can not be same as src"
 
-csih_inform "C-10. Test output is sub-directory of src for obfuscate"
+csih_inform "C-11. Test output is sub-directory of src for obfuscate"
 cp -a examples/simple test-subpath
 (cd test-subpath;
  $PYTHON ../pyarmor.py obfuscate --src=. -O output >result.log 2>&1)
 check_return_value
 check_file_exists test-subpath/output/queens.py
+
+csih_inform "C-12. Test utf-8 with BOM for obfuscate"
+mkdir -p test-utf8bom
+cp test/data/utf8bom.py test-utf8bom
+$PYARMOR obfuscate -O dist-utf8bom test-utf8bom/utf8bom.py >result.log 2>&1
+check_return_value
+check_file_exists dist-utf8bom/utf8bom.py
+
+(cd dist-utf8bom; $PYTHON utf8bom.py >result.log 2>&1 )
+check_return_value
+check_file_content dist-utf8bom/result.log 'PyArmor'
 
 
 echo ""
@@ -225,6 +236,7 @@ check_return_value
 check_return_value
 check_file_exists $PROPATH/queens.py
 check_file_exists $PROPATH/pytransform.py
+
 
 echo ""
 echo "-------------------- Test Project End ------------------------"
