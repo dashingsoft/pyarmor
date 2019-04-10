@@ -50,24 +50,24 @@ class Project(dict):
     OBF_CODE_MODE = 'none', 'des', 'fast', 'wrap'
 
     DEFAULT_VALUE = \
-        ( 'version', '.'.join([str(x) for x in VERSION]) ), \
-        ( 'name', None ), \
-        ( 'title', None ), \
-        ( 'src', None ), \
-        ( 'is_package', None ), \
-        ( 'manifest', default_manifest_template ), \
-        ( 'entry', None ), \
-        ( 'output', default_output_path ), \
-        ( 'capsule', capsule_filename ), \
-        ( 'runtime_path', None ), \
-        ( 'disable_restrict_mode', 1 ), \
-        ( 'obf_module_mode', default_obf_module_mode ), \
-        ( 'obf_code_mode', default_obf_code_mode ), \
-        ( 'obf_code', 1 ), \
-        ( 'obf_mod', 1 ), \
-        ( 'wrap_mode', 1 ), \
-        ( 'cross_protection', 1 ), \
-        ( 'build_time', 0. )
+        ('version', '.'.join([str(x) for x in VERSION])), \
+        ('name', None), \
+        ('title', None), \
+        ('src', None), \
+        ('is_package', None), \
+        ('manifest', default_manifest_template), \
+        ('entry', None), \
+        ('output', default_output_path), \
+        ('capsule', capsule_filename), \
+        ('runtime_path', None), \
+        ('disable_restrict_mode', 1), \
+        ('obf_module_mode', default_obf_module_mode), \
+        ('obf_code_mode', default_obf_code_mode), \
+        ('obf_code', 1), \
+        ('obf_mod', 1), \
+        ('wrap_mode', 1), \
+        ('cross_protection', 1), \
+        ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):
         for k, v in Project.DEFAULT_VALUE:
@@ -90,16 +90,19 @@ class Project(dict):
         return result
 
     def _check(self, path):
-        assert(os.path.exists(self.src))
-        assert(os.path.isabs(self.src))
-        assert(self.src != os.path.abspath(self.output))
-        assert(self.obf_module_mode in Project.OBF_MODULE_MODE)
-        assert(self.obf_code_mode in Project.OBF_CODE_MODE)
+        assert os.path.exists(self.src), \
+            'The src of this project is not found: %s' % self.src
+        assert os.path.isabs(self.src), \
+            'The src of this project is not absolute path'
+        assert self.src != os.path.abspath(self.output), \
+            'The output path can not be same as src in the project'
+        assert self.capsule.endswith('.zip'), \
+            'Invalid capsule, not a zip file'
 
-        assert(self.capsule.endswith('.zip'))
         capsule = self.capsule if os.path.isabs(self.capsule) \
             else os.path.join(path, self.capsule)
-        assert(os.path.exists(os.path.normpath(capsule)))
+        assert os.path.exists(os.path.normpath(capsule)), \
+            'No project capsule found: %s' % capsule
 
     def _dump(self, filename):
         with open(filename, 'w') as f:
@@ -126,7 +129,7 @@ class Project(dict):
         if comode == 'wrap':
             return 13 + m
         else:
-            return 7 + ( 1 - m ) * 3 + c
+            return 7 + (1 - m) * 3 + c
 
     def get_obfuscate_mode(self, mode=None, comode=None):
         if mode is None:
