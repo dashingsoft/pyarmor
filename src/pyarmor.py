@@ -511,13 +511,14 @@ def _hdinfo(args):
     show_hd_info()
 
 
-def _version_info():
+def _version_info(short=False):
     rcode = get_registration_code()
     if rcode:
         rcode = rcode.replace('-sn-1.txt', '')
-        return 'PyArmor Version %s (%s)\n%s' % (version, rcode, version_info)
+        ver = 'PyArmor Version %s (%s)\n%s' % (version, rcode)
     else:
-        return 'PyArmor Trial Version %s\n%s\n' % (version, version_info)
+        ver = 'PyArmor Trial Version %s' % version
+    return '\n'.join([ver, '' if short else version_info])
 
 
 def main(args):
@@ -772,7 +773,11 @@ def main(args):
     if args.silent:
         logging.getLogger().setLevel(100)
 
-    logging.info(_version_info())
+    if not hasattr(args, 'func'):
+        parser.print_help()
+        return
+
+    logging.info(_version_info(short=True))
     logging.debug('PyArmor install path: %s', PYARMOR_PATH)
 
     capsule = DEFAULT_CAPSULE
@@ -780,10 +785,7 @@ def main(args):
         logging.info('Generate global capsule %s', capsule)
         make_capsule(capsule)
 
-    if hasattr(args, 'func'):
-        args.func(args)
-    else:
-        parser.print_help()
+    args.func(args)
 
 
 def main_entry():
