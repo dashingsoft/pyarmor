@@ -26,7 +26,6 @@
 
 '''See "pyarmor.py <command> -h" for more information on a specific command.'''
 
-import json
 import logging
 import os
 import shutil
@@ -40,12 +39,11 @@ except ImportError:
     # argparse is new in version 2.7
     import polyfills.argparse as argparse
 
-from config import version, version_info, plat_name, dll_ext, dll_name, \
-                   default_obf_module_mode, default_obf_code_mode, \
+from config import version, version_info, plat_name, \
                    config_filename, capsule_filename, license_filename
 
 from project import Project
-from utils import make_capsule, obfuscate_scripts, make_runtime, \
+from utils import PYARMOR_PATH, make_capsule, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_command, get_registration_code, \
                   check_capsule, pytransform_bootstrap, encrypt_script, \
@@ -54,6 +52,7 @@ from utils import make_capsule, obfuscate_scripts, make_runtime, \
 import packer
 
 DEFAULT_CAPSULE = os.path.expanduser(os.path.join('~', capsule_filename))
+
 
 def armorcommand(func):
     return func
@@ -64,6 +63,7 @@ def armorcommand(func):
     #         logging.exception(e)
     # wrap.__doc__ = func.__doc__
     # return wrap
+
 
 @armorcommand
 def _init(args):
@@ -114,6 +114,7 @@ EXAMPLES
 
     logging.info('Project init successfully.')
 
+
 @armorcommand
 def _update(args):
     '''Update project settings.
@@ -148,12 +149,14 @@ Examples,
     project.save(args.project)
     logging.info('Update project OK.')
 
+
 @armorcommand
 def _info(args):
     '''Show project information'''
     project = Project()
     project.open(args.project)
     logging.info('Project %s information\n%s', args.project, project.info())
+
 
 @armorcommand
 def _build(args):
@@ -166,15 +169,14 @@ def _build(args):
     logging.info('Use capsule: %s', capsule)
 
     output = build_path(project.output, args.project) \
-             if args.output is None else args.output
+        if args.output is None else args.output
     logging.info('Output path is: %s', output)
 
     if not args.only_runtime:
-        mode = project.get_obfuscate_mode()
         files = project.get_build_files(args.force)
         src = project.src
         soutput = os.path.join(output, os.path.basename(src)) \
-                  if project.get('is_package') else output
+            if project.get('is_package') else output
 
         logging.info('Save obfuscated scripts to "%s"', soutput)
         if not os.path.exists(soutput):
@@ -201,14 +203,16 @@ def _build(args):
         else:
             wrap_mode = 0
             obf_code = 0 if project.obf_code_mode == 'none' else 1
-        v = lambda t : 'on' if t else 'off'
+
+        def v(t):
+            return 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
         logging.info('Obfuscating each function is %s', v(obf_code))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
 
         entry = os.path.abspath(project.entry) if project.entry else None
         protection = project.cross_protection \
-                     if hasattr(project, 'cross_protection') else 1
+            if hasattr(project, 'cross_protection') else 1
         for x in files:
             a, b = os.path.join(src, x), os.path.join(soutput, x)
             logging.info('\t%s -> %s', x, b)
@@ -252,6 +256,7 @@ def _build(args):
         logging.info('\t\tpyarmor_runtime()')
 
     logging.info('Build project OK.')
+
 
 @armorcommand
 def _licenses(args):
@@ -335,7 +340,7 @@ Examples,
             else:
                 fmt = '%s*FIXKEY:%s;%s' % (fmt, bind_key, s)
         else:
-            raise RuntimeError('Bind file %s not found' % bindfile)
+            raise RuntimeError('Bind file %s not found' % bind_file)
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
@@ -362,6 +367,7 @@ Examples,
 
     logging.info('Generate %d licenses OK.', len(args.codes))
 
+
 @armorcommand
 def _target(args):
     project = Project()
@@ -376,22 +382,22 @@ def _target(args):
         project.add_target(name, args.platform, args.license)
     project.save(args.project)
 
+
 @armorcommand
 def _capsule(args):
-    '''Make capsule separately'''
+    '''Generate the capsule explicitly'''
+    capsule = os.path.join(args.path, capsule_filename)
     if args.upgrade:
-        capsule = os.path.join(args.path, capsule_filename) if args.path \
-            else DEFAULT_CAPSULE
         logging.info('Preparing to upgrade the capsule %s ...', capsule)
         upgrade_capsule(capsule)
         return
 
-    capsule = os.path.join(args.path, capsule_filename)
-    logging.info('Generating capsule %s ...', capsule)
     if os.path.exists(capsule):
         logging.info('Do nothing, capsule %s has been exists', capsule)
     else:
+        logging.info('Generating capsule %s ...', capsule)
         make_capsule(capsule)
+
 
 @armorcommand
 def _obfuscate(args):
@@ -437,7 +443,7 @@ def _obfuscate(args):
         a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
         protection = args.cross_protection and entry \
-                     and (os.path.abspath(a) == os.path.abspath(entry))
+            and (os.path.abspath(a) == os.path.abspath(entry))
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
@@ -461,6 +467,7 @@ def _obfuscate(args):
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
+
 @armorcommand
 def _check(args):
     '''Check consistency of project'''
@@ -469,6 +476,7 @@ def _check(args):
     logging.info('Check project %s ...', args.project)
     project._check(args.project)
     logging.info('Check project OK.')
+
 
 @armorcommand
 def _benchmark(args):
@@ -497,9 +505,11 @@ def _benchmark(args):
     shutil.rmtree(benchtest)
     logging.info('Finish benchmark test.')
 
+
 @armorcommand
 def _hdinfo(args):
     show_hd_info()
+
 
 def _version_info():
     rcode = get_registration_code()
@@ -509,12 +519,13 @@ def _version_info():
     else:
         return 'PyArmor Trial Version %s\n%s\n' % (version, version_info)
 
+
 def main(args):
     parser = argparse.ArgumentParser(
         prog='pyarmor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='PyArmor is a command line tool used to obfuscate ' \
-                    'python scripts, bind obfuscated scripts to fixed ' \
+        description='PyArmor is a command line tool used to obfuscate '
+                    'python scripts, bind obfuscated scripts to fixed '
                     'machine or expire obfuscated scripts.',
         epilog=__doc__,
     )
@@ -535,11 +546,11 @@ def main(args):
         'capsule',
         epilog=_capsule.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Make capsule separately')
+        help='Generate or upgrade the capsule explicitly ')
     cparser.add_argument('--upgrade', action='store_true',
-                         help='Upgrade the capsule to latest version');
-    cparser.add_argument('path', nargs='?', default='',
-                         help='Path to save capsule, default is current path')
+                         help='Upgrade the capsule to latest version')
+    cparser.add_argument('path', nargs='?', default=os.path.expanduser('~'),
+                         help='Path to save capsule, default is home path')
     cparser.set_defaults(func=_capsule)
 
     #
@@ -588,7 +599,6 @@ def main(args):
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
 
-
     #
     # Command: config
     #
@@ -613,7 +623,7 @@ def main(args):
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
                          help='[DEPRECATED] Use --obf-mod instead')
     cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE,
-                         help='[DEPRECATED] Use --obf-code and --wrap-mode' \
+                         help='[DEPRECATED] Use --obf-code and --wrap-mode'
                               ' instead')
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
     cparser.add_argument('--obf-code', type=int, choices=(0, 1))
@@ -746,7 +756,6 @@ def main(args):
                          default=1, type=int)
     cparser.set_defaults(func=_benchmark)
 
-
     #
     # Command: pack
     #
@@ -763,10 +772,19 @@ def main(args):
     if args.silent:
         logging.getLogger().setLevel(100)
 
+    logging.info(_version_info())
+    logging.debug('PyArmor install path: %s', PYARMOR_PATH)
+
+    capsule = DEFAULT_CAPSULE
+    if not (os.path.exists(capsule) and check_capsule(capsule)):
+        logging.info('Generate global capsule %s', capsule)
+        make_capsule(capsule)
+
     if hasattr(args, 'func'):
         args.func(args)
     else:
         parser.print_help()
+
 
 def main_entry():
     logging.basicConfig(
@@ -781,6 +799,7 @@ def main_entry():
             raise
         logging.error('%s', e)
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main_entry()

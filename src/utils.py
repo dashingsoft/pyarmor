@@ -76,8 +76,6 @@ def download_pytransform(libname):
 
 def make_capsule(filename):
     path = PYARMOR_PATH
-    logging.info('PyArmor install path: %s', path)
-
     for a in 'public.key', 'license.lic':
         x = os.path.join(path, a)
         if not os.path.exists(x):
