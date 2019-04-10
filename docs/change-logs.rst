@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.2.6
+-----
+* Fix issue: raise codec exception as obfuscating the script of utf-8 with BOM
+* Change the default path to user home for command `capsule`
+
 5.2.5
 -----
 * Fix issue: raise IndexError if output path is '.' as building project
