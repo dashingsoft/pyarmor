@@ -60,7 +60,7 @@ class Project(dict):
         ('output', default_output_path), \
         ('capsule', capsule_filename), \
         ('runtime_path', None), \
-        ('disable_restrict_mode', 1), \
+        ('disable_restrict_mode', 0), \
         ('obf_module_mode', default_obf_module_mode), \
         ('obf_code_mode', default_obf_code_mode), \
         ('obf_code', 1), \
@@ -201,6 +201,7 @@ class Project(dict):
                 v = self[k]
             lines.append('%16s: %s' % (k, v))
         return '\n'.join(lines)
+
 
 if __name__ == '__main__':
     project = Project()
