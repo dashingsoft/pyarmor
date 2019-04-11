@@ -157,6 +157,7 @@ $PYARMOR init --src examples/testpkg/mypkg --entry "../main.py" \
 
 check_return_value
 
+$PYARMOR config --disable-restrict-mode=1 projects/testpkg
 $PYARMOR info projects/testpkg >result.log 2>&1
 
 check_return_value
@@ -180,6 +181,11 @@ echo ""
 csih_inform "Case 3.1: config py2exe"
 ( cd projects/py2exe; $ARMOR config --runtime-path='' \
     --manifest="global-include *.py, exclude __manifest__.py" \
+    >result.log 2>&1 )
+check_return_value
+
+csih_inform "Case 3.2: config pybench"
+( cd projects/pybench; $ARMOR config --disable-restrict-mode=1 \
     >result.log 2>&1 )
 check_return_value
 
@@ -321,11 +327,6 @@ from pytransform import pyarmor_runtime, get_license_info
 pyarmor_runtime()
 print(get_license_info())
 EOF
-
-# Remove decorator @dllmethod from get_registration_code
-# It will raise exception if pyarmor is trial version
-$SED -i -e "s/def get_registration_code/def _empty(): pass\ndef get_registration_code/g" \
-    projects/pybench/dist/pytransform.py;
 
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
