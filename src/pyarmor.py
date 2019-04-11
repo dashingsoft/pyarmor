@@ -90,7 +90,7 @@ EXAMPLES
         logging.info('Project is configured as package')
         project = Project(name=name, title=name, src=src,
                           entry=args.entry if args.entry else '__init__.py',
-                          is_package=1, obf_code_mode='wrap')
+                          is_package=1, disable_restrict_mode=1)
     else:
         logging.info('Project is configured as standalone application.')
         project = Project(name=name, title=name, src=src, entry=args.entry)
@@ -452,9 +452,16 @@ def _obfuscate(args):
         encrypt_script(prokey, a, b, protection=protection)
     logging.info('%d scripts have been obfuscated', len(files))
 
-    logging.info('Make runtime files')
     make_runtime(capsule, output)
-    if not args.restrict:
+
+    if entry and entry.endswith('__init__.py') and args.restrict is None:
+        logging.info('Disable restrict mode for package by default')
+        restrict = 0
+    else:
+        restrict = 1 if args.restrict is None else args.restrict
+        logging.info('Obfuscate scripts with restrict mode %s',
+                     'on' if restrict else 'off')
+    if not restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
         licfile = os.path.join(output, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
@@ -569,7 +576,7 @@ def main(args):
                          help='Match files recursively')
     cparser.add_argument('-s', '--src', metavar='PATH',
                          help='Base path for search python scripts')
-    cparser.add_argument('--restrict', type=int, default=1, choices=(0, 1),
+    cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          help='Set restrict mode')
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
                          default=1,
