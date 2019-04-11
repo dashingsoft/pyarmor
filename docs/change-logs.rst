@@ -7,6 +7,8 @@ Change Logs
 -----
 * Fix issue: raise codec exception as obfuscating the script of utf-8 with BOM
 * Change the default path to user home for command `capsule`
+* Disable restrict mode by default as obfuscating special script `__init__.py`
+* Refine log message
 
 5.2.5
 -----
