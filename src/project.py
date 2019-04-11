@@ -198,8 +198,11 @@ class Project(dict):
             if k == 'build_time':
                 v = time.asctime(time.gmtime(self[k]))
             else:
-                v = self[k]
-            lines.append('%16s: %s' % (k, v))
+                v = str(self[k])
+                n = 50
+                if len(v) > n:
+                    v = v[:n] + '\n%24s' % ' ' + v[n:]
+            lines.append('%22s: %s' % (k, v))
         return '\n'.join(lines)
 
 
