@@ -176,17 +176,23 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
 
 
 def make_runtime(capsule, output, licfile=None, platform=None):
+    logging.info('Generating runtime files to %s', output)
+
     myzip = ZipFile(capsule, 'r')
     if 'pytransform.key' in myzip.namelist():
+        logging.info('Extract pytransform.key')
         myzip.extract('pytransform.key', output)
     else:
+        logging.info('Extract pyshield.key, pyshield.lic, product.key')
         myzip.extract('pyshield.key', output)
         myzip.extract('pyshield.lic', output)
         myzip.extract('product.key', output)
 
     if licfile is None:
+        logging.info('Extract license.lic')
         myzip.extract('license.lic', output)
     else:
+        logging.info('Copying %s', licfile)
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
     if platform is None:
@@ -196,13 +202,19 @@ def make_runtime(capsule, output, licfile=None, platform=None):
             sysname = pytransform.format_platname()
             libpath = os.path.join(PYARMOR_PATH, 'platforms')
             libfile = os.path.join(libpath, sysname, libname)
+        logging.info('Copying %s', libfile)
         shutil.copy2(libfile, output)
     else:
         path = os.path.join(PYARMOR_PATH, 'platforms', platform)
         for x in os.listdir(path):
-            shutil.copy2(os.path.join(path, x), output)
+            filename = os.path.join(path, x)
+            logging.info('Copying %s', filename)
+            shutil.copy2(filename, output)
 
-    shutil.copy2(os.path.join(PYARMOR_PATH, 'pytransform.py'), output)
+    filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
+    shutil.copy2(filename, output)
+
+    logging.info('Generate runtime files OK')
 
 
 def make_project_license(capsule, code, output):
