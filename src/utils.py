@@ -235,7 +235,7 @@ def build_path(path, relpath):
     return path if os.path.isabs(path) else os.path.join(relpath, path)
 
 
-def make_command(platform, python, pyarmor, output):
+def make_project_command(platform, python, pyarmor, output):
     script = os.path.abspath(pyarmor)
     if platform.startswith('win'):
         filename = os.path.join(output, 'pyarmor.bat')

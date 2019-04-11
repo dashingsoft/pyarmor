@@ -24,7 +24,10 @@
 #   A tool used to import or run obfuscated python scripts.
 #
 
-'''See "pyarmor.py <command> -h" for more information on a specific command.'''
+'''PyArmor is a command line tool used to obfuscate python scripts,
+bind obfuscated scripts to fixed machine or expire obfuscated scripts.
+
+'''
 
 import logging
 import os
@@ -45,7 +48,7 @@ from config import version, version_info, plat_name, \
 from project import Project
 from utils import PYARMOR_PATH, make_capsule, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
-                  build_path, make_command, get_registration_code, \
+                  build_path, make_project_command, get_registration_code, \
                   check_capsule, pytransform_bootstrap, encrypt_script, \
                   get_product_key, upgrade_capsule
 
@@ -54,25 +57,13 @@ import packer
 DEFAULT_CAPSULE = os.path.expanduser(os.path.join('~', capsule_filename))
 
 
-def armorcommand(func):
+def arcommand(func):
     return func
-    # def wrap(*args, **kwargs):
-    #     try:
-    #         return func(*args, **kwargs)
-    #     except Exception as e:
-    #         logging.exception(e)
-    # wrap.__doc__ = func.__doc__
-    # return wrap
 
 
-@armorcommand
+@arcommand
 def _init(args):
-    '''Create an empty project or reinitialize an existing one
-
-EXAMPLES
-
-    pyarmor init --src=examples/simple --entry=queens.py project1
-    '''
+    '''Create an empty project or reinitialize an existing one.'''
     path = args.project
     logging.info('Create project in %s ...', path)
 
@@ -109,14 +100,14 @@ EXAMPLES
     logging.info('Configure file %s created', filename)
 
     logging.info('Create pyarmor command ...')
-    script = make_command(plat_name, sys.executable, sys.argv[0], path)
+    script = make_project_command(plat_name, sys.executable, sys.argv[0], path)
     logging.info('PyArmor command %s created', script)
 
     logging.info('Project init successfully.')
 
 
-@armorcommand
-def _update(args):
+@arcommand
+def _config(args):
     '''Update project settings.
 
 Option --manifest is comma-separated list of manifest template
@@ -125,12 +116,6 @@ command, same as MANIFEST.in of Python Distutils. The default value is
 
 Option --entry is comma-separated list of entry scripts, relative to
 src path of project.
-
-Examples,
-
-    cd projects/project1
-    ./pyarmor config --entry "main.py, another/main.py"
-                     --manifest "global-include *.py, exclude test*.py"
 
     '''
     project = Project()
@@ -150,7 +135,7 @@ Examples,
     logging.info('Update project OK.')
 
 
-@armorcommand
+@arcommand
 def _info(args):
     '''Show project information'''
     project = Project()
@@ -158,7 +143,7 @@ def _info(args):
     logging.info('Project %s information\n%s', args.project, project.info())
 
 
-@armorcommand
+@arcommand
 def _build(args):
     '''Build project, obfuscate all scripts in the project.'''
     project = Project()
@@ -258,22 +243,9 @@ def _build(args):
     logging.info('Build project OK.')
 
 
-@armorcommand
+@arcommand
 def _licenses(args):
-    '''Generate licenses for obfuscated scripts.
-
-Examples,
-
-* Expired license for global capsule
-
-    pyarmor licenses --expired=2018-05-12 Customer-Jordan
-
-* Bind license to fixed harddisk and expired someday for project
-
-    cd projects/myproject
-    ./pyarmor licenses -e 2018-05-12 \\
-              --bind-disk '100304PBN2081SF3NJ5T' Customer-Tom
-    '''
+    '''Generate licenses for obfuscated scripts.'''
     if os.path.exists(os.path.join(args.project, config_filename)):
         logging.info('Generate licenses for project %s ...', args.project)
         project = Project()
@@ -368,7 +340,7 @@ Examples,
     logging.info('Generate %d licenses OK.', len(args.codes))
 
 
-@armorcommand
+@arcommand
 def _target(args):
     project = Project()
     project.open(args.project)
@@ -383,7 +355,7 @@ def _target(args):
     project.save(args.project)
 
 
-@armorcommand
+@arcommand
 def _capsule(args):
     '''Generate the capsule explicitly'''
     capsule = os.path.join(args.path, capsule_filename)
@@ -399,7 +371,7 @@ def _capsule(args):
         make_capsule(capsule)
 
 
-@armorcommand
+@arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project'''
     if args.src is None and args.entry is None and not args.scripts:
@@ -475,7 +447,7 @@ def _obfuscate(args):
     logging.info('Obfuscate %d scripts OK.', len(files))
 
 
-@armorcommand
+@arcommand
 def _check(args):
     '''Check consistency of project'''
     project = Project()
@@ -485,12 +457,12 @@ def _check(args):
     logging.info('Check project OK.')
 
 
-@armorcommand
+@arcommand
 def _benchmark(args):
     '''Run benchmark test in current machine'''
     logging.info('Start benchmark test ...')
     logging.info('Obfuscate module mode: %s', args.obf_mod)
-    logging.info('Obfuscate bytecode mode: %s', args.obf_code)
+    logging.info('Obfuscate code mode: %s', args.obf_code)
     logging.info('Obfuscate wrap mode: %s', args.wrap_mode)
 
     logging.info('Benchmark bootstrap ...')
@@ -513,7 +485,7 @@ def _benchmark(args):
     logging.info('Finish benchmark test.')
 
 
-@armorcommand
+@arcommand
 def _hdinfo(args):
     show_hd_info()
 
@@ -532,10 +504,9 @@ def main(args):
     parser = argparse.ArgumentParser(
         prog='pyarmor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='PyArmor is a command line tool used to obfuscate '
-                    'python scripts, bind obfuscated scripts to fixed '
-                    'machine or expire obfuscated scripts.',
-        epilog=__doc__,
+        description=__doc__,
+        epilog='See "pyarmor <command> -h" for more information '
+               'on a specific command.'
     )
     parser.add_argument('-v', '--version', action='version',
                         version=_version_info())
@@ -544,7 +515,7 @@ def main(args):
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
-        metavar='<command>'
+        metavar=''
     )
 
     #
@@ -612,7 +583,7 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'config',
-        epilog=_update.__doc__,
+        epilog=_config.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Update project settings')
     cparser.add_argument('project', nargs='?', metavar='PATH',
@@ -638,7 +609,7 @@ def main(args):
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1))
     cparser.add_argument('--runtime-path', metavar="RPATH")
-    cparser.set_defaults(func=_update)
+    cparser.set_defaults(func=_config)
 
     #
     # Command: info
@@ -676,11 +647,11 @@ def main(args):
     cparser.add_argument('project', nargs='?', metavar='PATH', default='',
                          help='Project path')
     cparser.add_argument('-B', '--force', action='store_true',
-                         help='Obfuscate all scripts even if it\'s not updated')
+                         help='Force to obfuscate all scripts')
     cparser.add_argument('-r', '--only-runtime', action='store_true',
                          help='Generate extra runtime files only')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
-                         help='DO NOT generate extra runtime files')
+                         help='DO NOT generate runtime files')
     cparser.add_argument('-O', '--output',
                          help='Output path, override project configuration')
     cparser.set_defaults(func=_build)
