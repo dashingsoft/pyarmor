@@ -103,8 +103,7 @@ check_return_value
 check_file_content dist2-2/result.log 'Found 92 solutions'
 
 csih_inform "Case 1.3: run obfuscate script with new license"
-$PYARMOR obfuscate --src examples/simple --entry queens.py \
-    --output dist3 queens.py  >result.log 2>&1
+$PYARMOR obfuscate --output dist3 examples/simple/queens.py >result.log 2>&1
 check_return_value
 check_file_exists dist3/queens.py
 

@@ -89,9 +89,9 @@ check_file_content projects/test-capsule/.pyarmor_config "project2.zip"
 
 csih_inform "C-3. Test option --capsule for obfuscate"
 $PYARMOR init --src=examples/simple test-capsule >result.log 2>&1
-$PYARMOR obfuscate --src=examples/simple --output=dist-capsule \
-    --entry=queens.py --capsule=test-capsule/.pyarmor-capsule.zip \
-    >result.log 2>&1
+$PYARMOR obfuscate --capsule=test-capsule/.pyarmor-capsule.zip \
+         --output=dist-capsule examples/simple/queens.py \
+         >result.log 2>&1
 
 check_file_exists dist-capsule/queens.py
 check_file_content dist-capsule/queens.py '__pyarmor__(__name__'
@@ -147,8 +147,8 @@ check_file_content projects/test-bind-file/dist/result.log 'Found 92 solutions'
 
 csih_inform "C-6. Test option --recursive for obfuscate"
 rm .pyarmor_capsule.zip
-$PYARMOR obfuscate --src=examples/simple --entry queens.py --recursive \
-    -O dist-recursive >result.log 2>&1
+$PYARMOR obfuscate --recursive -O dist-recursive \
+         examples/simple/queens.py >result.log 2>&1
 check_return_value
 
 (cd dist-recursive; $PYTHON queens.py >result.log 2>&1 )
