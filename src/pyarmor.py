@@ -366,6 +366,11 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project'''
+
+    for x in ('src', 'entry', 'capsule', 'cross-protection', 'restrict'):
+        if args.getattr(x.replace('-', '_')):
+            logging.warning('Option --%s has been deprecated', x)
+
     if args.src is None and not args.scripts:
         raise RuntimeError('No scripts specified')
 
@@ -425,7 +430,7 @@ def _obfuscate(args):
     for x in files:
         a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
-        protection = args.cross_protection and entry \
+        protection = (not args.no_cross_protection) and entry \
             and (os.path.abspath(a) == os.path.abspath(entry))
 
         d = os.path.dirname(b)
@@ -437,20 +442,21 @@ def _obfuscate(args):
 
     make_runtime(capsule, output)
 
-    if entry and entry.endswith('__init__.py') and args.restrict is None:
+    if entry and entry.endswith('__init__.py'):
         logging.info('Disable restrict mode for package by default')
-        restrict = 0
+        no_restrict = 1
     else:
-        restrict = 1 if args.restrict is None else args.restrict
+        no_restrict = not args.restrict if args.no_restrict is None else \
+            args.no_restrict
         logging.info('Obfuscate scripts with restrict mode %s',
-                     'on' if restrict else 'off')
-    if not restrict:
+                     'off' if no_restrict else 'on')
+    if no_restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
         licfile = os.path.join(output, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
-    if entry and os.path.exists(entry):
+    if (not args.no_bootstrap) and entry and os.path.exists(entry):
         if os.path.isabs(entry):
             logging.info('Use outer entry script "%s"', entry)
             make_entry(entry, path, output)
@@ -554,25 +560,29 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts')
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
-    cparser.add_argument('-e', '--entry', metavar='SCRIPT',
-                         help='Specify outer entry script or none')
     cparser.add_argument('-r', '--recursive', action='store_true',
-                         help='Obfucate the scripts recursively')
-    cparser.add_argument('-s', '--src', metavar='PATH',
-                         help='Base path for search python scripts')
-    cparser.add_argument('--restrict', type=int, choices=(0, 1),
-                         help='Enable or disable restrict mode')
-    cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
-                         default=1,
-                         help='Enable or disable to insert protection code')
-    cparser.add_argument('--capsule',
-                         help='Use this capsule other than global capsule')
+                         help='Search scripts in recursive mode')
     cparser.add_argument('--exclude',
-                         help='Exclude the pathes in recursive mode')
+                         help='Exclude the path in recursive mode')
     cparser.add_argument('--exact', action='store_true',
-                         help='Only obfusate listed scripts')
+                         help='Only obfusate list scripts')
+    cparser.add_argument('--no-restrict', action='store_true',
+                         help='Disable restrict mode')
+    cparser.add_argument('--no-bootstrap', action='store_true',
+                         help='Do not insert bootstrap code to entry script')
+    cparser.add_argument('--no-cross-protection', action='store_true',
+                         help='Disable restrict mode')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
-                         help='Scripts to obfuscted')
+                         help='List scripts to obfuscted')
+    cparser.add_argument('-s', '--src', metavar='PATH',
+                         help='[DEPRECATED]Base path for searching scripts')
+    cparser.add_argument('-e', '--entry', metavar='SCRIPT',
+                         help='[DEPRECATED]Specify entry script')
+    cparser.add_argument('--restrict', type=int, choices=(0, 1),
+                         help='[DEPRECATED]Enable or disable restrict mode')
+    cparser.add_argument('--cross-protection', choices=(0, 1), default=1,
+                         help='[DEPRECATED]')
+    cparser.add_argument('--capsule', help='[DEPRECATED]')
     cparser.set_defaults(func=_obfuscate)
 
     #
