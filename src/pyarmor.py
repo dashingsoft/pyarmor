@@ -413,9 +413,6 @@ def _obfuscate(args):
     else:
         logging.info('Normal mode is on')
         files = Project.build_globfiles(['*.py'], path)
-        if args.exclude:
-            for x in args.exclude.split(','):
-                pass
 
     logging.info('Save obfuscated scripts to "%s"', output)
     if not os.path.exists(output):
