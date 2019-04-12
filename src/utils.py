@@ -147,6 +147,7 @@ def make_entry(entris, path, output, rpath=None, ispackage=False):
         else:
             filename = os.path.join(output, os.path.basename(src))
         if not os.path.exists(filename):
+            logging.info('Copy entry script %s to %s', src, filename)
             shutil.copy(src, filename)
         logging.info('Insert bootstrap code to entry script %s', filename)
         _make_entry(filename, rpath)
