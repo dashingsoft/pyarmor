@@ -99,7 +99,7 @@ def _init(args):
     project.save(path)
     logging.info('Configure file %s created', filename)
 
-    if sys.argv[1] == 'pyarmor.py':
+    if sys.argv[0] == 'pyarmor.py':
         logging.info('Create pyarmor command ...')
         s = make_project_command(plat_name, sys.executable, sys.argv[0], path)
         logging.info('PyArmor command %s created', s)
