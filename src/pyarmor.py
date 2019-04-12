@@ -99,25 +99,17 @@ def _init(args):
     project.save(path)
     logging.info('Configure file %s created', filename)
 
-    logging.info('Create pyarmor command ...')
-    script = make_project_command(plat_name, sys.executable, sys.argv[0], path)
-    logging.info('PyArmor command %s created', script)
+    if sys.argv[1] == 'pyarmor.py':
+        logging.info('Create pyarmor command ...')
+        s = make_project_command(plat_name, sys.executable, sys.argv[0], path)
+        logging.info('PyArmor command %s created', s)
 
     logging.info('Project init successfully.')
 
 
 @arcommand
 def _config(args):
-    '''Update project settings.
-
-Option --manifest is comma-separated list of manifest template
-command, same as MANIFEST.in of Python Distutils. The default value is
-"global-include *.py"
-
-Option --entry is comma-separated list of entry scripts, relative to
-src path of project.
-
-    '''
+    '''Update project settings.'''
     project = Project()
     project.open(args.project)
     logging.info('Update project %s ...', args.project)
@@ -374,13 +366,15 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project'''
-    if args.src is None and args.entry is None and not args.scripts:
-        raise RuntimeError('No entry script')
+    if args.src is None and not args.scripts:
+        raise RuntimeError('No scripts specified')
+
+    path = os.path.abspath(os.path.dirname(args.scripts[0])
+                           if args.src is None else args.src)
+    logging.info('Source path is "%s"', path)
 
     entry = args.entry or (args.scripts and args.scripts[0])
-    path = os.path.abspath(os.path.dirname(entry) if args.src is None
-                           else args.src)
-    logging.info('Obfuscate scripts in path "%s"', path)
+    logging.info('Entry script is %s', entry)
 
     capsule = args.capsule if args.capsule else DEFAULT_CAPSULE
     if os.path.exists(capsule) and check_capsule(capsule):
@@ -392,16 +386,36 @@ def _obfuscate(args):
     output = args.output
     if os.path.abspath(output) == path:
         raise RuntimeError('Output path can not be same as src')
+
     if args.recursive:
-        pats = ['global-include *.py', 'prune build', 'prune dist']
+        logging.info('Recursive mode is on')
+        pats = ['global-include *.py']
+
+        if args.exclude:
+            for x in args.exclude.split(','):
+                logging.info('Exclude path "%s"', x)
+                pats.append('prune %s' % x)
+
         if os.path.abspath(output).startswith(path):
             x = os.path.abspath(output)[len(path):].strip('/\\')
             pats.append('prune %s' % x)
+            logging.info('Auto exclude output path "%s"', x)
+
         if hasattr('', 'decode'):
             pats = [p.decode() for p in pats]
+
         files = Project.build_manifest(pats, path)
+
+    elif args.exact:
+        logging.info('Exact mode is on')
+        files = [os.path.abspath(x) for x in args.scripts]
+
     else:
+        logging.info('Normal mode is on')
         files = Project.build_globfiles(['*.py'], path)
+        if args.exclude:
+            for x in args.exclude.split(','):
+                pass
 
     logging.info('Save obfuscated scripts to "%s"', output)
     if not os.path.exists(output):
@@ -439,10 +453,12 @@ def _obfuscate(args):
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
-    if entry:
-        make_entry(os.path.basename(entry), path, output)
-    for script in args.scripts[1:]:
-        make_entry(os.path.basename(script), path, output)
+    if entry and os.path.exists(entry):
+        if os.path.isabs(entry):
+            logging.info('Use outer entry script "%s"', entry)
+            make_entry(entry, path, output)
+        else:
+            make_entry(os.path.basename(entry), path, output)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
@@ -542,18 +558,22 @@ def main(args):
         help='Obfuscate python scripts')
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
-                         help='Entry script [DEPRECATED]')
+                         help='Specify outer entry script or none')
     cparser.add_argument('-r', '--recursive', action='store_true',
-                         help='Match files recursively')
+                         help='Obfucate the scripts recursively')
     cparser.add_argument('-s', '--src', metavar='PATH',
                          help='Base path for search python scripts')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
-                         help='Set restrict mode')
+                         help='Enable or disable restrict mode')
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
                          default=1,
-                         help='Enable/disable to insert protection code')
+                         help='Enable or disable to insert protection code')
     cparser.add_argument('--capsule',
                          help='Use this capsule other than global capsule')
+    cparser.add_argument('--exclude',
+                         help='Exclude the pathes in recursive mode')
+    cparser.add_argument('--exact', action='store_true',
+                         help='Only obfusate listed scripts')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
                          help='Scripts to obfuscted')
     cparser.set_defaults(func=_obfuscate)
