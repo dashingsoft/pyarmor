@@ -3,6 +3,15 @@
 Change Logs
 ===========
 
+5.2.7
+-----
+* In command `obfuscate` add new options `--exclude`, `--exact`,
+  `--no-bootstrap`, `--no-restrict`, `--no-cross-protection`.
+* In command `obfuscate` deprecrate the options `--src`, `--entry`,
+  `--cross-protection`, `--restrict`.
+* In command `licenses` add new option `--no-restrict`
+* In command `licenses` deprecrate the option `--restrict`
+
 5.2.6
 -----
 * Fix issue: raise codec exception as obfuscating the script of utf-8 with BOM
