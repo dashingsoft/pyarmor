@@ -230,9 +230,9 @@ Create a project to manage obfuscated scripts.
 
 **OPTIONS**:
 
--t, --type {auto,app,pkg}    Project type, default is auto
--s, --src SRC                Base path of python scripts, default is current path
--e, --entry ENTRY            Entry script of this project
+-t, --type auto|app|pkg  Project type, default is auto
+-s, --src SRC            Base path of python scripts, default is current path
+-e, --entry ENTRY        Entry script of this project
 
 **DESCRIPTION**
 
@@ -289,12 +289,12 @@ Update project settings.
 --output OUTPUT                 Output path for obfuscated scripts
 --manifest TEMPLATE             Manifest template string
 --entry SCRIPT                  Entry script of this project
---is-package {0,1}              
---disable-restrict-mode {0,1}
---obf-mod {0,1}
---obf-code {0,1}
---wrap-mode {0,1}
---cross-protection {0,1}
+--is-package 0,1                Project is package or not        
+--disable-restrict-mode 0,1
+--obf-mod 0,1
+--obf-code 0,1
+--wrap-mode 0,1
+--cross-protection 0,1
 --runtime-path RPATH
 
 **DESCRIPTION**
