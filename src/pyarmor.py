@@ -64,8 +64,11 @@ def arcommand(func):
 @arcommand
 def _init(args):
     '''Create an empty project or reinitialize an existing one.'''
-    path = args.project
+    path = os.path.normpath(args.project)
     logging.info('Create project in %s ...', path)
+
+    if os.path.exists(os.path.join(path, config_filename)):
+        raise RuntimeError('A project already exists in "%s"' % path)
 
     if not os.path.exists(path):
         logging.info('Make project directory %s', path)
@@ -606,10 +609,10 @@ def main(args):
                          choices=('auto', 'app', 'pkg'))
     cparser.add_argument('-e', '--entry',
                          help='Entry script of this project')
-    cparser.add_argument('-s', '--src', required=True, default='',
+    cparser.add_argument('-s', '--src', default='',
                          help='Base path of python scripts')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('project', nargs='?', help='Project path')
+    cparser.add_argument('project', nargs='?', default='', help='Project path')
     cparser.set_defaults(func=_init)
 
     #
