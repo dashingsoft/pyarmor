@@ -134,6 +134,34 @@ local time::
     if response.tx_time > mktime(strptime('20190202', '%Y%m%d')):
         sys.exit(1)
 
+Obfuscating Single Module
+-------------------------
+
+To obfuscate one module exactly, use option `--exact`::
+
+    pyarmor obfuscate --exact --no-restrict foo.py
+
+Only :file:`foo.py` is obfuscated, and it could be imported by any
+other plain script. Without option `--no-restrict`, the obfuscated
+module only can be imported from other obfuscated scripts.
+
+Now import this obfuscated module::
+
+    cd dist
+    python -c "import foo"
+
+Obfuscating Whole Package
+-------------------------
+
+Run the following command to obfuscate a package::
+
+    pyarmor obfuscate --recursive --output dist/mypkg mykpg/__init__.py
+
+To import the obfuscated package::
+
+    cd dist
+    python -c "import mypkg"
+
 Packing Obfuscated Scripts
 --------------------------
 
