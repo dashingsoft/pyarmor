@@ -19,14 +19,9 @@ Use command ``init`` to create a project::
 
     pyarmor init --src=examples/pybench --entry=pybench.py projects/pybench
 
-The project path `projects/pybench` will be created, and ther are 2 files in it::
-
-    .pyarmor_config
-    pyarmor.bat or pyarmor
-
-:file:`.pyarmor_config` is project configuration of JSON format.
-
-The next file is shell script to call ``pyarmor`` in this project.
+The project path `projects/pybench` will be created, and ther is a
+:file:`.pyarmor_config` created at the same time, which is project
+configuration of JSON format.
 
 The common usage for project is to do any thing in the project path::
 
@@ -34,20 +29,20 @@ The common usage for project is to do any thing in the project path::
 
 Show project information::
 
-    ./pyarmor info
+    pyarmor info
 
 Obfuscate all the scripts in this project::
 
-    ./pyarmor build
+    pyarmor build
 
 Exclude the :file:`dist`, :file:`test`, the `.py` files in these
 folder will not be obfuscated::
 
-    ./pyarmor config --manifest "include *.py, prune dist, prune test"
+    pyarmor config --manifest "include *.py, prune dist, prune test"
 
 Force rebuild::
 
-    ./pyarmor build --force
+    pyarmor build --force
 
 Run obfuscated script::
 
@@ -57,7 +52,7 @@ Run obfuscated script::
 After some scripts changed, just run ``build`` again::
 
     cd projects/pybench
-    ./pyarmor build
+    pyarmor build
 
 .. _obfuscating scripts with different modes:
 
@@ -66,11 +61,11 @@ Obfuscating Scripts With Different Modes
 
 Configure mode to obfuscate scripts::
 
-    ./pyarmor config --obf-mod=1 --obf-code=0
+    pyarmor config --obf-mod=1 --obf-code=0
 
 Obfuscating scripts in new mode::
 
-    ./pyarmor build -B
+    pyarmor build -B
 
 
 Project Configuration File
