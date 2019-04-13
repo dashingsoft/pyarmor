@@ -142,6 +142,9 @@ def _build(args):
     project.open(args.project)
     logging.info('Build project %s ...', args.project)
 
+    logging.info('Check project')
+    project._check(args.project)
+
     capsule = build_path(project.capsule, args.project)
     logging.info('Use capsule: %s', capsule)
 
@@ -603,10 +606,9 @@ def main(args):
                          choices=('auto', 'app', 'pkg'))
     cparser.add_argument('-e', '--entry',
                          help='Entry script of this project')
-    cparser.add_argument('-s', '--src', required=True,
+    cparser.add_argument('-s', '--src', required=True, default='',
                          help='Base path of python scripts')
-    cparser.add_argument('--capsule',
-                         help='Use this capsule other than global capsule')
+    cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('project', nargs='?', help='Project path')
     cparser.set_defaults(func=_init)
 
@@ -624,7 +626,7 @@ def main(args):
     cparser.add_argument('--title')
     cparser.add_argument('--src')
     cparser.add_argument('--output')
-    cparser.add_argument('--capsule', help='Project capsule')
+    cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--manifest', metavar='TEMPLATE',
                          help='Manifest template string')
     cparser.add_argument('--entry', metavar='SCRIPT',
