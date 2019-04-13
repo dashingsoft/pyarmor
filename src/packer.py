@@ -41,7 +41,6 @@ import os
 import shutil
 import subprocess
 import sys
-import time
 
 from distutils.util import get_platform
 from glob import glob
@@ -220,7 +219,7 @@ def update_specfile(project, obfdist, src, entry, specfile):
 
     patched_lines = (
     "", "# Patched by PyArmor",
-    "a.scripts[0] = '%s', r'%s', 'PYSOURCE'" % (
+    "a.scripts[-1] = '%s', r'%s', 'PYSOURCE'" % (
         entry[:-3], os.path.join(obfdist, entry)),
     "for i in range(len(a.pure)):",
     "    if a.pure[i][1].startswith(a.pathex[0]):",
