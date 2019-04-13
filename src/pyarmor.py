@@ -124,10 +124,14 @@ def _config(args):
         args.capsule = os.path.abspath(args.capsule)
         logging.info('Change capsule to absolute path: %s', args.capsule)
     keys = project._update(dict(args._get_kwargs()))
-    logging.info('Changed attributes: %s', keys)
+    for k in keys:
+        logging.info('Change project %s to "%s"', k, getattr(project, k))
 
-    project.save(args.project)
-    logging.info('Update project OK.')
+    if keys:
+        project.save(args.project)
+        logging.info('Update project OK.')
+    else:
+        logging.info('Nothing changed.')
 
 
 @arcommand
