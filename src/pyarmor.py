@@ -367,8 +367,8 @@ def _capsule(args):
 def _obfuscate(args):
     '''Obfuscate scripts without project'''
 
-    for x in ('src', 'entry', 'capsule', 'cross-protection', 'restrict'):
-        if args.getattr(x.replace('-', '_')):
+    for x in ('src', 'entry', 'cross-protection', 'restrict'):
+        if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
     if args.src is None and not args.scripts:
@@ -427,10 +427,12 @@ def _obfuscate(args):
     prokey = get_product_key(capsule)
 
     logging.info('Obfuscate scripts with default mode')
+    cross_protection = 0 if args.no_cross_protection else \
+        1 if args.cross_protection is None else args.cross_protection
     for x in files:
         a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
-        protection = (not args.no_cross_protection) and entry \
+        protection = cross_protection and entry \
             and (os.path.abspath(a) == os.path.abspath(entry))
 
         d = os.path.dirname(b)
@@ -580,9 +582,9 @@ def main(args):
                          help='[DEPRECATED]Specify entry script')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          help='[DEPRECATED]Enable or disable restrict mode')
-    cparser.add_argument('--cross-protection', choices=(0, 1), default=1,
+    cparser.add_argument('--cross-protection', choices=(0, 1),
                          help='[DEPRECATED]')
-    cparser.add_argument('--capsule', help='[DEPRECATED]')
+    cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.set_defaults(func=_obfuscate)
 
     #
