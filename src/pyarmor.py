@@ -129,7 +129,7 @@ def _config(args):
 
 @arcommand
 def _info(args):
-    '''Show project information'''
+    '''Show project information.'''
     project = Project()
     project.open(args.project)
     logging.info('Project %s information\n%s', args.project, project.info())
@@ -351,7 +351,7 @@ def _target(args):
 
 @arcommand
 def _capsule(args):
-    '''Generate the capsule explicitly'''
+    '''Generate the capsule explicitly.'''
     capsule = os.path.join(args.path, capsule_filename)
     if args.upgrade:
         logging.info('Preparing to upgrade the capsule %s ...', capsule)
@@ -367,7 +367,7 @@ def _capsule(args):
 
 @arcommand
 def _obfuscate(args):
-    '''Obfuscate scripts without project'''
+    '''Obfuscate scripts without project.'''
 
     for x in ('src', 'entry', 'cross-protection', 'restrict'):
         if getattr(args, x.replace('-', '_')) is not None:
@@ -472,7 +472,7 @@ def _obfuscate(args):
 
 @arcommand
 def _check(args):
-    '''Check consistency of project'''
+    '''Check consistency of project.'''
     project = Project()
     project.open(args.project)
     logging.info('Check project %s ...', args.project)
@@ -482,7 +482,7 @@ def _check(args):
 
 @arcommand
 def _benchmark(args):
-    '''Run benchmark test in current machine'''
+    '''Run benchmark test in current machine.'''
     logging.info('Start benchmark test ...')
     logging.info('Obfuscate module mode: %s', args.obf_mod)
     logging.info('Obfuscate code mode: %s', args.obf_code)
@@ -567,7 +567,8 @@ def main(args):
     cparser.add_argument('-r', '--recursive', action='store_true',
                          help='Search scripts in recursive mode')
     cparser.add_argument('--exclude',
-                         help='Exclude the path in recursive mode')
+                         help='Exclude the path in recursive mode. '
+                         'Multiple paths are allowed, separated by ","')
     cparser.add_argument('--exact', action='store_true',
                          help='Only obfusate list scripts')
     cparser.add_argument('--no-restrict', action='store_true',
@@ -734,9 +735,9 @@ def main(args):
     cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('-O', '--output', help='Output path')
     cparser.add_argument('--no-restrict', action='store_true',
-                         help='Disable restrict mode')
+                         help='Generate license for non-restrict mode')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
-                         help='[DEPRECATED]Generate license for restrict mode')
+                         help=argparse.SUPPRESS)
 
     cparser.set_defaults(func=_licenses)
 
