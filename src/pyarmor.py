@@ -238,6 +238,10 @@ def _build(args):
 @arcommand
 def _licenses(args):
     '''Generate licenses for obfuscated scripts.'''
+    for x in ('bind-file', 'restrict'):
+        if getattr(args, x.replace('-', '_')) is not None:
+            logging.warning('Option --%s has been deprecated', x)
+
     if os.path.exists(os.path.join(args.project, config_filename)):
         logging.info('Generate licenses for project %s ...', args.project)
         project = Project()
@@ -246,16 +250,14 @@ def _licenses(args):
             if args.capsule is None else args.capsule
     else:
         if args.project != '':
-            logging.warning('Ignore option --project, no project in %s',
-                            args.project)
+            logging.warning('Ignore option --project, there is no project')
         capsule = DEFAULT_CAPSULE if args.capsule is None else args.capsule
         if not (os.path.exists(capsule) and check_capsule(capsule)):
             logging.info('Generate capsule %s', capsule)
             make_capsule(capsule)
         logging.info('Generate licenses with capsule %s ...', capsule)
-        project = {
-            'disable_restrict_mode': 0 if args.restrict else 1,
-        }
+        project = dict(disable_restrict_mode=1 if args.no_restrict else
+                       0 if args.restrict is None else args.restrict)
 
     licpath = os.path.join(
         args.project if args.output is None else args.output,
@@ -273,10 +275,10 @@ def _licenses(args):
               time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
 
     if project.get('disable_restrict_mode'):
-        logging.info('The license files generated is in disable restrict mode')
+        logging.info('The license file generated is in disable restrict mode')
         fmt = '%s*FLAGS:%c' % (fmt, 1)
     else:
-        logging.info('The license files generated is in restrict mode')
+        logging.info('The license file generated is in restrict mode')
 
     if args.bind_disk:
         fmt = '%s*HARDDISK:%s' % (fmt, args.bind_disk)
@@ -727,12 +729,14 @@ def main(args):
     group.add_argument('--bind-domain', metavar='DOMAIN',
                        help='Bind license to domain name')
     group.add_argument('--bind-file', metavar='filename;target_filename',
-                       help='Bind license to fixed file')
-    cparser.add_argument('-P', '--project', default='', help='Project path')
-    cparser.add_argument('-C', '--capsule', help='Project capsule')
+                       help=argparse.SUPPRESS)
+    cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
+    cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('-O', '--output', help='Output path')
-    cparser.add_argument('--restrict', type=int, default=1, choices=(0, 1),
-                         help='Generate license for restrict mode')
+    cparser.add_argument('--no-restrict', action='store_true',
+                         help='Disable restrict mode')
+    cparser.add_argument('--restrict', type=int, choices=(0, 1),
+                         help='[DEPRECATED]Generate license for restrict mode')
 
     cparser.set_defaults(func=_licenses)
 
