@@ -61,6 +61,9 @@ search the scripts:
 * Recursive: find all the `.py` files in the path of entry script recursively
 * Exact: only these scripts list in the command line
 
+If there is an entry script and option `--no-cross-protection` is not
+set, PyArmor will insert cross protection code into the entry script.
+
 Next obfuscate all these scripts in the default output path `dist`.
 
 After that generate default :file:`license.lic` for obfuscated scripts
@@ -77,16 +80,16 @@ can be imported from other obfuscated scripts.
 
 **EXAMPLES**
 
-* Obfuscate all the `.py` only in the same path of :file:`foo.py`::
+* Obfuscate all the `.py` only in the current path::
 
      pyarmor obfuscate foo.py
 
-* Obfuscate all the `.py` in the path of :file:`foo.py` recursively::
+* Obfuscate all the `.py` in the current path recursively::
 
      pyarmor obfuscate --recursive foo.py
 
-* Obfuscate all the `.py` in the path of :file:`foo.py` recursively,
-  exclude all the `.py` in the path `build` and `dist`::
+* Obfuscate all the `.py` in the current path recursively, exclude all
+  the `.py` in the path `build` and `dist`::
 
      pyarmor obfuscate --recursive --exclude build,dist foo.py
 
@@ -94,7 +97,7 @@ can be imported from other obfuscated scripts.
 
      pyarmor obfuscate --exact foo.py moda.py
 
-* Obfuscate one package::
+* Obfuscate all the `.py` file in the path `mypkg/`::
 
      pyarmor obfuscate --output dist/mypkg mypkg/__init__.py
 
@@ -103,15 +106,14 @@ can be imported from other obfuscated scripts.
 
      pyarmor obfuscate --exact --no-restrict moda.py
 
-* Obfuscate all the `.py` files in the same path of :file:`foo.py`,
-  but do not insert cross protection code into obfuscated script
-  :file:`dist/foo.py`::
+* Obfuscate all the `.py` files in the current path, but do not insert
+  cross protection code into obfuscated script :file:`dist/foo.py`::
 
      pyarmor obfuscate --no-cross-protection foo.py
 
-* Obfuscate all the `.py` files in the same path of :file:`foo.py`,
-  but do not insert bootstrap code at the beginning of obfuscated
-  script :file:`dist/foo.py`::
+* Obfuscate all the `.py` files in the current path, but do not insert
+  bootstrap code at the beginning of obfuscated script
+  :file:`dist/foo.py`::
 
      pyarmor obfuscate --no-bootstrap foo.py
 
@@ -126,7 +128,7 @@ Generate new licenses for obfuscated scripts.
 
     pyarmor licenses <options> CODE
 
-**OPTIONS**:
+**OPTIONS**
 
 -O, --output OUTPUT         Output path
 -e, --expired YYYY-MM-DD    Expired date for this license
@@ -184,7 +186,7 @@ Obfuscate the scripts and pack them into one bundle.
 
     pyarmor pack <options> SCRIPT
 
-**OPTIONS**:
+**OPTIONS**
 
 -t, --type TYPE      cx_Freeze, py2exe, py2app, PyInstaller(default).
 -O, --output OUTPUT  Directory to put final built distributions in.
@@ -228,7 +230,7 @@ Create a project to manage obfuscated scripts.
 
     pyarmor init <options> PATH
 
-**OPTIONS**:
+**OPTIONS**
 
 -t, --type <auto,app,pkg>  Project type, default value is `auto`
 -s, --src SRC              Base path of python scripts, default is current path
@@ -281,7 +283,7 @@ Update project settings.
 
     pyarmor config <options> [PATH]
 
-**OPTIONS**:
+**OPTIONS**
 
 --name NAME                     Project name
 --title TITLE                   Project title
@@ -339,7 +341,7 @@ build
 
 Build project, obfuscate all scripts in the project.
 
-**OPTIONS**:
+**OPTIONS**
 
 -B, --force           Force to obfuscate all scripts
 -r, --only-runtime    Generate extra runtime files only

@@ -275,9 +275,9 @@ All the string template `{xxx}` will be replaced with real value by
 PyArmor.
 
 To prevent PyArmor from inserting this protection code, pass
-`--cross-protection=0` as obfuscating the scripts::
+`--no-cross-protection` as obfuscating the scripts::
 
-    pyarmor obfuscate --cross-protection=0 foo.py
+    pyarmor obfuscate --no-cross-protection foo.py
 
 After the entry script is obfuscated, the :ref:`Bootstrap Code` will
 be inserted at the beginning of the obfuscated script.
