@@ -7,9 +7,9 @@ Change Logs
 -----
 * In command `obfuscate` add new options `--exclude`, `--exact`,
   `--no-bootstrap`, `--no-cross-protection`.
-* In command `obfuscate` deprecrate the options `--src`, `--entry`,
+* In command `obfuscate` deprecate the options `--src`, `--entry`,
   `--cross-protection`.
-* In command `licenses` deprecrate the option `--bind-file`.
+* In command `licenses` deprecate the option `--bind-file`.
 
 5.2.6
 -----
