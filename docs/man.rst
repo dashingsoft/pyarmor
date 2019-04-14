@@ -61,8 +61,8 @@ search the scripts:
 * Recursive: find all the `.py` files in the path of entry script recursively
 * Exact: only these scripts list in the command line
 
-If there is an entry script and option `--no-cross-protection` is not
-set, PyArmor will insert cross protection code into the entry script.
+If there is an entry script, PyArmor will modify it, insert cross
+protection code into the entry script.
 
 Next obfuscate all these scripts in the default output path `dist`.
 
