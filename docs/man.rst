@@ -47,7 +47,6 @@ Obfuscate python scripts.
 --exact                 Only obfuscate list scripts
 --no-bootstrap          Do not insert bootstrap code to entry script
 --no-cross-protection   Do not insert protection code to entry script
---no-restrict           Disable restrict mode
 
 **DESCRIPTION**
 
@@ -74,10 +73,6 @@ Finally insert :ref:`Bootstrap Code` into entry script.
 The entry script is only the first script if there are more than one
 script in command line.
 
-Option `--no-restrict` is required if the obfuscated scripts will be
-imported by the plain scripts. By default the obfuscated scripts only
-can be imported from other obfuscated scripts.
-
 **EXAMPLES**
 
 * Obfuscate all the `.py` only in the current path::
@@ -100,11 +95,6 @@ can be imported from other obfuscated scripts.
 * Obfuscate all the `.py` file in the path `mypkg/`::
 
      pyarmor obfuscate --output dist/mypkg mypkg/__init__.py
-
-* Obfuscate one module `moda.py` which could be used by any other
-  plain script::
-
-     pyarmor obfuscate --exact --no-restrict moda.py
 
 * Obfuscate all the `.py` files in the current path, but do not insert
   cross protection code into obfuscated script :file:`dist/foo.py`::
@@ -135,7 +125,6 @@ Generate new licenses for obfuscated scripts.
 -d, --bind-disk SN          Bind license to serial number of harddisk
 -4, --bind-ipv4 IPV4        Bind license to ipv4 addr
 -m, --bind-mac MACADDR      Bind license to mac addr
---no-restrict               Generate license for non-restrict mode
 
 **DESCRIPTION**
 
@@ -169,11 +158,6 @@ There maybe have whitespace in the serial number of harddisk for some
 machines, just quote it in the command line::
 
     pyarmor licenses --bind-disk "100304PBN2081SF3NJ5T " jondy
-
-If the obfuscated scripts will be imported by other plain scripts, do
-not miss option `--no-restrict`::
-
-    pyarmor licenses --no-restrict mycode2
 
 .. _pack:
 
