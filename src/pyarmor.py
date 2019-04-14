@@ -112,6 +112,10 @@ def _init(args):
 @arcommand
 def _config(args):
     '''Update project settings.'''
+    for x in ('obf-module-mode', 'obf-code-mode'):
+        if getattr(args, x.replace('-', '_')) is not None:
+            logging.warning('Option --%s has been deprecated', x)
+
     project = Project()
     project.open(args.project)
     logging.info('Update project %s ...', args.project)
@@ -252,7 +256,7 @@ def _build(args):
 @arcommand
 def _licenses(args):
     '''Generate licenses for obfuscated scripts.'''
-    for x in ('bind-file', 'restrict'):
+    for x in ('bind-file',):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -382,7 +386,7 @@ def _capsule(args):
 def _obfuscate(args):
     '''Obfuscate scripts without project.'''
 
-    for x in ('src', 'entry', 'cross-protection', 'restrict'):
+    for x in ('src', 'entry', 'cross-protection'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
