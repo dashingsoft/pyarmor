@@ -138,14 +138,9 @@ class Project(dict):
             comode = self.obf_code_mode
         return Project.map_obfuscate_mode(mode, comode)
 
-    def get_build_files(self, force=False):
-        output = os.path.abspath(os.path.normpath(self.output))
-        if output.startswith(self.src):
-            mlist = self.manifest.split(',')
-            mlist.append('prune %s' % output[len(self.src)+1:])
-            files = self.build_manifest(mlist, self.src)
-        else:
-            files = self.build_manifest(self.manifest.split(','), self.src)
+    def get_build_files(self, force=False, excludes=[]):
+        mlist = self.manifest.split(',') + excludes
+        files = self.build_manifest(mlist, self.src)
 
         if force:
             return files

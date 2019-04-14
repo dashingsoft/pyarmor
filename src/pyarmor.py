@@ -155,12 +155,17 @@ def _build(args):
     logging.info('Use capsule: %s', capsule)
 
     output = build_path(project.output, args.project) \
-        if args.output is None else args.output
+        if args.output is None else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
 
     if not args.only_runtime:
-        files = project.get_build_files(args.force)
         src = project.src
+        if os.path.abspath(output).startswith(src):
+            excludes = ['prune %s' % os.path.abspath(output)[len(src)+1:]]
+        else:
+            excludes = []
+
+        files = project.get_build_files(args.force, excludes=excludes)
         soutput = os.path.join(output, os.path.basename(src)) \
             if project.get('is_package') else output
 
