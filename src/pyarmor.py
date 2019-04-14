@@ -82,9 +82,8 @@ def _init(args):
        (args.type == 'auto' and os.path.exists(os.path.join(src,
                                                             '__init__.py'))):
         logging.info('Project is configured as package')
-        project = Project(name=name, title=name, src=src,
-                          entry=args.entry if args.entry else '__init__.py',
-                          is_package=1, disable_restrict_mode=1)
+        project = Project(name=name, title=name, src=src, is_package=1,
+                          entry=args.entry if args.entry else '__init__.py')
     else:
         logging.info('Project is configured as standalone application.')
         project = Project(name=name, title=name, src=src, entry=args.entry)
@@ -266,8 +265,7 @@ def _licenses(args):
             logging.info('Generate capsule %s', capsule)
             make_capsule(capsule)
         logging.info('Generate licenses with capsule %s ...', capsule)
-        project = dict(disable_restrict_mode=1 if args.no_restrict else
-                       0 if args.restrict is None else args.restrict)
+        project = dict(disable_restrict_mode=0 if args.restrict else 1)
 
     licpath = os.path.join(
         args.project if args.output is None else args.output,
@@ -456,15 +454,9 @@ def _obfuscate(args):
 
     make_runtime(capsule, output)
 
-    if entry and entry.endswith('__init__.py'):
-        logging.info('Disable restrict mode for package by default')
-        no_restrict = 1
-    else:
-        no_restrict = not args.restrict if args.no_restrict is None else \
-            args.no_restrict
-        logging.info('Obfuscate scripts with restrict mode %s',
-                     'off' if no_restrict else 'on')
-    if no_restrict:
+    logging.info('Obfuscate scripts with restrict mode %s',
+                 'on' if args.restrict else 'off')
+    if not args.restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
         licfile = os.path.join(output, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
@@ -581,8 +573,6 @@ def main(args):
                          'Multiple paths are allowed, separated by ","')
     cparser.add_argument('--exact', action='store_true',
                          help='Only obfusate list scripts')
-    cparser.add_argument('--no-restrict', action='store_true',
-                         help='Disable restrict mode')
     cparser.add_argument('--no-bootstrap', action='store_true',
                          help='Do not insert bootstrap code to entry script')
     cparser.add_argument('--no-cross-protection', action='store_true',
@@ -593,10 +583,10 @@ def main(args):
                          help='[DEPRECATED]Base path for searching scripts')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
                          help='[DEPRECATED]Specify entry script')
-    cparser.add_argument('--restrict', type=int, choices=(0, 1),
-                         help='[DEPRECATED]Enable or disable restrict mode')
     cparser.add_argument('--cross-protection', choices=(0, 1),
                          help='[DEPRECATED]')
+    cparser.add_argument('--restrict', type=int, choices=(0, 1),
+                         default=1, help=argparse.SUPPRESS)
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.set_defaults(func=_obfuscate)
 
@@ -743,10 +733,8 @@ def main(args):
     cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
     cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('-O', '--output', help='Output path')
-    cparser.add_argument('--no-restrict', action='store_true',
-                         help='Generate license for non-restrict mode')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
-                         help=argparse.SUPPRESS)
+                         default=1, help=argparse.SUPPRESS)
 
     cparser.set_defaults(func=_licenses)
 
