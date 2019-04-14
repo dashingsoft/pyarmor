@@ -77,25 +77,25 @@ ECHO.
 IF NOT ERRORLEVEL 0 GOTO END
 ECHO.
 
-REM Change to project path, there is a convenient script pyarmor.bat
+REM Change to project path
 CD /D %PROJECT%
 
 REM Filter source files by config project filter
 IF DEFINED PROJECT_FILTER (
-  CALL pyarmor.bat config --manifest "%PROJECT_FILTER%"
+  CALL %PYARMOR% config --manifest "%PROJECT_FILTER%"
   IF ERRORLEVEL 1 GOTO END
 )
 
 REM Obfuscate scripts by command build
 ECHO.
-CALL pyarmor.bat build
+CALL %PYARMOR% build
 IF NOT ERRORLEVEL 0 GOTO END
 ECHO.
 
 REM Generate new license if any
 IF DEFINED LICENSE_CODE (
 
-  CALL pyarmor.bat licenses %LICENSE_EXPIRED_DATE% %LICENSE_HARDDISK_SERIAL_NUMBER% %LICENSE_MAC_ADDR% %LICENSE_IPV4_ADDR% %LICENSE_CODE%
+  CALL %PYARMOR% licenses %LICENSE_EXPIRED_DATE% %LICENSE_HARDDISK_SERIAL_NUMBER% %LICENSE_MAC_ADDR% %LICENSE_IPV4_ADDR% %LICENSE_CODE%
   IF ERRORLEVEL 1 GOTO END
   
   REM Overwrite default license with this license

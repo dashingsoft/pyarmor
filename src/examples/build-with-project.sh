@@ -51,22 +51,22 @@ fi
 # Create a project
 $PYARMOR init --src=$SOURCE --entry=${ENTRY_SCRIPT} $PROJECT || exit 1
 
-# Change to project path, there is a convenient script pyarmor.bat
+# Change to project path
 cd $PROJECT
 
 # Filter source files by config project filter
 if [[ -n "${PROJECT_FILTER}" ]] ; then
-  ./pyarmor config --manifest "${PROJECT_FILTER}" || exit 1
+  $PYARMOR config --manifest "${PROJECT_FILTER}" || exit 1
 fi
 
 
 # Obfuscate scripts by command build
-./pyarmor build || exit 1
+$PYARMOR build || exit 1
 
 # Generate special license if any
 if [[ -n "${LICENSE_CODE}" ]] ; then
     echo
-    ./pyarmor licenses ${LICENSE_EXPIRED_DATE} ${LICENSE_HARDDISK_SERIAL_NUMBER} \
+    $PYARMOR licenses ${LICENSE_EXPIRED_DATE} ${LICENSE_HARDDISK_SERIAL_NUMBER} \
         ${LICENSE_MAC_ADDR} ${LICENSE_IPV4_ADDR} ${LICENSE_CODE} || exit 1
     echo
 

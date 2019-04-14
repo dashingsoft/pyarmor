@@ -115,18 +115,18 @@ PyArmor 的安装路径是 `/path/to/pyarmor`
 
     # 这儿自动生成有一个脚本 `pyarmor`，在 Windows 下面名字是 `pyarmor.bat`
     # 使用命令 `build` 加密工程中所有的 `.py` 文件，加密脚本存放在 `dist` 下面
-    ./pyarmor build
+    pyarmor build
 
     # 生成不同的授权文件
     #
     # 为 John 生成的限时许可，新的许可文件存放在 "licenses/john/license.lic"
-    ./pyarmor licenses --expired 2019-03-05 john
+    pyarmor licenses --expired 2019-03-05 john
 
     # 为 Lily 生成的硬盘许可，新的许可文件存放在 "licenses/lily/license.lic"
-    ./pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' lily
+    pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' lily
 
     # 为 Tom 生成的限时和网卡绑定许可，新的许可文件存放在 "licenses/tom/license.lic"
-    ./pyarmor licenses --bind-mac '70:f1:a1:23:f0:94' --expired 2019-03-05 tom
+    pyarmor licenses --bind-mac '70:f1:a1:23:f0:94' --expired 2019-03-05 tom
 
     # 创建给 John 的发布包
     #

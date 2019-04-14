@@ -126,18 +126,18 @@ will be distributed to three customers with different licenses:
 
     # A shell script "pyarmor" is created here (In windows it is "pyarmor.bat")
     # Use command `build` to obfuscate all the `.py` in the project
-    ./pyarmor build
+    pyarmor build
 
     # Generate licenses for each customer
     #
     # For John, generate an expired license, new license in "licenses/john/license.lic"
-    ./pyarmor licenses --expired 2019-03-05 john
+    pyarmor licenses --expired 2019-03-05 john
 
     # For Lily, generate a license bind to harddisk, new license in "licenses/lily/license.lic"
-    ./pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' lily
+    pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' lily
 
     # For Tom, generate an expired license bind to mac address, new license in "licenses/tom/license.lic"
-    ./pyarmor licenses --bind-mac '70:f1:a1:23:f0:94' --expired 2019-03-05 tom
+    pyarmor licenses --bind-mac '70:f1:a1:23:f0:94' --expired 2019-03-05 tom
 
     # Create distribution package for John
     #
