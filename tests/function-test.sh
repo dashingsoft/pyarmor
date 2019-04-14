@@ -210,6 +210,42 @@ check_file_exists dist-utf8bom/utf8bom.py
 check_return_value
 check_file_content dist-utf8bom/result.log 'PyArmor'
 
+csih_inform "C-13. Test option --exclude for obfuscate"
+$PYARMOR obfuscate -O test-exclude -r --exclude "mypkg,dist" \
+         examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists test-exclude/main.py
+check_file_not_exists test-exclude/mypkg/foo.py
+
+csih_inform "C-14. Test option --exact for obfuscate"
+$PYARMOR obfuscate -O test-exact --exact \
+         examples/testpkg/mypkg/foo.py >result.log 2>&1
+check_return_value
+check_file_exists test-exact/foo.py
+check_file_not_exists test-exact/__init__.py
+
+csih_inform "C-15. Test package for obfuscate"
+$PYARMOR obfuscate -O test-package/mypkg \
+         examples/testpkg/mypkg/__init__.py >result.log 2>&1
+check_return_value
+check_file_exists test-package/mypkg/foo.py
+check_file_exists test-package/mypkg/__init__.py
+
+(cd test-package; $PYTHON -c "import mypkg" >result.log 2>&1 )
+check_return_value
+
+csih_inform "C-16. Test option --no-bootstrap for obfuscate"
+$PYARMOR obfuscate -O test-no-bootstrap --no-bootstrap \
+         examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists test-no-bootstrap/main.py
+check_file_content test-no-bootstrap/main.py "pyarmor_runtime" not
+
+csih_inform "C-17. Test option --no-cross-protection for obfuscate"
+$PYARMOR obfuscate -O test-no-cross-protection --no-cross-protection \
+         examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists test-no-cross-protection/main.py
 
 echo ""
 echo "-------------------- Command End -----------------------------"
@@ -237,6 +273,18 @@ check_return_value
 check_file_exists $PROPATH/queens.py
 check_file_exists $PROPATH/pytransform.py
 
+csih_inform "Case P-2: project output path is sub-directory of src"
+PROPATH=projects/test-project-output
+cp -a examples/simple $PROPATH
+$PYARMOR init --src=$PROPATH $PROPATH  >result.log 2>&1
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+check_file_exists $PROPATH/dist/queens.py
+
+(cd $PROPATH; $ARMOR build -B >result.log 2>&1)
+check_return_value
+check_file_exists $PROPATH/dist/queens.py
+check_file_not_exists $PROPATH/dist/dist/queens.py
 
 echo ""
 echo "-------------------- Test Project End ------------------------"

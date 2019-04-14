@@ -330,6 +330,16 @@ check_file_exists()
 }
 
 # ======================================================================
+# Routine: check_file_not_exists
+#   Write a bug if file exists
+# Example: check_file_not_exists dist/foo.py
+# ======================================================================
+check_file_not_exists()
+{
+  [[ -f "$1" ]] && csih_bug "unexpected $1 found"
+}
+
+# ======================================================================
 # Routine: check_file_content
 #   Write a bug if file doesn't include some content
 # Example: check_file_content result.log "__pyarmor__"
