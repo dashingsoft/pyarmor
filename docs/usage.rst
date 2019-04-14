@@ -139,13 +139,9 @@ Obfuscating Single Module
 
 To obfuscate one module exactly, use option `--exact`::
 
-    pyarmor obfuscate --exact --no-restrict foo.py
+    pyarmor obfuscate --exact foo.py
 
-Only :file:`foo.py` is obfuscated, and it could be imported by any
-other plain script. Without option `--no-restrict`, the obfuscated
-module only can be imported from other obfuscated scripts.
-
-Now import this obfuscated module::
+Only :file:`foo.py` is obfuscated, now import this obfuscated module::
 
     cd dist
     python -c "import foo"
