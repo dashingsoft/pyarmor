@@ -17,11 +17,16 @@ Managing Obfuscated Scripts With Project
 
 Use command ``init`` to create a project::
 
+    cd examples/pybench
+    pyarmor init --entry=pybench.py
+
+It will create project configuration file :file:`.pyarmor_config` in
+the current path. Or create project in another path::
+  
     pyarmor init --src=examples/pybench --entry=pybench.py projects/pybench
 
-The project path `projects/pybench` will be created, and ther is a
-:file:`.pyarmor_config` created at the same time, which is project
-configuration of JSON format.
+The project path `projects/pybench` will be created, and
+:file:`.pyarmor_config` will be saved there.
 
 The common usage for project is to do any thing in the project path::
 
