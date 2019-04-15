@@ -528,7 +528,7 @@ def _version_info(short=False):
     rcode = get_registration_code()
     if rcode:
         rcode = rcode.replace('-sn-1.txt', '')
-        ver = 'PyArmor Version %s (%s)\n%s' % (version, rcode)
+        ver = 'PyArmor Version %s (%s)' % (version, rcode)
     else:
         ver = 'PyArmor Trial Version %s' % version
     return '\n'.join([ver, '' if short else version_info])
