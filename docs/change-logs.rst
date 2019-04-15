@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.2.8
+-----
+* Fix issue: `pyarmor -v` complains `not enough arguments for format string`
+
 5.2.7
 -----
 * In command `obfuscate` add new options `--exclude`, `--exact`,
