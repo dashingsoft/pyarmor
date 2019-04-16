@@ -129,9 +129,7 @@ Key Points to Use Obfuscated Scripts
 
   This file is dependent-platform, download the right one to the same
   path of `pytransform.py` according to target platform. All the
-  prebuilt dynamic libraries list here
-
-  http://pyarmor.dashingsoft.com/downloads/platforms/
+  prebuilt dynamic libraries list here :ref:`Support Platfroms`
 
 * By default `pytransform.py` search dynamic library `_pytransform` in
   the same path. Check `pytransform._load_library` to find the
