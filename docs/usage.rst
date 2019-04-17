@@ -109,7 +109,7 @@ get hardware information::
 
 Then generate new license bind to harddisk serial number and mac address::
 
-    pyarmor licenses --bind-disk '100304PBN2081SF3NJ5T' --bind-mac '20:c1:d2:2f:a0:96' code-002
+    pyarmor licenses --bind-disk "100304PBN2081SF3NJ5T" --bind-mac "20:c1:d2:2f:a0:96" code-002
 
 Run obfuscated script with new license::
 
