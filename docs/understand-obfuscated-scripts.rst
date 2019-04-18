@@ -78,31 +78,6 @@ scripts run in any machine and never expired.
 To change this behaviour, use command ``pyarmor licenses`` to generate
 new `license.lic` and overwrite the default one.
 
-Running Obfuscated Scripts
---------------------------
-
-The obfuscated scripts is a normal python script, it can be run by
-normal python interpreter::
-
-    cd dist
-    python myscript.py
-
-Firt :ref:`Bootstrap Code` is executed:
-
-* Import `pyarmor_runtime` from `pytransform.py`
-* Execute `pyarmor_runtime`
-    * Load dynamic library `_pytransform` by `ctypes`
-    * Check `license.lic` in the same path
-    * Add there builtin functions `__pyarmor__`, `__enter_armor__`, `__exit_armor__`
-
-After that:
-
-* Call `__pyarmor__` to import the obfuscated module.
-* Call `__enter_armor__` to restore code object of function before executing each function
-* Call `__exit_armor__` to obfuscate code object of function after each function return
-
-More information, refer to :ref:`How to Obfuscate Scripts` and :ref:`How to Run Obfuscated Scripts`
-
 Key Points to Use Obfuscated Scripts
 ------------------------------------
 
@@ -143,6 +118,31 @@ Key Points to Use Obfuscated Scripts
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/runtime-files')
+
+Running Obfuscated Scripts
+--------------------------
+
+The obfuscated scripts is a normal python script, it can be run by
+normal python interpreter::
+
+    cd dist
+    python myscript.py
+
+Firt :ref:`Bootstrap Code` is executed:
+
+* Import `pyarmor_runtime` from `pytransform.py`
+* Execute `pyarmor_runtime`
+    * Load dynamic library `_pytransform` by `ctypes`
+    * Check `license.lic` in the same path
+    * Add there builtin functions `__pyarmor__`, `__enter_armor__`, `__exit_armor__`
+
+After that:
+
+* Call `__pyarmor__` to import the obfuscated module.
+* Call `__enter_armor__` to restore code object of function before executing each function
+* Call `__exit_armor__` to obfuscate code object of function after each function return
+
+More information, refer to :ref:`How to Obfuscate Scripts` and :ref:`How to Run Obfuscated Scripts`
 
 Two types of `license.lic`
 --------------------------
