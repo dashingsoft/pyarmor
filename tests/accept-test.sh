@@ -66,6 +66,13 @@ check_file_content dist/result.log "This license for Joker will be expired in"
 check_file_content dist/result.log "Hello world"
 check_file_content dist/result.log "1 + 1 = 2"
 
+csih_inform "4. Import obfuscated package"
+$PYARMOR obfuscate -O dist/mypkg examples/testpkg/mypkg/__init__.py >result.log 2>&1
+(cd dist; $PYTHON -c "from mypkg import foo
+foo.hello('pyarmor')"  >result.log 2>&1)
+check_return_value
+check_file_content dist/result.log "Hello!"
+
 # ======================================================================
 #
 # Finished and cleanup.
