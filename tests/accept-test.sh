@@ -73,6 +73,18 @@ foo.hello('pyarmor')"  >result.log 2>&1)
 check_return_value
 check_file_content dist/result.log "Hello!"
 
+csih_inform "5. Run big array scripts"
+ascript="big_array.py"
+$PYTHON -c"
+with open('$ascript', 'wb') as f:
+  for i in xrange(100):
+    f.write('a{0} = {1}\n'.format(i, [1] * 1000))"
+$PYARMOR obfuscate --exact -O dist-big-array $ascript >result.log 2>&1
+check_return_value
+
+(cd dist; $PYTHON $ascript >result.log 2>&1)
+check_return_value
+
 # ======================================================================
 #
 # Finished and cleanup.
