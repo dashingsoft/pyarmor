@@ -66,12 +66,14 @@ DEFAULT_PACKER = {
         ['build', '--build-exe'])
 }
 
+
 def logaction(func):
     def wrap(*args, **kwargs):
         logging.info('')
         logging.info('%s', func.__name__)
         return func(*args, **kwargs)
     return wrap
+
 
 @logaction
 def update_library(obfdist, libzip):
@@ -98,6 +100,7 @@ the original scripts with obfuscated ones.
         for name in namelist:
             f.write(os.path.join(obfdist, name), name)
 
+
 @logaction
 def run_setup_script(src, entry, build, script, packcmd, obfdist):
     '''Update entry script, copy pytransform.py to source path, then run
@@ -122,6 +125,7 @@ setup script to build the bundle.
         logging.error('\n\n%s\n\n', stdoutdata.decode())
         raise RuntimeError('Run setup script failed')
 
+
 @logaction
 def copy_runtime_files(runtimes, output):
     for s in glob(os.path.join(runtimes, '*.key')):
@@ -131,6 +135,7 @@ def copy_runtime_files(runtimes, output):
     for dllname in glob(os.path.join(runtimes, '_pytransform.*')):
         shutil.copy(dllname, output)
 
+
 def call_armor(args):
     logging.info('')
     logging.info('')
@@ -138,6 +143,7 @@ def call_armor(args):
     p.wait()
     if p.returncode != 0:
         raise RuntimeError('Call pyarmor failed')
+
 
 def pathwrapper(func):
     def wrap(*args, **kwargs):
@@ -149,6 +155,7 @@ def pathwrapper(func):
         finally:
             os.chdir(oldpath)
     return wrap
+
 
 @pathwrapper
 def _packer(src, entry, build, script, packcmd, output, libname):
@@ -175,6 +182,7 @@ def _packer(src, entry, build, script, packcmd, output, libname):
 
     shutil.rmtree(project)
 
+
 @logaction
 def check_setup_script(_type, setup):
     if os.path.exists(setup):
@@ -188,6 +196,7 @@ def check_setup_script(_type, setup):
     else:
         logging.info('\tvi setup.py')
     raise RuntimeError('No setup script %s found', setup)
+
 
 @logaction
 def run_pyi_makespec(project, obfdist, src, entry, packcmd):
@@ -212,20 +221,21 @@ def run_pyi_makespec(project, obfdist, src, entry, packcmd):
         logging.error('\n\n%s\n\n', stdoutdata.decode())
         raise RuntimeError('Make specfile failed')
 
+
 @logaction
 def update_specfile(project, obfdist, src, entry, specfile):
     with open(specfile) as f:
         lines = f.readlines()
 
     patched_lines = (
-    "", "# Patched by PyArmor",
-    "a.scripts[-1] = '%s', r'%s', 'PYSOURCE'" % (
-        entry[:-3], os.path.join(obfdist, entry)),
-    "for i in range(len(a.pure)):",
-    "    if a.pure[i][1].startswith(a.pathex[0]):",
-    "        a.pure[i] = a.pure[i][0], a.pure[i][1].replace(" \
-    "a.pathex[0], r'%s'), a.pure[i][2]" % os.path.abspath(obfdist),
-    "# Patch end.", "", "")
+        "", "# Patched by PyArmor",
+        "a.scripts[-1] = '%s', r'%s', 'PYSOURCE'" % (
+            entry[:-3], os.path.join(obfdist, entry)),
+        "for i in range(len(a.pure)):",
+        "    if a.pure[i][1].startswith(a.pathex[0]):",
+        "        a.pure[i] = a.pure[i][0], a.pure[i][1].replace("
+        "a.pathex[0], r'%s'), a.pure[i][2]" % os.path.abspath(obfdist),
+        "# Patch end.", "", "")
 
     for i in range(len(lines)):
         if lines[i].startswith("pyz = PYZ(a.pure"):
@@ -240,6 +250,7 @@ def update_specfile(project, obfdist, src, entry, specfile):
 
     return os.path.normpath(patched_file)
 
+
 @logaction
 def run_pyinstaller(project, src, entry, specfile, packcmd):
     p = subprocess.Popen(
@@ -251,13 +262,14 @@ def run_pyinstaller(project, src, entry, specfile, packcmd):
         logging.error('\n\n%s\n\n', stdoutdata.decode())
         raise RuntimeError('Run pyinstller failed')
 
+
 @pathwrapper
 def _pyinstaller(src, entry, packcmd, output):
     project = os.path.join('projects', 'pyinstaller')
     obfdist = os.path.join(project, 'dist')
     spec = os.path.join(project, os.path.basename(entry)[:-3] + '.spec')
 
-    args = 'obfuscate', '-r', '--src', src, '--entry', entry, '-O', obfdist
+    args = 'obfuscate', '-r', '-O', obfdist, os.path.join(src, entry)
     call_armor(args)
 
     run_pyi_makespec(project, obfdist, src, entry, packcmd)
@@ -267,6 +279,7 @@ def _pyinstaller(src, entry, packcmd, output):
     run_pyinstaller(project, src, entry, patched_spec, packcmd)
 
     shutil.rmtree(project)
+
 
 def packer(args):
     _type = args.type
@@ -304,24 +317,24 @@ def packer(args):
     logging.info('')
     logging.info('\t%s', output)
 
+
 def add_arguments(parser):
     parser.add_argument('-v', '--version', action='version', version='v0.1')
 
     parser.add_argument('-t', '--type', default='PyInstaller', metavar='TYPE',
                         choices=DEFAULT_PACKER.keys(),
                         help=', '.join(DEFAULT_PACKER.keys()))
-    # parser.add_argument('-p', '--path',
-    #                     help='Base path, default is the path of entry script')
     parser.add_argument('-s', '--setup',
-                        help='Setup script, default is setup.py, ' \
+                        help='Setup script, default is setup.py, '
                              'or ENTRY.spec for PyInstaller')
     parser.add_argument('-O', '--output',
-                        help='Directory to put final built distributions in' \
+                        help='Directory to put final built distributions in'
                         ' (default is output path of setup script)')
     parser.add_argument('-e', '--options',
                         help='Extra options to run pack command')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
                         help='Entry script')
+
 
 def main(args):
     parser = argparse.ArgumentParser(
@@ -332,6 +345,7 @@ def main(args):
     )
     add_arguments(parser)
     packer(parser.parse_args(args))
+
 
 if __name__ == '__main__':
     logging.basicConfig(
