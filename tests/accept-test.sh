@@ -82,7 +82,7 @@ with open('$ascript', 'wb') as f:
 $PYARMOR obfuscate --exact -O dist-big-array $ascript >result.log 2>&1
 check_return_value
 
-(cd dist; $PYTHON $ascript >result.log 2>&1)
+(cd dist-big-array; $PYTHON $ascript >result.log 2>&1)
 check_return_value
 
 # ======================================================================
