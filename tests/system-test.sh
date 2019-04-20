@@ -493,8 +493,8 @@ check_file_content $PROPATH/dist/result.log 'Hello! PyArmor Test Case'
 csih_inform "Case T-1.5: obfuscate big code object without wrap mode"
 PROPATH=projects/test_big_code_object
 $PYTHON -c"
-with open('big_array.py', 'wb') as f:
-  for i in xrange(100):
+with open('big_array.py', 'w') as f:
+  for i in range(100):
     f.write('a{0} = {1}\n'.format(i, [1] * 1000))
   f.write('print(\"a99 = %s\" % a99)')"
 $PYARMOR init --src=. --entry=big_array.py -t app $PROPATH >result.log 2>&1
