@@ -156,7 +156,7 @@ $PYARMOR init --src examples/testpkg/mypkg --entry "../main.py" \
 
 check_return_value
 
-$PYARMOR config --disable-restrict-mode=1 projects/testpkg
+$PYARMOR config --disable-restrict-mode=1 projects/testpkg >result.log 2>&1
 $PYARMOR info projects/testpkg >result.log 2>&1
 
 check_return_value
@@ -466,7 +466,7 @@ check_file_content $PROPATH/dist/result.log 'Shared code object works well'
 csih_inform "Case T-1.3: obfuscate module with auto-wrap mode"
 PROPATH=projects/testmod_auto_wrap
 $PYARMOR init --src=examples/py2exe --entry=queens.py $PROPATH >result.log 2>&1
-$PYARMOR config --obf-code-mode=wrap --disable-restrict-mode=1 \
+$PYARMOR config --wrap-mode=1 --disable-restrict-mode=1 \
                 --manifest="include queens.py" $PROPATH >result.log 2>&1
 (cd $PROPATH; $ARMOR build >result.log 2>&1)
 
@@ -489,6 +489,25 @@ check_file_content $PROPATH/dist/mypkg/__init__.py '__pyarmor__(__name__'
 cp examples/testpkg/main.py $PROPATH/dist
 (cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1 )
 check_file_content $PROPATH/dist/result.log 'Hello! PyArmor Test Case'
+
+csih_inform "Case T-1.5: obfuscate big code object without wrap mode"
+PROPATH=projects/test_big_code_object
+$PYTHON -c"
+with open('big_array.py', 'wb') as f:
+  for i in xrange(100):
+    f.write('a{0} = {1}\n'.format(i, [1] * 1000))
+  f.write('print(\"a99 = %s\" % a99)')"
+$PYARMOR init --src=. --entry=big_array.py -t app $PROPATH >result.log 2>&1
+$PYARMOR config --wrap-mode=0 --manifest="include big_array.py" $PROPATH >result.log 2>&1
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+
+check_file_exists $PROPATH/dist/big_array.py
+check_file_content $PROPATH/dist/big_array.py 'pyarmor_runtime'
+check_file_content $PROPATH/dist/big_array.py '__pyarmor__(__name__'
+
+(cd $PROPATH/dist; $PYTHON big_array.py >result.log 2>&1 )
+check_return_value
+check_file_content $PROPATH/dist/result.log 'a99 ='
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"
