@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.2.9
+-----
+* Fix segmentation fault issue for python3.5 and before: run too big obfuscated code object (>65536 bytes) will crash (#67)
+* Fix issue: missing bootstrap code for command `pack` (#68)
+* Fix issue: the output script is same as original script if obfuscating scripts with option `--exact`
+
 5.2.8
 -----
 * Fix issue: `pyarmor -v` complains `not enough arguments for format string`
