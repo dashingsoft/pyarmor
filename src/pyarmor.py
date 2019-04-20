@@ -449,7 +449,10 @@ def _obfuscate(args):
     cross_protection = 0 if args.no_cross_protection else \
         1 if args.cross_protection is None else args.cross_protection
     for x in files:
-        a, b = os.path.join(path, x), os.path.join(output, x)
+        if os.path.isabs(x):
+            a, b = x, os.path.join(output, os.path.basename(x))
+        else:
+            a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
         protection = cross_protection and entry \
             and (os.path.abspath(a) == os.path.abspath(entry))
