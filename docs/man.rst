@@ -172,8 +172,9 @@ Obfuscate the scripts and pack them into one bundle.
 
 **OPTIONS**
 
--t, --type TYPE      cx_Freeze, py2exe, py2app, PyInstaller(default).
--O, --output OUTPUT  Directory to put final built distributions in.
+-t, --type TYPE        cx_Freeze, py2exe, py2app, PyInstaller(default).
+-O, --output OUTPUT    Directory to put final built distributions in.
+-e, --options OPTIONS  Extra options to run pack command
 
 **DESCRIPTION**
 
@@ -184,10 +185,20 @@ Then obfuscates all the `.py` files in the same path of entry script.
 
 Next replace the original scripts with the obfuscated ones.
 
-Finally pack all of them into one bundle
+Finally pack all of them into one bundle.
 
 This command only works for simple script. For complicated cases,
 refer to :ref:`How to pack obfuscated scripts`.
+
+**EXAMPLES**
+
+* Obfuscate `foo.py` and pack them into the bundle `dist/foo`::
+
+    pyarmor pack foo.py
+
+* Pass extra options to run `PyInstaller`::
+
+    pyarmor pack --options '-w --icon a.ico' foo.py
 
 .. _hdinfo:
 
