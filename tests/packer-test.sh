@@ -6,6 +6,8 @@ source test-header.sh
 #
 # ======================================================================
 
+PYTHON=C:/Python34/python
+
 PYARMOR="${PYTHON} pyarmor.py"
 
 csih_inform "Python is $PYTHON"
@@ -47,7 +49,7 @@ $PYARMOR --help >result.log 2>&1 || csih_error "PyArmor bootstrap failed"
 
 echo -e "\n-------------------- py2exe Test -----------------------------\n"
 
-csih_inform "Case 1-1: Only full path entry script"
+csih_inform "Case 1-1: Test full path entry script with py2exe"
 $PYARMOR pack --type py2exe examples/py2exe/hello.py >result.log 2>&1
 check_return_value
 
@@ -66,7 +68,7 @@ echo -e "\n-------------------- py2exe End ------------------------------\n"
 
 echo -e "\n-------------------- cx_Freeze Test --------------------------\n"
 
-csih_inform "Case 2-1: Only full path entry script"
+csih_inform "Case 2-1: Test full path entry script with cx_Freeze"
 $PYARMOR pack --type cx_Freeze examples/cx_Freeze/hello.py >result.log 2>&1
 check_return_value
 
@@ -77,6 +79,26 @@ check_file_exists $dist/license.lic
 check_file_content $dist/result.log 'Found 92 solutions'
 
 echo -e "\n-------------------- cx_Freeze End ---------------------------\n"
+
+# ======================================================================
+#
+#  Command: pack with PyInstaller
+#
+# ======================================================================
+
+echo -e "\n------------------ PyInstaller Test ----------------------\n"
+
+csih_inform "Case 3-1: Test full path entry script with PyInstaller"
+$PYARMOR pack examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+dist=examples/simple/dist/queens
+( cd $dist; ./queens.exe  >result.log 2>&1 )
+
+check_file_exists $dist/license.lic
+check_file_content $dist/result.log 'Found 92 solutions'
+
+echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
 #
