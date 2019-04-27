@@ -116,12 +116,21 @@ class Project(dict):
         self.update(obj)
         self._check(os.path.dirname(filename))
 
-    def open(self, path):
+    def _project_filename(self, path):
         filename = os.path.join(path, config_filename)
+        if not os.path.exists(filename):
+            name = config_filename + '.' + os.path.basename(path)
+            filename = os.path.join(os.path.dirname(path), name)
+        if not os.path.exists(filename):
+            raise RuntimeError('No project found at %s' % path)
+        return filename
+
+    def open(self, path):
+        filename = self._project_filename(path)
         self._load(filename)
 
     def save(self, path):
-        filename = os.path.join(path, config_filename)
+        filename = self._project_filename(path)
         self._dump(filename)
 
     @classmethod

@@ -65,11 +65,24 @@ def arcommand(func):
 def _init(args):
     '''Create an empty project or reinitialize an existing one.'''
     path = os.path.normpath(args.project)
-    logging.info('Create project in %s ...', path)
 
+    if args.child is not None:
+        n = args.child
+        logging.info('Create child project %d in %s ...', n, path)
+        parent = os.path.join(path, config_filename)
+        if not os.path.exists(parent):
+            raise RuntimeError('No parent project exists in "%s"' % path)
+        filename = os.path.join(path, '%s.%d' % (config_filename, n))
+        if os.path.exists(filename):
+            raise RuntimeError('Child project %d already exists' % n)
+        logging.info('Copy %s to %s', parent, filename)
+        shutil.copyfile(parent, filename)
+        logging.info('Child project %d init successfully.', n)
+        return
+
+    logging.info('Create project in %s ...', path)
     if os.path.exists(os.path.join(path, config_filename)):
         raise RuntimeError('A project already exists in "%s"' % path)
-
     if not os.path.exists(path):
         logging.info('Make project directory %s', path)
         os.makedirs(path)
@@ -628,6 +641,7 @@ def main(args):
     cparser.add_argument('-s', '--src', default='',
                          help='Base path of python scripts')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
+    cparser.add_argument('--child', type=int, help=argparse.SUPPRESS)
     cparser.add_argument('project', nargs='?', default='', help='Project path')
     cparser.set_defaults(func=_init)
 
