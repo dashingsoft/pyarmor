@@ -92,11 +92,22 @@ csih_inform "Case 3-1: Test full path entry script with PyInstaller"
 $PYARMOR pack examples/simple/queens.py >result.log 2>&1
 check_return_value
 
-dist=examples/simple/dist/queens
-( cd $dist; ./queens.exe  >result.log 2>&1 )
+dist=examples/simple/dist
+( cd $dist/queens; ./queens.exe  >result.log 2>&1 )
 
-check_file_exists $dist/license.lic
-check_file_content $dist/result.log 'Found 92 solutions'
+check_file_exists $dist/queens/license.lic
+check_file_content $dist/queens/result.log 'Found 92 solutions'
+
+csih_inform "Case 3-2: Test sys.flags.debug is set with PyInstaller"
+rm -rf $dist
+PYTHONDEBUG=y $PYARMOR pack examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+( cd $dist/queens; ./queens.exe  >result.log 2>&1 )
+
+check_file_exists $dist/obf/queens-patched.spec
+check_file_exists $dist/queens/license.lic
+check_file_content $dist/queens/result.log 'Found 92 solutions'
 
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
