@@ -216,10 +216,17 @@ def _build(args):
             if not os.path.exists(d):
                 os.makedirs(d)
 
-            pcode = entry and (os.path.abspath(a) == entry) and protection
+            if entry and (os.path.abspath(a) == entry):
+                pcode = protection
+                if hasattr(project, 'plugins'):
+                    plugins = project.plugins
+            else:
+                pcode = 0
+                plugins = None
+
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
                            wrap_mode=wrap_mode, protection=pcode,
-                           rpath=project.runtime_path)
+                           plugins=plugins, rpath=project.runtime_path)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
@@ -456,12 +463,13 @@ def _obfuscate(args):
         logging.info('\t%s -> %s', x, b)
         protection = cross_protection and entry \
             and (os.path.abspath(a) == os.path.abspath(entry))
+        plugins = protection and args.plugins
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
             os.makedirs(d)
 
-        encrypt_script(prokey, a, b, protection=protection)
+        encrypt_script(prokey, a, b, protection=protection, plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
     make_runtime(capsule, output)
@@ -597,6 +605,8 @@ def main(args):
                          help='[DEPRECATED]Specify entry script')
     cparser.add_argument('--cross-protection', choices=(0, 1),
                          help='[DEPRECATED]')
+    cparser.add_argument('--plugin', dest='plugins', action='append',
+                         help=argparse.SUPPRESS)
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          default=1, help=argparse.SUPPRESS)
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)

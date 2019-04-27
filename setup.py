@@ -1,12 +1,13 @@
 # Always prefer setuptools over distutils
 try:
-    from setuptools import setup, find_packages
+    from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
 # To use a consistent encoding
 from codecs import open
-from os import listdir, path
+from os import path
+from sys import argv
 
 from src.config import version
 here = path.abspath(path.dirname(__file__))
@@ -47,7 +48,6 @@ else:
         'platforms/macosx_x86_64/_pytransform.dylib',
     ]
 
-from sys import argv
 if argv[1] == 'bdist_wheel':
     for opt in argv[1:]:
         if opt.startswith('--plat-name'):
@@ -125,11 +125,13 @@ setup(
     # Note that this is a string of words separated by whitespace, not a list.
     keywords='protect obfuscate encrypt obfuscation distribute',
 
-    packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.webui'],
+    packages=['pyarmor',
+              'pyarmor.polyfills', 'pyarmor.webui', 'pyarmor.plugins'],
     package_dir={'pyarmor': 'src'},
     package_data={
         'pyarmor': pyarmor_data_files + platform_data_files,
-        'pyarmor.webui': ['css/*.css', 'js/*.js', '*.html', '*.js', 'manager.*'],
+        'pyarmor.webui': ['css/*.css', 'js/*.js', '*.html', '*.js',
+                          'manager.*'],
     },
 
     # data_files=other_data_files,

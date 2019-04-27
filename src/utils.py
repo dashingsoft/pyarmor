@@ -24,6 +24,7 @@
 #  All the routines of pytransform.
 #
 import logging
+import marshal
 import os
 import re
 import shutil
@@ -35,7 +36,7 @@ from time import gmtime, strftime
 from zipfile import ZipFile
 
 import pytransform
-from config import plat_name, dll_ext, dll_name, entry_lines, \
+from config import plat_name, dll_ext, dll_name, entry_lines, plugin_lines, \
                    protect_code_template, download_url, support_platforms
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
@@ -258,6 +259,26 @@ def get_registration_code():
     return code
 
 
+def build_plugins(plugins):
+    lines = []
+    for p in plugins:
+        index = p.find('(')
+        name = p if index == -1 else p[0:index].strip()
+        args = '()' if index == -1 else p[index:].strip()
+        filename = os.path.join(PYARMOR_PATH, 'plugins', name + '.py')
+        if not os.path.exists(filename):
+            raise RuntimeError('No plugin script %s found' % filename)
+        with open(filename, 'r') as f:
+            co = compile(f.read(), name, 'exec')
+            scode = marshal.dumps(co)
+            checksum = 0
+            for c in scode:
+                checksum += ord(c)
+            lines.append(plugin_lines.format(
+                name=name, args=args, code=scode, checksum=checksum))
+    return '\n'.join(lines)
+
+
 def make_protect_pytransform(template=None, filename=None, rpath=None):
     if filename is None:
         filename = pytransform._pytransform._name
@@ -317,7 +338,7 @@ def _guess_encoding(filename):
 
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
-                   obf_mod=1, protection=0, rpath=None):
+                   obf_mod=1, protection=0, plugins=None, rpath=None):
     if sys.version_info[0] == 2:
         with open(filename, 'r') as f:
             lines = f.readlines()
@@ -330,10 +351,22 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             if i > 0:
                 lines[0] = lines[0][i:]
 
+    if plugins:
+        n = 0
+        for line in lines:
+            if line.startswith('# {PyArmor Plugins}') \
+               or line.startswith("if __name__ == '__main__':") \
+               or line.startswith('if __name__ == "__main__":'):
+                logging.info('Patch this entry script with protection code')
+                lines[n:n] = build_plugins(plugins)
+                break
+            n += 1
+
     if protection:
         n = 0
         for line in lines:
-            if line.startswith('# No PyArmor Protection Code'):
+            if line.startswith('# No PyArmor Protection Code') or \
+               line.startswith('# {No PyArmor Protection Code}'):
                 break
             elif (line.startswith('# {PyArmor Protection Code}')
                   or line.startswith("if __name__ == '__main__':")

@@ -199,7 +199,7 @@ PyArmor will replace this line with protection code.
 
 If there is line like this::
 
-    # No PyArmor Protection Code
+    # {No PyArmor Protection Code}
 
 PyArmor will not patch this script.
 

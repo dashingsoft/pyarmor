@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '5.2.9'
+version = '5.3.0'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
@@ -27,6 +27,17 @@ dll_name = '_pytransform'
 entry_lines = 'from %spytransform import pyarmor_runtime\n', \
               'pyarmor_runtime(%s)\n'
 protect_code_template = 'protect_code.pt'
+
+plugin_lines = '''def {name}{args}:
+    import marshal
+    co = "{code}"
+    checksum = 0
+    for c in co:
+        checksum += ord(c)
+    if checksum != {checksum}:
+        sys.exit(1)
+    eval(marshal.loads(co))
+'''
 
 config_filename = '.pyarmor_config'
 capsule_filename = '.pyarmor_capsule.zip'
