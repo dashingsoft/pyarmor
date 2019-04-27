@@ -117,12 +117,12 @@ class Project(dict):
         self._check(os.path.dirname(filename))
 
     def _project_filename(self, path):
-        filename = os.path.join(path, config_filename)
-        if not os.path.exists(filename):
-            name = config_filename + '.' + os.path.basename(path)
-            filename = os.path.join(os.path.dirname(path), name)
-        if not os.path.exists(filename):
-            raise RuntimeError('No project found at %s' % path)
+        if os.path.exists(path):
+            filename = os.path.join(path, config_filename)
+        else:
+            name = os.path.basename(path)
+            filename = os.path.join(os.path.dirname(path),
+                                    '%s.%s' % (config_filename, name))
         return filename
 
     def open(self, path):
