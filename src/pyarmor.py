@@ -662,6 +662,8 @@ def main(args):
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1))
     cparser.add_argument('--runtime-path', metavar="RPATH")
+    cparser.add_argument('--plugin', dest='plugins', action='append',
+                         help=argparse.SUPPRESS)
     cparser.set_defaults(func=_config)
 
     #
