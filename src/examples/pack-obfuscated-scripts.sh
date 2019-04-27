@@ -20,6 +20,6 @@ OUTPUT=
 
 OPTIONS=
 [[ -n "${SETUP_SCRIPT}" ]] && OPTIONS="$OPTIONS --setup ${SETUP_SCRIPT}"
-[[ -n "$OUTPUT" ]] && OPTIONS="$OPTIONS --setup $OUTPUT"
+[[ -n "$OUTPUT" ]] && OPTIONS="$OPTIONS --output $OUTPUT"
 
 $PYARMOR pack $OPTIONS "${ENTRY_SCRIPT}"
