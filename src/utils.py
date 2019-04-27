@@ -386,6 +386,10 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     with open(destname, 'w') as f:
         f.write(s.decode())
 
+    if sys.flags.debug and (protection or plugins):
+        with open('pyarmor.patched-' + filename, 'w') as f:
+            f.write(''.join(lines))
+
 
 def get_product_key(capsule):
     output = tempfile.gettempdir()
