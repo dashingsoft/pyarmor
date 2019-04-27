@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.3.0
+-----
+* Add option `--plugin` in command `obfuscate`
+* Add property `plugins` for Project, and add option `--plugin` in command `config`
+* Change default build path for command `pack`
+
 5.2.9
 -----
 * Fix segmentation fault issue for python3.5 and before: run too big obfuscated code object (>65536 bytes) will crash (#67)
