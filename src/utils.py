@@ -387,7 +387,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         f.write(s.decode())
 
     if sys.flags.debug and (protection or plugins):
-        with open('pyarmor.patched-' + filename, 'w') as f:
+        with open(filename + '.pyarmor-patched', 'w') as f:
             f.write(''.join(lines))
 
 
