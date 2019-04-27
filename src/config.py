@@ -37,6 +37,7 @@ plugin_lines = '''def {name}{args}:
     if checksum != {checksum}:
         sys.exit(1)
     eval(marshal.loads(co))
+{name}{args}
 '''
 
 config_filename = '.pyarmor_config'
