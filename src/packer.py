@@ -32,7 +32,8 @@ execute your program without Python installed.
 The prefer way is
 
     pip install pyinstaller
-    parmor pack /path/to/src/hello.py
+    cd /path/to/src
+    parmor pack hello.py
 
 '''
 
@@ -139,7 +140,8 @@ def copy_runtime_files(runtimes, output):
 def call_armor(args):
     logging.info('')
     logging.info('')
-    p = subprocess.Popen([sys.executable, 'pyarmor.py'] + list(args))
+    s = os.path.join(os.path.dirname(__file__), 'pyarmor.py')
+    p = subprocess.Popen([sys.executable, s] + list(args))
     p.wait()
     if p.returncode != 0:
         raise RuntimeError('Call pyarmor failed')
@@ -157,9 +159,8 @@ def pathwrapper(func):
     return wrap
 
 
-@pathwrapper
 def _packer(src, entry, build, script, packcmd, output, libname):
-    project = os.path.join('projects', 'build-for-packer-v0.1')
+    project = os.path.join(output, 'obf')
     obfdist = os.path.join(project, 'dist')
 
     args = 'init', '-t', 'app', '--src', src, '--entry', entry, project
@@ -180,7 +181,8 @@ def _packer(src, entry, build, script, packcmd, output, libname):
 
     copy_runtime_files(obfdist, output)
 
-    shutil.rmtree(project)
+    if not sys.flags.debug:
+        shutil.rmtree(project)
 
 
 @logaction
@@ -263,9 +265,8 @@ def run_pyinstaller(project, src, entry, specfile, packcmd):
         raise RuntimeError('Run pyinstller failed')
 
 
-@pathwrapper
 def _pyinstaller(src, entry, packcmd, output):
-    project = os.path.join('projects', 'pyinstaller')
+    project = os.path.join(output, 'obf')
     obfdist = os.path.join(project, 'dist')
     spec = os.path.join(project, os.path.basename(entry)[:-3] + '.spec')
 
@@ -278,7 +279,8 @@ def _pyinstaller(src, entry, packcmd, output):
 
     run_pyinstaller(project, src, entry, patched_spec, packcmd)
 
-    shutil.rmtree(project)
+    if not sys.flags.debug:
+        shutil.rmtree(project)
 
 
 def packer(args):
@@ -306,6 +308,9 @@ def packer(args):
     packcmd = DEFAULT_PACKER[_type][2] + [output] + extra_options
 
     logging.info('Prepare to pack obfuscated scripts with %s', _type)
+    logging.info('src for scripts: %s', src)
+    logging.info('output path: %s', output)
+
     if _type == 'PyInstaller':
         _pyinstaller(src, entry, packcmd, output)
     else:
@@ -324,12 +329,9 @@ def add_arguments(parser):
     parser.add_argument('-t', '--type', default='PyInstaller', metavar='TYPE',
                         choices=DEFAULT_PACKER.keys(),
                         help=', '.join(DEFAULT_PACKER.keys()))
-    parser.add_argument('-s', '--setup',
-                        help='Setup script, default is setup.py, '
-                             'or ENTRY.spec for PyInstaller')
+    parser.add_argument('-s', '--setup', help=argparse.SUPPRESS)
     parser.add_argument('-O', '--output',
-                        help='Directory to put final built distributions in'
-                        ' (default is output path of setup script)')
+                        help='Directory to put final built distributions in')
     parser.add_argument('-e', '--options',
                         help='Extra options to run pack command')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
