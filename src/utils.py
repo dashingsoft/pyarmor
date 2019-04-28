@@ -258,8 +258,8 @@ def get_registration_code():
     return code
 
 
-def build_plugins(plugins):
-    indent = ' ' * 4
+def build_plugins(plugins, indent=4):
+    indent = ' ' * indent
     template = 'def {name}{args}:\n%s{code}\n{name}{args}\n' % indent
     result = []
     for p in plugins:
