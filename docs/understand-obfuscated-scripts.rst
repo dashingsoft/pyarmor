@@ -68,8 +68,10 @@ Except obfuscated scripts, all the other files are called `Runtime Files`:
 
 All of them are required to run obfuscated scripts.
 
-The `license.lic`
------------------
+.. _the license file for obfuscated script:
+
+The License File for Obfuscated Script
+--------------------------------------
 
 There is a special runtime file `license.lic`. The default one,
 which generated as executing ``pyarmor obfuscate``, allows obfuscated

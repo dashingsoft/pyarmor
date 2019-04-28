@@ -4,9 +4,18 @@ License
 =======
 
 PyArmor is published as shareware. Free trial version never expires,
-the limitation is
+the limitations are
 
-* :ref:`Global Capsule` in trial version is fixed.
+- The maximum size of code object is 35728 bytes in trial version
+- The scripts obfuscated by trial version are not private. It means
+  anyone could generate the license file which works for these
+  obfuscated scripts.
+
+About the license file of obfuscated scripts, refer to :ref:`The
+License File for Obfuscated Script`
+
+A registration code is required to obfuscate big code object or
+generate private obfuscated scripts.
 
 There are 2 basic types of licenses issued for the software. These are:
 
