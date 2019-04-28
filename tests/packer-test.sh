@@ -98,9 +98,9 @@ dist=examples/simple/dist
 check_file_exists $dist/queens/license.lic
 check_file_content $dist/queens/result.log 'Found 92 solutions'
 
-csih_inform "Case 3-2: Test sys.flags.debug is set with PyInstaller"
+csih_inform "Case 3-2: Test option --clean with PyInstaller"
 rm -rf $dist
-PYTHONDEBUG=y $PYARMOR pack examples/simple/queens.py >result.log 2>&1
+PYTHONDEBUG=y $PYARMOR pack --clean examples/simple/queens.py >result.log 2>&1
 check_return_value
 
 ( cd $dist/queens; ./queens.exe  >result.log 2>&1 )

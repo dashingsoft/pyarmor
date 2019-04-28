@@ -319,10 +319,11 @@ def packer(args):
     logging.info('output path: %s', output)
 
     if _type == 'PyInstaller':
-        _pyinstaller(src, entry, packcmd, output)
+        _pyinstaller(src, entry, packcmd, output, args.clean)
     else:
         check_setup_script(_type, os.path.join(build, script))
-        _packer(src, entry, build, script, packcmd, output, libname)
+        _packer(src, entry, build, script, packcmd, output, libname,
+                args.clean)
 
     logging.info('')
     logging.info('Pack obfuscated scripts successfully in the path')
@@ -341,6 +342,8 @@ def add_arguments(parser):
                         help='Directory to put final built distributions in')
     parser.add_argument('-e', '--options',
                         help='Extra options to run pack command')
+    parser.add_argument('--clean', action="store_true",
+                        help='Remove build path before packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
                         help='Entry script')
 
