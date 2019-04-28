@@ -28,18 +28,6 @@ entry_lines = 'from %spytransform import pyarmor_runtime\n', \
               'pyarmor_runtime(%s)\n'
 protect_code_template = 'protect_code.pt'
 
-plugin_lines = '''def {name}{args}:
-    import marshal
-    co = "{code}"
-    checksum = 0
-    for c in co:
-        checksum += ord(c)
-    if checksum != {checksum}:
-        sys.exit(1)
-    eval(marshal.loads(co))
-{name}{args}
-'''
-
 config_filename = '.pyarmor_config'
 capsule_filename = '.pyarmor_capsule.zip'
 license_filename = 'license.lic'

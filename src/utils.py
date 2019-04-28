@@ -24,7 +24,6 @@
 #  All the routines of pytransform.
 #
 import logging
-import marshal
 import os
 import re
 import shutil
@@ -36,7 +35,7 @@ from time import gmtime, strftime
 from zipfile import ZipFile
 
 import pytransform
-from config import plat_name, dll_ext, dll_name, entry_lines, plugin_lines, \
+from config import plat_name, dll_ext, dll_name, entry_lines, \
                    protect_code_template, download_url, support_platforms
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
@@ -260,7 +259,9 @@ def get_registration_code():
 
 
 def build_plugins(plugins):
-    lines = []
+    indent = ' ' * 4
+    template = 'def {name}{args}:\n%s{code}\n{name}{args}\n' % indent
+    result = []
     for p in plugins:
         index = p.find('(')
         name = p if index == -1 else p[0:index].strip()
@@ -269,14 +270,10 @@ def build_plugins(plugins):
         if not os.path.exists(filename):
             raise RuntimeError('No plugin script %s found' % filename)
         with open(filename, 'r') as f:
-            co = compile(f.read(), name, 'exec')
-            scode = marshal.dumps(co)
-            checksum = 0
-            for c in scode:
-                checksum += ord(c)
-            lines.append(plugin_lines.format(
-                name=name, args=args, code=scode, checksum=checksum))
-    return '\n'.join(lines)
+            lines = f.readlines()
+            result.append(template.format(
+                name=name, args=args, code=indent.join(lines)))
+    return result
 
 
 def make_protect_pytransform(template=None, filename=None, rpath=None):
@@ -357,7 +354,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             if line.startswith('# {PyArmor Plugins}') \
                or line.startswith("if __name__ == '__main__':") \
                or line.startswith('if __name__ == "__main__":'):
-                logging.info('Patch this entry script with protection code')
+                logging.info('Patch this entry script with plugins')
                 lines[n:n] = build_plugins(plugins)
                 break
             n += 1
@@ -373,9 +370,13 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
                 template = None if protection == 1 else protection
-                lines[n:n] = make_protect_pytransform(template, rpath=rpath)
+                lines[n:n] = [make_protect_pytransform(template, rpath=rpath)]
                 break
             n += 1
+
+    if sys.flags.debug and (protection or plugins):
+        with open(filename + '.pyarmor-patched', 'w') as f:
+            f.write(''.join(lines))
 
     modname = _frozen_modname(filename, destname)
     co = compile(''.join(lines), modname, 'exec')
@@ -385,10 +386,6 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
 
     with open(destname, 'w') as f:
         f.write(s.decode())
-
-    if sys.flags.debug and (protection or plugins):
-        with open(filename + '.pyarmor-patched', 'w') as f:
-            f.write(''.join(lines))
 
 
 def get_product_key(capsule):
