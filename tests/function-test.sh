@@ -247,6 +247,28 @@ $PYARMOR obfuscate -O test-no-cross-protection --no-cross-protection \
 check_return_value
 check_file_exists test-no-cross-protection/main.py
 
+csih_inform "C-18. Test option --plugin for obfuscate"
+echo "print('Hello Plugin')" > plugins/hello.py
+$PYARMOR obfuscate -O dist-plugin --plugin "hello" \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd dist-plugin; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content dist-plugin/result.log 'Hello Plugin'
+check_file_content dist-plugin/result.log 'Found 92 solutions'
+
+csih_inform "C-19. Test option --plugin with arguments for obfuscate"
+echo "print('Hello ' + locals().get('name'))" > plugins/hello2.py
+$PYARMOR obfuscate -O dist-plugin2 --plugin "hello2(name='World')" \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd dist-plugin2; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content dist-plugin2/result.log 'Hello World'
+check_file_content dist-plugin2/result.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
