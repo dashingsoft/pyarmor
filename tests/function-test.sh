@@ -345,10 +345,20 @@ check_file_content $PROPATH/result.log "manifest: include queens.py"
 check_file_content $PROPATH/result.log "hello2(name='World')"
 
 csih_inform "Case PC-4: build child project 1"
-(cd $PROPATH; $ARMOR build 1 >result.log 2>&1)
+(cd $PROPATH; $ARMOR build --no-runtime 1 >result.log 2>&1)
 
 check_return_value
 check_file_exists $PROPATH/dist/queens.py
+check_file_not_exists $PROPATH/dist/pytransform.py
+
+csih_inform "Case PC-5: clear plugin for child project 1"
+(cd $PROPATH;
+ $ARMOR config --plugin clear 1 >result.log 2>&1)
+check_return_value
+
+(cd $PROPATH;  $ARMOR info 1 >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/result.log "hello2(name='World')" not
 
 echo ""
 echo "-------------------- Test Project Child End -------------------"

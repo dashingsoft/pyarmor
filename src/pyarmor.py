@@ -139,6 +139,11 @@ def _config(args):
     if args.capsule is not None:
         args.capsule = os.path.abspath(args.capsule)
         logging.info('Change capsule to absolute path: %s', args.capsule)
+    if args.plugins is not None:
+        # plugins = project.get('plugins', [])
+        if 'clear' in args.plugins:
+            logging.info('Clear all plugins')
+            args.plugins = []
     keys = project._update(dict(args._get_kwargs()))
     for k in keys:
         logging.info('Change project %s to "%s"', k, getattr(project, k))
