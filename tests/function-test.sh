@@ -314,6 +314,48 @@ echo ""
 
 # ======================================================================
 #
+#  Project Child
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test Project Child -----------------------"
+echo ""
+
+csih_inform "Case PC-1: create child project 1"
+PROPATH=projects/test-child-project
+$PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
+$PYARMOR init --child 1 $PROPATH >result.log 2>&1
+
+check_return_value
+check_file_exists $PROPATH/.pyarmor_config.1
+
+csih_inform "Case PC-2: config child project 1"
+(cd $PROPATH;
+ $ARMOR config --plugin="hello" --plugin="hello2(name='World')" \
+        --manifest "include queens.py" 1 >result.log 2>&1)
+
+check_return_value
+
+csih_inform "Case PC-3: show information of child project 1"
+(cd $PROPATH;  $ARMOR info 1 >result.log 2>&1)
+
+check_return_value
+check_file_content $PROPATH/result.log "manifest: include queens.py"
+check_file_content $PROPATH/result.log "hello2(name='World')"
+
+csih_inform "Case PC-4: build child project 1"
+(cd $PROPATH; $ARMOR build 1 >result.log 2>&1)
+
+check_return_value
+check_file_exists $PROPATH/dist/queens.py
+
+echo ""
+echo "-------------------- Test Project Child End -------------------"
+echo ""
+
+# ======================================================================
+#
 #  Mode: auto-wrap
 #
 # ======================================================================
