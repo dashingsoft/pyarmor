@@ -276,6 +276,19 @@ def build_plugins(plugins, indent=4):
     return result
 
 
+def patch_plugins(plugins):
+    result = []
+    path = os.getenv('PYARMOR_PLUGIN', '')
+    for name in plugins:
+        filename = name if name.endswith('.py') else (name + '.py')
+        filename = build_path(filename, path)
+        if not os.path.exists(filename):
+            raise RuntimeError('No plugin script %s found' % filename)
+        with open(filename, 'r') as f:
+            result.append(f.read())
+    return result
+
+
 def make_protect_pytransform(template=None, filename=None, rpath=None):
     if filename is None:
         filename = pytransform._pytransform._name
@@ -355,7 +368,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                or line.startswith("if __name__ == '__main__':") \
                or line.startswith('if __name__ == "__main__":'):
                 logging.info('Patch this entry script with plugins')
-                lines[n:n] = build_plugins(plugins)
+                lines[n:n] = patch_plugins(plugins)
                 break
             n += 1
 
