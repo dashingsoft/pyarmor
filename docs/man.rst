@@ -47,6 +47,7 @@ Obfuscate python scripts.
 --exact                 Only obfuscate list scripts
 --no-bootstrap          Do not insert bootstrap code to entry script
 --no-cross-protection   Do not insert protection code to entry script
+--plugin NAME           Insert extra code to entry script
 
 **DESCRIPTION**
 
@@ -72,6 +73,11 @@ Finally insert :ref:`Bootstrap Code` into entry script.
 
 The entry script is only the first script if there are more than one
 script in command line.
+
+Option `--plugin` could specify one script which will be inserted into
+entry script. Generally these functions would only work in the
+obfuscated scripts, so they are in the separate script other than
+entry script.
 
 **EXAMPLES**
 
@@ -106,6 +112,11 @@ script in command line.
   :file:`dist/foo.py`::
 
      pyarmor obfuscate --no-bootstrap foo.py
+
+* First insert the content of :file:`check_ntp_time.py` into `foo.py`,
+  then obfuscating `foo.py`::
+
+     pyarmor obfuscate --plugin check_ntp_time foo.py
 
 .. _licenses:
 
@@ -198,7 +209,8 @@ refer to :ref:`How to pack obfuscated scripts`.
 
 * Pass extra options to run `PyInstaller`::
 
-    pyarmor pack --options '-w --icon a.ico' foo.py
+    pyarmor pack --options '-w --icon app.ico' foo.py
+
 
 .. _hdinfo:
 
@@ -293,6 +305,7 @@ Update project settings.
 --wrap-mode <0,1>               Disable or enable to wrap mode
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
 --runtime-path RPATH            Set the path of runtime files in target machine
+--plugin NAME                   Insert extra code to entry script
 
 **DESCRIPTION**
 
@@ -329,6 +342,15 @@ src path of project.
 
     pyarmor config --wrap-mode 0
 
+* Set plugin for entry script. The content of `check_ntp_time.py` will
+  be insert into entry script as building project::
+
+    pyarmor config --plugin check_ntp_time.py
+
+* Clear all plugins::
+
+    pyarmor config --plugin clear
+     
 .. _build:
 
 build

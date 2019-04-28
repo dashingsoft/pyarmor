@@ -8,8 +8,7 @@ Change Logs
 * In the trial version of PyArmor, it will raise error as obfuscating the code object which size is greater than 32768 bytes.
 * Add option `--plugin` in command `obfuscate`
 * Add property `plugins` for Project, and add option `--plugin` in command `config`
-* Change default build path for command `pack`
-* In command `pack`, do not remove build path if `sys.flags.debug` is set
+* Change default build path for command `pack`, and do not remove it after command finished.
 
 5.2.9
 -----

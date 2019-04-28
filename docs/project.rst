@@ -22,7 +22,7 @@ Use command ``init`` to create a project::
 
 It will create project configuration file :file:`.pyarmor_config` in
 the current path. Or create project in another path::
-  
+
     pyarmor init --src=examples/pybench --entry=pybench.py projects/pybench
 
 The project path `projects/pybench` will be created, and
@@ -271,5 +271,14 @@ Each project has a configure file. It's a json file named
     for example, use py2exe to package obfuscated scripts. Set
     runtime_path to an empty string, and copy :ref:`Runtime Files` to
     same path of zip file, will solve this problem.
+
+* plugins
+
+    None or list of string
+
+    All the scripts here will be inserted into entry script of
+    project. The entension `.py` is alternative. For example::
+
+        plugins: ["check_ntp_time.py", "show_license_info"]
 
 .. include:: _common_definitions.txt
