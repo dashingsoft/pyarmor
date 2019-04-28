@@ -159,9 +159,15 @@ def pathwrapper(func):
     return wrap
 
 
-def _packer(src, entry, build, script, packcmd, output, libname):
-    project = os.path.join(output, 'obf')
+def _packer(src, entry, build, script, packcmd, output, libname, clean=False):
+    project = os.path.join(build, 'obf')
     obfdist = os.path.join(project, 'dist')
+
+    logging.info('Build path: %s', project)
+    logging.info('Obfuscated scrips output path: %s', obfdist)
+    if clean and os.path.exists(project):
+        logging.info('Clean build path %s', project)
+        shutil.rmtree(project)
 
     args = 'init', '-t', 'app', '--src', src, '--entry', entry, project
     call_armor(args)
@@ -180,9 +186,6 @@ def _packer(src, entry, build, script, packcmd, output, libname):
     update_library(obfdist, os.path.join(output, libname))
 
     copy_runtime_files(obfdist, output)
-
-    if not sys.flags.debug:
-        shutil.rmtree(project)
 
 
 @logaction
@@ -265,9 +268,16 @@ def run_pyinstaller(project, src, entry, specfile, packcmd):
         raise RuntimeError('Run pyinstller failed')
 
 
-def _pyinstaller(src, entry, packcmd, output):
+def _pyinstaller(src, entry, packcmd, output, clean=False):
     project = os.path.join(output, 'obf')
     obfdist = os.path.join(project, 'dist')
+
+    logging.info('Build path: %s', project)
+    logging.info('Obfuscated scrips output path: %s', obfdist)
+    if clean and os.path.exists(project):
+        logging.info('Clean build path %s', project)
+        shutil.rmtree(project)
+
     spec = os.path.join(project, os.path.basename(entry)[:-3] + '.spec')
 
     args = 'obfuscate', '-r', '-O', obfdist, os.path.join(src, entry)
@@ -278,9 +288,6 @@ def _pyinstaller(src, entry, packcmd, output):
     patched_spec = update_specfile(project, obfdist, src, entry, spec)
 
     run_pyinstaller(project, src, entry, patched_spec, packcmd)
-
-    if not sys.flags.debug:
-        shutil.rmtree(project)
 
 
 def packer(args):
