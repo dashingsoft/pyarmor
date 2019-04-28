@@ -92,9 +92,9 @@ class Project(dict):
         return result
 
     def _check(self, path):
-        pro_path = path if path == '' or os.path.exists(path) \
+        pro_path = path if (path == '' or os.path.exists(path)) \
             else os.path.dirname(path)
-        assert os.path.exists(pro_path), \
+        assert os.path.exists(os.path.normpath(pro_path)), \
             'Project path %s does not exists' % pro_path
         assert os.path.exists(self.src), \
             'The src of this project is not found: %s' % self.src
