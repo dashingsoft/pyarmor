@@ -168,10 +168,14 @@ def _build(args):
     logging.info('Check project')
     project._check(args.project)
 
-    capsule = build_path(project.capsule, args.project)
+    pro_path = args.project \
+        if args.project == '' or os.path.exists(args.project) \
+        else os.path.dirname(args.project)
+
+    capsule = build_path(project.capsule, pro_path)
     logging.info('Use capsule: %s', capsule)
 
-    output = build_path(project.output, args.project) \
+    output = build_path(project.output, pro_path) \
         if args.output is None else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
 

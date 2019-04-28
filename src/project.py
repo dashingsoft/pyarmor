@@ -92,6 +92,10 @@ class Project(dict):
         return result
 
     def _check(self, path):
+        pro_path = path if path == '' or os.path.exists(path) \
+            else os.path.dirname(path)
+        assert os.path.exists(pro_path), \
+            'Project path %s does not exists' % pro_path
         assert os.path.exists(self.src), \
             'The src of this project is not found: %s' % self.src
         assert os.path.isabs(self.src), \
@@ -102,7 +106,7 @@ class Project(dict):
             'Invalid capsule, not a zip file'
 
         capsule = self.capsule if os.path.isabs(self.capsule) \
-            else os.path.join(path, self.capsule)
+            else os.path.join(pro_path, self.capsule)
         assert os.path.exists(os.path.normpath(capsule)), \
             'No project capsule found: %s' % capsule
 
