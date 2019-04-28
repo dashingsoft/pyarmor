@@ -628,7 +628,7 @@ def main(args):
     cparser.add_argument('--cross-protection', choices=(0, 1),
                          help='[DEPRECATED]')
     cparser.add_argument('--plugin', dest='plugins', action='append',
-                         help=argparse.SUPPRESS)
+                         help='Insert extra code to entry script')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          default=1, help=argparse.SUPPRESS)
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
@@ -686,7 +686,7 @@ def main(args):
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1))
     cparser.add_argument('--runtime-path', metavar="RPATH")
     cparser.add_argument('--plugin', dest='plugins', action='append',
-                         help=argparse.SUPPRESS)
+                         help='Insert extra code to entry script')
     cparser.set_defaults(func=_config)
 
     #
