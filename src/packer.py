@@ -48,6 +48,8 @@ from glob import glob
 from py_compile import compile as compile_file
 from shlex import split
 from zipfile import PyZipFile
+from os.path import relpath
+
 
 try:
     import argparse
@@ -70,10 +72,24 @@ DEFAULT_PACKER = {
 
 def logaction(func):
     def wrap(*args, **kwargs):
-        logging.info('')
         logging.info('%s', func.__name__)
         return func(*args, **kwargs)
     return wrap
+
+
+def run_command(cmdlist):
+    logging.info('\n\n%s\n\n', ' '.join(cmdlist))
+    if sys.flags.debug:
+        p = subprocess.Popen(cmdlist)
+    else:
+        p = subprocess.Popen(cmdlist, stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT)
+    output, _ = p.communicate()
+
+    if p.returncode != 0:
+        if not sys.flags.debug:
+            logging.error('\n\n%s\n\n', output.decode())
+        raise RuntimeError('Run command failed')
 
 
 @logaction
@@ -103,6 +119,31 @@ the original scripts with obfuscated ones.
 
 
 @logaction
+def copy_runtime_files(runtimes, output):
+    for s in glob(os.path.join(runtimes, '*.key')):
+        shutil.copy(s, output)
+    for s in glob(os.path.join(runtimes, '*.lic')):
+        shutil.copy(s, output)
+    for dllname in glob(os.path.join(runtimes, '_pytransform.*')):
+        shutil.copy(dllname, output)
+
+
+def pathwrapper(func):
+    def wrap(*args, **kwargs):
+        oldpath = os.getcwd()
+        os.chdir(args[2])
+        logging.info('Change current path to %s', os.getcwd())
+        logging.info('-' * 50)
+        try:
+            return func(*args, **kwargs)
+        finally:
+            os.chdir(oldpath)
+            logging.info('Restore current path to %s', oldpath)
+            logging.info('%s\n', '-' * 50)
+    return wrap
+
+
+@pathwrapper
 def run_setup_script(src, entry, build, script, packcmd, obfdist):
     '''Update entry script, copy pytransform.py to source path, then run
 setup script to build the bundle.
@@ -113,80 +154,50 @@ setup script to build the bundle.
     tempfile = '%s.armor.bak' % entry
     shutil.move(os.path.join(src, entry), tempfile)
     shutil.move(obf_entry, src)
-    shutil.copy('pytransform.py', src)
+    shutil.copy(os.path.join(obfdist, 'pytransform.py'), src)
 
-    p = subprocess.Popen([sys.executable, script] + packcmd, cwd=build,
-                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdoutdata, _ = p.communicate()
-
-    shutil.move(tempfile, os.path.join(src, entry))
-    os.remove(os.path.join(src, 'pytransform.py'))
-
-    if p.returncode != 0:
-        logging.error('\n\n%s\n\n', stdoutdata.decode())
-        raise RuntimeError('Run setup script failed')
+    try:
+        run_command([sys.executable, script] + packcmd)
+    finally:
+        shutil.move(tempfile, os.path.join(src, entry))
+        os.remove(os.path.join(src, 'pytransform.py'))
 
 
-@logaction
-def copy_runtime_files(runtimes, output):
-    for s in glob(os.path.join(runtimes, '*.key')):
-        shutil.copy(s, output)
-    for s in glob(os.path.join(runtimes, '*.lic')):
-        shutil.copy(s, output)
-    for dllname in glob(os.path.join(runtimes, '_pytransform.*')):
-        shutil.copy(dllname, output)
-
-
-def call_armor(args):
-    logging.info('')
-    logging.info('')
+def call_pyarmor(args):
     s = os.path.join(os.path.dirname(__file__), 'pyarmor.py')
-    p = subprocess.Popen([sys.executable, s] + list(args))
-    p.wait()
-    if p.returncode != 0:
-        raise RuntimeError('Call pyarmor failed')
-
-
-def pathwrapper(func):
-    def wrap(*args, **kwargs):
-        oldpath = os.getcwd()
-        os.chdir(os.path.abspath(os.path.dirname(__file__)))
-        logging.info('Change path to %s', os.getcwd())
-        try:
-            return func(*args, **kwargs)
-        finally:
-            os.chdir(oldpath)
-    return wrap
+    run_command([sys.executable, relpath(s)] + list(args))
 
 
 def _packer(src, entry, build, script, packcmd, output, libname,
             xoptions, clean=False):
-    project = os.path.join(build, 'obf')
+    if xoptions:
+        logging.warning('-x, -xoptions are ignored')
+
+    project = relpath(os.path.join(build, 'obf'))
     obfdist = os.path.join(project, 'dist')
 
-    logging.info('Build path: %s', project)
-    logging.info('Obfuscated scrips output path: %s', obfdist)
+    logging.info('obfuscated scrips output path: %s', obfdist)
+    logging.info('build path: %s', project)
     if clean and os.path.exists(project):
-        logging.info('Clean build path %s', project)
+        logging.info('Remove build path')
         shutil.rmtree(project)
 
-    args = 'init', '-t', 'app', '--src', src, '--entry', entry, project
-    call_armor(args)
+    logging.info('Run PyArmor to create a project')
+    call_pyarmor(['init', '-t', 'app', '--src', relpath(src),
+                  '--entry', entry, project])
 
+    logging.info('Run PyArmor to config the project')
     filters = ('global-include *.py', 'prune build, prune dist',
                'exclude %s pytransform.py' % entry)
     args = ('config', '--runtime-path', '',
             '--manifest', ','.join(filters), project)
-    call_armor(args)
+    call_pyarmor(args)
 
-    if xoptions:
-        args = ['config'] + list(xoptions) + [project]
-        call_armor(args)
+    logging.info('Run PyArmor to build the project')
+    call_pyarmor(['build', project])
 
-    args = 'build', project
-    call_armor(args)
-
-    run_setup_script(src, entry, build, script, packcmd, obfdist)
+    run_setup_script(src, entry, build, script, packcmd,
+                     os.path.abspath(obfdist))
 
     update_library(obfdist, os.path.join(output, libname))
 
@@ -205,10 +216,9 @@ def check_setup_script(_type, setup):
         logging.info('\tcxfreeze-quickstart')
     else:
         logging.info('\tvi setup.py')
-    raise RuntimeError('No setup script %s found', setup)
+    raise RuntimeError('No setup script %s found' % setup)
 
 
-@logaction
 def run_pyi_makespec(project, obfdist, src, entry, packcmd):
     s = os.pathsep
     # d = os.path.relpath(obfdist, project)
@@ -224,16 +234,9 @@ def run_pyi_makespec(project, obfdist, src, entry, packcmd):
     options.extend(datas)
     options.extend(scripts)
 
-    p = subprocess.Popen([sys.executable] + packcmd + options,
-                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdoutdata, _ = p.communicate()
-
-    if p.returncode != 0:
-        logging.error('\n\n%s\n\n', stdoutdata.decode())
-        raise RuntimeError('Make specfile failed')
+    run_command([sys.executable] + packcmd + options)
 
 
-@logaction
 def update_specfile(project, obfdist, src, entry, specfile):
     with open(specfile) as f:
         lines = f.readlines()
@@ -262,40 +265,36 @@ def update_specfile(project, obfdist, src, entry, specfile):
     return os.path.normpath(patched_file)
 
 
-@logaction
-def run_pyinstaller(project, src, entry, specfile, packcmd):
-    p = subprocess.Popen(
-        [sys.executable] + packcmd + ['-y', specfile],
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdoutdata, _ = p.communicate()
-
-    if p.returncode != 0:
-        logging.error('\n\n%s\n\n', stdoutdata.decode())
-        raise RuntimeError('Run pyinstller failed')
-
-
 def _pyinstaller(src, entry, packcmd, output, specfile, xoptions, clean=False):
+    src = relpath(src)
+    output = relpath(output)
     project = os.path.join(output, 'obf')
     obfdist = os.path.join(project, 'dist')
     if specfile is None:
-        specfile = os.path.join(src, os.path.basename(entry)[:-3] + '.spec')
+        specfile = os.path.join(os.path.basename(entry)[:-3] + '.spec')
 
-    logging.info('spec file: %s', specfile)
-    logging.info('Build path: %s', project)
-    logging.info('Obfuscated scrips output path: %s', obfdist)
+    logging.info('build path: %s', relpath(project))
     if clean and os.path.exists(project):
-        logging.info('Clean build path %s', project)
+        logging.info('Remove build path')
         shutil.rmtree(project)
 
+    logging.info('Run PyArmor to obfuscate scripts...')
     args = ['obfuscate', '-r', '-O', obfdist] + xoptions
-    call_armor(args + [os.path.join(src, entry)])
+    call_pyarmor(args + [os.path.join(src, entry)])
 
-    if not os.path.exists(specfile):
+    if clean or (not os.path.exists(specfile)):
+        logging.info('Run PyInstaller to generate .spec file...')
         run_pyi_makespec(project, obfdist, src, entry, packcmd)
+        logging.info('Save .spec file to %s', specfile)
+    else:
+        logging.info('Use cached .spec file: %s', specfile)
 
+    logging.info('Patching .spec file...')
     patched_spec = update_specfile(project, obfdist, src, entry, specfile)
+    logging.info('Save patched .spec file to %s', patched_spec)
 
-    run_pyinstaller(project, src, entry, patched_spec, packcmd)
+    logging.info('Run PyInstaller with patched .spec file...')
+    run_command([sys.executable] + packcmd + ['-y', patched_spec])
 
 
 def packer(args):
@@ -320,26 +319,24 @@ def packer(args):
             else os.path.join(build, args.output)
     output = os.path.normpath(output)
 
-    libname = DEFAULT_PACKER[t][1]
-    packcmd = DEFAULT_PACKER[t][2] + [output] + extra_options
-
-    logging.info('Prepare to pack obfuscated scripts with %s', t)
-    logging.info('src for scripts: %s', src)
-    logging.info('output path: %s', output)
+    logging.info('Prepare to pack obfuscated scripts with %s...', t)
+    logging.info('entry script: %s', entry)
+    logging.info('src for searching scripts: %s', relpath(src))
+    logging.info('output path: %s', relpath(output))
 
     if t == 'PyInstaller':
+        packcmd = DEFAULT_PACKER[t][2] + [relpath(output)] + extra_options
         _pyinstaller(src, entry, packcmd, output, script,
                      xoptions, args.clean)
     else:
+        libname = DEFAULT_PACKER[t][1]
+        packcmd = DEFAULT_PACKER[t][2] + [output] + extra_options
         script = 'setup.py' if script is None else script
         check_setup_script(t, os.path.join(build, script))
         _packer(src, entry, build, script, packcmd, output, libname,
                 xoptions, args.clean)
 
-    logging.info('')
-    logging.info('Pack obfuscated scripts successfully in the path')
-    logging.info('')
-    logging.info('\t%s', output)
+    logging.info('Pack obfuscated scripts successfully.')
 
 
 def add_arguments(parser):
