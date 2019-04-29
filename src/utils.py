@@ -376,13 +376,13 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             else:
                 i = line.find(marker)
                 if i > -1:
-                    plist.append((n, i))
+                    plist.append((n+1, i))
             n += 1
         if k > -1:
             logging.info('Patch this entry script with plugins')
             lines[k:k] = patch_plugins(plugins)
         for n, i in plist:
-            lines[n] = lines[:i] + lines[i + len(marker):].strip()
+            lines[n] = lines[n][:i] + lines[n][i+len(marker):].lstrip()
 
     if protection:
         n = 0
