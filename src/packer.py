@@ -168,8 +168,11 @@ def call_pyarmor(args):
     run_command([sys.executable, relpath(s)] + list(args))
 
 
-def _packer(src, entry, build, script, packcmd, output, libname,
-            xoptions, clean=False):
+def _packer(t, src, entry, build, script, output, options, xoptions, clean):
+    libname = DEFAULT_PACKER[t][1]
+    packcmd = DEFAULT_PACKER[t][2] + [relpath(output, build)] + options
+    script = 'setup.py' if script is None else script
+    check_setup_script(t, os.path.join(build, script))
     if xoptions:
         logging.warning('-x, -xoptions are ignored')
 
@@ -265,9 +268,11 @@ def update_specfile(project, obfdist, src, entry, specfile):
     return os.path.normpath(patched_file)
 
 
-def _pyinstaller(src, entry, packcmd, output, specfile, xoptions, clean=False):
+def _pyinstaller(src, entry, output, specfile, options, xoptions, clean):
     src = relpath(src)
     output = relpath(output)
+    packcmd = DEFAULT_PACKER['PyInstaller'][2] + [output] + options
+
     project = os.path.join(output, 'obf')
     obfdist = os.path.join(project, 'dist')
     if specfile is None:
@@ -322,20 +327,15 @@ def packer(args):
     logging.info('Prepare to pack obfuscated scripts with %s...', t)
     logging.info('entry script: %s', entry)
     logging.info('src for searching scripts: %s', relpath(src))
-    logging.info('output path: %s', relpath(output))
 
     if t == 'PyInstaller':
-        packcmd = DEFAULT_PACKER[t][2] + [relpath(output)] + extra_options
-        _pyinstaller(src, entry, packcmd, output, script,
-                     xoptions, args.clean)
+        _pyinstaller(src, entry, output, script,
+                     extra_options, xoptions, args.clean)
     else:
-        libname = DEFAULT_PACKER[t][1]
-        packcmd = DEFAULT_PACKER[t][2] + [output] + extra_options
-        script = 'setup.py' if script is None else script
-        check_setup_script(t, os.path.join(build, script))
-        _packer(src, entry, build, script, packcmd, output, libname,
-                xoptions, args.clean)
+        _packer(t, src, entry, build, script, output,
+                extra_options, xoptions, args.clean)
 
+    logging.info('Final output path: %s', relpath(output))
     logging.info('Pack obfuscated scripts successfully.')
 
 
