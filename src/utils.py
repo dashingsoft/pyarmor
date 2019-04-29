@@ -363,14 +363,26 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
 
     if plugins:
         n = 0
+        k = -1
+        plist = []
+        marker = '# PyArmor Plugin:'
         for line in lines:
-            if line.startswith('# {PyArmor Plugins}') \
-               or line.startswith("if __name__ == '__main__':") \
-               or line.startswith('if __name__ == "__main__":'):
-                logging.info('Patch this entry script with plugins')
-                lines[n:n] = patch_plugins(plugins)
-                break
+            if line.startswith('# {PyArmor Plugins}'):
+                k = n + 1
+            elif (line.startswith("if __name__ == '__main__':")
+                  or line.startswith('if __name__ == "__main__":')):
+                if k == -1:
+                    k = n
+            else:
+                i = line.find(marker)
+                if i > -1:
+                    plist.append((n, i))
             n += 1
+        if k > -1:
+            logging.info('Patch this entry script with plugins')
+            lines[k:k] = patch_plugins(plugins)
+        for n, i in plist:
+            lines[n] = lines[:i] + lines[i + len(marker):].strip()
 
     if protection:
         n = 0
