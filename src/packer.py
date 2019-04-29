@@ -48,7 +48,6 @@ from glob import glob
 from py_compile import compile as compile_file
 from shlex import split
 from zipfile import PyZipFile
-from os.path import relpath
 
 
 try:
@@ -90,6 +89,13 @@ def run_command(cmdlist):
         if not sys.flags.debug:
             logging.error('\n\n%s\n\n', output.decode())
         raise RuntimeError('Run command failed')
+
+
+def relpath(path, start=os.curdir):
+    try:
+        return os.path.relpath(path, start)
+    except Exception:
+        return path
 
 
 @logaction
@@ -165,7 +171,7 @@ setup script to build the bundle.
 
 def call_pyarmor(args):
     s = os.path.join(os.path.dirname(__file__), 'pyarmor.py')
-    run_command([sys.executable, relpath(s)] + list(args))
+    run_command([sys.executable, s] + list(args))
 
 
 def _packer(t, src, entry, build, script, output, options, xoptions, clean):
