@@ -211,13 +211,14 @@ def check_setup_script(_type, setup):
 @logaction
 def run_pyi_makespec(project, obfdist, src, entry, packcmd):
     s = os.pathsep
-    d = os.path.relpath(obfdist, project)
+    # d = os.path.relpath(obfdist, project)
+    d = obfdist
     datas = [
-        '--add-data', '%s%s.' % (os.path.join(d, '*.lic'), s),
-        '--add-data', '%s%s.' % (os.path.join(d, '*.key'), s),
+        '--add-data', '%s%s.' % (os.path.join(d, 'license.lic'), s),
+        '--add-data', '%s%s.' % (os.path.join(d, 'pytransform.key'), s),
         '--add-data', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
     ]
-    scripts = [os.path.join(src, entry)]
+    scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
 
     options = ['-y']
     options.extend(datas)

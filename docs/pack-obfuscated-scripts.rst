@@ -32,10 +32,10 @@ Install ``pyinstaller``::
 Generate specfile, add the obfuscated entry script and data files
 required by obfuscated scripts::
 
-    pyinstaller --add-data dist/obf/*.lic
-                --add-data dist/obf/*.key
+    pyinstaller --add-data dist/obf/license.lic    
+                --add-data dist/obf/pytransform.key
                 --add-data dist/obf/_pytransform.*
-                hello.py
+                hello.py dist/obf/hello.py
 
 Update specfile ``hello.spec``, insert the following lines after the
 ``Analysis`` object. The purpose is to replace all the original
