@@ -159,7 +159,8 @@ def pathwrapper(func):
     return wrap
 
 
-def _packer(src, entry, build, script, packcmd, output, libname, clean=False):
+def _packer(src, entry, build, script, packcmd, output, libname,
+            xoptions, clean=False):
     project = os.path.join(build, 'obf')
     obfdist = os.path.join(project, 'dist')
 
@@ -177,6 +178,10 @@ def _packer(src, entry, build, script, packcmd, output, libname, clean=False):
     args = ('config', '--runtime-path', '',
             '--manifest', ','.join(filters), project)
     call_armor(args)
+
+    if xoptions:
+        args = ['config'] + list(xoptions) + [project]
+        call_armor(args)
 
     args = 'build', project
     call_armor(args)
@@ -212,9 +217,9 @@ def run_pyi_makespec(project, obfdist, src, entry, packcmd):
         '--add-data', '%s%s.' % (os.path.join(d, '*.key'), s),
         '--add-data', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
     ]
-    scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
+    scripts = [os.path.join(src, entry)]
 
-    options = ['-y', '--specpath', project]
+    options = ['-y']
     options.extend(datas)
     options.extend(scripts)
 
@@ -268,62 +273,67 @@ def run_pyinstaller(project, src, entry, specfile, packcmd):
         raise RuntimeError('Run pyinstller failed')
 
 
-def _pyinstaller(src, entry, packcmd, output, clean=False):
+def _pyinstaller(src, entry, packcmd, output, specfile, xoptions, clean=False):
     project = os.path.join(output, 'obf')
     obfdist = os.path.join(project, 'dist')
+    if specfile is None:
+        specfile = os.path.join(src, os.path.basename(entry)[:-3] + '.spec')
 
+    logging.info('spec file: %s', specfile)
     logging.info('Build path: %s', project)
     logging.info('Obfuscated scrips output path: %s', obfdist)
     if clean and os.path.exists(project):
         logging.info('Clean build path %s', project)
         shutil.rmtree(project)
 
-    spec = os.path.join(project, os.path.basename(entry)[:-3] + '.spec')
+    args = ['obfuscate', '-r', '-O', obfdist] + xoptions
+    call_armor(args + [os.path.join(src, entry)])
 
-    args = 'obfuscate', '-r', '-O', obfdist, os.path.join(src, entry)
-    call_armor(args)
+    if not os.path.exists(specfile):
+        run_pyi_makespec(project, obfdist, src, entry, packcmd)
 
-    run_pyi_makespec(project, obfdist, src, entry, packcmd)
-
-    patched_spec = update_specfile(project, obfdist, src, entry, spec)
+    patched_spec = update_specfile(project, obfdist, src, entry, specfile)
 
     run_pyinstaller(project, src, entry, patched_spec, packcmd)
 
 
 def packer(args):
-    _type = args.type
+    t = args.type
     src = os.path.abspath(os.path.dirname(args.entry[0]))
     entry = os.path.basename(args.entry[0])
     extra_options = [] if args.options is None else split(args.options)
+    xoptions = [] if args.xoptions is None else split(args.xoptions)
 
     if args.setup is None:
         build = src
-        script = 'setup.py'
+        script = None
     else:
         build = os.path.abspath(os.path.dirname(args.setup))
         script = os.path.basename(args.setup)
 
     if args.output is None:
-        dist = DEFAULT_PACKER[_type][0]
+        dist = DEFAULT_PACKER[t][0]
         output = os.path.join(build, dist)
     else:
         output = args.output if os.path.isabs(args.output) \
             else os.path.join(build, args.output)
     output = os.path.normpath(output)
 
-    libname = DEFAULT_PACKER[_type][1]
-    packcmd = DEFAULT_PACKER[_type][2] + [output] + extra_options
+    libname = DEFAULT_PACKER[t][1]
+    packcmd = DEFAULT_PACKER[t][2] + [output] + extra_options
 
-    logging.info('Prepare to pack obfuscated scripts with %s', _type)
+    logging.info('Prepare to pack obfuscated scripts with %s', t)
     logging.info('src for scripts: %s', src)
     logging.info('output path: %s', output)
 
-    if _type == 'PyInstaller':
-        _pyinstaller(src, entry, packcmd, output, args.clean)
+    if t == 'PyInstaller':
+        _pyinstaller(src, entry, packcmd, output, script,
+                     xoptions, args.clean)
     else:
-        check_setup_script(_type, os.path.join(build, script))
+        script = 'setup.py' if script is None else script
+        check_setup_script(t, os.path.join(build, script))
         _packer(src, entry, build, script, packcmd, output, libname,
-                args.clean)
+                xoptions, args.clean)
 
     logging.info('')
     logging.info('Pack obfuscated scripts successfully in the path')
@@ -342,6 +352,8 @@ def add_arguments(parser):
                         help='Directory to put final built distributions in')
     parser.add_argument('-e', '--options',
                         help='Extra options to run pack command')
+    parser.add_argument('-x', '--xoptions',
+                        help='Extra options to obfuscate scripts')
     parser.add_argument('--clean', action="store_true",
                         help='Remove build path before packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
