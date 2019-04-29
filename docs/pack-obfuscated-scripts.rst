@@ -35,13 +35,13 @@ required by obfuscated scripts::
     pyinstaller --add-data dist/obf/*.lic
                 --add-data dist/obf/*.key
                 --add-data dist/obf/_pytransform.*
-                hello.py dist/obf/hello.py
+                hello.py
 
 Update specfile ``hello.spec``, insert the following lines after the
 ``Analysis`` object. The purpose is to replace all the original
 scripts with obfuscated ones::
 
-    a.scripts[0] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
+    a.scripts[-1] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
     for i in range(len(a.pure)):
         if a.pure[i][1].startswith(a.pathex[0]):
             a.pure[i] = a.pure[i][0], a.pure[i][1].replace(a.pathex[0], os.path.abspath('dist/obf')), a.pure[i][2]
