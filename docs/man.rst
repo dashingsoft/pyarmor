@@ -74,10 +74,13 @@ Finally insert :ref:`Bootstrap Code` into entry script.
 The entry script is only the first script if there are more than one
 script in command line.
 
-Option `--plugin` could specify one script which will be inserted into
-entry script. Generally these functions would only work in the
-obfuscated scripts, so they are in the separate script other than
-entry script.
+Option `--plugin` is used to extend license type of obfuscated
+scripts, it will insert the content of plugin into entry script. The
+corresponding filename of plugin is `NAME.py`. `Name` may be absolute
+path if it's not in the current path, or specify plugin path by
+environment variable `PYARMOR_PLUGIN`.
+
+About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
 
 **EXAMPLES**
 
@@ -113,8 +116,8 @@ entry script.
 
      pyarmor obfuscate --no-bootstrap foo.py
 
-* First insert the content of :file:`check_ntp_time.py` into `foo.py`,
-  then obfuscating `foo.py`::
+* Insert the content of :file:`check_ntp_time.py` into `foo.py`, then
+  obfuscating `foo.py`::
 
      pyarmor obfuscate --plugin check_ntp_time foo.py
 
@@ -229,7 +232,6 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 * Pass extra options to obfuscate scripts::
 
     pyarmor pack -x " --exclude venv,test" foo.py
-
 
 .. _hdinfo:
 

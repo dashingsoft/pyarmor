@@ -276,9 +276,11 @@ Each project has a configure file. It's a json file named
 
     None or list of string
 
-    All the scripts here will be inserted into entry script of
-    project. The entension `.py` is alternative. For example::
+    Extend license type of obfuscated scripts, multi-plugins are
+    supported. For example::
 
-        plugins: ["check_ntp_time.py", "show_license_info"]
+        plugins: ["check_ntp_time", "show_license_info"]
+
+    About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
 
 .. include:: _common_definitions.txt
