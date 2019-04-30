@@ -77,7 +77,8 @@ def logaction(func):
 
 
 def run_command(cmdlist):
-    logging.info('\n\n%s\n\n', ' '.join(cmdlist))
+    logging.info('\n\n%s\n\n', ' '.join(
+        [x if x.find(' ') == -1 else ('"%s"' % x) for x in cmdlist]))
     if sys.flags.debug:
         p = subprocess.Popen(cmdlist)
     else:
