@@ -184,9 +184,9 @@ def _build(args):
         if args.output is None else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
 
-    platname = project.get('platform', args.platform)
-    if platname:
-        logging.info('Taget platform is: %s', platname)
+    platform = args.platform if args.platform else project.get('platform')
+    if platform:
+        logging.info('Taget platform is: %s', platform)
 
     if not args.only_runtime:
         src = project.src
@@ -234,11 +234,11 @@ def _build(args):
         entry = os.path.abspath(project.entry) if project.entry else None
         protection = project.cross_protection \
             if hasattr(project, 'cross_protection') else 1
-        if platname:
+        if platform:
             if protection == 1:
-                protection = platname
+                protection = platform
             elif isinstance(protection, str):
-                protection = ','.join([protection, platname])
+                protection = ','.join([protection, platform])
 
         for x in files:
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -276,7 +276,7 @@ def _build(args):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
         logging.info('Make runtime files to %s', routput)
-        make_runtime(capsule, routput, platform=platname)
+        make_runtime(capsule, routput, platform=platform)
         if project.get('disable_restrict_mode'):
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
             licfile = os.path.join(routput, license_filename)
