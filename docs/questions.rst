@@ -129,8 +129,8 @@ For more information, refer to :ref:`Restrict Mode`
 Protection Fault: unexpected xxx
 --------------------------------
 
-Use obfuscated scripts in wrong way, by default, all the runtimes
-cann't be changed any more. Do not touch the following files
+Use obfuscated scripts in wrong way, by default, all the runtime files
+can't be changed any more. Do not touch the following files
 
 * pytransform.py
 * _pytransform.so/.dll/.dylib
