@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.3.1
+-----
+* Refine `pack` command, and make output clear.
+* Document plugin usage to extend license type for obufscated scripts. Refer to
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#using-plugin-to-extend-license-type
+
 5.3.0
 -----
 * In the trial version of PyArmor, it will raise error as obfuscating the code object which size is greater than 32768 bytes.
