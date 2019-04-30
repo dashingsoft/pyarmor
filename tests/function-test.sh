@@ -259,9 +259,10 @@ check_file_content dist-plugin/result.log 'Hello Plugin'
 check_file_content dist-plugin/result.log 'Found 92 solutions'
 
 csih_inform "C-19. Test option --plugin with PYARMOR_PLUGIN for obfuscate"
-echo "print('Hello World')" > plugins/hello2.py
-PYARMOR_PLUGIN=plugins $PYARMOR obfuscate -O dist-plugin2 --plugin hello2 \
-              examples/simple/queens.py >result.log 2>&1
+mkdir test-plugins
+echo "print('Hello World')" > test-plugins/hello2.py
+PYARMOR_PLUGIN=test-plugins $PYARMOR obfuscate -O dist-plugin2 \
+              --plugin hello2 examples/simple/queens.py >result.log 2>&1
 check_return_value
 
 (cd dist-plugin2; $PYTHON queens.py >result.log 2>&1 )
