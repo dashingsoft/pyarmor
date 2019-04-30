@@ -178,6 +178,14 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
     return filepairs
 
 
+def _get_platform_library(platname):
+    path = os.path.join(PYARMOR_PATH, 'platforms', platname)
+    for x in os.listdir(path):
+        if x.startswith('_pytransform.'):
+            return os.path.join(path, x)
+    raise RuntimeError('No dynamic library found for %s' % platname)
+
+
 def make_runtime(capsule, output, licfile=None, platform=None):
     logging.info('Generating runtime files to %s', output)
 
@@ -208,11 +216,9 @@ def make_runtime(capsule, output, licfile=None, platform=None):
         logging.info('Copying %s', libfile)
         shutil.copy2(libfile, output)
     else:
-        path = os.path.join(PYARMOR_PATH, 'platforms', platform)
-        for x in os.listdir(path):
-            filename = os.path.join(path, x)
-            logging.info('Copying %s', filename)
-            shutil.copy2(filename, output)
+        filename = _get_platform_library(platform)
+        logging.info('Copying %s', filename)
+        shutil.copy2(filename, output)
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
     shutil.copy2(filename, output)
@@ -378,8 +384,19 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                   or line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
-                template = None if protection == 1 else protection
-                lines[n:n] = [make_protect_pytransform(template, rpath=rpath)]
+                template, target = None, None
+                if isinstance(protection, str):
+                    if protection.find(',') == -1:
+                        if protection.find('_pytransform.') == -1:
+                            template = protection
+                        else:
+                            target = _get_platform_library(protection)
+                    else:
+                        template, platname = protection.split(',')
+                        target = _get_platform_library(platname)
+                lines[n:n] = [make_protect_pytransform(template=template,
+                                                       filename=target,
+                                                       rpath=rpath)]
                 break
             n += 1
 

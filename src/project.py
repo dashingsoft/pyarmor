@@ -28,6 +28,7 @@
 #    1.0.1: Add title
 #    1.0.2: Add disable_restrict_mode
 #    1.1.0: Add cross_protection, obf_code, obf_mod, wrap_mode, plugins
+#    1.2.0: Add platform
 #
 import os
 import time
@@ -44,7 +45,7 @@ from config import config_filename, capsule_filename, default_output_path, \
 
 class Project(dict):
 
-    VERSION = 1, 1, 0
+    VERSION = 1, 2, 0
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -69,6 +70,7 @@ class Project(dict):
         ('wrap_mode', 1), \
         ('cross_protection', 1), \
         ('plugins', None), \
+        ('platform', None), \
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):

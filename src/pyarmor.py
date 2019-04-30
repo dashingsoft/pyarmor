@@ -184,6 +184,10 @@ def _build(args):
         if args.output is None else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
 
+    platname = project.get('platform', args.platform)
+    if platname:
+        logging.info('Taget platform is: %s', platname)
+
     if not args.only_runtime:
         src = project.src
         if os.path.abspath(output).startswith(src):
@@ -230,6 +234,12 @@ def _build(args):
         entry = os.path.abspath(project.entry) if project.entry else None
         protection = project.cross_protection \
             if hasattr(project, 'cross_protection') else 1
+        if platname:
+            if protection == 1:
+                protection = platname
+            elif isinstance(protection, str):
+                protection = ','.join([protection, platname])
+
         for x in files:
             a, b = os.path.join(src, x), os.path.join(soutput, x)
             logging.info('\t%s -> %s', x, b)
@@ -266,7 +276,7 @@ def _build(args):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
         logging.info('Make runtime files to %s', routput)
-        make_runtime(capsule, routput)
+        make_runtime(capsule, routput, platform=platname)
         if project.get('disable_restrict_mode'):
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
             licfile = os.path.join(routput, license_filename)
@@ -477,6 +487,13 @@ def _obfuscate(args):
     logging.info('Obfuscate scripts with default mode')
     cross_protection = 0 if args.no_cross_protection else \
         1 if args.cross_protection is None else args.cross_protection
+    if args.platform:
+        logging.info('Target platform is %s', args.platform)
+        if cross_protection == 1:
+            cross_protection = args.platform
+        elif isinstance(cross_protection, str):
+            cross_protection = ','.join([cross_protection, args.platform])
+
     for x in files:
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -494,7 +511,7 @@ def _obfuscate(args):
         encrypt_script(prokey, a, b, protection=protection, plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
-    make_runtime(capsule, output)
+    make_runtime(capsule, output, platform=args.platform)
 
     logging.info('Obfuscate scripts with restrict mode %s',
                  'on' if args.restrict else 'off')
@@ -632,6 +649,7 @@ def main(args):
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          default=1, help=argparse.SUPPRESS)
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
+    cparser.add_argument('--platform', help=argparse.SUPPRESS)
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -669,6 +687,7 @@ def main(args):
     cparser.add_argument('--src')
     cparser.add_argument('--output')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
+    cparser.add_argument('--platform', help=argparse.SUPPRESS)
     cparser.add_argument('--manifest', metavar='TEMPLATE',
                          help='Manifest template string')
     cparser.add_argument('--entry', metavar='SCRIPT',
@@ -732,12 +751,13 @@ def main(args):
                          help='DO NOT generate runtime files')
     cparser.add_argument('-O', '--output',
                          help='Output path, override project configuration')
+    cparser.add_argument('--platform', help=argparse.SUPPRESS)
     cparser.set_defaults(func=_build)
 
     #
     # Command: target
     #
-    # cparser = subparsers.add_parser('target', help='Manage target for project')
+    # cparser = subparsers.add_parser('target', help='Manage targets for project')
     # cparser.add_argument('name', metavar='NAME', nargs=1,
     #                      help='Target name')
     # group = cparser.add_argument_group('Target definition')
