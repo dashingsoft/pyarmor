@@ -250,14 +250,16 @@ def update_specfile(project, obfdist, src, entry, specfile):
     with open(specfile) as f:
         lines = f.readlines()
 
+    p = os.path.abspath(obfdist)
     patched_lines = (
         "", "# Patched by PyArmor",
         "a.scripts[-1] = '%s', r'%s', 'PYSOURCE'" % (
             entry[:-3], os.path.join(obfdist, entry)),
         "for i in range(len(a.pure)):",
         "    if a.pure[i][1].startswith(a.pathex[0]):",
-        "        a.pure[i] = a.pure[i][0], a.pure[i][1].replace("
-        "a.pathex[0], r'%s'), a.pure[i][2]" % os.path.abspath(obfdist),
+        "        x = a.pure[i][1].replace(a.pathex[0], r'%s')" % p,
+        "        if os.path.exists(x):",
+        "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]"
         "# Patch end.", "", "")
 
     for i in range(len(lines)):
@@ -355,7 +357,7 @@ def add_arguments(parser):
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in')
     parser.add_argument('-e', '--options',
-                        help='Extra options to run pack command')
+                        help='Extra options to run external tool')
     parser.add_argument('-x', '--xoptions',
                         help='Extra options to obfuscate scripts')
     parser.add_argument('--clean', action="store_true",
