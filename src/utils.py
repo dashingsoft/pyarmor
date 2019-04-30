@@ -54,11 +54,13 @@ def pytransform_bootstrap(path=None):
 
 
 def download_pytransform(libname):
-    if plat_name not in dict(support_platforms[1]):
+    pdict = dict(support_platforms[1])
+    pdict.update(dict([(x, x) for _, x in support_platforms[0]]))
+    if plat_name not in pdict:
         logging.error('Unsupport platform %s', plat_name)
         raise RuntimeError('No available library for this platform')
 
-    path = dict(support_platforms[1]).get(plat_name)
+    path = pdict.get(plat_name)
     url = '/'.join([download_url, path, libname])
     target = os.path.join(PYARMOR_PATH, libname)
 
