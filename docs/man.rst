@@ -183,9 +183,11 @@ Obfuscate the scripts and pack them into one bundle.
 
 **OPTIONS**
 
--t, --type TYPE        cx_Freeze, py2exe, py2app, PyInstaller(default).
--O, --output OUTPUT    Directory to put final built distributions in.
--e, --options OPTIONS  Extra options to run pack command
+-t, --type TYPE         cx_Freeze, py2exe, py2app, PyInstaller(default).
+-O, --output OUTPUT     Directory to put final built distributions in.
+-e, --options OPTIONS   Extra options to run external tool
+-x, --xoptions OPTIONS  Extra options to obfuscate scripts
+--clean                 Remove last build path before packing
 
 **DESCRIPTION**
 
@@ -198,8 +200,21 @@ Next replace the original scripts with the obfuscated ones.
 
 Finally pack all of them into one bundle.
 
-This command only works for simple script. For complicated cases,
-refer to :ref:`How to pack obfuscated scripts`.
+Option `--options` could pass any extra options to external
+tool. `PyInstaller` is called by this way::
+
+    pyinstaller --distpath DIST -y EXTRA_OPTIONS SCRIPT
+
+`EXTRA_OPTIONS` is replaced with this option.
+
+Option `--xoptions` could pass any extra options to obfuscate
+scripts. By default, `pack` will obfuscate scripts like this::
+
+    pyarmor obfuscate -r --output DIST EXTRA_OPTIONS SCRIPT
+
+`EXTRA_OPTIONS` is replaced with this option.
+
+For more information, refer to :ref:`How to pack obfuscated scripts`.
 
 **EXAMPLES**
 
@@ -209,7 +224,11 @@ refer to :ref:`How to pack obfuscated scripts`.
 
 * Pass extra options to run `PyInstaller`::
 
-    pyarmor pack --options '-w --icon app.ico' foo.py
+    pyarmor pack -e " -w --icon app.ico" foo.py
+
+* Pass extra options to obfuscate scripts::
+
+    pyarmor pack -x " --exclude venv,test" foo.py
 
 
 .. _hdinfo:
@@ -350,7 +369,7 @@ src path of project.
 * Clear all plugins::
 
     pyarmor config --plugin clear
-     
+
 .. _build:
 
 build

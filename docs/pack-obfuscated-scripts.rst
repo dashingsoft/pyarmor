@@ -44,7 +44,9 @@ scripts with obfuscated ones::
     a.scripts[-1] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
     for i in range(len(a.pure)):
         if a.pure[i][1].startswith(a.pathex[0]):
-            a.pure[i] = a.pure[i][0], a.pure[i][1].replace(a.pathex[0], os.path.abspath('dist/obf')), a.pure[i][2]
+            x = a.pure[i][1].replace(a.pathex[0], os.path.abspath('dist/obf'))
+            if os.path.exists(x):
+                a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
 Run patched specfile to build final distribution::
 
