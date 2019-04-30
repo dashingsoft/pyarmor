@@ -258,24 +258,6 @@ def get_registration_code():
     return code
 
 
-def build_plugins(plugins, indent=4):
-    indent = ' ' * indent
-    template = 'def {name}{args}:\n%s{code}\n{name}{args}\n' % indent
-    result = []
-    for p in plugins:
-        index = p.find('(')
-        name = p if index == -1 else p[0:index].strip()
-        args = '()' if index == -1 else p[index:].strip()
-        filename = os.path.join(PYARMOR_PATH, 'plugins', name + '.py')
-        if not os.path.exists(filename):
-            raise RuntimeError('No plugin script %s found' % filename)
-        with open(filename, 'r') as f:
-            lines = f.readlines()
-            result.append(template.format(
-                name=name, args=args, code=indent.join(lines)))
-    return result
-
-
 def patch_plugins(plugins):
     result = []
     path = os.getenv('PYARMOR_PLUGIN', '')
