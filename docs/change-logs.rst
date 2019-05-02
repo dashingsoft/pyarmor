@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.3.2
+-----
+* Fix bug: if there is only one comment line in the script it will raise IndexError as obfuscating this script.
+
 5.3.1
 -----
 * Refine `pack` command, and make output clear.
