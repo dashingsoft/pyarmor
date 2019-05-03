@@ -6,7 +6,7 @@ version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts.
 
-For more information, refer to http://pyarmor.dashingsoft.com
+For more information, refer to https://pyarmor.readthedocs.io
 '''
 
 # The last three components of the filename before the extension are

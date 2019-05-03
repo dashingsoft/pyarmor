@@ -27,6 +27,8 @@
 '''PyArmor is a command line tool used to obfuscate python scripts,
 bind obfuscated scripts to fixed machine or expire obfuscated scripts.
 
+More information, refer to https://pyarmor.readthedocs.io
+
 '''
 
 import logging
