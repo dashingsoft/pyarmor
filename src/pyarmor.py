@@ -591,20 +591,6 @@ def main(args):
     )
 
     #
-    # Command: capsule
-    #
-    cparser = subparsers.add_parser(
-        'capsule',
-        epilog=_capsule.__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Generate or upgrade the capsule explicitly ')
-    cparser.add_argument('--upgrade', action='store_true',
-                         help='Upgrade the capsule to latest version')
-    cparser.add_argument('path', nargs='?', default=os.path.expanduser('~'),
-                         help='Path to save capsule, default is home path')
-    cparser.set_defaults(func=_capsule)
-
-    #
     # Command: obfuscate
     #
     cparser = subparsers.add_parser(
@@ -639,6 +625,52 @@ def main(args):
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help=argparse.SUPPRESS)
     cparser.set_defaults(func=_obfuscate)
+
+    #
+    # Command: license
+    #
+    cparser = subparsers.add_parser(
+        'licenses',
+        epilog=_licenses.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Generate new licenses for obfuscated scripts'
+    )
+    cparser.add_argument('codes', nargs='+', metavar='CODE',
+                         help='Registration code for this license')
+    group = cparser.add_argument_group('Bind license to hardware')
+    group.add_argument('-e', '--expired', metavar='YYYY-MM-DD',
+                       help='Expired date for this license')
+    group.add_argument('-d', '--bind-disk', metavar='SN',
+                       help='Bind license to serial number of harddisk')
+    group.add_argument('-4', '--bind-ipv4', metavar='a.b.c.d',
+                       help='Bind license to ipv4 addr')
+    # group.add_argument('-6', '--bind-ipv6', metavar='a:b:c:d',
+    #                    help='Bind license to ipv6 addr')
+    group.add_argument('-m', '--bind-mac', metavar='x:x:x:x',
+                       help='Bind license to mac addr')
+    group.add_argument('--bind-domain', metavar='DOMAIN',
+                       help='Bind license to domain name')
+    group.add_argument('--bind-file', metavar='filename;target_filename',
+                       help=argparse.SUPPRESS)
+    cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
+    cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
+    cparser.add_argument('-O', '--output', help='Output path')
+    cparser.add_argument('--restrict', type=int, choices=(0, 1),
+                         default=1, help=argparse.SUPPRESS)
+
+    cparser.set_defaults(func=_licenses)
+
+    #
+    # Command: pack
+    #
+    cparser = subparsers.add_parser(
+        'pack',
+        epilog=packer.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Pack obfuscated scripts to one bundle'
+    )
+    packer.add_arguments(cparser)
+    cparser.set_defaults(func=packer.packer)
 
     #
     # Command: init
@@ -697,6 +729,27 @@ def main(args):
     cparser.set_defaults(func=_config)
 
     #
+    # Command: build
+    #
+    cparser = subparsers.add_parser(
+        'build',
+        epilog=_build.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Obfuscate all the scripts in the project')
+    cparser.add_argument('project', nargs='?', metavar='PATH', default='',
+                         help='Project path')
+    cparser.add_argument('-B', '--force', action='store_true',
+                         help='Force to obfuscate all scripts')
+    cparser.add_argument('-r', '--only-runtime', action='store_true',
+                         help='Generate extra runtime files only')
+    cparser.add_argument('-n', '--no-runtime', action='store_true',
+                         help='DO NOT generate runtime files')
+    cparser.add_argument('-O', '--output',
+                         help='Output path, override project configuration')
+    cparser.add_argument('--platform', help=argparse.SUPPRESS)
+    cparser.set_defaults(func=_build)
+
+    #
     # Command: info
     #
     cparser = subparsers.add_parser(
@@ -720,61 +773,6 @@ def main(args):
     cparser.add_argument('project', nargs='?', metavar='PATH',
                          default='', help='Project path')
     cparser.set_defaults(func=_check)
-
-    #
-    # Command: build
-    #
-    cparser = subparsers.add_parser(
-        'build',
-        epilog=_build.__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Obfuscate all the scripts in the project')
-    cparser.add_argument('project', nargs='?', metavar='PATH', default='',
-                         help='Project path')
-    cparser.add_argument('-B', '--force', action='store_true',
-                         help='Force to obfuscate all scripts')
-    cparser.add_argument('-r', '--only-runtime', action='store_true',
-                         help='Generate extra runtime files only')
-    cparser.add_argument('-n', '--no-runtime', action='store_true',
-                         help='DO NOT generate runtime files')
-    cparser.add_argument('-O', '--output',
-                         help='Output path, override project configuration')
-    cparser.add_argument('--platform', help=argparse.SUPPRESS)
-    cparser.set_defaults(func=_build)
-
-    #
-    # Command: license
-    #
-    cparser = subparsers.add_parser(
-        'licenses',
-        epilog=_licenses.__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Generate new licenses for obfuscated scripts'
-    )
-    cparser.add_argument('codes', nargs='+', metavar='CODE',
-                         help='Registration code for this license')
-    group = cparser.add_argument_group('Bind license to hardware')
-    group.add_argument('-e', '--expired', metavar='YYYY-MM-DD',
-                       help='Expired date for this license')
-    group.add_argument('-d', '--bind-disk', metavar='SN',
-                       help='Bind license to serial number of harddisk')
-    group.add_argument('-4', '--bind-ipv4', metavar='a.b.c.d',
-                       help='Bind license to ipv4 addr')
-    # group.add_argument('-6', '--bind-ipv6', metavar='a:b:c:d',
-    #                    help='Bind license to ipv6 addr')
-    group.add_argument('-m', '--bind-mac', metavar='x:x:x:x',
-                       help='Bind license to mac addr')
-    group.add_argument('--bind-domain', metavar='DOMAIN',
-                       help='Bind license to domain name')
-    group.add_argument('--bind-file', metavar='filename;target_filename',
-                       help=argparse.SUPPRESS)
-    cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
-    cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('-O', '--output', help='Output path')
-    cparser.add_argument('--restrict', type=int, choices=(0, 1),
-                         default=1, help=argparse.SUPPRESS)
-
-    cparser.set_defaults(func=_licenses)
 
     #
     # Command: hdinfo
@@ -808,16 +806,18 @@ def main(args):
     cparser.set_defaults(func=_benchmark)
 
     #
-    # Command: pack
+    # Command: capsule
     #
     cparser = subparsers.add_parser(
-        'pack',
-        epilog=packer.__doc__,
+        'capsule',
+        epilog=_capsule.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Pack obfuscated scripts to one bundle'
-    )
-    packer.add_arguments(cparser)
-    cparser.set_defaults(func=packer.packer)
+        help='Generate or upgrade the capsule explicitly ')
+    cparser.add_argument('--upgrade', action='store_true',
+                         help='Upgrade the capsule to latest version')
+    cparser.add_argument('path', nargs='?', default=os.path.expanduser('~'),
+                         help='Path to save capsule, default is home path')
+    cparser.set_defaults(func=_capsule)
 
     args = parser.parse_args(args)
     if args.silent:
