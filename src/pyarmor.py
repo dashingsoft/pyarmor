@@ -27,8 +27,6 @@
 '''PyArmor is a command line tool used to obfuscate python scripts,
 bind obfuscated scripts to fixed machine or expire obfuscated scripts.
 
-More information, refer to https://pyarmor.readthedocs.io
-
 '''
 
 import logging
@@ -580,7 +578,8 @@ def main(args):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=__doc__,
         epilog='See "pyarmor <command> -h" for more information '
-               'on a specific command.'
+               'on a specific command.\n\nMore usage refer to '
+               'https://pyarmor.readthedocs.io'
     )
     parser.add_argument('-v', '--version', action='version',
                         version=_version_info())
