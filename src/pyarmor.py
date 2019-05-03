@@ -42,7 +42,7 @@ except ImportError:
     # argparse is new in version 2.7
     import polyfills.argparse as argparse
 
-from config import version, version_info, plat_name, \
+from config import version, version_info, plat_name, purchase_info, \
                    config_filename, capsule_filename, license_filename
 
 from project import Project
@@ -50,11 +50,12 @@ from utils import PYARMOR_PATH, make_capsule, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
                   check_capsule, pytransform_bootstrap, encrypt_script, \
-                  get_product_key, upgrade_capsule
+                  get_product_key, upgrade_capsule, save_config, load_config
 
 import packer
 
 DEFAULT_CAPSULE = os.path.expanduser(os.path.join('~', capsule_filename))
+DEFAULT_CONFIG = os.path.expanduser(os.path.join('~', config_filename))
 
 
 def arcommand(func):
@@ -409,7 +410,6 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project.'''
-
     for x in ('src', 'entry', 'cross-protection'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
@@ -560,6 +560,56 @@ def _benchmark(args):
 @arcommand
 def _hdinfo(args):
     show_hd_info()
+
+
+@arcommand
+def _register(args):
+    '''Make registration code work.'''
+    key = 'purchased_code'
+    licfile = os.path.join(PYARMOR_PATH, license_filename)
+
+    logging.info('The license file is %s', licfile)
+    logging.info('Read pyarmor config from %s', DEFAULT_CONFIG)
+    cfg = load_config(DEFAULT_CONFIG)
+
+    def backup_code(rcode):
+        rlist = cfg.get(key)
+        if rlist is None:
+            cfg[key] = [rcode]
+        elif rcode not in rlist:
+            rlist.append(rcode)
+
+        logging.info('Save code to config file')
+        save_config(cfg, DEFAULT_CONFIG)
+
+    if args.backup:
+        logging.info('Read code from license file')
+        with open(licfile, 'r') as f:
+            rcode = f.read().strip()
+        logging.info('Got code:\n%s', rcode)
+
+        backup_code(rcode)
+        logging.info('Backup code successfully.')
+        return
+
+    def make_pyarmor_license(rcode):
+        logging.info('Generating license from:\n%s', rcode)
+        with open(licfile, 'w') as f:
+            f.write(rcode)
+        logging.info('Write code to license file OK')
+
+    if args.restore is not None:
+        logging.info('Restore license from index %d', args.restore)
+        rcode = cfg.get(key, [])[args.restore]
+        make_pyarmor_license(rcode)
+
+    elif args.rcode is not None:
+        logging.info('Backup registration code')
+        backup_code(args.rcode)
+        make_pyarmor_license(args.rcode)
+
+    logging.info('The new code has taken effective, '
+                 'check it by "pyarmor -v".')
 
 
 def _version_info(short=False):
@@ -819,6 +869,24 @@ def main(args):
     cparser.add_argument('path', nargs='?', default=os.path.expanduser('~'),
                          help='Path to save capsule, default is home path')
     cparser.set_defaults(func=_capsule)
+
+    #
+    # Command: register
+    #
+    cparser = subparsers.add_parser(
+        'register',
+        epilog=_register.__doc__ + purchase_info,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Make registration code work')
+    group = cparser.add_mutually_exclusive_group()
+    group.add_argument('-r', '--restore', type=int, nargs='?',
+                       const=0, metavar='INDEX',
+                       help='Restore license by registration code')
+    group.add_argument('-b', '--backup', action='store_true',
+                       help='Backup current registration code')
+    group.add_argument('rcode', nargs='?', metavar='CODE',
+                       help='Registration code')
+    cparser.set_defaults(func=_register)
 
     args = parser.parse_args(args)
     if args.silent:

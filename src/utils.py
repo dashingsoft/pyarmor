@@ -31,6 +31,7 @@ import subprocess
 import sys
 import tempfile
 from codecs import BOM_UTF8
+from json import dump as json_dump, load as json_load
 from time import gmtime, strftime
 from zipfile import ZipFile
 
@@ -447,6 +448,20 @@ def upgrade_capsule(capsule):
         myzip.close()
 
     logging.info('Upgrade capsule OK.')
+
+
+def load_config(filename):
+    if os.path.exists(filename):
+        with open(filename, 'r') as f:
+            cfg = json_load(f)
+    else:
+        cfg = {}
+    return cfg
+
+
+def save_config(cfg, filename=None):
+    with open(filename, 'w') as f:
+        json_dump(cfg, f, indent=2)
 
 
 if __name__ == '__main__':

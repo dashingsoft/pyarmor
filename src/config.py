@@ -9,6 +9,14 @@ obfuscated scripts to fixed machine or expire obfuscated scripts.
 For more information, refer to https://pyarmor.readthedocs.io
 '''
 
+purchase_info = '''
+
+If there is no registration code yet, please purchase one by visiting
+
+https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
+
+'''
+
 # The last three components of the filename before the extension are
 # called "compatibility tags." The compatibility tags express the
 # package's basic interpreter requirements and are detailed in PEP
@@ -72,17 +80,25 @@ exec_file('%s')
 '''
 
 trial_info = '''
-You're using trail version. Free trial version that never expires,
-but project capsule generated is fixed by hardcode, so all the
-encrypted files are encrypted by same key.
+You're using trail version. Free trial version never expires,
+the limitations are
 
-A registration code is required to generate random project capsule.
+- The maximum size of code object is 35728 bytes in trial version
+- The scripts obfuscated by trial version are not private. It means
+  anyone could generate the license file which works for these
+  obfuscated scripts.
+
+A registration code is required to obfuscate big code object or
+generate private obfuscated scripts.
+
 If PyArmor is helpful for you, please purchase one by visiting
 
   https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
-If you have received a registration code, just replace the content
-of "license.lic" with registration code only (no newline).
+If you have received a registration code, run the following command to
+make it effective::
+
+  pyarmor register REGISTRATION_CODE
 
 Enjoy it!
 
