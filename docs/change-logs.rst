@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.3.3
+-----
+* Refine `benchmark` command
+* Document the performance of obfuscated scripts https://pyarmor.readthedocs.io/en/latest/performance.html
+* Add command `register` to take registration code effects
+
 5.3.2
 -----
 * Fix bug: if there is only one comment line in the script it will raise IndexError as obfuscating this script.

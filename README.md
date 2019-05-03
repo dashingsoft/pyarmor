@@ -83,10 +83,17 @@ Click [Purchase](https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3
 
 A registration code will be sent to your immediately after payment is completed successfully.
 
-After you receive the email which includes registration code, copy registration
-code only (no newline), then replace the content of `license.lic` with it.
+After you receive the email which includes registration code, run the
+following command to make it effective::
 
-Check License
+    pyarmor register CODE
+
+Note that command `register` is introduced from `PyArmor` 5.3.3,
+please upgrade the old version to the latest one, or directly replace
+the content of `license.lic` in the `PyArmor` installed path with the
+registration code only (no newline).
+
+Check new license works
 
     pyarmor --version
 
