@@ -8,6 +8,7 @@ Change Logs
 * Refine `benchmark` command
 * Document the performance of obfuscated scripts https://pyarmor.readthedocs.io/en/latest/performance.html
 * Add command `register` to take registration code effects
+* Rename trial license file `license.lic` to `license.tri`
 
 5.3.2
 -----
