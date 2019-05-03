@@ -606,6 +606,9 @@ def _register(args):
 
     logging.info('The new code has been taken effect, '
                  'check it by "pyarmor -v".')
+    logging.info('If something is wrong with new license, '
+                 'please restore trial license by this way:\n'
+                 '\tcp %s %s', licfile[:-4] + '.tri', licfile)
 
 
 def _version_info(short=False):

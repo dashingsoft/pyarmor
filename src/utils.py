@@ -43,6 +43,15 @@ PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
 
 def pytransform_bootstrap(path=None):
+    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
+    if not os.path.exists(licfile):
+        if not os.access(PYARMOR_PATH, os.W_OK):
+            logging.error('Bootstrap need write file "license.lic" to %s, '
+                          'please run pyarmor with sudo for first time',
+                          PYARMOR_PATH)
+            raise RuntimeError('No write permission for target path')
+        shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), licfile)
+
     path = PYARMOR_PATH if path is None else path
     libname = dll_name + dll_ext
     if not os.path.exists(os.path.join(path, libname)):

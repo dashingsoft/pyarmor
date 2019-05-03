@@ -18,7 +18,7 @@ with open(path.join(here, 'src', 'README.rst'), encoding='utf-8') as f:
 
 pyarmor_data_files = [
     'pyshield.key', 'pyshield.lic', 'public.key',
-    'product.key', 'license.lic', 'README.rst',
+    'product.key', 'license.tri', 'README.rst',
     'protect_code.pt',
     'examples/README.md', 'examples/README-ZH.md',
     'examples/*.sh', 'examples/*.bat',
