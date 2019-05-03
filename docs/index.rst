@@ -39,6 +39,7 @@ Contents:
    usage
    pytransform
    security
+   performance
    understand-obfuscated-scripts
    how-to-do
    pack-obfuscated-scripts
