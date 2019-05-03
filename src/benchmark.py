@@ -28,11 +28,9 @@ import os
 import shutil
 import sys
 import subprocess
-import tempfile
 import time
 
-from ctypes import cdll, c_int, c_void_p, py_object, pythonapi, PYFUNCTYPE
-from ctypes.util import find_library
+from ctypes import c_int, c_void_p, py_object, pythonapi, PYFUNCTYPE
 
 import pytransform
 
@@ -41,6 +39,7 @@ OBF_CODE_MODE = 'none', 'des', 'fast', 'wrap'
 
 PYARMOR_PATH = os.path.dirname(__file__)
 PYARMOR = 'pyarmor.py'
+
 
 def make_test_script(filename):
     lines = [
@@ -62,9 +61,11 @@ def make_test_script(filename):
     with open(filename, 'wb') as f:
         f.write('\n'.join(lines).encode())
 
+
 def call_pyarmor(args):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
+
 
 def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
     project = os.path.join(output, 'project')
@@ -89,6 +90,7 @@ def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
     for s in os.listdir(os.path.join(project, 'dist')):
         shutil.copy(os.path.join(project, 'dist', s), output)
 
+
 def metricmethod(func):
     def wrap(*args, **kwargs):
         t1 = time.clock()
@@ -97,6 +99,7 @@ def metricmethod(func):
         logging.info('%s: %s ms', func.__name__, (t2 - t1) * 1000)
         return result
     return wrap
+
 
 @metricmethod
 def verify_license(m):
@@ -108,6 +111,7 @@ def verify_license(m):
         logging.warning('Verify license failed')
         code = ''
     return code
+
 
 @metricmethod
 def init_pytransform(m):
@@ -122,53 +126,69 @@ def init_pytransform(m):
     init_runtime = prototype(('init_runtime', m))
     init_runtime(0, 0, 0, 0)
 
+
 @metricmethod
 def load_pytransform():
     return pytransform._load_library(PYARMOR_PATH)
+
 
 @metricmethod
 def import_no_obfuscated_module(name):
     return __import__(name)
 
+
 @metricmethod
 def import_obfuscated_module(name):
+    m = load_pytransform()
+    init_pytransform(m)
+    verify_license(m)
     return __import__(name)
+
+
+@metricmethod
+def re_import_no_obfuscated_module(name):
+    return __import__(name)
+
+
+@metricmethod
+def re_import_obfuscated_module(name):
+    return __import__(name)
+
 
 @metricmethod
 def run_empty_obfuscated_code_object(foo):
     return foo.empty()
 
+
 @metricmethod
 def run_one_thousand_obfuscated_bytecode(foo):
     return foo.one_thousand()
+
 
 @metricmethod
 def run_ten_thousand_obfuscated_bytecode(foo):
     return foo.ten_thousand()
 
+
 @metricmethod
 def run_empty_no_obfuscated_code_object(foo):
     return foo.empty()
+
 
 @metricmethod
 def run_one_thousand_no_obfuscated_bytecode(foo):
     return foo.one_thousand()
 
+
 @metricmethod
 def run_ten_thousand_no_obfuscated_bytecode(foo):
     return foo.ten_thousand()
+
 
 def main():
     if not os.path.exists('benchmark.py'):
         logging.warning('Please change current path to %s', PYARMOR_PATH)
         return
-
-    time.clock()
-    m = load_pytransform()
-    init_pytransform(m)
-    verify_license(m)
-
-    logging.info('')
 
     output = '.benchtest'
     name = 'bfoo'
@@ -208,26 +228,31 @@ def main():
         logging.info('Run "%s benchmark.py".', sys.executable)
         return
 
-    if os.path.exists(os.path.basename(filename)):
-        logging.info('Test script: %s', os.path.basename(filename))
+    filename = os.path.basename(filename)
+    if os.path.exists(filename):
+        logging.info('Test script: %s', filename)
     else:
-        logging.warning('Test script: %s not found', os.path.basename(filename))
+        logging.warning('Test script: %s not found', filename)
         logging.info('Run "%s benchmark.py bootstrap" first.', sys.executable)
         return
 
-    if os.path.exists(os.path.basename(obfilename)):
-        logging.info('Obfuscated script: %s', os.path.basename(obfilename))
+    obfilename = os.path.basename(obfilename)
+    if os.path.exists(obfilename):
+        logging.info('Obfuscated script: %s', obfilename)
     else:
-        logging.warning('Obfuscated script: %s not found', os.path.basename(obfilename))
+        logging.warning('Obfuscated script: %s not found', obfilename)
         logging.info('Run "%s benchmark.py bootstrap" first.', sys.executable)
         return
 
-    logging.info('Start test')
     logging.info('--------------------------------------')
 
     logging.info('')
     foo = import_no_obfuscated_module(name)
     obfoo = import_obfuscated_module(obname)
+
+    logging.info('')
+    foo = re_import_no_obfuscated_module(name)
+    obfoo = re_import_obfuscated_module(obname)
 
     logging.info('')
     run_empty_no_obfuscated_code_object(foo)
@@ -240,6 +265,10 @@ def main():
     logging.info('')
     run_ten_thousand_no_obfuscated_bytecode(foo)
     run_ten_thousand_obfuscated_bytecode(obfoo)
+
+    logging.info('')
+    logging.info('--------------------------------------')
+
 
 if __name__ == '__main__':
     logging.basicConfig(

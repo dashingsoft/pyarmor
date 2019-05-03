@@ -559,13 +559,16 @@ def _benchmark(args):
     logging.info('Benchmark bootstrap OK.')
 
     logging.info('Run benchmark test ...')
-    benchtest = '.benchtest'
-    p = subprocess.Popen([sys.executable, 'benchmark.py'],
-                         cwd=os.path.join(path, benchtest))
+    benchtest = os.path.join(path, '.benchtest')
+    p = subprocess.Popen([sys.executable, 'benchmark.py'], cwd=benchtest)
     p.wait()
 
-    logging.info('Remove test path: %s', benchtest)
-    shutil.rmtree(benchtest)
+    if args.no_clean:
+        logging.info('Test scripts are saved in the path: %s', benchtest)
+    else:
+        logging.info('Remove test path: %s', benchtest)
+        shutil.rmtree(benchtest)
+
     logging.info('Finish benchmark test.')
 
 
@@ -831,6 +834,9 @@ def main(args):
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
                          default=1, type=int)
+    cparser.add_argument('--no-clean', action='store_true',
+                         help='Do not clean the test scripts'
+                              'generated in real time')
     cparser.set_defaults(func=_benchmark)
 
     #
