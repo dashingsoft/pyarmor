@@ -38,6 +38,7 @@ mkdir -p test/data
 csih_inform "Copy test files from ${datapath} to ./test/data"
 cp ${datapath}/*.py test/data
 cp ${datapath}/project.zip test/data
+cp ${datapath}/project.zip test/data/project-orig.zip
 
 csih_inform "Prepare for function testing"
 echo ""
@@ -179,7 +180,7 @@ fi
 
 csih_inform "C-9. Test --upgrade for capsule"
 mkdir -p test-upgrade
-cp test/data/project.zip test-upgrade/.pyarmor_capsule.zip
+cp test/data/project-orig.zip test-upgrade/.pyarmor_capsule.zip
 
 $PYARMOR capsule --upgrade ./test-upgrade/ >result.log 2>&1
 check_return_value
