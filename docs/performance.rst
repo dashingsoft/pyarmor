@@ -3,7 +3,7 @@
 The Performance of Obfuscated Scripts
 =====================================
 
-Run command :ref:`pack` to check the performance of obfuscated
+Run command `benchmark` to check the performance of obfuscated
 scripts::
 
     pyarmor benchmark
