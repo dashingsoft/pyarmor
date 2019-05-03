@@ -133,15 +133,19 @@ def load_pytransform():
 
 
 @metricmethod
+def total_extra_init_time():
+    m = load_pytransform()
+    init_pytransform(m)
+    verify_license(m)
+
+
+@metricmethod
 def import_no_obfuscated_module(name):
     return __import__(name)
 
 
 @metricmethod
 def import_obfuscated_module(name):
-    m = load_pytransform()
-    init_pytransform(m)
-    verify_license(m)
     return __import__(name)
 
 
@@ -245,6 +249,9 @@ def main():
         return
 
     logging.info('--------------------------------------')
+
+    logging.info('')
+    total_extra_init_time()
 
     logging.info('')
     foo = import_no_obfuscated_module(name)
