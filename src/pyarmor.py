@@ -572,7 +572,12 @@ def _register(args):
     logging.info('Read pyarmor config from %s', DEFAULT_CONFIG)
     cfg = load_config(DEFAULT_CONFIG)
 
-    def backup_code(rcode):
+    if args.backup:
+        logging.info('Read code from license file')
+        with open(licfile, 'r') as f:
+            rcode = f.read().strip()
+        logging.info('Got code:\n%s', rcode)
+
         rlist = cfg.get(key)
         if rlist is None:
             cfg[key] = [rcode]
@@ -582,13 +587,6 @@ def _register(args):
         logging.info('Save code to config file')
         save_config(cfg, DEFAULT_CONFIG)
 
-    if args.backup:
-        logging.info('Read code from license file')
-        with open(licfile, 'r') as f:
-            rcode = f.read().strip()
-        logging.info('Got code:\n%s', rcode)
-
-        backup_code(rcode)
         logging.info('Backup code successfully.')
         return
 
@@ -604,11 +602,9 @@ def _register(args):
         make_pyarmor_license(rcode)
 
     elif args.rcode is not None:
-        logging.info('Backup registration code')
-        backup_code(args.rcode)
         make_pyarmor_license(args.rcode)
 
-    logging.info('The new code has taken effective, '
+    logging.info('The new code has been taken effect, '
                  'check it by "pyarmor -v".')
 
 

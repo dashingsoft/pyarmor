@@ -31,7 +31,7 @@ import subprocess
 import sys
 import tempfile
 from codecs import BOM_UTF8
-from json import dump as json_dump, load as json_load
+from json import dumps as json_dumps, load as json_load
 from time import gmtime, strftime
 from zipfile import ZipFile
 
@@ -460,8 +460,9 @@ def load_config(filename):
 
 
 def save_config(cfg, filename=None):
+    s = json_dumps(cfg, indent=2)
     with open(filename, 'w') as f:
-        json_dump(cfg, f, indent=2)
+        f.write(s)
 
 
 if __name__ == '__main__':
