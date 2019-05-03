@@ -391,21 +391,6 @@ def _licenses(args):
 
 
 @arcommand
-def _target(args):
-    project = Project()
-    project.open(args.project)
-
-    name = args.name[0]
-    if args.remove:
-        logging.info('Remove target from project %s ...', args.project)
-        project.remove_target(name)
-    else:
-        logging.info('Add target to project %s ...', args.project)
-        project.add_target(name, args.platform, args.license)
-    project.save(args.project)
-
-
-@arcommand
 def _capsule(args):
     '''Generate the capsule explicitly.'''
     capsule = os.path.join(args.path, capsule_filename)
@@ -756,23 +741,6 @@ def main(args):
                          help='Output path, override project configuration')
     cparser.add_argument('--platform', help=argparse.SUPPRESS)
     cparser.set_defaults(func=_build)
-
-    #
-    # Command: target
-    #
-    # cparser = subparsers.add_parser('target', help='Manage targets for project')
-    # cparser.add_argument('name', metavar='NAME', nargs=1,
-    #                      help='Target name')
-    # group = cparser.add_argument_group('Target definition')
-    # group.add_argument('-p', '--platform', metavar='PLATFORM',
-    #                    help='Target platform to run obfuscated scripts')
-    # group.add_argument('-c', '--license', metavar='CODE',
-    #                    help='License code for this target')
-    # cparser.add_argument('--remove', action='store_true',
-    #                      help='Remove target from project')
-    # cparser.add_argument('-P', '--project', required=True, default='',
-    #                      help='Project path or configure file')
-    # cparser.set_defaults(func=_target)
 
     #
     # Command: license
