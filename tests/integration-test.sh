@@ -334,6 +334,8 @@ cd ${workpath}
 cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are moved to src
 [[ -d src ]] && mv src/* ./
+# From pyarmor 5.3.3, license.lic is renamed as license.tri
+[[ -f license.lic ]] || cp license.tri license.lic
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
 cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
 
