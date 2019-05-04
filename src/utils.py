@@ -67,27 +67,25 @@ def pytransform_bootstrap(path=None):
     pytransform.pyarmor_init()
 
 
-def get_platform_list():
+def get_platform_list(plat=None):
     url = platform_prefix + '/' + platform_config
     logging.info('Reading data from %s', url)
     f = urlopen(url, timeout=3.0)
 
     logging.info('Loading platforms information')
     cfg = json_loads(f.read())
-    return cfg.get('platforms', [])
+    return cfg.get('platforms', []) if plat is None \
+        else [x for x in cfg.get('platforms', [])
+              if plat == x['path'] or plat in x['names']]
 
 
-def download_pytransform(platname, output=None):
-    plist = get_platform_list()
-    found = False
-    for p in plist:
-        if platname == p.get('path') or platname in p.get('names', []):
-            found = True
-            break
-    if not found:
-        logging.error('Unsupport platform %s', platname)
+def download_pytransform(plat, output=None):
+    plist = get_platform_list(plat)
+    if not plist:
+        logging.error('Unsupport platform %s', plat)
         raise RuntimeError('No available library for this platform')
 
+    p = plist[0]
     libname = p['filename']
     url = '/'.join([platform_prefix, p['path'], libname])
     logging.info('Find library at %s', url)
@@ -100,7 +98,7 @@ def download_pytransform(platname, output=None):
     logging.info('Downloading library file ...')
     res = urlopen(url, timeout=60)
 
-    dest = os.path.join(output, platname)
+    dest = os.path.join(output, plat)
     if not os.path.exists(dest):
         logging.info('Create target path: %s', dest)
         os.makedirs(dest)

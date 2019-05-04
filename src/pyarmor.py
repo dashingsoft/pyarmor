@@ -50,7 +50,8 @@ from utils import PYARMOR_PATH, make_capsule, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
                   check_capsule, pytransform_bootstrap, encrypt_script, \
-                  get_product_key, upgrade_capsule, save_config, load_config
+                  get_product_key, upgrade_capsule, save_config, load_config, \
+                  get_platform_list, download_pytransform
 
 import packer
 
@@ -611,6 +612,23 @@ def _register(args):
                  '\tcp %s %s', licfile[:-4] + '.tri', licfile)
 
 
+@arcommand
+def _platforms(args):
+    '''List and download dynamic library for different platforms.'''
+    if args.downloads:
+        for name in args.downloads:
+            download_pytransform(name, args.output)
+    else:
+        lines = []
+        for p in get_platform_list(args.list):
+            lines.append('')
+            lines.append('%16s: %s' % ('id', p['path']))
+            lines.append('%16s: %s' % ('plat-names', p['names']))
+            lines.append('%16s: %s' % ('features', p['features']))
+            lines.append('%16s: %s' % ('remark', p['remark']))
+        logging.info('Support platforms:\n%s', '\n'.joiin(lines))
+
+
 def _version_info(short=False):
     rcode = get_registration_code()
     if rcode:
@@ -887,6 +905,22 @@ def main(args):
                        help='Registration code')
     cparser.set_defaults(func=_register)
 
+    #
+    # Command: platforms
+    #
+    cparser = subparsers.add_parser(
+        'platforms',
+        epilog=_platforms.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='List and download dynamic library _pytransform')
+    group = cparser.add_mutually_exclusive_group()
+    group.add_argument('--list', nargs='?', const=None, metavar='PLATNAME',
+                       help='List all the support platforms')
+    group.add_argument('-d', '--download', dest='downloads',
+                       help='Download dynamic library _pytransform')
+    cparser.add_argument('-O', '--output', help='Output path')
+    cparser.set_defaults(func=_platforms)
+
     args = parser.parse_args(args)
     if args.silent:
         logging.getLogger().setLevel(100)
@@ -912,7 +946,8 @@ def main_entry():
         format='%(levelname)-8s %(message)s',
     )
     try:
-        pytransform_bootstrap()
+        if not sys.argv[1:2] == 'platforms':
+            pytransform_bootstrap()
         main(sys.argv[1:])
     except Exception as e:
         if sys.flags.debug:
