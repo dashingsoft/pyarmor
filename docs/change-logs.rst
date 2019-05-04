@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.3.4
+-----
+* Add command `download` used to download platform-dependent dynamic libraries
+
 5.3.3
 -----
 * Refine `benchmark` command

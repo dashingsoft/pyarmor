@@ -26,6 +26,12 @@ The commands for project::
     info         Show project information
     check        Check consistency of project
 
+.. The other commands:
+
+   benchmark     Run benchmark test in current machine
+   register      Make registration code work
+   download      Download platform-dependent dynamic libraries
+
 See `pyarmor <command> -h` for more information on a specific command.
 
 .. _obfuscate:
