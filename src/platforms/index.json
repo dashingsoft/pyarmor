@@ -43,7 +43,7 @@
         },
         {
             "path": "macosx_x86_64",
-            "platname": "macosx64",
+            "platname": "darwin64",
             "machines": ["", "x86_64", "intel", "amd64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dylib",
@@ -115,7 +115,7 @@
         },
         {
             "path": "ios.arm64",
-            "platname": "ios64",
+            "platname": "darwin64",
             "machines": ["arm64"],
             "features": [],
             "filename": "_pytransform.dylib",
