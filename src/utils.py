@@ -27,17 +27,21 @@ import logging
 import os
 import re
 import shutil
-import subprocess
 import sys
 import tempfile
 from codecs import BOM_UTF8
-from json import dumps as json_dumps, load as json_load
+from json import dumps as json_dumps, loads as json_loads
 from time import gmtime, strftime
 from zipfile import ZipFile
 
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
 import pytransform
-from config import plat_name, dll_ext, dll_name, entry_lines, \
-                   protect_code_template, download_url, support_platforms
+from config import dll_ext, dll_name, entry_lines, protect_code_template, \
+                   platform_prefix, platform_config
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
@@ -56,34 +60,56 @@ def pytransform_bootstrap(path=None):
     libname = dll_name + dll_ext
     if not os.path.exists(os.path.join(path, libname)):
         libpath = os.path.join(path, 'platforms')
-        sysname = pytransform.format_platname()
-        if not os.path.exists(os.path.join(libpath, sysname, libname)):
-            download_pytransform(libname)
+        platname = pytransform.format_platname()
+        if not os.path.exists(os.path.join(libpath, platname, libname)):
+            download_pytransform(platname)
             logging.info('Bootstrap OK.\n')
     pytransform.pyarmor_init()
 
 
-def download_pytransform(libname):
-    pdict = dict(support_platforms[1])
-    pdict.update(dict([(x, x) for _, x in support_platforms[0]]))
-    if plat_name not in pdict:
-        logging.error('Unsupport platform %s', plat_name)
+def get_platform_list():
+    url = platform_prefix + '/' + platform_config
+    logging.info('Reading data from %s', url)
+    f = urlopen(url, timeout=3.0)
+
+    logging.info('Loading platforms information')
+    cfg = json_loads(f.read())
+    return cfg.get('platforms', [])
+
+
+def download_pytransform(platname, output=None):
+    plist = get_platform_list()
+    found = False
+    for p in plist:
+        if platname == p.get('path') or platname in p.get('names', []):
+            found = True
+            break
+    if not found:
+        logging.error('Unsupport platform %s', platname)
         raise RuntimeError('No available library for this platform')
 
-    path = pdict.get(plat_name)
-    url = '/'.join([download_url, path, libname])
-    target = os.path.join(PYARMOR_PATH, libname)
+    libname = p['filename']
+    url = '/'.join([platform_prefix, p['path'], libname])
+    logging.info('Find library at %s', url)
 
-    logging.info('Downloading %s by wget ...', url)
-    if not os.access(PYARMOR_PATH, os.W_OK):
-        logging.error('Cound not save target file to %s', PYARMOR_PATH)
+    output = PYARMOR_PATH if output is None else output
+    if not os.access(output, os.W_OK):
+        logging.error('Cound not download library file to %s', output)
         raise RuntimeError('No write permission for target path')
 
-    p = subprocess.Popen(['wget', '-O', target, url])
-    if p.wait() == 0:
-        logging.info('Save target file to %s', target)
-    else:
-        raise RuntimeError('Download file failed')
+    logging.info('Downloading library file ...')
+    res = urlopen(url, timeout=60)
+
+    dest = os.path.join(output, platname)
+    if not os.path.exists(dest):
+        logging.info('Create target path: %s', dest)
+        os.makedirs(dest)
+
+    target = os.path.join(dest, libname)
+    logging.info('Writing target file: %s', target)
+    with open(target, 'wb') as f:
+        f.write(res.read())
+    logging.info('Download pytransform library file successfully.')
 
 
 def make_capsule(filename):
@@ -462,7 +488,7 @@ def upgrade_capsule(capsule):
 def load_config(filename):
     if os.path.exists(filename):
         with open(filename, 'r') as f:
-            cfg = json_load(f)
+            cfg = json_loads(f.read())
     else:
         cfg = {}
     return cfg
