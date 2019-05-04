@@ -73,12 +73,13 @@ def get_platform_list(platid=None):
     logging.info('Reading data from %s', url)
     f = urlopen(url, timeout=3.0)
 
-    platid = platid.replace('\\', '/')
-    if platid.find('/') == -1:
-        name, mach = platid, ''
-    else:
-        name, mach = platid.split('/', 1)
-    logging.info('Search library for %s and arch %s', name, mach)
+    if platid is not None:
+        platid = platid.replace('\\', '/')
+        if platid.find('/') == -1:
+            name, mach = platid, ''
+        else:
+            name, mach = platid.split('/', 1)
+        logging.info('Search library for %s and arch %s', name, mach)
 
     logging.info('Loading platforms information')
     cfg = json_loads(f.read())
