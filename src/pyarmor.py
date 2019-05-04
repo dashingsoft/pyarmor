@@ -618,17 +618,24 @@ def _platforms(args):
     '''List and download dynamic library for different platforms.'''
     if args.downloads:
         for name in args.downloads:
+            logging.info('Download dynamic library for %s', name)
             download_pytransform(name, args.output)
     else:
         lines = []
-        for p in get_platform_list(args.list):
+        plist = get_platform_list()
+        pat = None if args.list is None else args.list.lower()
+        for p in plist:
+            if pat and pat not in p['platname'] \
+               and pat not in ' '.join(p['machines']) \
+               and pat not in ' '.join(p['features']).lower():
+                continue
             lines.append('')
             lines.append('%16s: %s' % ('id', p['path']))
             lines.append('%16s: %s' % ('platname', p['platname']))
-            lines.append('%16s: %s' % ('machines', ','.join(p['machines'])))
-            lines.append('%16s: %s' % ('features', ','.join(p['features'])))
+            lines.append('%16s: %s' % ('machines', ', '.join(p['machines'])))
+            lines.append('%16s: %s' % ('features', ', '.join(p['features'])))
             lines.append('%16s: %s' % ('remark', p['remark']))
-        logging.info('Support platforms:\n%s', '\n'.join(lines))
+        logging.info('All the available libraries:\n%s', '\n'.join(lines))
 
 
 def _version_info(short=False):
@@ -914,13 +921,15 @@ def main(args):
         'platforms',
         epilog=_platforms.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='List and download dynamic library _pytransform')
+        help='Download platform-dependent dynamic libraries')
     group = cparser.add_mutually_exclusive_group()
-    group.add_argument('--list', nargs='?', const=None, metavar='PLATNAME',
+    group.add_argument('--list', nargs='?', const=None, metavar='FILTER',
                        help='List all the support platforms')
     group.add_argument('-d', '--download', dest='downloads',
-                       help='Download dynamic library _pytransform')
-    cparser.add_argument('-O', '--output', help='Output path')
+                       action='append', metavar='ID',
+                       help='Download dynamic library by platform id')
+    cparser.add_argument('-O', '--output', metavar='PATH',
+                         help='Save downloaded file to another path')
     cparser.set_defaults(func=_platforms)
 
     args = parser.parse_args(args)

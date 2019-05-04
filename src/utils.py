@@ -76,13 +76,13 @@ def get_platform_list(platid=None):
     if platid is not None:
         platid = platid.replace('\\', '/')
         if platid.find('/') == -1:
-            name, mach = platid, ''
+            name, mach = platid, pytransform.platform.machine().lower()
         else:
             name, mach = platid.split('/', 1)
         logging.info('Search library for %s and arch %s', name, mach)
 
     logging.info('Loading platforms information')
-    cfg = json_loads(f.read())
+    cfg = json_loads(f.read().decode())
     return cfg.get('platforms', []) if platid is None \
         else [x for x in cfg.get('platforms', [])
               if platid == x['path'] or (

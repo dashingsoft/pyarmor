@@ -8,7 +8,7 @@
         {
             "path": "win32",
             "platname": "windows32",
-            "machines": ["", "x86"],
+            "machines": ["x86"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dll",
             "md5": "",
@@ -17,7 +17,7 @@
         {
             "path": "win_amd64",
             "platname": "windows64",
-            "machines": ["", "amd64", "x86_64", "x64"],
+            "machines": ["amd64", "x86_64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dll",
             "md5": "",
@@ -26,7 +26,7 @@
         {
             "path": "linux_i386",
             "platname": "linux32",
-            "machines": ["", "i386", "i486", "i586", "i686", "x86"],
+            "machines": ["i386", "i486", "i586", "i686", "x86"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.so",
             "md5": "",
@@ -35,7 +35,7 @@
         {
             "path": "linux_x86_64",
             "platname": "linux64",
-            "machines": ["", "x86_64", "amd64", "x64"],
+            "machines": ["x86_64", "amd64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.so",
             "md5": "",
@@ -44,7 +44,7 @@
         {
             "path": "macosx_x86_64",
             "platname": "darwin64",
-            "machines": ["", "x86_64", "intel", "amd64", "x64"],
+            "machines": ["x86_64", "intel", "amd64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dylib",
             "md5": "",
