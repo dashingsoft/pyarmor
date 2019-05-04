@@ -30,8 +30,6 @@ make_platform_files()
         cp -a linux_i386 linux32;
         cp -a linux_x86_64 linux64;
         cp -a macosx_x86_64 darwin64;
-        cp -a armv7 linux32/arm;
-        cp -a armv8.64-bit linux64/arm;
     )
 }
 
