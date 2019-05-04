@@ -614,16 +614,16 @@ def _register(args):
 
 
 @arcommand
-def _platforms(args):
-    '''List and download dynamic library for different platforms.'''
-    if args.downloads:
-        for name in args.downloads:
-            logging.info('Download dynamic library for %s', name)
-            download_pytransform(name, args.output)
+def _download(args):
+    '''List and download platform-dependent dynamic libraries.'''
+    if args.platid:
+        logging.info('Download dynamic library for %s', args.platid)
+        download_pytransform(args.platid, args.output)
+
     else:
         lines = []
         plist = get_platform_list()
-        pat = None if args.list is None else args.list.lower()
+        pat = None if args.pattern is None else args.pattern.lower()
         for p in plist:
             if pat and pat not in p['platname'] \
                and pat not in ' '.join(p['machines']) \
@@ -915,22 +915,21 @@ def main(args):
     cparser.set_defaults(func=_register)
 
     #
-    # Command: platforms
+    # Command: download
     #
     cparser = subparsers.add_parser(
-        'platforms',
-        epilog=_platforms.__doc__,
+        'download',
+        epilog=_download.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Download platform-dependent dynamic libraries')
-    group = cparser.add_mutually_exclusive_group()
-    group.add_argument('--list', nargs='?', const=None, metavar='FILTER',
-                       help='List all the support platforms')
-    group.add_argument('-d', '--download', dest='downloads',
-                       action='append', metavar='ID',
-                       help='Download dynamic library by platform id')
-    cparser.add_argument('-O', '--output', metavar='PATH',
+    cparser.add_argument('-O', '--output', metavar='NAME',
                          help='Save downloaded file to another path')
-    cparser.set_defaults(func=_platforms)
+    group = cparser.add_mutually_exclusive_group()
+    group.add_argument('--list', nargs='?', const='', dest='pattern',
+                       help='List all the available platforms')
+    group.add_argument('platid', nargs='?',
+                       help='Download dynamic library by platform id')
+    cparser.set_defaults(func=_download)
 
     args = parser.parse_args(args)
     if args.silent:
@@ -952,7 +951,7 @@ def main_entry():
         format='%(levelname)-8s %(message)s',
     )
     try:
-        if 'platforms' not in sys.argv[1:2]:
+        if 'download' not in sys.argv[1:2]:
             pytransform_bootstrap()
             capsule = DEFAULT_CAPSULE
             if not (os.path.exists(capsule) and check_capsule(capsule)):
