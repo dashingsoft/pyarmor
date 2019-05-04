@@ -60,29 +60,38 @@ def pytransform_bootstrap(path=None):
     libname = dll_name + dll_ext
     if not os.path.exists(os.path.join(path, libname)):
         libpath = os.path.join(path, 'platforms')
-        platname = pytransform.format_platname()
-        if not os.path.exists(os.path.join(libpath, platname, libname)):
-            download_pytransform(platname)
+        platname = os.getenv('PYARMOR_PLATFORM')
+        platid = pytransform.format_platname(platname)
+        if not os.path.exists(os.path.join(libpath, platid, libname)):
+            download_pytransform(platid)
             logging.info('Bootstrap OK.\n')
-    pytransform.pyarmor_init()
+    pytransform.pyarmor_init(platname=platname)
 
 
-def get_platform_list(plat=None):
+def get_platform_list(platid=None):
     url = platform_prefix + '/' + platform_config
     logging.info('Reading data from %s', url)
     f = urlopen(url, timeout=3.0)
 
+    platid = platid.replace('\\', '/')
+    if platid.find('/') == -1:
+        name, mach = platid, ''
+    else:
+        name, mach = platid.split('/', 1)
+    logging.info('Search library for %s and arch %s', name, mach)
+
     logging.info('Loading platforms information')
     cfg = json_loads(f.read())
-    return cfg.get('platforms', []) if plat is None \
+    return cfg.get('platforms', []) if platid is None \
         else [x for x in cfg.get('platforms', [])
-              if plat == x['path'] or plat in x['names']]
+              if platid == x['path'] or (
+                      name == x['platname'] and mach in x['machines'])]
 
 
-def download_pytransform(plat, output=None):
-    plist = get_platform_list(plat)
+def download_pytransform(platid, saveas=None):
+    plist = get_platform_list(platid)
     if not plist:
-        logging.error('Unsupport platform %s', plat)
+        logging.error('Unsupport platform %s', platid)
         raise RuntimeError('No available library for this platform')
 
     p = plist[0]
@@ -90,15 +99,15 @@ def download_pytransform(plat, output=None):
     url = '/'.join([platform_prefix, p['path'], libname])
     logging.info('Find library at %s', url)
 
-    output = PYARMOR_PATH if output is None else output
-    if not os.access(output, os.W_OK):
-        logging.error('Cound not download library file to %s', output)
+    if not os.access(PYARMOR_PATH, os.W_OK):
+        logging.error('Cound not download library file to %s', PYARMOR_PATH)
         raise RuntimeError('No write permission for target path')
 
     logging.info('Downloading library file ...')
     res = urlopen(url, timeout=60)
 
-    dest = os.path.join(output, plat)
+    dest = os.path.join(PYARMOR_PATH, 'platforms',
+                        platid if saveas is None else saveas)
     if not os.path.exists(dest):
         logging.info('Create target path: %s', dest)
         os.makedirs(dest)
@@ -241,12 +250,14 @@ def make_runtime(capsule, output, licfile=None, platform=None):
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
     if platform is None:
-        libname = dll_name + dll_ext
-        libfile = os.path.join(PYARMOR_PATH, libname)
+        libfile = pytransform._pytransform._name
         if not os.path.exists(libfile):
-            sysname = pytransform.format_platname()
-            libpath = os.path.join(PYARMOR_PATH, 'platforms')
-            libfile = os.path.join(libpath, sysname, libname)
+            libname = dll_name + dll_ext
+            libfile = os.path.join(PYARMOR_PATH, libname)
+            if not os.path.exists(libfile):
+                pname = pytransform.format_platname()
+                libpath = os.path.join(PYARMOR_PATH, 'platforms')
+                libfile = os.path.join(libpath, pname, libname)
         logging.info('Copying %s', libfile)
         shutil.copy2(libfile, output)
     else:

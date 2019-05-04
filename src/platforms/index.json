@@ -7,7 +7,8 @@
     "platforms": [
         {
             "path": "win32",
-            "names": ["win32"],
+            "platname": "windows32",
+            "machines": ["", "x86"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dll",
             "md5": "",
@@ -15,7 +16,8 @@
         },
         {
             "path": "win_amd64",
-            "names": ["win_amd64"],
+            "platname": "windows64",
+            "machines": ["", "amd64", "x86_64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dll",
             "md5": "",
@@ -23,7 +25,8 @@
         },
         {
             "path": "linux_i386",
-            "names": ["linux_i386"],
+            "platname": "linux32",
+            "machines": ["", "i386", "i486", "i586", "i686", "x86"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.so",
             "md5": "",
@@ -31,7 +34,8 @@
         },
         {
             "path": "linux_x86_64",
-            "names": ["linux_x86_64"],
+            "platname": "linux64",
+            "machines": ["", "x86_64", "amd64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.so",
             "md5": "",
@@ -39,7 +43,8 @@
         },
         {
             "path": "macosx_x86_64",
-            "names": ["macosx_x86_64"],
+            "platname": "macosx64",
+            "machines": ["", "x86_64", "intel", "amd64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dylib",
             "md5": "",
@@ -47,7 +52,8 @@
         },
         {
             "path": "armv7",
-            "names": ["linux_armv7"],
+            "platname": "linux32",
+            "machines": ["armv7l"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",
@@ -55,7 +61,8 @@
         },
         {
             "path": "armv8.64-bit",
-            "names": ["linux_aarch64"],
+            "platname": "linux64",
+            "machines": ["aarch64"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",
@@ -63,7 +70,8 @@
         },
         {
             "path": "vs2015/x86",
-            "names": ["win32"],
+            "platname": "vs2015",
+            "machines": ["x86"],
             "features": [],
             "filename": "_pytransform.dll",
             "md5": "",
@@ -71,7 +79,8 @@
         },
         {
             "path": "vs2015/x64",
-            "names": ["win_amd64"],
+            "platname": "vs2015",
+            "machines": ["x64", "amd64"],
             "features": [],
             "filename": "_pytransform.dll",
             "md5": "",
@@ -79,7 +88,8 @@
         },
         {
             "path": "armv5",
-            "names": ["linux_armv5"],
+            "platname": "linux32",
+            "machines": ["armv5"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",
@@ -87,7 +97,8 @@
         },
         {
             "path": "armv8.32-bit",
-            "names": ["linux_aarch32"],
+            "platname": "linux32",
+            "machines": ["aarch32"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",
@@ -95,7 +106,8 @@
         },
         {
             "path": "ppc64le",
-            "names": ["linux_ppc64le"],
+            "platname": "linux64",
+            "machines": ["ppc64le"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",
@@ -103,7 +115,8 @@
         },
         {
             "path": "ios.arm64",
-            "names": ["ios_arm64"],
+            "platname": "ios64",
+            "machines": ["arm64"],
             "features": [],
             "filename": "_pytransform.dylib",
             "md5": "",
@@ -111,7 +124,8 @@
         },
         {
             "path": "freebsd",
-            "names": ["freebsd_x86_64"],
+            "platname": "freebsd",
+            "machines": ["x86_64"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",
@@ -119,7 +133,8 @@
         },
         {
             "path": "alpine",
-            "names": ["linux_x86_64"],
+            "platname": "alpine_linux",
+            "machines": ["x86_64"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",
@@ -127,7 +142,8 @@
         },
         {
             "path": "poky-i586",
-            "names": ["linux_i386"],
+            "platname": "poky_linux",
+            "machines": ["x86", "i386", "i486", "i586", "i686"],
             "features": [],
             "filename": "_pytransform.so",
             "md5": "",

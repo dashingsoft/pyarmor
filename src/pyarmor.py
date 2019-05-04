@@ -42,7 +42,7 @@ except ImportError:
     # argparse is new in version 2.7
     import polyfills.argparse as argparse
 
-from config import version, version_info, plat_name, purchase_info, \
+from config import version, version_info, purchase_info, \
                    config_filename, capsule_filename, license_filename
 
 from project import Project
@@ -118,7 +118,8 @@ def _init(args):
 
     if sys.argv[0] == 'pyarmor.py':
         logging.info('Create pyarmor command ...')
-        s = make_project_command(plat_name, sys.executable, sys.argv[0], path)
+        platname = sys.platform
+        s = make_project_command(platname, sys.executable, sys.argv[0], path)
         logging.info('PyArmor command %s created', s)
 
     logging.info('Project init successfully.')
@@ -623,7 +624,8 @@ def _platforms(args):
         for p in get_platform_list(args.list):
             lines.append('')
             lines.append('%16s: %s' % ('id', p['path']))
-            lines.append('%16s: %s' % ('plat-names', p['names']))
+            lines.append('%16s: %s' % ('platname', p['platname']))
+            lines.append('%16s: %s' % ('machines', p['machines']))
             lines.append('%16s: %s' % ('features', p['features']))
             lines.append('%16s: %s' % ('remark', p['remark']))
         logging.info('Support platforms:\n%s', '\n'.joiin(lines))

@@ -139,16 +139,19 @@ def get_license_info():
 
     return info
 
-def format_platname():
-    plat = platform.system().lower()
-    bitness = struct.calcsize('P'.encode()) * 8
+def format_platname(platname=None):
+    if platname is None:
+        plat = platform.system().lower()
+        bitness = struct.calcsize('P'.encode()) * 8
+        platname = '%s%s' % (plat, bitness)
     mach = platform.machine().lower()
-    return os.path.join('%s%s' % (plat, bitness), 'arm') \
-        if plat == 'linux' and (mach[:3] == 'arm' or mach[:5] == 'aarch') \
-        else '%s%s' % (plat, bitness)
+    return platname if mach in (
+        'intel', 'x86', 'i386', 'i486', 'i586', 'i686',
+        'x64', 'x86_64', 'amd64'
+        ) else os.path.join(platname, mach)
 
 # Load _pytransform library
-def _load_library(path=None, is_runtime=0):
+def _load_library(path=None, is_runtime=0, platname=None):
     path = os.path.dirname(__file__) if path is None \
         else os.path.normpath(path)
 
@@ -167,7 +170,7 @@ def _load_library(path=None, is_runtime=0):
     if not os.path.exists(filename):
         if is_runtime:
             raise PytransformError('Could not find "%s"' % filename)
-        libpath = os.path.join(path, 'platforms', format_platname())
+        libpath = os.path.join(path, 'platforms', format_platname(platname))
         filename = os.path.join(libpath, os.path.basename(filename))
         if not os.path.exists(filename):
             raise PytransformError('Could not find "%s"' % filename)
@@ -192,11 +195,11 @@ def _load_library(path=None, is_runtime=0):
 
     return m
 
-def pyarmor_init(path=None, is_runtime=0):
+def pyarmor_init(path=None, is_runtime=0, platname=None):
     global _pytransform
     global _get_error_msg
     if _pytransform is None:
-        _pytransform = _load_library(path, is_runtime)
+        _pytransform = _load_library(path, is_runtime, platname)
         _get_error_msg = _pytransform.get_error_msg
         _get_error_msg.restype = c_char_p
         return init_pytransform()
