@@ -625,10 +625,10 @@ def _platforms(args):
             lines.append('')
             lines.append('%16s: %s' % ('id', p['path']))
             lines.append('%16s: %s' % ('platname', p['platname']))
-            lines.append('%16s: %s' % ('machines', p['machines']))
-            lines.append('%16s: %s' % ('features', p['features']))
+            lines.append('%16s: %s' % ('machines', ','.join(p['machines'])))
+            lines.append('%16s: %s' % ('features', ','.join(p['features'])))
             lines.append('%16s: %s' % ('remark', p['remark']))
-        logging.info('Support platforms:\n%s', '\n'.joiin(lines))
+        logging.info('Support platforms:\n%s', '\n'.join(lines))
 
 
 def _version_info(short=False):
@@ -934,11 +934,6 @@ def main(args):
     logging.info(_version_info(short=True))
     logging.debug('PyArmor install path: %s', PYARMOR_PATH)
 
-    capsule = DEFAULT_CAPSULE
-    if not (os.path.exists(capsule) and check_capsule(capsule)):
-        logging.info('Generate global capsule %s', capsule)
-        make_capsule(capsule)
-
     args.func(args)
 
 
@@ -948,8 +943,12 @@ def main_entry():
         format='%(levelname)-8s %(message)s',
     )
     try:
-        if not sys.argv[1:2] == 'platforms':
+        if 'platforms' not in sys.argv[1:2]:
             pytransform_bootstrap()
+            capsule = DEFAULT_CAPSULE
+            if not (os.path.exists(capsule) and check_capsule(capsule)):
+                logging.info('Generate global capsule %s', capsule)
+                make_capsule(capsule)
         main(sys.argv[1:])
     except Exception as e:
         if sys.flags.debug:
