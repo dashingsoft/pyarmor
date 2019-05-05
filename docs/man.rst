@@ -504,7 +504,7 @@ run obfuscated functions etc.
 
 * Check the test scripts which saved in the path `.benchtest`::
 
-    pyarmor benchmakr --debug
+    pyarmor benchmark --debug
 
 .. _register:
 
