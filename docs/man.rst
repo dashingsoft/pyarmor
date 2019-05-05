@@ -26,11 +26,11 @@ The commands for project::
     info         Show project information
     check        Check consistency of project
 
-.. The other commands:
+The other commands::
 
-   benchmark     Run benchmark test in current machine
-   register      Make registration code work
-   download      Download platform-dependent dynamic libraries
+    benchmark    Run benchmark test in current machine
+    register     Make registration code work
+    download     Download platform-dependent dynamic libraries
 
 See `pyarmor <command> -h` for more information on a specific command.
 
@@ -467,5 +467,116 @@ Run this command in project path::
 Or specify the project path at the end::
 
     pyarmor check /path/to/project
+
+.. _benchmark:
+
+banchmark
+---------
+
+Check the performance of obfuscated scripts.
+
+**SYNOPSIS**::
+
+    pyarmor benchmark <options>
+
+**OPTIONS**:
+
+-m, --obf-mode <0,1>   Whether to obfuscate the whole module
+-c, --obf-code <0,1>   Whether to obfuscate each function
+-w, --wrap-mode <0,1>  Whether to obfuscate each function with wrap mode
+--debug                Do not remove test path
+
+**DESCRIPTION**
+
+This command will generate a test script, obfuscate it and run it,
+then output the elapsed time to initialize, import obfuscated module,
+run obfuscated functions etc.
+
+**EXAMPLES**
+
+* Test performance with default mode::
+
+    pyarmor benchmark
+
+* Test performance with no wrap mode::
+
+    pyarmor benchmark --wrap-mode 0
+
+* Check the test scripts which saved in the path `.benchtest`::
+
+    pyarmor benchmakr --debug
+
+.. _register:
+
+register
+--------
+
+Make registration code effect, backup and restore it.
+
+**SYNOPSIS**::
+
+    pyarmor register <options> CODE
+
+**OPTIONS**:
+
+-b, --backup     Backup current registration code
+-r, --restore    Restore license file from last backup
+
+**DESCRIPTION**
+
+Make registration code effect by this way::
+
+    pyarmor register CODE
+
+Check it works::
+
+    pyarmor -v
+
+It's better to backup this code after everything is fine::
+
+    pyarmor register --backup
+
+The code will be saved in the file `~/.pyarmor_config`
+
+.. note::
+
+   If something is wrong, PyArmor maybe could not start. In this case,
+   try to remove `license.lic` in the installed path of PyArmor, then
+   run `pyarmor` again.
+
+.. _download:
+
+download
+--------
+
+List and download platform-dependent dynamic libraries.
+
+**SYNOPSIS**::
+
+    pyarmor download <options> PLAT-ID
+
+**OPTIONS**:
+
+--list PATTERN        List available dynamic libraries in different platforms
+-O, --output NAME     Save downloaded file to another path
+
+**DESCRIPTION**
+
+In some machines maybe PyArmor could not recognize the platform and
+raise error. For example::
+
+    ERROR: Unsupport platform linux32/armv7l
+
+In this case, check all the available prebuilt libraries::
+
+    pyarmor download --list
+
+And download `armv7` from this list::
+
+    pyarmor download --output linux32/armv7l armv7
+
+Filter could be applied to list the platforms, for example::
+
+    pyarmor download --list linux32
 
 .. include:: _common_definitions.txt
