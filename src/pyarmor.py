@@ -512,6 +512,8 @@ def _obfuscate(args):
         if os.path.isabs(entry):
             logging.info('Use outer entry script "%s"', entry)
             make_entry(entry, path, output)
+        elif args.src:
+            make_entry(entry, path, output)
         else:
             make_entry(os.path.basename(entry), path, output)
 

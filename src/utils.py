@@ -186,13 +186,13 @@ def _make_entry(filename, rpath=None):
 def make_entry(entris, path, output, rpath=None, ispackage=False):
     for entry in entris.split(','):
         entry = entry.strip()
-        src = build_path(entry, path)
         if ispackage \
            and (not os.path.isabs(entry)) and (not entry.startswith('..')):
             filename = os.path.join(output, os.path.basename(path), entry)
         else:
-            filename = os.path.join(output, os.path.basename(src))
+            filename = os.path.join(output, entry)
         if not os.path.exists(filename):
+            src = build_path(entry, path)
             logging.info('Copy entry script %s to %s', src, filename)
             shutil.copy(src, filename)
         logging.info('Insert bootstrap code to entry script %s', filename)
