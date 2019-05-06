@@ -200,11 +200,9 @@ def _get_script_shell(script):
 def make_entry(entris, path, output, rpath=None, ispackage=False):
     for entry in entris.split(','):
         entry = entry.strip()
-        if ispackage \
-           and (not os.path.isabs(entry)) and (not entry.startswith('..')):
-            filename = os.path.join(output, os.path.basename(path), entry)
-        else:
-            filename = build_path(entry, output)
+        if ispackage:
+            output = os.path.join(output, os.path.basename(path))
+        filename = build_path(entry, output)
         src = build_path(entry, path)
         if os.path.exists(filename):
             shell = _get_script_shell(src)
