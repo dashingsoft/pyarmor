@@ -159,7 +159,7 @@ def check_capsule(capsule):
     return True
 
 
-def _make_entry(filename, rpath=None):
+def _make_entry(filename, rpath=None, shell=None):
     entry_code = entry_lines[0] % (
         '.' if os.path.basename(filename) == '__init__.py' else '')
 
@@ -178,9 +178,21 @@ def _make_entry(filename, rpath=None):
 
     with open(filename, 'w') as f:
         f.write(''.join(lines[:n]))
+        if shell:
+            f.write(shell)
         f.write(entry_code)
         f.write(entry_lines[1] % ('' if rpath is None else repr(rpath)))
         f.write(''.join(lines[n:]))
+
+
+def _get_script_shell(script):
+    with open(script, 'rb') as f:
+        line = f.read(60)
+        if len(line) > 2 and line[0] == 35 and line[1] == 33:
+            for c in (b'\n', b'\r'):
+                i = line.find(c) + 1
+                if i > 0:
+                    return line[:i]
 
 
 def make_entry(entris, path, output, rpath=None, ispackage=False):
@@ -190,13 +202,16 @@ def make_entry(entris, path, output, rpath=None, ispackage=False):
            and (not os.path.isabs(entry)) and (not entry.startswith('..')):
             filename = os.path.join(output, os.path.basename(path), entry)
         else:
-            filename = os.path.join(output, entry)
-        if not os.path.exists(filename):
-            src = build_path(entry, path)
+            filename = build_path(entry, output)
+        src = build_path(entry, path)
+        if os.path.exists(filename):
+            shell = _get_script_shell(src)
+        else:
+            shell = None
             logging.info('Copy entry script %s to %s', src, filename)
             shutil.copy(src, filename)
         logging.info('Insert bootstrap code to entry script %s', filename)
-        _make_entry(filename, rpath)
+        _make_entry(filename, rpath, shell=shell)
 
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
