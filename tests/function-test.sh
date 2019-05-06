@@ -310,6 +310,20 @@ check_return_value
 check_file_exists $PROPATH/dist/queens.py
 check_file_not_exists $PROPATH/dist/dist/queens.py
 
+csih_inform "Case P-3: project entry script is not in the src path"
+PROPATH=projects/test-entry
+mkdir -p $PROPATH/scripts
+cat <<EOF > $PROPATH/scripts/foo.py
+#! /usr/bin/env python
+print('Hello')
+EOF
+$PYARMOR init --src=$PROPATH --entry scripts/foo.py $PROPATH  >result.log 2>&1
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+check_file_exists $PROPATH/dist/scripts/foo.py
+check_file_content $PROPATH/dist/scripts/foo.py '#! /usr/bin/env python'
+check_file_content $PROPATH/dist/scripts/foo.py 'pyarmor_runtime'
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""
