@@ -93,9 +93,9 @@ def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
 
 def metricmethod(func):
     def wrap(*args, **kwargs):
-        t1 = time.clock()
+        t1 = time.process_time()
         result = func(*args, **kwargs)
-        t2 = time.clock()
+        t2 = time.process_time()
         logging.info('%s: %s ms', func.__name__, (t2 - t1) * 1000)
         return result
     return wrap
