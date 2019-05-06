@@ -92,6 +92,9 @@ def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
 
 
 def metricmethod(func):
+    if not hasattr(time, 'process_time'):
+        time.process_time = time.clock
+
     def wrap(*args, **kwargs):
         t1 = time.process_time()
         result = func(*args, **kwargs)
