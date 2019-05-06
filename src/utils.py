@@ -186,13 +186,15 @@ def _make_entry(filename, rpath=None, shell=None):
 
 
 def _get_script_shell(script):
-    with open(script, 'rb') as f:
-        line = f.read(60)
-        if len(line) > 2 and line[0] == 35 and line[1] == 33:
-            for c in (b'\n', b'\r'):
-                i = line.find(c) + 1
+    with open(script, 'r') as f:
+        try:
+            line = f.read(60)
+            if len(line) > 2 and line[:2] == '#!':
+                i = line.find('\n') + 1
                 if i > 0:
                     return line[:i]
+        except Exception:
+            pass
 
 
 def make_entry(entris, path, output, rpath=None, ispackage=False):
@@ -210,6 +212,8 @@ def make_entry(entris, path, output, rpath=None, ispackage=False):
             shell = None
             logging.info('Copy entry script %s to %s', src, filename)
             shutil.copy(src, filename)
+        if shell:
+            logging.info('Insert shell line: %s', shell)
         logging.info('Insert bootstrap code to entry script %s', filename)
         _make_entry(filename, rpath, shell=shell)
 
