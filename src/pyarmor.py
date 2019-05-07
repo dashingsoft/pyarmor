@@ -270,6 +270,7 @@ def _build(args):
         if project.entry:
             make_entry(project.entry, project.src, output,
                        rpath=project.runtime_path,
+                       runtime=not args.no_runtime,
                        ispackage=project.get('is_package'))
 
     if not args.no_runtime:

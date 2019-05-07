@@ -159,9 +159,9 @@ def check_capsule(capsule):
     return True
 
 
-def _make_entry(filename, rpath=None, shell=None):
-    entry_code = entry_lines[0] % (
-        '.' if os.path.basename(filename) == '__init__.py' else '')
+def _make_entry(filename, rpath=None, runtime=True, shell=None):
+    ispkg = os.path.basename(filename) == '__init__.py'
+    entry_code = entry_lines[0] % ('.' if runtime and ispkg else '')
 
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -197,7 +197,7 @@ def _get_script_shell(script):
             pass
 
 
-def make_entry(entris, path, output, rpath=None, ispackage=False):
+def make_entry(entris, path, output, rpath=None, runtime=True, ispackage=False):
     for entry in entris.split(','):
         entry = entry.strip()
         if ispackage:
@@ -213,7 +213,7 @@ def make_entry(entris, path, output, rpath=None, ispackage=False):
         if shell:
             logging.info('Insert shell line: %s', shell)
         logging.info('Insert bootstrap code to entry script %s', filename)
-        _make_entry(filename, rpath, shell=shell)
+        _make_entry(filename, rpath, runtime=runtime, shell=shell)
 
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
