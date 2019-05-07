@@ -325,6 +325,16 @@ check_file_content $PROPATH/dist/scripts/foo.py '#! /usr/bin/env python'
 check_file_content $PROPATH/dist/scripts/foo.py 'pyarmor_runtime'
 check_file_content $PROPATH/dist/scripts/foo.py 'print' not
 
+csih_inform "Case P-4: no leading dot is inserted into entry script without runtime"
+PROPATH=projects/test-package-init
+$PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
+(cd $PROPATH; $ARMOR build --no-runtime >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/mypkg/__init__.py
+check_file_content $PROPATH/dist/mypkg/__init__.py 'from pytransform import pyarmor_runtime'
+check_file_content $PROPATH/dist/mypkg/__init__.py 'pyarmor_runtime'
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""
