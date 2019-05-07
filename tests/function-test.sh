@@ -323,6 +323,7 @@ check_return_value
 check_file_exists $PROPATH/dist/scripts/foo.py
 check_file_content $PROPATH/dist/scripts/foo.py '#! /usr/bin/env python'
 check_file_content $PROPATH/dist/scripts/foo.py 'pyarmor_runtime'
+check_file_content $PROPATH/dist/scripts/foo.py 'print' not
 
 echo ""
 echo "-------------------- Test Project End ------------------------"
