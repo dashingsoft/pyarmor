@@ -106,6 +106,31 @@ $PYARMOR config --wrap-mode=0 --manifest="include big_array.py" $PROPATH >result
 check_file_content $PROPATH/result.log 'Obfuscate co failed'
 check_file_content $PROPATH/result.log 'Too big code object, the limitation is'
 
+csih_inform "7. Import many obfuscated packages"
+PROPATH=test-many-packages
+mkdir -p $PROPATH/pkg1
+mkdir -p $PROPATH/pkg2
+echo "name = 'This is first package'" > $PROPATH/pkg1/__init__.py
+echo "name = 'This is second package'" > $PROPATH/pkg2/__init__.py
+
+$PYARMOR init --src=$PROPATH/pkg1 --entry=__init__.py $PROPATH/pkg1 >result.log 2>&1
+$PYARMOR init --src=$PROPATH/pkg2 --entry=__init__.py $PROPATH/pkg2 >result.log 2>&1
+$PYARMOR build --output $PROPATH/obf --no-runtime $PROPATH/pkg1 >result.log 2>&1
+$PYARMOR build --output $PROPATH/obf --no-runtime $PROPATH/pkg2 >result.log 2>&1
+$PYARMOR build --output $PROPATH/obf --only-runtime $PROPATH/pkg1 >result.log 2>&1
+
+cat <<EOF > $PROPATH/obf/main.py
+from pkg1 import name as pkg_name1
+from pkg2 import name as pkg_name2
+print(pkg_name1)
+print(pkg_name2)
+EOF
+(cd $PROPATH/obf; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/obf/result.log 'This is first package'
+check_file_content $PROPATH/obf/result.log 'This is second package'
+
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -181,6 +206,30 @@ check_file_content $PROPATH/dist/big_array.py '__pyarmor__(__name__'
 (cd $PROPATH/dist; $PYTHON big_array.py >result.log 2>&1 )
 check_return_value
 check_file_content $PROPATH/dist/result.log 'a99 ='
+
+csih_inform "7. Import many obfuscated packages"
+PROPATH=test-many-packages
+mkdir -p $PROPATH/pkg1
+mkdir -p $PROPATH/pkg2
+echo "name = 'This is first package'" > $PROPATH/pkg1/__init__.py
+echo "name = 'This is second package'" > $PROPATH/pkg2/__init__.py
+
+$PYARMOR init --src=$PROPATH/pkg1 --entry=__init__.py $PROPATH/pkg1 >result.log 2>&1
+$PYARMOR init --src=$PROPATH/pkg2 --entry=__init__.py $PROPATH/pkg2 >result.log 2>&1
+$PYARMOR build --output $PROPATH/obf --no-runtime $PROPATH/pkg1 >result.log 2>&1
+$PYARMOR build --output $PROPATH/obf --no-runtime $PROPATH/pkg2 >result.log 2>&1
+$PYARMOR build --output $PROPATH/obf --only-runtime $PROPATH/pkg1 >result.log 2>&1
+
+cat <<EOF > $PROPATH/obf/main.py
+from pkg1 import name as pkg_name1
+from pkg2 import name as pkg_name2
+print(pkg_name1)
+print(pkg_name2)
+EOF
+(cd $PROPATH/obf; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/obf/result.log 'This is first package'
+check_file_content $PROPATH/obf/result.log 'This is second package'
 
 csih_inform "Remove global capsule"
 rm -rf ~/.pyarmor_capsule.zip
