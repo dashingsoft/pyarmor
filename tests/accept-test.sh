@@ -232,7 +232,7 @@ check_file_content $PROPATH/obf/result.log 'This is first package'
 check_file_content $PROPATH/obf/result.log 'This is second package'
 
 csih_inform "Remove global capsule"
-rm -rf ~/.pyarmor_capsule.zip
+rm -rf ~/.pyarmor_capsule.zip*
 
 # ======================================================================
 #
