@@ -489,8 +489,8 @@ def _obfuscate(args):
         else:
             a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
-        protection = cross_protection and entry \
-            and (os.path.abspath(a) == os.path.abspath(entry))
+        protection = entry and (os.path.abspath(a) == os.path.abspath(entry)) \
+            and cross_protection
         plugins = protection and args.plugins
 
         d = os.path.dirname(b)

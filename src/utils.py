@@ -450,13 +450,14 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 template, target = None, None
                 if isinstance(protection, str):
                     if protection.find(',') == -1:
-                        if protection.find('_pytransform.') == -1:
-                            template = protection
-                        else:
-                            target = _get_platform_library(protection)
+                        target = _get_platform_library(protection)
                     else:
                         template, platname = protection.split(',')
                         target = _get_platform_library(platname)
+                if template:
+                    logging.info('Use template: %s', template)
+                if target:
+                    logging.info('Target dynamic library: %s', target)
                 lines[n:n] = [make_protect_pytransform(template=template,
                                                        filename=target,
                                                        rpath=rpath)]
