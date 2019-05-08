@@ -10,8 +10,8 @@ version never expires, the limitations are
 - The scripts obfuscated by trial version are not private. It means
   anyone could generate the license file which works for these
   obfuscated scripts.
-- The trial version may not be used for the Python scripts of any
-  commercial product.
+- Without permission the trial version may not be used for the Python
+  scripts of any commercial product.
 
 About the license file of obfuscated scripts, refer to :ref:`The
 License File for Obfuscated Script`
@@ -40,9 +40,10 @@ There are 2 basic types of licenses issued for the software. These are:
   obfuscated scripts and distribute them and all the required files to
   any other machine and device.
 
-  The license purchased for one product serials should not be used for
-  other product serials. Business users should purchase new license
-  for different product serials.
+  Without permission of the software owner the license purchased for
+  one product serials should not be used for other product
+  serials. Business users should purchase new license for different
+  product serials.
 
 Purchase
 --------
@@ -63,7 +64,7 @@ Note that command `register` is introduced from `PyArmor` 5.3.3,
 please upgrade the old version to the latest one, or directly replace
 the content of `license.lic` in the `PyArmor` installed path with the
 registration code only (no newline).
-    
+
 Check new license works by this command::
 
     pyarmor --version
