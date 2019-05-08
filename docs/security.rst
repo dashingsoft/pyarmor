@@ -127,8 +127,10 @@ In order to protect `_pytransform` in Python script, some extra code
 will be inserted into the entry script, refer to :ref:`Special
 Handling of Entry Script`
 
-If you want to hide the code more thoroughly, try to use any other
-tool such as ASProtect_, VMProtect_ to protect dynamic library
-`_pytransform` which is distributed with obfuscatd scripts.
+.. unused:
+   
+    If you want to hide the code more thoroughly, try to use any other
+    tool such as ASProtect_, VMProtect_ to protect dynamic library
+    `_pytransform` which is distributed with obfuscatd scripts.
 
 .. include:: _common_definitions.txt

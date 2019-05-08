@@ -118,6 +118,10 @@ edit `pytransform.py` and comment these lines in function
     if _pytransform is not None:
         raise PytransformError('_pytransform can not be loaded twice')
 
+.. note::
+
+   This limitation has been removed from v5.3.5.
+
 Check restrict mode failed
 --------------------------
 
