@@ -3,12 +3,17 @@
 Change Logs
 ===========
 
+5.3.5
+-----
+* The bootstrap code could run many times in same Python interpreter.
+* Remove extra `.` from the bootstrap code of `__init__.py` as building project without runtime files.
+
 5.3.4
 -----
 * Add command `download` used to download platform-dependent dynamic libraries
 * Keep shell line for obfuscated entry scripts if there is first line starts with `#!`
 * Fix issue: if entry script is not in the `src` path, bootstrap code will not be inserted.
-  
+
 5.3.3
 -----
 * Refine `benchmark` command
