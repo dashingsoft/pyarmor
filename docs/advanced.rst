@@ -3,6 +3,42 @@
 Advanced Topics
 ===============
 
+.. _obfuscating many packages:
+
+Obfuscating Many Packages
+-------------------------
+
+There are 3 packages: `pkg1`, `pkg2`, `pkg2`. All of them will be
+obfuscated, and use shared runtime files.
+
+First change to work path, create 3 projects::
+
+    mkdir build
+    cd build
+
+    pyarmor init --src /path/to/pkg1 --entry __init__.py pkg1
+    pyarmor init --src /path/to/pkg2 --entry __init__.py pkg2
+    pyarmor init --src /path/to/pkg3 --entry __init__.py pkg3
+
+Then make runtime files, save them in the path `dist`::
+
+    pyarmor build --output dist --only-runtime pkg1
+
+Next obfuscate 3 packages, save them in the `dist`::
+
+    pyarmor build --output dist --no-runtime pkg1
+    pyarmor build --output dist --no-runtime pkg2
+    pyarmor build --output dist --no-runtime pkg3
+
+Check all the output and test these obfuscated packages::
+
+    ls dist/
+
+    cd dist
+    python -c 'import pkg1
+    import pkg2
+    import pkg3'
+
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 
