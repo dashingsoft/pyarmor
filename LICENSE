@@ -7,29 +7,41 @@
 
   1. The author and holder of the copyright of the software is Jondy Zhao.
 
-  2. The software is distributed as Free To Use But Restricted. This means that
-     anyone may use the software for non-commercial usage. In free version the
-     python scripts are obfuscated with fixed key, that is to say, everyone uses
-     the same key to obfuscate python scripts in free version. For any
-     commercial usage or to obfuscate python scripts by random key, the user
-     must purchase a license to continue using the software.
+  2. The software is distributed as Free To Use But Restricted:
 
+     a. The maximum size of code object is 35728 bytes in trial version
+
+     b. The scripts obfuscated by trial version are not private. It
+        means anyone could generate the license file which works for
+        these obfuscated scripts.
+
+     c. The trial version may not be used for the Python scripts of any
+        commercial product.
+     
   3. There are 2 basic types of licenses issued for the software. These are:
 
      a. A natural person usage license for home users. The user purchases one
         license to use the software on his own computer.
 
-        Home users may use their natural person usage license on all computers
-        and embedded devices which are property of the license owner.
+        Home users may use their natural person usage license to obfuscate all
+        the python scripts which are property of the license owner, to generate
+        private license files for the obfuscated scripts and distribute them and
+        all the required files to any other machine or device.
 
      b. A juridical person usage license for business users. The user purchases
-        one license to use the software for one product or one project of an
+        one license to use the software for one product serials of an
         organization.
 
         Business users may use their juridical person usage license on all
-        computers and embedded devices for one product or project. But they
-        require another license for different product or project.
+        computers and embedded devices to obfuscate all the python scripts of
+        this product serials, to generate private license files for these
+        obfuscated scripts and distribute them and all the required files to any
+        other machine and device.
 
+        The license purchased for one product serials should not be used for
+        other product serials. Business users should purchase new license for
+        different product serials.
+        
      A user who purchased a license, is granted a non-exclusive right to use
      the software on as many computers as defined by the licensing terms above
      according to the number of licenses purchased, for any legal purpose.
@@ -44,13 +56,15 @@
 
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
-     A registration code will be sent to your immediately after
-     payment is completed successfully. After you receive this email,
-     copy registration code only (no newline), then replace the
-     content of "license.lic" within the software. Run the following
-     command to check your registration code
+     A registration code will be sent to your immediately after payment is
+     completed successfully. After you receive this email, copy registration
+     code only (no newline), then make it effective by this command
 
-         python pyarmor.py --version
+         pyarmor register CODE
+
+     Run the following command to check your registration code
+
+         pyarmor --version
 
      The registration code is valid forever, it can be used permanently. But it
      may not be rented or leased.
@@ -85,16 +99,8 @@
      loss of profits or any other kind of loss while using or misusing
      this software.
 
-  8. You may not use, copy, emulate, clone, rent, lease, sell, modify,
-     decompile, disassemble, otherwise reverse engineer, or transfer the
-     licensed software, or any subset of the licensed software, except as
-     provided for in this agreement. Any such unauthorized use shall result in
-     immediate and automatic termination of this license and may result in
-     criminal and/or civil prosecution.
-
-     Neither PyArmor binary code, or source code may be used or reverse
-     engineered to re-create the PyArmor obfuscated algorithm, which is
-     proprietary, without written permission.
+  8. The dynamic library of the software may not be used for reverse engineer to
+     re-create the PyArmor obfuscated algorithm.
 
   9. The licensor shall be responsible for interpretation of the
      agreement. Anytime the licensor made any modifications to the agreement,
