@@ -274,7 +274,8 @@ def _build(args):
                        ispackage=project.get('is_package'))
 
     if not args.no_runtime:
-        routput = os.path.join(output, os.path.basename(project.src)) \
+        routput = output if args.output is not None and args.only_runtime \
+            else os.path.join(output, os.path.basename(project.src)) \
             if project.get('is_package') else output
         if not os.path.exists(routput):
             logging.info('Make path: %s', routput)
