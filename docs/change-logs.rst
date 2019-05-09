@@ -5,7 +5,7 @@ Change Logs
 
 5.3.6
 -----
-* Fix bug: protection code can't find the corrent dynamic library if distributing obfuscated scripts to other platforms.
+* Fix bug: protection code can't find the correct dynamic library if distributing obfuscated scripts to other platforms.
 * Document how to distribute obfuscated scripts to other platforms
   https://pyarmor.readthedocs.io/en/latest/advanced.html#distributing-obfuscated-scripts-to-other-platform
 
