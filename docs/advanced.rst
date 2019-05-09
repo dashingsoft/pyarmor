@@ -39,6 +39,25 @@ Check all the output and test these obfuscated packages::
     import pkg2
     import pkg3'
 
+.. _distributing obfuscated scripts to other platform:
+
+Distributing Obfuscated Scripts To Other Platform
+-------------------------------------------------
+
+First list and download dynalic library of target platform by command
+:ref:`download`::
+
+    pyarmor download --list
+    pyarmor download linux_x86_64
+
+Then specify platform name as obfuscating the scripts::
+
+    pyarmor obfuscate --platform linux_x86_64 foo.py
+
+For project::
+
+    pyarmor build --platform linux_x86_64
+
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 

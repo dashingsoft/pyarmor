@@ -54,6 +54,7 @@ Obfuscate python scripts.
 --no-bootstrap          Do not insert bootstrap code to entry script
 --no-cross-protection   Do not insert protection code to entry script
 --plugin NAME           Insert extra code to entry script
+--platform NAME         Distribute obfuscated scripts to other platform
 
 **DESCRIPTION**
 
@@ -87,6 +88,9 @@ path if it's not in the current path, or specify plugin path by
 environment variable `PYARMOR_PLUGIN`.
 
 About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
+
+Option `--platform` is used to specify the target platform of
+obfuscated scripts if target platform is different from build platform.
 
 **EXAMPLES**
 
@@ -126,6 +130,14 @@ About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
   obfuscating `foo.py`::
 
      pyarmor obfuscate --plugin check_ntp_time foo.py
+
+* Obfuscate the scripts in Macos and run obfuscated scripts in
+  Ubuntu::
+
+    pyarmor download --list
+    pyarmor download linux_x86_64
+
+    pyarmor obfuscate --platform linux_x86_64 foo.py
 
 .. _licenses:
 
@@ -391,6 +403,7 @@ Build project, obfuscate all scripts in the project.
 -r, --only-runtime    Generate extra runtime files only
 -n, --no-runtime      DO NOT generate runtime files
 -O, --output OUTPUT   Output path, override project configuration
+--platform NAME       Distribute obfuscated scripts to other platform
 
 **DESCRIPTION**
 
@@ -421,10 +434,17 @@ Or specify the project path at the end::
 
     pyarmor build -n
 
-* Save the obfuscated scripts to other path, it'll not change the
+* Save the obfuscated scripts to other path, it doesn't change the
   output path of project settings::
 
     pyarmor build -B -O /path/to/other
+
+* Build project in Macos and run obfuscated scripts in Ubuntu::
+
+    pyarmor download --list
+    pyarmor download linux_x86_64
+
+    pyarmor build -B --platform linux_x86_64
 
 .. _info:
 

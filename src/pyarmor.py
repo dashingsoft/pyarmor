@@ -704,7 +704,8 @@ def main(args):
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          default=1, help=argparse.SUPPRESS)
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('--platform', help=argparse.SUPPRESS)
+    cparser.add_argument('--platform', help='Distribute obfuscated scripts '
+                         'to other platform')
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -827,7 +828,8 @@ def main(args):
                          help='DO NOT generate runtime files')
     cparser.add_argument('-O', '--output',
                          help='Output path, override project configuration')
-    cparser.add_argument('--platform', help=argparse.SUPPRESS)
+    cparser.add_argument('--platform', help='Distribute obfuscated scripts '
+                         'to other platform')
     cparser.set_defaults(func=_build)
 
     #
