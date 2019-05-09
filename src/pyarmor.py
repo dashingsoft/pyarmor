@@ -234,13 +234,14 @@ def _build(args):
         logging.info('Obfuscating each function is %s', v(obf_code))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
 
-        entry = os.path.abspath(project.entry) if project.entry else None
+        entries = [build_path(s.strip(), project.src)
+                   for s in project.entry.split(',')] if project.entry else []
         protection = project.cross_protection \
             if hasattr(project, 'cross_protection') else 1
         if platform:
             if protection == 1:
                 protection = platform
-            elif isinstance(protection, str):
+            elif not isinstance(protection, int):
                 protection = ','.join([protection, platform])
 
         for x in files:
@@ -251,7 +252,7 @@ def _build(args):
             if not os.path.exists(d):
                 os.makedirs(d)
 
-            if entry and (os.path.abspath(a) == entry):
+            if entries and (os.path.abspath(a) in entries):
                 pcode = protection
                 if hasattr(project, 'plugins'):
                     plugins = project.plugins
