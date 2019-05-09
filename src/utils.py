@@ -448,7 +448,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
                 template, target = None, None
-                if isinstance(protection, str):
+                if not isinstance(protection, int):
                     if protection.find(',') == -1:
                         target = _get_platform_library(protection)
                     else:
