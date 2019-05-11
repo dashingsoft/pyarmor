@@ -5,9 +5,13 @@ The Differences of Obfuscated Scripts
 
 There are something changed after Python scripts are obfuscated:
 
-* Python Version in build machine must be same as in target
-  machine. To be exact, the magic string value used to recognize
-  byte-compiled code files (.pyc files) must be same.
+* The major version of Python in build machine should be same as in
+  target machine. Because the scripts will be compiled to byte-code
+  before they're obfuscated, so the obfuscated scripts can't be run by
+  all the Python versions as the original scripts could. Especially
+  for Python 3.6, it introduces word size instructions, and it's
+  totally different from Python 3.5 and before. It's recommeded to run
+  the obfuscated scripts with same major version of Python.
 
 * If Python interpreter is compiled with Py_TRACE_REFS or Py_DEBUG, it
   will crash to run obfuscated scripts.

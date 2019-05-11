@@ -58,6 +58,26 @@ For project::
 
     pyarmor build --platform linux_x86_64
 
+.. _obfuscating scripts by different python version:
+
+Obfuscating Scripts By Other Version Of Python
+----------------------------------------------
+
+If there are multiple Python versions installed in the machine, the
+command `pyarmor` uses default Python. In case the scripts need to be
+obfuscated by other Python, run `pyarmor` by this Python explicitly.
+
+For example, first find :file:`pyarmor.py`::
+
+    find /usr/local/lib -name pyarmor.py
+
+Generally it should be in the
+`/usr/local/lib/python2.7/dist-packages/pyarmor` in most of linux.
+
+Then run pyarmor as the following way::
+
+    /usr/bin/python3.6 /usr/local/lib/python2.7/dist-packages/pyarmor/pyarmor.py
+
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 
