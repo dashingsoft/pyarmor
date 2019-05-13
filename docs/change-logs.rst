@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.3.7
+-----
+* Fix bug: the bootstrap code isn't inserted correctly if the path of entry script is absolute path.
+
 5.3.6
 -----
 * Fix bug: protection code can't find the correct dynamic library if distributing obfuscated scripts to other platforms.

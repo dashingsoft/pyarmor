@@ -512,13 +512,12 @@ def _obfuscate(args):
         make_project_license(capsule, licode, licfile)
 
     if (not args.no_bootstrap) and entry and os.path.exists(entry):
-        if os.path.isabs(entry):
+        entryname = entry if args.src else os.path.basename(entry)
+        if os.path.exists(os.path.join(output, entryname)):
+            make_entry(entryname, path, output)
+        else:
             logging.info('Use outer entry script "%s"', entry)
             make_entry(entry, path, output)
-        elif args.src:
-            make_entry(entry, path, output)
-        else:
-            make_entry(os.path.basename(entry), path, output)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
