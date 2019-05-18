@@ -89,7 +89,7 @@ def _init(args):
         logging.info('Make project directory %s', path)
         os.makedirs(path)
 
-    src = os.path.abspath(args.src)
+    src = os.path.normpath(os.path.abspath(args.src))
     logging.info('Python scripts base path: %s', src)
 
     name = os.path.basename(os.path.abspath(path))
@@ -137,7 +137,7 @@ def _config(args):
     logging.info('Update project %s ...', args.project)
 
     if args.src is not None:
-        args.src = os.path.abspath(args.src)
+        args.src = os.path.normpath(os.path.abspath(args.src))
         logging.info('Change src to absolute path: %s', args.src)
     if args.capsule is not None:
         args.capsule = os.path.abspath(args.capsule)
