@@ -72,14 +72,16 @@ def _generate_project_capsule():
 def _generate_pytransform_key(licfile, pubkey):
     prototype = PYFUNCTYPE(py_object, c_char_p, py_object)
     dlfunc = prototype(('generate_pytransform_key', _pytransform))
-    return dlfunc(licfile.encode(), pubkey)
+    return dlfunc(licfile.encode() if sys.version_info[0] == 3 else licfile,
+                  pubkey)
 
 @dllmethod
 def generate_license_file(filename, priname, rcode, start=-1, count=1):
     prototype = PYFUNCTYPE(c_int, c_char_p, c_char_p, c_char_p, c_int, c_int)
     dlfunc = prototype(('generate_project_license_files', _pytransform))
     return dlfunc(filename.encode(), priname.encode(), rcode.encode(),
-                  start, count)
+                  start, count) if sys.version_info[0] == 3 \
+        else dlfunc(filename, priname, rcode, start, count)
 
 @dllmethod
 def get_registration_code():
@@ -185,7 +187,7 @@ def _load_library(path=None, is_runtime=0, platname=None):
     #     m.set_option(-1, find_library('c').encode())
 
     if not os.path.abspath('.') == os.path.abspath(path):
-        m.set_option(1, path.encode())
+        m.set_option(1, path.encode() if sys.version_info[0] == 3 else path)
 
     # Required from Python3.6
     m.set_option(2, sys.byteorder.encode())
