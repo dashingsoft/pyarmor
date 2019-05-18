@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.3.8
+-----
+* Fix non-ascii path issue in Windows
+
 5.3.7
 -----
 * Fix bug: the bootstrap code isn't inserted correctly if the path of entry script is absolute path.
