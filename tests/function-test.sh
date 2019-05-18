@@ -597,13 +597,13 @@ echo "-------------------- Test non-ascii path --------------------"
 echo ""
 
 csih_inform "Case I18N-1: run obfuscated scripts in zh-CN path"
-dist=中文路径
-$PYARMOR obfuscate -O $dist examples/simple/queens.py  > result.log 2>&1
+output=中文路径
+$PYARMOR obfuscate -O $output/dist examples/simple/queens.py  > result.log 2>&1
 check_return_value
 
-(cd $dist; $PYTHON queens.py >result.log 2>&1 )
+(cd $output; $PYTHON dist/queens.py >result.log 2>&1 )
 check_return_value
-check_file_content $dist/result.log 'Found 92 solutions'
+check_file_content $output/result.log 'Found 92 solutions'
 
 echo ""
 echo "-------------------- Test non-ascii path END ----------------"
