@@ -62,21 +62,21 @@ case ${PLATFORM} in
         ;;
     linux_i386)
         PYTHON=${PYTHON:-python}
-        declare -r harddisk_sn='VB07ab3ff6-81eb5787 '
+        declare -r harddisk_sn=VB07ab3ff6-81eb5787
         declare -r ifmac_address=08:00:27:88:4b:88
         declare -r ifip_address=192.168.121.106
         declare -r domain_name=
         ;;
     linux_x86_64)
         PYTHON=${PYTHON:-python}
-        declare -r harddisk_sn='            9WK3FEMQ'
-        declare -r ifmac_address='00:23:8b:e0:4f:a7'
+        declare -r harddisk_sn=9WK3FEMQ
+        declare -r ifmac_address=00:23:8b:e0:4f:a7
         declare -r ifip_address=192.168.121.103
         declare -r domain_name=
         ;;
     macosx_x86_64)
         PYTHON=${PYTHON:-python}
-        declare -r harddisk_sn='VB85de09d4-23402b07 '
+        declare -r harddisk_sn=VB85de09d4-23402b07
         declare -r ifmac_address=08:00:27:b0:b3:94
         declare -r ifip_address=10.0.2.15
         declare -r domain_name=
