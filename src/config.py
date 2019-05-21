@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '5.3.9'
+version = '5.4.0'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
