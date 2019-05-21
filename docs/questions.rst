@@ -141,4 +141,14 @@ can't be changed any more. Do not touch the following files
 
 For more information, refer to :ref:`Special Handling of Entry Script`
 
+.. How easy is to recover obfuscated code?:
+
+    If someone tries to break the obfuscation, he first must be an
+    expert in the field of reverse engineer, and be an expert of
+    Python, who should understand the structure of code object of
+    python, how python interpreter each instruction. If someone of
+    them start to reverse, he/she must step by step thousands of
+    machine instruction, and research the algorithm by machine
+    codes. So it's not an easy thing to reverse pyarmor.
+
 .. include:: _common_definitions.txt
