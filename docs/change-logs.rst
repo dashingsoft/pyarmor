@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.3.10
+------
+* Qeury harddisk's serial number without administrator in Windows
+
 5.3.9
 -----
 * Remove the leading and trailing whitespace of harddisk's serial number

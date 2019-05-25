@@ -128,6 +128,10 @@ Check restrict mode failed
 Use obfuscated scripts in wrong way, by default all the obfuscated
 scripts can't be changed any more.
 
+Besides packing the obfuscated scripts will report this error
+either. Do not pack the obfuscated scripts, but pack the plain scripts
+directly.
+
 For more information, refer to :ref:`Restrict Mode`
 
 Protection Fault: unexpected xxx
@@ -140,6 +144,28 @@ can't be changed any more. Do not touch the following files
 * _pytransform.so/.dll/.dylib
 
 For more information, refer to :ref:`Special Handling of Entry Script`
+
+Warning: code object xxxx isn't wrapped
+---------------------------------------
+
+It means this function isn't been obfuscated, because it includes some
+special instructions.
+
+For example, there is 2-bytes instruction `JMP 255`, after the code
+object is obfuscated, the operand is increased to `267`, and the
+instructions will be changed to::
+
+    EXTEND 1
+    JMP 11
+
+In this case, it's complex to obfuscate the code object with wrap
+mode. So the code object is left as it's, but all the other code
+objects still are obfuscated.
+
+In later version, it will be obfuscated with non wrap mode.
+
+In current version add some unused code in this function so that the
+operand isn't the critical value may avoid this warning.
 
 .. How easy is to recover obfuscated code?:
 
