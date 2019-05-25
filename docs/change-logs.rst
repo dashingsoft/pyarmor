@@ -5,7 +5,7 @@ Change Logs
 
 5.3.10
 ------
-* Qeury harddisk's serial number without administrator in Windows
+* Query harddisk's serial number without administrator in Windows
 
 5.3.9
 -----
