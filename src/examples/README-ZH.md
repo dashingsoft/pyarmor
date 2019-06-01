@@ -22,8 +22,7 @@ Windows 下使用，`.sh` 的在 Linux，MacOS 等上面使用。他们都存放
 
 * [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
-    使用这个脚本模板通过第三方工具 (PyInstaller, py2exe, py2app,
-    cx_Freeze) 来打包加密的脚本。
+    使用这个脚本模板通过第三方工具 PyInstaller 来打包加密的脚本。
 
 
 除了这些脚本之外，这里还有一些真实的例子。现在打开一个命令窗口，按照下

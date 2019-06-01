@@ -29,8 +29,7 @@ then run it to obfuscate your python scripts quickly.
 
 * [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
-    The basic usage show how to pack obfuscated scripts with
-    `PyInstaller`, `py2exe`, `py2app` or `cx_Freeze`.
+    The basic usage show how to pack obfuscated scripts with `PyInstaller`.
 
 Not only those scripts, but also some really examples are distributed
 with PyArmor. Just open a command window, follow the instructions in
