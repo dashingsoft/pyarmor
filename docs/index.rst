@@ -47,6 +47,7 @@ Contents:
    differences
    advanced
    man
+   examples
    questions
    license
    platforms
