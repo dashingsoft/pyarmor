@@ -198,8 +198,7 @@ Generate an expired license for the bundle::
 
     dist/myscript/myscript
 
-Note that command ``pack`` maybe doesn't work if ``.spec`` file of
-PyInstaller_ has been customed. You need edit ``.spec`` file to pack
-obfuscated scripts, See :ref:`How to pack obfuscated scripts`.
+For complicated cases, refer to command :ref:`pack` and :ref:`How to
+pack obfuscated scripts`.
 
 .. include:: _common_definitions.txt
