@@ -236,7 +236,7 @@ def run_pyi_makespec(project, obfdist, src, entry, packcmd):
     datas = [
         '--add-data', '%s%s.' % (os.path.join(d, 'license.lic'), s),
         '--add-data', '%s%s.' % (os.path.join(d, 'pytransform.key'), s),
-        '--add-data', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
+        '--add-binary', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
     ]
     scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
 
