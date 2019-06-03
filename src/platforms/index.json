@@ -11,7 +11,7 @@
             "machines": ["x86"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dll",
-            "md5": "",
+            "sha256": "f8fd5d14fe0aba4d15531a33681a4594262d6d8ab06247a288b00baaa52b282c",
             "remark": "Cross compile by x86_64-w64-mingw32-gcc in cygwin"
         },
         {
@@ -20,7 +20,7 @@
             "machines": ["amd64", "x86_64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dll",
-            "md5": "",
+            "sha256": "60555661168de7219684fc50db50ada2749da1dcb11a49713e4e50c0e0a2ac3d",
             "remark": "Cross compile by x86_64-w64-mingw32-gcc in cygwin"
         },
         {
@@ -29,7 +29,7 @@
             "machines": ["i386", "i486", "i586", "i686", "x86"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "aa36b2dc2b53cdcd7d4b02d4c4336f08f0a3c639fe5a2c1c01e8d8c2c735f9ca",
             "remark": "Built by GCC"
         },
         {
@@ -38,7 +38,7 @@
             "machines": ["x86_64", "amd64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "7bb399bb65513c002489d4b5e83e07f7e6b34a6ae258711d9fabe673fd360b7d",
             "remark": "Built by GCC"
         },
         {
@@ -47,7 +47,7 @@
             "machines": ["x86_64", "intel", "amd64", "x64"],
             "features": ["JIT", "ANTI-DEBUG"],
             "filename": "_pytransform.dylib",
-            "md5": "",
+            "sha256": "50a74a8bffc9023984e7c45cf0fff057b3c1c1f1e1ef2b5fded9332dfb69d028",
             "remark": "Built by CLang with MacOSX10.11"
         },
         {
@@ -56,7 +56,7 @@
             "machines": ["armv7l"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "0419fffb400580d136b2f4da6293d3d4cfa2e9a973466c3a1d641d715ff78f40",
             "remark": "32-bit Armv7 Cortex-A, hard-float, little-endian"
         },
         {
@@ -65,7 +65,7 @@
             "machines": ["aarch64"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "2460bde701e7f4e1cf1350b83d77a180fdebe2c40b31ceccc7b7b6eea30ca0e2",
             "remark": "64-bit Armv8 Cortex-A, little-endian"
         },
         {
@@ -74,7 +74,7 @@
             "machines": ["x86"],
             "features": [],
             "filename": "_pytransform.dll",
-            "md5": "",
+            "sha256": "122edf647e55737bb8017d7f263fae792d5a81918983890cb492454dabf3559a",
             "remark": "Built by VS2015"
         },
         {
@@ -83,7 +83,7 @@
             "machines": ["x64", "amd64"],
             "features": [],
             "filename": "_pytransform.dll",
-            "md5": "",
+            "sha256": "5374aed57aea84730e86d8971d028eddf9c8d1d4fe86f47261b6a7beb268392b",
             "remark": "Built by VS2015"
         },
         {
@@ -92,7 +92,7 @@
             "machines": ["armv5"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "eedbd0e3ab7b4186c2add39496e0b96ef15ddd7eb4343b9f78269dbfb99ad541",
             "remark": "32-bit Armv5 (arm926ej-s)"
         },
         {
@@ -101,7 +101,7 @@
             "machines": ["aarch32"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "350b4ccde28bc13607ebccb83722ec729025534cb317ef07bf78f5759cd258b9",
             "remark": "32-bit Armv8 Cortex-A, hard-float, little-endian"
         },
         {
@@ -110,7 +110,7 @@
             "machines": ["ppc64le"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "87a9047580805aa4488e749c9684b2b4656c4d578aad1adff3d95b1367cced9d",
             "remark": "For POWER8"
         },
         {
@@ -119,7 +119,7 @@
             "machines": ["arm64"],
             "features": [],
             "filename": "_pytransform.dylib",
-            "md5": "",
+            "sha256": "67a8a8270ba330cb484dba49fe6f5d0717012c6ebd2d51e8aaa7d445bdcd33e6",
             "remark": "Built by CLang with iPhoneOS9.3.sdk"
         },
         {
@@ -128,7 +128,7 @@
             "machines": ["x86_64"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "3af55df8bee1095ffe9b9f154ef185a0ff39a8f361cdd80c81dea74183b549a7",
             "remark": "Not support harddisk serial number"
         },
         {
@@ -137,7 +137,7 @@
             "machines": ["x86_64"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "a5d2f4cd0b39f314ae1e7f82c7d04eb9cf7f0178fcdf92dad9e804420b6ed19e",
             "remark": "Built with musl-1.1.21 for Docker"
         },
         {
@@ -146,7 +146,7 @@
             "machines": ["x86", "i386", "i486", "i586", "i686"],
             "features": [],
             "filename": "_pytransform.so",
-            "md5": "",
+            "sha256": "59d91e273b0075c7c379450cdb7ccc6fcc3dd120468d66a3788435d771229e9e",
             "remark": "Work for Inel Quark, Cross compile by i586-poky-linux"
         }
     ]
