@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.3.12
+------
+* Add integrity checks for the downloaded binaries (#85)
+
 5.3.11
 ------
 * Fix issue: get wrong harddisk's serial number for some special cases in Windows
