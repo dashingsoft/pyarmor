@@ -1,3 +1,4 @@
+
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
@@ -23,6 +24,7 @@
 #
 #  All the routines of pytransform.
 #
+import hashlib
 import logging
 import os
 import re
@@ -113,10 +115,14 @@ def download_pytransform(platid, saveas=None):
         logging.info('Create target path: %s', dest)
         os.makedirs(dest)
 
+    data = res.read()
+    if hashlib.sha256(data).hexdigest() != p['sha256']:
+        raise RuntimeError('Verify downloaded library failed')
+
     target = os.path.join(dest, libname)
     logging.info('Writing target file: %s', target)
     with open(target, 'wb') as f:
-        f.write(res.read())
+        f.write(data)
     logging.info('Download pytransform library file successfully.')
 
 
