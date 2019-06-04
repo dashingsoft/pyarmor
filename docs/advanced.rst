@@ -247,8 +247,8 @@ First create plugin :file:`check_ntp_time.py`:
 
 .. code-block:: python
 
-    # Only for debug, otherwise module pytransform isn't available
-    # in development
+    # Uncomment the next 2 lines for debug, otherwise module pytransform
+    # isn't available in development
 
     # from pytransform import pyarmor_init
     # pyarmor_init()
