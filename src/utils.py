@@ -1,4 +1,3 @@
-
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
@@ -60,6 +59,7 @@ def pytransform_bootstrap(path=None):
 
     path = PYARMOR_PATH if path is None else path
     libname = dll_name + dll_ext
+    platname = None
     if not os.path.exists(os.path.join(path, libname)):
         libpath = os.path.join(path, 'platforms')
         platname = os.getenv('PYARMOR_PLATFORM')
