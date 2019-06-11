@@ -3,10 +3,15 @@
 Change Logs
 ===========
 
+5.4.0
+-----
+* Do not obfuscate lambda functions by default
+* Fix issue: local variable `platname` referenced before assignment
+
 5.3.13
 ------
 * Add option `--url` for command `download`
-
+  
 5.3.12
 ------
 * Add integrity checks for the downloaded binaries (#85)
