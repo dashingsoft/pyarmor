@@ -70,8 +70,9 @@ def pytransform_bootstrap(path=None):
     pytransform.pyarmor_init(platname=platname)
 
 
-def get_platform_list(platid=None):
-    url = platform_prefix + '/' + platform_config
+def get_platform_list(platid=None, prefix=None):
+    prefix = platform_prefix if prefix is None else prefix
+    url = prefix + '/' + platform_config
     logging.info('Reading data from %s', url)
     f = urlopen(url, timeout=3.0)
 
@@ -91,15 +92,16 @@ def get_platform_list(platid=None):
                       name == x['platname'] and mach in x['machines'])]
 
 
-def download_pytransform(platid, saveas=None):
-    plist = get_platform_list(platid)
+def download_pytransform(platid, saveas=None, prefix=None):
+    plist = get_platform_list(platid, prefix=prefix)
     if not plist:
         logging.error('Unsupport platform %s', platid)
         raise RuntimeError('No available library for this platform')
 
     p = plist[0]
     libname = p['filename']
-    url = '/'.join([platform_prefix, p['path'], libname])
+    prefix = platform_prefix if prefix is None else prefix
+    url = '/'.join([prefix, p['path'], libname])
     logging.info('Find library at %s', url)
 
     if not os.access(PYARMOR_PATH, os.W_OK):

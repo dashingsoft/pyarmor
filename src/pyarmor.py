@@ -622,7 +622,7 @@ def _download(args):
     '''List and download platform-dependent dynamic libraries.'''
     if args.platid:
         logging.info('Download dynamic library for %s', args.platid)
-        download_pytransform(args.platid, args.output)
+        download_pytransform(args.platid, saveas=args.output, prefix=args.url)
 
     else:
         lines = []
@@ -930,6 +930,8 @@ def main(args):
         help='Download platform-dependent dynamic libraries')
     cparser.add_argument('-O', '--output', metavar='NAME',
                          help='Save downloaded file to another path')
+    cparser.add_argument('--url',
+                         help='Use this mirror site other than default site')
     group = cparser.add_mutually_exclusive_group()
     group.add_argument('--list', nargs='?', const='', dest='pattern',
                        help='List all the available platforms')
