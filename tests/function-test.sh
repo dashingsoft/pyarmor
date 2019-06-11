@@ -611,6 +611,38 @@ echo ""
 
 # ======================================================================
 #
+#  Test lambda function
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test lambda function --------------------"
+echo ""
+
+csih_inform "Case LF-1: lambda function should not be obfuscated"
+
+cat <<EOF >> test-lambda.py
+f = lambda x: x**2
+print('pow(8, 2) = %d' % f(8))
+co = f.func_code if hasattr(f, 'func_code') else f.__code__
+print('len(co_names) is %s' % len(co.co_names))
+EOF
+
+output=test-lambda
+$PYARMOR obfuscate -O $output --exact test-lambda.py  > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON test-lambda.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'pow(8, 2) = 64'
+check_file_content $output/result.log 'len(co_names) is 0'
+
+echo ""
+echo "-------------------- Test lambda function END ----------------"
+echo ""
+
+# ======================================================================
+#
 # Finished and cleanup.
 #
 # ======================================================================
