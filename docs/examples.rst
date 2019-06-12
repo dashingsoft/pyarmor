@@ -25,7 +25,7 @@ There is a tool `easy-han` based on PyQt. Here list the main files::
 Here the shell script used to pack this tool by PyArmor::
 
     cd /path/to/src
-    pyarmor pack -e " --name easy-han --hidden-import comtypes --data-file 'config.json;.'" \
+    pyarmor pack -e " --name easy-han --hidden-import comtypes --add-data 'config.json;.'" \
                  -x " --exclude vnev;tests" -s "easy-han.spec" main.py
 
     cd dist/easy-han
@@ -35,7 +35,7 @@ By option `-e` passing extra options to run `PyInstaller`, to be sure
 these options work with `PyInstaller`::
 
     cd /path/to/src
-    pyinstaller --name easy-han --hidden-import comtypes --data-file 'config.json;.' main.py
+    pyinstaller --name easy-han --hidden-import comtypes --add-data 'config.json;.' main.py
 
     cd dist/easy-han
     ./easy-han
