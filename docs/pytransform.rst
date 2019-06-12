@@ -23,9 +23,15 @@ Contents
 
    Return how many days left for time limitation license.
 
-   0: has been expired
+   >0: valid in these days
 
    -1: never expired
+
+.. note::
+
+   If the obfuscated script has been expired, it will raise exception
+   and quit directly. All the code in the obfuscated script will not
+   run, so this function will not return 0.
 
 .. function:: get_license_info()
 
