@@ -108,6 +108,16 @@ check_return_value
 check_file_exists foo2-patched.spec
 check_file_content dist/foo2/result.log 'Found 92 solutions'
 
+csih_inform "Case 3-3: Test one file with PyInstaller"
+$PYARMOR pack --clean --options " --name foo3 -F" -s "foo3.spec" \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+( cd dist/; ./foo3.exe  >result.log 2>&1 )
+
+check_file_exists foo3-patched.spec
+check_file_content dist/result.log 'Found 92 solutions'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
