@@ -49,7 +49,7 @@ Obfuscate python scripts.
 
 -O, --output PATH       Output path, default is `dist`
 -r, --recursive         Search scripts in recursive mode
---exclude PATH          Exclude the path in recusrive mode. Multiple paths are allowed, separated by ","
+--exclude PATH          Exclude the path in recusrive mode. Multiple paths are allowed, separated by ",", or use this option multiple times
 --exact                 Only obfuscate list scripts
 --no-bootstrap          Do not insert bootstrap code to entry script
 --no-cross-protection   Do not insert protection code to entry script
@@ -103,9 +103,10 @@ obfuscated scripts if target platform is different from build platform.
      pyarmor obfuscate --recursive foo.py
 
 * Obfuscate all the `.py` in the current path recursively, exclude all
-  the `.py` in the path `build` and `dist`::
+  the `.py` in the path `build` and `tests`::
 
-     pyarmor obfuscate --recursive --exclude build,dist foo.py
+     pyarmor obfuscate --recursive --exclude build,tests foo.py
+     pyarmor obfuscate --recursive --exclude build --exclude tests foo.py
 
 * Obfuscate only two scripts `foo.py`, `moda.py` exactly::
 
@@ -249,7 +250,7 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
 * Pass extra options to obfuscate scripts::
 
-    pyarmor pack -x " --exclude venv,test" foo.py
+    pyarmor pack -x " --exclude venv --exclude test" foo.py
 
 .. _hdinfo:
 
