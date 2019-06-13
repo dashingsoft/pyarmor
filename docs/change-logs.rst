@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.4.1
+-----
+* New feature: do not obfuscate functions which name starts with `lambda_`
+* Fix issue: it will raise `Protection Fault` as packing obfuscated scripts to one file
+
 5.4.0
 -----
 * Do not obfuscate lambda functions by default
