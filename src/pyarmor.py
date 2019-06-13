@@ -445,9 +445,10 @@ def _obfuscate(args):
         pats = ['global-include *.py']
 
         if args.exclude:
-            for x in args.exclude.split(','):
-                logging.info('Exclude path "%s"', x)
-                pats.append('prune %s' % x)
+            for item in args.exclude:
+                for x in item.split(','):
+                    logging.info('Exclude path "%s"', x)
+                    pats.append('prune %s' % x)
 
         if os.path.abspath(output).startswith(path):
             x = os.path.abspath(output)[len(path):].strip('/\\')
@@ -682,9 +683,10 @@ def main(args):
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
     cparser.add_argument('-r', '--recursive', action='store_true',
                          help='Search scripts in recursive mode')
-    cparser.add_argument('--exclude',
+    cparser.add_argument('--exclude', action='append',
                          help='Exclude the path in recursive mode. '
-                         'Multiple paths are allowed, separated by ","')
+                         'Multiple paths are allowed, separated by ",",'
+                         'or use this option multiple times')
     cparser.add_argument('--exact', action='store_true',
                          help='Only obfusate list scripts')
     cparser.add_argument('--no-bootstrap', action='store_true',
