@@ -637,6 +637,25 @@ check_return_value
 check_file_content $output/result.log 'pow(8, 2) = 64'
 check_file_content $output/result.log 'len(co_names) is 0'
 
+csih_inform "Case LF-2: no obfuscate function like 'lambda_*'"
+
+cat <<EOF >> test-lambda2.py
+def lambda_f(x):
+    return x**2
+print('pow(8, 2) = %d' % lambda_f(8))
+co = lambda_f.func_code if hasattr(lambda_f, 'func_code') else lambda_f.__code__
+print('len(co_names) is %s' % len(co.co_names))
+EOF
+
+output=test-lambda2
+$PYARMOR obfuscate -O $output --exact test-lambda2.py  > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON test-lambda2.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'pow(8, 2) = 64'
+check_file_content $output/result.log 'len(co_names) is 0'
+
 echo ""
 echo "-------------------- Test lambda function END ----------------"
 echo ""
