@@ -42,7 +42,10 @@ def protect_pytransform():
                 raise RuntimeError('unexpected pytransform.py')
 
     def check_lib_pytransform():
-        filename = pytransform.os.path.join({rpath}, {filename})
+        if getattr(pytransform.sys, 'frozen', False):
+            filename = pytransform.os.path.join(pytransform.sys._MEIPASS, {filename})
+        else:
+            filename = pytransform.os.path.join({rpath}, {filename})
         size = {size}
         n = size >> 2
         with open(filename, 'rb') as f:
