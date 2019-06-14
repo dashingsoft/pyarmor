@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.4.2
+-----
+* Option `--exclude` can use multiple times in command `obfuscate`
+* Exclude build path automatically in command `pack`  
+
 5.4.1
 -----
 * New feature: do not obfuscate functions which name starts with `lambda_`
