@@ -3,10 +3,14 @@
 Change Logs
 ===========
 
+5.4.3
+-----
+* Fix issue: the command `download` always shows trial version
+
 5.4.2
 -----
 * Option `--exclude` can use multiple times in command `obfuscate`
-* Exclude build path automatically in command `pack`  
+* Exclude build path automatically in command `pack`
 
 5.4.1
 -----
@@ -21,11 +25,11 @@ Change Logs
 5.3.13
 ------
 * Add option `--url` for command `download`
-  
+
 5.3.12
 ------
 * Add integrity checks for the downloaded binaries (#85)
-  
+
 5.3.11
 ------
 * Fix issue: get wrong harddisk's serial number for some special cases in Windows
