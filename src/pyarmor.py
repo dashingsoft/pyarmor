@@ -961,12 +961,11 @@ def main_entry():
         format='%(levelname)-8s %(message)s',
     )
     try:
-        if 'download' not in sys.argv[1:2]:
-            pytransform_bootstrap()
-            capsule = DEFAULT_CAPSULE
-            if not (os.path.exists(capsule) and check_capsule(capsule)):
-                logging.info('Generate global capsule %s', capsule)
-                make_capsule(capsule)
+        try:
+            pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
+        except Exception:
+            if 'download' not in sys.argv[1:2]:
+                raise
         main(sys.argv[1:])
     except Exception as e:
         if sys.flags.debug:

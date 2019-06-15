@@ -47,17 +47,17 @@ from config import dll_ext, dll_name, entry_lines, protect_code_template, \
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
 
-def pytransform_bootstrap(path=None):
-    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
+def pytransform_bootstrap(path=None, capsule=None):
+    path = PYARMOR_PATH if path is None else path
+    licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
-        if not os.access(PYARMOR_PATH, os.W_OK):
+        if not os.access(path, os.W_OK):
             logging.error('Bootstrap need write file "license.lic" to %s, '
                           'please run pyarmor with sudo for first time',
-                          PYARMOR_PATH)
+                          path)
             raise RuntimeError('No write permission for target path')
         shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), licfile)
 
-    path = PYARMOR_PATH if path is None else path
     libname = dll_name + dll_ext
     platname = None
     if not os.path.exists(os.path.join(path, libname)):
@@ -68,6 +68,11 @@ def pytransform_bootstrap(path=None):
             download_pytransform(platid)
             logging.info('Bootstrap OK.\n')
     pytransform.pyarmor_init(platname=platname)
+
+    if capsule is not None:
+        if not (os.path.exists(capsule) and check_capsule(capsule)):
+            logging.info('Generate global capsule %s', capsule)
+            make_capsule(capsule)
 
 
 def get_platform_list(platid=None, prefix=None):
