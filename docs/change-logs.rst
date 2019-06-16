@@ -5,6 +5,8 @@ Change Logs
 
 5.4.3
 -----
+* Add function `get_license_code` in runtime module `pytransform`, which mainly used in plugin to extend license type.
+  Refer to https://pyarmor.readthedocs.io/en/latest/advanced.html#using-plugin-to-extend-license-type
 * Fix issue: the command `download` always shows trial version
 
 5.4.2
