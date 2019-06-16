@@ -141,6 +141,9 @@ def get_license_info():
 
     return info
 
+def get_license_code():
+    return get_license_info()['CODE']
+
 def format_platname(platname=None):
     if platname is None:
         plat = platform.system().lower()
