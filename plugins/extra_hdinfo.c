@@ -28,7 +28,7 @@ query_interface_mac_address(int sock, char *buf, unsigned int size)
         return -1;
       }
 
-      snprintf(buf + j * 18, size, "%02x:%02x:%02x:%02x:%02x:%02x,",
+      snprintf(buf + j * 18, size, "%02x:%02x:%02x:%02x:%02x:%02x.",
                (unsigned char)req[0].ifr_hwaddr.sa_data[0],
                (unsigned char)req[0].ifr_hwaddr.sa_data[1],
                (unsigned char)req[0].ifr_hwaddr.sa_data[2],

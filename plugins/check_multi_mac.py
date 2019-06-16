@@ -1,9 +1,10 @@
 from hashlib import sha384
 from ctypes import cdll, c_char
+from pytransform import get_license_code
 
 lib_hdinfo_filename = "/usr/lib/extra_hdinfo.so"
 lib_hdinfo_checksum = "7838938a424b273c1e9782a1f1aebe3b70421d83a73a091e2502a5206931f0a58c7dee1d4d2d0e313ae6b992f5fa865d"
-expected_mac_addresses = "00:16:3e:08:20:b4,70:f1:a1:23:f0:94"
+expected_mac_addresses = get_license_code()
 
 
 def _check_lib_hdinfo():
