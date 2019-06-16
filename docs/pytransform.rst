@@ -44,6 +44,13 @@ Contents
    Raise :exc:`PytransformError` if license is invalid, for example,
    it has been expired.
 
+.. function:: get_license_code()
+
+   Return a string, which is specified as generating the licenses for
+   obfucated scripts.
+
+   Raise :exc:`PytransformError` if license is invalid.
+   
 .. function:: get_hd_info(hdtype, size=256)
 
    Get hardware information by *hdtype*, *hdtype* could one of
@@ -83,22 +90,35 @@ Double check harddisk information
 
 .. code-block:: python
 
-   from pytransform import get_hd_info, HT_IFMAC
-   expected_mac_address = 'xx:xx:xx:xx:xx'
+   from pytransform import get_hd_info, get_license_code, HT_IFMAC
+   expected_mac_address = get_license_code().split('-')[1]
    if get_hd_info(HT_IFMAC) != expected_mac_address:
        sys.exit(1)
 
-Check internet time by NTP server, expired on `2019-2-2`
+Then generate one expired license file for this obfuscated script
+
+.. code-block:: shell
+
+   pyarmor licenses -e 2020-01-01 MAC-70:f1:a1:23:f0:94
+
+Check internet time by NTP server
 
 .. code-block:: python
 
     from ntplib import NTPClient
     from time import mktime, strptime
+    from pytransform import get_license_code
 
     NTP_SERVER = 'europe.pool.ntp.org'
-    EXPIRED_DATE = '20190202'
+    EXPIRED_DATE = get_license_code()[4:]
 
     c = NTPClient()
     response = c.request(NTP_SERVER, version=3)
-    if response.tx_time > mktime(strptime(EXPIRED_DATE, '%Y%m%d')):
+    if response.tx_time > mktime(strptime(EXPIRED_DATE, '%Y-%m-%d')):
         sys.exit(1)
+        
+Also save the expired date in the license file, generate it by this command
+
+.. code-block:: shell
+
+   pyarmor licenses NTP-2020-01-01

@@ -247,27 +247,24 @@ First create plugin :file:`check_ntp_time.py`:
 
 .. code-block:: python
 
-    # Uncomment the next 2 lines for debug, otherwise module pytransform
-    # isn't available in development
-
+    # Uncomment the next 2 lines for debug as the script isn't obfuscated,
+    # otherwise runtime module "pytransform" isn't available in development
     # from pytransform import pyarmor_init
     # pyarmor_init()
 
-    from pytransform import get_license_info
+    from pytransform import get_license_code
     from ntplib import NTPClient
     from time import mktime, strptime
     import sys
 
     NTP_SERVER = 'europe.pool.ntp.org'
-    EXPIRED_DATE = '20190202'
+    EXPIRED_DATE = get_license_code()[4:]
 
     def check_expired():
-        licinfo = get_license_info()
-        if licinfo['CODE'] == 'Trial':
-            c = NTPClient()
-            response = c.request(NTP_SERVER, version=3)
-            if response.tx_time > mktime(strptime(EXPIRED_DATE, '%Y%m%d')):
-                sys.exit(1)
+        c = NTPClient()
+        response = c.request(NTP_SERVER, version=3)
+        if response.tx_time > mktime(strptime(EXPIRED_DATE, '%Y%m%d')):
+            sys.exit(1)
 
 Then insert 2 comments in the entry script :file:`foo.py`::
 
@@ -310,6 +307,10 @@ Or set environment variable `PYARMOR_PLUGIN`. For example::
 
     export PYARMOR_PLUGIN=/usr/share/pyarmor/plugins
     pyarmor obfuscate --plugin check_ntp_time foo.py
+
+Finally generate one license file for this obfuscated script::
+
+    pyarmor licenses NTP:20190501
 
 .. customizing protection code:
 
