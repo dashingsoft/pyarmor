@@ -3,6 +3,9 @@ Plugins
 
 Plugin usually is used to extend license type.
 
+Example 1: Check All the Mac Address
+------------------------------------
+
 Here is an example show how to check all the mac addresses.
 
 There are 2 files in this plugin::
@@ -84,3 +87,51 @@ Distributing the obfuscated scripts to target machine:
 
 * Copy all the files in the `dist` path to target machine
 * Copy `extra_hdinfo.so` to `/usr/lib` in target machine
+
+Example 2: Check Docker Container ID
+------------------------------------
+
+First write the plugin `check_docker.py`::
+
+    from pytransform import get_license_code
+    
+    
+    def check_docker_id():
+        cid = None
+        with open("/proc/self/cgroup") as f:
+            for line in f:
+                if line.split(':', 2)[1] == 'name=systemd':
+                    cid = line.strip().split('/')[-1]
+                    break
+    
+        if cid is None or cid != get_license_code():
+            raise RuntimeError('license not for this machine')
+    
+
+Then edit the entry script `foo.py`, insert two comment lines::
+
+    import logging
+    import sys
+
+    # {PyArmor Plugins}
+
+    def main():
+        # PyArmor Plugin: check_docker_id()
+        print("Hello World!")
+
+
+    if __name__ == '__main__':
+        main()
+
+Now, obfuscate the script with this plugin::
+
+    pyarmor obfuscate --plugin check_docker foo.py
+        
+If the plugin file isn’t in the current path, use absolute path instead::
+
+    pyarmor obfuscate --plugin /path/to/check_docker foo.py
+    
+The last step is to generate the license file for the obfuscated script::
+
+    pyarmor licenses f56b1824e453126ab5426708dbbed41d0232f6f2ab21de1c40da934b68a5d8a2
+    cp licenses/f56b1824e453126ab5426708dbbed41d0232f6f2ab21de1c40da934b68a5d8a2/license.lic ./dist
