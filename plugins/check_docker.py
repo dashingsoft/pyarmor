@@ -1,4 +1,12 @@
-from pytransform import get_license_code
+from pytransform import _pytransform
+from ctypes import py_object, PYFUNCTYPE
+
+
+def get_license_code():
+    prototype = PYFUNCTYPE(py_object)
+    dlfunc = prototype(('get_registration_code', _pytransform))
+    licinfo = dlfunc()
+    return licinfo['CODE']
 
 
 def check_docker_id():
