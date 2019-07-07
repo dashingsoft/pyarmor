@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.4.4
+-----
+* Fix issue: In Linux could not get the serial number of SCSI harddisk
+* Fix issuse: In Windows the serial number is not right if the leading character is alpha number
+
 5.4.3
 -----
 * Add function `get_license_code` in runtime module `pytransform`, which mainly used in plugin to extend license type.
