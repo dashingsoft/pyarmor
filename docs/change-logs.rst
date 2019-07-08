@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.4.5
+-----
+* Enhancement: In Linux support to get the serial number of NVME harddisk
+* Fix issue: After run command `register`, pyarmor could not generate capsule if there is `license.lic` in the current path
+
 5.4.4
 -----
 * Fix issue: In Linux could not get the serial number of SCSI harddisk
