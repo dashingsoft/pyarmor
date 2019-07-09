@@ -167,6 +167,14 @@ In later version, it will be obfuscated with non wrap mode.
 In current version add some unused code in this function so that the
 operand isn't the critical value may avoid this warning.
 
+Error: Try to run unauthorized function
+---------------------------------------
+
+If there is any `license.lic` or `pytransform.key` in the current
+path, pyarmor maybe reports this error. One solution is to remove all
+of that files, the other solution upgrades PyArmor. It has been fixed
+in v5.4.5.
+
 .. How easy is to recover obfuscated code?:
 
     If someone tries to break the obfuscation, he first must be an
