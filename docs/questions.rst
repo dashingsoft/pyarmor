@@ -170,10 +170,9 @@ operand isn't the critical value may avoid this warning.
 Error: Try to run unauthorized function
 ---------------------------------------
 
-If there is any `license.lic` or `pytransform.key` in the current
+If there is any file `license.lic` or `pytransform.key` in the current
 path, pyarmor maybe reports this error. One solution is to remove all
-of that files, the other solution upgrades PyArmor. It has been fixed
-in v5.4.5.
+of that files, the other solution to upgrade PyArmor to v5.4.5 later.
 
 .. How easy is to recover obfuscated code?:
 
