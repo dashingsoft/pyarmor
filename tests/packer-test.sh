@@ -118,6 +118,28 @@ check_return_value
 check_file_exists foo3-patched.spec
 check_file_content dist/result.log 'Found 92 solutions'
 
+csih_inform "Case 3-4: Test one file without license by PyInstaller"
+cat <<EOF > copy_license.py
+import sys
+from os.path import join, dirname
+with open(join(dirname(sys.executable), 'license.lic'), 'rb') as fs:
+    with open(join(sys._MEIPASS, 'license.lic'), 'wb') as fd:
+        fd.write(fs.read())
+EOF
+$PYARMOR pack --clean --without-license \
+         --options " --name foo4 -F --runtime-hook copy_license.py" \
+         -s "foo4.spec" examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists foo4-patched.spec
+
+( cd dist/; ./foo4.exe  >result.log 2>&1 )
+check_file_content dist/result.log 'Found 92 solutions' not
+
+cp dist/obf/dist/license.lic dist/
+( cd dist/; mkdir other; cd other; ../foo4.exe > ../result.log )
+check_return_value
+check_file_content dist/result.log 'Found 92 solutions'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
