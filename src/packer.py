@@ -230,15 +230,18 @@ def check_setup_script(_type, setup):
     raise RuntimeError('No setup script %s found' % setup)
 
 
-def run_pyi_makespec(project, obfdist, src, entry, packcmd):
+def run_pyi_makespec(project, obfdist, src, entry, packcmd, nolicense):
     s = os.pathsep
     # d = os.path.relpath(obfdist, project)
     d = obfdist
     datas = [
-        '--add-data', '%s%s.' % (os.path.join(d, 'license.lic'), s),
         '--add-data', '%s%s.' % (os.path.join(d, 'pytransform.key'), s),
         '--add-binary', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
     ]
+    if not nolicense:
+        datas.append('--add-data')
+        datas.append('%s%s.' % (os.path.join(d, 'license.lic'), s))
+
     scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
 
     options = ['-y']
@@ -278,7 +281,9 @@ def update_specfile(project, obfdist, src, entry, specfile):
     return os.path.normpath(patched_file)
 
 
-def _pyinstaller(src, entry, output, specfile, options, xoptions, clean):
+def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
+    clean = args.clean
+    nolicense = args.without_license
     src = relpath(src)
     output = relpath(output)
     packcmd = DEFAULT_PACKER['PyInstaller'][2] + [output] + options
@@ -299,7 +304,7 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, clean):
 
     if clean or (not os.path.exists(specfile)):
         logging.info('Run PyInstaller to generate .spec file...')
-        run_pyi_makespec(project, obfdist, src, entry, packcmd)
+        run_pyi_makespec(project, obfdist, src, entry, packcmd, nolicense)
         logging.info('Save .spec file to %s', specfile)
     else:
         logging.info('Use cached .spec file: %s', specfile)
@@ -339,8 +344,7 @@ def packer(args):
     logging.info('src for searching scripts: %s', relpath(src))
 
     if t == 'PyInstaller':
-        _pyinstaller(src, entry, output, script,
-                     extra_options, xoptions, args.clean)
+        _pyinstaller(src, entry, output, script, extra_options, xoptions, args)
     else:
         _packer(t, src, entry, build, script, output,
                 extra_options, xoptions, args.clean)
@@ -362,6 +366,8 @@ def add_arguments(parser):
                         help='Extra options to run external tool')
     parser.add_argument('-x', '--xoptions',
                         help='Extra options to obfuscate scripts')
+    parser.add_argument('--without-license', action='store_true',
+                        help='Do not generate license for obfuscated scripts')
     parser.add_argument('--clean', action="store_true",
                         help='Remove build path before packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
