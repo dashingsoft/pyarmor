@@ -42,10 +42,14 @@ def protect_pytransform():
                 raise RuntimeError('unexpected pytransform.py')
 
     def check_lib_pytransform():
+        platname = pytransform.sys.platform
+        libname = '_pytransform.dylib' if platname.startswith('darwin') else \
+                  '_pytransform.dll' if platname.startswith('win') else \
+                  '_pytransform.so'
         if getattr(pytransform.sys, 'frozen', False):
-            filename = pytransform.os.path.join(pytransform.sys._MEIPASS, {filename})
+            filename = pytransform.os.path.join(pytransform.sys._MEIPASS, libname)
         else:
-            filename = pytransform.os.path.join({rpath}, {filename})
+            filename = pytransform.os.path.join({rpath}, libname)
         size = {size}
         n = size >> 2
         with open(filename, 'rb') as f:
