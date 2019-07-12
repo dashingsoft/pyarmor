@@ -36,5 +36,7 @@ There are something changed after Python scripts are obfuscated:
       # The output will be '<frozen foo>'
       print(hello.__file__)
 
-
+* Some Python C API are required by obfuscated scripts, so other
+  third-party interpreter, for example Jython, maybe not work.
+  
 .. include:: _common_definitions.txt
