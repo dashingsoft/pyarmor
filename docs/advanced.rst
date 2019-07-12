@@ -334,7 +334,7 @@ file. For example::
 So that we could generate different licenses for different users
 later easily. Here are basic steps:
 
-1. First create script `copy_licese.py`::
+1. First create runtime-hook script `copy_licese.py`::
 
     import sys
     from os.path import join, dirname
@@ -357,7 +357,12 @@ Try to run `dist/foo.exe`, it should report license error.
 
 3. Finally run `pyarmor licenses` to generate new license for the
    obfuscated scripts, and copy new `license.lic` and `dist/foo.exe`
-   to end users.
+   to end users::
+
+    pyarmor licenses -e 2020-01-01 tom
+    cp license/tom/license.lic dist/
+
+    dist/foo.exe
 
 .. customizing protection code:
 
