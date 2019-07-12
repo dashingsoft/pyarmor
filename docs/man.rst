@@ -209,8 +209,9 @@ Obfuscate the scripts and pack them into one bundle.
 -O, --output OUTPUT     Directory to put final built distributions in.
 -e, --options OPTIONS   Extra options to run external tool
 -x, --xoptions OPTIONS  Extra options to obfuscate scripts
---clean                 Remove last build path before packing
 --without-license       Do not generate license for obfuscated scripts
+--clean                 Remove last build path before packing
+--debug                 Do not remove build files after packing
 
 **DESCRIPTION**
 

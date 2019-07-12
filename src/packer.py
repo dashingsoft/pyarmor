@@ -299,8 +299,8 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
         shutil.rmtree(project)
 
     logging.info('Run PyArmor to obfuscate scripts...')
-    args = ['obfuscate', '-r', '-O', obfdist, '--exclude', output] + xoptions
-    call_pyarmor(args + [os.path.join(src, entry)])
+    call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output]
+                 + xoptions + [os.path.join(src, entry)])
 
     if clean or (not os.path.exists(specfile)):
         logging.info('Run PyInstaller to generate .spec file...')
@@ -315,6 +315,15 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
 
     logging.info('Run PyInstaller with patched .spec file...')
     run_command([sys.executable] + packcmd + ['-y', patched_spec])
+
+    if not args.debug:
+        if args.setup is None:
+            logging.info('Remove .spec file %s', specfile)
+            os.remove(specfile)
+        logging.info('Remove patched .spec file %s', patched_spec)
+        os.remove(patched_spec)
+        logging.info('Remove build path %s', project)
+        shutil.rmtree(project)
 
 
 def packer(args):
@@ -370,6 +379,8 @@ def add_arguments(parser):
                         help='Do not generate license for obfuscated scripts')
     parser.add_argument('--clean', action="store_true",
                         help='Remove build path before packing')
+    parser.add_argument('--debug', action="store_true",
+                        help='Do not remove build files after packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
                         help='Entry script')
 
