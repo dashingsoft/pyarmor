@@ -347,12 +347,11 @@ later easily. Here are basic steps:
     pyarmor pack --clean --without-license \
             -e " --onefile --icon logo.ico --runtime-hook copy_license.py" foo.py
 
-Option `--without-license` tells `pyamor` not to bundle the
-`license.lic` of obfuscated scripts to the final executable file.
-
-By option `--runtime-hook` of `PyInstaller`, the specified script
- `copy_licesen.py` will be executed before any obfuscated scripts are
- imported. It will copy outer `license.lic` to right path.
+Option `--without-license` tells `pyamor` not to bundle the `license.lic` of
+obfuscated scripts to the final executable file. By option `--runtime-hook` of
+`PyInstaller`, the specified script `copy_licesen.py` will be executed before
+any obfuscated scripts are imported. It will copy outer `license.lic` to right
+path.
 
 Try to run `dist/foo.exe`, it should report license error.
 

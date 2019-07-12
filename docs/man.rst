@@ -210,6 +210,7 @@ Obfuscate the scripts and pack them into one bundle.
 -e, --options OPTIONS   Extra options to run external tool
 -x, --xoptions OPTIONS  Extra options to obfuscate scripts
 --clean                 Remove last build path before packing
+--without-license       Do not generate license for obfuscated scripts
 
 **DESCRIPTION**
 
