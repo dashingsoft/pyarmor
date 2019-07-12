@@ -142,6 +142,20 @@ After that:
 
 More information, refer to :ref:`How to Obfuscate Scripts` and :ref:`How to Run Obfuscated Scripts`
 
+Search path for `license.lic` and `pytransform.key`
+---------------------------------------------------
+
+As the obfuscated script is running, it first searches the current
+path, then search the path of runtime module `pytransform.py` to find
+the file `license.lic` and `pytransform.key`.
+
+Sometimes there is any of `license.lic` or `pytransform.py` in the
+current path, but it's not for obfuscated scripts. In this case, try
+to run obfuscated scripts, it will report this error::
+
+    Invalid input packet.
+    Check license failed.
+
 Two types of `license.lic`
 --------------------------
 
