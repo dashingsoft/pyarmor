@@ -8,7 +8,6 @@ Change Logs
 * Add option `--without-license` for command `pack`. Sample usage refer to
   https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-to-one-executable-file
 * Add option `--debug` for command `pack`. If this option isn't set, all the build files will be removed after packing.
-* Fix issue: Warning: code object xxxx isn't wrapped (#59)
 
 5.4.5
 -----

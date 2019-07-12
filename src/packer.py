@@ -344,8 +344,7 @@ def packer(args):
         dist = DEFAULT_PACKER[t][0]
         output = os.path.join(build, dist)
     else:
-        output = args.output if os.path.isabs(args.output) \
-            else os.path.join(build, args.output)
+        output = os.path.abspath(args.output)
     output = os.path.normpath(output)
 
     logging.info('Prepare to pack obfuscated scripts with %s...', t)
