@@ -174,6 +174,19 @@ If there is any file `license.lic` or `pytransform.key` in the current
 path, pyarmor maybe reports this error. One solution is to remove all
 of that files, the other solution to upgrade PyArmor to v5.4.5 later.
 
+Check license failed: Invalid input packet.
+-------------------------------------------
+
+If print this error as running the obfuscated scripts, check if there
+is any of `license.lic` or `pytransform.key` in the current path. To
+be sure they're generated for the obfuscated scripts. If not, rename
+them or move them to other path.
+
+Because the obfuscated scripts will first search the current path,
+then search the path of runtime module `pytransform.py` to find the
+file `license.lic` and `pytransform.key`. If they're not generated for
+the obfuscated script, this error will be reported.
+
 .. How easy is to recover obfuscated code?:
 
     If someone tries to break the obfuscation, he first must be an
