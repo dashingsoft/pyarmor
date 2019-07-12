@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.4.6
+-----
+* Add option `--without-license` for command `pack`. Sample usage refer to
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-to-one-executable-file
+* Fix issue: Warning: code object xxxx isn't wrapped (#59)
+
 5.4.5
 -----
 * Enhancement: In Linux support to get the serial number of NVME harddisk
