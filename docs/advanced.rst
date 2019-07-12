@@ -312,6 +312,54 @@ Finally generate one license file for this obfuscated script::
 
     pyarmor licenses NTP:20190501
 
+.. _bundle obfuscated scripts to one executable file:
+
+Bundle Obfuscated Scripts To One Executable File
+------------------------------------------------
+
+Run the following command to pack the script `foo.py` to one
+executable file `dist/foo.exe`. Here `foo.py` isn't obfuscated, it
+will be obfuscated before packing::
+
+    pyarmor pack -e " --onefile" foo.py
+    dist/foo.exe
+
+If you don't want to bundle the `license.lic` of the obfuscated
+scripts into the executable file, but put it outside of the executable
+file. For example::
+
+    dist/foo.exe
+    dist/license.lic
+
+So that we could generate different licenses for different users
+later easily. Here are basic steps:
+
+1. First create script `copy_licese.py`::
+
+    import sys
+    from os.path import join, dirname
+    with open(join(dirname(sys.executable), 'license.lic'), 'rb') as fs:
+        with open(join(sys._MEIPASS, 'license.lic'), 'wb') as fd:
+            fd.write(fs.read())
+
+2. Then pack the scirpt with extra options::
+
+    pyarmor pack --clean --without-license \
+            -e " --onefile --icon logo.ico --runtime-hook copy_license.py" foo.py
+
+Option `--without-license` tells `pyamor` not to bundle the
+`license.lic` of obfuscated scripts to the final executable file.
+
+By option `--runtime-hook` of `PyInstaller`, the specified script
+ `copy_licesen.py` will be executed before any obfuscated scripts are
+ imported. It will copy outer `license.lic` to right path.
+
+Try to run `dist/foo.exe`, it should report license error.
+
+3. Finally run `pyarmor licenses` to generate new license for the
+   obfuscated scripts, and copy new `license.lic` and `dist/foo.exe`
+   to end users.
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt
