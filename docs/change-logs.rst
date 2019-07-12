@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.5.x
+-----
+* Fix issue: Warning: code object xxxx isn't wrapped (#59)
+
 5.4.6
 -----
 * Add option `--without-license` for command `pack`. Sample usage refer to
