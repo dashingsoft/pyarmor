@@ -42,7 +42,7 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_prefix, platform_config
+                   platform_urls, platform_config
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
@@ -75,11 +75,22 @@ def pytransform_bootstrap(path=None, capsule=None):
             make_capsule(capsule)
 
 
-def get_platform_list(platid=None, prefix=None):
-    prefix = platform_prefix if prefix is None else prefix
-    url = prefix + '/' + platform_config
-    logging.info('Reading data from %s', url)
-    f = urlopen(url, timeout=3.0)
+def _get_remote_file(urls, path, timeout=3.0):
+    while urls:
+        prefix = urls[0]
+        url = '/'.join([prefix, 'platforms', path])
+        logging.info('Getting remote file: %s', url)
+        try:
+            return urlopen(url, timeout=timeout)
+        except Exception as e:
+            urls.pop(0)
+            logging.info('Could not get file from %s: %s', prefix, e)
+
+
+def _get_platform_list(urls, platid=None):
+    f = _get_remote_file(urls, platform_config)
+    if f is None:
+        raise RuntimeError('No available site to download library file')
 
     if platid is not None:
         platid = platid.replace('\\', '/')
@@ -97,24 +108,28 @@ def get_platform_list(platid=None, prefix=None):
                       name == x['platname'] and mach in x['machines'])]
 
 
-def download_pytransform(platid, saveas=None, prefix=None):
-    plist = get_platform_list(platid, prefix=prefix)
+def get_platform_list():
+    return _get_platform_list(platform_urls[:])
+
+
+def download_pytransform(platid, saveas=None, url=None):
+    urls = platform_urls[:] if url is None else ([url] + platform_urls)
+    plist = _get_platform_list(urls, platid)
     if not plist:
         logging.error('Unsupport platform %s', platid)
         raise RuntimeError('No available library for this platform')
 
     p = plist[0]
     libname = p['filename']
-    prefix = platform_prefix if prefix is None else prefix
-    url = '/'.join([prefix, p['path'], libname])
-    logging.info('Find library at %s', url)
+    path = '/'.join([p['path'], libname])
+    logging.info('Found available library %s', path)
 
     if not os.access(PYARMOR_PATH, os.W_OK):
         logging.error('Cound not download library file to %s', PYARMOR_PATH)
         raise RuntimeError('No write permission for target path')
 
     logging.info('Downloading library file ...')
-    res = urlopen(url, timeout=60)
+    res = _get_remote_file(urls, path, timeout=60)
 
     dest = os.path.join(PYARMOR_PATH, 'platforms',
                         platid if saveas is None else saveas)

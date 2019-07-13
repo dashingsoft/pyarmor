@@ -45,9 +45,11 @@ default_manifest_template = 'global-include *.py'
 default_obf_module_mode = 'des'
 default_obf_code_mode = 'des'
 
-platform_prefix = 'https://pyarmor.dashingsoft.com/downloads/platforms'
+platform_urls = [
+    'https://github.com/dashingsoft/pyarmor-core/raw/master',
+    'https://pyarmor.dashingsoft.com/downloads',
+    ]
 platform_config = 'index.json'
-
 
 #
 # DEPRECATED From v3.4.0, all the follwing lines will be removed from v4

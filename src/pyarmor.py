@@ -623,7 +623,7 @@ def _download(args):
     '''List and download platform-dependent dynamic libraries.'''
     if args.platid:
         logging.info('Download dynamic library for %s', args.platid)
-        download_pytransform(args.platid, saveas=args.output, prefix=args.url)
+        download_pytransform(args.platid, saveas=args.output, url=args.url)
 
     else:
         lines = []
