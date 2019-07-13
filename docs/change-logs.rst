@@ -6,6 +6,7 @@ Change Logs
 5.5.x
 -----
 * Fix issue: Warning: code object xxxx isn't wrapped (#59)
+* Refine command `download`, fix some users could not download library file from pyarmor.dashingsoft.com
 
 5.4.6
 -----

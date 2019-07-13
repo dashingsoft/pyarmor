@@ -24,13 +24,14 @@ clear_platform_files()
 
 make_platform_files()
 {
-    (cd src/platforms;
-        cp -a win32 windows32;
-        cp -a win_amd64 windows64;
-        cp -a linux_i386 linux32;
-        cp -a linux_x86_64 linux64;
-        cp -a macosx_x86_64 darwin64;
-    )
+    src=../pyarmor-core/platforms
+    dst=src/platforms
+    mkdir -p ${dst}
+    cp -a ${src}/win32 ${dst}/windows32;
+    cp -a ${src}/win_amd64 ${dst}/windows64;
+    cp -a ${src}/linux_i386 ${dst}/linux32;
+    cp -a ${src}/linux_x86_64 ${dst}/linux64;
+    cp -a ${src}/macosx_x86_64 ${dst}/darwin64;
 }
 
 # Make platform files
