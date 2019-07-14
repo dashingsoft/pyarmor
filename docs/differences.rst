@@ -47,6 +47,16 @@ least to run the obfuscated scripts:
   built from the soure https://github.com/python/cpython , and the
   core source code should not be modified.
 
+* On Linux, `RTLD_GLOBAL` must be set as loading `libpythonXY.so` by
+  `dlopen`, otherwise obfuscated scripts couldn't work.
+
+.. note::  
+
+   Boost::python loads `libpythonXY.so` without `RTLD_GLOBAL` by
+   default, it will raise error "No PyCode_Type found" as running
+   obfuscated scripts. To solve this problem, change the source of
+   Boost::python and set `RTLD_GLOBAL` explicitly.
+
 * The module `ctypes` must be exists and `ctypes.pythonapi._handle`
   must be set as the real handle of Python dynamic library, PyArmor
   will query some Python C APIs by this handle.
