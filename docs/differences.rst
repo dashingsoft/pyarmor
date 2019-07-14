@@ -29,14 +29,26 @@ There are something changed after Python scripts are obfuscated:
 
       def hello(msg):
           print(msg)
-      
+
       # The output will be 'foo.py'
       print(__file__)
-      
+
       # The output will be '<frozen foo>'
       print(hello.__file__)
 
-* Some Python C API are required by obfuscated scripts, so other
-  third-party interpreter, for example Jython, maybe not work.
-  
+About Third-Party Interpreter
+-----------------------------
+
+About third-party interperter, for example Jython, and any embeded
+Python C/C++ code, they should satisfy the following conditions at
+least to run the obfuscated scripts:
+
+* They must be load offical Python dynamic library, which should be
+  built from the soure https://github.com/python/cpython , and the
+  core source code should not be modified.
+
+* The module `ctypes` must be exists and `ctypes.pythonapi._handle`
+  must be set as the real handle of Python dynamic library, PyArmor
+  will query some Python C APIs by this handle.
+
 .. include:: _common_definitions.txt
