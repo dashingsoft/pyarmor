@@ -78,6 +78,51 @@ Then run pyarmor as the following way::
 
     /usr/bin/python3.6 /usr/local/lib/python2.7/dist-packages/pyarmor/pyarmor.py
 
+.. _let python interpreter recognize obfuscated scripts automatically:
+
+Let Python Interpreter Recognize Obfuscated Scripts Automatically
+-----------------------------------------------------------------
+
+In a few cases, if Python Interpreter could recognize obfuscated
+scripts automatically, it will make everything simple:
+
+* Almost all the obfuscated scripts will be run as main script
+* In the obfuscated scripts call `multiprocessing` to create new process
+* Or call `Popen`, `os.exec` etc. to run any other obfuscated scripts
+* ...
+
+Here are the base steps:
+
+1. First obfuscate all the scripts::
+
+    pyarmor obfuscate --recursive foo.py
+
+In the output path `dist`, there are 4 runtime files generated at the same time:
+
+* pytransform.py
+* pytransform.key
+* _pytransform.so (.dll or .dylib)
+* license.lic
+
+2. Create a new path `pytransform` in the Python system library, it would be
+   `lib/site-packages` (on Windows) or `lib/pythonX.Y/site-packages` (on Linux)
+
+3. Copy 4 runtime files to this path, rename `pytransform.py` as `__init__.py`
+
+4. Edit `lib/site.py` (on Windows) or `lib/pythonX.Y/site.py` (on Linux), insert
+   :ref:`Bootstrap Code` before the line `if __name__ == '__main__'`::
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+
+They also could be inserted into the end of function `site.main`, or anywhere
+they could be executed as module `site` is imported.
+
+After that `python` could run the obfuscated scripts directly, becausee the
+module `site` is automatically imported during Python initialization.
+
+Refer to https://docs.python.org/3/library/site.html
+
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 
