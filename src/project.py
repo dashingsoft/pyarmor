@@ -29,6 +29,7 @@
 #    1.0.2: Add disable_restrict_mode
 #    1.1.0: Add cross_protection, obf_code, obf_mod, wrap_mode, plugins
 #    1.2.0: Add platform
+#    1.2.1: Add advanced_mode
 #
 import os
 import time
@@ -68,6 +69,7 @@ class Project(dict):
         ('obf_code', 1), \
         ('obf_mod', 1), \
         ('wrap_mode', 1), \
+        ('advanced_mode', 0), \
         ('cross_protection', 1), \
         ('plugins', None), \
         ('platform', None), \

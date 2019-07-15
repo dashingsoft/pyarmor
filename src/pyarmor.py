@@ -228,11 +228,15 @@ def _build(args):
             wrap_mode = 0
             obf_code = 0 if project.obf_code_mode == 'none' else 1
 
+        adv_mode = (1 if project.advanced_mode else 0) \
+            if hasattr(project, 'advanced_mode') else 0
+        
         def v(t):
             return 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
         logging.info('Obfuscating each function is %s', v(obf_code))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
+        logging.info('Advanced mode is %s', v(adv_mode))
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
@@ -261,8 +265,9 @@ def _build(args):
                 plugins = None
 
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
-                           wrap_mode=wrap_mode, protection=pcode,
-                           plugins=plugins, rpath=project.runtime_path)
+                           wrap_mode=wrap_mode, adv_mode=adv_mode,
+                           protection=pcode, plugins=plugins,
+                           rpath=project.runtime_path)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
@@ -485,6 +490,9 @@ def _obfuscate(args):
         elif isinstance(cross_protection, str):
             cross_protection = ','.join([cross_protection, args.platform])
 
+    advanced = 1 if args.advanced else 0
+    logging.info('Advanced mode is %d', advanced)
+
     for x in files:
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -499,7 +507,8 @@ def _obfuscate(args):
         if not os.path.exists(d):
             os.makedirs(d)
 
-        encrypt_script(prokey, a, b, protection=protection, plugins=plugins)
+        encrypt_script(prokey, a, b, adv_mode=advanced,
+                       protection=protection, plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
     make_runtime(capsule, output, platform=args.platform)
@@ -708,6 +717,8 @@ def main(args):
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
+    cparser.add_argument('--advanced', nargs='?', const='1', type='int',
+                         default=None, help='Enable advanced mode')
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -810,6 +821,7 @@ def main(args):
     cparser.add_argument('--runtime-path', metavar="RPATH")
     cparser.add_argument('--plugin', dest='plugins', action='append',
                          help='Insert extra code to entry script')
+    cparser.add_argument('--advanced-mode', type=int, choices=(0, 1))
     cparser.set_defaults(func=_config)
 
     #
