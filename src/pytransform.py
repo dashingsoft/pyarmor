@@ -19,7 +19,6 @@ HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_IPV6, HT_DOMAIN = range(5)
 #
 _pytransform = None
 _get_error_msg = None
-_debug_mode = sys.flags.debug
 
 class PytransformError(Exception):
     pass
@@ -195,8 +194,12 @@ def _load_library(path=None, is_runtime=0, platname=None):
     # Required from Python3.6
     m.set_option(2, sys.byteorder.encode())
 
-    m.set_option(3, c_char_p(_debug_mode))
+    if sys.flags.debug:
+        m.set_option(3, c_char_p(1))
     m.set_option(4, c_char_p(not is_runtime))
+
+    # Disable advanced mode if required
+    # m.set_option(5, c_char_p(1))
 
     return m
 
