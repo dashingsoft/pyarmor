@@ -717,7 +717,7 @@ def main(args):
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
-    cparser.add_argument('--advanced', nargs='?', const='1', type='int',
+    cparser.add_argument('--advanced', nargs='?', const='1', type=int,
                          default=None, help='Enable advanced mode')
     cparser.set_defaults(func=_obfuscate)
 
