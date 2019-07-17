@@ -131,8 +131,14 @@ check_file_content $PROPATH/obf/result.log 'This is first package'
 check_file_content $PROPATH/obf/result.log 'This is second package'
 
 csih_inform "8. Obfuscate scripts with advanced mode"
-$PYARMOR obfuscate --advanced --output dist-trial-advanced examples/simple/queens.py >result.log 2>&1
-check_file_content result.log 'Advanced mode is not available in trial version'
+let -i n=0
+while (( n < 36 )) ; do
+    (( n++ ))
+    echo "def foo$n(i):
+    return i + 1" >> t32.py
+done
+$PYARMOR obfuscate --advanced --output dist-trial-advanced --exact t32.py >result.log 2>&1
+check_file_content result.log 'Too many functions in one module, in trial version the limitation is'
 
 # ======================================================================
 #
