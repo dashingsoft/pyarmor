@@ -130,6 +130,9 @@ check_return_value
 check_file_content $PROPATH/obf/result.log 'This is first package'
 check_file_content $PROPATH/obf/result.log 'This is second package'
 
+csih_inform "8. Obfuscate scripts with advanced mode"
+$PYARMOR obfuscate --advanced --output dist-trial-advanced examples/simple/queens.py >result.log 2>&1
+check_file_content result.log 'Advanced mode is not available in trial version'
 
 # ======================================================================
 #
@@ -231,14 +234,23 @@ check_return_value
 check_file_content $PROPATH/obf/result.log 'This is first package'
 check_file_content $PROPATH/obf/result.log 'This is second package'
 
-csih_inform "Remove global capsule"
-rm -rf ~/.pyarmor_capsule.zip*
+csih_inform "8. Obfuscate scripts with advanced mode"
+$PYARMOR obfuscate --advanced --output dist-advanced examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists dist-advanced/queens.py
+
+(cd dist-advanced; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content dist-advanced/result.log 'Found 92 solutions'
 
 # ======================================================================
 #
 # Finished and cleanup.
 #
 # ======================================================================
+
+csih_inform "Remove global capsule"
+rm -rf ~/.pyarmor_capsule.zip*
 
 # Return test root
 cd ../..
