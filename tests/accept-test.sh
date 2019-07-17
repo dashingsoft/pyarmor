@@ -138,7 +138,7 @@ while (( n < 36 )) ; do
     return i + 1" >> t32.py
 done
 $PYARMOR obfuscate --advanced --output dist-trial-advanced --exact t32.py >result.log 2>&1
-check_file_content result.log 'Too many functions in one module, in trial version the limitation is'
+check_file_content result.log 'In trial version the limitation is about'
 
 # ======================================================================
 #
