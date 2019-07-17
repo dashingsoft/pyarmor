@@ -278,6 +278,15 @@ check_return_value
 check_file_content dist-plugin2/result.log 'Hello World'
 check_file_content dist-plugin2/result.log 'Found 92 solutions'
 
+csih_inform "C-20. Test absolute jump critical value in wrap mode"
+$PYARMOR obfuscate -O dist-pop-jmp --exact test/data/pop_jmp.py >result.log 2>&1
+check_return_value
+
+(cd dist-pop-jmp; $PYTHON pop_jmp.py >result.log 2>&1 )
+check_return_value
+check_file_content dist-pop-jmp/result.log 'jmp_simple return 3'
+check_file_content dist-pop-jmp/result.log 'jmp_short return 30'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
