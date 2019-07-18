@@ -9,7 +9,7 @@
 
   2. The software is distributed as Free To Use But Restricted:
 
-     a. The maximum size of code object is 35728 bytes in trial version
+     a. The maximum size of code object is about 35728 bytes in trial version
 
      b. The scripts obfuscated by trial version are not private. It
         means anyone could generate the license file which works for
@@ -17,6 +17,10 @@
 
      c. Without permission the trial version may not be used for the Python
         scripts of any commercial product.
+
+     d. In trial version if obfuscating the Python scripts in advanced
+        mode, the limitation is no more than about 32 functions (code
+        objects) in one module.
      
   3. There are 2 basic types of licenses issued for the software. These are:
 
