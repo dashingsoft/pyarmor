@@ -262,6 +262,12 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
     pyarmor pack -e " --onefile" -x " --advanced" foo.py
 
+* If the application name is changed by passing option `-n` of
+  `PyInstaller`, the option `-s` must be specified at the same
+  time. For example::
+
+    pyarmor pack -e " -n my_app" -s "my_app.spec" foo.py
+
 .. _hdinfo:
 
 hdinfo
