@@ -22,7 +22,7 @@ gcc or some other `C` compiles. It's welcome to report the issue if Python
 interpreter doesn't work in advanced mode.
 
 Take this into account, the advanced mode is disabled by default. In order to
-enable it, pass option `--advanced` to command `obfuscate`. But in next major
+enable it, pass option `--advanced` to command `obfuscate`. But in next minor
 version, this mode may be enable by default.
 
 **Upgrade Notes**:
