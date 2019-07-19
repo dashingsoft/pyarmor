@@ -43,6 +43,7 @@ Contents:
    understand-obfuscated-scripts
    how-to-do
    pack-obfuscated-scripts
+   mode
    project
    differences
    advanced

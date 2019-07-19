@@ -18,14 +18,14 @@ run normally. Besides if some core Python C APIs are changed unexpectedly, the
 obfuscated scripts in advanced mode won't work. Because this feature is highly
 depended on the machine instruction set, it's only available for x86/x64 arch
 now. And pyarmor maybe makes mistake if Python interpreter is compiled by old
-gcc or some other c compiles. It's welcome to report the issue if Python
+gcc or some other `C` compiles. It's welcome to report the issue if Python
 interpreter doesn't work in advanced mode.
 
-Take this into account, the advanced mode is off by default. In order to turn it
-on, pass option `--advanced` to command `obfuscate`. But in next major version,
-this mode maybe turns on by default.
+Take this into account, the advanced mode is disabled by default. In order to
+enable it, pass option `--advanced` to command `obfuscate`. But in next major
+version, this mode may be enable by default.
 
-Upgrade notes:
+**Upgrade Notes**:
 
 Before upgrading, please estimate Python interpreter in product environments to
 be sure it works in advanced mode. Here is the guide
