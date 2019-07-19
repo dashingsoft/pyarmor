@@ -187,11 +187,6 @@ Before this, run command :ref:`hdinfo` to get hardware information::
 
     pyarmor hdinfo
 
-There maybe have whitespace in the serial number of harddisk for some
-machines, just quote it in the command line::
-
-    pyarmor licenses --bind-disk "100304PBN2081SF3NJ5T " jondy
-
 .. _pack:
 
 pack
@@ -267,6 +262,16 @@ scripts.
 **SYNOPSIS**::
 
     pyarmor hdinfo
+
+If `pyarmor` isn't installed, downlad this tool `hdinfo`
+
+    https://github.com/dashingsoft/pyarmor-core/tree/master/#hdinfo
+
+And run it directly::
+
+    hdinfo
+
+It will print the same hardware information as `pyarmor hdinfo`
 
 .. _init:
 
