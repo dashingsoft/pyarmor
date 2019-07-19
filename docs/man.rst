@@ -55,6 +55,7 @@ Obfuscate python scripts.
 --no-cross-protection   Do not insert protection code to entry script
 --plugin NAME           Insert extra code to entry script
 --platform NAME         Distribute obfuscated scripts to other platform
+--advanced              Enable advanced mode
 
 **DESCRIPTION**
 
@@ -139,6 +140,10 @@ obfuscated scripts if target platform is different from build platform.
     pyarmor download linux_x86_64
 
     pyarmor obfuscate --platform linux_x86_64 foo.py
+
+* Obfuscate the scripts in advanced mode::
+
+    pyarmor obfuscate --advanced foo.py
 
 .. _licenses:
 
@@ -235,6 +240,10 @@ scripts. By default, `pack` will obfuscate scripts like this::
 
 For more information, refer to :ref:`How to pack obfuscated scripts`.
 
+.. important::
+
+   Do not pack the obfuscated scripts, but plain scripts directly.
+
 **EXAMPLES**
 
 * Obfuscate `foo.py` and pack them into the bundle `dist/foo`::
@@ -248,6 +257,10 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 * Pass extra options to obfuscate scripts::
 
     pyarmor pack -x " --exclude venv --exclude test" foo.py
+
+* Pack the obfuscated script to one file and in advanced mode::
+
+    pyarmor pack -e " --onefile" -x " --advanced" foo.py
 
 .. _hdinfo:
 
@@ -349,7 +362,8 @@ Update project settings.
 --disable-restrict-mode <0,1>   Disable or enable restrict mode
 --obf-mod <0,1>                 Disable or enable to obfuscate module
 --obf-code <0,1>                Disable or enable to obfuscate function
---wrap-mode <0,1>               Disable or enable to wrap mode
+--wrap-mode <0,1>               Disable or enable wrap mode
+--advanced-mode <0,1>           Disable or enable advanced  mode
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
 --runtime-path RPATH            Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script
