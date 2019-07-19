@@ -3,10 +3,36 @@
 Change Logs
 ===========
 
-5.5.x
+5.5.0
 -----
 * Fix issue: Warning: code object xxxx isn't wrapped (#59)
 * Refine command `download`, fix some users could not download library file from pyarmor.dashingsoft.com
+* Introduce advanced mode for x86/x64 arch, it has some limitations in trial version
+* Add option `--advanced` for command `obfuscate`
+* Add new property `advanced_mode` for project
+
+A new feature **Advanced Mode** is introduced in this version. In this mode the
+structure of PyCode_Type is changed a little to improve the security. And a hook
+also is injected into Python interpreter so that the modified code objects could
+run normally. Besides if some core Python C APIs are changed unexpectedly, the
+obfuscated scripts in advanced mode won't work. Because this feature is highly
+depended on the machine instruction set, it's only available for x86/x64 arch
+now. And pyarmor maybe makes mistake if Python interpreter is compiled by old
+gcc or some other c compiles. It's welcome to report the issue if Python
+interpreter doesn't work in advanced mode.
+
+Take this into account, the advanced mode is off by default. In order to turn it
+on, pass option `--advanced` to command `obfuscate`. But in next major version,
+this mode maybe turns on by default.
+
+Upgrade notes:
+
+Before upgrading, please estimate Python interpreter in product environments to
+be sure it works in advanced mode. Here is the guide
+
+https://github.com/dashingsoft/pyarmor-core/tree/v5.3.0/tests/advanced_mode/README.md
+
+It is recommended to upgrade in the next major version.
 
 5.4.6
 -----
