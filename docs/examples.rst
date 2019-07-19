@@ -26,7 +26,7 @@ Here the shell script used to pack this tool by PyArmor::
 
     cd /path/to/src
     pyarmor pack -e " --name easy-han --hidden-import comtypes --add-data 'config.json;.'" \
-                 -x " --exclude vnev;tests" -s "easy-han.spec" main.py
+                 -x " --exclude vnev --exclude tests" -s "easy-han.spec" main.py
 
     cd dist/easy-han
     ./easy-han
@@ -46,10 +46,22 @@ need not to be obfuscated. By passing option `--exclude` to exclude
 them, to be sure these options work with command :ref:`obfuscate`::
 
     cd /path/to/src
-    pyarmor obfuscate --exclude vnev;tests main.py
+    pyarmor obfuscate --exclude vnev --exclude tests main.py
 
 By option `-s` to specify the `.spec` filename, because `PyInstaller`
 changes the default filename of `.spec` by option `--name`, so it tell
 command `pack` the right filename.
+
+.. note::
+
+   From PyArmor 5.5.0, pass the obfuscated option `--advanced` to
+   enable :ref:`Advanced Mode`. For example::
+
+       pyarmor pack -x " --advanced --exclude tests" foo.py
+
+.. important::
+
+   The command `pack` will obfuscate the scripts automatically, do not
+   try to pack the obfuscated the scripts.
 
 .. include:: _common_definitions.txt
