@@ -52,16 +52,16 @@ By option `-s` to specify the `.spec` filename, because `PyInstaller` changes
 the default filename of `.spec` by option `--name`, so it tell command `pack`
 the right filename.
 
+.. important::
+
+   The command `pack` will obfuscate the scripts automatically, do not try to
+   pack the obfuscated the scripts.
+
 .. note::
 
    From PyArmor 5.5.0, it could improve the security by passing the obfuscated
    option `--advanced` to enable :ref:`Advanced Mode`. For example::
 
        pyarmor pack -x " --advanced --exclude tests" foo.py
-
-.. important::
-
-   The command `pack` will obfuscate the scripts automatically, do not try to
-   pack the obfuscated the scripts.
 
 .. include:: _common_definitions.txt
