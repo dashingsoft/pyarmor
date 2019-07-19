@@ -29,7 +29,7 @@ enable it, pass option `--advanced` to command `obfuscate`::
 
     pyarmor obfuscate --advanced foo.py
 
-In next minor version, this mode may be enable by default.
+In next minor version, this mode may be enabled by default.
 
 **Upgrade Notes**:
 
@@ -38,7 +38,7 @@ be sure it works in advanced mode. Here is the guide
 
 https://github.com/dashingsoft/pyarmor-core/tree/v5.3.0/tests/advanced_mode/README.md
 
-It is recommended to upgrade in the next major version.
+It is recommended to upgrade in the next minor version.
 
 .. note::
 
