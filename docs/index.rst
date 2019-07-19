@@ -41,9 +41,9 @@ Contents:
    security
    performance
    understand-obfuscated-scripts
+   mode
    how-to-do
    pack-obfuscated-scripts
-   mode
    project
    differences
    advanced
