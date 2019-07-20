@@ -266,7 +266,7 @@ def update_specfile(project, obfdist, src, entry, specfile):
         "        if os.path.exists(x):",
         "            if hasattr(a.pure, '_code_cache'):",
         "                with open(x) as f:",
-        "                    a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'eval')",
+        "                    a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')",
         "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]",
         "# Patch end.", "", "")
 
