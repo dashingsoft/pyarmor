@@ -5,6 +5,8 @@ Change Logs
 
 5.5.1
 -----
+* Fix bug: it could not obfuscate more than 32 functions in advanced mode even
+  pyarmor isn't trial version.
 * In command `licenses`, the output path of generated license file is truncated
   if the registration code is too long, and all the invalid characters for path
   are removed.
