@@ -16,6 +16,10 @@ To solve this problem, the common solution is
 3. Replace original scipts with obfuscated in the bundle
 4. Replace entry scrirpt with obfuscated one
 
+PyArmor provides command :ref:`pack` to achieve this. But in some cases maybe it
+doesn't work. This document describes what the command `pack` does, and also
+could be as a guide to bundle the obfuscated scripts by yourself.
+
 Depend on what tool used, there are different ways.
 
 First obfuscate scripts to ``dist/obf``::
@@ -29,8 +33,8 @@ Install ``pyinstaller``::
 
     pip install pyinstaller
 
-Generate specfile, add the obfuscated entry script and data files
-required by obfuscated scripts::
+Generate specfile, add the obfuscated entry script and data files required by
+obfuscated scripts::
 
     pyinstaller --add-data dist/obf/license.lic
                 --add-data dist/obf/pytransform.key
@@ -38,8 +42,8 @@ required by obfuscated scripts::
                 hello.py dist/obf/hello.py
 
 Update specfile ``hello.spec``, insert the following lines after the
-``Analysis`` object. The purpose is to replace all the original
-scripts with obfuscated ones::
+``Analysis`` object. The purpose is to replace all the original scripts with
+obfuscated ones::
 
     a.scripts[-1] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
     for i in range(len(a.pure)):
@@ -76,16 +80,14 @@ Build bundle executable to ``dist`` with separated library::
 
     build_exe --library library.zip hello.py
 
-Build bundle executable with the obfuscated entry to
-``dist/obf/dist``, all the other obfuscated scripts should be include
-by ``-i name`` or ``-p pkgname``::
+Build bundle executable with the obfuscated entry to ``dist/obf/dist``, all the
+other obfuscated scripts should be include by ``-i name`` or ``-p pkgname``::
 
     ( cd dist/obf;
       build_exe --library library.zip -i queens hello.py )
 
-Update ``dist/obf/library.zip``, which only includes the obfuscated
-scripts, merge all the dependenices files from ``dist/library.zip``
-into it.
+Update ``dist/obf/library.zip``, which only includes the obfuscated scripts,
+merge all the dependenices files from ``dist/library.zip`` into it.
 
 Copy all the files to final output::
 
@@ -121,16 +123,14 @@ Build bundle executable to ``dist``::
 
     cxfreeze --target-dir=dist hello.py
 
-Build bundle executable with the obfuscated entry to
-``dist/obf/dist``, all the other obfuscated scripts should be include
-by ``--include-modules NAMES``::
+Build bundle executable with the obfuscated entry to ``dist/obf/dist``, all the
+other obfuscated scripts should be include by ``--include-modules NAMES``::
 
     cd dist/obf
     cxfreeze --target-dir=dist --include-modules=queens hello.py
 
-Update ``dist/obf/python34.zip``, which only includes the obfuscated
-scripts, merge all the dependenices files from ``dist/python34.zip``
-into it.
+Update ``dist/obf/python34.zip``, which only includes the obfuscated scripts,
+merge all the dependenices files from ``dist/python34.zip`` into it.
 
 Copy all the files to final output::
 
