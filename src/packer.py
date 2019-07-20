@@ -264,7 +264,10 @@ def update_specfile(project, obfdist, src, entry, specfile):
         "    if a.pure[i][1].startswith(a.pathex[0]):",
         "        x = a.pure[i][1].replace(a.pathex[0], r'%s')" % p,
         "        if os.path.exists(x):",
-        "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]"
+        "            if hasattr(a.pure, '_code_cache'):",
+        "                with open(x) as f:",
+        "                    a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'eval')",
+        "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]",
         "# Patch end.", "", "")
 
     for i in range(len(lines)):
