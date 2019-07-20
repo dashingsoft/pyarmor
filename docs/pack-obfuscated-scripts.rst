@@ -32,7 +32,7 @@ Install ``pyinstaller``::
 Generate specfile, add the obfuscated entry script and data files
 required by obfuscated scripts::
 
-    pyinstaller --add-data dist/obf/license.lic    
+    pyinstaller --add-data dist/obf/license.lic
                 --add-data dist/obf/pytransform.key
                 --add-data dist/obf/_pytransform.*
                 hello.py dist/obf/hello.py
@@ -46,6 +46,9 @@ scripts with obfuscated ones::
         if a.pure[i][1].startswith(a.pathex[0]):
             x = a.pure[i][1].replace(a.pathex[0], os.path.abspath('dist/obf'))
             if os.path.exists(x):
+                if hasattr(a.pure, '_code_cache'):
+                    with open(x) as f:
+                        a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')
                 a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
 Run patched specfile to build final distribution::
