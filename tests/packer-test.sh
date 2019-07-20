@@ -10,6 +10,8 @@ PYTHON=C:/Python34/python
 
 PYARMOR="${PYTHON} pyarmor.py"
 
+PYINSEXTRACTOR=$(cygpath -m $(pwd)/verify/pyinstxtractor.py)
+
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
 csih_inform "PyArmor is $PYARMOR"
@@ -17,6 +19,7 @@ csih_inform "PyArmor is $PYARMOR"
 csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
+
 
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
@@ -28,7 +31,7 @@ cd src/
 chmod +x platforms/windows32/_pytransform$DLLEXT
 chmod +x platforms/windows64/_pytransform$DLLEXT
 
-csih_inform "Prepare for system testing"
+csih_inform "Prepare for packer testing"
 echo ""
 
 
@@ -136,6 +139,17 @@ cp licenses/test-packer/license.lic dist/
 ( cd dist/; mkdir other; cd other; ../foo4.exe > ../result.log )
 check_return_value
 check_file_content dist/result.log 'Found 92 solutions'
+
+csih_inform "Case 3-5: Test module is obfuscated in the bundle"
+output=test-module-for-pyinstaller
+target=$output/main.exe_extracted/out00-PYZ.pyz_extracted/mypkg.foo.pyc
+$PYARMOR pack --output $output examples/testpkg/main.py >result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON $PYINSEXTRACTOR main/main.exe >result.log 2>&1)
+check_file_exists $target
+check_file_content $target "__pyarmor__"
+check_file_content $target "Hello" not
 
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
