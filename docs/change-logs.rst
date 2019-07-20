@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.5.1
+-----
+* In command `licenses`, the output path of generated license file is truncated
+  if the registration code is too long, and all the invalid characters for path
+  are removed.
+
 5.5.0
 -----
 * Fix issue: Warning: code object xxxx isn't wrapped (#59)

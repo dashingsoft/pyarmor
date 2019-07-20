@@ -30,6 +30,7 @@ bind obfuscated scripts to fixed machine or expire obfuscated scripts.
 '''
 
 import logging
+import re
 import os
 import shutil
 import subprocess
@@ -230,7 +231,7 @@ def _build(args):
 
         adv_mode = (1 if project.advanced_mode else 0) \
             if hasattr(project, 'advanced_mode') else 0
-        
+
         def v(t):
             return 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
@@ -379,7 +380,8 @@ def _licenses(args):
     fmt = fmt + '*CODE:'
 
     for rcode in args.codes:
-        output = os.path.join(licpath, rcode)
+        output = os.path.join(licpath,
+                              re.sub('[^-_0-9a-zA-Z]', '', rcode[:32]))
         if not os.path.exists(output):
             logging.info('Make path: %s', output)
             os.mkdir(output)
