@@ -10,8 +10,6 @@ PYTHON=C:/Python34/python
 
 PYARMOR="${PYTHON} pyarmor.py"
 
-PYINSEXTRACTOR=$(cygpath -m $(pwd)/verify/pyinstxtractor.py)
-
 csih_inform "Python is $PYTHON"
 csih_inform "Tested Package: $pkgfile"
 csih_inform "PyArmor is $PYARMOR"
@@ -142,14 +140,16 @@ check_file_content dist/result.log 'Found 92 solutions'
 
 csih_inform "Case 3-5: Test module is obfuscated in the bundle"
 output=test-module-for-pyinstaller
-target=$output/main.exe_extracted/out00-PYZ.pyz_extracted/mypkg.foo.pyc
-$PYARMOR pack --output $output examples/testpkg/main.py >result.log 2>&1
+$PYARMOR pack --debug --output $output examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists main-patched.spec
+
+sed -i -e "s/'exec'/'eval'/g" main-patched.spec >/dev/null 2>&1
+$PYTHON -m PyInstaller --clean -y --distpath $output main-patched.spec >result.log 2>&1
 check_return_value
 
-(cd $output; $PYTHON $PYINSEXTRACTOR main/main.exe >result.log 2>&1)
-check_file_exists $target
-check_file_content $target "__pyarmor__"
-check_file_content $target "Hello" not
+(cd $output; ./main/main.exe >result.log 2>&1)
+check_file_content $output/result.log "RuntimeError: Check restrict mode failed"
 
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
