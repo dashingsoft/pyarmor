@@ -57,7 +57,7 @@ obfuscated ones::
 
 Run patched specfile to build final distribution::
 
-    pyinstaller hello.spec
+    pyinstaller --clean -y hello.spec
 
 Check obfuscated scripts work::
 
