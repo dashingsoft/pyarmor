@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.5.3
+-----
+* Fix issue: it will raise error "Invalid input packet" to import 2 independent obfuscated packages in 64-bit Windows.
+
 5.5.2
 -----
 * Fix bug of command `pack`: the obfuscated modules aren't packed into the
