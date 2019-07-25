@@ -491,13 +491,13 @@ cp examples/testpkg/main.py $PROPATH/dist
 check_file_content $PROPATH/dist/result.log 'Hello! PyArmor Test Case'
 
 csih_inform "Case T-1.5: obfuscate 2 independent packages"
+output=dist-pkgs
+$PYARMOR obfuscate -O $output/pkg1 examples/testpkg/mypkg/__init__.py >result.log 2>&1
+$PYARMOR obfuscate -O $output/pkg2 examples/testpkg/mypkg/__init__.py >result.log 2>&1
+check_file_exists $output/pkg1/__init__.py
+check_file_exists $output/pkg2/__init__.py
 
-$PYARMOR obfuscate -O dist/pkg1 examples/testpkg/mypkg/__init__.py >result.log 2>&1
-$PYARMOR obfuscate -O dist/pkg2 examples/testpkg/mypkg/__init__.py >result.log 2>&1
-check_file_exists dist/pkg1/__init__.py
-check_file_exists dist/pkg2/__init__.py
-
-cat <<EOF > dist/main.py
+cat <<EOF > $output/main.py
 from pkg1 import foo as foo1
 from pkg2 import foo as foo2
 
@@ -505,9 +505,9 @@ foo1.hello('pkg1')
 foo2.hello('pkg2')
 EOF
 
-(cd dist; $PYTHON main.py >result.log 2>&1)
-check_file_content dist/result.log "Hello! pkg1"
-check_file_content dist/result.log "Hello! pkg2"
+(cd $output; $PYTHON main.py >result.log 2>&1)
+check_file_content $output/result.log "Hello! pkg1"
+check_file_content $output/result.log "Hello! pkg2"
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"
