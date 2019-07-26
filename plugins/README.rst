@@ -93,8 +93,16 @@ Example 2: Check Docker Container ID
 
 First write the plugin `check_docker.py`::
 
-    from pytransform import get_license_code
+    from pytransform import _pytransform
+    from ctypes import py_object, PYFUNCTYPE
     
+    def get_license_code():
+        prototype = PYFUNCTYPE(py_object)
+        dlfunc = prototype(('get_registration_code', _pytransform))
+        rcode = dlfunc().decode()
+        index = rcode.find('*CODE:')
+        return rcode[index+6:]
+        from pytransform import get_license_code
     
     def check_docker_id():
         cid = None

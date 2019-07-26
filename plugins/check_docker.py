@@ -5,8 +5,9 @@ from ctypes import py_object, PYFUNCTYPE
 def get_license_code():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_registration_code', _pytransform))
-    licinfo = dlfunc()
-    return licinfo['CODE']
+    rcode = dlfunc().decode()
+    index = rcode.find('*CODE:')
+    return rcode[index+6:]
 
 
 def check_docker_id():
