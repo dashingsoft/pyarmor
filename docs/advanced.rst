@@ -221,6 +221,29 @@ Finally generate one license file for this obfuscated script::
 
     pyarmor licenses NTP:20190501
 
+.. note::
+
+   It's better to move `get_licese_code` to the obfuscated
+   script. Here it's an example::
+
+       def get_license_code():
+           from ctypes import py_object, PYFUNCTYPE
+           from pytransform import _pytransform
+           prototype = PYFUNCTYPE(py_object)
+           dlfunc = prototype(('get_registration_code', _pytransform))
+           rcode = dlfunc().decode()
+           index = rcode.find('*CODE:')
+           return rcode[index+6:]
+
+.. note::
+
+   The expired date may be encoded either. For example::
+
+       pyarmor licenses xxxx
+
+   Here "xxx" is encoded expired date, then decode it as checking the
+   expired date in the obfuscated script.
+
 .. _bundle obfuscated scripts to one executable file:
 
 Bundle Obfuscated Scripts To One Executable File
