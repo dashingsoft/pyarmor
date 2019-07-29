@@ -235,6 +235,9 @@ Finally generate one license file for this obfuscated script::
            index = rcode.find('*CODE:')
            return rcode[index+6:]
 
+   Besides, insert the content of `ntplib.py` into the plugin so that
+   `NTPClient` could be used locally.
+
 .. note::
 
    The expired date may be encoded either. For example::

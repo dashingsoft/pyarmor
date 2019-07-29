@@ -50,7 +50,7 @@ Contents
    obfucated scripts.
 
    Raise :exc:`PytransformError` if license is invalid.
-   
+
 .. function:: get_hd_info(hdtype, size=256)
 
    Get hardware information by *hdtype*, *hdtype* could one of
@@ -116,9 +116,16 @@ Check internet time by NTP server
     response = c.request(NTP_SERVER, version=3)
     if response.tx_time > mktime(strptime(EXPIRED_DATE, '%Y-%m-%d')):
         sys.exit(1)
-        
+
 Also save the expired date in the license file, generate it by this command
 
 .. code-block:: shell
 
    pyarmor licenses NTP-2020-01-01
+
+.. note::
+
+   For security, it's better to move the source of `get_license_code`
+   and `NTPClient` into the obfuscated scripts.
+
+   Refer to :ref:`Using Plugin to Extend License Type`
