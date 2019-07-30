@@ -78,6 +78,20 @@ Then run pyarmor as the following way::
 
     /usr/bin/python3.6 /usr/local/lib/python2.7/dist-packages/pyarmor/pyarmor.py
 
+It's convenient to create a shell script `/usr/local/bin/pyarmor3`, the content is::
+
+    /usr/bin/python3.6 /usr/local/lib/python2.7/dist-packages/pyarmor/pyarmor.py "$*"
+
+And ::
+
+    chmod +x /usr/local/bin/pyarmor3
+
+then use `pyarmor3` as before.
+
+In the Windows, create a bat file `pyarmor3.bat`, the content would be like this::
+
+    C:\Python36\python C:\Python27\Lib\site-packages\pyarmor\pyarmor.py %*
+
 .. _let python interpreter recognize obfuscated scripts automatically:
 
 Let Python Interpreter Recognize Obfuscated Scripts Automatically
