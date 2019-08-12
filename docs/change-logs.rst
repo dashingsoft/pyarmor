@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.5.4
+-----
+* Fix issue: the output path isn't correct when building a package with multiple entries
+
 5.5.3
 -----
 * Fix issue: it will raise error "Invalid input packet" to import 2 independent obfuscated packages in 64-bit Windows.
