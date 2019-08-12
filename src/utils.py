@@ -226,10 +226,10 @@ def _get_script_shell(script):
 
 
 def make_entry(entris, path, output, rpath=None, runtime=True, ispackage=False):
+    if ispackage:
+        output = os.path.join(output, os.path.basename(path))
     for entry in entris.split(','):
         entry = entry.strip()
-        if ispackage:
-            output = os.path.join(output, os.path.basename(path))
         filename = build_path(entry, output)
         src = build_path(entry, path)
         if os.path.exists(filename):
