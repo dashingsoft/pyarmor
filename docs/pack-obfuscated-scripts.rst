@@ -45,10 +45,10 @@ Update specfile ``hello.spec``, insert the following lines after the
 ``Analysis`` object. The purpose is to replace all the original scripts with
 obfuscated ones::
 
-    a.scripts[-1] = 'hello', 'dist/obf/hello.py', 'PYSOURCE'
+    a.scripts[-1] = 'hello', r'dist/obf/hello.py', 'PYSOURCE'
     for i in range(len(a.pure)):
         if a.pure[i][1].startswith(a.pathex[0]):
-            x = a.pure[i][1].replace(a.pathex[0], os.path.abspath('dist/obf'))
+            x = a.pure[i][1].replace(a.pathex[0], os.path.normpath(os.path.abspath('dist/obf')))
             if os.path.exists(x):
                 if hasattr(a.pure, '_code_cache'):
                     with open(x) as f:
@@ -58,6 +58,11 @@ obfuscated ones::
 Run patched specfile to build final distribution::
 
     pyinstaller --clean -y hello.spec
+
+.. note::
+
+   Option `--clean` is required, otherwise the obfuscated scripts will
+   not be replaced because the cached `.pyz` will be used.
 
 Check obfuscated scripts work::
 
