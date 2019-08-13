@@ -16,7 +16,7 @@ Change Logs
 -----
 * Fix bug of command `pack`: the obfuscated modules aren't packed into the
   bundle if there is an attribute `_code_cache` in the `a.pure`
-  
+
 5.5.1
 -----
 * Fix bug: it could not obfuscate more than 32 functions in advanced mode even
