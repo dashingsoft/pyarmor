@@ -6,6 +6,7 @@ Change Logs
 5.5.4
 -----
 * Fix issue: the output path isn't correct when building a package with multiple entries
+* Fix issue: the obfuscated scripts raise SystemError "unknown opcode" if advanced mode is enabled in some MacOS machines
 
 5.5.3
 -----
