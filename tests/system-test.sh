@@ -491,6 +491,9 @@ cp examples/testpkg/main.py $PROPATH/dist
 check_file_content $PROPATH/dist/result.log 'Hello! PyArmor Test Case'
 
 csih_inform "Case T-1.5: obfuscate 2 independent packages"
+if [[ "$PLATFORM" == "win32" ]] ; then
+csih_inform "This testcase is ignored in platform win32"
+else
 output=dist-pkgs
 $PYARMOR obfuscate -O $output/pkg1 examples/testpkg/mypkg/__init__.py >result.log 2>&1
 $PYARMOR obfuscate -O $output/pkg2 examples/testpkg/mypkg/__init__.py >result.log 2>&1
@@ -508,6 +511,7 @@ EOF
 (cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log "Hello! pkg1"
 check_file_content $output/result.log "Hello! pkg2"
+fi
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"
