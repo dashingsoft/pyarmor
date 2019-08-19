@@ -738,7 +738,7 @@ check_file_content $output/result.log 'Check restrict mode failed'
 
 csih_inform "Case RM-3: test restrict mode 3"
 output=test-restrict-3
-$PYARMOR obfuscate -O $output -r \
+$PYARMOR obfuscate -O $output -r --restrict 1 \
          examples/testpkg/main.py > result.log 2>&1
 check_return_value
 
@@ -751,7 +751,7 @@ check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
 (cd $output; $PYTHON -c"import main
-main.foo('mypkg')" >result.log 2>&1 )
+main.hello('mypkg')" >result.log 2>&1 )
 check_file_content $output/result.log 'This function could not be called from the plain script'
 
 echo ""
