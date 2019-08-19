@@ -429,7 +429,7 @@ def _guess_encoding(filename):
 
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
-                   obf_mod=1, adv_mode=0, protection=0,
+                   obf_mod=1, adv_mode=0, rest_mode=1, protection=0,
                    plugins=None, rpath=None):
     if sys.version_info[0] == 2:
         with open(filename, 'r') as f:
@@ -500,7 +500,8 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     modname = _frozen_modname(filename, destname)
     co = compile(''.join(lines), modname, 'exec')
 
-    flags = obf_code | obf_mod << 8 | wrap_mode << 16 | adv_mode << 24
+    flags = obf_code | obf_mod << 8 | wrap_mode << 16 | adv_mode << 24 \
+        | rest_mode << 28
     s = pytransform.encrypt_code_object(pubkey, co, flags)
 
     with open(destname, 'w') as f:

@@ -129,7 +129,7 @@ def _init(args):
 @arcommand
 def _config(args):
     '''Update project settings.'''
-    for x in ('obf-module-mode', 'obf-code-mode'):
+    for x in ('obf-module-mode', 'obf-code-mode', 'disable-restrict-mode'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -192,6 +192,9 @@ def _build(args):
     if platform:
         logging.info('Taget platform is: %s', platform)
 
+    restrict = project.get('restrict_mode',
+                           0 if project.get('disable_restrict_mode') else 1)
+
     if not args.only_runtime:
         src = project.src
         if os.path.abspath(output).startswith(src):
@@ -238,6 +241,7 @@ def _build(args):
         logging.info('Obfuscating each function is %s', v(obf_code))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
         logging.info('Advanced mode is %s', v(adv_mode))
+        logging.info('Restrict mode is %s', restrict)
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
@@ -267,8 +271,8 @@ def _build(args):
 
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
                            wrap_mode=wrap_mode, adv_mode=adv_mode,
-                           protection=pcode, plugins=plugins,
-                           rpath=project.runtime_path)
+                           rest_mode=restrict, protection=pcode,
+                           plugins=plugins, rpath=project.runtime_path)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
@@ -289,7 +293,7 @@ def _build(args):
             os.mkdir(routput)
         logging.info('Make runtime files to %s', routput)
         make_runtime(capsule, routput, platform=platform)
-        if project.get('disable_restrict_mode'):
+        if not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
             licfile = os.path.join(routput, license_filename)
             logging.info('Generate no restrict mode license file: %s', licfile)
@@ -317,6 +321,9 @@ def _licenses(args):
         project.open(args.project)
         capsule = build_path(project.capsule, args.project) \
             if args.capsule is None else args.capsule
+        restrict_mode = project.get('restrict_mode',
+                                    0 if project.get('disable_restrict_mode')
+                                    else 1)
     else:
         if args.project != '':
             logging.warning('Ignore option --project, there is no project')
@@ -325,7 +332,8 @@ def _licenses(args):
             logging.info('Generate capsule %s', capsule)
             make_capsule(capsule)
         logging.info('Generate licenses with capsule %s ...', capsule)
-        project = dict(disable_restrict_mode=0 if args.restrict else 1)
+        project = dict(restrict_mode=args.restrict)
+        restrict_mode = args.restrict
 
     licpath = os.path.join(
         args.project if args.output is None else args.output,
@@ -342,7 +350,7 @@ def _licenses(args):
         fmt = '*TIME:%.0f\n' % \
               time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
 
-    if project.get('disable_restrict_mode'):
+    if not restrict_mode:
         logging.info('The license file generated is in disable restrict mode')
         fmt = '%s*FLAGS:%c' % (fmt, 1)
     else:
@@ -495,6 +503,9 @@ def _obfuscate(args):
     advanced = 1 if args.advanced else 0
     logging.info('Advanced mode is %d', advanced)
 
+    restrict = args.restrict
+    logging.info('Restrict mode is %d', restrict)
+
     for x in files:
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -509,7 +520,7 @@ def _obfuscate(args):
         if not os.path.exists(d):
             os.makedirs(d)
 
-        encrypt_script(prokey, a, b, adv_mode=advanced,
+        encrypt_script(prokey, a, b, adv_mode=advanced, rest_mode=restrict,
                        protection=protection, plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
@@ -714,8 +725,8 @@ def main(args):
                          help='[DEPRECATED]')
     cparser.add_argument('--plugin', dest='plugins', action='append',
                          help='Insert extra code to entry script')
-    cparser.add_argument('--restrict', type=int, choices=(0, 1),
-                         default=1, help=argparse.SUPPRESS)
+    cparser.add_argument('--restrict', type=int, choices=range(8),
+                         default=1, help='Set restrict mode')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
@@ -810,7 +821,10 @@ def main(args):
     cparser.add_argument('--entry', metavar='SCRIPT',
                          help='Entry script of this project')
     cparser.add_argument('--is-package', type=int, choices=(0, 1))
-    cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1))
+    cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1),
+                         help=argparse.SUPPRESS)
+    cparser.add_argument('--restrict-mode', type=int, choices=range(8),
+                         help='Set restrict mode')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
                          help='[DEPRECATED] Use --obf-mod instead')
     cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE,
