@@ -64,7 +64,6 @@ echo ""
 echo "-------------------- Bootstrap End -----------------------------"
 echo ""
 
-
 # ======================================================================
 #
 #  Command: init, config, licenses, obfuscate
@@ -674,6 +673,89 @@ check_file_content $output/result.log 'len(co_names) is 0'
 
 echo ""
 echo "-------------------- Test lambda function END ----------------"
+echo ""
+
+# ======================================================================
+#
+#  Test restrict mode
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test restrict mode --------------------"
+echo ""
+
+csih_inform "Case RM-0: test restrict mode 0"
+output=test-restrict-0
+$PYARMOR obfuscate -O $output -r --restrict 0 \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+check_file_content $output/result.log 'No restrict mode'
+
+csih_inform "Case RM-1: test restrict mode 1"
+output=test-restrict-1
+$PYARMOR obfuscate -O $output -r --restrict 1 \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'No restrict mode' not
+check_file_content $output/result.log 'Check restrict mode failed'
+
+csih_inform "Case RM-2: test restrict mode 2"
+output=test-restrict-2
+$PYARMOR obfuscate -O $output -r --restrict 2 \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+(cd $output; $PYTHON -c"import main" >result.log 2>&1 )
+check_file_content $output/result.log 'Check restrict mode failed'
+
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'No restrict mode' not
+check_file_content $output/result.log 'Check restrict mode failed'
+
+csih_inform "Case RM-3: test restrict mode 3"
+output=test-restrict-3
+$PYARMOR obfuscate -O $output -r \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+
+$PYARMOR obfuscate -O $output/mypkg --exact --restrict 3 \
+         --no-bootstrap examples/testpkg/mypkg/foo.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+(cd $output; $PYTHON -c"import main
+main.foo('mypkg')" >result.log 2>&1 )
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+echo ""
+echo "-------------------- Test restrict mode END ----------------"
 echo ""
 
 # ======================================================================
