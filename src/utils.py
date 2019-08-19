@@ -501,7 +501,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     co = compile(''.join(lines), modname, 'exec')
 
     flags = obf_code | obf_mod << 8 | wrap_mode << 16 | adv_mode << 24 \
-        | rest_mode << 28
+        | (9 if rest_mode == 4 else 5 if rest_mode == 2 else rest_mode) << 28
     s = pytransform.encrypt_code_object(pubkey, co, flags)
 
     with open(destname, 'w') as f:

@@ -725,7 +725,7 @@ def main(args):
                          help='[DEPRECATED]')
     cparser.add_argument('--plugin', dest='plugins', action='append',
                          help='Insert extra code to entry script')
-    cparser.add_argument('--restrict', type=int, choices=range(8),
+    cparser.add_argument('--restrict', type=int, choices=range(5),
                          default=1, help='Set restrict mode')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
@@ -823,7 +823,7 @@ def main(args):
     cparser.add_argument('--is-package', type=int, choices=(0, 1))
     cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1),
                          help=argparse.SUPPRESS)
-    cparser.add_argument('--restrict-mode', type=int, choices=range(8),
+    cparser.add_argument('--restrict-mode', type=int, choices=range(5),
                          help='Set restrict mode')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
                          help='[DEPRECATED] Use --obf-mod instead')
