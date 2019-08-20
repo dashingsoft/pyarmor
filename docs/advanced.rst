@@ -313,6 +313,39 @@ Try to run `dist/foo.exe`, it should report license error.
 
     dist/foo.exe
 
+.. _improving the security by restrict mode:
+
+Improving The Security By Restrict Mode
+---------------------------------------
+
+By default the scripts are obfuscated by restrict mode 1, that is, the
+obfuscated scripts can't be changed. In order to improve the security,
+obfuscating the scripts by restrict mode 2 so that the obfuscated
+scripts can't be imported out of the obfuscated scripts. For example::
+
+    pyarmor obfuscate --restrict 2 foo.py
+
+Or obfuscating the scripts by restrict mode 3 for more security. It
+will even check each function call to be sure all the functions are
+called in the obfuscated scripts. For example::
+
+    pyarmor obfuscate --restrict 3 foo.py
+
+However restrict mode 2 and 3 aren't applied to Python package. There is another
+solutiion for Python package to improve the security:
+
+* The `.py` files which are used by outer scripts are obfuscated by restrice mode 1
+* All the other `.py` files which are used only in the package are obfuscated by restrict mode 4
+
+Fro example::
+
+    cd /path/to/mypkg
+    pyarmor obfuscate --exact __init__.py exported_func.py
+    pyarmor obfuscate --restrict 4 --recursive \
+            --exclude __init__.py --exclude exported_func.py .
+
+More information about restrict mode, refer to :ref:`Restrict Mode`
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt

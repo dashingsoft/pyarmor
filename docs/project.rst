@@ -122,7 +122,7 @@ Each project has a configure file. It's a json file named
     1 if there is `__init__.py` in the path `src`, otherwise it's
     None.
 
-* disable_restrict_mode
+* disable_restrict_mode [DEPRECRATED]
 
     Available values: 0, 1, None
 
@@ -133,6 +133,14 @@ Each project has a configure file. It's a json file named
     imported by outer scripts.
 
     By default it's set to 0.
+
+    Refer to :ref:`Restrict Mode`
+
+* restrict_mode
+
+    Available values: 0, 1, 2, 3, 4
+
+    By default it's set to 1.
 
     Refer to :ref:`Restrict Mode`
 

@@ -159,8 +159,12 @@ to :ref:`Obfuscating Scripts With Different Modes`
 Restrict Mode
 -------------
 
-From PyArmor 5.2, Restrict Mode is default setting. In restrict mode,
-obfuscated scripts must be one of the following formats::
+From PyArmor 5.5.6, there are 4 restrice modes:
+
+* Mode 1
+
+In this mode, obfuscated scripts must be one of the following
+formats::
 
     __pyarmor__(__name__, __file__, b'...')
 
@@ -198,9 +202,56 @@ It doesn't work, because there is an extra code "print"::
 
     $ python b.py
 
+* Mode 2
 
-Restrict mode could be disabled by this way if required::
+In this mode, except that the obfuscated can't changed, there are 2 restricts:
+
+- The entry script must be obfuscated
+- The obfuscated scripts could not be imported out of the obfuscated script
+
+For example, this command will raise error if the `foo.py` is obfuscated by
+restrict mode 2::
+
+    $ python -c'import foo'
+
+* Mode 3
+
+In this mode, there is another restrict base on Mode 2:
+
+- All the functions in the obfuscated script cound not be called out of the
+  obfuscated scripts.
+
+* Mode 4
+
+It's similar with Mode 3, but there is a exception:
+
+- The entry script could be plain script
+
+It's mainly used for obfuscating Python package. For example, obfuscating the
+`.py` files which will be used by outer scripts and `__init__.py` by restrict
+mode 1, all the other scripts are obfuscated by restrict mode 4.
+
+.. note::
+
+   Mode 2 and 3 could not be used to obfuscate the Python package,
+   because it will be imported from other plain scripts.
+
+.. note::
+
+   Restrict mode is applied to one single script, different scripts
+   could be obfuscated by different restrict mode.
+
+
+From PyArmor 5.2, Restrict Mode 1 is default. It could be disabled by
+this way if required::
 
     pyarmor obfuscate --restrict=0 foo.py
+
+Also obfuscating the scripts by other restrict mode::
+
+    pyarmor obfuscate --restrict=2 foo.py
+    pyarmor obfuscate --restrict=4 foo.py
+
+For more examples, refer to :ref:`Improving the security by restrict mode`
 
 .. include:: _common_definitions.txt

@@ -56,6 +56,7 @@ Obfuscate python scripts.
 --plugin NAME           Insert extra code to entry script
 --platform NAME         Distribute obfuscated scripts to other platform
 --advanced              Enable advanced mode
+--restrict <0,1,2,3,4>  Set restrict mode
 
 **DESCRIPTION**
 
@@ -92,6 +93,8 @@ About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
 
 Option `--platform` is used to specify the target platform of
 obfuscated scripts if target platform is different from build platform.
+
+Option `--restrict` is used to set restrict mode, :ref:`Restrict Mode`
 
 **EXAMPLES**
 
@@ -144,6 +147,15 @@ obfuscated scripts if target platform is different from build platform.
 * Obfuscate the scripts in advanced mode::
 
     pyarmor obfuscate --advanced foo.py
+
+* Obfuscate the scripts with restrict mode 2::
+
+    pyarmor obfuscate --restrict 2 foo.py
+
+* Obfuscate all the `.py` files in the current path except `__init__.py` with
+  restrice mode 4::
+
+    pyarmor obfuscate --restrict 4 --exclude __init__.py --recursive .
 
 .. _licenses:
 
@@ -319,9 +331,8 @@ If the option `--type` is set to `auto`, which is the default value,
 the project type will set to `pkg` if the entry script is
 `__init__.py`, otherwise to `app`.
 
-The `init` command will set the properties `disable_restrict_mode` and
-`is_package` of this project to `1` if the new project is configured
-as `pkg`, otherwise they're set to `0`.
+The `init` command will set `is_package` to `1` if the new project is
+configured as `pkg`, otherwise it's set to `0`.
 
 After project is created, use command config_ to change the project
 settings.
@@ -365,7 +376,7 @@ Update project settings.
 --manifest TEMPLATE             Manifest template string
 --entry SCRIPT                  Entry script of this project
 --is-package <0,1>              Set project as package or not
---disable-restrict-mode <0,1>   Disable or enable restrict mode
+--restrict-mode <0,1,2,3,4>     Set restrict mode
 --obf-mod <0,1>                 Disable or enable to obfuscate module
 --obf-code <0,1>                Disable or enable to obfuscate function
 --wrap-mode <0,1>               Disable or enable wrap mode

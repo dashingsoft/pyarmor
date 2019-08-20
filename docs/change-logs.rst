@@ -3,6 +3,18 @@
 Change Logs
 ===========
 
+5.5.6
+-----
+* Add new restrict mode 2, 3 and 4 to improve security of the obfuscated scripts, refer to :ref:`Restrict Mode`
+* In command `obfuscate`, option `--restrict` supports new value 2, 3 and 4
+* In command `config`, option `--disable-restrict-mode` is deprecrated
+* In command `config`, add new option `--restrict`
+* In command `obfuscate` the last argument could be a directory
+
+5.5.5
+-----
+* Win32 issue: the obfuscated scripts will print extra message.
+
 5.5.4
 -----
 * Fix issue: the output path isn't correct when building a package with multiple entries
