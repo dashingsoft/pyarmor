@@ -160,7 +160,7 @@ $PYARMOR config --disable-restrict-mode=1 projects/testpkg >result.log 2>&1
 $PYARMOR info projects/testpkg >result.log 2>&1
 
 check_return_value
-check_file_content result.log 'disable_restrict_mode: 1'
+check_file_content result.log 'restrict_mode: 0'
 check_file_content result.log 'is_package: 1'
 
 echo ""
