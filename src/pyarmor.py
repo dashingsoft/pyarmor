@@ -440,10 +440,21 @@ def _obfuscate(args):
             logging.warning('Option --%s has been deprecated', x)
 
     if args.src is None and not args.scripts:
-        raise RuntimeError('No scripts specified')
+        args.src = '.'
 
-    path = os.path.abspath(os.path.dirname(args.scripts[0])
-                           if args.src is None else args.src)
+    if args.src is None:
+        if args.scripts[0].lower().endswith('.py'):
+            path = os.path.abspath(os.path.dirname(args.scripts[0]))
+        else:
+            path = os.path.abspath(args.scripts[0])
+            args.src = path
+            if len(args.scripts) > 1:
+                raise RuntimeError('Only one path is allowed')
+            args.scripts = []
+    else:
+        path = os.path.abspath(args.src)
+    if not os.path.exists(path):
+        raise RuntimeError('Not found source path: %s' % path)
     logging.info('Source path is "%s"', path)
 
     entry = args.entry or (args.scripts and args.scripts[0])
