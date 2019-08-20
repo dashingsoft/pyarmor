@@ -153,13 +153,13 @@ check_file_content $output/result.log "RuntimeError: Check restrict mode failed"
 
 csih_inform "Case 3-5: Test the scripts is obfuscated with restrict mode 2"
 dist=test-pyinstaller-restrict-mode
-$PYARMOR pack --output $dist -x " --restrict 2" examples/simple/queens.py >result.log 2>&1
+$PYARMOR pack --output $dist -x " --restrict 2" examples/testpkg/main.py >result.log 2>&1
 check_return_value
 
-( cd $dist/queens; ./queens.exe  >result.log 2>&1 )
+( cd $dist/main; ./main.exe  >result.log 2>&1 )
 
-check_file_exists $dist/queens/license.lic
-check_file_content $dist/queens/result.log 'Found 92 solutions'
+check_file_exists $dist/main/license.lic
+check_file_content $dist/main/result.log 'Hello! PyArmor Test Case'
 
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
