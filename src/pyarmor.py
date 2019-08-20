@@ -148,6 +148,11 @@ def _config(args):
         if 'clear' in args.plugins:
             logging.info('Clear all plugins')
             args.plugins = []
+    if args.disable_restrict_mode is not None:
+        if args.restrict_mode is not None:
+            logging.warning('Option --disable_restrict_mode is ignored')
+        else:
+            args.restrict_mode = 0 if args.disable_restrict_mode else 1
     keys = project._update(dict(args._get_kwargs()))
     for k in keys:
         logging.info('Change project %s to "%s"', k, getattr(project, k))
@@ -725,7 +730,7 @@ def main(args):
                          help='[DEPRECATED]')
     cparser.add_argument('--plugin', dest='plugins', action='append',
                          help='Insert extra code to entry script')
-    cparser.add_argument('--restrict', type=int, choices=range(4),
+    cparser.add_argument('--restrict', type=int, choices=range(5),
                          default=1, help='Set restrict mode')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
@@ -823,7 +828,7 @@ def main(args):
     cparser.add_argument('--is-package', type=int, choices=(0, 1))
     cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1),
                          help=argparse.SUPPRESS)
-    cparser.add_argument('--restrict-mode', type=int, choices=range(4),
+    cparser.add_argument('--restrict-mode', type=int, choices=range(5),
                          help='Set restrict mode')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
                          help='[DEPRECATED] Use --obf-mod instead')

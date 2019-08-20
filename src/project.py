@@ -30,7 +30,7 @@
 #    1.1.0: Add cross_protection, obf_code, obf_mod, wrap_mode, plugins
 #    1.2.0: Add platform
 #    1.2.1: Add advanced_mode
-#    1.2.2: Rename disable_restrice_mode to restrict mode
+#    1.2.2: Remove disable_restrice_mode, add restrict_mode
 #
 import os
 import time
@@ -64,7 +64,7 @@ class Project(dict):
         ('output', default_output_path), \
         ('capsule', capsule_filename), \
         ('runtime_path', None), \
-        ('disable_restrict_mode', 0), \
+        ('restrict_mode', 1), \
         ('obf_module_mode', default_obf_module_mode), \
         ('obf_code_mode', default_obf_code_mode), \
         ('obf_code', 1), \
