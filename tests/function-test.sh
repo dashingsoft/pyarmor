@@ -189,6 +189,7 @@ check_file_content result.log "Upgrade capsule OK"
 check_file_exists test-upgrade/pytransform.key
 
 csih_inform "C-10. Test output == src for obfuscate"
+mkdir -p abc
 $PYARMOR obfuscate --src=abc -O abc >result.log 2>&1
 check_file_content result.log "Output path can not be same as src"
 
@@ -285,6 +286,15 @@ check_return_value
 check_return_value
 check_file_content dist-pop-jmp/result.log 'jmp_simple return 3'
 check_file_content dist-pop-jmp/result.log 'jmp_short return 30'
+
+csih_inform "C-21. Test last argument is directory for obfuscate"
+$PYARMOR obfuscate -O test-path-1 examples/simple  >result.log 2>&1
+check_return_value
+check_file_exists test-path-1/queens.py
+
+csih_inform "C-22. Test more than one path for obfuscate"
+$PYARMOR obfuscate examples/simple examples/testpkg  >result.log 2>&1
+check_file_content result.log "Only one path is allowed"
 
 echo ""
 echo "-------------------- Command End -----------------------------"
@@ -738,11 +748,30 @@ check_file_content $output/result.log 'Check restrict mode failed'
 
 csih_inform "Case RM-3: test restrict mode 3"
 output=test-restrict-3
+$PYARMOR obfuscate -O $output -r --restrict 3 \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+(cd $output; $PYTHON -c"import main" >result.log 2>&1 )
+check_file_content $output/result.log 'Check restrict mode failed'
+
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'No restrict mode' not
+check_file_content $output/result.log 'Check restrict mode failed'
+
+csih_inform "Case RM-4: test restrict mode 4"
+output=test-restrict-4
 $PYARMOR obfuscate -O $output -r --restrict 1 \
          examples/testpkg/main.py > result.log 2>&1
 check_return_value
 
-$PYARMOR obfuscate -O $output/mypkg --exact --restrict 3 \
+$PYARMOR obfuscate -O $output/mypkg --exact --restrict 4 \
          --no-bootstrap examples/testpkg/mypkg/foo.py > result.log 2>&1
 check_return_value
 
