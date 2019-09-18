@@ -100,3 +100,7 @@ platform.
      - i586
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/platforms/intel-quark/_pytransform.so>`_
      - Cross compile by i586-poky-linux
+   * - Android
+     - aarch64
+     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/platforms/android.aarch64/_pytransform.so>`_
+     - Build by android-ndk-r20/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang
