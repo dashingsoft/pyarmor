@@ -180,8 +180,7 @@ formats::
     pyarmor_runtime('...')
     __pyarmor__(__name__, __file__, b'...')
 
-And obfuscated script must be imported from obfuscated script. No any
-other statement can be inserted into obfuscated scripts.
+No any other statement can be inserted into obfuscated scripts.
 
 For examples, it works::
 
@@ -227,9 +226,9 @@ It's similar with Mode 3, but there is a exception:
 
 - The entry script could be plain script
 
-It's mainly used for obfuscating Python package. For example, obfuscating the
-`.py` files which will be used by outer scripts and `__init__.py` by restrict
-mode 1, all the other scripts are obfuscated by restrict mode 4.
+It's mainly used for obfuscating Python package. The `__init__.py` is
+obfuscated by restrict mode 1, all the other scripts are obfuscated by
+restrict mode 4.
 
 .. note::
 
