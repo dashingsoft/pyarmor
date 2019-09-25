@@ -337,7 +337,7 @@ solutiion for Python package to improve the security:
 * The `.py` files which are used by outer scripts are obfuscated by restrice mode 1
 * All the other `.py` files which are used only in the package are obfuscated by restrict mode 4
 
-Fro example::
+For example::
 
     cd /path/to/mypkg
     pyarmor obfuscate --exact __init__.py exported_func.py
