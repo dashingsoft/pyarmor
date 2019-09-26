@@ -182,16 +182,8 @@ formats::
 
 No any other statement can be inserted into obfuscated scripts.
 
-For examples, it works::
-
-    $ cat a.py
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-    __pyarmor__(__name__, __file__, b'...')
-
-    $ python a.py
-
-It doesn't work, because there is an extra code "print"::
+For examples, the obfuscate scirpt `b.py` doesn't work, because there
+is an extra code "print"::
 
     $ cat b.py
     from pytransform import pyarmor_runtime
