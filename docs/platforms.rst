@@ -96,6 +96,10 @@ platform.
      - x86_64
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/platforms/alpine/_pytransform.so>`_
      - Built with musl-1.1.21 for Docker
+   * - Alpine Linux
+     - arm
+     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/platforms/alpine.arm/_pytransform.so>`_
+     - Built with musl-1.1.21 for Docker
    * - Inel Quark
      - i586
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/platforms/intel-quark/_pytransform.so>`_
