@@ -99,7 +99,7 @@ platform.
    * - Alpine Linux
      - arm
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/platforms/alpine.arm/_pytransform.so>`_
-     - Built with musl-1.1.21 for Docker
+     - Built with musl-1.1.21, 32-bit Armv5T, hard-float, little-endian
    * - Inel Quark
      - i586
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/platforms/intel-quark/_pytransform.so>`_
