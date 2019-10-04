@@ -23,10 +23,6 @@ project_capsule_name = capsule_filename
 project_config_name = config_filename
 
 def call_armor(args):
-    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
-    if not os.path.exists(licfile):
-        shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), licfile)
-
     p = subprocess.Popen([sys.executable, 'pyarmor.py'] + list(args),
                          cwd=PYARMOR_PATH)
     p.wait()
@@ -35,6 +31,8 @@ def call_armor(args):
 
 def _check_trial_license():
     filename = os.path.join(PYARMOR_PATH, 'license.lic')
+    if not os.path.exists(filename):
+        shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), filename)
     return os.path.getsize(filename) == 256
 
 def _check_project_index():
