@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.5.7
+-----
+* Fix webui bug: raise "name 'output' is not defined" as running `packer`
+
 5.5.6
 -----
 * Add new restrict mode 2, 3 and 4 to improve security of the obfuscated scripts, refer to :ref:`Restrict Mode`

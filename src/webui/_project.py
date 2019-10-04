@@ -232,7 +232,7 @@ def packObfuscatedScripts(args):
 
     call_armor(params)
 
-    return dict(output=output)
+    return dict(output=args['output'])
 
 if __name__ == '__main__':
     import doctest
