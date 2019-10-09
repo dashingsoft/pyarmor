@@ -177,16 +177,16 @@ check_return_value
 check_file_content dist-codec/result.log 'PyArmor'
 fi
 
-csih_inform "C-9. Test --upgrade for capsule"
-mkdir -p test-upgrade
-cp test/data/project-orig.zip test-upgrade/.pyarmor_capsule.zip
+csih_inform "C-9. Test --upgrade for capsule (ignored)"
+# mkdir -p test-upgrade
+# cp test/data/project-orig.zip test-upgrade/.pyarmor_capsule.zip
 
-$PYARMOR capsule --upgrade ./test-upgrade/ >result.log 2>&1
-check_return_value
-check_file_content result.log "Upgrade capsule OK"
+# $PYARMOR capsule --upgrade ./test-upgrade/ >result.log 2>&1
+# check_return_value
+# check_file_content result.log "Upgrade capsule OK"
 
-(cd test-upgrade; unzip .pyarmor_capsule.zip >result.log 2>&1)
-check_file_exists test-upgrade/pytransform.key
+# (cd test-upgrade; unzip .pyarmor_capsule.zip >result.log 2>&1)
+# check_file_exists test-upgrade/pytransform.key
 
 csih_inform "C-10. Test output == src for obfuscate"
 mkdir -p abc

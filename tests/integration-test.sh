@@ -338,6 +338,9 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 [[ -f license.lic ]] || cp license.tri license.lic
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
 cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
+cp ../../data/project.zip ./ && \
+    cp ../../data/foo.zip ./ && \
+    cp ../../data/foo-key.zip ./ || csih_error "Copy capsule files FAILED"
 
 # From pyarmor 4.5.4, platform name is renamed
 if [[ -d platforms/windows32 ]] ; then
@@ -381,29 +384,34 @@ $PYARMOR --help >result.log 2>&1 \
     || [[ -f _pytransform.dylib ]] \
     || csih_error "Case 1.1 FAILED: no pytransform extension found"
 
-csih_inform "Case 1.2: generate anonymous capsule"
-$PYARMOR capsule >result.log 2>&1 \
-    || csih_bug "Case 1.2 FAILED: return non-zero code"
-[[ -f project.zip ]] \
-    || csih_bug "Case 1.2 FAILED: no project.zip found"
 
-csih_inform "Case 1.3: generate named capsule foo.zip"
-$PYARMOR capsule foo >result.log 2>&1 \
-    || csih_bug "Case 1.3 FAILED: return non-zero code"
-[[ -f foo.zip ]] \
-    || csih_bug "Case 1.3 FAILED: no foo.zip found"
+#
+# From PyArmor 5.6, the capsule could not be generated.
+#
+# csih_inform "Case 1.2: generate anonymous capsule"
+# $PYARMOR capsule >result.log 2>&1 \
+#     || csih_bug "Case 1.2 FAILED: return non-zero code"
+# [[ -f project.zip ]] \
+#     || csih_bug "Case 1.2 FAILED: no project.zip found"
 
-csih_inform "Case 1.4: generate capsule with output path"
-$PYARMOR capsule -O dist foo2 >result.log 2>&1 \
-    || csih_bug "Case 1.4 FAILED: return non-zero code"
-[[ -f dist/foo2.zip ]] \
-    || csih_bug "Case 1.4 FAILED: no dist/foo2.zip found"
+# csih_inform "Case 1.3: generate named capsule foo.zip"
+# $PYARMOR capsule foo >result.log 2>&1 \
+#     || csih_bug "Case 1.3 FAILED: return non-zero code"
+# [[ -f foo.zip ]] \
+#     || csih_bug "Case 1.3 FAILED: no foo.zip found"
 
-csih_inform "Case 1.5: generate capsule for next tests"
-$PYARMOR capsule foo-key >result.log 2>&1 \
-    || csih_bug "Case 1.5 FAILED: return non-zero code"
-[[ -f foo-key.zip ]] \
-    || csih_bug "Case 1.5 FAILED: no foo-key.zip found"
+# csih_inform "Case 1.4: generate capsule with output path"
+# $PYARMOR capsule -O dist foo2 >result.log 2>&1 \
+#     || csih_bug "Case 1.4 FAILED: return non-zero code"
+# [[ -f dist/foo2.zip ]] \
+#     || csih_bug "Case 1.4 FAILED: no dist/foo2.zip found"
+
+# csih_inform "Case 1.5: generate capsule for next tests"
+# $PYARMOR capsule foo-key >result.log 2>&1 \
+#     || csih_bug "Case 1.5 FAILED: return non-zero code"
+# [[ -f foo-key.zip ]] \
+#     || csih_bug "Case 1.5 FAILED: no foo-key.zip found"
+
 
 #
 # Command: encrypt
@@ -984,42 +992,43 @@ echo ""
 # ======================================================================
 # Test functions in trial license.  PART 4
 #
+# DEPRECATED from v5.6.0, no capsule could be generated
 # ======================================================================
 
-echo ""
-echo "-------------------- Start Trial License Test --------------------"
-echo ""
+# echo ""
+# echo "-------------------- Start Trial License Test --------------------"
+# echo ""
 
-csih_inform "Replace normal license with trial license"
-cp license.tri license.lic
+# csih_inform "Replace normal license with trial license"
+# cp license.tri license.lic
 
-csih_inform "Case T1.1: generate capsule in trial license"
-$PYARMOR capsule >result.log 2>&1 \
-    || csih_bug "Case T1.1 FAILED: return non-zero code"
-[[ -f project.zip ]] \
-    || csih_bug "Case T1.1 FAILED: no project.zip found"
+# csih_inform "Case T1.1: generate capsule in trial license"
+# $PYARMOR capsule >result.log 2>&1 \
+#     || csih_bug "Case T1.1 FAILED: return non-zero code"
+# [[ -f project.zip ]] \
+#     || csih_bug "Case T1.1 FAILED: no project.zip found"
 
-csih_inform "Case T1.2: encrypt script in trial license"
-$PYARMOR encrypt --mode=0 -C project.zip -O dist foo.py >result.log 2>&1 \
-    || csih_bug "Case T1.2 FAILED: return non-zero code"
-[[ -f dist/foo.py${extchar} ]] \
-    || csih_bug "Case T1.2 FAILED: no dist/foo.py${extchar} found"
+# csih_inform "Case T1.2: encrypt script in trial license"
+# $PYARMOR encrypt --mode=0 -C project.zip -O dist foo.py >result.log 2>&1 \
+#     || csih_bug "Case T1.2 FAILED: return non-zero code"
+# [[ -f dist/foo.py${extchar} ]] \
+#     || csih_bug "Case T1.2 FAILED: no dist/foo.py${extchar} found"
 
-csih_inform "Case T1.3: import encrypted module in trial license"
-(cd dist ;
-    cp ../startup.py ./ ;
-    $PYTHON startup.py >../result.log 2>&1 \
-        || csih_bug "Case T1.3 FAILED: return non-zero code"
-)
-grep -q "foo.hello(2) = 7" result.log \
-    || csih_bug "Case T1.3 FAILED: python script returns unexpected result"
+# csih_inform "Case T1.3: import encrypted module in trial license"
+# (cd dist ;
+#     cp ../startup.py ./ ;
+#     $PYTHON startup.py >../result.log 2>&1 \
+#         || csih_bug "Case T1.3 FAILED: return non-zero code"
+# )
+# grep -q "foo.hello(2) = 7" result.log \
+#     || csih_bug "Case T1.3 FAILED: python script returns unexpected result"
 
-csih_inform "Remove files/dirs: dist build others project.zip foo.zip"
-rm -rf dist build others project.zip foo.zip
+# csih_inform "Remove files/dirs: dist build others project.zip foo.zip"
+# rm -rf dist build others project.zip foo.zip
 
-echo ""
-echo "-------------------- End Trial License Test --------------------"
-echo ""
+# echo ""
+# echo "-------------------- End Trial License Test --------------------"
+# echo ""
 
 
 # ======================================================================
