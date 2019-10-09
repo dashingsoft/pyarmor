@@ -69,7 +69,7 @@ def pytransform_bootstrap(path=None, capsule=None):
             logging.info('Bootstrap OK.\n')
     pytransform.pyarmor_init(platname=platname)
 
-    if capsule is not None:
+    if capsule is not None and 'register' not in sys.argv[1:2]:
         if not os.path.exists(capsule):
             logging.info('Generating public capsule ...')
             make_capsule(capsule)
@@ -565,13 +565,13 @@ def query_keyinfo(key):
 
 
 def register_keyfile(filename):
-    items = ('license key', 'license.lic', PYARMOR_PATH), \
-        ('private capsule', '.pyarmor_capsule.zip', os.path.expanduser('~'))
     f = ZipFile(filename, 'r')
     try:
-        for x in items:
-            logging.info('Extract %s "%s" to %s' % x)
-            f.extract('license.lic', path=x[-1])
+        homepath = os.path.expanduser('~')
+        for item in [('license key', 'license.lic', PYARMOR_PATH),
+                     ('private capsule', '.pyarmor_capsule.zip', homepath)]:
+            logging.info('Extract %s "%s" to %s' % item)
+            f.extract(item[1], path=item[-1])
     finally:
         f.close()
 
