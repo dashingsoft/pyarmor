@@ -21,7 +21,7 @@
      d. In trial version if obfuscating the Python scripts in advanced
         mode, the limitation is no more than about 32 functions (code
         objects) in one module.
-     
+
   3. There are 2 basic types of licenses issued for the software. These are:
 
      a. A natural person usage license for home users. The user purchases one
@@ -45,7 +45,7 @@
         Without permission of &quot;licensor&quot; the license purchased for one
         product serials should not be used for other product serials. Business
         users should purchase new license for different product serials.
-        
+
      A user who purchased a license, is granted a non-exclusive right to use
      the software on as many computers as defined by the licensing terms above
      according to the number of licenses purchased, for any legal purpose.
@@ -60,15 +60,24 @@
 
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
-     A registration code will be sent to your immediately after payment is
-     completed successfully. After you receive this email, copy registration
-     code only (no newline), then make it effective by this command
+     A registration keyfile generally named "pyarmor-regfile-1.zip" will be sent
+     to your by email immediately after payment is completed successfully. There
+     are 3 files in the archive:
 
-         pyarmor register CODE
+         * REAME.txt
+         * license.lic (registration code)
+         * .pyarmor_capsule.zip (private capsule)
 
-     Run the following command to check your registration code
+     Run the following command to take this keyfile effects:
 
-         pyarmor --version
+         pyarmor register /path/to/pyarmor-regfile-1.zip
+
+     Check the registeration information:
+
+         pyarmor register
+
+     After the registration keyfile takes effect, you need obfuscate the scripts
+     again.
 
      The registration code is valid forever, it can be used permanently. But it
      may not be rented or leased.

@@ -52,28 +52,31 @@ To buy a license, please visit the following url
 
 https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
-A registration code will be sent to your immediately after payment is
-completed successfully.
+A registration keyfile generally named "pyarmor-regfile-1.zip" will be
+sent to your by email immediately after payment is completed
+successfully. There are 3 files in the archive:
 
-After you receive the email which includes registration code, run the
-following command to make it effective::
+* REAME.txt
+* license.lic (registration code)
+* .pyarmor_capsule.zip (private capsule)
 
-    pyarmor register CODE
+Run the following command to take this keyfile effects:
 
-Note that command `register` is introduced from `PyArmor` 5.3.3,
-please upgrade the old version to the latest one, or directly replace
-the content of `license.lic` in the `PyArmor` installed path with the
-registration code only (no newline).
+    pyarmor register /path/to/pyarmor-regfile-1.zip
 
-Check new license works by this command::
+Check the registeration information:
 
-    pyarmor --version
+    pyarmor register
 
-The result should show ``PyArmor Version X.Y.Z`` and registration code.
+If the version of PyArmor < 5.6, unzip this registration file, then
 
-After new license takes effect, you need obfuscate the scripts again,
-and a random :ref:`Global Capsule` will be generated implicitly when
-you run command ``pyarmor obfuscate``
+* Copy license.lic in the archive to the installed path of PyArmor
+
+Note that ".pyarmor_capsule.zip" in the archive doesn't work with the
+previous version of PyArmor 5.6
+
+After the registration keyfile takes effect, you need obfuscate the
+scripts again.
 
 **The registration code is valid forever, it can be used permanently.**
 

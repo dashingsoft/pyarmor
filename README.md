@@ -67,13 +67,8 @@ PyArmor is published as shareware. Free trial version never expires, the limitat
   anyone could generate the license file which works for these
   obfuscated scripts.
 
-About the license file of obfuscated scripts, refer to [The License File for Obfuscated Script](https://pyarmor.readthedocs.io/en/latest/understand-obfuscated-scripts.html#the-license-file-for-obfuscated-script)
-
-A registration code is required to obfuscate big code object or
-generate private obfuscated scripts.
-
-- Personal user: one registration code is enough.
-- Company user: one registration code is only used for one project/product.
+A registration code is required to obfuscate big code object or generate private
+obfuscated scripts.
 
 For details, refer to [About License](https://pyarmor.readthedocs.io/en/latest/license.html).
 
@@ -81,21 +76,21 @@ For details, refer to [About License](https://pyarmor.readthedocs.io/en/latest/l
 
 Click [Purchase](https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1),
 
-A registration code will be sent to your immediately after payment is completed successfully.
+A registration keyfile generally named "pyarmor-regfile-1.zip" will be sent to
+your by email immediately after payment is completed successfully. There are 3
+files in the archive:
 
-After you receive the email which includes registration code, run the
-following command to make it effective::
+* REAME.txt
+* license.lic (registration code)
+* .pyarmor_capsule.zip (private capsule)
 
-    pyarmor register CODE
+Run the following command to take this keyfile effects:
 
-Note that command `register` is introduced from `PyArmor` 5.3.3,
-please upgrade the old version to the latest one, or directly replace
-the content of `license.lic` in the `PyArmor` installed path with the
-registration code only (no newline).
+    pyarmor register /path/to/pyarmor-regfile-1.zip
 
-Check new license works
+Check the registeration information:
 
-    pyarmor --version
+    pyarmor register
 
 **The registration code is valid forever, it can be used permanently.**
 

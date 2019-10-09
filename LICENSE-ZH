@@ -44,14 +44,19 @@
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
          https://pyarmor.dashingsoft.com/cart/order.html
 
-     支付成功之后一个软件许可码会通过电子邮件发送，收到该电子邮件之后，把里面的
-     软件许可码（一行文本，不包含回车符）拷贝出来，使用下面的命令生效注册码
+     支付成功之后注册文件会自动通过电子邮件发送过去。注册文件是一个压缩文件，里
+     面包含说明文件，注册码文件和私有密钥文件。
 
-        pyarmor register 注册码
+     当收到包含注册文件的邮件之后，保存附件中的注册文件到本地，然后使用下面的命
+     令生效注册文件
 
-     注册码生效之后，可以使用下面的命令查看
+         pyarmor register pyarmor-regfile-1.zip
 
-         pyarmor --version
+     然后可以运行下面的命令查看注册信息
+
+         pyarmor register
+
+     注册码生效之后，使用试用版本加密的脚本需要全部重新加密。
 
      软件许可码永久有效，可以一直使用，但是不能转接或者租用。
 
