@@ -565,15 +565,13 @@ def query_keyinfo(key):
 
 
 def register_keyfile(filename):
+    items = ('license key', 'license.lic', PYARMOR_PATH), \
+        ('private capsule', '.pyarmor_capsule.zip', os.path.expanduser('~'))
     f = ZipFile(filename, 'r')
     try:
-        path = PYARMOR_PATH
-        logging.info('Extract license file to %s', path)
-        f.extract('license.lic', path=path)
-
-        path = os.path.expanduser('~')
-        logging.info('Extract private capsule to %s', path)
-        f.extract('.pyarmor_capsule.zip', path=path)
+        for x in items:
+            logging.info('Extract %s "%s" to %s' % x)
+            f.extract('license.lic', path=x[-1])
     finally:
         f.close()
 
