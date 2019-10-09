@@ -20,8 +20,10 @@ HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_IPV6, HT_DOMAIN = range(5)
 _pytransform = None
 _get_error_msg = None
 
+
 class PytransformError(Exception):
     pass
+
 
 def dllmethod(func):
     def wrap(*args, **kwargs):
@@ -35,6 +37,7 @@ def dllmethod(func):
         return result
     return wrap
 
+
 @dllmethod
 def init_pytransform():
     major, minor = sys.version_info[0:2]
@@ -44,11 +47,13 @@ def init_pytransform():
     init_module = prototype(('init_module', _pytransform))
     return init_module(major, minor, pythonapi._handle)
 
+
 @dllmethod
 def init_runtime():
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_int, c_int)
     _init_runtime = prototype(('init_runtime', _pytransform))
     return _init_runtime(0, 0, 0, 0)
+
 
 @dllmethod
 def encrypt_code_object(pubkey, co, flags):
@@ -56,23 +61,6 @@ def encrypt_code_object(pubkey, co, flags):
     dlfunc = prototype(('encrypt_code_object', _pytransform))
     return dlfunc(pubkey, co, flags)
 
-def generate_capsule(licfile):
-    prikey, pubkey, prolic = _generate_project_capsule()
-    capkey, newkey = _generate_pytransform_key(licfile, pubkey)
-    return prikey, pubkey, capkey, newkey, prolic
-
-@dllmethod
-def _generate_project_capsule():
-    prototype = PYFUNCTYPE(py_object)
-    dlfunc = prototype(('generate_project_capsule', _pytransform))
-    return dlfunc()
-
-@dllmethod
-def _generate_pytransform_key(licfile, pubkey):
-    prototype = PYFUNCTYPE(py_object, c_char_p, py_object)
-    dlfunc = prototype(('generate_pytransform_key', _pytransform))
-    return dlfunc(licfile.encode() if sys.version_info[0] == 3 else licfile,
-                  pubkey)
 
 @dllmethod
 def generate_license_file(filename, priname, rcode, start=-1, count=1):
@@ -82,16 +70,19 @@ def generate_license_file(filename, priname, rcode, start=-1, count=1):
                   start, count) if sys.version_info[0] == 3 \
         else dlfunc(filename, priname, rcode, start, count)
 
+
 @dllmethod
 def get_registration_code():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_registration_code', _pytransform))
     return dlfunc()
 
+
 def get_expired_days():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_expired_days', _pytransform))
     return dlfunc()
+
 
 def get_hd_info(hdtype, size=256):
     t_buf = c_char * size
@@ -100,8 +91,10 @@ def get_hd_info(hdtype, size=256):
         raise PytransformError(_get_error_msg())
     return buf.value.decode()
 
+
 def show_hd_info():
     return _pytransform.show_hd_info()
+
 
 def get_license_info():
     info = {
@@ -140,8 +133,10 @@ def get_license_info():
 
     return info
 
+
 def get_license_code():
     return get_license_info()['CODE']
+
 
 def format_platname(platname=None):
     if platname is None:
@@ -153,6 +148,7 @@ def format_platname(platname=None):
         'intel', 'x86', 'i386', 'i486', 'i586', 'i686',
         'x64', 'x86_64', 'amd64'
         ) else os.path.join(platname, mach)
+
 
 # Load _pytransform library
 def _load_library(path=None, is_runtime=0, platname=None):
@@ -203,6 +199,7 @@ def _load_library(path=None, is_runtime=0, platname=None):
 
     return m
 
+
 def pyarmor_init(path=None, is_runtime=0, platname=None):
     global _pytransform
     global _get_error_msg
@@ -211,6 +208,7 @@ def pyarmor_init(path=None, is_runtime=0, platname=None):
     _get_error_msg.restype = c_char_p
     return init_pytransform()
 
+
 def pyarmor_runtime(path=None):
     try:
         if pyarmor_init(path, is_runtime=1) == 0:
@@ -218,6 +216,31 @@ def pyarmor_runtime(path=None):
     except PytransformError as e:
         print(e)
         sys.exit(1)
+
+
+#
+# Not available from v5.6
+#
+def generate_capsule(licfile):
+    prikey, pubkey, prolic = _generate_project_capsule()
+    capkey, newkey = _generate_pytransform_key(licfile, pubkey)
+    return prikey, pubkey, capkey, newkey, prolic
+
+
+@dllmethod
+def _generate_project_capsule():
+    prototype = PYFUNCTYPE(py_object)
+    dlfunc = prototype(('generate_project_capsule', _pytransform))
+    return dlfunc()
+
+
+@dllmethod
+def _generate_pytransform_key(licfile, pubkey):
+    prototype = PYFUNCTYPE(py_object, c_char_p, py_object)
+    dlfunc = prototype(('generate_pytransform_key', _pytransform))
+    return dlfunc(licfile.encode() if sys.version_info[0] == 3 else licfile,
+                  pubkey)
+
 
 #
 # Deprecated functions from v5.1
@@ -228,10 +251,12 @@ def encrypt_project_files(proname, filelist, mode=0):
     dlfunc = prototype(('encrypt_project_files', _pytransform))
     return dlfunc(proname.encode(), filelist, mode)
 
+
 def generate_project_capsule(licfile):
     prikey, pubkey, prolic = _generate_project_capsule()
     capkey = _encode_capsule_key_file(licfile)
     return prikey, pubkey, capkey, prolic
+
 
 @dllmethod
 def _encode_capsule_key_file(licfile):
@@ -239,12 +264,14 @@ def _encode_capsule_key_file(licfile):
     dlfunc = prototype(('encode_capsule_key_file', _pytransform))
     return dlfunc(licfile.encode(), None)
 
+
 @dllmethod
 def encrypt_files(key, filelist, mode=0):
     t_key = c_char * 32
     prototype = PYFUNCTYPE(c_int, t_key, py_object, c_int)
     dlfunc = prototype(('encrypt_files', _pytransform))
     return dlfunc(t_key(*key), filelist, mode)
+
 
 @dllmethod
 def generate_module_key(pubname, key):
@@ -264,12 +291,14 @@ def old_init_runtime(systrace=0, sysprofile=1, threadtrace=0, threadprofile=1):
     _init_runtime = prototype(('init_runtime', _pytransform))
     return _init_runtime(systrace, sysprofile, threadtrace, threadprofile)
 
+
 @dllmethod
 def import_module(modname, filename):
     '''Only for old version, before PyArmor 3'''
     prototype = PYFUNCTYPE(py_object, c_char_p, c_char_p)
     _import_module = prototype(('import_module', _pytransform))
     return _import_module(modname.encode(), filename.encode())
+
 
 @dllmethod
 def exec_file(filename):
