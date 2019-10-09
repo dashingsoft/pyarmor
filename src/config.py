@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '5.5.7'
+version = '5.6.0'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
@@ -92,7 +92,7 @@ help_footer = '''
 For more information, refer to http://pyarmor.dashingsoft.com
 '''
 
-download_url = 'http://pyarmor.dashingsoft.com/downloads/platforms'
+download_url = 'https://pyarmor.dashingsoft.com/downloads/platforms'
 support_platforms = [
     (
         ('win32', 'win32'),
@@ -112,3 +112,5 @@ support_platforms = [
         ('freebsd_x86_64', 'freebsd'),
     )
 ]
+
+key_url = 'https://api.dashingsoft.com/product/key/%s/query'

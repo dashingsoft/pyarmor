@@ -17,6 +17,7 @@ rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
 datafile=$(pwd)/data/pyarmor-data.tar.gz
+capsulefile=$(pwd)/data/pyarmor-test-0001.zip
 
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
@@ -27,6 +28,7 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 
 csih_inform "Extract test data"
 mkdir data && (cd data; tar xzf $datafile)
+cp $capsulefile data/
 
 # From pyarmor 4.5.4, platform name is renamed
 if [[ -d platforms/windows32 ]] ; then
@@ -162,12 +164,13 @@ echo ""
 echo "-------------------- Test Normal Version ------------------------"
 echo ""
 
-csih_inform "Replacing trial license.lic with normal one"
-cp data/license.lic .
-touch license.lic
+csih_inform "0. Register keyfile"
+$PYARMOR register data/pyarmor-test-0001.zip >result.log 2>&1
+check_return_value
 
 csih_inform "1. Show version information"
 $PYARMOR --version >result.log 2>&1
+check_file_content result.log "pyarmor-test-0001"
 
 csih_inform "2. Obfuscate foo.py"
 $PYARMOR obfuscate examples/helloworld/foo.py >result.log 2>&1
@@ -277,7 +280,7 @@ check_file_content dist-advanced-2/result.log 'Hello world'
 # ======================================================================
 
 csih_inform "Remove global capsule"
-rm -rf ~/.pyarmor_capsule.zip*
+rm -rf ~/.pyarmor_capsule.zip
 
 # Return test root
 cd ../..

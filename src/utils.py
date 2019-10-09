@@ -42,7 +42,7 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_urls, platform_config
+                   platform_urls, platform_config, key_url
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
@@ -70,8 +70,8 @@ def pytransform_bootstrap(path=None, capsule=None):
     pytransform.pyarmor_init(platname=platname)
 
     if capsule is not None:
-        if not (os.path.exists(capsule) and check_capsule(capsule)):
-            logging.info('Generate global capsule %s', capsule)
+        if not os.path.exists(capsule):
+            logging.info('Generating public capsule ...')
             make_capsule(capsule)
 
 
@@ -149,30 +149,15 @@ def download_pytransform(platid, saveas=None, url=None):
 
 
 def make_capsule(filename):
-    path = PYARMOR_PATH
-    for a in 'public.key', 'license.lic':
-        x = os.path.join(path, a)
-        if not os.path.exists(x):
-            raise RuntimeError('No %s found in pyarmor' % x)
-    licfile = os.path.join(path, 'license.lic')
-
-    logging.info('Generating project key ...')
-    pri, pubx, capkey, newkey, lic = pytransform.generate_capsule(licfile)
-    logging.info('Generate project key OK.')
-
-    logging.info('Writing capsule to %s ...', filename)
-    myzip = ZipFile(filename, 'w')
-    try:
-        myzip.write(os.path.join(path, 'public.key'), 'pyshield.key')
-        myzip.writestr('pyshield.lic', capkey)
-        # myzip.write(os.path.join(path, 'pytransform.py'), 'pytransform.py')
-        myzip.writestr('private.key', pri)
-        myzip.writestr('product.key', pubx)
-        myzip.writestr('pytransform.key', newkey)
-        myzip.writestr('license.lic', lic)
-    finally:
-        myzip.close()
-    logging.info('Write capsule OK.')
+    if get_registration_code():
+        logging.error('The registered version would use private capsule.'
+                      '\n\t Please run `pyarmor register KEYFILE` '
+                      'to restore your private capsule.')
+        raise RuntimeError('Could not generate private capsule.')
+    public_capsule = os.path.join(PYARMOR_PATH, 'public_capsule.zip')
+    logging.info('Copy %s to %s', public_capsule, filename)
+    shutil.copy(public_capsule, filename)
+    logging.info('Generate public capsule %s OK.', filename)
 
 
 def check_capsule(capsule):
@@ -557,6 +542,40 @@ def save_config(cfg, filename=None):
     s = json_dumps(cfg, indent=2)
     with open(filename, 'w') as f:
         f.write(s)
+
+
+def query_keyinfo(key):
+    try:
+        res = urlopen(key_url % key, timeout=3.0)
+        customer = json_loads(res.read().decode())
+    except Exception as e:
+        if sys.flags.debug:
+            logging.warning(e)
+        return 'Because of internet exception, could not query ' \
+               'registration information.'
+
+    name = customer['name']
+    email = customer['email']
+    if name and email:
+        info = 'This code is authorized to %s <%s>' % (name, email)
+    else:
+        info = 'Warning: this code may NOT be issued by PyArmor officially.' \
+               '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'
+    return info
+
+
+def register_keyfile(filename):
+    f = ZipFile(filename, 'r')
+    try:
+        path = PYARMOR_PATH
+        logging.info('Extract license file to %s', path)
+        f.extract('license.lic', path=path)
+
+        path = os.path.expanduser('~')
+        logging.info('Extract private capsule to %s', path)
+        f.extract('.pyarmor_capsule.zip', path=path)
+    finally:
+        f.close()
 
 
 if __name__ == '__main__':

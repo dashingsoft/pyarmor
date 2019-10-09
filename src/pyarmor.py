@@ -50,8 +50,8 @@ from project import Project
 from utils import PYARMOR_PATH, make_capsule, make_runtime, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
-                  check_capsule, pytransform_bootstrap, encrypt_script, \
-                  get_product_key, upgrade_capsule, save_config, load_config, \
+                  pytransform_bootstrap, encrypt_script, \
+                  get_product_key, register_keyfile, query_keyinfo, \
                   get_platform_list, download_pytransform
 
 import packer
@@ -333,8 +333,8 @@ def _licenses(args):
         if args.project != '':
             logging.warning('Ignore option --project, there is no project')
         capsule = DEFAULT_CAPSULE if args.capsule is None else args.capsule
-        if not (os.path.exists(capsule) and check_capsule(capsule)):
-            logging.info('Generate capsule %s', capsule)
+        if not os.path.exists(capsule):
+            logging.info('Generating public capsule ...')
             make_capsule(capsule)
         logging.info('Generate licenses with capsule %s ...', capsule)
         project = dict(restrict_mode=args.restrict)
@@ -418,18 +418,13 @@ def _licenses(args):
 
 @arcommand
 def _capsule(args):
-    '''Generate the capsule explicitly.'''
+    '''Generate public capsule explicitly.'''
     capsule = os.path.join(args.path, capsule_filename)
-    if args.upgrade:
-        logging.info('Preparing to upgrade the capsule %s ...', capsule)
-        upgrade_capsule(capsule)
-        return
-
-    if os.path.exists(capsule):
-        logging.info('Do nothing, capsule %s has been exists', capsule)
-    else:
-        logging.info('Generating capsule %s ...', capsule)
+    if args.force or not os.path.exists(capsule):
+        logging.info('Generating public capsule ...')
         make_capsule(capsule)
+    else:
+        logging.info('Do nothing, capsule %s has been exists', capsule)
 
 
 @arcommand
@@ -461,7 +456,7 @@ def _obfuscate(args):
     logging.info('Entry script is %s', entry)
 
     capsule = args.capsule if args.capsule else DEFAULT_CAPSULE
-    if os.path.exists(capsule) and check_capsule(capsule):
+    if os.path.exists(capsule):
         logging.info('Use cached capsule %s', capsule)
     else:
         logging.info('Generate capsule %s', capsule)
@@ -609,51 +604,15 @@ def _hdinfo(args):
 
 @arcommand
 def _register(args):
-    '''Make registration code work.'''
-    key = 'purchased_code'
-    licfile = os.path.join(PYARMOR_PATH, license_filename)
-
-    logging.info('The license file is %s', licfile)
-    logging.info('Read pyarmor config from %s', DEFAULT_CONFIG)
-    cfg = load_config(DEFAULT_CONFIG)
-
-    if args.backup:
-        logging.info('Read code from license file')
-        with open(licfile, 'r') as f:
-            rcode = f.read().strip()
-        logging.info('Got code:\n%s', rcode)
-
-        rlist = cfg.get(key)
-        if rlist is None:
-            cfg[key] = [rcode]
-        elif rcode not in rlist:
-            rlist.append(rcode)
-
-        logging.info('Save code to config file')
-        save_config(cfg, DEFAULT_CONFIG)
-
-        logging.info('Backup code successfully.')
+    '''Make registration keyfile work.'''
+    if args.filename is None:
+        print(_version_info(verbose=1))
         return
 
-    def make_pyarmor_license(rcode):
-        logging.info('Generating license from:\n%s', rcode)
-        with open(licfile, 'w') as f:
-            f.write(rcode)
-        logging.info('Write code to license file OK')
-
-    if args.restore is not None:
-        logging.info('Restore license from index %d', args.restore)
-        rcode = cfg.get(key, [])[args.restore]
-        make_pyarmor_license(rcode)
-
-    elif args.rcode is not None:
-        make_pyarmor_license(args.rcode)
-
-    logging.info('The new code has been taken effect, '
-                 'check it by "pyarmor -v".')
-    logging.info('If something is wrong with new license, '
-                 'please restore trial license by this way:\n'
-                 '\tcp %s %s', licfile[:-4] + '.tri', licfile)
+    logging.info('Start to register keyfile: %s', args.filename)
+    register_keyfile(args.filename)
+    logging.info('This keyfile has been registered successfully.')
+    logging.info('Run "pyarmor register" to check registration information.')
 
 
 @arcommand
@@ -681,14 +640,23 @@ def _download(args):
         logging.info('All the available libraries:\n%s', '\n'.join(lines))
 
 
-def _version_info(short=False):
+def _version_info(verbose=2):
     rcode = get_registration_code()
     if rcode:
         rcode = rcode.replace('-sn-1.txt', '')
-        ver = 'PyArmor Version %s (%s)' % (version, rcode)
+        ver = 'PyArmor Version %s' % version
     else:
         ver = 'PyArmor Trial Version %s' % version
-    return '\n'.join([ver, '' if short else version_info])
+    if verbose == 0:
+        return ver
+
+    info = [ver]
+    if rcode:
+        info.append('Registration Code: %s' % rcode)
+        info.append(query_keyinfo(rcode))
+    if verbose > 1:
+        info.extend(['', version_info])
+    return '\n'.join(info)
 
 
 def main(args):
@@ -941,9 +909,9 @@ def main(args):
         'capsule',
         epilog=_capsule.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Generate or upgrade the capsule explicitly ')
-    cparser.add_argument('--upgrade', action='store_true',
-                         help='Upgrade the capsule to latest version')
+        help='Generate public capsule explicitly ')
+    cparser.add_argument('-f', '--force', action='store_true',
+                         help='Force update public capsule even if it exists')
     cparser.add_argument('path', nargs='?', default=os.path.expanduser('~'),
                          help='Path to save capsule, default is home path')
     cparser.set_defaults(func=_capsule)
@@ -955,15 +923,10 @@ def main(args):
         'register',
         epilog=_register.__doc__ + purchase_info,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Make registration code work')
+        help='Make registration key work')
     group = cparser.add_mutually_exclusive_group()
-    group.add_argument('-r', '--restore', type=int, nargs='?',
-                       const=0, metavar='INDEX',
-                       help='Restore license by registration code')
-    group.add_argument('-b', '--backup', action='store_true',
-                       help='Backup current registration code')
-    group.add_argument('rcode', nargs='?', metavar='CODE',
-                       help='Registration code')
+    group.add_argument('filename', nargs='?', metavar='KEYFILE',
+                       help='Filename of registration keyfile')
     cparser.set_defaults(func=_register)
 
     #
@@ -993,7 +956,7 @@ def main(args):
         parser.print_help()
         return
 
-    logging.info(_version_info(short=True))
+    logging.info(_version_info(verbose=0))
     logging.debug('PyArmor install path: %s', PYARMOR_PATH)
 
     args.func(args)
