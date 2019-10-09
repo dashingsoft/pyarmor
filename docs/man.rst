@@ -29,7 +29,7 @@ The commands for project::
 The other commands::
 
     benchmark    Run benchmark test in current machine
-    register     Make registration code work
+    register     Make registration file work
     download     Download platform-dependent dynamic libraries
 
 See `pyarmor <command> -h` for more information on a specific command.
@@ -570,38 +570,23 @@ run obfuscated functions etc.
 register
 --------
 
-Make registration code effect, backup and restore it.
+Make registration keyfile effect, or show registration information.
 
 **SYNOPSIS**::
 
-    pyarmor register <options> CODE
-
-**OPTIONS**:
-
--b, --backup     Backup current registration code
--r, --restore    Restore license file from last backup
+    pyarmor register [KEYFILE]
 
 **DESCRIPTION**
 
-Make registration code effect by this way::
+A registration keyfile will be sent to you by email as attachments
+after purchasing PyArmor. This command is used to register the keyfile
+to take it effects::
 
-    pyarmor register CODE
+    pyarmor register /path/to/pyarmor-regfile-1.zip
 
-Check it works::
+Show registration information::
 
-    pyarmor -v
-
-It's better to backup this code after everything is fine::
-
-    pyarmor register --backup
-
-The code will be saved in the file `~/.pyarmor_config`
-
-.. note::
-
-   If something is wrong, PyArmor maybe could not start. In this case,
-   try to remove `license.lic` in the installed path of PyArmor, then
-   run `pyarmor` again.
+    pyarmor register
 
 .. _download:
 
