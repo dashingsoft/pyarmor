@@ -13,12 +13,9 @@ which includes license key and `private capsule` will be sent to
 customer by email.
 
 For the previous purchased user, the old private capsules which are
-generated implicitly by PyArmor after running command `register` still
-work, but maybe not supported from v5.7 or later.
-
-Contact jondy.zhao@gmail.com if you'd like to new `private
-capsule`. But it's not recommended if the obfuscated scripts have been
-worked in stable.
+generated implicitly by PyArmor after registered PyArmor still work,
+but maybe not supported later. Contact jondy.zhao@gmail.com if you'd
+like to use new `private capsule`.
 
 The other changes:
 
