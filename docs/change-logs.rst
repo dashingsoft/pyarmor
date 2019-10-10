@@ -3,6 +3,27 @@
 Change Logs
 ===========
 
+5.6.0
+-----
+In this version, new `private capsule`, which use 2048 bits RSA key to
+improve security for obfucated scripts, is introduced for purchased
+users. All the trial versions still use one same `public capsule`
+which use 1024 bits RSA keys. After purchasing PyArmor, a keyfile
+which includes license key and `private capsule` will be sent to
+customer by email.
+
+For the previous purchased user, the old private capsules which are
+generated implicitly by PyArmor after running command `register` still
+work, but maybe not supported from v5.7 or later.
+
+Contact jondy.zhao@gmail.com if you'd like to new `private
+capsule`. But it's not recommended if the obfuscated scripts have been
+worked in stable.
+
+The other changes:
+
+* Command `register` are refined according to new private capsule
+
 5.5.7
 -----
 * Fix webui bug: raise "name 'output' is not defined" as running `packer`
