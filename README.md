@@ -67,10 +67,7 @@ PyArmor is published as shareware. Free trial version never expires, the limitat
   anyone could generate the license file which works for these
   obfuscated scripts.
 
-A registration code is required to obfuscate big code object or generate private
-obfuscated scripts.
-
-For details, refer to [About License](https://pyarmor.readthedocs.io/en/latest/license.html).
+For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
 
 ### Purchase
 

@@ -45,14 +45,18 @@
          https://pyarmor.dashingsoft.com/cart/order.html
 
      支付成功之后注册文件会自动通过电子邮件发送过去。注册文件是一个压缩文件，里
-     面包含说明文件，注册码文件和私有密钥文件。
+     面包含 3 个文件:
+
+        * README.txt
+        * license.lic (注册码)
+        * .pyarmor_capsule.zip (私有密钥箱)
 
      当收到包含注册文件的邮件之后，保存附件中的注册文件到本地，然后使用下面的命
      令生效注册文件
 
          pyarmor register pyarmor-regfile-1.zip
 
-     然后可以运行下面的命令查看注册信息
+     运行下面的命令查看注册信息
 
          pyarmor register
 

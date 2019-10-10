@@ -70,10 +70,8 @@ Check the registeration information:
 
 If the version of PyArmor < 5.6, unzip this registration file, then
 
-* Copy license.lic in the archive to the installed path of PyArmor
-
-Note that ".pyarmor_capsule.zip" in the archive doesn't work with the
-previous version of PyArmor 5.6
+* Copy "license.lic" in the archive to the installed path of PyArmor
+* Copy ".pyarmor_capsule.zip" in the archive to user HOME path
 
 After the registration keyfile takes effect, you need obfuscate the
 scripts again.
