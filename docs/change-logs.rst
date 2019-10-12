@@ -21,6 +21,42 @@ The other changes:
 
 * Command `register` are refined according to new private capsule
 
+**Upgrade Note for Perviouse User**
+
+There are 2 solutions:
+
+1. Still use old license code.
+
+It's recommanded that you have generated some customized "license.lic"
+for the obfuscated scrips and these "license.lic" files have been
+issued to your customers. If use new key file, all the previous
+"license.lic" does not work, you need generate new one and resend to
+your customers.
+
+Actually the command `pip install --upgrade pyarmor` does not
+overwrite the purchased license code, you need not run command
+`pyarmor register` again. It should work, you can check it by run
+`pyarmor -v`.
+
+Or in any machine in which old version pyarmor is running, compress
+the following 2 files to one archive "pyarmor-regfile.zip":
+
+* license.lic, which locates in the installed path of pyarmor
+* .pyarmor_capsule.zip, which locates in the user HOME path
+
+Then register this keyfile in the new version of pyarmor
+
+    pyarmor register pyarmor-regfile.zip
+
+2. Use new key file.
+
+It's recommanded that you just obfuscate the scripts, and do not issue
+customized "license.lic" to your customers.
+
+Forward the purchased email received from MyCommerce to
+jondy.zhao@gmail.com, and the new key file will be sent to the
+registration email, no fee for this upgrading.
+
 5.5.7
 -----
 * Fix webui bug: raise "name 'output' is not defined" as running `packer`
