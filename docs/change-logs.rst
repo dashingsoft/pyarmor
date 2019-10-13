@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.6.1
+-----
+* The command `download` will check the version of dynamic library to
+  be sure it works with the current PyArmor.
+
 5.6.0
 -----
 In this version, new `private capsule`, which use 2048 bits RSA key to
