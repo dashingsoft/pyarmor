@@ -21,24 +21,23 @@ generate private obfuscated scripts.
 
 There are 2 basic types of licenses issued for the software. These are:
 
-* A natural person usage license for home users. The user purchases one
-  license to use the software on his own computer.
+* A personal license for home users. The user purchases one license to
+  use the software on his own computer.
 
-  Home users may use their natural person usage license to obfuscate
-  all the python scripts which are property of the license owner, to
-  generate private license files for the obfuscated scripts and
-  distribute them and all the required files to any other machine or
-  device.
+  Home users may use their personal license to obfuscate all the
+  python scripts which are property of the license owner, to generate
+  private license files for the obfuscated scripts and distribute them
+  and all the required files to any other machine or device.
 
-* A juridical person usage license for business users. The user
-  purchases one license to use the software for one product serials of
-  an organization.
+* A enterprise license for business users. The user purchases one
+  license to use the software for one product serials of an
+  organization.
 
-  Business users may use their juridical person usage license on all
-  computers and embedded devices to obfuscate all the python scripts
-  of this product serials, to generate private license files for these
-  obfuscated scripts and distribute them and all the required files to
-  any other machine and device.
+  Business users may use their enterprise license on all computers and
+  embedded devices to obfuscate all the python scripts of this product
+  serials, to generate private license files for these obfuscated
+  scripts and distribute them and all the required files to any other
+  machine and device.
 
   Without permission of the software owner the license purchased for
   one product serials should not be used for other product
