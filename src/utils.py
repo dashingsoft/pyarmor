@@ -42,7 +42,7 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_urls, platform_config, key_url
+                   platform_urls, platform_config, key_url, version
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
@@ -102,6 +102,11 @@ def _get_platform_list(urls, platid=None):
 
     logging.info('Loading platforms information')
     cfg = json_loads(f.read().decode())
+
+    compatible = cfg.get('compatible', '').split()
+    if compatible and compatible[-1] > version:
+        raise RuntimeError('The core library v%s is not compatible with '
+                           'PyArmor v%s' % (compatible[-1], version))
     return cfg.get('platforms', []) if platid is None \
         else [x for x in cfg.get('platforms', [])
               if platid == x['path'] or (
