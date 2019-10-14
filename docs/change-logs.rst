@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.6.2
+-----
+* Fix `pyarmor-webui` start issue in some cases:  can't import name '_project'
+
 5.6.1
 -----
 * The command `download` will check the version of dynamic library to
