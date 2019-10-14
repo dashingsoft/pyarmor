@@ -391,16 +391,16 @@ def _licenses(args):
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
+    extra_data = '' if args.bind_data else (';' + args.bind_data)
 
     for rcode in args.codes:
-        output = os.path.join(licpath,
-                              re.sub('[^-_0-9a-zA-Z]', '', rcode[:32]))
+        output = os.path.join(licpath, rcode)
         if not os.path.exists(output):
             logging.info('Make path: %s', output)
             os.mkdir(output)
 
         licfile = os.path.join(output, license_filename)
-        licode = fmt + rcode
+        licode = fmt + rcode + extra_data
         txtinfo = licode.replace('\n', r'\n')
         if args.expired:
             txtinfo = '"Expired:%s%s"' % (args.expired,
@@ -740,6 +740,8 @@ def main(args):
     #                    help='Bind license to ipv6 addr')
     group.add_argument('-m', '--bind-mac', metavar='x:x:x:x',
                        help='Bind license to mac addr')
+    group.add_argument('-x', '--bind-data', metavar='DATA', help='Pass extra '
+                       'data to license, used to extend license type')
     group.add_argument('--bind-domain', metavar='DOMAIN',
                        help='Bind license to domain name')
     group.add_argument('--bind-file', metavar='filename;target_filename',

@@ -104,6 +104,7 @@ def get_license_info():
         'IFMAC': 'Any',
         'IFIPV4': 'Any',
         'DOMAIN': 'Any',
+        'DATA': '',
         'CODE': '',
     }
     rcode = get_registration_code().decode()
@@ -130,7 +131,10 @@ def get_license_info():
             prev = k
             start = index + len(k) + 2
     info['CODE'] = rcode[start:]
-
+    i = info['CODE'].find(';')
+    if i > 0:
+        info['DATA'] = info['CODE'][i+1:]
+        info['CODE'] = info[:i]
     return info
 
 
