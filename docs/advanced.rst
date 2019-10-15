@@ -175,15 +175,22 @@ First create plugin :file:`check_ntp_time.py`:
     # from pytransform import pyarmor_init
     # pyarmor_init()
 
-    from pytransform import get_license_code
     from ntplib import NTPClient
     from time import mktime, strptime
     import sys
 
-    NTP_SERVER = 'europe.pool.ntp.org'
-    EXPIRED_DATE = get_license_code()[4:]
+    def get_license_data():
+        from ctypes import py_object, PYFUNCTYPE
+        from pytransform import _pytransform
+        prototype = PYFUNCTYPE(py_object)
+        dlfunc = prototype(('get_registration_code', _pytransform))
+        rcode = dlfunc().decode()
+        index = rcode.find(';', rcode.find('*CODE:'))
+        return rcode[index+1:]
 
     def check_expired():
+        NTP_SERVER = 'europe.pool.ntp.org'
+        EXPIRED_DATE = get_license_data()
         c = NTPClient()
         response = c.request(NTP_SERVER, version=3)
         if response.tx_time > mktime(strptime(EXPIRED_DATE, '%Y%m%d')):
@@ -233,33 +240,13 @@ Or set environment variable `PYARMOR_PLUGIN`. For example::
 
 Finally generate one license file for this obfuscated script::
 
-    pyarmor licenses NTP:20190501
+    pyarmor licenses -x 20190501 MYPRODUCT-0001
+    cp licenses/MYPRODUCT-0001/license.lic dist/
 
 .. note::
 
-   It's better to move `get_licese_code` to the obfuscated
-   script. Here it's an example::
-
-       def get_license_code():
-           from ctypes import py_object, PYFUNCTYPE
-           from pytransform import _pytransform
-           prototype = PYFUNCTYPE(py_object)
-           dlfunc = prototype(('get_registration_code', _pytransform))
-           rcode = dlfunc().decode()
-           index = rcode.find('*CODE:')
-           return rcode[index+6:]
-
-   Besides, insert the content of `ntplib.py` into the plugin so that
-   `NTPClient` could be used locally.
-
-.. note::
-
-   The expired date may be encoded either. For example::
-
-       pyarmor licenses xxxx
-
-   Here "xxx" is encoded expired date, then decode it as checking the
-   expired date in the obfuscated script.
+   It's better to insert the content of `ntplib.py` into the plugin so
+   that `NTPClient` needn't be imported out of obfuscated scripts.
 
 .. _bundle obfuscated scripts to one executable file:
 

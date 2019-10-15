@@ -175,6 +175,7 @@ Generate new licenses for obfuscated scripts.
 -d, --bind-disk SN          Bind license to serial number of harddisk
 -4, --bind-ipv4 IPV4        Bind license to ipv4 addr
 -m, --bind-mac MACADDR      Bind license to mac addr
+-x, --bind-data DATA        Pass extra data to license, used to extend license type
 
 **DESCRIPTION**
 
@@ -203,6 +204,22 @@ Another example, bind obfuscated scripts in mac address and expired on
 Before this, run command :ref:`hdinfo` to get hardware information::
 
     pyarmor hdinfo
+
+By option `-x` any data could be saved into the license file, it's
+mainly used to extend license tyoe. For example::
+
+    pyarmor licenses -x "2019-02-15" tom
+
+In the obfuscated scripts, the data passed by `-x` could be got by
+this way::
+
+    from pytransfrom import get_license_info
+    info = get_license_info()
+    print(info['DATA'])
+
+.. note::
+   
+   Here is a real example :ref:`Using Plugin to Extend License Type`
 
 .. _pack:
 
