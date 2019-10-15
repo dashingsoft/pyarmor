@@ -391,7 +391,7 @@ def _licenses(args):
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
-    extra_data = '' if args.bind_data else (';' + args.bind_data)
+    extra_data = '' if args.bind_data is None else (';' + args.bind_data)
 
     for rcode in args.codes:
         output = os.path.join(licpath, rcode)
