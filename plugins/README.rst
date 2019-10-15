@@ -8,24 +8,22 @@ Example 1: Check All the Mac Address
 
 Here is an example show how to check all the mac addresses.
 
-There are 2 files in this plugin::
+There are 2 files in this plugin:
+    `extra_hdinfo.c`_
+    `check_multi_mac.py`_
 
-    extra_hdinfo.c
-    check_multi_mac.py
+The dynamic library `extra_hdinfo.so` exports one function `get_multi_mac` which
+could get all the mac addresses.
 
-The dynamic library `extra_hdinfo.so` exports one function
-`get_multi_mac` which could get all the mac addresses.
+The script `check_multi_mac.py`_ will get the multiple mac address by calling
+`get_multi_mac` in the dynamic library `extra_hdinfo.so`, then compare the
+expected mac address saved in the `license.lic` of the obfuscated scripts, check
+whether it's expected.
 
-The script `check_multi_mac.py` will get the multiple mac address by
-calling `get_multi_mac` in the dynamic library `extra_hdinfo.so`, then
-compare the expected mac address saved in the `license.lic` of the
-obfuscated scripts, check whether it's expected.
+It will also check the file `extra_hdinfo.so` to be sure it's not changed by
+someone else.
 
-It will also check the file `extra_hdinfo.so` to be sure it's not
-changed by someone else.
-
-First build dynamic library `extra_hdinfo.so` used to get all mac
-addresses::
+First build dynamic library `extra_hdinfo.so` used to get all mac addresses::
 
     gcc -shared -o extra_hdinfo.so -fPIC extra_hdinfo.c
 
@@ -33,42 +31,24 @@ Get sha384 of `extra_hdinfo.so`::
 
     sha384sum extra_hdinfo.so
 
-Edit the file `check_multi_mac.py`, replace the value of
-`lib_hdinfo_checksum` got above.
+Edit the file `check_multi_mac.py`_, replace the value of `lib_hdinfo_checksum`
+got above.
 
 Then edit the entry script `foo.py <foo.py>`_ , insert two comment lines::
 
     # {PyArmor Plugins}
     # PyArmor Plugin: check_docker_id()
 
-It maybe like this, for example::
-
-    import logging
-    import sys
-
-    # {PyArmor Plugins}
-
-    def main():
-        # PyArmor Plugin: check_multi_mac()
-        logging.info("Hello World!")
-
-
-    if __name__ == '__main__':
-        logging.basicConfig(level=logging.INFO)
-        main()
-
 Now, obfuscate the script with this plugin::
 
     pyarmor obfuscate --plugin check_multi_mac foo.py
 
-The content of `check_multi_mac.py` will be insert after the first
-comment line `# {PyArmor Plugins}`
+The content of `check_multi_mac.py`_ will be insert after the first comment line
+`# {PyArmor Plugins}`
 
-And the prefix of second comment will be stripped::
+And the prefix of second comment will be stripped as::
 
-    def main():
-        check_multi_mac()
-        logging.info("Hello World!")
+    check_multi_mac()
 
 So the plugin takes effect.
 
@@ -96,7 +76,7 @@ Distributing the obfuscated scripts to target machine:
 Example 2: Check Docker Container ID
 ------------------------------------
 
-First write the plugin `check_docker.py`::
+First write the plugin `check_docker.py`_::
 
     from pytransform import _pytransform
     from ctypes import py_object, PYFUNCTYPE
@@ -120,7 +100,7 @@ First write the plugin `check_docker.py`::
             raise RuntimeError('license not for this machine')
 
 
-Then edit the entry script `foo.py <foo.py>`_ , insert two comment lines::
+Then edit the entry script `foo.py`_ , insert two comment lines::
 
     # {PyArmor Plugins}
     # PyArmor Plugin: check_docker_id()
@@ -137,3 +117,9 @@ The last step is to generate the license file for the obfuscated script::
 
     pyarmor licenses -x f56b1824e453126ab5426708dbbed41d0232f6f2ab21de1c40da934b68a5d8a2 CODE-0002
     cp licenses/CODE-0002/license.lic ./dist
+
+
+.. _foo.py: foo.py
+.. _extra_hdinfo.c: extra_hdinfo.c
+.. _check_multi_mac.py: check_multi_mac.py
+.. _check_docker.py: check_docker.py
