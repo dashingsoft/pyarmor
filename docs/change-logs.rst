@@ -34,7 +34,7 @@ The other changes:
 
 * Command `register` are refined according to new private capsule
 
-**Upgrade Note for Perviouse User**
+**Upgrade Note for Previous User**
 
 There are 2 solutions:
 
