@@ -8,9 +8,10 @@ Example 1: Check All the Mac Address
 
 Here is an example show how to check all the mac addresses.
 
-There are 2 files in this plugin:
-    `extra_hdinfo.c`_
-    `check_multi_mac.py`_
+There are 2 files in this plugin::
+
+    extra_hdinfo.c
+    check_multi_mac.py
 
 The dynamic library `extra_hdinfo.so` exports one function `get_multi_mac` which
 could get all the mac addresses.
@@ -23,7 +24,7 @@ whether it's expected.
 It will also check the file `extra_hdinfo.so` to be sure it's not changed by
 someone else.
 
-First build dynamic library `extra_hdinfo.so` used to get all mac addresses::
+First build `extra_hdinfo.c`_::
 
     gcc -shared -o extra_hdinfo.so -fPIC extra_hdinfo.c
 
