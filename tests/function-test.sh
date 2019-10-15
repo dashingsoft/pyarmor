@@ -296,6 +296,12 @@ csih_inform "C-22. Test more than one path for obfuscate"
 $PYARMOR obfuscate examples/simple examples/testpkg  >result.log 2>&1
 check_file_content result.log "Only one path is allowed"
 
+csih_inform "C-23. Test option --bind-data for licenses"
+$PYARMOR licenses -x 20191011 test-bind-data >result.log 2>&1
+check_return_value
+check_file_exists licenses/test-bind-data/license.lic
+check_file_content projects/test-bind-file/license.lic.txt 'test-bind-data;20191011'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
