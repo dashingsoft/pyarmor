@@ -300,7 +300,7 @@ csih_inform "C-23. Test option --bind-data for licenses"
 $PYARMOR licenses -x 20191011 test-bind-data >result.log 2>&1
 check_return_value
 check_file_exists licenses/test-bind-data/license.lic
-check_file_content projects/test-bind-file/license.lic.txt 'test-bind-data;20191011'
+check_file_content licenses/test-bind-data/license.lic.txt 'test-bind-data;20191011'
 
 echo ""
 echo "-------------------- Command End -----------------------------"
