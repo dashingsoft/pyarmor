@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.6.3
+-----
+* Add option `-x` in command `licenses` to save extra data in the license file. It's mainly used to extend license type.
+
 5.6.2
 -----
 * Fix `pyarmor-webui` start issue in some cases:  can't import name '_project'
