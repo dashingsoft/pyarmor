@@ -1,7 +1,7 @@
 import logging
-import sys
 
 # {PyArmor Plugins}
+
 
 def main():
     # PyArmor Plugin: check_multi_mac()

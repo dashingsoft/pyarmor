@@ -36,7 +36,12 @@ Get sha384 of `extra_hdinfo.so`::
 Edit the file `check_multi_mac.py`, replace the value of
 `lib_hdinfo_checksum` got above.
 
-Next edit the entry script `foo.py`, insert two comment lines::
+Then edit the entry script `foo.py <foo.py>`_ , insert two comment lines::
+
+    # {PyArmor Plugins}
+    # PyArmor Plugin: check_docker_id()
+
+It maybe like this, for example::
 
     import logging
     import sys
@@ -80,8 +85,8 @@ The last step is to generate the license file for the obfuscated script.
 
 2. Generate the license file and copy it to dist path::
 
-    pyarmor licenses 70:f1:a1:23:f0:94.08:00:27:51:d9:fe
-    cp licenses/70:f1:a1:23:f0:94.08:00:27:51:d9:fe/license.lic ./dist
+    pyarmor licenses -x 70:f1:a1:23:f0:94.08:00:27:51:d9:fe CODE-0001
+    cp licenses/CODE-0001/license.lic ./dist
 
 Distributing the obfuscated scripts to target machine:
 
@@ -95,15 +100,14 @@ First write the plugin `check_docker.py`::
 
     from pytransform import _pytransform
     from ctypes import py_object, PYFUNCTYPE
-    
-    def get_license_code():
+
+    def get_license_data():
         prototype = PYFUNCTYPE(py_object)
         dlfunc = prototype(('get_registration_code', _pytransform))
         rcode = dlfunc().decode()
-        index = rcode.find('*CODE:')
-        return rcode[index+6:]
-        from pytransform import get_license_code
-    
+        index = rcode.find(';', rcode.find('*CODE:'))
+        return rcode[index+1:]
+
     def check_docker_id():
         cid = None
         with open("/proc/self/cgroup") as f:
@@ -111,35 +115,25 @@ First write the plugin `check_docker.py`::
                 if line.split(':', 2)[1] == 'name=systemd':
                     cid = line.strip().split('/')[-1]
                     break
-    
-        if cid is None or cid != get_license_code():
+
+        if cid is None or cid != get_license_data():
             raise RuntimeError('license not for this machine')
-    
 
-Then edit the entry script `foo.py`, insert two comment lines::
 
-    import logging
-    import sys
+Then edit the entry script `foo.py <foo.py>`_ , insert two comment lines::
 
     # {PyArmor Plugins}
-
-    def main():
-        # PyArmor Plugin: check_docker_id()
-        print("Hello World!")
-
-
-    if __name__ == '__main__':
-        main()
+    # PyArmor Plugin: check_docker_id()
 
 Now, obfuscate the script with this plugin::
 
     pyarmor obfuscate --plugin check_docker foo.py
-        
+
 If the plugin file isn’t in the current path, use absolute path instead::
 
     pyarmor obfuscate --plugin /path/to/check_docker foo.py
-    
+
 The last step is to generate the license file for the obfuscated script::
 
-    pyarmor licenses f56b1824e453126ab5426708dbbed41d0232f6f2ab21de1c40da934b68a5d8a2
-    cp licenses/f56b1824e453126ab5426708dbbed41d0232f6f2ab21de1c40da934b68a5d8a2/license.lic ./dist
+    pyarmor licenses -x f56b1824e453126ab5426708dbbed41d0232f6f2ab21de1c40da934b68a5d8a2 CODE-0002
+    cp licenses/CODE-0002/license.lic ./dist

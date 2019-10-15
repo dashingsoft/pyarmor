@@ -225,6 +225,7 @@ after the first comment::
 At the same time, the prefix of second comment will be stripped::
 
     def main():
+        # PyArmor Plugin: check_expired()
         check_expired()
 
 So the plugin takes effect.
