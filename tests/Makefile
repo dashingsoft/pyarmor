@@ -38,12 +38,18 @@ $(info ****************** RUN TEST IN $(PLATFORM))
 $(info )
 
 ifeq ($(findstring linux,$(PLATFORM)),linux)
+
 TARGET = _pytransform.so
 PYROOT = /home/jondy/workspace/pytransform-legend/python/usr/local
 CMDPREFIX = LD_LIBRARY_PATH=$(PYROOT)/lib
 PYCMD = $(PYROOT)/bin/pythonXY
 PYLIB = $(PYROOT)/lib/pythonXY
-VERSIONS := 2.6 2.7 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7
+ifeq ($(ARCH),x86_64)
+    VERSIONS := 2.6 2.7 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7 3.8
+else
+    VERSIONS := 2.6 2.7 3.0 3.1 3.2 3.3 3.4 3.5 3.6 3.7
+endif
+
 else
 
 ifeq ($(findstring macosx,$(PLATFORM)),macosx)
@@ -58,7 +64,7 @@ CMDPREFIX =
 PYCMD = C:/PythonXY/python
 PYLIB = C:/PythonXY/Lib
 ifeq ($(ARCH),x86_64)
-    VERSIONS := 26 27 30 31 32 33 34 35 36 37
+    VERSIONS := 26 27 30 31 32 33 34 35 36 37 38
 else
     VERSIONS := 26 27 30 31 32 33 34
 endif
