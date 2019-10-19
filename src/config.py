@@ -2,6 +2,9 @@ from distutils.util import get_platform
 
 version = '5.6.4'
 
+# The corresponding version of _pytransform.so
+core_version = '5.5.0'
+
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts.
@@ -45,7 +48,6 @@ default_manifest_template = 'global-include *.py'
 default_obf_module_mode = 'des'
 default_obf_code_mode = 'des'
 
-core_version = '5.4.0'
 platform_urls = [
     'https://github.com/dashingsoft/pyarmor-core/raw/v%s' % core_version,
     ]
