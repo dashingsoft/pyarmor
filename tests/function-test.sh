@@ -785,10 +785,6 @@ check_return_value
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
-(cd $output; $PYTHON -c"import main
-main.hello('mypkg')" >result.log 2>&1 )
-check_file_content $output/result.log 'This function could not be called from the plain script'
-
 echo ""
 echo "-------------------- Test restrict mode END ----------------"
 echo ""
