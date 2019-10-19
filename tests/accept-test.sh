@@ -281,6 +281,9 @@ check_file_content dist-advanced-2/result.log 'Hello world'
 
 csih_inform "Remove global capsule"
 rm -rf ~/.pyarmor_capsule.zip
+if ! [[ -z "$USERPROFILE" ]] ; then
+   rm -rf $USERPROFILE\\.pyarmor_capsule.zip
+fi
 
 # Return test root
 cd ../..
