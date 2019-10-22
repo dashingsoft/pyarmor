@@ -16,6 +16,14 @@ In the following cases, obfuscated scripts will crash
 * Running obfuscated script by the debug version Python
 * Obfuscating scripts by Python 2.6 but running the obfuscated scripts by Python 2.7
 
+After PyArmor 5.5.0, some machines may be crashed because of advanced mode. A
+quick workaround is to diable advanced mode by editing the file `pytransform.py`
+which locates in the installed path of `pyarmor` , in the function
+`_load_library`, uncomment about line 202. The final code looks like this::
+
+    # Disable advanced mode if required
+    m.set_option(5, c_char_p(1))
+
 Could not find `_pytransform`
 -----------------------------
 
@@ -187,6 +195,15 @@ then search the path of runtime module `pytransform.py` to find the
 file `license.lic` and `pytransform.key`. If they're not generated for
 the obfuscated script, this error will be reported.
 
+'XXX' codec can't decode byte 0xXX
+----------------------------------
+
+Add the exact source encode at the begin of the script. For example::
+
+    # -*- coding: utf-8 -*-
+
+Refer to https://docs.python.org/2.7/tutorial/interpreter.html#source-code-encoding
+
 .. How easy is to recover obfuscated code?:
 
     If someone tries to break the obfuscation, he first must be an
@@ -196,5 +213,5 @@ the obfuscated script, this error will be reported.
     them start to reverse, he/she must step by step thousands of
     machine instruction, and research the algorithm by machine
     codes. So it's not an easy thing to reverse pyarmor.
-
+    
 .. include:: _common_definitions.txt
