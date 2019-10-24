@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.6.5
+-----
+* Fix win32 issue: verify license failed in some cases
+* Refine core library to improve security
+
 5.6.4
 -----
 * Fix segmentation fault issue for Python 3.8
