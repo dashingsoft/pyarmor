@@ -204,6 +204,40 @@ Add the exact source encode at the begin of the script. For example::
 
 Refer to https://docs.python.org/2.7/tutorial/interpreter.html#source-code-encoding
 
+/lib64/libc.so.6: version 'GLIBC_2.14' not found
+------------------------------------------------
+
+In some machines there is no `GLIBC_2.14`, it will raise this exception.
+
+One solution is patching `_pytransform.so` by the following way.
+
+First check version information::
+
+    readelf -V /path/to/_pytransform.so
+    ...
+
+    Version needs section '.gnu.version_r' contains 2 entries:
+     Addr: 0x00000000000056e8  Offset: 0x0056e8  Link: 4 (.dynstr)
+      000000: Version: 1  File: libdl.so.2  Cnt: 1
+      0x0010:   Name: GLIBC_2.2.5  Flags: none  Version: 7
+      0x0020: Version: 1  File: libc.so.6  Cnt: 6
+      0x0030:   Name: GLIBC_2.7  Flags: none  Version: 8
+      0x0040:   Name: GLIBC_2.14  Flags: none Version: 6
+      0x0050:   Name: GLIBC_2.4  Flags: none  Version: 5
+      0x0060:   Name: GLIBC_2.3.4  Flags: none  Version: 4
+      0x0070:   Name: GLIBC_2.2.5  Flags: none  Version: 3
+      0x0080:   Name: GLIBC_2.3  Flags: none  Version: 2
+
+Then replace the entry of `GLIBC_2.14` with `GLIBC_2.2.5`:
+
+* Copy 4 bytes at 0x56e8+0x10=0x56f8 to 0x56e8+0x40=0x5728
+* Copy 4 bytes at 0x56e8+0x18=0x56f8 to 0x56e8+0x48=0x5728
+
+Here are sample commands::
+
+    xxd -s 0x56f8 -l 4 _pytransform.so | sed "s/56f8/5728/" | xxd -r - _pytransform.so
+    xxd -s 0x5700 -l 4 _pytransform.so | sed "s/5700/5730/" | xxd -r - _pytransform.so
+
 .. How easy is to recover obfuscated code?:
 
     If someone tries to break the obfuscation, he first must be an
@@ -213,5 +247,5 @@ Refer to https://docs.python.org/2.7/tutorial/interpreter.html#source-code-encod
     them start to reverse, he/she must step by step thousands of
     machine instruction, and research the algorithm by machine
     codes. So it's not an easy thing to reverse pyarmor.
-    
+
 .. include:: _common_definitions.txt
