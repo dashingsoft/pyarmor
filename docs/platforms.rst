@@ -75,6 +75,7 @@ platform.
      - Built by VS2015
    * - Linux
      - armv5
+     -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/armv5/_pytransform.so>`_
      - 32-bit Armv5 (arm926ej-s)
    * - Linux
