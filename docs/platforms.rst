@@ -18,50 +18,59 @@ Contact jondy.zhao@gmail.com if you'd like to run PyArmor in other
 platform.
 
 .. list-table:: Table-1. Prebuilt Libraries Distributed with PyArmor
-   :widths: 10 10 20 60
+   :widths: 10 10 20 10 50
    :name: Prebuilt Libraries Distributed with PyArmor
    :header-rows: 1
 
    * - OS
      - Arch
+     - Features
      - Download
      - Description
    * - Windows
      - i686
+     - Anti-Debug, JIT, ADV
      - `_pytransform.dll <http://pyarmor.dashingsoft.com/downloads/latest/win32/_pytransform.dll>`_
      - Cross compile by i686-pc-mingw32-gcc in cygwin
    * - Windows
      - AMD64
+     - Anti-Debug, JIT, ADV
      - `_pytransform.dll <http://pyarmor.dashingsoft.com/downloads/latest/win_amd64/_pytransform.dll>`_
      - Cross compile by x86_64-w64-mingw32-gcc in cygwin
    * - Linux
      - i686
+     - Anti-Debug, JIT, ADV
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux_i386/_pytransform.so>`_
      - Built by GCC
    * - Linux
      - x86_64
+     - Anti-Debug, JIT, ADV
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux_x86_64/_pytransform.so>`_
      - Built by GCC
    * - MacOSX
      - x86_64, intel
+     - Anti-Debug, JIT, ADV
      - `_pytransform.dylib <http://pyarmor.dashingsoft.com/downloads/latest/macosx_x86_64/_pytransform.dylib>`_
      - Built by CLang with MacOSX10.11
 
 .. list-table:: Table-2. All The Others Prebuilt Libraries For PyArmor
    :name: All The Others Prebuilt Libraries For PyArmor
-   :widths: 10 10 20 60
+   :widths: 10 10 20 10 50
    :header-rows: 1
 
    * - OS
      - Arch
+     - Features
      - Download
      - Description
    * - Windows
      - x86
+     -
      - `_pytransform.dll <http://pyarmor.dashingsoft.com/downloads/latest/vs2015/x86/_pytransform.dll>`_
      - Built by VS2015
    * - Windows
      - x64
+     -
      - `_pytransform.dll <http://pyarmor.dashingsoft.com/downloads/latest/vs2015/x64/_pytransform.dll>`_
      - Built by VS2015
    * - Linux
@@ -70,41 +79,51 @@ platform.
      - 32-bit Armv5 (arm926ej-s)
    * - Linux
      - armv7
+     - Anti-Debug, JIT
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/armv7/_pytransform.so>`_
      - 32-bit Armv7 Cortex-A, hard-float, little-endian
    * - Linux
      - aarch32
+     - Anti-Debug, JIT
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/armv8.32-bit/_pytransform.so>`_
      - 32-bit Armv8 Cortex-A, hard-float, little-endian
    * - Linux
      - aarch64
+     - Anti-Debug, JIT
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/armv8.64-bit/_pytransform.so>`_
      - 64-bit Armv8 Cortex-A, little-endian
    * - Linux
      - ppc64le
+     -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/ppc64le/_pytransform.so>`_
      - For POWER8
    * - iOS
      - arm64
+     -
      - `_pytransform.dylib <http://pyarmor.dashingsoft.com/downloads/latest/ios.arm64/_pytransform.dylib>`_
      - Built by CLang with iPhoneOS9.3.sdk
    * - FreeBSD
      - x86_64
+     -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/freebsd/_pytransform.so>`_
      - Not support harddisk serial number
    * - Alpine Linux
      - x86_64
+     -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/alpine/_pytransform.so>`_
      - Built with musl-1.1.21 for Docker
    * - Alpine Linux
      - arm
+     -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/alpine.arm/_pytransform.so>`_
      - Built with musl-1.1.21, 32-bit Armv5T, hard-float, little-endian
    * - Inel Quark
      - i586
+     -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/intel-quark/_pytransform.so>`_
      - Cross compile by i586-poky-linux
    * - Android
      - aarch64
+     -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/android.aarch64/_pytransform.so>`_
      - Build by android-ndk-r20/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang
