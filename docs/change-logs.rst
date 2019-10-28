@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.6.6
+-----
+* Remove unused exported symbols from core libraries
+
 5.6.5
 -----
 * Fix win32 issue: verify license failed in some cases
