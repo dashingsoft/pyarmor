@@ -535,7 +535,7 @@ $PYARMOR init --src=test-empty --entry=foo.py projects/empty  > result.log 2>&1
 check_return_value
 
 for obf_mod in 0 1 ; do
-  for obf_code in 0 1 ; do
+  for obf_code in 0 1 2 ; do
     for obf_wrap_mode in 0 1 ; do
       csih_inform "T-m${obf_mod}-c${obf_code}-w${obf_wrap_mode}"
       (cd projects/empty &&

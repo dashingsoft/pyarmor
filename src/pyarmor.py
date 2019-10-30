@@ -817,7 +817,7 @@ def main(args):
                          help='[DEPRECATED] Use --obf-code and --wrap-mode'
                               ' instead')
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
-    cparser.add_argument('--obf-code', type=int, choices=(0, 1))
+    cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2))
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1))
     cparser.add_argument('--runtime-path', metavar="RPATH")
@@ -895,7 +895,7 @@ def main(args):
     )
     cparser.add_argument('-m', '--obf-mod', choices=(0, 1),
                          default=1, type=int)
-    cparser.add_argument('-c', '--obf-code', choices=(0, 1),
+    cparser.add_argument('-c', '--obf-code', choices=(0, 1, 2),
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
                          default=1, type=int)

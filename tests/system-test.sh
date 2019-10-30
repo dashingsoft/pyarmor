@@ -395,7 +395,7 @@ echo ""
 
 csih_inform "Case 9.1: run benchmark test"
 for obf_mod in 0 1 ; do
-  for obf_code in 0 1 ; do
+  for obf_code in 0 1 2 ; do
     for obf_wrap_mode in 0 1 ; do
       csih_inform "obf_mod: $obf_mod, obf_code: $obf_code, wrap_mode: $obf_wrap_mode"
       logfile="log_${obf_mod}_${obf_code}_${obf_wrap_mode}.log"

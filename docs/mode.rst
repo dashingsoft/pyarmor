@@ -63,6 +63,11 @@ The code object of each function will keep it as it is.
 In this case, the code object of each function will be obfuscated in
 different ways depending on wrap mode.
 
+* obf_code == 2
+
+Almost same as obf_mode 1, but obfuscating bytecode by more complex
+algorithm, and so slower than the former.
+
 .. _wrap mode:
 
 Wrap Mode

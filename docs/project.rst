@@ -225,7 +225,11 @@ Each project has a configure file. It's a json file named
 
         Obfuscate each code object by default algorithm
 
-  Refer to :ref:`Obfuscating Code Mode`
+        - 2
+
+        Obfuscate each code object by more complex algorithm
+
+  The default value is `1`, refer to :ref:`Obfuscating Code Mode`
 
 * wrap_mode
 
@@ -233,7 +237,7 @@ Each project has a configure file. It's a json file named
 
   Whether to wrap code object with `try..final` block.
 
-  Refer to :ref:`Wrap Mode`
+  The default value is `1`, refer to :ref:`Wrap Mode`
 
 * obf_mod
 
@@ -247,7 +251,7 @@ Each project has a configure file. It's a json file named
 
         Obfuscate byte-code by DES algorithm
 
-  Refer to :ref:`Obfuscating Module Mode`
+  The default value is `1`, refer to :ref:`Obfuscating Module Mode`
 
 * cross_protection
 
