@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.6.7
+-----
+* Fix issue (#129): "Invalid input packet" on raspberry pi (armv7)
+* Add new obfuscation mode: obf_code == 2
+
 5.6.6
 -----
 * Remove unused exported symbols from core libraries
