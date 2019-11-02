@@ -699,7 +699,7 @@ def main(args):
     cparser.add_argument('--no-cross-protection', action='store_true',
                          help='Do not insert cross protection code to entry script')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
-                         help='List scripts to obfuscted, the first script is entry script')
+                         help='List scripts to obfuscated, the first script is entry script')
     cparser.add_argument('-s', '--src', metavar='PATH',
                          help='[DEPRECATED]Base path for searching scripts')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
