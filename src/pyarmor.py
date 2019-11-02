@@ -690,16 +690,18 @@ def main(args):
                          help='Search scripts in recursive mode')
     cparser.add_argument('--exclude', action='append',
                          help='Exclude the path in recursive mode. '
-                         'Multiple paths are allowed, separated by ",",'
-                         'or use this option multiple times')
+                         'Multiple paths are allowed, separated by ",". '
+                         'Or use this option multiple times')
     cparser.add_argument('--exact', action='store_true',
                          help='Only obfusate list scripts')
     cparser.add_argument('--no-bootstrap', action='store_true',
                          help='Do not insert bootstrap code to entry script')
     cparser.add_argument('--no-cross-protection', action='store_true',
-                         help='Do not insert cross protection code to entry script')
+                         help='Do not insert cross protection code to entry '
+                         'script')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
-                         help='List scripts to obfuscated, the first script is entry script')
+                         help='List scripts to obfuscated, the first script '
+                         'is entry script')
     cparser.add_argument('-s', '--src', metavar='PATH',
                          help='[DEPRECATED]Base path for searching scripts')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
@@ -714,7 +716,8 @@ def main(args):
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
     cparser.add_argument('--advanced', nargs='?', const='1', type=int,
-                         metavar='1', default=None, help='Enable advanced mode')
+                         metavar='1', default=None,
+                         help='Enable advanced mode')
     cparser.set_defaults(func=_obfuscate)
 
     #
