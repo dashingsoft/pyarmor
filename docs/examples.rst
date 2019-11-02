@@ -62,6 +62,62 @@ the right filename.
    From PyArmor 5.5.0, it could improve the security by passing the obfuscated
    option `--advanced` to enable :ref:`Advanced Mode`. For example::
 
-       pyarmor pack -x " --advanced --exclude tests" foo.py
+       pyarmor pack -x " --advanced 1 --exclude tests" foo.py
+
+Running obfuscated Django site with Apache and mod_wsgi
+-------------------------------------------------------
+
+Here is a simple site of Django::
+
+    /path/to/mysite/
+        db.sqlite3
+        manage.py
+        mysite/
+            __init__.py
+            settings.py
+            urls.py
+            wsgi.py
+        polls/
+            __init__.py
+            admin.py
+            apps.py
+            migrations/
+                __init__.py
+            models.py
+            tests.py
+            urls.py
+            views.py
+
+First obfuscating all the scripts::
+
+    # Create target path
+    mkdir -p /var/www/obf_site
+
+    # Copy all files to target path, because pyarmor don't deal with any data files
+    cp -a /path/to/mysite/* /var/www/obf_site/
+
+    cd /path/to/mysite
+
+    # Obfuscating all the scripts in the current path recursively, specify the entry script "wsgi.py"
+    # The obfuscate scripts will be save to "/var/www/obf_site"
+    pyarmor obfuscate --src="." -r --output=/var/www/obf_site mysite/wsgi.py
+
+Then edit the server configuration file of Apache::
+
+    WSGIScriptAlias / /var/www/obf_site/mysite/wsgi.py
+    WSGIPythonHome /path/to/venv
+
+    # The runtime files required by pyarmor are generated in this path
+    WSGIPythonPath /var/www/obf_site
+
+    <Directory /path/to/mysite.com/mysite>
+        <Files wsgi.py>
+            Require all granted
+        </Files>
+    </Directory>
+
+Finally restart Apache::
+
+    apachectl restart
 
 .. include:: _common_definitions.txt
