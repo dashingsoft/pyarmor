@@ -30,7 +30,6 @@ bind obfuscated scripts to fixed machine or expire obfuscated scripts.
 '''
 
 import logging
-import re
 import os
 import shutil
 import subprocess
@@ -698,9 +697,9 @@ def main(args):
     cparser.add_argument('--no-bootstrap', action='store_true',
                          help='Do not insert bootstrap code to entry script')
     cparser.add_argument('--no-cross-protection', action='store_true',
-                         help='Disable restrict mode')
+                         help='Do not insert cross protection code to entry script')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
-                         help='List scripts to obfuscted')
+                         help='List scripts to obfuscted, the first script is entry script')
     cparser.add_argument('-s', '--src', metavar='PATH',
                          help='[DEPRECATED]Base path for searching scripts')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
@@ -715,7 +714,7 @@ def main(args):
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
     cparser.add_argument('--advanced', nargs='?', const='1', type=int,
-                         default=None, help='Enable advanced mode')
+                         metavar='1', default=None, help='Enable advanced mode')
     cparser.set_defaults(func=_obfuscate)
 
     #
