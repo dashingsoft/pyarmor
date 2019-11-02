@@ -429,7 +429,7 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project.'''
-    for x in ('src', 'entry', 'cross-protection'):
+    for x in ('entry', 'cross-protection'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -703,7 +703,7 @@ def main(args):
                          help='List scripts to obfuscated, the first script '
                          'is entry script')
     cparser.add_argument('-s', '--src', metavar='PATH',
-                         help='[DEPRECATED]Base path for searching scripts')
+                         help='Base path for searching scripts')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
                          help='[DEPRECATED]Specify entry script')
     cparser.add_argument('--cross-protection', choices=(0, 1),
