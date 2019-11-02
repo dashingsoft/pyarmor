@@ -569,7 +569,7 @@ echo ""
 
 if [[ "$PLATFORM" == win[3_]* && "$PYTHON" == C:/Python3[012]/python ]] ; then
 
-csih_inform "This testcase is ignored in this platform"
+csih_inform "These testcases are ignored in this platform"
 
 else
 
@@ -592,7 +592,9 @@ check_file_content $PROPATH/dist/result.log 'function f'
 check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'
 
-csih_inform "Case M-1: run obfuscated scripts with multiprocessing 2"
+# Do not work even without obfuscation
+if 0 ; then
+csih_inform "Case M-2: run obfuscated scripts with multiprocessing 2"
 
 # sed -i -e "1,2 d" $PROPATH/dist/mp.py
 
@@ -604,12 +606,13 @@ import mp
 mp.main()
 EOF
 
-(cd $PROPATH/dist; $PYTHON mp.py >result.log 2>&1 )
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1 )
 check_return_value
 check_file_content $PROPATH/dist/result.log 'module name: __main__'
 check_file_content $PROPATH/dist/result.log 'function f'
 check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'
+fi
 
 fi
 
