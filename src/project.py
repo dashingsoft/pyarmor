@@ -31,6 +31,7 @@
 #    1.2.0: Add platform
 #    1.2.1: Add advanced_mode
 #    1.2.2: Remove disable_restrice_mode, add restrict_mode
+#    1.2.3: Add package_runtime
 #
 import os
 import time
@@ -47,7 +48,7 @@ from config import config_filename, capsule_filename, default_output_path, \
 
 class Project(dict):
 
-    VERSION = 1, 2, 2
+    VERSION = 1, 2, 3
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -74,6 +75,7 @@ class Project(dict):
         ('cross_protection', 1), \
         ('plugins', None), \
         ('platform', None), \
+        ('package_runtime', 1), \
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):
