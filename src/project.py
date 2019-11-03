@@ -75,7 +75,7 @@ class Project(dict):
         ('cross_protection', 1), \
         ('plugins', None), \
         ('platform', None), \
-        ('package_runtime', 1), \
+        ('package_runtime', 0), \
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):

@@ -288,11 +288,11 @@ Each project has a configure file. It's a json file named
 
   How to save the runtime files:
 
-        - 0
+        - 0 (Default)
 
         Save them in the same path with the obufscated scripts
 
-        - 1 (Default)
+        - 1
 
         Save them in the sub-path `pytransform` as a package
 
