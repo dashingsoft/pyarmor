@@ -484,11 +484,21 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             lines = f.readlines()
     else:
         encoding = _guess_encoding(filename)
-        with open(filename, 'r', encoding=encoding) as f:
-            lines = f.readlines()
+        try:
+            with open(filename, 'r', encoding=encoding) as f:
+                lines = f.readlines()
+        except UnicodeDecodeError:
+            encoding = 'utf-8'
+            with open(filename, 'r', encoding=encoding) as f:
+                lines = f.readlines()
+        # Try to remove any UTF BOM bytes
         if encoding == 'utf-8' and lines:
-            i = lines[0].find('#')
-            if i > 0:
+            i = 0
+            for c in lines[0]:
+                if ord(c) < 128:
+                    break
+                i += 1
+            if i:
                 lines[0] = lines[0][i:]
 
     if plugins:
