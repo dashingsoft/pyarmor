@@ -365,6 +365,59 @@ def patch_plugins(plugins):
     return result
 
 
+def _build_source_keylist(source, code, closure):
+    result = []
+    flist = ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library',
+             'get_registration_code', 'get_expired_days', 'get_hd_info',
+             'get_license_info', 'get_license_code', 'format_platname',
+             'pyarmor_init', 'pyarmor_runtime')
+
+    def _make_value(co):
+        return len(co.co_names), len(co.co_consts), len(co.co_code)
+
+    def _make_code_key(co):
+        v1 = _make_value(co)
+        v2 = _make_value(co.co_consts[1]) if co.co_name == 'dllmethod'else None
+        co_closure = getattr(co, closure, None)
+        v3 = _make_value(getattr(co_closure[0].cell_contents, code)) \
+            if co_closure else None
+        return v1, v2, v3
+
+    mod_co = compile(source, 'pytransform', 'exec')
+    result.append((-1, _make_code_key(mod_co)))
+    mod_consts = mod_co.co_consts
+    for i in range(len(mod_consts)):
+        co_const = mod_consts[i]
+        co = getattr(co_const, code, None)
+        if co and co.co_name in flist:
+            result.append((i, _make_code_key(co)))
+    return result
+
+
+def _build_pytransform_keylist(mod, code, closure):
+    result = []
+    flist = ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library',
+             'get_registration_code', 'get_expired_days', 'get_hd_info',
+             'get_license_info', 'get_license_code', 'format_platname',
+             'pyarmor_init', 'pyarmor_runtime')
+
+    def _make_value(co):
+        return len(co.co_names), len(co.co_consts), len(co.co_code)
+
+    def _make_code_key(co):
+        v1 = _make_value(co)
+        v2 = _make_value(co.co_consts[1]) if co.co_name == 'dllmethod'else None
+        co_closure = getattr(co, closure, None)
+        v3 = _make_value(getattr(co_closure[0].cell_contents, code)) \
+            if co_closure else None
+        return v1, v2, v3
+
+    for name in flist:
+        co = getattr(getattr(mod, name), code)
+        result.append((name, _make_code_key(co)))
+    return result
+
+
 def make_protect_pytransform(template=None, filename=None, rpath=None):
     if filename is None:
         filename = pytransform._pytransform._name
@@ -382,10 +435,12 @@ def make_protect_pytransform(template=None, filename=None, rpath=None):
 
     code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
-    rpath = 'pytransform.os.path.dirname(__file__)' if rpath is None \
-            else repr(rpath)
+    keylist = _build_pytransform_keylist(pytransform, code, closure)
+    rpath = 'pytransform.os.path.dirname(pytransform.__file__)' \
+        if rpath is None else repr(rpath)
     return buf.format(code=code, closure=closure, size=size, checksum=cosum,
-                      rpath=rpath, filename=repr(os.path.basename(filename)))
+                      keylist=keylist, rpath=rpath,
+                      filename=repr(os.path.basename(filename)))
 
 
 def _frozen_modname(filename, filename2):
