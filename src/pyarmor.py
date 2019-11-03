@@ -285,7 +285,8 @@ def _build(args):
         if project.entry:
             soutput = os.path.join(output, os.path.basename(project.src)) \
                 if project.get('is_package') else output
-            package_runtime = project.get('package_runtime', 0)
+            package_runtime = project.get('package_runtime', 0) \
+                if args.package_runtime is None else args.package_runtime
             make_entry(project.entry, project.src, soutput,
                        rpath=project.runtime_path,
                        inner=(package_runtime != 2) and (not args.no_runtime))
@@ -298,7 +299,8 @@ def _build(args):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
 
-        package = project.get('package_runtime', 0)
+        package = project.get('package_runtime', 0) \
+            if args.package_runtime is None else args.package_runtime
         make_runtime(capsule, routput, platform=platform, package=package)
 
         if not restrict:
@@ -718,8 +720,7 @@ def main(args):
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
-    cparser.add_argument('--package-runtime', choices=(0, 1, 2), default=0,
-                         nargs='?', const=1, type=int,
+    cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_obfuscate)
 
@@ -853,6 +854,8 @@ def main(args):
                          help='Output path, override project configuration')
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
+    cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
+                         help='Save runtime files as a package or not')
     cparser.set_defaults(func=_build)
 
     #

@@ -7,7 +7,7 @@ Change Logs
 -----
 * Remove deprecated flag for option `--src` in command `obfuscate`
 * Fix help message errors in command `obfuscate`
-* Add option `--package-runtime` in command `obfuscate`
+* Add option `--package-runtime` in command `obfuscate`, `config` and `build`
 * Add attribute `package_runtime` for project
 * Refine default cross protection code
 
