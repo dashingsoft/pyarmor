@@ -268,7 +268,8 @@ def _get_platform_library(platname):
 def make_runtime(capsule, output, licfile=None, platform=None, package=False):
     if package:
         output = os.path.join(output, 'pytransform')
-        os.makedirs(output)
+        if not os.path.exists(output):
+            os.makedirs(output)
     logging.info('Generating runtime files to %s', output)
 
     myzip = ZipFile(capsule, 'r')

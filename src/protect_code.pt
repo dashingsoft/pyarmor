@@ -50,6 +50,8 @@ def protect_pytransform():
             filename = pytransform.os.path.join(pytransform.sys._MEIPASS, libname)
         else:
             filename = pytransform.os.path.join({rpath}, libname)
+            if not pytransform.os.path.exists(filename):
+                filename = pytransform.os.path.join({rpath}, 'pytransform', libname)
         size = {size}
         n = size >> 2
         with open(filename, 'rb') as f:

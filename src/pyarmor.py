@@ -718,11 +718,11 @@ def main(args):
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
-    cparser.add_argument('--advanced', nargs='?', const='1', type=int,
-                         metavar='1', default=None,
+    cparser.add_argument('--advanced', nargs='?', const=1, type=int,
+                         default=0, choices=(0, 1),
                          help='Enable advanced mode')
     cparser.add_argument('--package-runtime', choices=(0, 1), default=0,
-                         nargs='?', const=1,
+                         nargs='?', const=1, type=int,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_obfuscate)
 
@@ -855,7 +855,7 @@ def main(args):
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
     cparser.add_argument('--package-runtime', choices=(0, 1), default=0,
-                         nargs='?', const=1,
+                         nargs='?', const=1, type=int,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_build)
 
