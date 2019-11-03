@@ -318,6 +318,15 @@ check_file_content test-package-runtime/result.log 'Found 92 solutions'
 check_return_value
 check_file_content test-package-runtime/result2.log 'Found 92 solutions'
 
+csih_inform "C-25. Test option --package-runtime=2 for obfuscate"
+$PYARMOR obfuscate --package-runtime 2 --output test-package-runtime2 \
+         examples/testpkg/mypkg/__init__.py >result.log 2>&1
+check_return_value
+check_file_exists test-package-runtime2/pytransform/__init__.py
+check_file_content test-package-runtime2/pytransform/__init__.py 'def init_runtime'
+check_file_exists test-package-runtime2/__init__.py
+check_file_content test-package-runtime2/__init__.py 'from pytransform import pyarmor_runtime'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
@@ -385,7 +394,11 @@ check_file_content $PROPATH/dist/mypkg/__init__.py 'pyarmor_runtime'
 csih_inform "Case P-5: build project with --package-runtime=1"
 PROPATH=projects/test-package-runtime
 $PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
-(cd $PROPATH; $ARMOR build --package-runtime >result.log 2>&1)
+
+$PYARMOR config --package-runtime=1 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
 check_return_value
 
 check_file_exists $PROPATH/dist/pytransform/__init__.py
@@ -394,6 +407,21 @@ check_file_content $PROPATH/dist/pytransform/__init__.py 'def pyarmor_runtime'
 (cd $PROPATH/dist; $PYTHON queens.py >result.log 2>&1 )
 check_return_value
 check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
+
+csih_inform "Case P-6: build project with --package-runtime=2"
+PROPATH=projects/test-package-runtime2
+$PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --package-runtime=2 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/mypkg/pytransform/__init__.py
+check_file_content $PROPATH/dist/mypkg/pytransform/__init__.py 'def pyarmor_runtime'
+check_file_exists $PROPATH/dist/mypkg/__init__.py
+check_file_content $PROPATH/dist/mypkg/__init__.py 'from pytransform import pyarmor_runtime'
 
 echo ""
 echo "-------------------- Test Project End ------------------------"
