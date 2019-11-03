@@ -265,7 +265,10 @@ def _get_platform_library(platname):
     raise RuntimeError('No dynamic library found for %s' % platname)
 
 
-def make_runtime(capsule, output, licfile=None, platform=None):
+def make_runtime(capsule, output, licfile=None, platform=None, package=False):
+    if package:
+        output = os.path.join(output, 'pytransform')
+        os.makedirs(output)
     logging.info('Generating runtime files to %s', output)
 
     myzip = ZipFile(capsule, 'r')
@@ -302,7 +305,8 @@ def make_runtime(capsule, output, licfile=None, platform=None):
         shutil.copy2(filename, output)
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
-    shutil.copy2(filename, output)
+    shutil.copy2(filename, os.path.join(output, '__init__.py') if package
+                 else output)
 
     logging.info('Generate runtime files OK')
 

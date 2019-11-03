@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.6.8
+-----
+* Remove deprecated flag for option `--src` in command `obfuscate`
+* Fix help message errors in command `obfuscate`
+* Add option `--package-runtime` in command `obfuscate` and `build`
+
 5.6.7
 -----
 * Fix issue (#129): "Invalid input packet" on raspberry pi (armv7)

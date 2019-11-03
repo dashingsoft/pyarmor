@@ -47,16 +47,17 @@ Obfuscate python scripts.
 
 **OPTIONS**
 
--O, --output PATH       Output path, default is `dist`
--r, --recursive         Search scripts in recursive mode
---exclude PATH          Exclude the path in recusrive mode. Multiple paths are allowed, separated by ",", or use this option multiple times
---exact                 Only obfuscate list scripts
---no-bootstrap          Do not insert bootstrap code to entry script
---no-cross-protection   Do not insert protection code to entry script
---plugin NAME           Insert extra code to entry script
---platform NAME         Distribute obfuscated scripts to other platform
---advanced              Enable advanced mode
---restrict <0,1,2,3,4>  Set restrict mode
+-O, --output PATH           Output path, default is `dist`
+-r, --recursive             Search scripts in recursive mode
+--exclude PATH              Exclude the path in recusrive mode. Multiple paths are allowed, separated by ",", or use this option multiple times
+--exact                     Only obfuscate list scripts
+--no-bootstrap              Do not insert bootstrap code to entry script
+--no-cross-protection       Do not insert protection code to entry script
+--plugin NAME               Insert extra code to entry script
+--platform NAME             Distribute obfuscated scripts to other platform
+--advanced                  Enable advanced mode
+--restrict <0,1,2,3,4>      Set restrict mode
+--package-runtime <0,1>     Save the runtime files as a package or not
 
 **DESCRIPTION**
 
@@ -95,6 +96,22 @@ Option `--platform` is used to specify the target platform of
 obfuscated scripts if target platform is different from build platform.
 
 Option `--restrict` is used to set restrict mode, :ref:`Restrict Mode`
+
+If `--package-runtime` is set to `1`, all the runtimes will be saved
+in the separated folder `pytransform` as package::
+
+    pytransform/
+        __init__.py
+        _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+        pytransform.key
+        license.lic
+
+Otherwise they'll be saved in the same path with obfuscated scripts::
+
+    pytransform.py
+    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+    pytransform.key
+    license.lic
 
 **EXAMPLES**
 
@@ -218,7 +235,7 @@ this way::
     print(info['DATA'])
 
 .. note::
-   
+
    Here is a real example :ref:`Using Plugin to Extend License Type`
 
 .. _pack:
@@ -460,6 +477,7 @@ Build project, obfuscate all scripts in the project.
 -n, --no-runtime      DO NOT generate runtime files
 -O, --output OUTPUT   Output path, override project configuration
 --platform NAME       Distribute obfuscated scripts to other platform
+--package-runtime <0,1>     Save the runtime files as a package or not
 
 **DESCRIPTION**
 
@@ -501,6 +519,10 @@ Or specify the project path at the end::
     pyarmor download linux_x86_64
 
     pyarmor build -B --platform linux_x86_64
+
+* Generate runtime files in a separated folder `pytransform` as package::
+
+    pyarmor build --only-runtime --package-runtime
 
 .. _info:
 

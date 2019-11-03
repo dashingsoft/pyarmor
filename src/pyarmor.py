@@ -295,8 +295,10 @@ def _build(args):
         if not os.path.exists(routput):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
-        logging.info('Make runtime files to %s', routput)
-        make_runtime(capsule, routput, platform=platform)
+
+        make_runtime(capsule, routput, platform=platform,
+                     package=args.package_runtime)
+
         if not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
             licfile = os.path.join(routput, license_filename)
@@ -534,7 +536,8 @@ def _obfuscate(args):
                        protection=protection, plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
-    make_runtime(capsule, output, platform=args.platform)
+    make_runtime(capsule, output, platform=args.platform,
+                 package=args.package_runtime)
 
     logging.info('Obfuscate scripts with restrict mode %s',
                  'on' if args.restrict else 'off')
@@ -718,6 +721,9 @@ def main(args):
     cparser.add_argument('--advanced', nargs='?', const='1', type=int,
                          metavar='1', default=None,
                          help='Enable advanced mode')
+    cparser.add_argument('--package-runtime', choices=(0, 1), default=0,
+                         nargs='?', const=1,
+                         help='Save runtime files as a package or not')
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -848,6 +854,9 @@ def main(args):
                          help='Output path, override project configuration')
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
+    cparser.add_argument('--package-runtime', choices=(0, 1), default=0,
+                         nargs='?', const=1,
+                         help='Save runtime files as a package or not')
     cparser.set_defaults(func=_build)
 
     #

@@ -1,6 +1,6 @@
 from distutils.util import get_platform
 
-version = '5.6.7'
+version = '5.6.8'
 
 # The corresponding version of _pytransform.so
 core_version = '5.5.3'
