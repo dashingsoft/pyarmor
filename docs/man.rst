@@ -57,7 +57,7 @@ Obfuscate python scripts.
 --platform NAME             Distribute obfuscated scripts to other platform
 --advanced                  Enable advanced mode
 --restrict <0,1,2,3,4>      Set restrict mode
---package-runtime <0,1>     Save the runtime files as a package or not
+--package-runtime <0,1,2>   Save the runtime files as a package or not
 
 **DESCRIPTION**
 
@@ -79,7 +79,12 @@ Next obfuscate all these scripts in the default output path `dist`.
 After that generate default :file:`license.lic` for obfuscated scripts
 and make all the other :ref:`Runtime Files` in the `dist` path.
 
-Finally insert :ref:`Bootstrap Code` into entry script.
+Finally insert :ref:`Bootstrap Code` into entry script. If the entry script is
+`__init__.py` and option `package_runtime` doesn't equal `2`, the bootstrap code
+makes a relative import by using leading dots like this::
+
+    from .pytransform import pyarmor_runtime
+    pyarmor_runtime()
 
 The entry script is only the first script if there are more than one
 script in command line.
@@ -97,8 +102,15 @@ obfuscated scripts if target platform is different from build platform.
 
 Option `--restrict` is used to set restrict mode, :ref:`Restrict Mode`
 
-If `--package-runtime` is set to `1`, all the runtimes will be saved
-in the separated folder `pytransform` as package::
+If `--package-runtime` is `0`, all the runtime files will be saved in the same
+path with obfuscated scripts::
+  
+    pytransform.py
+    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+    pytransform.key
+    license.lic
+
+Otherwise they'll be saved in the separated folder `pytransform` as package::
 
     pytransform/
         __init__.py
@@ -106,13 +118,9 @@ in the separated folder `pytransform` as package::
         pytransform.key
         license.lic
 
-Otherwise they'll be saved in the same path with obfuscated scripts::
-
-    pytransform.py
-    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    pytransform.key
-    license.lic
-
+`1` means that this package is still in the same path with obfuscated scripts in
+runtime, `2` means it's in the other path.
+    
 **EXAMPLES**
 
 * Obfuscate all the `.py` only in the current path::
@@ -173,6 +181,11 @@ Otherwise they'll be saved in the same path with obfuscated scripts::
   restrice mode 4::
 
     pyarmor obfuscate --restrict 4 --exclude __init__.py --recursive .
+
+* Obfuscate a package and generate runtime files as package::
+
+    cd /path/to/mypkg
+    pyarmor obfuscate -r --package-runtime 2 --output dist/mypkg __init__.py
 
 .. _licenses:
 
@@ -412,12 +425,13 @@ Update project settings.
 --is-package <0,1>              Set project as package or not
 --restrict-mode <0,1,2,3,4>     Set restrict mode
 --obf-mod <0,1>                 Disable or enable to obfuscate module
---obf-code <0,1>                Disable or enable to obfuscate function
+--obf-code <0,1,2>              Disable or enable to obfuscate function
 --wrap-mode <0,1>               Disable or enable wrap mode
 --advanced-mode <0,1>           Disable or enable advanced  mode
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
 --runtime-path RPATH            Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script
+--package-runtime <0,1,2>       Save the runtime files as a package or not
 
 **DESCRIPTION**
 
@@ -477,7 +491,6 @@ Build project, obfuscate all scripts in the project.
 -n, --no-runtime      DO NOT generate runtime files
 -O, --output OUTPUT   Output path, override project configuration
 --platform NAME       Distribute obfuscated scripts to other platform
---package-runtime <0,1>     Save the runtime files as a package or not
 
 **DESCRIPTION**
 
@@ -519,10 +532,6 @@ Or specify the project path at the end::
     pyarmor download linux_x86_64
 
     pyarmor build -B --platform linux_x86_64
-
-* Generate runtime files in a separated folder `pytransform` as package::
-
-    pyarmor build --only-runtime --package-runtime
 
 .. _info:
 

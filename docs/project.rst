@@ -284,6 +284,24 @@ Each project has a configure file. It's a json file named
     runtime_path to an empty string, and copy :ref:`Runtime Files` to
     same path of zip file, will solve this problem.
 
+* package_runtime
+
+  How to save the runtime files:
+
+        - 0
+
+        Save them in the same path with the obufscated scripts
+
+        - 1 (Default)
+
+        Save them in the sub-path `pytransform` as a package
+
+        - 2
+
+        Same as 1, but the package `pytransform` may be in other path
+        in runtime. So the bootstrap code will not be made a relative
+        import when inserting entry script.
+
 * plugins
 
     None or list of string

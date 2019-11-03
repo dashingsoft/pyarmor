@@ -283,10 +283,12 @@ def _build(args):
         project.save(args.project)
 
         if project.entry:
-            make_entry(project.entry, project.src, output,
+            soutput = os.path.join(output, os.path.basename(project.src)) \
+                if project.get('is_package') else output
+            package_runtime = project.get('package_runtime', 0)
+            make_entry(project.entry, project.src, soutput,
                        rpath=project.runtime_path,
-                       runtime=not args.no_runtime,
-                       ispackage=project.get('is_package'))
+                       inner=(package_runtime != 2) and (not args.no_runtime))
 
     if not args.no_runtime:
         routput = output if args.output is not None and args.only_runtime \
@@ -296,20 +298,14 @@ def _build(args):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
 
-        make_runtime(capsule, routput, platform=platform,
-                     package=args.package_runtime)
+        package = project.get('package_runtime', 0)
+        make_runtime(capsule, routput, platform=platform, package=package)
 
         if not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
             licfile = os.path.join(routput, license_filename)
             logging.info('Generate no restrict mode license file: %s', licfile)
             make_project_license(capsule, licode, licfile)
-
-    else:
-        logging.info('\tIn order to import obfuscated scripts, insert ')
-        logging.info('\t2 lines in entry script:')
-        logging.info('\t\tfrom pytransform import pyarmor_runtime')
-        logging.info('\t\tpyarmor_runtime()')
 
     logging.info('Build project OK.')
 
@@ -548,12 +544,13 @@ def _obfuscate(args):
         make_project_license(capsule, licode, licfile)
 
     if (not args.no_bootstrap) and entry and os.path.exists(entry):
+        inner = args.package_runtime != 2
         entryname = entry if args.src else os.path.basename(entry)
         if os.path.exists(os.path.join(output, entryname)):
-            make_entry(entryname, path, output)
+            make_entry(entryname, path, output, inner=inner)
         else:
             logging.info('Use outer entry script "%s"', entry)
-            make_entry(entry, path, output)
+            make_entry(entry, path, output, inner=inner)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
@@ -721,7 +718,7 @@ def main(args):
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
-    cparser.add_argument('--package-runtime', choices=(0, 1), default=0,
+    cparser.add_argument('--package-runtime', choices=(0, 1, 2), default=0,
                          nargs='?', const=1, type=int,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_obfuscate)
@@ -832,6 +829,8 @@ def main(args):
     cparser.add_argument('--plugin', dest='plugins', action='append',
                          help='Insert extra code to entry script')
     cparser.add_argument('--advanced-mode', type=int, choices=(0, 1))
+    cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
+                         help='Save runtime files as a package or not')
     cparser.set_defaults(func=_config)
 
     #
@@ -854,9 +853,6 @@ def main(args):
                          help='Output path, override project configuration')
     cparser.add_argument('--platform', help='Distribute obfuscated scripts '
                          'to other platform')
-    cparser.add_argument('--package-runtime', choices=(0, 1), default=0,
-                         nargs='?', const=1, type=int,
-                         help='Save runtime files as a package or not')
     cparser.set_defaults(func=_build)
 
     #
