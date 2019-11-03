@@ -302,6 +302,22 @@ check_return_value
 check_file_exists licenses/test-bind-data/license.lic
 check_file_content licenses/test-bind-data/license.lic.txt 'test-bind-data;20191011'
 
+csih_inform "C-24. Test option --package-runtime=1 for obfuscate"
+$PYARMOR obfuscate --package-runtime 1 --output test-package-runtime \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists test-package-runtime/pytransform/__init__.py
+check_file_content test-package-runtime/pytransform/__init__.py 'def init_runtime'
+
+(cd test-package-runtime; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content test-package-runtime/result.log 'Found 92 solutions'
+
+(cd test-package-runtime; mkdir another; mv pytransform another;
+    PYTHONPATH=another $PYTHON queens.py >result2.log 2>&1 )
+check_return_value
+check_file_content test-package-runtime/result2.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
@@ -365,6 +381,19 @@ check_return_value
 check_file_exists $PROPATH/dist/mypkg/__init__.py
 check_file_content $PROPATH/dist/mypkg/__init__.py 'from pytransform import pyarmor_runtime'
 check_file_content $PROPATH/dist/mypkg/__init__.py 'pyarmor_runtime'
+
+csih_inform "Case P-5: build project with --package-runtime=1"
+PROPATH=projects/test-package-runtime
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+(cd $PROPATH; $ARMOR build --package-runtime >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/pytransform/__init__.py
+check_file_content $PROPATH/dist/pytransform/__init__.py 'def pyarmor_runtime'
+
+(cd $PROPATH/dist; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
 
 echo ""
 echo "-------------------- Test Project End ------------------------"
