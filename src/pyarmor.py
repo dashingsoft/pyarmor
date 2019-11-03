@@ -266,15 +266,17 @@ def _build(args):
                 os.makedirs(d)
 
             if entries and (os.path.abspath(a) in entries):
+                vmode = adv_mode | 8
                 pcode = protection
                 if hasattr(project, 'plugins'):
                     plugins = project.plugins
             else:
+                vmode = adv_mode
                 pcode = 0
                 plugins = None
 
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
-                           wrap_mode=wrap_mode, adv_mode=adv_mode,
+                           wrap_mode=wrap_mode, adv_mode=vmode,
                            rest_mode=restrict, protection=pcode,
                            plugins=plugins, rpath=project.runtime_path)
 
@@ -522,15 +524,16 @@ def _obfuscate(args):
         else:
             a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
-        protection = entry and (os.path.abspath(a) == os.path.abspath(entry)) \
-            and cross_protection
+        is_entry = entry and (os.path.abspath(a) == os.path.abspath(entry))
+        protection = is_entry and cross_protection
         plugins = protection and args.plugins
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
             os.makedirs(d)
 
-        encrypt_script(prokey, a, b, adv_mode=advanced, rest_mode=restrict,
+        vmode = advanced | (8 if is_entry else 0)
+        encrypt_script(prokey, a, b, adv_mode=vmode, rest_mode=restrict,
                        protection=protection, plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
