@@ -225,31 +225,18 @@ Here it's the default template of protection code::
                 raise RuntimeError('Unexpected obfuscated script')
 
         def check_mod_pytransform():
-            CO_NAMES = set(['Exception', 'LoadLibrary', 'None', 'PYFUNCTYPE',
-                            'PytransformError', '__file__', '_debug_mode',
-                            '_get_error_msg', '_handle', '_load_library',
-                            '_pytransform', 'abspath', 'basename', 'byteorder',
-                            'c_char_p', 'c_int', 'c_void_p', 'calcsize', 'cdll',
-                            'dirname', 'encode', 'exists', 'exit',
-                            'format_platname', 'get_error_msg', 'init_pytransform',
-                            'init_runtime', 'int', 'isinstance', 'join', 'lower',
-                            'normpath', 'os', 'path', 'platform', 'print',
-                            'pyarmor_init', 'pythonapi', 'restype', 'set_option',
-                            'str', 'struct', 'sys', 'system', 'version_info'])
-
-            colist = []
-
-            for name in ('dllmethod', 'init_pytransform', 'init_runtime',
-                         '_load_library', 'pyarmor_init', 'pyarmor_runtime'):
-                colist.append(getattr(pytransform, name).{code})
-
-            for name in ('init_pytransform', 'init_runtime'):
-                colist.append(getattr(pytransform, name).{closure}[0].cell_contents.{code})
-            colist.append(pytransform.dllmethod.{code}.co_consts[1])
-
-            for co in colist:
-                if not (set(co.co_names) < CO_NAMES):
-                    raise RuntimeError('Unexpected pytransform.py')
+            def _check_co_key(co, v):
+                return (len(co.co_names), len(co.co_consts), len(co.co_code)) == v
+            for k, (v1, v2, v3) in {keylist}:
+                co = getattr(pytransform, k).{code}
+                if not _check_co_key(co, v1):
+                    raise RuntimeError('unexpected pytransform.py')
+                if v2:
+                    if not _check_co_key(co.co_consts[1], v2):
+                        raise RuntimeError('unexpected pytransform.py')
+                if v3:
+                    if not _check_co_key(co.{closure}[0].cell_contents.{code}, v3):
+                        raise RuntimeError('unexpected pytransform.py')
 
         def check_lib_pytransform():
             filename = pytransform.os.path.join({rpath}, {filename})
