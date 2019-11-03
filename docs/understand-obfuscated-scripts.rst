@@ -27,6 +27,17 @@ you find all the required files to run obfuscated scripts::
     pytransform.key
     license.lic
 
+From v5.7.0, the runtime files are saved in the separated folder
+`pytransform` as package. Here is file list In the `dist` folder::
+  
+    myscript.py
+    mymodule.py
+    pytransform/
+        __init__.py
+        _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+        pytransform.key
+        license.lic
+    
 The obfuscated scripts are normal Python scripts. The module
 `dist/mymodule.py` would be like this::
 
