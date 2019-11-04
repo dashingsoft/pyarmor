@@ -32,40 +32,39 @@ Installation
 
 Obfuscate scripts
 
-    pyarmor obfuscate examples/simple/queens.py
+    pyarmor obfuscate foo.py
 
 Run obfuscated scripts
 
     cd dist
-    python queens.py
+    python foo.py
 
-Pack obfuscated scripts with `PyInstaller`, `py2exe`, `cx_Freeze` etc.
+Pack obfuscated scripts into one bundle
 
     pip install pyinstaller
-    pyarmor pack examples/py2exe/hello.py
+    pyarmor pack foo.py
 
 Generate an expired license and run obfuscated scripts with new license
 
     pyarmor licenses --expired 2018-12-31 Customer-Jondy
-    cp licenses/Customer-Jondy/license.lic dist/
+    cp licenses/Customer-Jondy/license.lic dist/pytransform/
 
     cd dist/
-    python queens.py
+    python foo.py
 
 Start webui, open web page in browser for basic usage of PyArmor
 
     pyarmor-webui
 
-More usage, refer to [Examples](src/examples/README.md), [Documentation](https://pyarmor.readthedocs.io/en/latest/)
+More usage, refer to 
+
+* [Examples](src/examples/README.md)
+* [Documentation](https://pyarmor.readthedocs.io/en/latest/)
 
 ## License
 
-PyArmor is published as shareware. Free trial version never expires, the limitations are
-
-- The maximum size of code object is 35728 bytes in trial version
-- The scripts obfuscated by trial version are not private. It means
-  anyone could generate the license file which works for these
-  obfuscated scripts.
+PyArmor is published as shareware, free trial version never expires, there are
+some limitations.
 
 For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
 
