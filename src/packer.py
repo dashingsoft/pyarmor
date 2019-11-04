@@ -200,7 +200,7 @@ def _packer(t, src, entry, build, script, output, options, xoptions, clean):
     filters = ('global-include *.py', 'prune build, prune dist',
                'prune %s' % project,
                'exclude %s pytransform.py' % entry)
-    args = ('config', '--runtime-path', '',
+    args = ('config', '--runtime-path', '', '--package-runtime', '0',
             '--manifest', ','.join(filters), project)
     call_pyarmor(args)
 
@@ -302,7 +302,8 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
         shutil.rmtree(project)
 
     logging.info('Run PyArmor to obfuscate scripts...')
-    call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output]
+    call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
+                  '--package-runtime', '0']
                  + xoptions + [os.path.join(src, entry)])
 
     if clean or (not os.path.exists(specfile)):

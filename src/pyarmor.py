@@ -724,6 +724,7 @@ def main(args):
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
     cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
+                         default=1,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_obfuscate)
 
