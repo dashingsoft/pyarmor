@@ -46,8 +46,8 @@ Pack obfuscated scripts into one bundle
 
 Generate an expired license and run obfuscated scripts with new license
 
-    pyarmor licenses --expired 2018-12-31 Customer-Jondy
-    cp licenses/Customer-Jondy/license.lic dist/pytransform/
+    pyarmor licenses --expired 2018-12-31 PRODUCT-SN-0001
+    cp licenses/PRODUCT-SN-0001/license.lic dist/pytransform/
 
     cd dist/
     python foo.py
