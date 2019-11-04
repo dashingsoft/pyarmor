@@ -322,8 +322,8 @@ csih_inform "Case 7.2: Show license info"
 ( cd projects/pybench; $ARMOR build >licenses-result.log 2>&1 )
 
 cat <<EOF > projects/pybench/dist/info.py
-from pytransform import pyarmor_runtime, get_license_info
-pyarmor_runtime()
+from pytransform import pyarmor_init, get_license_info
+pyarmor_init()
 print(get_license_info())
 EOF
 
