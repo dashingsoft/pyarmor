@@ -5,11 +5,11 @@ Change Logs
 
 5.6.8
 -----
-* Remove deprecated flag for option `--src` in command `obfuscate`
-* Fix help message errors in command `obfuscate`
 * Add option `--package-runtime` in command `obfuscate`, `config` and `build`
 * Add attribute `package_runtime` for project
 * Refine default cross protection code
+* Remove deprecated flag for option `--src` in command `obfuscate`
+* Fix help message errors in command `obfuscate`
 
 5.6.7
 -----
