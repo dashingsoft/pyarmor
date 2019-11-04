@@ -72,12 +72,15 @@ if [[ -n "${LICENSE_CODE}" ]] ; then
 
     # Overwrite default license with this license
     if [[ -n "${PKGNAME}" ]] ; then
-        echo Copy new license to $PROJECT/dist
-        cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist/${PKGNAME}
+        LICPATH=$PROJECT/dist/${PKGNAME}
     else
-        echo Copy new license to $PROJECT/dist/${PKGNAME}
-        cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist
+        LICPATH=$PROJECT/dist
     fi
+    if ! [[ -f "$LICPATH/license.lic" ]] ; then
+        LICPATH=$LICPATH/pytransform
+    fi
+    echo Copy new license to $PROJECT/dist/${PKGNAME}
+    cp licenses/${LICENSE_CODE}/license.lic $PROJECT/dist
 fi
 
 # Run obfuscated scripts if

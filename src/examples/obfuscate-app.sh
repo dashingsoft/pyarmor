@@ -33,8 +33,13 @@ if [[ -n "${LICENSE_EXPIRED_DATE}" ]] ; then
     echo
 
     # Overwrite default license with this expired license
-    echo Copy expired license to $OUTPUT
-    cp  licenses/${LICENSE_CODE}/license.lic $OUTPUT
+    if [[ -f "$OUTPUT/license.lic" ]] ; then
+        echo Copy expired license to $OUTPUT
+        cp licenses/${LICENSE_CODE}/license.lic $OUTPUT
+    else
+        echo Copy expired license to $OUTPUT/pytransform
+        cp licenses/${LICENSE_CODE}/license.lic $OUTPUT/pytransform
+    fi
 fi
 
 # Run obfuscated scripts

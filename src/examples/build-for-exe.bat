@@ -94,7 +94,7 @@ cd /D %PROJECT%
 
 REM This is the key, change default runtime path, otherwise dynamic library _pytransform could not be found
 Echo.
-Call pyarmor.bat config --runtime-path="" --manifest "global-include *.py, exclude %ENTRY_SCRIPT% setup.py pytransform.py, prune build, prune dist"
+Call pyarmor.bat config --runtime-path="" --package-runtime=0 --manifest "global-include *.py, exclude %ENTRY_SCRIPT% setup.py pytransform.py, prune build, prune dist"
 
 REM Obfuscate scripts without runtime files, only obfuscated scripts are generated
 Echo.
