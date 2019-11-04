@@ -63,8 +63,12 @@ More usage, refer to
 
 ## License
 
-PyArmor is published as shareware, free trial version never expires, there are
-some limitations.
+PyArmor is published as shareware, free trial version never expires, but there are
+some limitations:
+
+* The maximum size of code object is 35728 bytes in trial version
+* All the trial version uses same public capsule other than private capsule
+* ...
 
 For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
 
