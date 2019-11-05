@@ -347,7 +347,7 @@ $PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
 check_return_value
 
 (cd $PROPATH;
- $ARMOR config --output="." >result.log 2>&1;
+ $ARMOR config --output="." --package-runtime=0 >result.log 2>&1;
  $ARMOR build >result.log 2>&1)
 check_return_value
 check_file_exists $PROPATH/queens.py
@@ -650,7 +650,7 @@ check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'
 
 # Do not work even without obfuscation
-if 0 ; then
+if false ; then
 csih_inform "Case M-2: run obfuscated scripts with multiprocessing 2"
 
 # sed -i -e "1,2 d" $PROPATH/dist/mp.py
