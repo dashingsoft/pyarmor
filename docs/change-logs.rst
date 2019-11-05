@@ -3,6 +3,41 @@
 Change Logs
 ===========
 
+5.7.0
+-----
+There are 2 major changes in this version:
+
+1. The runtime files are saved in the separated folder `pytransform` as package::
+
+    dist/
+        obf_foo.py
+
+        pytransform/
+            __init__.py
+            license.lic
+            pytransform.key
+            ...
+
+2. The bootstrap code must be in the obfuscated scripts, and it must be entry
+   script as obfuscating.
+
+Other changes:
+
+* Change default value of project attribute `package_runtime` from 0 to 1
+* Change default value of option `--package-runtime` from 0 to 1 in command `obfuscate`
+
+Upgrade notes:
+
+* If you have generated new runtime file "license.lic", it should be copied to
+  `dist/pytransform` other than `dist/`
+  
+* If you'd like to save the runtime files in the same folder with obfuscated
+  scripts as before, obfuscating the scripts with option `package-runtime` like
+  this::
+
+    pyarmor obfuscate --package-runtime=0 foo.py
+    pyarmor build --package-runtime=0
+
 5.6.8
 -----
 * Add option `--package-runtime` in command `obfuscate`, `config` and `build`
