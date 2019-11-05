@@ -329,9 +329,6 @@ def _licenses(args):
         project.open(args.project)
         capsule = build_path(project.capsule, args.project) \
             if args.capsule is None else args.capsule
-        restrict_mode = project.get('restrict_mode',
-                                    0 if project.get('disable_restrict_mode')
-                                    else 1)
     else:
         if args.project != '':
             logging.warning('Ignore option --project, there is no project')
@@ -341,7 +338,7 @@ def _licenses(args):
             make_capsule(capsule)
         logging.info('Generate licenses with capsule %s ...', capsule)
         project = dict(restrict_mode=args.restrict)
-        restrict_mode = args.restrict
+    restrict_mode = 0 if args.disable_restrict_mode else args.restrict
 
     licpath = os.path.join(
         args.project if args.output is None else args.output,
@@ -763,6 +760,8 @@ def main(args):
     cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
     cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('-O', '--output', help='Output path')
+    cparser.add_argument('--disable-restrict-mode', action='store_true',
+                         help='Disable all the restrict modes')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          default=1, help=argparse.SUPPRESS)
 
