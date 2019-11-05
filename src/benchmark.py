@@ -81,6 +81,8 @@ def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
             '--obf-mod', module_mode,
             '--obf-code', code_mode,
             '--wrap-mode', wrap_mode,
+            '--restrict-mode', '0',
+            '--package-runtime', '0',
             project]
     call_pyarmor(args)
 
