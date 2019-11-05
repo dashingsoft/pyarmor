@@ -201,7 +201,7 @@ def _packer(t, src, entry, build, script, output, options, xoptions, clean):
                'prune %s' % project,
                'exclude %s pytransform.py' % entry)
     args = ('config', '--runtime-path', '', '--package-runtime', '0',
-            '--manifest', ','.join(filters), project)
+            '--restrict-mode', '0', '--manifest', ','.join(filters), project)
     call_pyarmor(args)
 
     logging.info('Run PyArmor to build the project')
