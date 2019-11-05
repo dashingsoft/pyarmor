@@ -307,7 +307,9 @@ def _build(args):
 
         if not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
-            licfile = os.path.join(routput, license_filename)
+            licpath = os.path.join(routput, 'pytransform') if package \
+                else routput
+            licfile = os.path.join(licpath, license_filename)
             logging.info('Generate no restrict mode license file: %s', licfile)
             make_project_license(capsule, licode, licfile)
 
@@ -544,7 +546,9 @@ def _obfuscate(args):
                  'on' if args.restrict else 'off')
     if not args.restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
-        licfile = os.path.join(output, license_filename)
+        licpath = os.path.join(output, 'pytransform') if args.package_runtime \
+            else output
+        licfile = os.path.join(licpath, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
 
