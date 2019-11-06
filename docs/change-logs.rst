@@ -18,14 +18,11 @@ There are 2 major changes in this version:
             pytransform.key
             ...
 
-2. The bootstrap code must be in the obfuscated scripts, and it must be entry
-   script as obfuscating.
-
 Upgrade notes:
 
 * If you have generated new runtime file "license.lic", it should be copied to
   `dist/pytransform` other than `dist/`
-  
+
 * If you'd like to save the runtime files in the same folder with obfuscated
   scripts as before, obfuscating the scripts with option `package-runtime` like
   this::
@@ -33,13 +30,32 @@ Upgrade notes:
     pyarmor obfuscate --package-runtime=0 foo.py
     pyarmor build --package-runtime=0
 
+2. The bootstrap code must be in the obfuscated scripts, and it must be entry
+   script as obfuscating.
+
+Upgrade notes:
+
+* If you have inserted bootstrap code into the obfuscated script `dist/foo.py`
+  which is obfuscated but not as entry script manually. Do it by this command
+  after v5.7.0::
+
+    pyarmor --no-runtime --exact foo.py
+
+* If you need insert bootstrap code into plain script, first obfuscate an empty
+  script like this::
+
+    echo "" > pytransform_bootstrap.py
+    pyarmor --no-runtime --exact pytransform_bootstrap.py
+
+  Then import `pytransform_bootstrap` in the plain script.
+
 Other changes:
 
 * Change default value of project attribute `package_runtime` from 0 to 1
 * Change default value of option `--package-runtime` from 0 to 1 in command `obfuscate`
 * Add option `--no-runtime` for command `obfuscate`
 * Add optioin `--disable-restrict-mode` for command `licenses`
-    
+
 5.6.8
 -----
 * Add option `--package-runtime` in command `obfuscate`, `config` and `build`
