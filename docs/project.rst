@@ -274,8 +274,8 @@ Each project has a configure file. It's a json file named
     None or any path.
 
     When run obfuscated scripts, where to find dynamic library
-    `_pytransform`. The default value is None, it means it's within the `runtime
-    package`_ or in the same path of :file:`pytransform.py`.
+    `_pytransform`. The default value is None, it means it's within the
+    :ref:`runtime package` or in the same path of :file:`pytransform.py`.
 
     It's useful when obfuscated scripts are packed into a zip file,
     for example, use py2exe to package obfuscated scripts. Set

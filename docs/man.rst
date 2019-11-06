@@ -77,10 +77,10 @@ protection code into the entry script.
 
 Next obfuscate all these scripts in the default output path `dist`.
 
-After that make the `runtime package`_ in the `dist` path and generate
-the default :file:`license.lic` for obfuscated scripts.
+After that make the :ref:`runtime package` in the `dist` path and generate the
+default :file:`license.lic` for obfuscated scripts.
 
-Finally insert the `bootstrap code`_ into entry script.
+Finally insert the :ref:`bootstrap code` into entry script.
 
 The entry script is only the first script if there are more than one
 script in command line.
@@ -115,15 +115,15 @@ Otherwise they'll be saved in the separated folder `pytransform` as package::
 
 The default value is `1`, the value `2` is only used in a special case.
 
-Generally if the entry script is `__init__.py`, the `bootstrap code`_ will make a
-relative import by using leading dots like this::
+Generally if the entry script is `__init__.py`, the :ref:`bootstrap code` will
+make a relative import by using leading dots like this::
 
     from .pytransform import pyarmor_runtime
     pyarmor_runtime()
 
-But if option `--package-runtime` is `2`, it means the `runtime package`_ will
-be in other path, so the `bootstrap code`_ still makes absolute import without
-leading dots.
+But if option `--package-runtime` is `2`, it means the :ref:`runtime package`
+will be in other path, so the :ref:`bootstrap code` still makes absolute import
+without leading dots.
 
 **EXAMPLES**
 

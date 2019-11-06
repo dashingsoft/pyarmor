@@ -107,12 +107,12 @@ scripts automatically, it will make everything simple:
 
 Here are the base steps:
 
-1. First create the `runtime package`_ with empty entry script::
+1. First create the :ref:`runtime package` with empty entry script::
 
     echo "" > pytransform_bootstrap.py
     pyarmor obfuscate pytransform_bootstrap.py
 
-2. Move the `runtime package`_ `dist/pytransform` to Python system library. For
+2. Move the :ref:`runtime package` `dist/pytransform` to Python system library. For
    example::
 
     # For windows
@@ -131,6 +131,7 @@ Here are the base steps:
    `pytransform_bootstrap` before the line `if __name__ == '__main__'`::
 
     import pytransform_bootstrap
+
     if __name__ == '__main__':
         ...
 
@@ -143,9 +144,9 @@ module `site` is automatically imported during Python initialization.
 Refer to https://docs.python.org/3/library/site.html
 
 .. note::
-   
-    Before v5.7.0, you need create the `runtime package`_ by the `runtime
-    files`_ manually.
+
+    Before v5.7.0, you need create the :ref:`runtime package` by the
+    :ref:`runtime files` manually.
 
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
@@ -159,19 +160,19 @@ default. Specify option `--advanced` to enable it::
     cd /path/to/project
     pyarmor config --advanced 1
     pyarmor build -B
-    
+
 From PyArmor 5.2, the default :ref:`Restrict Mode` is 1. It could be changed by
-this way::
+the option `--restrict`::
 
     pyarmor obfuscate --restrict=2 foo.py
     pyarmor obfuscate --restrict=3 foo.py
-    
+
     # For project
     cd /path/to/project
     pyarmor config --restrict 4
     pyarmor build -B
-    
-All the restricts could be disabled if required::
+
+All the restricts could be disabled by this way if required::
 
     pyarmor obfuscate --restrict=0 foo.py
 
@@ -181,7 +182,7 @@ All the restricts could be disabled if required::
 
 The modes of :ref:`Obfuscating Code Mode`, :ref:`Wrap Mode`, :ref:`Obfuscating
 module Mode` could not be changed in command :ref:`obfucate`. They only could be
-changed by command `config`_ when :ref:`Using Project`. For example::
+changed by command config_ when :ref:`Using Project`. For example::
 
     pyarmor init --src=src --entry=main.py .
     pyarmor config --obf-mod=1 --obf-code=1 --wrap-mode=0
@@ -314,13 +315,13 @@ later easily. Here are basic steps:
     pyarmor pack --clean --without-license \
             -e " --onefile --icon logo.ico --runtime-hook copy_license.py" foo.py
 
-Option `--without-license` tells `pyamor` not to bundle the `license.lic` of
-obfuscated scripts to the final executable file. By option `--runtime-hook` of
-`PyInstaller`, the specified script `copy_licesen.py` will be executed before
-any obfuscated scripts are imported. It will copy outer `license.lic` to right
-path.
+  Option `--without-license` tells `pyamor` not to bundle the `license.lic` of
+  obfuscated scripts to the final executable file. By option `--runtime-hook` of
+  `PyInstaller`, the specified script `copy_licesen.py` will be executed before
+  any obfuscated scripts are imported. It will copy outer `license.lic` to right
+  path.
 
-Try to run `dist/foo.exe`, it should report license error.
+  Try to run `dist/foo.exe`, it should report license error.
 
 3. Finally run `pyarmor licenses` to generate new license for the
    obfuscated scripts, and copy new `license.lic` and `dist/foo.exe`
