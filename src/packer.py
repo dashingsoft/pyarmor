@@ -21,8 +21,7 @@
 #
 #  @Description:
 #
-#   Pack obfuscated Python scripts with any of third party
-#   tools: py2exe, py2app, cx_Freeze
+#   Pack obfuscated Python scripts with PyInstaller
 #
 
 '''Pack obfuscated scripts to one bundle, distribute the
@@ -375,9 +374,9 @@ def add_arguments(parser):
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in')
     parser.add_argument('-e', '--options',
-                        help='Extra options to run external tool')
+                        help='Pass these extra options to `pyinstaller`')
     parser.add_argument('-x', '--xoptions',
-                        help='Extra options to obfuscate scripts')
+                        help='Pass these extra options to `pyarmor obfuscate`')
     parser.add_argument('--without-license', action='store_true',
                         help='Do not generate license for obfuscated scripts')
     parser.add_argument('--clean', action="store_true",
