@@ -23,8 +23,8 @@ The capsule can't help restoring the obfuscated scripts at all. If your `private
 capsuel` got by someone else, the risk is that he/she may generate new license
 for your obfuscated scripts.
 
-It's not used when running the obfuscated scripts, so need not distribute it
-with obfuscated scripts to the end users.
+Generally this capsule is only in the build machine, it's not used when running
+the obfuscated scripts.
 
 Obfuscated Scripts
 ------------------
@@ -151,8 +151,11 @@ Key Points to Use Obfuscated Scripts
 * The obfuscated scripts are normal python scripts, so they can be seamless to
   replace original scripts.
 
-* There is only one thing changed, the `runtime package`_ must be in any Python
-  Path, so that the `bootstrap code`_ can run at first.
+* There is only one thing changed, the `bootstrap code`_ must be executed before
+  running or importing any obfuscated scripts.
+
+* The `runtime package`_ must be in any Python Path, so that the `bootstrap
+  code`_ can run correctly.
 
 * The `bootstrap code`_ will load dynamic library `_pytransform.so/.dll/.dylib`
   by `ctypes`. This file is dependent-platform, all the prebuilt dynamic
