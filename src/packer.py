@@ -358,6 +358,7 @@ def packer(args):
     if t == 'PyInstaller':
         _pyinstaller(src, entry, output, script, extra_options, xoptions, args)
     else:
+        logging.warning('Deprecated way, use PyInstaller instead')
         _packer(t, src, entry, build, script, output,
                 extra_options, xoptions, args.clean)
 
@@ -369,8 +370,7 @@ def add_arguments(parser):
     parser.add_argument('-v', '--version', action='version', version='v0.1')
 
     parser.add_argument('-t', '--type', default='PyInstaller', metavar='TYPE',
-                        choices=DEFAULT_PACKER.keys(),
-                        help=', '.join(DEFAULT_PACKER.keys()))
+                        choices=DEFAULT_PACKER.keys(), help=argparse.SUPPRESS)
     parser.add_argument('-s', '--setup', help=argparse.SUPPRESS)
     parser.add_argument('-O', '--output',
                         help='Directory to put final built distributions in')
