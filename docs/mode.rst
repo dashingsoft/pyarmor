@@ -164,20 +164,20 @@ All of these modes only could be changed in the project for now, refer to
 Restrict Mode
 -------------
 
-From PyArmor 5.7.0, the `bootstrap code`_ must be in the obfuscated scripts and
-must be specified as entry script. For example, there are 2 scripts `foo.py` and
-`test.py` in the same folder, obfuscated by this command::
+From PyArmor 5.7.0, the :ref:`bootstrap code` must be in the obfuscated scripts
+and must be specified as entry script. For example, there are 2 scripts `foo.py`
+and `test.py` in the same folder, obfuscated by this command::
 
     pyarmor obfuscate foo.py
 
 Inserting the `bootstrap code` into obfuscated script `dist/test.py` by manual
 doesn't work, because it's not specified as entry script. It must be run this
-command to insert the `bootstrap code`_::
+command to insert the :ref:`bootstrap code`::
 
     pyarmor --no-runtime --exact test.py
 
-If you need insert the `bootstrap code`_ into plain script, first obfuscate an
-empty script like this::
+If you need insert the :ref:`bootstrap code` into plain script, first obfuscate
+an empty script like this::
 
     echo "" > pytransform_bootstrap.py
     pyarmor --no-runtime --exact pytransform_bootstrap.py

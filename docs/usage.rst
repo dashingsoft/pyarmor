@@ -45,7 +45,6 @@ of :file:`myscript.py` would be like this::
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
 
 The first 2 lines called :ref:`Bootstrap Code`, are only in the entry
@@ -125,8 +124,8 @@ Extending License Type
 
 It's easy to extend any other licese type for obfuscated scripts: **just add
 authentication code in the entry script**. The script can't be changed any more
-after it is obfuscated, so write whatever you want in your script. In this case
-the :ref:`module pytransform` would be useful.
+after it is obfuscated, so do whatever you want in your script. In this case the
+:ref:`module pytransform` would be useful.
 
 But the prefer way is :ref:`using plugin to extend license type`. The advantage
 is that your scripts needn't be changed at all. Just write authentication code
