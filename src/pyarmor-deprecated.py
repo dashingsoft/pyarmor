@@ -513,6 +513,10 @@ It's Following the Distutils’ own manifest template
     ZipFile(capsule).extractall(path=output)
     logging.info('Extract capsule to %s OK.', output)
 
+    # Fix bootstrap restrict issue from v5.7.0
+    make_license(capsule, os.path.join(output, 'license.lic'),
+                 '*FLAGS:A*CODE:PyArmor')
+
     if mode >= 3:
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
@@ -689,6 +693,10 @@ For example,
     else:
         logging.info('License file expired at %s', expired)
         fmt = '*TIME:%.0f\n' % time.mktime(time.strptime(expired, '%Y-%m-%d'))
+
+    # Fix bootstrap restrict issue from v5.7.0
+    if key.find('FLAGS') == -1:
+        fmt = '%s*FLAGS:A' % fmt
 
     if binddisk:
         logging.info('License file bind to harddisk "%s"', binddisk)
