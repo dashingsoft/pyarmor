@@ -132,6 +132,15 @@ cp licenses/Jondy/license.lic dist3/pytransform/
 check_return_value
 check_file_content dist3/result.log 'Found 92 solutions'
 
+csih_inform "Case 1.4: obfuscate one script exactly without runtime files"
+$PYARMOR obfuscate --output dist4 --exact --no-runtime \
+         examples/pybench/pybench.py >result.log 2>&1
+check_return_value
+check_file_exists dist4/pybench.py
+check_file_not_exists dist4/Lists.py
+check_file_not_exists dist4/pytransform.py
+check_file_not_exists dist4/pytransform/__init__.py
+
 echo ""
 echo "-------------------- Test Command obfuscate END ----------------"
 echo ""
@@ -365,6 +374,23 @@ cp projects/pybench/id_rsa projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'\*FIXKEY\*'"
+
+csih_inform "Case 7.3: Generate license which disable all restricts"
+output=test-no-restrict-license
+$PYARMOR obfuscate -O $output --no-cross-protection \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+$PYARMOR licenses --disable-restrict-mode NO-RESTRICT >result.log 2>&1
+check_return_value
+check_file_exists licenses/NO-RESTRICT/license.lic
+
+cp licenses/NO-RESTRICT/license.lic $output/pytransform/
+echo -e "\nprint('No restrict mode')" >> $output/queens.py
+(cd $output; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Found 92 solutions'
+check_file_content $output/result.log 'No restrict mode'
 
 echo ""
 echo "-------------------- Test Command licenses END -----------------"
