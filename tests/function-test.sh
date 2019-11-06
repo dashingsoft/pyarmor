@@ -829,7 +829,7 @@ check_file_content $output/result.log 'No restrict mode' not
 check_file_content $output/result.log 'Check restrict mode failed'
 
 cp $output/main.bak $output/main.py
-rm -rf $output/mypkg/foo.py? __pycache__ mypkg/__pycache__
+rm -rf $output/mypkg/foo.py? __pycache__ $output/mypkg/__pycache__
 echo -e "\nprint('This is obfuscated foo')" >> $output/mypkg/foo.py
 (cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
