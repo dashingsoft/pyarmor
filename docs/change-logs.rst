@@ -21,11 +21,6 @@ There are 2 major changes in this version:
 2. The bootstrap code must be in the obfuscated scripts, and it must be entry
    script as obfuscating.
 
-Other changes:
-
-* Change default value of project attribute `package_runtime` from 0 to 1
-* Change default value of option `--package-runtime` from 0 to 1 in command `obfuscate`
-
 Upgrade notes:
 
 * If you have generated new runtime file "license.lic", it should be copied to
@@ -38,6 +33,13 @@ Upgrade notes:
     pyarmor obfuscate --package-runtime=0 foo.py
     pyarmor build --package-runtime=0
 
+Other changes:
+
+* Change default value of project attribute `package_runtime` from 0 to 1
+* Change default value of option `--package-runtime` from 0 to 1 in command `obfuscate`
+* Add option `--no-runtime` for command `obfuscate`
+* Add optioin `--disable-restrict-mode` for command `licenses`
+    
 5.6.8
 -----
 * Add option `--package-runtime` in command `obfuscate`, `config` and `build`
