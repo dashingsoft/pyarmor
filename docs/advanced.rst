@@ -182,7 +182,7 @@ All the restricts could be disabled by this way if required::
 
 The modes of :ref:`Obfuscating Code Mode`, :ref:`Wrap Mode`, :ref:`Obfuscating
 module Mode` could not be changed in command :ref:`obfucate`. They only could be
-changed by command config_ when :ref:`Using Project`. For example::
+changed by command :ref:`config` when :ref:`Using Project`. For example::
 
     pyarmor init --src=src --entry=main.py .
     pyarmor config --obf-mod=1 --obf-code=1 --wrap-mode=0

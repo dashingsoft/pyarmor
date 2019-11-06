@@ -83,7 +83,7 @@ code may make a relateive import by leading "."::
 
 And there is another form if the runtime path is specified as obfuscating
 scripts::
-  
+
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/runtime')
 
@@ -156,13 +156,13 @@ Key Points to Use Obfuscated Scripts
 
 * The `bootstrap code`_ will load dynamic library `_pytransform.so/.dll/.dylib`
   by `ctypes`. This file is dependent-platform, all the prebuilt dynamic
-  libraries list here `Support Platforms`_
+  libraries list here :ref:`Support Platforms`
 
 * By default the `bootstrap code`_ searchs dynamic library `_pytransform` in the
   `runtime package`_. Check `pytransform._load_library` to find the details.
 
 * If the dynamic library `_pytransform` isn't within the `runtime package`_,
-  change the `bootstrap code`::
+  change the `bootstrap code`_::
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/runtime')
@@ -174,6 +174,6 @@ Key Points to Use Obfuscated Scripts
   `os.exec`, `subprocess.Popen` etc., make sure the `bootstrap code`_ are called
   in new process before running any obfuscated script.
 
-More information, refer to `How to Obfuscate Scripts`_ and `How to Run Obfuscated Scripts`_
+More information, refer to :ref:`How to Obfuscate Scripts` and :ref:`How to Run Obfuscated Scripts`
 
 .. include:: _common_definitions.txt
