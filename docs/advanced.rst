@@ -20,7 +20,7 @@ First change to work path, create 3 projects::
     pyarmor init --src /path/to/pkg2 --entry __init__.py pkg2
     pyarmor init --src /path/to/pkg3 --entry __init__.py pkg3
 
-Then make runtime files, save them in the path `dist`::
+Then make the :ref:`runtime package`, save it in the path `dist`::
 
     pyarmor build --output dist --only-runtime pkg1
 
@@ -38,6 +38,11 @@ Check all the output and test these obfuscated packages::
     python -c 'import pkg1
     import pkg2
     import pkg3'
+
+.. note::
+
+   The runtime package `pytransform` in the output path `dist` also could be
+   move to any other Python path, only if it could be imported.
 
 .. _distributing obfuscated scripts to other platform:
 

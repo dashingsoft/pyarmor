@@ -231,13 +231,13 @@ An expired license will be generated in the default output path plus code name
 `licenses/mycode`, then overwrite the old one in the same path of obfuscated
 script::
 
-    cp licenses/mycode/license.lic dist/
+    cp licenses/mycode/license.lic dist/pytransform/
 
 Another example, bind obfuscated scripts in mac address and expired on
 2019-10-10::
 
     pyarmor licenses --expired 2019-10-10 --bind-mac 2a:33:50:46:8f tom
-    cp licenses/tom/license.lic dist/
+    cp licenses/tom/license.lic dist/pytransform/
 
 Before this, run command `hdinfo`_ to get hardware information::
 
@@ -289,19 +289,15 @@ Next replace the original scripts with the obfuscated ones.
 
 Finally pack all of them into one bundle.
 
-Option `--options` could pass any extra options to `PyInstaller`. It is called
-by this way::
+Option `--options EXTRA_OPTIONS` could pass any extra options to
+`PyInstaller`. It is called by this way::
 
     pyinstaller --distpath DIST -y EXTRA_OPTIONS SCRIPT
 
-`EXTRA_OPTIONS` is replaced with this option.
-
-Option `--xoptions` could pass any extra options to obfuscate scripts. By
-default, `pack` will obfuscate scripts like this::
+Option `--xoptions EXTRA_OPTIONS` could pass any extra options to obfuscate
+scripts. `pack` will call pyarmor to obfuscate scripts like this::
 
     pyarmor obfuscate -r --output DIST EXTRA_OPTIONS SCRIPT
-
-`EXTRA_OPTIONS` is replaced with this option.
 
 For more information, refer to :ref:`How to pack obfuscated scripts`.
 
@@ -327,9 +323,8 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
     pyarmor pack -e " --onefile" -x " --advanced" foo.py
 
-* If the application name is changed by passing option `-n` of
-  `PyInstaller`, the option `-s` must be specified at the same
-  time. For example::
+* If the application name is changed by passing option `-n` of `PyInstaller`,
+  the option `-s` must be specified at the same time. For example::
 
     pyarmor pack -e " -n my_app" -s "my_app.spec" foo.py
 

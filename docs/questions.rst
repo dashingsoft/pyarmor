@@ -27,8 +27,8 @@ which locates in the installed path of `pyarmor` , in the function
 Could not find `_pytransform`
 -----------------------------
 
-Generally, the dynamic library `_pytransform` is in the same path of
-obfuscated scripts. It may be:
+Generally, the dynamic library `_pytransform` is in the :ref:`runtime package`,
+before v5.7.0, it's in the same path of obfuscated scripts. It may be:
 
 * `_pytransform.so` in Linux
 * `_pytransform.dll` in Windows
@@ -186,10 +186,10 @@ is any of `license.lic` or `pytransform.key` in the current path. To
 be sure they're generated for the obfuscated scripts. If not, rename
 them or move them to other path.
 
-Because the obfuscated scripts will first search the current path,
-then search the path of runtime module `pytransform.py` to find the
-file `license.lic` and `pytransform.key`. If they're not generated for
-the obfuscated script, this error will be reported.
+Before v5.7.0, the obfuscated scripts will first search the current path, then
+search the path of runtime module `pytransform.py` to find the file
+`license.lic` and `pytransform.key`. If they're not generated for the obfuscated
+script, this error will be reported.
 
 'XXX' codec can't decode byte 0xXX
 ----------------------------------
