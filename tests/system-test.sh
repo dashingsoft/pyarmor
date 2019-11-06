@@ -83,6 +83,9 @@ check_file_exists dist2/hello.py
 check_file_content dist2/hello.py 'pyarmor_runtime()'
 check_file_exists dist2/queens.py
 check_file_content dist2/queens.py '__pyarmor__(__name__'
+check_file_exists dist2/pytransform/__init__.py
+check_file_exists dist2/pytransform/license.lic
+check_file_not_exists dist2/license.lic
 
 ( cd dist2; $PYTHON hello.py >result.log 2>&1 )
 check_return_value
@@ -102,6 +105,19 @@ check_file_content dist2-2/queens.py '__pyarmor__(__name__'
 check_return_value
 check_file_content dist2-2/result.log 'Found 92 solutions'
 
+csih_inform "Case 1.2-3: obfuscate script with --package-runtime=0 and --restrict=0"
+$PYARMOR obfuscate --package-runtime=0 --restrict=0 --output dist2-3 \
+                   -r examples/py2exe/hello.py >result.log 2>&1
+
+check_return_value
+check_file_exists dist2-3/hello.py
+check_file_content dist2-3/hello.py 'pyarmor_runtime()'
+check_file_exists dist2-3/pytransform.py
+
+( cd dist2-3; $PYTHON hello.py >result.log 2>&1 )
+check_return_value
+check_file_content dist2-3/result.log 'Found 92 solutions'
+
 csih_inform "Case 1.3: run obfuscate script with new license"
 $PYARMOR obfuscate --output dist3 examples/simple/queens.py >result.log 2>&1
 check_return_value
@@ -110,7 +126,7 @@ check_file_exists dist3/queens.py
 $PYARMOR licenses --expired $(next_month) Jondy >result.log 2>&1
 check_return_value
 check_file_exists licenses/Jondy/license.lic
-cp licenses/Jondy/license.lic dist3/
+cp licenses/Jondy/license.lic dist3/pytransform/
 
 ( cd dist3; $PYTHON queens.py >result.log 2>&1 )
 check_return_value
@@ -331,12 +347,12 @@ EOF
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'PyArmor-Project'"
 
-cp $output/code1/license.lic projects/pybench/dist
+cp $output/code1/license.lic projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'code1'"
 
-cp $output/customer-tom/license.lic projects/pybench/dist
+cp $output/customer-tom/license.lic projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'customer-tom'"
@@ -344,8 +360,8 @@ check_file_content projects/pybench/dist/result.log "'${harddisk_sn}'"
 check_file_content projects/pybench/dist/result.log "'${ifmac_address}'"
 check_file_content projects/pybench/dist/result.log "'${ifip_address}'"
 
-cp $output/fixkey/license.lic projects/pybench/dist
-cp projects/pybench/id_rsa projects/pybench/dist
+cp $output/fixkey/license.lic projects/pybench/dist/pytransform
+cp projects/pybench/id_rsa projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'\*FIXKEY\*'"
@@ -491,9 +507,6 @@ cp examples/testpkg/main.py $PROPATH/dist
 check_file_content $PROPATH/dist/result.log 'Hello! PyArmor Test Case'
 
 csih_inform "Case T-1.5: obfuscate 2 independent packages"
-if [[ "$PLATFORM" == "win32" ]] ; then
-csih_inform "This testcase is ignored in platform win32"
-else
 output=dist-pkgs
 $PYARMOR obfuscate -O $output/pkg1 examples/testpkg/mypkg/__init__.py >result.log 2>&1
 $PYARMOR obfuscate -O $output/pkg2 examples/testpkg/mypkg/__init__.py >result.log 2>&1
@@ -511,7 +524,6 @@ EOF
 (cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log "Hello! pkg1"
 check_file_content $output/result.log "Hello! pkg2"
-fi
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"

@@ -64,13 +64,13 @@ check_file_content dist/result.log "is never expired"
 check_file_content dist/result.log "Hello world"
 check_file_content dist/result.log "1 + 1 = 2"
 
-csih_inform "4. Generate expired license"
+csih_inform "3.1 Generate expired license"
 $PYARMOR licenses -e $(next_month) Joker >result.log 2>&1
 check_return_value
 check_file_exists licenses/Joker/license.lic
 
-csih_inform "3. Run obfuscated foo.py with expired license"
-cp licenses/Joker/license.lic dist/
+csih_inform "3.2 Run obfuscated foo.py with expired license"
+cp licenses/Joker/license.lic dist/pytransform
 (cd dist; $PYTHON foo.py >result.log 2>&1)
 check_return_value
 check_file_content dist/result.log "This license for Joker will be expired in"
@@ -183,13 +183,13 @@ check_file_content dist/result.log "is never expired"
 check_file_content dist/result.log "Hello world"
 check_file_content dist/result.log "1 + 1 = 2"
 
-csih_inform "4. Generate expired license"
+csih_inform "3.1 Generate expired license"
 $PYARMOR licenses -e $(next_month) Joker >result.log 2>&1
 check_return_value
 check_file_exists licenses/Joker/license.lic
 
-csih_inform "3. Run obfuscated foo.py with expired license"
-cp licenses/Joker/license.lic dist/
+csih_inform "3.2 Run obfuscated foo.py with expired license"
+cp licenses/Joker/license.lic dist/pytransform
 (cd dist; $PYTHON foo.py >result.log 2>&1)
 check_return_value
 check_file_content dist/result.log "This license for Joker will be expired in"
