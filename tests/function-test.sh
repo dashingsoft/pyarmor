@@ -423,6 +423,20 @@ check_file_content $PROPATH/dist/mypkg/pytransform/__init__.py 'def pyarmor_runt
 check_file_exists $PROPATH/dist/mypkg/__init__.py
 check_file_content $PROPATH/dist/mypkg/__init__.py 'from pytransform import pyarmor_runtime'
 
+csih_inform "Case P-7: build project with --restrict-mode=0"
+PROPATH=projects/test-p7
+$PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
+$PYARMOR config --restrict-mode=0 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/mypkg/pytransform/__init__.py
+check_file_exists $PROPATH/dist/mypkg/pytransform/license.lic
+check_file_exists $PROPATH/dist/mypkg/__init__.py
+check_file_not_exists $PROPATH/dist/mypkg/license.lic
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""
@@ -767,12 +781,23 @@ $PYARMOR obfuscate -O $output -r --restrict 0 \
          examples/testpkg/main.py > result.log 2>&1
 check_return_value
 
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+(cd $output; $PYTHON main.py >result.log 2>&1)
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+echo -e "\nprint('This is obfuscated foo')" >> $output/mypkg/foo.py
+(cd $output; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+check_file_content $output/result.log 'No restrict mode'
+
+(cd $output; $PYTHON -c 'import main' >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+check_file_content $output/result.log 'No restrict mode'
+
+(cd $output; echo "import main" > a.py ; $PYTHON a.py >result.log 2>&1 )
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 check_file_content $output/result.log 'No restrict mode'
@@ -783,14 +808,31 @@ $PYARMOR obfuscate -O $output -r --restrict 1 \
          examples/testpkg/main.py > result.log 2>&1
 check_return_value
 
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+(cd $output; $PYTHON main.py >result.log 2>&1)
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
+(cd $output; $PYTHON -c 'import main' >result.log 2>&1)
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+(cd $output; echo "import main" > a.py ; $PYTHON a.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+cp $output/main.py $output/main.bak
+rm -rf $output/main.py? __pycache__
 echo -e "\nprint('No restrict mode')" >> $output/main.py
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+(cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
+check_file_content $output/result.log 'Check restrict mode failed'
+
+cp $output/main.bak $output/main.py
+rm -rf $output/mypkg/foo.py? __pycache__ mypkg/__pycache__
+echo -e "\nprint('This is obfuscated foo')" >> $output/mypkg/foo.py
+(cd $output; $PYTHON main.py >result.log 2>&1)
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'Check restrict mode failed'
 
 csih_inform "Case RM-2: test restrict mode 2"
@@ -803,7 +845,12 @@ check_return_value
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
-(cd $output; $PYTHON -c"import main" >result.log 2>&1 )
+(cd $output; $PYTHON -c 'import main' >result.log 2>&1)
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'Check restrict mode failed'
+
+(cd $output; echo "import main" > a.py ; $PYTHON a.py >result.log 2>&1 )
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'Check restrict mode failed'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
@@ -833,17 +880,65 @@ check_file_content $output/result.log 'Check restrict mode failed'
 
 csih_inform "Case RM-4: test restrict mode 4"
 output=test-restrict-4
-$PYARMOR obfuscate -O $output -r --restrict 1 \
-         examples/testpkg/main.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/mypkg -r --restrict 1 \
+         examples/testpkg/mypkg/__init__.py > result.log 2>&1
 check_return_value
 
 $PYARMOR obfuscate -O $output/mypkg --exact --restrict 4 \
          --no-bootstrap examples/testpkg/mypkg/foo.py > result.log 2>&1
 check_return_value
 
+cp examples/testpkg/main.py $output
 (cd $output; $PYTHON main.py >result.log 2>&1 )
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+(cd $output; $PYTHON -c"import mypkg
+mypkg.hello('One')" >result.log 2>&1 )
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+(cd $output; $PYTHON -c"import mypkg
+mypkg.open_hello('Two')" >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'This is public hello: Two'
+
+(cd $output; $PYTHON -c"import mypkg
+mypkg.proxy_hello('Three')" >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'This is proxy hello: Three'
+check_file_content $output/result.log 'Hello! Three'
+
+csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
+output=test-restrict-bootstrap
+$PYARMOR obfuscate -O $output -r --restrict 0 --no-bootstrap \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+check_file_content $output/main.py 'pyarmor_runtime' not
+
+cat <<EOF > $output/a.py
+from pytransform import pyarmor_runtime
+pyarmor_runtime()
+import main
+EOF
+
+(cd $output; $PYTHON a.py >result.log 2>&1 )
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+rm -rf $output
+$PYARMOR obfuscate -O $output -r --restrict 1 --no-bootstrap \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+check_file_content $output/main.py 'pyarmor_runtime' not
+
+cat <<EOF > $output/a.py
+from pytransform import pyarmor_runtime
+pyarmor_runtime()
+import main
+EOF
+
+(cd $output; $PYTHON a.py >result.log 2>&1 )
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'Check restrict mode failed'
 
 echo ""
 echo "-------------------- Test restrict mode END ----------------"
