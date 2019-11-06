@@ -107,35 +107,45 @@ scripts automatically, it will make everything simple:
 
 Here are the base steps:
 
-1. First obfuscate all the scripts::
+1. First create the `runtime package`_ with empty entry script::
 
-    pyarmor obfuscate --recursive foo.py
+    echo "" > pytransform_bootstrap.py
+    pyarmor obfuscate pytransform_bootstrap.py
 
-In the output path `dist`, there are 4 runtime files generated at the same time:
+2. Move the `runtime package`_ `dist/pytransform` to Python system library. For
+   example::
 
-* pytransform.py
-* pytransform.key
-* _pytransform.so (.dll or .dylib)
-* license.lic
+    # For windows
+    mv dist/pytransform C:/Python37/Lib/site-packages/
 
-2. Create a new path `pytransform` in the Python system library, it would be
-   `lib/site-packages` (on Windows) or `lib/pythonX.Y/site-packages` (on Linux)
+    # For linux
+    mv dist/pytransform /usr/local/lib/python3.5/dist-packages/
 
-3. Copy 4 runtime files to this path, rename `pytransform.py` as `__init__.py`
+3. Move obfuscated bootstrap script `dist/pytransform_bootstrap.py` to Python
+   system library::
 
-4. Edit `lib/site.py` (on Windows) or `lib/pythonX.Y/site.py` (on Linux), insert
-   :ref:`Bootstrap Code` before the line `if __name__ == '__main__'`::
+     mv dist/pytransform_bootstrap.py C:/Python37/Lib/
+     mv dist/pytransform_bootstrap.py /usr/lib/python3.5/
 
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
+4. Edit `lib/site.py` (on Windows) or `lib/pythonX.Y/site.py` (on Linux), import
+   `pytransform_bootstrap` before the line `if __name__ == '__main__'`::
 
-They also could be inserted into the end of function `site.main`, or anywhere
-they could be executed as module `site` is imported.
+    import pytransform_bootstrap
+    if __name__ == '__main__':
+        ...
+
+It also could be inserted into the end of function `site.main`, or anywhere they
+could be executed as module `site` is imported.
 
 After that `python` could run the obfuscated scripts directly, becausee the
 module `site` is automatically imported during Python initialization.
 
 Refer to https://docs.python.org/3/library/site.html
+
+.. note::
+   
+    Before v5.7.0, you need create the `runtime package`_ by the `runtime
+    files`_ manually.
 
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
@@ -143,20 +153,39 @@ Obfuscating Python Scripts In Different Modes
 :ref:`Advanced Mode` is introduced from PyArmor 5.5.0, it's disabled by
 default. Specify option `--advanced` to enable it::
 
-    pyarmor obfuscate --advanced foo.py
+    pyarmor obfuscate --advanced 1 foo.py
 
-From PyArmor 5.2, :ref:`Restrict Mode` is default setting. It could be disabled
-by this way if required::
+    # For project
+    cd /path/to/project
+    pyarmor config --advanced 1
+    pyarmor build -B
+    
+From PyArmor 5.2, the default :ref:`Restrict Mode` is 1. It could be changed by
+this way::
+
+    pyarmor obfuscate --restrict=2 foo.py
+    pyarmor obfuscate --restrict=3 foo.py
+    
+    # For project
+    cd /path/to/project
+    pyarmor config --restrict 4
+    pyarmor build -B
+    
+All the restricts could be disabled if required::
 
     pyarmor obfuscate --restrict=0 foo.py
 
+    # For project
+    pyarmor config --restrict=0
+    pyarmor build -B
+
 The modes of :ref:`Obfuscating Code Mode`, :ref:`Wrap Mode`, :ref:`Obfuscating
 module Mode` could not be changed in command :ref:`obfucate`. They only could be
-changed in the :ref:`Using Project`. For example::
+changed by command `config`_ when :ref:`Using Project`. For example::
 
     pyarmor init --src=src --entry=main.py .
     pyarmor config --obf-mod=1 --obf-code=1 --wrap-mode=0
-    pyarmor build
+    pyarmor build -B
 
 .. _using plugin to extend license type:
 
@@ -265,8 +294,9 @@ If you don't want to bundle the `license.lic` of the obfuscated
 scripts into the executable file, but put it outside of the executable
 file. For example::
 
-    dist/foo.exe
-    dist/license.lic
+    dist/
+        foo.exe
+        license.lic
 
 So that we could generate different licenses for different users
 later easily. Here are basic steps:
@@ -308,14 +338,14 @@ Improving The Security By Restrict Mode
 
 By default the scripts are obfuscated by restrict mode 1, that is, the
 obfuscated scripts can't be changed. In order to improve the security,
-obfuscating the scripts by restrict mode 2 so that the obfuscated
-scripts can't be imported out of the obfuscated scripts. For example::
+obfuscating the scripts by restrict mode 2 so that the obfuscated scripts can't
+be imported out of the obfuscated scripts. For example::
 
     pyarmor obfuscate --restrict 2 foo.py
 
-Or obfuscating the scripts by restrict mode 3 for more security. It
-will even check each function call to be sure all the functions are
-called in the obfuscated scripts. For example::
+Or obfuscating the scripts by restrict mode 3 for more security. It will even
+check each function call to be sure all the functions are called in the
+obfuscated scripts. For example::
 
     pyarmor obfuscate --restrict 3 foo.py
 

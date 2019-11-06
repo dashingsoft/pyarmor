@@ -1,9 +1,8 @@
 Installation
 ============
 
-|PyArmor| is a normal Python package.  You can download the archive
-from PyPi_, but it is easier to install using pip_ where is is
-available, for example::
+|PyArmor| is a normal Python package.  You can download the archive from PyPi_,
+but it is easier to install using pip_ where is available, for example::
 
     pip install pyarmor
 

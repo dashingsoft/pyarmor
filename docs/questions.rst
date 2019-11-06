@@ -60,14 +60,6 @@ The `license.lic` generated doesn't work
 The key is that the capsule used to obfuscate scripts must be same as
 the capsule used to generate licenses.
 
-If obfuscate scripts by command `pyarmor obfuscate`, :ref:`Global
-Capsule` is used implicitly. If obfuscate scripts by command `pyarmor
-build`, the project capsule is used.
-
-When generating new licenses for obfuscated scripts, if run command
-`pyarmor licenses` in project path, the project capsule is used
-implicitly, otherwise :ref:`Global Capsule`.
-
 The :ref:`Global Capsule` will be changed if the trial license file of
 |PyArmor| is replaced with normal one, or it's deleted occasionally
 (which will be generated implicitly as running command `pyarmor
@@ -174,6 +166,10 @@ In later version, it will be obfuscated with non wrap mode.
 
 In current version add some unused code in this function so that the
 operand isn't the critical value may avoid this warning.
+
+.. note::
+
+   This has been fixed in v5.5.0.
 
 Error: Try to run unauthorized function
 ---------------------------------------

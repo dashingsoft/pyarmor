@@ -57,8 +57,14 @@ Checking the performance for other mode by this way::
 
     pyarmor benchmark --wrap-mode 0
 
-Look at the scripts used by this command::
+List all available options::
+
+    pyarmor benchmark -h
+
+Look at the scripts used to run benchmark test::
 
     pyarmor benchmark --debug
+
+All the used files are saved in the folder `.benchtest`
 
 .. include:: _common_definitions.txt

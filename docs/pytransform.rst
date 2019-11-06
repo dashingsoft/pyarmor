@@ -31,15 +31,22 @@ Contents
 
    If the obfuscated script has been expired, it will raise exception
    and quit directly. All the code in the obfuscated script will not
-   run, so this function will not return 0.
+   run, so this function will never return 0.
 
 .. function:: get_license_info()
 
    Get license information of obfuscated scripts.
 
-   It returns a dict with keys *expired*, *CODE*, *IFMAC*.
+   It returns a dict with keys:
 
-   The value of *expired* is == -1 means no time limitation.
+   * expired: how many days left for this licenses
+   * IFMAC
+   * HARDDISK
+   * IPV4
+   * DATA
+   * CODE
+
+   The value of *expired* == -1 means no time limitation.
 
    Raise :exc:`PytransformError` if license is invalid, for example,
    it has been expired.
@@ -87,3 +94,10 @@ Show left days of license
        print(e)
 
 More usage refer to :ref:`Using Plugin to Extend License Type`
+
+.. note::
+
+   Though `pytransform.py` is plain script, it's also protected by `PyArmor`. If
+   it's changed, it will raise exception when running the obfuscated script.
+
+   Refer to :ref:`special handling of entry script`

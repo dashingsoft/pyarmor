@@ -58,6 +58,7 @@ Obfuscate python scripts.
 --advanced                  Enable advanced mode
 --restrict <0,1,2,3,4>      Set restrict mode
 --package-runtime <0,1,2>   Save the runtime files as a package or not
+-n, --no-runtime            DO NOT generate runtime files
 
 **DESCRIPTION**
 
@@ -76,35 +77,29 @@ protection code into the entry script.
 
 Next obfuscate all these scripts in the default output path `dist`.
 
-After that generate default :file:`license.lic` for obfuscated scripts
-and make all the other :ref:`Runtime Files` in the `dist` path.
+After that make the `runtime package`_ in the `dist` path and generate
+the default :file:`license.lic` for obfuscated scripts.
 
-Finally insert :ref:`Bootstrap Code` into entry script. If the entry script is
-`__init__.py` and option `package_runtime` doesn't equal `2`, the bootstrap code
-makes a relative import by using leading dots like this::
-
-    from .pytransform import pyarmor_runtime
-    pyarmor_runtime()
+Finally insert the `bootstrap code`_ into entry script.
 
 The entry script is only the first script if there are more than one
 script in command line.
 
-Option `--plugin` is used to extend license type of obfuscated
-scripts, it will insert the content of plugin into entry script. The
-corresponding filename of plugin is `NAME.py`. `Name` may be absolute
-path if it's not in the current path, or specify plugin path by
-environment variable `PYARMOR_PLUGIN`.
+Option `--plugin` is used to extend license type of obfuscated scripts, it will
+insert the content of plugin into entry script. The corresponding filename of
+plugin is `NAME.py`. `Name` may be absolute path if it's not in the current
+path, or specify plugin path by environment variable `PYARMOR_PLUGIN`.
 
 About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
 
-Option `--platform` is used to specify the target platform of
-obfuscated scripts if target platform is different from build platform.
+Option `--platform` is used to specify the target platform of obfuscated scripts
+if target platform is different from build platform.
 
 Option `--restrict` is used to set restrict mode, :ref:`Restrict Mode`
 
 If `--package-runtime` is `0`, all the runtime files will be saved in the same
 path with obfuscated scripts::
-  
+
     pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
     pytransform.key
@@ -118,9 +113,18 @@ Otherwise they'll be saved in the separated folder `pytransform` as package::
         pytransform.key
         license.lic
 
-`1` means that this package is still in the same path with obfuscated scripts in
-runtime, `2` means it's in the other path.
-    
+The default value is `1`, the value `2` is only used in a special case.
+
+Generally if the entry script is `__init__.py`, the `bootstrap code`_ will make a
+relative import by using leading dots like this::
+
+    from .pytransform import pyarmor_runtime
+    pyarmor_runtime()
+
+But if option `--package-runtime` is `2`, it means the `runtime package`_ will
+be in other path, so the `bootstrap code`_ still makes absolute import without
+leading dots.
+
 **EXAMPLES**
 
 * Obfuscate all the `.py` only in the current path::
@@ -171,7 +175,7 @@ runtime, `2` means it's in the other path.
 
 * Obfuscate the scripts in advanced mode::
 
-    pyarmor obfuscate --advanced foo.py
+    pyarmor obfuscate --advanced 1 foo.py
 
 * Obfuscate the scripts with restrict mode 2::
 
@@ -186,6 +190,10 @@ runtime, `2` means it's in the other path.
 
     cd /path/to/mypkg
     pyarmor obfuscate -r --package-runtime 2 --output dist/mypkg __init__.py
+
+* Obfuscate a script `foo.py` only, no runtime files::
+
+    pyarmor --no-runtime --exact foo.py
 
 .. _licenses:
 
@@ -209,19 +217,19 @@ Generate new licenses for obfuscated scripts.
 
 **DESCRIPTION**
 
-In order to run obfuscated scripts, it's necessarey to hava a
-:flile:`license.lic`. As obfuscating the scripts, there is a default
-:file:`license.lic` created at the same time. In this license the
-obfuscated scripts can run on any machine and never expired.
+In order to run obfuscated scripts, it's necessarey to hava a `license.lic`. As
+obfuscating the scripts, there is a default `license.lic` created at the same
+time. In this license the obfuscated scripts can run on any machine and never
+expired.
 
-This command is used to generate new licenses for obfuscated
-scripts. For example::
+This command is used to generate new licenses for obfuscated scripts. For
+example::
 
     pyarmor licenses --expired 2019-10-10 mycode
 
-An expired license will be generated in the default output path plus
-code name `licenses/mycode`, then overwrite the old one in the same
-path of obfuscated script::
+An expired license will be generated in the default output path plus code name
+`licenses/mycode`, then overwrite the old one in the same path of obfuscated
+script::
 
     cp licenses/mycode/license.lic dist/
 
@@ -231,17 +239,16 @@ Another example, bind obfuscated scripts in mac address and expired on
     pyarmor licenses --expired 2019-10-10 --bind-mac 2a:33:50:46:8f tom
     cp licenses/tom/license.lic dist/
 
-Before this, run command :ref:`hdinfo` to get hardware information::
+Before this, run command `hdinfo`_ to get hardware information::
 
     pyarmor hdinfo
 
-By option `-x` any data could be saved into the license file, it's
-mainly used to extend license tyoe. For example::
+By option `-x` any data could be saved into the license file, it's mainly used
+to extend license tyoe. For example::
 
     pyarmor licenses -x "2019-02-15" tom
 
-In the obfuscated scripts, the data passed by `-x` could be got by
-this way::
+In the obfuscated scripts, the data passed by `-x` could be got by this way::
 
     from pytransfrom import get_license_info
     info = get_license_info()
@@ -264,7 +271,6 @@ Obfuscate the scripts and pack them into one bundle.
 
 **OPTIONS**
 
--t, --type TYPE         cx_Freeze, py2exe, py2app, PyInstaller(default).
 -O, --output OUTPUT     Directory to put final built distributions in.
 -e, --options OPTIONS   Extra options to run external tool
 -x, --xoptions OPTIONS  Extra options to obfuscate scripts
@@ -274,8 +280,8 @@ Obfuscate the scripts and pack them into one bundle.
 
 **DESCRIPTION**
 
-PyArmor first packes the script by calling the third-party tool such
-as PyInstaller, gets the dependencies and other required files.
+PyArmor first packes the script by calling PyInstaller, gets the dependencies
+and other required files.
 
 Then obfuscates all the `.py` files in the same path of entry script.
 
@@ -283,15 +289,15 @@ Next replace the original scripts with the obfuscated ones.
 
 Finally pack all of them into one bundle.
 
-Option `--options` could pass any extra options to external
-tool. `PyInstaller` is called by this way::
+Option `--options` could pass any extra options to `PyInstaller`. It is called
+by this way::
 
     pyinstaller --distpath DIST -y EXTRA_OPTIONS SCRIPT
 
 `EXTRA_OPTIONS` is replaced with this option.
 
-Option `--xoptions` could pass any extra options to obfuscate
-scripts. By default, `pack` will obfuscate scripts like this::
+Option `--xoptions` could pass any extra options to obfuscate scripts. By
+default, `pack` will obfuscate scripts like this::
 
     pyarmor obfuscate -r --output DIST EXTRA_OPTIONS SCRIPT
 
@@ -332,10 +338,9 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 hdinfo
 ------
 
-Show hardware information of this machine, such as serial number of
-hard disk, mac address of network card etc. The information got here
-could be as input data to generate license file for obfuscated
-scripts.
+Show hardware information of this machine, such as serial number of hard disk,
+mac address of network card etc. The information got here could be as input data
+to generate license file for obfuscated scripts.
 
 **SYNOPSIS**::
 
@@ -370,19 +375,17 @@ Create a project to manage obfuscated scripts.
 
 **DESCRIPTION**
 
-This command will create a project in the specify `PATH`, and a
-:file:`.pyarmor_config` will be created at the same time, which is
-project configuration of JSON format.
+This command will create a project in the specify `PATH`, and a file
+`.pyarmor_config` will be created at the same time, which is project
+configuration of JSON format.
 
-If the option `--type` is set to `auto`, which is the default value,
-the project type will set to `pkg` if the entry script is
-`__init__.py`, otherwise to `app`.
+If the option `--type` is set to `auto`, which is the default value, the project
+type will set to `pkg` if the entry script is `__init__.py`, otherwise to `app`.
 
-The `init` command will set `is_package` to `1` if the new project is
-configured as `pkg`, otherwise it's set to `0`.
+The `init` command will set `is_package` to `1` if the new project is configured
+as `pkg`, otherwise it's set to `0`.
 
-After project is created, use command config_ to change the project
-settings.
+After project is created, use command config_ to change the project settings.
 
 **EXAMPLES**
 
@@ -486,11 +489,12 @@ Build project, obfuscate all scripts in the project.
 
 **OPTIONS**
 
--B, --force           Force to obfuscate all scripts
--r, --only-runtime    Generate extra runtime files only
--n, --no-runtime      DO NOT generate runtime files
--O, --output OUTPUT   Output path, override project configuration
---platform NAME       Distribute obfuscated scripts to other platform
+-B, --force                   Force to obfuscate all scripts
+-r, --only-runtime            Generate extra runtime files only
+-n, --no-runtime              DO NOT generate runtime files
+-O, --output OUTPUT           Output path, override project configuration
+--platform NAME               Distribute obfuscated scripts to other platform
+--package-runtime <0,1,2>     Save the runtime files as a package or not
 
 **DESCRIPTION**
 
@@ -588,16 +592,16 @@ Check the performance of obfuscated scripts.
 
 **OPTIONS**:
 
--m, --obf-mode <0,1>   Whether to obfuscate the whole module
--c, --obf-code <0,1>   Whether to obfuscate each function
--w, --wrap-mode <0,1>  Whether to obfuscate each function with wrap mode
---debug                Do not remove test path
+-m, --obf-mode <0,1>     Whether to obfuscate the whole module
+-c, --obf-code <0,1,2>   Whether to obfuscate each function
+-w, --wrap-mode <0,1>    Whether to obfuscate each function with wrap mode
+--debug                  Do not remove test path
 
 **DESCRIPTION**
 
-This command will generate a test script, obfuscate it and run it,
-then output the elapsed time to initialize, import obfuscated module,
-run obfuscated functions etc.
+This command will generate a test script, obfuscate it and run it, then output
+the elapsed time to initialize, import obfuscated module, run obfuscated
+functions etc.
 
 **EXAMPLES**
 
@@ -626,9 +630,9 @@ Make registration keyfile effect, or show registration information.
 
 **DESCRIPTION**
 
-A registration keyfile will be sent to you by email as attachments
-after purchasing PyArmor. This command is used to register the keyfile
-to take it effects::
+A registration keyfile will be sent to you by email as attachments after
+purchasing PyArmor. This command is used to register the keyfile to take it
+effects::
 
     pyarmor register /path/to/pyarmor-regfile-1.zip
 

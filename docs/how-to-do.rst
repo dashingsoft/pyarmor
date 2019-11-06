@@ -3,27 +3,27 @@
 How PyArmor Does It
 ===================
 
-Look at what happened after ``foo.py`` is obfuscated by PyArmor. Here
-are the files list in the output path :file:`dist`::
+Look at what happened after ``foo.py`` is obfuscated by PyArmor. Here are the
+files list in the output path :file:`dist`::
 
     foo.py
 
-    pytransform.py
-    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    pytransform.key
-    license.lic
+    pytransform/
+        __init__.py
+        _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+        pytransform.key
+        license.lic
 
 :file:`dist/foo.py` is obfuscated script, the content is::
 
-
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
 
-All the other extra files called `Runtime Files`, which are required to run or
-import obfuscated scripts. So long as runtime files are in any Python path,
-obfuscated script `dist/foo.py` can be used as normal Python script. That is to say:
+There is an extra folder `pytransform` called `Runtime Package`, which are the
+only required to run or import obfuscated scripts. So long as this package is in
+any Python Path, the obfuscated script `dist/foo.py` can be used as normal
+Python script. That is to say:
 
 **The original python scripts can be replaced with obfuscated scripts seamlessly.**
 
@@ -34,13 +34,11 @@ How to Obfuscate Python Scripts
 
 How to obfuscate python scripts by PyArmor?
 
-
 First compile python script to code object::
 
     char *filename = "foo.py";
     char *source = read_file( filename );
     PyCodeObject *co = Py_CompileString( source, "<frozen foo>", Py_file_input );
-
 
 Then change code object as the following way
 
@@ -76,9 +74,8 @@ Then change code object as the following way
 
 * Change all code objects in the ``co_consts`` recursively
 
-
-Next serializing reformed code object and obfuscate it to protect
-constants and literal strings::
+Next serializing reformed code object and obfuscate it to protect constants and
+literal strings::
 
     char *string_code = marshal.dumps( co );
     char *obfuscated_code = obfuscate_algorithm( string_code  );
@@ -91,7 +88,6 @@ Finally generate obfuscated script::
 The obfuscated script is a normal Python script, it looks like this::
 
     __pyarmor__(__name__, __file__, b'\x01\x0a...')
-
 
 .. _how to run obfuscated scripts:
 
@@ -127,8 +123,8 @@ The next code line in ``dist/foo.py`` is::
 
 After that, in the runtime of this python interpreter
 
-* ``__armor_enter__`` is called as soon as code object is executed, it
-  will restore byte-code of this code object::
+* ``__armor_enter__`` is called as soon as code object is executed, it will
+  restore byte-code of this code object::
 
     static PyObject *
     __armor_enter__(PyObject *self, PyObject *args)
@@ -152,8 +148,8 @@ After that, in the runtime of this python interpreter
         Py_RETURN_NONE;
     }
 
-* ``__armor_exit__`` is called so long as code object completed
-  execution, it will obfuscate byte-code again::
+* ``__armor_exit__`` is called so long as code object completed execution, it
+  will obfuscate byte-code again::
 
     static PyObject *
     __armor_exit__(PyObject *self, PyObject *args)
@@ -190,8 +186,8 @@ There are 2 extra changes for entry script:
 * Before obfuscating, insert protection code to entry script.
 * After obfuscated, insert bootstrap code to obfuscated script.
 
-Before obfuscating entry scipt, PyArmor will search the content line
-by line. If there is line like this::
+Before obfuscating entry scipt, PyArmor will search the content line by line. If
+there is line like this::
 
     # {PyArmor Protection Code}
 
@@ -258,15 +254,14 @@ Here it's the default template of protection code::
 
     protect_pytransform()
 
-All the string template `{xxx}` will be replaced with real value by
-PyArmor.
+All the string template `{xxx}` will be replaced with real value by PyArmor.
 
 To prevent PyArmor from inserting this protection code, pass
 `--no-cross-protection` as obfuscating the scripts::
 
     pyarmor obfuscate --no-cross-protection foo.py
 
-After the entry script is obfuscated, the :ref:`Bootstrap Code` will
-be inserted at the beginning of the obfuscated script.
+After the entry script is obfuscated, the :ref:`Bootstrap Code` will be inserted
+at the beginning of the obfuscated script.
 
 .. include:: _common_definitions.txt

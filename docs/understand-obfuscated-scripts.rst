@@ -9,15 +9,41 @@ Global Capsule
 --------------
 
 The :file:`.pyarmor_capsule.zip` in the ``HOME`` path called `Global
-Capsule`. It's created implicitly when executing command ``pyarmor
-obfuscate``. |PyArmor| will read data from `Global Capsule` when
-obfuscating scripts or generating licenses for obfuscated scripts.
+Capsule`. |PyArmor| will read data from `Global Capsule` when obfuscating
+scripts or generating licenses for obfuscated scripts.
+
+All the trial version of PyArmor shares one same :file:`.pyarmor_capsule.zip`,
+which is created implicitly when executing command ``pyarmor obfuscate``. It
+uses 1024 bits RSA keys, called `public capsule`.
+
+For purchased version, each user will receive one exclusive `private capsule`,
+which use 2048 bits RSA key.
+
+The capsule can't help restoring the obfuscated scripts at all. If your `private
+capsuel` got by someone else, the risk is that he/she may generate new license
+files for your obfuscated scripts.
+
+It's not used when running the obfuscated scripts, so need not distribute it
+with obfuscated scripts to the end users.
 
 Obfuscated Scripts
 ------------------
 
-After the scripts are obfuscated by |PyArmor|, in the `dist` folder
-you find all the required files to run obfuscated scripts::
+After the scripts are obfuscated by |PyArmor|, in the `dist` folder you find all
+the required files to run obfuscated scripts::
+
+    dist/
+        myscript.py
+        mymodule.py
+
+        pytransform/
+            __init__.py
+            _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+            pytransform.key
+            license.lic
+
+Before v5.7.0, the runtime files are saved in the same folder with obfuscated
+scripts. Here is file list in the `dist` folder::
 
     myscript.py
     mymodule.py
@@ -27,119 +53,104 @@ you find all the required files to run obfuscated scripts::
     pytransform.key
     license.lic
 
-From v5.7.0, the runtime files are saved in the separated folder
-`pytransform` as package. Here is file list In the `dist` folder::
-  
-    myscript.py
-    mymodule.py
-    pytransform/
-        __init__.py
-        _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-        pytransform.key
-        license.lic
-    
-The obfuscated scripts are normal Python scripts. The module
-`dist/mymodule.py` would be like this::
+The obfuscated scripts are normal Python scripts. The module `dist/mymodule.py`
+would be like this::
 
-    __pyarmor__(__name__, __file__, b'\x06\x0f...')
+    __pyarmor__(__name__, __file__, b'\x06\x0f...', 1)
 
 The entry script `dist/myscript.py` would be like this::
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-
-    __pyarmor__(__name__, __file__, b'\x0a\x02...')
+    __pyarmor__(__name__, __file__, b'\x0a\x02...', 1)
 
 .. _bootstrap code:
 
 Bootstrap Code
 --------------
 
-The first 2 lines in the entry script called `Bootstrap Code`. It's
-only in the entry script::
+The first 2 lines in the entry script called `Bootstrap Code`. It's only in the
+entry script::
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
 
+For the obfuscated package which entry script is `__init__.py`. The bootstrap
+code may make a relateive import by leading "."::
+
+    from .pytransform import pyarmor_runtime
+    pyarmor_runtime()
+
+.. _runtime package:
+
+Runtime Package
+---------------
+
+The package `pytransform` which is in the same folder with obfuscated scripts
+called `Runtime Packge`. It's required to run the obfuscated script, and it's
+the only dependence.
+
+Generally this package is in the same folder with obfuscated scripts, but it can
+be moved anywhere. Only this package in any Python Path, the obfuscated scripts
+can be run as normal scripts.
+
+There are 4 files in this package::
+
+    pytransform/
+        __init__.py                  A normal python module
+        _pytransform.so/.dll/.lib    A dynamic library implements core functions
+        pytransform.key              Data file
+        license.lic                  The license file for obfuscated scripts
+
+        
+Before v5.7.0, the runtime package has another form `Runtime Files`
+
 .. _runtime files:
 
 Runtime Files
--------------
+~~~~~~~~~~~~~
 
-Except obfuscated scripts, all the other files are called `Runtime Files`:
+They're not in one package, but as four separated files::
 
-* `pytransform.py`, a normal python module
-* `_pytransform.so`, or `_pytransform.dll`, or `_pytransform.dylib` a dynamic library implements core functions
-* `pytransform.key`, data file
-* `license.lic`, the license file for obfuscated scripts
-
-All of them are required to run obfuscated scripts.
-
+    pytransform.py               A normal python module
+    _pytransform.so/.dll/.lib    A dynamic library implements core functions
+    pytransform.key              Data file
+    license.lic                  The license file for obfuscated scripts
+  
+Obviously `Runtime Package` is more clear than `Runtime Files`.
+    
 .. _the license file for obfuscated script:
 
 The License File for Obfuscated Script
 --------------------------------------
 
-There is a special runtime file `license.lic`. The default one,
-which generated as executing ``pyarmor obfuscate``, allows obfuscated
-scripts run in any machine and never expired.
+There is a special runtime file `license.lic`, it's required to run the
+obfuscated scripts and generated by PyArmor.
 
-To change this behaviour, use command ``pyarmor licenses`` to generate
-new `license.lic` and overwrite the default one.
+When executing ``pyarmor obfuscate``, a default one will be generated, which
+allows obfuscated scripts run in any machine and never expired.
 
-Key Points to Use Obfuscated Scripts
-------------------------------------
+To bind obfuscated scripts to fix machine, or want to expire the obfuscated
+scripts, use command ``pyarmor licenses`` to generate a new `license.lic` and
+overwrite the default one.
 
-* The obfuscated script is a normal python script, so it can be
-  seamless to replace original script.
+.. note::
 
-* There is only one thing changed, the following code must be run
-  before using any obfuscated script::
-
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-
-  It must in the obfuscated script and only be called one time in the
-  same Python interpreter.  It will create some builtin function to
-  deal with obfuscated code.
-
-* The extra runtime file `pytransform.py` must be in any Python
-  path in target machine. `pytransform.py` need load dynamic
-  library `_pytransform` by `ctypes`. It may be
-
-    - `_pytransform.so` in Linux
-    - `_pytransform.dll` in Windows
-    - `_pytransform.dylib` in MacOS
-
-  This file is dependent-platform, download the right one to the same
-  path of `pytransform.py` according to target platform. All the
-  prebuilt dynamic libraries list here :ref:`Support Platfroms`
-
-* By default `pytransform.py` search dynamic library `_pytransform` in
-  the same path. Check `pytransform._load_library` to find the
-  details.
-
-* All the other :ref:`Runtime Files` should in the same path as
-  dynamic library `_pytransform`
-
-* If :ref:`Runtime Files` locate in some other path, change
-  :ref:`Bootstrap Code`::
-
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime('/path/to/runtime-files')
-
+    In PyArmor, there is another `license.lic`, which locates in the source path
+    of PyArmor. It's required to run `pyarmor`, and issued by me, :)
+    
 Running Obfuscated Scripts
 --------------------------
 
-The obfuscated scripts is a normal python script, it can be run by
-normal python interpreter::
+The obfuscated scripts is a normal python script, it can be run by normal python
+interpreter::
 
     cd dist
     python myscript.py
 
 Firt :ref:`Bootstrap Code` is executed:
 
-* Import `pyarmor_runtime` from `pytransform.py`
+* Import `pyarmor_runtime` from `pytransform/__init__.py`
 * Execute `pyarmor_runtime`
     * Load dynamic library `_pytransform` by `ctypes`
     * Check `license.lic` in the same path
@@ -153,44 +164,39 @@ After that:
 
 More information, refer to :ref:`How to Obfuscate Scripts` and :ref:`How to Run Obfuscated Scripts`
 
-Search path for `license.lic` and `pytransform.key`
----------------------------------------------------
+Key Points to Use Obfuscated Scripts
+------------------------------------
 
-As the obfuscated script is running, it first searches the current
-path, then search the path of runtime module `pytransform.py` to find
-the file `license.lic` and `pytransform.key`.
+* The obfuscated scripts are normal python scripts, so they can be seamless to
+  replace original scripts.
 
-Sometimes there is any of `license.lic` or `pytransform.py` in the
-current path, but it's not for obfuscated scripts. In this case, try
-to run obfuscated scripts, it will report this error::
+* There is only one thing changed, the `runtime package`_ must be in any Python
+  Path, so that the `bootstrap code`_ can run at first.
 
-    Invalid input packet.
-    Check license failed.
+* The `bootstrap code`_ will load dynamic library `_pytransform` by `ctypes`. It
+  may be
 
-Two types of `license.lic`
---------------------------
+    - `_pytransform.so` in Linux
+    - `_pytransform.dll` in Windows
+    - `_pytransform.dylib` in MacOS
 
-In PyArmor, there are 2 types of `license.lic`
+  This file is dependent-platform, all the prebuilt dynamic libraries list here
+  :ref:`Support Platfroms`
 
-* `license.lic` of PyArmor, which locates in the source path of
-  PyArmor. It's required to run `pyarmor`
+* By default the `bootstrap code`_ searchs dynamic library `_pytransform` in the
+  `runtime package`_. Check `pytransform._load_library` to find the details.
 
-* `license.lic` of Obfuscated Scripts, which is generated as
-  obfuscating scripts by the end user of PyArmor. It's required to run
-  the obfuscated scripts.
+* If the dynamic library `_pytransform` isn't within the `runtime package`_,
+  change the `bootstrap code`::
 
-The relation between 2 `license.lic` is::
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime('/path/to/runtime')
 
-    license.lic of PyArmor --> .pyarmor_capsule.zip --> license.lic of Obfuscated Scripts
+  Both of `license.lic` and `pytransform.key` should be in this runtime path
+  either.
 
-When obfuscating scripts with command `pyarmor obfuscate` or `pyarmor
-build`, the :ref:`Global Capsule` is used implicitly. If there is no
-:ref:`Global Capsule`, PyArmor will read `license.lic` of PyArmor as
-input to generate the :ref:`Global Capsule`.
-
-When runing command `pyarmor licenses`, it will generate a new
-`license.lic` for obfuscated scripts. Here the :ref:`Global Capsule`
-will be as input file to generate this `license.lic` of Obfuscated
-Scripts.
+* When starts a fresh python interpreter process by `multiprocssing`, `Popen`,
+  `os.exec` etc., make sure the `bootstrap code`_ are called in new process
+  before running any obfuscated script.
 
 .. include:: _common_definitions.txt

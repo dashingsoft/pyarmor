@@ -40,8 +40,8 @@ Obfuscate all the scripts in this project::
 
     pyarmor build
 
-Exclude the :file:`dist`, :file:`test`, the `.py` files in these
-folder will not be obfuscated::
+Change the project configuration, exclude the :file:`dist`, :file:`test`, the
+`.py` files in these folder will not be obfuscated::
 
     pyarmor config --manifest "include *.py, prune dist, prune test"
 
@@ -64,11 +64,11 @@ After some scripts changed, just run ``build`` again::
 Obfuscating Scripts With Different Modes
 ----------------------------------------
 
-Configure mode to obfuscate scripts::
+First configure mode to obfuscate scripts::
 
     pyarmor config --obf-mod=1 --obf-code=0
 
-Obfuscating scripts in new mode::
+Then obfuscating scripts in new mode::
 
     pyarmor build -B
 
@@ -102,8 +102,7 @@ Each project has a configure file. It's a json file named
 
     It means all files anywhere in the `src` tree matching.
 
-    Multi manifest template commands are spearated by comma, for
-    example::
+    Multi manifest template commands are spearated by comma, for example::
 
         global-include *.py, exclude __mainfest__.py, prune test
 
@@ -114,27 +113,26 @@ Each project has a configure file. It's a json file named
 
     Available values: 0, 1, None
 
-    When it's set to 1, the basename of `src` will be appended to
-    `output` as the final path to save obfuscated scripts, and
-    runtime files are still in the path `output`
+    When it's set to 1, the basename of `src` will be appended to `output` as
+    the final path to save obfuscated scripts, but runtime files are still in
+    the path `output`
 
-    When init a project and no `--type` specified, it will be set to
-    1 if there is `__init__.py` in the path `src`, otherwise it's
-    None.
+    When init a project and no `--type` specified, it will be set to 1 if there
+    is `__init__.py` in the path `src`, otherwise it's None.
 
 * disable_restrict_mode [DEPRECRATED]
 
     Available values: 0, 1, None
 
-    When it's None or 0, obfuscated scripts can not be imported from
-    outer scripts.
+    When it's None or 0, obfuscated scripts can not be imported from outer
+    scripts.
 
-    When it's set to 1, it the obfuscated scripts are allowed to be
-    imported by outer scripts.
+    When it's set to 1, it the obfuscated scripts are allowed to be imported by
+    outer scripts.
 
     By default it's set to 0.
 
-    Refer to :ref:`Restrict Mode`
+    This attribute has been deprecrated, use `restrict_mode` instead.
 
 * restrict_mode
 
@@ -276,8 +274,8 @@ Each project has a configure file. It's a json file named
     None or any path.
 
     When run obfuscated scripts, where to find dynamic library
-    `_pytransform`. The default value is None, it means it's in the
-    same path of :file:`pytransform.py`.
+    `_pytransform`. The default value is None, it means it's within the `runtime
+    package`_ or in the same path of :file:`pytransform.py`.
 
     It's useful when obfuscated scripts are packed into a zip file,
     for example, use py2exe to package obfuscated scripts. Set
@@ -288,11 +286,11 @@ Each project has a configure file. It's a json file named
 
   How to save the runtime files:
 
-        - 0 (Default)
+        - 0 
 
         Save them in the same path with the obufscated scripts
 
-        - 1
+        - 1 (Default)
 
         Save them in the sub-path `pytransform` as a package
 
