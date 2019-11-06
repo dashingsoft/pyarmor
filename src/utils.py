@@ -78,7 +78,7 @@ def pytransform_bootstrap(path=None, capsule=None):
 def _get_remote_file(urls, path, timeout=3.0):
     while urls:
         prefix = urls[0]
-        url = '/'.join([prefix, 'platforms', path])
+        url = '/'.join([prefix, path])
         logging.info('Getting remote file: %s', url)
         try:
             return urlopen(url, timeout=timeout)
