@@ -536,6 +536,19 @@ def _obfuscate(args):
                        protection=protection, plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
+    if (not args.no_bootstrap) and entry and os.path.exists(entry):
+        inner = args.package_runtime != 2
+        entryname = entry if args.src else os.path.basename(entry)
+        if os.path.exists(os.path.join(output, entryname)):
+            make_entry(entryname, path, output, inner=inner)
+        else:
+            logging.info('Use outer entry script "%s"', entry)
+            make_entry(entry, path, output, inner=inner)
+
+    if args.no_runtime:
+        logging.info('Obfuscate %d scripts OK.', len(files))
+        return
+
     make_runtime(capsule, output, platform=args.platform,
                  package=args.package_runtime)
 
@@ -548,15 +561,6 @@ def _obfuscate(args):
         licfile = os.path.join(licpath, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
         make_project_license(capsule, licode, licfile)
-
-    if (not args.no_bootstrap) and entry and os.path.exists(entry):
-        inner = args.package_runtime != 2
-        entryname = entry if args.src else os.path.basename(entry)
-        if os.path.exists(os.path.join(output, entryname)):
-            make_entry(entryname, path, output, inner=inner)
-        else:
-            logging.info('Use outer entry script "%s"', entry)
-            make_entry(entry, path, output, inner=inner)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
@@ -727,6 +731,8 @@ def main(args):
     cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
                          default=1,
                          help='Save runtime files as a package or not')
+    cparser.add_argument('-n', '--no-runtime', action='store_true',
+                         help='DO NOT generate runtime files')
     cparser.set_defaults(func=_obfuscate)
 
     #
