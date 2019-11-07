@@ -52,7 +52,7 @@ To buy a license, please visit the following url
 https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
 A registration keyfile generally named "pyarmor-regfile-1.zip" will be
-sent to your by email immediately after payment is completed
+sent to your email immediately after payment is completed
 successfully. There are 3 files in the archive:
 
 * REAME.txt
