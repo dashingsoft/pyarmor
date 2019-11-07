@@ -703,6 +703,7 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'obfuscate',
+        aliases=['o'],
         epilog=_obfuscate.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts')
@@ -751,6 +752,7 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'licenses',
+        aliases=['l'],
         epilog=_licenses.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Generate new licenses for obfuscated scripts'
@@ -789,6 +791,7 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'pack',
+        aliases=['p'],
         epilog=packer.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Pack obfuscated scripts to one bundle'
@@ -801,6 +804,7 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'init',
+        aliases=['i'],
         epilog=_init.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Create a project to manage obfuscated scripts'
@@ -821,6 +825,7 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'config',
+        aliases=['c'],
         epilog=_config.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Update project settings')
@@ -863,6 +868,7 @@ def main(args):
     #
     cparser = subparsers.add_parser(
         'build',
+        aliases=['b'],
         epilog=_build.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate all the scripts in the project')
