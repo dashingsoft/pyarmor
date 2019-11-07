@@ -36,11 +36,9 @@ import subprocess
 import sys
 import time
 
-try:
-    import argparse
-except ImportError:
-    # argparse is new in version 2.7
-    import polyfills.argparse as argparse
+# argparse is new in Python 2.7, and not in 3.0, 3.1
+# Besides no command aliases supported by Python 2.7
+import polyfills.argparse as argparse
 
 from config import version, version_info, purchase_info, \
                    config_filename, capsule_filename, license_filename
