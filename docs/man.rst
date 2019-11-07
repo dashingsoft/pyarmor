@@ -77,8 +77,7 @@ protection code into the entry script.
 
 Next obfuscate all these scripts in the default output path `dist`.
 
-After that make the :ref:`runtime package` in the `dist` path and generate the
-default :file:`license.lic` for obfuscated scripts.
+After that make the :ref:`runtime package` in the `dist` path.
 
 Finally insert the :ref:`bootstrap code` into entry script.
 
@@ -88,9 +87,8 @@ script in command line.
 Option `--plugin` is used to extend license type of obfuscated scripts, it will
 insert the content of plugin into entry script. The corresponding filename of
 plugin is `NAME.py`. `Name` may be absolute path if it's not in the current
-path, or specify plugin path by environment variable `PYARMOR_PLUGIN`.
-
-About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
+path, or specify plugin path by environment variable `PYARMOR_PLUGIN`. About the
+usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
 
 Option `--platform` is used to specify the target platform of obfuscated scripts
 if target platform is different from build platform.
@@ -105,7 +103,7 @@ path with obfuscated scripts::
     pytransform.key
     license.lic
 
-Otherwise they'll be saved in the separated folder `pytransform` as package::
+By default they'll be saved in the separated folder `pytransform` as package::
 
     pytransform/
         __init__.py
@@ -113,15 +111,13 @@ Otherwise they'll be saved in the separated folder `pytransform` as package::
         pytransform.key
         license.lic
 
-The default value is `1`, the value `2` is only used in a special case.
-
 Generally if the entry script is `__init__.py`, the :ref:`bootstrap code` will
 make a relative import by using leading dots like this::
 
     from .pytransform import pyarmor_runtime
     pyarmor_runtime()
 
-But if option `--package-runtime` is `2`, it means the :ref:`runtime package`
+But if `--package-runtime` is set to `2`, it means the :ref:`runtime package`
 will be in other path, so the :ref:`bootstrap code` still makes absolute import
 without leading dots.
 
