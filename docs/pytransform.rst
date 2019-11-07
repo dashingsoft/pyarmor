@@ -97,7 +97,8 @@ More usage refer to :ref:`Using Plugin to Extend License Type`
 
 .. note::
 
-   Though `pytransform.py` is plain script, it's also protected by `PyArmor`. If
-   it's changed, it will raise exception when running the obfuscated script.
+   Though `pytransform.py` is not obfuscated when running the obfuscated script,
+   it's also protected by `PyArmor`. If it's changed, the obfuscated script will
+   raise protection exception.
 
    Refer to :ref:`special handling of entry script`

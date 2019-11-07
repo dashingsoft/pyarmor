@@ -370,6 +370,54 @@ For example::
 
 More information about restrict mode, refer to :ref:`Restrict Mode`
 
+Checking Imported Function Is Obfuscated
+----------------------------------------
+
+Sometimes it need to make sure the imported functions from other module are
+obfuscated. For example, there are 2 scripts `main.py` and `foo.py`::
+
+    $ cat main.py
+
+    import foo
+
+    def start_server():
+        foo.connect('root', 'root password')
+
+    $ cat foo.py
+
+    def connect(username, password):
+        mysql.dbconnect(username, password)
+
+In the obfuscated `main.py`, it need to be sure `foo.connect` is
+obfuscated. Otherwise the end users may replace the obfuscated `foo.py` with
+this plain code::
+
+    def connect(username, password):
+        print('password is %s', password)
+
+One solution is to check imported functions by decorator `assert_armored` in the
+`main.py`. For example::
+
+    import foo
+
+    def assert_armored(*names):
+        def wrapper(func):
+            def _execute(*args, **kwargs):
+                for s in names:
+                    # For Python2
+                    # if not (s.func_code.co_flags & 0x20000000):
+                    # For Python3
+                    if not (s.__code__.co_flags & 0x20000000):
+                        raise RuntimeError('Access violate')
+                return func(*args, **kwargs)
+            return _execute
+        return wrapper
+
+    @assert_armored(foo.connect, foo.connect2)
+    def start_server():
+        foo.connect('root', 'root password')
+        foo.connect2('user', 'user password')
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt
