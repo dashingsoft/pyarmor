@@ -39,13 +39,13 @@ Upgrade notes:
   which is obfuscated but not as entry script manually. Do it by this command
   after v5.7.0::
 
-    pyarmor --no-runtime --exact foo.py
+    pyarmor obfuscate --no-runtime --exact foo.py
 
 * If you need insert bootstrap code into plain script, first obfuscate an empty
   script like this::
 
     echo "" > pytransform_bootstrap.py
-    pyarmor --no-runtime --exact pytransform_bootstrap.py
+    pyarmor obfuscate --no-runtime --exact pytransform_bootstrap.py
 
   Then import `pytransform_bootstrap` in the plain script.
 

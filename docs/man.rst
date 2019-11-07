@@ -299,7 +299,8 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
 .. important::
 
-   Do not pack the obfuscated scripts, but plain scripts directly.
+   The command `pack` will obfuscate the scripts automatically, do not
+   try to pack the obfuscated the scripts.
 
 **EXAMPLES**
 
