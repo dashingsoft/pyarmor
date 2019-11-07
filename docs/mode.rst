@@ -174,13 +174,13 @@ Inserting the `bootstrap code` into obfuscated script `dist/test.py` by manual
 doesn't work, because it's not specified as entry script. It must be run this
 command to insert the :ref:`bootstrap code`::
 
-    pyarmor --no-runtime --exact test.py
+    pyarmor obfuscate --no-runtime --exact test.py
 
 If you need insert the :ref:`bootstrap code` into plain script, first obfuscate
 an empty script like this::
 
     echo "" > pytransform_bootstrap.py
-    pyarmor --no-runtime --exact pytransform_bootstrap.py
+    pyarmor obfuscate --no-runtime --exact pytransform_bootstrap.py
 
 Then import `pytransform_bootstrap` in the plain script.
 

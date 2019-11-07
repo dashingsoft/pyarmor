@@ -189,7 +189,7 @@ without leading dots.
 
 * Obfuscate a script `foo.py` only, no runtime files::
 
-    pyarmor --no-runtime --exact foo.py
+    pyarmor obfuscate --no-runtime --exact foo.py
 
 .. _licenses:
 
