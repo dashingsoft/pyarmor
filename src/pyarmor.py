@@ -649,6 +649,17 @@ def _download(args):
         logging.info('All the available libraries:\n%s', '\n'.join(lines))
 
 
+@arcommand
+def _runtime(args):
+    '''Generate runtime package separately.'''
+    capsule = DEFAULT_CAPSULE
+    output = args.output
+    package = not args.no_package
+    platform = args.platform
+    make_runtime(capsule, output, licfile=args.with_license, platform=platform,
+                 package=package)
+
+
 def _version_info(verbose=2):
     rcode = get_registration_code()
     if rcode:
@@ -934,7 +945,7 @@ def main(args):
         'capsule',
         epilog=_capsule.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Generate public capsule explicitly ')
+        add_help=False)
     cparser.add_argument('-f', '--force', action='store_true',
                          help='Force update public capsule even if it exists')
     cparser.add_argument('path', nargs='?', default=os.path.expanduser('~'),
@@ -972,6 +983,26 @@ def main(args):
     group.add_argument('platid', nargs='?',
                        help='Download dynamic library by platform id')
     cparser.set_defaults(func=_download)
+
+    #
+    # Command: runtime
+    #
+    cparser = subparsers.add_parser(
+        'runtime',
+        epilog=_runtime.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Generate runtime package separately')
+    cparser.add_argument('-O', '--output', metavar='PATH', default='dist',
+                         help='Output path, default is "%(default)s"')
+    cparser.add_argument('-n', '--no-package', action='store_true',
+                         help='Generate runtime files without package')
+    cparser.add_argument('-L', '--with-license', metavar='license',
+                         help='Replace default license with this file')
+    cparser.add_argument('--platform', help='Generate runtime package '
+                         'for specified platform')
+    cparser.add_argument('pkgname', nargs='?', default='pytransform',
+                         help=argparse.SUPPRESS)
+    cparser.set_defaults(func=_runtime)
 
     args = parser.parse_args(args)
     if args.silent:

@@ -284,7 +284,7 @@ def make_runtime(capsule, output, licfile=None, platform=None, package=False):
         logging.info('Extract license.lic')
         myzip.extract('license.lic', output)
     else:
-        logging.info('Copying %s', licfile)
+        logging.info('Copying %s as license file', licfile)
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
     if platform is None:
@@ -296,11 +296,11 @@ def make_runtime(capsule, output, licfile=None, platform=None, package=False):
                 pname = pytransform.format_platname()
                 libpath = os.path.join(PYARMOR_PATH, 'platforms')
                 libfile = os.path.join(libpath, pname, libname)
-        logging.info('Copying %s', libfile)
+        logging.info('Copying %s', os.path.relpath(libfile))
         shutil.copy2(libfile, output)
     else:
         filename = _get_platform_library(platform)
-        logging.info('Copying %s', filename)
+        logging.info('Copying %s', os.path.relpath(filename))
         shutil.copy2(filename, output)
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
