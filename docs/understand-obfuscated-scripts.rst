@@ -23,8 +23,8 @@ The capsule can't help restoring the obfuscated scripts at all. If your `private
 capsuel` got by someone else, the risk is that he/she may generate new license
 for your obfuscated scripts.
 
-Generally this capsule is only in the build machine, it's not used when running
-the obfuscated scripts.
+Generally this capsule is only in the build machine, it's not used by the
+obfuscated scripts, and should not be distributed to the end users.
 
 Obfuscated Scripts
 ------------------
@@ -42,17 +42,6 @@ the required files to run obfuscated scripts::
             pytransform.key
             license.lic
 
-Before v5.7.0, the runtime files are saved in the same folder with obfuscated
-scripts. Here is file list in the `dist` folder::
-
-    myscript.py
-    mymodule.py
-
-    pytransform.py
-    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    pytransform.key
-    license.lic
-
 The obfuscated scripts are normal Python scripts. The module `dist/mymodule.py`
 would be like this::
 
@@ -69,7 +58,7 @@ The entry script `dist/myscript.py` would be like this::
    In PyArmor, entry script is the first obfuscated script to be run or to be
    imported in a python interpreter process. For example, `__init__.py` is entry
    script if only one single python package is obfuscated.
-   
+
 .. _bootstrap code:
 
 Bootstrap Code
@@ -104,7 +93,8 @@ the only dependency of obfuscated scripts.
 
 Generally this package is in the same folder with obfuscated scripts, but it can
 be moved anywhere. Only this package in any Python Path, the obfuscated scripts
-can be run as normal scripts.
+can be run as normal scripts. And all the scripts obfuscated by the same
+:ref:`Global Capsule` could share this package.
 
 There are 4 files in this package::
 
