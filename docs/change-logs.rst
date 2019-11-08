@@ -3,6 +3,14 @@
 Change Logs
 ===========
 
+5.7.1
+-----
+* Add command `runtime` to generate runtime package separately
+* Add the first character as alias for command `obfuscate, licenses, init, config, build`  
+* Fix cross platform obfuscating scripts don't work issue (#136).
+  This bug should be exists from v5.6.0 to v5.7.0
+  Related target platforms `armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm, poky-i586`
+
 5.7.0
 -----
 There are 2 major changes in this version:
