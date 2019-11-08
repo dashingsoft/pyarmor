@@ -963,7 +963,7 @@ def main(args):
         'register',
         epilog=_register.__doc__ + purchase_info,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Make registration key work')
+        help='Make registration keyfile work')
     group = cparser.add_mutually_exclusive_group()
     group.add_argument('filename', nargs='?', metavar='KEYFILE',
                        help='Filename of registration keyfile')
