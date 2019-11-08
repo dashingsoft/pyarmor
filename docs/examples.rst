@@ -110,7 +110,7 @@ Then edit the server configuration file of Apache::
     # The runtime files required by pyarmor are generated in this path
     WSGIPythonPath /var/www/obf_site
 
-    <Directory /path/to/mysite.com/mysite>
+    <Directory /var/www/obf_site/mysite>
         <Files wsgi.py>
             Require all granted
         </Files>
