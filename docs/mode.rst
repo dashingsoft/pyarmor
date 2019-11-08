@@ -27,7 +27,7 @@ interpreter doesn't work in advanced mode.
 Take this into account, the advanced mode is disabled by default. In order to
 enable it, pass option `--advanced` to command `obfuscate`::
 
-    pyarmor obfuscate --advanced foo.py
+    pyarmor obfuscate --advanced 1 foo.py
 
 In next minor version, this mode may be enabled by default.
 
