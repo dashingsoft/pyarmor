@@ -49,7 +49,7 @@ from utils import PYARMOR_PATH, make_capsule, make_runtime, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, \
                   get_product_key, register_keyfile, query_keyinfo, \
-                  get_platform_list, download_pytransform
+                  get_platform_list, download_pytransform, check_cross_platform
 
 import packer
 
@@ -193,6 +193,7 @@ def _build(args):
     platform = args.platform if args.platform else project.get('platform')
     if platform:
         logging.info('Taget platform is: %s', platform)
+        check_cross_platform(platform)
 
     restrict = project.get('restrict_mode',
                            0 if project.get('disable_restrict_mode') else 1)
@@ -428,6 +429,8 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project.'''
+    check_cross_platform(args.platform)
+
     for x in ('entry', 'cross-protection'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
@@ -1024,7 +1027,7 @@ def main(args):
 
 def main_entry():
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG if sys.flags.debug else logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
     try:

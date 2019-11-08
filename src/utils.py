@@ -32,6 +32,7 @@ import sys
 import tempfile
 from codecs import BOM_UTF8
 from json import dumps as json_dumps, loads as json_loads
+from subprocess import Popen
 from time import gmtime, strftime
 from zipfile import ZipFile
 
@@ -63,10 +64,15 @@ def pytransform_bootstrap(path=None, capsule=None):
     if not os.path.exists(os.path.join(path, libname)):
         libpath = os.path.join(path, 'platforms')
         platname = os.getenv('PYARMOR_PLATFORM')
-        platid = pytransform.format_platname(platname)
+        if platname == 'simple':
+            platid = '%s/simple' % pytransform.format_platname()
+            platname = platid
+        else:
+            platid = pytransform.format_platname(platname)
         if not os.path.exists(os.path.join(libpath, platid, libname)):
             download_pytransform(platid)
             logging.info('Bootstrap OK.\n')
+    logging.debug('Build platform is %s', platname)
     pytransform.pyarmor_init(platname=platname)
 
     if capsule is not None and 'register' not in sys.argv[1:2]:
@@ -647,6 +653,21 @@ def register_keyfile(filename):
             f.extract(item[1], path=item[-1])
     finally:
         f.close()
+
+
+def check_cross_platform(platname):
+    if os.getenv('PYARMOR_PLATFORM') == 'simple':
+        return
+    if platname in ('armv5', 'android.aarch64', 'ppc64le', 'ios.arm64',
+                    'freebsd', 'alpine', 'alpine.arm', 'poky-i586'):
+        logging.info('===========================================')
+        logging.info('Reboot PyArmor to obfuscate the scripts for platform %s',
+                     platname)
+        logging.info('===========================================')
+        os.putenv('PYARMOR_PLATFORM', 'simple')
+        p = Popen([sys.executable] + sys.argv)
+        p.wait()
+        sys.exit(p.returncode)
 
 
 if __name__ == '__main__':
