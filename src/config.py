@@ -54,6 +54,8 @@ platform_urls = [
     ]
 platform_config = 'index.json'
 
+key_url = 'https://api.dashingsoft.com/product/key/%s/query'
+
 #
 # DEPRECATED From v3.4.0, all the follwing lines will be removed from v4
 #
@@ -115,5 +117,3 @@ support_platforms = [
         ('freebsd_x86_64', 'freebsd'),
     )
 ]
-
-key_url = 'https://api.dashingsoft.com/product/key/%s/query'
