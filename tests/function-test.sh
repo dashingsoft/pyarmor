@@ -327,6 +327,11 @@ check_file_content test-package-runtime2/pytransform/__init__.py 'def init_runti
 check_file_exists test-package-runtime2/__init__.py
 check_file_content test-package-runtime2/__init__.py 'from pytransform import pyarmor_runtime'
 
+csih_inform "C-25. Test command runtime with default option"
+$PYARMOR runtime > result.log 2>&1
+check_return_value
+check_file_exists dist/pytransform/__init__.py
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
