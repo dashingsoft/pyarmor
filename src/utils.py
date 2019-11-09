@@ -529,6 +529,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         n = 0
         k = -1
         plist = []
+        pnames = []
         marker = '# PyArmor Plugin:'
         for line in lines:
             if line.startswith('# {PyArmor Plugins}'):
@@ -537,12 +538,18 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 i = line.find(marker)
                 if i > -1:
                     plist.append((n+1, i))
+                    name = line[i+len(marker):].strip().strip('@')
+                    t = name.find('(')
+                    if t == -1:
+                        raise RuntimeError('Invalid plugin marker '
+                                           'at line %d\n\t%s' % (n, line))
+                    pnames.append(name[:t].strip())
             n += 1
         if k > -1:
             logging.info('Patch this entry script with plugins')
-            lines[k:k] = _patch_plugins(plugins)
+            lines[k:k] = _patch_plugins(plugins, pnames)
         for n, i in plist:
-            lines[n] = lines[n][:i] + lines[n][i+len(marker):].lstrip()
+            lines[n] = lines[n][:i] + lines[n][i+len(marker):].strip()
 
     if protection:
         n = 0
