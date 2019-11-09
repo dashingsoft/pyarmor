@@ -16,6 +16,7 @@ The most commonly used pyarmor commands are::
     licenses     Generate new licenses for obfuscated scripts
     pack         Pack obfuscated scripts to one bundle
     hdinfo       Show hardware information
+    runtime      Generate runtime package separately
 
 The commands for project::
 
@@ -37,13 +38,13 @@ See `pyarmor <command> -h` for more information on a specific command.
 .. note::
 
    From v5.7.1, the first character is command alias for most usage commands::
-     
+
        obfuscate, licenses, pack, init, config, build
 
    For example::
-     
+
        pyarmor o => pyarmor obfuscate
-  
+
 .. _obfuscate:
 
 obfuscate
