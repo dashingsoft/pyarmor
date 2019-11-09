@@ -435,9 +435,6 @@ def _obfuscate(args):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
-    if args.src is None and not args.scripts:
-        args.src = '.'
-
     if args.src is None:
         if args.scripts[0].lower().endswith('.py'):
             path = os.path.abspath(os.path.dirname(args.scripts[0]))
@@ -722,11 +719,12 @@ def main(args):
     cparser.add_argument('--no-cross-protection', action='store_true',
                          help='Do not insert cross protection code to entry '
                          'script')
-    cparser.add_argument('scripts', metavar='SCRIPT', nargs='*',
+    cparser.add_argument('scripts', metavar='SCRIPT', nargs='+',
                          help='List scripts to obfuscated, the first script '
                          'is entry script')
     cparser.add_argument('-s', '--src', metavar='PATH',
-                         help='Base path for searching scripts')
+                         help='Specify source path if entry script is not '
+                         'in the top most path')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
                          help=argparse.SUPPRESS)
     cparser.add_argument('--cross-protection', choices=(0, 1),
@@ -1003,7 +1001,7 @@ def main(args):
                          help='Output path, default is "%(default)s"')
     cparser.add_argument('-n', '--no-package', action='store_true',
                          help='Generate runtime files without package')
-    cparser.add_argument('-L', '--with-license', metavar='license',
+    cparser.add_argument('-L', '--with-license', metavar='FILE',
                          help='Replace default license with this file')
     cparser.add_argument('--platform', help='Generate runtime package '
                          'for specified platform')

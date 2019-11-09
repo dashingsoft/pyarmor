@@ -60,6 +60,7 @@ Obfuscate python scripts.
 
 -O, --output PATH           Output path, default is `dist`
 -r, --recursive             Search scripts in recursive mode
+-s, --src PATH              Specify source path if entry script is not in the top most path
 --exclude PATH              Exclude the path in recusrive mode. Multiple paths are allowed, separated by ",", or use this option multiple times
 --exact                     Only obfuscate list scripts
 --no-bootstrap              Do not insert bootstrap code to entry script
@@ -94,6 +95,12 @@ Finally insert the :ref:`bootstrap code` into entry script.
 
 The entry script is only the first script if there are more than one
 script in command line.
+
+Option ``--src`` used to specify source path if entry script is not in the top
+most path. For example::
+
+    # if no option --src, the "./mysite" is the source path
+    pyarmor obfuscate --src "." --recursive mysite/wsgi.py
 
 Option ``--plugin`` is used to extend license type of obfuscated scripts, it
 will insert the content of plugin into entry script. The corresponding filename
@@ -141,6 +148,21 @@ without leading dots.
 * Obfuscate all the `.py` in the current path recursively::
 
      pyarmor obfuscate --recursive foo.py
+
+* Obfuscate all the `.py` in the current path recursively, but entry script not
+  in top most path::
+
+     pyarmor obfuscate --src "." --recursive mysite/wsgi.py
+
+* Obfuscate a script `foo.py` only, no runtime files::
+
+    pyarmor obfuscate --no-runtime --exact foo.py
+
+* Obfuscate all the `.py` in a path recursive, no entry script, no generate
+  runtime package::
+
+     pyarmor obfuscate --recursive --no-runtime .
+     pyarmor obfuscate --recursive --no-runtime src/
 
 * Obfuscate all the `.py` in the current path recursively, exclude all
   the `.py` in the path `build` and `tests`::
@@ -197,10 +219,6 @@ without leading dots.
 
     cd /path/to/mypkg
     pyarmor obfuscate -r --package-runtime 2 --output dist/mypkg __init__.py
-
-* Obfuscate a script `foo.py` only, no runtime files::
-
-    pyarmor obfuscate --no-runtime --exact foo.py
 
 .. _licenses:
 
