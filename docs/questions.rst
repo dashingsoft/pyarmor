@@ -251,7 +251,7 @@ If report this error as running command `pyarmor pack`:
 * Make sure the script specified in the command line is not obfuscated
 * Run `pack` with extra option `--clean` to remove cached `myscript.spec`::
 
-    payrmor pack --clean foo.py
+    pyarmor pack --clean foo.py
 
 .. How easy is to recover obfuscated code?:
 
