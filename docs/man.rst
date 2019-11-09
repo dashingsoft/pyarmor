@@ -67,7 +67,7 @@ Obfuscate python scripts.
 --no-cross-protection       Do not insert protection code to entry script
 --plugin NAME               Insert extra code to entry script
 --platform NAME             Distribute obfuscated scripts to other platform
---advanced                  Enable advanced mode
+--advanced <0,1>            Enable advanced mode
 --restrict <0,1,2,3,4>      Set restrict mode
 --package-runtime <0,1,2>   Save the runtime files as a package or not
 -n, --no-runtime            DO NOT generate runtime files
@@ -113,15 +113,8 @@ scripts if target platform is different from build platform.
 
 Option ``--restrict`` is used to set restrict mode, :ref:`Restrict Mode`
 
-If ``--package-runtime`` is `0`, all the runtime files will be saved in the same
-path with obfuscated scripts::
-
-    pytransform.py
-    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    pytransform.key
-    license.lic
-
-By default they'll be saved in the separated folder `pytransform` as package::
+By default the runtime files will be saved in the separated folder ``pytransform``
+as package::
 
     pytransform/
         __init__.py
@@ -129,15 +122,24 @@ By default they'll be saved in the separated folder `pytransform` as package::
         pytransform.key
         license.lic
 
-Generally if the entry script is `__init__.py`, the :ref:`bootstrap code` will
-make a relative import by using leading dots like this::
+If ``--package-runtime`` is `0`, they will be saved in the same path with
+obfuscated scripts as four separated files::
+
+    pytransform.py
+    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+    pytransform.key
+    license.lic
+
+If ``--package-runtime`` is set to `2`, it means the :ref:`runtime package` will
+be in other path, so the :ref:`bootstrap code` always makes absolute import
+without leading dots.
+    
+Otherwise when the entry script is `__init__.py`, it will make a relative import
+by using leading dots like this::
 
     from .pytransform import pyarmor_runtime
     pyarmor_runtime()
 
-But if ``--package-runtime`` is set to `2`, it means the :ref:`runtime package`
-will be in other path, so the :ref:`bootstrap code` still makes absolute import
-without leading dots.
 
 **EXAMPLES**
 
@@ -301,7 +303,7 @@ Obfuscate the scripts and pack them into one bundle.
 -x, --xoptions OPTIONS  Pass these extra options to `pyarmor obfuscate`
 -s FILE                 Specify .spec file used by `pyinstaller`
 --without-license       Do not generate license for obfuscated scripts
---clean                 Remove last build path before packing
+--clean                 Remove cached .spec file before packing
 --debug                 Do not remove build files after packing
 
 **DESCRIPTION**
