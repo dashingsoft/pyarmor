@@ -850,7 +850,7 @@ def main(args):
     cparser.add_argument('--restrict-mode', type=int, choices=range(5),
                          help='Set restrict mode')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
-                         help=argparse.SUPPRESS)                         
+                         help=argparse.SUPPRESS)
     cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE,
                          help=argparse.SUPPRESS)
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
