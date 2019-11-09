@@ -41,8 +41,8 @@ Check all the output and test these obfuscated packages::
 
 .. note::
 
-   The runtime package `pytransform` in the output path `dist` also could be
-   move to any other Python path, only if it could be imported.
+   The runtime package :mod:`pytransform` in the output path `dist` also could
+   be move to any other Python path, only if it could be imported.
 
 .. _distributing obfuscated scripts to other platform:
 

@@ -15,7 +15,7 @@ There are several advantages to manage obfuscated scripts by Project:
 Managing Obfuscated Scripts With Project
 ----------------------------------------
 
-Use command ``init`` to create a project::
+Use command :ref:`init` to create a project::
 
     cd examples/pybench
     pyarmor init --entry=pybench.py
@@ -54,7 +54,7 @@ Run obfuscated script::
     cd dist
     python pybench.py
 
-After some scripts changed, just run ``build`` again::
+After some scripts changed, just run :ref:`build` again::
 
     cd projects/pybench
     pyarmor build
