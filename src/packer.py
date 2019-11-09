@@ -23,16 +23,17 @@
 #
 #   Pack obfuscated Python scripts with PyInstaller
 #
+#   The prefer way is
+#
+#       pip install pyinstaller
+#       cd /path/to/src
+#       parmor pack hello.py
+#
 
-'''Pack obfuscated scripts to one bundle, distribute the
-bundle as a folder or file to other people, and they can
-execute your program without Python installed.
-
-The prefer way is
-
-    pip install pyinstaller
-    cd /path/to/src
-    parmor pack hello.py
+'''
+Pack obfuscated scripts to one bundle, distribute the bundle as a
+folder or file to other people, and they can execute your program
+without Python installed.
 
 '''
 
@@ -48,12 +49,7 @@ from py_compile import compile as compile_file
 from shlex import split
 from zipfile import PyZipFile
 
-
-try:
-    import argparse
-except ImportError:
-    # argparse is new in version 2.7
-    import polyfills.argparse as argparse
+import polyfills.argparse as argparse
 
 # Default output path, library name, command options for setup script
 DEFAULT_PACKER = {
@@ -370,17 +366,18 @@ def add_arguments(parser):
 
     parser.add_argument('-t', '--type', default='PyInstaller', metavar='TYPE',
                         choices=DEFAULT_PACKER.keys(), help=argparse.SUPPRESS)
-    parser.add_argument('-s', '--setup', help=argparse.SUPPRESS)
-    parser.add_argument('-O', '--output',
+    parser.add_argument('-s', '--setup', metavar='FILE',
+                        help='Specify .spec file used by `pyinstaller`')
+    parser.add_argument('-O', '--output', metavar='PATH',
                         help='Directory to put final built distributions in')
-    parser.add_argument('-e', '--options',
+    parser.add_argument('-e', '--options', metavar='EXTRA_OPTIONS',
                         help='Pass these extra options to `pyinstaller`')
-    parser.add_argument('-x', '--xoptions',
+    parser.add_argument('-x', '--xoptions', metavar='EXTRA_OPTIONS',
                         help='Pass these extra options to `pyarmor obfuscate`')
     parser.add_argument('--without-license', action='store_true',
                         help='Do not generate license for obfuscated scripts')
     parser.add_argument('--clean', action="store_true",
-                        help='Remove build path before packing')
+                        help='Remove cached .spec file from the beginning')
     parser.add_argument('--debug', action="store_true",
                         help='Do not remove build files after packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,

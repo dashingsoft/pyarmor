@@ -705,7 +705,8 @@ def main(args):
         epilog=_obfuscate.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate python scripts')
-    cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
+    cparser.add_argument('-O', '--output', default='dist', metavar='PATH',
+                         help='Output path, default is "%(default)s"')
     cparser.add_argument('-r', '--recursive', action='store_true',
                          help='Search scripts in recursive mode')
     cparser.add_argument('--exclude', metavar='PATH', action='append',
@@ -729,13 +730,14 @@ def main(args):
                          help=argparse.SUPPRESS)
     cparser.add_argument('--cross-protection', choices=(0, 1),
                          help=argparse.SUPPRESS)
-    cparser.add_argument('--plugin', dest='plugins', action='append',
+    cparser.add_argument('--plugin', dest='plugins', metavar='NAME',
+                         action='append',
                          help='Insert extra code to entry script')
     cparser.add_argument('--restrict', type=int, choices=range(5),
                          default=1, help='Set restrict mode')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('--platform', help='Distribute obfuscated scripts '
-                         'to other platform')
+    cparser.add_argument('--platform', metavar='PLAT-ID',
+                         help='Target platform to run obfuscated scripts')
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
@@ -855,7 +857,8 @@ def main(args):
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1))
     cparser.add_argument('--runtime-path', metavar="RPATH")
-    cparser.add_argument('--plugin', dest='plugins', action='append',
+    cparser.add_argument('--plugin', dest='plugins', metavar='NAME',
+                         action='append',
                          help='Insert extra code to entry script')
     cparser.add_argument('--advanced-mode', type=int, choices=(0, 1))
     cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
@@ -881,8 +884,8 @@ def main(args):
                          help='DO NOT generate runtime files')
     cparser.add_argument('-O', '--output',
                          help='Output path, override project configuration')
-    cparser.add_argument('--platform', help='Distribute obfuscated scripts '
-                         'to other platform')
+    cparser.add_argument('--platform', metavar='PLAT-ID',
+                         help='Target platform to run obfuscated scripts')
     cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_build)
