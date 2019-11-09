@@ -10,6 +10,7 @@ There are several advantages to manage obfuscated scripts by Project:
 
 * Increment build, only updated scripts are obfuscated since last build
 * Filter obfuscated scripts in the project, exclude some scripts
+* Obfuscate the scripts with different modes  
 * More convenient to manage obfuscated scripts
 
 Managing Obfuscated Scripts With Project
@@ -36,12 +37,14 @@ Show project information::
 
     pyarmor info
 
-Obfuscate all the scripts in this project::
+Obfuscate all the scripts in this project by command :ref:`build`::
 
     pyarmor build
 
-Change the project configuration, exclude the :file:`dist`, :file:`test`, the
-`.py` files in these folder will not be obfuscated::
+Change the project configuration by command :ref:`config`.
+
+For example, exclude the :file:`dist`, :file:`test`, the `.py` files in these
+folder will not be obfuscated::
 
     pyarmor config --manifest "include *.py, prune dist, prune test"
 
@@ -64,7 +67,7 @@ After some scripts changed, just run :ref:`build` again::
 Obfuscating Scripts With Different Modes
 ----------------------------------------
 
-First configure mode to obfuscate scripts::
+First configure the different modes, refer to :ref:`The Modes of Obfuscated Scripts`::
 
     pyarmor config --obf-mod=1 --obf-code=0
 
@@ -91,7 +94,7 @@ Each project has a configure file. It's a json file named
 
     Base path to match files by manifest template string.
 
-    Generally it's absolute path.
+    It could be absolute path, or relative path based on project folder.
 
 * manifest
 
@@ -119,20 +122,6 @@ Each project has a configure file. It's a json file named
 
     When init a project and no ``--type`` specified, it will be set to 1 if
     there is `__init__.py` in the path `src`, otherwise it's None.
-
-* disable_restrict_mode [DEPRECRATED]
-
-    Available values: 0, 1, None
-
-    When it's None or 0, obfuscated scripts can not be imported from outer
-    scripts.
-
-    When it's set to 1, it the obfuscated scripts are allowed to be imported by
-    outer scripts.
-
-    By default it's set to 0.
-
-    This attribute has been deprecrated, use `restrict_mode` instead.
 
 * restrict_mode
 
@@ -170,46 +159,6 @@ Each project has a configure file. It's a json file named
 
     Filename of project capsule. It's relative to project path if it's
     not absolute path.
-
-* obf_module_mode [DEPRECRATED]
-
-    How to obfuscate whole code object of module:
-
-        - none
-
-        No obfuscate
-
-        - des
-
-        Obfuscate whole code object by DES algorithm
-
-        The default value is `des`
-
-* obf_code_mode [DEPRECRATED]
-
-    How to obfuscate byte code of each code object:
-
-        - none
-
-        No obfuscate
-
-        - des
-
-        Obfuscate byte-code by DES algorithm
-
-        - fast
-
-        Obfuscate byte-code by a simple algorithm, it's faster than
-        DES
-
-        - wrap
-
-        The wrap code is different from `des` and `fast`. In this
-        mode, when code object start to execute, byte-code is
-        restored. As soon as code object completed execution,
-        byte-code will be obfuscated again.
-
-    The default value is `wrap`.
 
 * obf_code
 
