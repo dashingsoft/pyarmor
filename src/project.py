@@ -79,11 +79,17 @@ class Project(dict):
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):
+        self._path = ''
         for k, v in Project.DEFAULT_VALUE:
             kwargs.setdefault(k, v)
         super(Project, self).__init__(*args, **kwargs)
 
     def __getattr__(self, name):
+        if name == 'src':
+            src = self[name]
+            if not os.path.isabs(src):
+                src = os.path.normpath(os.path.join(self._path, src))
+            return src
         if name in self:
             return self[name]
         raise AttributeError(name)
@@ -103,19 +109,21 @@ class Project(dict):
             else os.path.dirname(path)
         assert os.path.exists(os.path.normpath(pro_path)), \
             'Project path %s does not exists' % pro_path
+
         assert os.path.exists(self.src), \
             'The src of this project is not found: %s' % self.src
         assert os.path.isabs(self.src), \
             'The src of this project is not absolute path'
+
         assert self.src != os.path.abspath(self.output), \
             'The output path can not be same as src in the project'
-        assert self.capsule.endswith('.zip'), \
-            'Invalid capsule, not a zip file'
 
         capsule = self.capsule if os.path.isabs(self.capsule) \
             else os.path.join(pro_path, self.capsule)
         assert os.path.exists(os.path.normpath(capsule)), \
             'No project capsule found: %s' % capsule
+        assert self.capsule.endswith('.zip'), \
+            'Invalid capsule, not a zip file'
 
     def _dump(self, filename):
         with open(filename, 'w') as f:
@@ -138,6 +146,7 @@ class Project(dict):
 
     def open(self, path):
         filename = self._project_filename(path)
+        self._path = os.path.abspath(os.path.dirname(filename))
         self._load(filename)
 
     def save(self, path):
@@ -217,6 +226,8 @@ class Project(dict):
         for k, v in Project.DEFAULT_VALUE:
             if k == 'build_time':
                 v = time.asctime(time.gmtime(self[k]))
+            elif k == 'src':
+                v = self.src
             else:
                 v = str(self[k])
                 n = 50

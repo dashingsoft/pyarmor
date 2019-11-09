@@ -44,7 +44,7 @@ from config import version, version_info, purchase_info, \
                    config_filename, capsule_filename, license_filename
 
 from project import Project
-from utils import PYARMOR_PATH, make_capsule, make_runtime, \
+from utils import PYARMOR_PATH, make_capsule, make_runtime, relpath, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, \
@@ -63,7 +63,7 @@ def arcommand(func):
 
 @arcommand
 def _init(args):
-    '''Create an empty project or reinitialize an existing one.'''
+    '''Create an project to manage the obfuscated scripts.'''
     path = os.path.normpath(args.project)
 
     if args.child is not None:
@@ -87,7 +87,11 @@ def _init(args):
         logging.info('Make project directory %s', path)
         os.makedirs(path)
 
-    src = os.path.normpath(os.path.abspath(args.src))
+    if os.path.isabs(args.src):
+        pro_src = src = os.path.normpath(args.src)
+    else:
+        src = os.path.abspath(args.src)
+        pro_src = relpath(src, os.path.abspath(path))
     logging.info('Python scripts base path: %s', src)
 
     name = os.path.basename(os.path.abspath(path))
@@ -95,11 +99,11 @@ def _init(args):
        (args.type == 'auto' and os.path.exists(os.path.join(src,
                                                             '__init__.py'))):
         logging.info('Project is configured as package')
-        project = Project(name=name, title=name, src=src, is_package=1,
+        project = Project(name=name, title=name, src=pro_src, is_package=1,
                           entry=args.entry if args.entry else '__init__.py')
     else:
         logging.info('Project is configured as standalone application.')
-        project = Project(name=name, title=name, src=src, entry=args.entry)
+        project = Project(name=name, title=name, src=pro_src, entry=args.entry)
 
     if args.capsule:
         capsule = os.path.abspath(args.capsule)
@@ -135,7 +139,11 @@ def _config(args):
     logging.info('Update project %s ...', args.project)
 
     if args.src is not None:
-        args.src = os.path.normpath(os.path.abspath(args.src))
+        src = os.path.abspath(args.src)
+        if os.path.abspath(args.src):
+            args.src = src
+        else:
+            args.src = relpath(src, project._path)
         logging.info('Change src to absolute path: %s', args.src)
     if args.capsule is not None:
         args.capsule = os.path.abspath(args.capsule)
