@@ -156,7 +156,7 @@ check_return_value
 check_file_content dist-recursive/result.log 'Found 92 solutions'
 
 csih_inform "C-7. Test no entry script for obfuscate"
-$PYARMOR obfuscate --src=examples/simple -O test-no-entry >result.log 2>&1
+$PYARMOR obfuscate -O test-no-entry examples/simple >result.log 2>&1
 check_return_value
 check_file_exists test-no-entry/queens.py
 
@@ -190,13 +190,13 @@ csih_inform "C-9. Test --upgrade for capsule (ignored)"
 
 csih_inform "C-10. Test output == src for obfuscate"
 mkdir -p abc
-$PYARMOR obfuscate --src=abc -O abc >result.log 2>&1
+$PYARMOR obfuscate -O abc abc >result.log 2>&1
 check_file_content result.log "Output path can not be same as src"
 
 csih_inform "C-11. Test output is sub-directory of src for obfuscate"
 cp -a examples/simple test-subpath
 (cd test-subpath;
- $PYTHON ../pyarmor.py obfuscate --src=. -O output >result.log 2>&1)
+ $PYTHON ../pyarmor.py obfuscate -O output . >result.log 2>&1)
 check_return_value
 check_file_exists test-subpath/output/queens.py
 
