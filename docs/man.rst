@@ -296,33 +296,46 @@ Obfuscate the scripts and pack them into one bundle.
 
 **OPTIONS**
 
--O, --output OUTPUT     Directory to put final built distributions in.
--e, --options OPTIONS   Extra options to run external tool
--x, --xoptions OPTIONS  Extra options to obfuscate scripts
+-O, --output PATH       Directory to put final built distributions in.
+-e, --options OPTIONS   Pass these extra options to `pyinstaller`
+-x, --xoptions OPTIONS  Pass these extra options to `pyarmor obfuscate`
+-s FILE                 Specify .spec file used by `pyinstaller`
 --without-license       Do not generate license for obfuscated scripts
 --clean                 Remove last build path before packing
 --debug                 Do not remove build files after packing
 
 **DESCRIPTION**
 
-PyArmor first packes the script by calling PyInstaller, gets the dependencies
-and other required files.
+The command `pack`_ first calls `PyInstaller`_ to generate `.spec` file which
+name is same as entry script. The options specified by ``--options`` will be
+pass to `PyInstaller`_ to generate `.spec` file. It could any option accepted by
+`PyInstaller`_ except ``--distpath``.
 
-Then obfuscates all the `.py` files in the same path of entry script.
+.. note::
 
-Next replace the original scripts with the obfuscated ones.
+   If there is one `.spec` file exists, PyArmor uses this cached one. If option
+   ``--clean`` is set, PyArmor will always generate a new one and overrite the
+   old one.
 
-Finally pack all of them into one bundle.
+If there is in trouble, make sure this `.spec` works with `PyInstaller`_. For
+example::
 
-Option ``--options EXTRA_OPTIONS`` could pass any extra options to
-`PyInstaller`. It is called by this way::
+    pyinstaller myscript.spec
 
-    pyinstaller --distpath DIST -y EXTRA_OPTIONS SCRIPT
+If you have a `.spec` file worked, specified by ``-s``, thus `pack`_ will use it
+other than generate new one ::
 
-Option ``--xoptions EXTRA_OPTIONS`` could pass any extra options to obfuscate
-scripts. `pack` will call pyarmor to obfuscate scripts like this::
+    pyarmor pack -s /path/to/myself.spec foo.py
 
-    pyarmor obfuscate -r --output DIST EXTRA_OPTIONS SCRIPT
+Then `pack`_ will obfuscates all the `.py` files in the same path of entry
+script. It will call `pyarmor obfuscate` with options ``-r``, ``--output``, and
+the extra options specified by ``--xoptions``.
+
+Next `pack`_ patches the `.spec` file so that the original scripts could be
+replaced with the obfuscated ones.
+
+Finally `pack`_ call `PyInstaller`_ with this pacthed `.spec` file to generate
+the final distributions.
 
 For more information, refer to :ref:`How to pack obfuscated scripts`.
 
@@ -337,6 +350,14 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
     pyarmor pack foo.py
 
+* Remove the cached `foo.spec`, and start a clean pack::
+
+    pyarmor pack --clean foo.py
+
+* Pack the obfuscated scripts by an exists `myfoo.spec`::
+
+    pyarmor pack -s myfoo.spec foo.py
+
 * Pass extra options to run `PyInstaller`::
 
     pyarmor pack -e " -w --icon app.ico" foo.py
@@ -349,8 +370,8 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
     pyarmor pack -e " --onefile" -x " --advanced" foo.py
 
-* If the application name is changed by passing option `-n` of `PyInstaller`,
-  the option `-s` must be specified at the same time. For example::
+* If the application name is changed by option `-n` of `PyInstaller`, the option
+  `-s` must be specified at the same time. For example::
 
     pyarmor pack -e " -n my_app" -s "my_app.spec" foo.py
 
