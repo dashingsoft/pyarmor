@@ -439,6 +439,31 @@ One solution is to check imported functions by decorator `assert_armored` in the
         foo.connect('root', 'root password')
         foo.connect2('user', 'user password')
 
+About Third-Party Interpreter
+-----------------------------
+
+About third-party interperter, for example Jython, and any embeded
+Python C/C++ code, they should satisfy the following conditions at
+least to run the obfuscated scripts:
+
+* They must be load offical Python dynamic library, which should be
+  built from the soure https://github.com/python/cpython , and the
+  core source code should not be modified.
+
+* On Linux, `RTLD_GLOBAL` must be set as loading `libpythonXY.so` by
+  `dlopen`, otherwise obfuscated scripts couldn't work.
+
+.. note::  
+
+   Boost::python does not load `libpythonXY.so` with `RTLD_GLOBAL` by
+   default, so it will raise error "No PyCode_Type found" as running
+   obfuscated scripts. To solve this problem, try to call the method
+   `sys.setdlopenflags(os.RTLD_GLOBAL)` as initializing.
+
+* The module `ctypes` must be exists and `ctypes.pythonapi._handle`
+  must be set as the real handle of Python dynamic library, PyArmor
+  will query some Python C APIs by this handle.
+        
 .. customizing protection code:
 
 .. include:: _common_definitions.txt

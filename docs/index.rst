@@ -45,7 +45,6 @@ Contents:
    how-to-do
    pack-obfuscated-scripts
    project
-   differences
    advanced
    man
    examples
