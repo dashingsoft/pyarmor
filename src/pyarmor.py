@@ -445,6 +445,9 @@ def _obfuscate(args):
                 raise RuntimeError('Only one path is allowed')
             args.scripts = []
     else:
+        for s in args.scrips:
+            if not s.lower().endswith('.py'):
+                raise RuntimeError('Only one path is allowed')
         path = os.path.abspath(args.src)
     if not os.path.exists(path):
         raise RuntimeError('Not found source path: %s' % path)
