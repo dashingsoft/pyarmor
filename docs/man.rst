@@ -34,6 +34,16 @@ The other commands::
 
 See `pyarmor <command> -h` for more information on a specific command.
 
+.. note::
+
+   From v5.7.1, the first character is command alias for most usage commands::
+     
+       obfuscate, licenses, pack, init, config, build
+
+   For example::
+     
+       pyarmor o => pyarmor obfuscate
+  
 .. _obfuscate:
 
 obfuscate
@@ -84,18 +94,18 @@ Finally insert the :ref:`bootstrap code` into entry script.
 The entry script is only the first script if there are more than one
 script in command line.
 
-Option `--plugin` is used to extend license type of obfuscated scripts, it will
-insert the content of plugin into entry script. The corresponding filename of
-plugin is `NAME.py`. `Name` may be absolute path if it's not in the current
+Option ``--plugin`` is used to extend license type of obfuscated scripts, it
+will insert the content of plugin into entry script. The corresponding filename
+of plugin is `NAME.py`. `Name` may be absolute path if it's not in the current
 path, or specify plugin path by environment variable `PYARMOR_PLUGIN`. About the
 usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
 
-Option `--platform` is used to specify the target platform of obfuscated scripts
-if target platform is different from build platform.
+Option ``--platform`` is used to specify the target platform of obfuscated
+scripts if target platform is different from build platform.
 
-Option `--restrict` is used to set restrict mode, :ref:`Restrict Mode`
+Option ``--restrict`` is used to set restrict mode, :ref:`Restrict Mode`
 
-If `--package-runtime` is `0`, all the runtime files will be saved in the same
+If ``--package-runtime`` is `0`, all the runtime files will be saved in the same
 path with obfuscated scripts::
 
     pytransform.py
@@ -117,7 +127,7 @@ make a relative import by using leading dots like this::
     from .pytransform import pyarmor_runtime
     pyarmor_runtime()
 
-But if `--package-runtime` is set to `2`, it means the :ref:`runtime package`
+But if ``--package-runtime`` is set to `2`, it means the :ref:`runtime package`
 will be in other path, so the :ref:`bootstrap code` still makes absolute import
 without leading dots.
 
@@ -285,12 +295,12 @@ Next replace the original scripts with the obfuscated ones.
 
 Finally pack all of them into one bundle.
 
-Option `--options EXTRA_OPTIONS` could pass any extra options to
+Option ``--options EXTRA_OPTIONS`` could pass any extra options to
 `PyInstaller`. It is called by this way::
 
     pyinstaller --distpath DIST -y EXTRA_OPTIONS SCRIPT
 
-Option `--xoptions EXTRA_OPTIONS` could pass any extra options to obfuscate
+Option ``--xoptions EXTRA_OPTIONS`` could pass any extra options to obfuscate
 scripts. `pack` will call pyarmor to obfuscate scripts like this::
 
     pyarmor obfuscate -r --output DIST EXTRA_OPTIONS SCRIPT
@@ -371,8 +381,9 @@ This command will create a project in the specify `PATH`, and a file
 `.pyarmor_config` will be created at the same time, which is project
 configuration of JSON format.
 
-If the option `--type` is set to `auto`, which is the default value, the project
-type will set to `pkg` if the entry script is `__init__.py`, otherwise to `app`.
+If the option ``--type`` is set to `auto`, which is the default value, the
+project type will set to `pkg` if the entry script is `__init__.py`, otherwise
+to `app`.
 
 The `init` command will set `is_package` to `1` if the new project is configured
 as `pkg`, otherwise it's set to `0`.
@@ -666,5 +677,46 @@ And download `armv7` from this list::
 Filter could be applied to list the platforms, for example::
 
     pyarmor download --list linux32
+
+.. _runtime:
+
+runtime
+-------
+
+Geneate :ref:`runtime package` separately.
+
+**SYNOPSIS**::
+
+    pyarmor runtime <options>
+
+**OPTIONS**:
+
+-O, --output PATH             Output path, default is `dist`
+-n, --no-package              Generate runtime files without package
+-L, --with-license FILE       Replace default license with this file
+--platform NAME               Generate runtime package for specified platform
+
+**DESCRIPTION**
+
+This command is used to generate the runtime package separately.
+
+The :ref:`runtiem package` could be shared if the scripts are obufscated by same
+:ref:`Global Capsule`. So generate it once, then need not generate the runtime
+files when obfuscating the scripts later.
+
+**EXAMPLES**
+
+* Generate :ref:`runtime package` ``pytransform`` in the default path `dist`::
+
+    pyarmor runtime
+
+* Not generate a package, but four separate files :ref:`runtime files`::
+
+    pyarmor runtime -n
+
+* Generate :ref:`runtime package` for platform `armv7` with expired license::
+
+    pyarmor licenses --expired 2020-01-01 code-001
+    pyarmor runtime --with-licenses licenses/code-001/license.lic --platform armv7
 
 .. include:: _common_definitions.txt
