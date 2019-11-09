@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.7.2
+-----
+* Fix plugin codec issue (#138): 'gbk' codec can't decode byte 0x82 in position 590: illegal multibyte sequence
+* Project src may be relative path base on project path
+
 5.7.1
 -----
 * Add command `runtime` to generate runtime package separately

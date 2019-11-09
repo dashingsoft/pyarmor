@@ -31,8 +31,8 @@ Here the shell script used to pack this tool by PyArmor::
     cd dist/easy-han
     ./easy-han
 
-By option `-e` passing extra options to run `PyInstaller`, to be sure these
-options work with `PyInstaller`::
+By option ``-e`` passing extra options to run `PyInstaller`_, to be sure these
+options work with `PyInstaller`_::
 
     cd /path/to/src
     pyinstaller --name easy-han --hidden-import comtypes --add-data 'config.json;.' main.py
@@ -40,27 +40,27 @@ options work with `PyInstaller`::
     cd dist/easy-han
     ./easy-han
 
-By option `-x` passing extra options to obfuscate the scripts, there are many
+By option ``-x`` passing extra options to obfuscate the scripts, there are many
 `.py` files in the path `tests` and `vnev`, but all of them need not to be
-obfuscated. By passing option `--exclude` to exclude them, to be sure these
+obfuscated. By passing option ``--exclude`` to exclude them, to be sure these
 options work with command :ref:`obfuscate`::
 
     cd /path/to/src
     pyarmor obfuscate --exclude vnev --exclude tests main.py
 
-By option `-s` to specify the `.spec` filename, because `PyInstaller` changes
-the default filename of `.spec` by option `--name`, so it tell command `pack`
-the right filename.
+By option ``-s`` to specify the `.spec` filename, because `PyInstaller`_ changes
+the default filename of `.spec` by option ``--name``, so it tell command
+:ref:`pack` the right filename.
 
 .. important::
 
-   The command `pack` will obfuscate the scripts automatically, do not try to
-   pack the obfuscated the scripts.
+   The command :ref:`pack` will obfuscate the scripts automatically, do not try
+   to pack the obfuscated the scripts.
 
 .. note::
 
    From PyArmor 5.5.0, it could improve the security by passing the obfuscated
-   option `--advanced` to enable :ref:`Advanced Mode`. For example::
+   option ``--advanced`` to enable :ref:`Advanced Mode`. For example::
 
        pyarmor pack -x " --advanced 1 --exclude tests" foo.py
 

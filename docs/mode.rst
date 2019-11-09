@@ -25,7 +25,7 @@ gcc or some other `C` compiles. It's welcome to report the issue if Python
 interpreter doesn't work in advanced mode.
 
 Take this into account, the advanced mode is disabled by default. In order to
-enable it, pass option `--advanced` to command `obfuscate`::
+enable it, pass option ``--advanced`` to command :ref:`obfuscate`::
 
     pyarmor obfuscate --advanced 1 foo.py
 

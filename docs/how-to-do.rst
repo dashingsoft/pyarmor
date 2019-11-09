@@ -167,10 +167,10 @@ Here it's the default template of protection code::
 
     protect_pytransform()
 
-All the string template `{xxx}` will be replaced with real value by PyArmor.
+All the string template ``{xxx}`` will be replaced with real value by PyArmor.
 
 To prevent PyArmor from inserting this protection code, pass
-`--no-cross-protection` as obfuscating the scripts::
+``--no-cross-protection`` as obfuscating the scripts::
 
     pyarmor obfuscate --no-cross-protection foo.py
 
@@ -322,7 +322,7 @@ Run patched specfile to build final distribution::
 
 .. note::
 
-   Option `--clean` is required, otherwise the obfuscated scripts will not be
+   Option ``--clean`` is required, otherwise the obfuscated scripts will not be
    replaced because the cached `.pyz` will be used.
 
 Check obfuscated scripts work::

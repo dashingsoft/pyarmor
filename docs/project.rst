@@ -117,8 +117,8 @@ Each project has a configure file. It's a json file named
     the final path to save obfuscated scripts, but runtime files are still in
     the path `output`
 
-    When init a project and no `--type` specified, it will be set to 1 if there
-    is `__init__.py` in the path `src`, otherwise it's None.
+    When init a project and no ``--type`` specified, it will be set to 1 if
+    there is `__init__.py` in the path `src`, otherwise it's None.
 
 * disable_restrict_mode [DEPRECRATED]
 

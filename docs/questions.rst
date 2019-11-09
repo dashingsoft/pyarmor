@@ -249,7 +249,7 @@ No module name pytransform
 If report this error as running command `pyarmor pack`:
 
 * Make sure the script specified in the command line is not obfuscated
-* Run `pack` with extra option `--clean` to remove cached `myscript.spec`::
+* Run `pack` with extra option ``--clean`` to remove cached `myscript.spec`::
 
     pyarmor pack --clean foo.py
 

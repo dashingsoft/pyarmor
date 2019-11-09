@@ -178,7 +178,7 @@ Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 
 :ref:`Advanced Mode` is introduced from PyArmor 5.5.0, it's disabled by
-default. Specify option `--advanced` to enable it::
+default. Specify option ``--advanced`` to enable it::
 
     pyarmor obfuscate --advanced 1 foo.py
 
@@ -188,7 +188,7 @@ default. Specify option `--advanced` to enable it::
     pyarmor build -B
 
 From PyArmor 5.2, the default :ref:`Restrict Mode` is 1. It could be changed by
-the option `--restrict`::
+the option ``--restrict``::
 
     pyarmor obfuscate --restrict=2 foo.py
     pyarmor obfuscate --restrict=3 foo.py
@@ -341,20 +341,19 @@ later easily. Here are basic steps:
     pyarmor pack --clean --without-license \
             -e " --onefile --icon logo.ico --runtime-hook copy_license.py" foo.py
 
-  Option `--without-license` tells `pyamor` not to bundle the `license.lic` of
-  obfuscated scripts to the final executable file. By option `--runtime-hook` of
-  `PyInstaller`, the specified script `copy_licesen.py` will be executed before
-  any obfuscated scripts are imported. It will copy outer `license.lic` to right
-  path.
+  Option ``--without-license`` tells :ref:`pack` not to bundle the `license.lic`
+  of obfuscated scripts to the final executable file. By option
+  ``--runtime-hook`` of `PyInstaller`_, the specified script `copy_licesen.py`
+  will be executed before any obfuscated scripts are imported. It will copy
+  outer `license.lic` to right path.
 
   Try to run `dist/foo.exe`, it should report license error.
 
-3. Finally run `pyarmor licenses` to generate new license for the
-   obfuscated scripts, and copy new `license.lic` and `dist/foo.exe`
-   to end users::
+3. Finally run :ref:`licenses` to generate new license for the obfuscated
+   scripts, and copy new `license.lic` and `dist/foo.exe` to end users::
 
-    pyarmor licenses -e 2020-01-01 tom
-    cp license/tom/license.lic dist/
+    pyarmor licenses -e 2020-01-01 code-001
+    cp license/code-001/license.lic dist/
 
     dist/foo.exe
 
