@@ -356,16 +356,30 @@ def get_registration_code():
     return code
 
 
-def patch_plugins(plugins):
+def search_plugins(plugins):
     result = []
     path = os.getenv('PYARMOR_PLUGIN', '')
     for name in plugins:
-        filename = name if name.endswith('.py') else (name + '.py')
-        filename = build_path(filename, path)
+        i = 1 if name[0] == '@' else 0
+        filename = name[i:] + '.py'
+        key = os.path.basename(name[i:])
         if not os.path.exists(filename):
-            raise RuntimeError('No plugin script %s found' % filename)
-        lines = _readlines(filename)
-        result.append(''.join(lines))
+            filename = build_path(filename, path)
+            if not os.path.exists(filename):
+                raise RuntimeError('No script found for plugin %s' % name)
+        logging.info('Found plugin %s at: %s', key, filename)
+        result.append((key, filename, i))
+    return result
+
+
+def _patch_plugins(plugins, pnames):
+    result = []
+    for key, filename, i in plugins:
+        if i or key in pnames:
+            lines = _readlines(filename)
+            result.append(''.join(lines))
+    if pnames and not result:
+        raise RuntimeError('There are plugin calls, but no plugin definition')
     return result
 
 
@@ -519,10 +533,6 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         for line in lines:
             if line.startswith('# {PyArmor Plugins}'):
                 k = n + 1
-            elif (line.startswith("if __name__ == '__main__':")
-                  or line.startswith('if __name__ == "__main__":')):
-                if k == -1:
-                    k = n
             else:
                 i = line.find(marker)
                 if i > -1:
@@ -530,7 +540,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             n += 1
         if k > -1:
             logging.info('Patch this entry script with plugins')
-            lines[k:k] = patch_plugins(plugins)
+            lines[k:k] = _patch_plugins(plugins)
         for n, i in plist:
             lines[n] = lines[n][:i] + lines[n][i+len(marker):].lstrip()
 

@@ -47,7 +47,7 @@ from project import Project
 from utils import PYARMOR_PATH, make_capsule, make_runtime, relpath, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
-                  pytransform_bootstrap, encrypt_script, \
+                  pytransform_bootstrap, encrypt_script, search_plugins, \
                   get_product_key, register_keyfile, query_keyinfo, \
                   get_platform_list, download_pytransform, check_cross_platform
 
@@ -144,7 +144,7 @@ def _config(args):
             args.src = src
         else:
             args.src = relpath(src, project._path)
-        logging.info('Change src to absolute path: %s', args.src)
+        logging.info('Format src to %s', args.src)
     if args.capsule is not None:
         args.capsule = os.path.abspath(args.capsule)
         logging.info('Change capsule to absolute path: %s', args.capsule)
@@ -276,7 +276,7 @@ def _build(args):
                 vmode = adv_mode | 8
                 pcode = protection
                 if hasattr(project, 'plugins'):
-                    plugins = project.plugins
+                    plugins = search_plugins(project.plugins)
             else:
                 vmode = adv_mode
                 pcode = 0
@@ -534,7 +534,7 @@ def _obfuscate(args):
         logging.info('\t%s -> %s', x, b)
         is_entry = entry and (os.path.abspath(a) == os.path.abspath(entry))
         protection = is_entry and cross_protection
-        plugins = protection and args.plugins
+        plugins = protection and search_plugins(args.plugins)
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
