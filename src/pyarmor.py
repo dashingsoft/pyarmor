@@ -711,7 +711,7 @@ def main(args):
     cparser.add_argument('-O', '--output', default='dist', metavar='PATH')
     cparser.add_argument('-r', '--recursive', action='store_true',
                          help='Search scripts in recursive mode')
-    cparser.add_argument('--exclude', action='append',
+    cparser.add_argument('--exclude', metavar='PATH', action='append',
                          help='Exclude the path in recursive mode. '
                          'Multiple paths are allowed, separated by ",". '
                          'Or use this option multiple times')
@@ -728,9 +728,9 @@ def main(args):
     cparser.add_argument('-s', '--src', metavar='PATH',
                          help='Base path for searching scripts')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
-                         help='[DEPRECATED]Specify entry script')
+                         help=argparse.SUPPRESS)
     cparser.add_argument('--cross-protection', choices=(0, 1),
-                         help='[DEPRECATED]')
+                         help=argparse.SUPPRESS)
     cparser.add_argument('--plugin', dest='plugins', action='append',
                          help='Insert extra code to entry script')
     cparser.add_argument('--restrict', type=int, choices=range(5),
