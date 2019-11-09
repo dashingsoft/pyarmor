@@ -377,7 +377,7 @@ def add_arguments(parser):
     parser.add_argument('--without-license', action='store_true',
                         help='Do not generate license for obfuscated scripts')
     parser.add_argument('--clean', action="store_true",
-                        help='Remove cached .spec file from the beginning')
+                        help='Remove cached .spec file before packing')
     parser.add_argument('--debug', action="store_true",
                         help='Do not remove build files after packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
