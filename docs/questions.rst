@@ -3,10 +3,10 @@
 When Things Go Wrong
 ====================
 
-Turn on debugging output to get more error information::
+Turn on python debug option to get more error information::
 
-    python -d pyarmor.py ...
-    PYTHONDEBUG=y pyarmor ...
+    PYTHONDEBUG=y pyarmor ...    
+    python -d obfuscated_scripts.py ...
 
 Segment fault
 -------------
@@ -87,9 +87,7 @@ Marshal loads failed when running xxx.py
 1. Check whether the version of Python to run obfuscated scripts is
    same as the version of Python to obfuscate script
 
-2. Check whether the capsule is generated based on current license of
-   PyArmor. Try to move global capsule `~/.pyarmor_capsule.zip` to any
-   other path, then obfuscate scripts again.
+2. Run obfuscated script by `python -d` to show more error message.
 
 3. Be sure the capsule used to generated the license file is same as
    the capsule used to obfuscate the scripts. The filename of the
@@ -178,18 +176,20 @@ If there is any file `license.lic` or `pytransform.key` in the current
 path, pyarmor maybe reports this error. One solution is to remove all
 of that files, the other solution to upgrade PyArmor to v5.4.5 later.
 
-Check license failed: Invalid input packet.
--------------------------------------------
+Run obfuscated scripts reports: Invalid input packet
+----------------------------------------------------
 
-If print this error as running the obfuscated scripts, check if there
-is any of `license.lic` or `pytransform.key` in the current path. To
-be sure they're generated for the obfuscated scripts. If not, rename
-them or move them to other path.
+If the scripts are obfuscated in different platform, check the notes in
+:ref:`Distributing Obfuscated Scripts To Other Platform`
 
-Before v5.7.0, the obfuscated scripts will first search the current path, then
-search the path of runtime module `pytransform.py` to find the file
-`license.lic` and `pytransform.key`. If they're not generated for the obfuscated
-script, this error will be reported.
+Before v5.7.0, check if there is any of `license.lic` or `pytransform.key` in
+the current path. Make sure they're generated for the obfuscated scripts. If
+not, rename them or move them to other path.
+
+Because the obfuscated scripts will first search the current path, then search
+the path of runtime module `pytransform.py` to find the file `license.lic` and
+`pytransform.key`. If they're not generated for the obfuscated script, this
+error will be reported.
 
 'XXX' codec can't decode byte 0xXX
 ----------------------------------
@@ -233,6 +233,25 @@ Here are sample commands::
 
     xxd -s 0x56f8 -l 4 _pytransform.so | sed "s/56f8/5728/" | xxd -r - _pytransform.so
     xxd -s 0x5700 -l 4 _pytransform.so | sed "s/5700/5730/" | xxd -r - _pytransform.so
+
+Purchased pyarmor is not private
+--------------------------------
+
+Even obfuscated with purchased version, license from trial version works::
+
+* Make sure command `pyarmor register` shows correct registration information
+* Make sure :ref:`global capsule` file `~/.pyarmor_capsule.zip` is same as the one in the keyfile `pyarmor-regfile-1.zip`
+* Try to reboot system.  
+
+No module name pytransform
+--------------------------
+
+If report this error as running command `pyarmor pack`::
+
+* Make sure the script specified in the command line is not obfuscated
+* Run `pack` with extra option `--clean` to remove cached `myscript.spec`::
+
+    payrmor pack --clean foo.py
 
 .. How easy is to recover obfuscated code?:
 
