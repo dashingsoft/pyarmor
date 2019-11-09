@@ -71,7 +71,14 @@ Just copy all the files in the output path `dist` to end users. Note that except
 the obfuscated scripts, the :ref:`Runtime Package` need to be distributed to end
 users too.
 
+The :ref:`Runtime Package` may not with the obfuscated scripts, it could be
+moved to any Python path, only if `import pytransform` works.
+
 About the security of obfuscated scripts, refer to :ref:`The Security of PyArmor`
+
+.. note::
+
+   PyArmor need NOT be installed in the runtime machine
 
 Generating License For Obfuscated Scripts
 -----------------------------------------
@@ -119,6 +126,10 @@ Run obfuscated script with new license::
     cd dist/
     python myscript.py
 
+.. note::
+
+   Before v5.7.0, the default ``license.lic`` locates in the path ``dist`` other than ``dist/pytransform``
+
 Extending License Type
 ----------------------
 
@@ -127,9 +138,9 @@ authentication code in the entry script**. The script can't be changed any more
 after it is obfuscated, so do whatever you want in your script. In this case the
 :ref:`module pytransform` would be useful.
 
-But the prefer way is :ref:`using plugin to extend license type`. The advantage
-is that your scripts needn't be changed at all. Just write authentication code
-in a separated script, and inject it in the obfuscated scripts when obfuscating.
+The prefer way is :ref:`using plugin to extend license type`. The advantage is
+that your scripts needn't be changed at all. Just write authentication code in a
+separated script, and inject it in the obfuscated scripts as obfuscating.
 
 Here are some plugin examples
 
@@ -138,7 +149,7 @@ https://github.com/dashingsoft/pyarmor/tree/master/plugins
 Obfuscating Single Module
 -------------------------
 
-To obfuscate one module exactly, use option `--exact`::
+To obfuscate one module exactly, use option ``--exact``::
 
     pyarmor obfuscate --exact foo.py
 
