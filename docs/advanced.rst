@@ -49,19 +49,22 @@ Check all the output and test these obfuscated packages::
 Distributing Obfuscated Scripts To Other Platform
 -------------------------------------------------
 
-First list and download dynamic library of target platform by command
-:ref:`download`::
+First list all the prebuilt dynamic libraries by command :ref:`download`::
 
     pyarmor download --list
-    pyarmor download linux_x86_64
 
-Then specify platform name as obfuscating the scripts::
+Find the right one for target platform, download it by platform id::
 
-    pyarmor obfuscate --platform linux_x86_64 foo.py
+    pyarmor download armv7
+
+Then specify platform id when obfuscating the scripts::
+
+    pyarmor obfuscate --platform armv7 foo.py
 
 For project::
 
-    pyarmor build --platform linux_x86_64
+    pyarmor build --platform armv7
+
 
 .. note::
 
@@ -69,8 +72,17 @@ For project::
    obfuscated in linux64/windows64/darwin64 don't work after copied to one of
    this target platform::
 
-       armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm,
-       poky-i586
+       armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm, poky-i586
+
+   After v5.7.0, if the obfuscated scripts still don't work in these platforms,
+   set environment variable `PYARMOR_PLATFORM` to `simple`, then obfuscate the
+   scripts again::
+
+       PYARMOR_PLATFORM=simple pyarmor obfuscate --platform armv5 foo.py
+
+       # For windows
+       SET PYARMOR_PLATFORM=simple
+       pyarmor obfuscate --platform armv5 foo.py
 
 .. _obfuscating scripts by different python version:
 

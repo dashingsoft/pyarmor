@@ -133,13 +133,12 @@ issued to your customers. If use new key file, all the previous
 "license.lic" does not work, you need generate new one and resend to
 your customers.
 
-Actually the command `pip install --upgrade pyarmor` does not
-overwrite the purchased license code, you need not run command
-`pyarmor register` again. It should work, you can check it by run
-`pyarmor -v`.
+Actually the command `pip install --upgrade pyarmor` does not overwrite the
+purchased license code, you need not run command `pyarmor register` again. It
+should still work, you can check it by run `pyarmor -v`.
 
-Or in any machine in which old version pyarmor is running, compress
-the following 2 files to one archive "pyarmor-regfile.zip":
+Or in any machine in which old version pyarmor is running, compress the
+following 2 files to one archive "pyarmor-regfile.zip":
 
 * license.lic, which locates in the installed path of pyarmor
 * .pyarmor_capsule.zip, which locates in the user HOME path
@@ -150,12 +149,12 @@ Then register this keyfile in the new version of pyarmor
 
 2. Use new key file.
 
-It's recommanded that you just obfuscate the scripts, and do not issue
-customized "license.lic" to your customers.
+It's recommanded that you have not issued any customized "license.lic" to your
+customers.
 
-Forward the purchased email received from MyCommerce to
-jondy.zhao@gmail.com, and the new key file will be sent to the
-registration email, no fee for this upgrading.
+Forward the purchased email received from MyCommerce to jondy.zhao@gmail.com,
+and the new key file will be sent to the registration email, no fee for this
+upgrading.
 
 5.5.7
 -----

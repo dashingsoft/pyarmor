@@ -20,9 +20,9 @@ files list in the output path :file:`dist`::
     pyarmor_runtime()
     __pyarmor__(__name__, __file__, b'\x06\x0f...')
 
-There is an extra folder `pytransform` called `Runtime Package`, which are the
-only required to run or import obfuscated scripts. So long as this package is in
-any Python Path, the obfuscated script `dist/foo.py` can be used as normal
+There is an extra folder `pytransform` called :ref:`Runtime Package`, which are
+the only required to run or import obfuscated scripts. So long as this package
+is in any Python Path, the obfuscated script `dist/foo.py` can be used as normal
 Python script. That is to say:
 
 **The original python scripts can be replaced with obfuscated scripts seamlessly.**
@@ -104,7 +104,7 @@ The first 2 lines, which called ``Bootstrap Code``::
 It will fulfil the following tasks
 
 * Load dynamic library ``_pytransform`` by ``ctypes``
-* Check ``dist/license.lic`` is valid or not
+* Check ``license.lic`` is valid or not
 * Add 3 cfunctions to module ``builtins``: ``__pyarmor__``, ``__armor_enter__``, ``__armor_exit__``
 
 The next code line in ``dist/foo.py`` is::
