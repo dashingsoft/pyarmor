@@ -466,8 +466,8 @@ Update project settings.
 
 --name NAME                     Project name
 --title TITLE                   Project title
---src SRC                       Project src
---output OUTPUT                 Output path for obfuscated scripts
+--src SRC                       Project src, base path for matching scripts
+--output PATH                   Output path for obfuscated scripts
 --manifest TEMPLATE             Manifest template string
 --entry SCRIPT                  Entry script of this project
 --is-package <0,1>              Set project as package or not
@@ -675,9 +675,7 @@ Make registration keyfile effect, or show registration information.
 
 **DESCRIPTION**
 
-A registration keyfile will be sent to you by email as attachments after
-purchasing PyArmor. This command is used to register the keyfile to take it
-effects::
+This command is used to register the purchased keyfile to take it effects::
 
     pyarmor register /path/to/pyarmor-regfile-1.zip
 
@@ -699,7 +697,7 @@ List and download platform-dependent dynamic libraries.
 **OPTIONS**:
 
 --list PATTERN        List available dynamic libraries in different platforms
--O, --output NAME     Save downloaded file to another path
+-O, --output PATH     Save downloaded library to this path, default is `PLAT-ID`
 
 **DESCRIPTION**
 
@@ -719,6 +717,12 @@ And download `armv7` from this list::
 Filter could be applied to list the platforms, for example::
 
     pyarmor download --list linux32
+
+If the scripts is obfuscated for other platform, the library of target platform
+need to be downloaded first. For example::
+
+    pyarmor download armv5
+    pyarmor obfuscate --platform armv5 foo.py
 
 .. _runtime:
 
