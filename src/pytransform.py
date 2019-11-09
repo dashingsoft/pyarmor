@@ -134,7 +134,7 @@ def get_license_info():
     i = info['CODE'].find(';')
     if i > 0:
         info['DATA'] = info['CODE'][i+1:]
-        info['CODE'] = info[:i]
+        info['CODE'] = info['CODE'][:i]
     return info
 
 
