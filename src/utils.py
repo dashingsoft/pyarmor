@@ -302,11 +302,11 @@ def make_runtime(capsule, output, licfile=None, platform=None, package=False):
                 pname = pytransform.format_platname()
                 libpath = os.path.join(PYARMOR_PATH, 'platforms')
                 libfile = os.path.join(libpath, pname, libname)
-        logging.info('Copying %s', os.path.relpath(libfile))
+        logging.info('Copying %s', relpath(libfile))
         shutil.copy2(libfile, output)
     else:
         filename = _get_platform_library(platform)
-        logging.info('Copying %s', os.path.relpath(filename))
+        logging.info('Copying %s', relpath(filename))
         shutil.copy2(filename, output)
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
@@ -364,8 +364,8 @@ def patch_plugins(plugins):
         filename = build_path(filename, path)
         if not os.path.exists(filename):
             raise RuntimeError('No plugin script %s found' % filename)
-        with open(filename, 'r') as f:
-            result.append(f.read())
+        lines = _readlines(filename)
+        result.append(''.join(lines))
     return result
 
 
@@ -482,9 +482,7 @@ def _guess_encoding(filename):
             return m and m.group(1)
 
 
-def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
-                   obf_mod=1, adv_mode=0, rest_mode=1, protection=0,
-                   plugins=None, rpath=None):
+def _readlines(filename):
     if sys.version_info[0] == 2:
         with open(filename, 'r') as f:
             lines = f.readlines()
@@ -506,7 +504,13 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 i += 1
             if i:
                 lines[0] = lines[0][i:]
+    return lines
 
+
+def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
+                   obf_mod=1, adv_mode=0, rest_mode=1, protection=0,
+                   plugins=None, rpath=None):
+    lines = _readlines(filename)
     if plugins:
         n = 0
         k = -1
@@ -668,6 +672,13 @@ def check_cross_platform(platname):
         p = Popen([sys.executable] + sys.argv)
         p.wait()
         sys.exit(p.returncode)
+
+
+def relpath(path, start=os.curdir):
+    try:
+        return os.path.relpath(path, start)
+    except Exception:
+        return path
 
 
 if __name__ == '__main__':
