@@ -763,6 +763,6 @@ files when obfuscating the scripts later.
 * Generate :ref:`runtime package` for platform `armv7` with expired license::
 
     pyarmor licenses --expired 2020-01-01 code-001
-    pyarmor runtime --with-licenses licenses/code-001/license.lic --platform armv7
+    pyarmor runtime --with-license licenses/code-001/license.lic --platform armv7
 
 .. include:: _common_definitions.txt
