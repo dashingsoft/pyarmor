@@ -815,7 +815,7 @@ def main(args):
     cparser.add_argument('-e', '--entry',
                          help='Entry script of this project')
     cparser.add_argument('-s', '--src', default='',
-                         help='Base path of python scripts')
+                         help='Project src, base path for matching scripts')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--child', type=int, help=argparse.SUPPRESS)
     cparser.add_argument('project', nargs='?', default='', help='Project path')
@@ -834,8 +834,10 @@ def main(args):
                          default='', help='Project path')
     cparser.add_argument('--name')
     cparser.add_argument('--title')
-    cparser.add_argument('--src')
-    cparser.add_argument('--output')
+    cparser.add_argument('--src',
+                         help='Project src, base path for matching scripts')
+    cparser.add_argument('--output',
+                         help='Output path for obfuscated scripts')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help=argparse.SUPPRESS)
     cparser.add_argument('--manifest', metavar='TEMPLATE',
@@ -848,10 +850,9 @@ def main(args):
     cparser.add_argument('--restrict-mode', type=int, choices=range(5),
                          help='Set restrict mode')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
-                         help='[DEPRECATED] Use --obf-mod instead')
+                         help=argparse.SUPPRESS)                         
     cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE,
-                         help='[DEPRECATED] Use --obf-code and --wrap-mode'
-                              ' instead')
+                         help=argparse.SUPPRESS)
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2))
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
@@ -981,15 +982,14 @@ def main(args):
         epilog=_download.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Download platform-dependent dynamic libraries')
-    cparser.add_argument('-O', '--output', metavar='NAME',
-                         help='Save downloaded file to another path')
-    cparser.add_argument('--url',
-                         help='Use this mirror site other than default site')
+    cparser.add_argument('-O', '--output', metavar='PATH',
+                         help='Save library to this path, default is `PLAT`')
+    cparser.add_argument('--url', help='Download from this mirror site')
     group = cparser.add_mutually_exclusive_group()
     group.add_argument('--list', nargs='?', const='', dest='pattern',
                        help='List all the available platforms')
-    group.add_argument('platid', nargs='?',
-                       help='Download dynamic library by platform id')
+    group.add_argument('platid', nargs='?', metavar='PLAT',
+                       help='Download dynamic library of this platform')
     cparser.set_defaults(func=_download)
 
     #
