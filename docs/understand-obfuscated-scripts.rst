@@ -53,11 +53,14 @@ The entry script `dist/myscript.py` would be like this::
     pyarmor_runtime()
     __pyarmor__(__name__, __file__, b'\x0a\x02...', 1)
 
-.. note::
+.. _entry script:
 
-   In PyArmor, entry script is the first obfuscated script to be run or to be
-   imported in a python interpreter process. For example, `__init__.py` is entry
-   script if only one single python package is obfuscated.
+Entry Script
+~~~~~~~~~~~~
+
+In PyArmor, entry script is the first obfuscated script to be run or to be
+imported in a python interpreter process. For example, `__init__.py` is entry
+script if only one single python package is obfuscated.
 
 .. _bootstrap code:
 
