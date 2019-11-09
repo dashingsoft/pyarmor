@@ -38,10 +38,10 @@ Contents:
    installation
    usage
    pytransform
-   security
-   performance
    understand-obfuscated-scripts
    mode
+   performance
+   security
    how-to-do
    project
    advanced
