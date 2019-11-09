@@ -43,7 +43,6 @@ Contents:
    understand-obfuscated-scripts
    mode
    how-to-do
-   pack-obfuscated-scripts
    project
    advanced
    man

@@ -89,93 +89,6 @@ The obfuscated script is a normal Python script, it looks like this::
 
     __pyarmor__(__name__, __file__, b'\x01\x0a...')
 
-.. _how to run obfuscated scripts:
-
-How to Run Obfuscated Script
-----------------------------
-
-How to run obfuscated script ``dist/foo.py`` by Python Interpreter?
-
-The first 2 lines, which called ``Bootstrap Code``::
-
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-
-It will fulfil the following tasks
-
-* Load dynamic library ``_pytransform`` by ``ctypes``
-* Check ``license.lic`` is valid or not
-* Add 3 cfunctions to module ``builtins``: ``__pyarmor__``, ``__armor_enter__``, ``__armor_exit__``
-
-The next code line in ``dist/foo.py`` is::
-
-    __pyarmor__(__name__, __file__, b'\x01\x0a...')
-
-``__pyarmor__`` is called, it will import original module from obfuscated code::
-
-    static PyObject *
-    __pyarmor__(char *name, char *pathname, unsigned char *obfuscated_code)
-    {
-        char *string_code = restore_obfuscated_code( obfuscated_code );
-        PyCodeObject *co = marshal.loads( string_code );
-        return PyImport_ExecCodeModuleEx( name, co, pathname );
-    }
-
-After that, in the runtime of this python interpreter
-
-* ``__armor_enter__`` is called as soon as code object is executed, it will
-  restore byte-code of this code object::
-
-    static PyObject *
-    __armor_enter__(PyObject *self, PyObject *args)
-    {
-        // Got code object
-        PyFrameObject *frame = PyEval_GetFrame();
-        PyCodeObject *f_code = frame->f_code;
-
-        // Increase refcalls of this code object
-        // Borrow co_names->ob_refcnt as call counter
-        // Generally it will not increased  by Python Interpreter
-        PyObject *refcalls = f_code->co_names;
-        refcalls->ob_refcnt ++;
-
-        // Restore byte code if it's obfuscated
-        if (IS_OBFUSCATED(f_code->co_flags)) {
-            restore_byte_code(f_code->co_code);
-            clear_obfuscated_flag(f_code);
-        }
-
-        Py_RETURN_NONE;
-    }
-
-* ``__armor_exit__`` is called so long as code object completed execution, it
-  will obfuscate byte-code again::
-
-    static PyObject *
-    __armor_exit__(PyObject *self, PyObject *args)
-    {
-        // Got code object
-        PyFrameObject *frame = PyEval_GetFrame();
-        PyCodeObject *f_code = frame->f_code;
-
-        // Decrease refcalls of this code object
-        PyObject *refcalls = f_code->co_names;
-        refcalls->ob_refcnt --;
-
-        // Obfuscate byte code only if this code object isn't used by any function
-        // In multi-threads or recursive call, one code object may be referenced
-        // by many functions at the same time
-        if (refcalls->ob_refcnt == 1) {
-            obfuscate_byte_code(f_code->co_code);
-            set_obfuscated_flag(f_code);
-        }
-
-        // Clear f_locals in this frame
-        clear_frame_locals(frame);
-
-        Py_RETURN_NONE;
-    }
-
 .. _special handling of entry script:
 
 Special Handling of Entry Script
@@ -263,5 +176,163 @@ To prevent PyArmor from inserting this protection code, pass
 
 After the entry script is obfuscated, the :ref:`Bootstrap Code` will be inserted
 at the beginning of the obfuscated script.
+
+.. _how to run obfuscated scripts:
+
+How to Run Obfuscated Script
+----------------------------
+
+How to run obfuscated script ``dist/foo.py`` by Python Interpreter?
+
+The first 2 lines, which called ``Bootstrap Code``::
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+
+It will fulfil the following tasks
+
+* Load dynamic library ``_pytransform`` by ``ctypes``
+* Check ``license.lic`` is valid or not
+* Add 3 cfunctions to module ``builtins``: ``__pyarmor__``, ``__armor_enter__``, ``__armor_exit__``
+
+The next code line in ``dist/foo.py`` is::
+
+    __pyarmor__(__name__, __file__, b'\x01\x0a...')
+
+``__pyarmor__`` is called, it will import original module from obfuscated code::
+
+    static PyObject *
+    __pyarmor__(char *name, char *pathname, unsigned char *obfuscated_code)
+    {
+        char *string_code = restore_obfuscated_code( obfuscated_code );
+        PyCodeObject *co = marshal.loads( string_code );
+        return PyImport_ExecCodeModuleEx( name, co, pathname );
+    }
+
+After that, in the runtime of this python interpreter
+
+* ``__armor_enter__`` is called as soon as code object is executed, it will
+  restore byte-code of this code object::
+
+    static PyObject *
+    __armor_enter__(PyObject *self, PyObject *args)
+    {
+        // Got code object
+        PyFrameObject *frame = PyEval_GetFrame();
+        PyCodeObject *f_code = frame->f_code;
+
+        // Increase refcalls of this code object
+        // Borrow co_names->ob_refcnt as call counter
+        // Generally it will not increased  by Python Interpreter
+        PyObject *refcalls = f_code->co_names;
+        refcalls->ob_refcnt ++;
+
+        // Restore byte code if it's obfuscated
+        if (IS_OBFUSCATED(f_code->co_flags)) {
+            restore_byte_code(f_code->co_code);
+            clear_obfuscated_flag(f_code);
+        }
+
+        Py_RETURN_NONE;
+    }
+
+* ``__armor_exit__`` is called so long as code object completed execution, it
+  will obfuscate byte-code again::
+
+    static PyObject *
+    __armor_exit__(PyObject *self, PyObject *args)
+    {
+        // Got code object
+        PyFrameObject *frame = PyEval_GetFrame();
+        PyCodeObject *f_code = frame->f_code;
+
+        // Decrease refcalls of this code object
+        PyObject *refcalls = f_code->co_names;
+        refcalls->ob_refcnt --;
+
+        // Obfuscate byte code only if this code object isn't used by any function
+        // In multi-threads or recursive call, one code object may be referenced
+        // by many functions at the same time
+        if (refcalls->ob_refcnt == 1) {
+            obfuscate_byte_code(f_code->co_code);
+            set_obfuscated_flag(f_code);
+        }
+
+        // Clear f_locals in this frame
+        clear_frame_locals(frame);
+
+        Py_RETURN_NONE;
+    }
+
+.. _how to pack obfuscated scripts:
+
+How To Pack Obfuscated Scripts
+------------------------------
+
+The obfuscated scripts generated by PyArmor can replace Python scripts
+seamlessly, but there is an issue when packing them into one bundle by
+PyInstaller:
+
+**All the dependencies of obfuscated scripts CAN NOT be found at all**
+
+To solve this problem, the common solution is
+
+1. Find all the dependenices by original scripts.
+2. Add runtimes files required by obfuscated scripts to the bundle
+3. Replace original scipts with obfuscated in the bundle
+4. Replace entry scrirpt with obfuscated one
+
+PyArmor provides command :ref:`pack` to achieve this. But in some cases maybe it
+doesn't work. This document describes what the command `pack` does, and also
+could be as a guide to bundle the obfuscated scripts by yourself.
+
+First install ``pyinstaller``::
+
+    pip install pyinstaller
+
+Then obfuscate scripts to ``dist/obf``::
+
+    pyarmor obfuscate --output dist/obf hello.py
+
+Next generate specfile, add the obfuscated entry script and data files required
+by obfuscated scripts::
+
+    pyinstaller --add-data dist/obf/license.lic
+                --add-data dist/obf/pytransform.key
+                --add-data dist/obf/_pytransform.*
+                hello.py dist/obf/hello.py
+
+And patch specfile ``hello.spec``, insert the following lines after the
+``Analysis`` object. The purpose is to replace all the original scripts with
+obfuscated ones::
+
+    a.scripts[-1] = 'hello', r'dist/obf/hello.py', 'PYSOURCE'
+    for i in range(len(a.pure)):
+        if a.pure[i][1].startswith(a.pathex[0]):
+            x = a.pure[i][1].replace(a.pathex[0], os.path.abspath('dist/obf'))
+            if os.path.exists(x):
+                if hasattr(a.pure, '_code_cache'):
+                    with open(x) as f:
+                        a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')
+                a.pure[i] = a.pure[i][0], x, a.pure[i][2]
+
+Run patched specfile to build final distribution::
+
+    pyinstaller --clean -y hello.spec
+
+.. note::
+
+   Option `--clean` is required, otherwise the obfuscated scripts will not be
+   replaced because the cached `.pyz` will be used.
+
+Check obfuscated scripts work::
+
+   # It works
+   dist/hello/hello.exe
+
+   rm dist/hello/license.lic
+
+   # It should not work
+   dist/hello/hello.exe
 
 .. include:: _common_definitions.txt
