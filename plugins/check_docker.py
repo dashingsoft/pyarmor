@@ -8,7 +8,7 @@ def get_license_data():
     return rcode[index+1:]
 
 
-def check_docker_id():
+def check_docker():
     cid = None
     with open("/proc/self/cgroup") as f:
         for line in f:

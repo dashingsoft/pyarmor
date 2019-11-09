@@ -38,14 +38,14 @@ got above.
 Then edit the entry script `foo.py <foo.py>`_ , insert two comment lines::
 
     # {PyArmor Plugins}
-    # PyArmor Plugin: check_docker_id()
+    # PyArmor Plugin: check_multi_mac()
 
 Now, obfuscate the script with this plugin::
 
     pyarmor obfuscate --plugin check_multi_mac foo.py
 
-The content of `check_multi_mac.py`_ will be insert after the first comment line
-`# {PyArmor Plugins}`
+The content of `check_multi_mac.py`_ will be insert after the first
+comment line `# {PyArmor Plugins}`
 
 And the prefix of second comment will be stripped as::
 
@@ -89,7 +89,7 @@ First write the plugin `check_docker.py`_::
         index = rcode.find(';', rcode.find('*CODE:'))
         return rcode[index+1:]
 
-    def check_docker_id():
+    def check_docker():
         cid = None
         with open("/proc/self/cgroup") as f:
             for line in f:
@@ -104,7 +104,7 @@ First write the plugin `check_docker.py`_::
 Then edit the entry script `foo.py`_ , insert two comment lines::
 
     # {PyArmor Plugins}
-    # PyArmor Plugin: check_docker_id()
+    # PyArmor Plugin: check_docker()
 
 Now, obfuscate the script with this plugin::
 
