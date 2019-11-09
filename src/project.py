@@ -226,8 +226,6 @@ class Project(dict):
         for k, v in Project.DEFAULT_VALUE:
             if k == 'build_time':
                 v = time.asctime(time.gmtime(self[k]))
-            elif k == 'src':
-                v = self.src
             else:
                 v = str(self[k])
                 n = 50
