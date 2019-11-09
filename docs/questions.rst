@@ -237,7 +237,7 @@ Here are sample commands::
 Purchased pyarmor is not private
 --------------------------------
 
-Even obfuscated with purchased version, license from trial version works::
+Even obfuscated with purchased version, license from trial version works:
 
 * Make sure command `pyarmor register` shows correct registration information
 * Make sure :ref:`global capsule` file `~/.pyarmor_capsule.zip` is same as the one in the keyfile `pyarmor-regfile-1.zip`
@@ -246,7 +246,7 @@ Even obfuscated with purchased version, license from trial version works::
 No module name pytransform
 --------------------------
 
-If report this error as running command `pyarmor pack`::
+If report this error as running command `pyarmor pack`:
 
 * Make sure the script specified in the command line is not obfuscated
 * Run `pack` with extra option `--clean` to remove cached `myscript.spec`::
