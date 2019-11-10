@@ -105,14 +105,14 @@ scripts. Each plugin is a normal Python script, PyArmor searches it by this way:
 * Raise exception if not found
 
 When PyArmor obfuscates the script, it will scan each line, and do something if
-the comment line is plugin marker. The following plugin markers are supported::
+the comment line is plugin marker. The following plugin markers are supported:
 
 * Plugin definition marker ``# {PyArmor Plugins}``
 * Plugin call marker ``# PyArmor Plugin:  plugin_name(arguments...)`` or ``# pyarmor_plugin_name(arguments...)``
 * Plugin decorator marker ``# @pyarmor_``
 
 Plugin definition marker must be in model level, that is to say, no
-indentation. The plugin script will be insert here as it was.
+indentation. The plugin script will be inserted here as it was.
 
 Plugin call maker could be in anywhere. PyArmor just removes the first part ``#
 PyArmor Plugin:`` or ``# pyarmor_`` , strip the whitespace around the rest, then
