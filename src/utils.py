@@ -360,7 +360,7 @@ def search_plugins(plugins):
     result = []
     path = os.getenv('PYARMOR_PLUGIN', '')
     for name in plugins:
-        i = 0 if name[0] == '@' else 1
+        i = 1 if name[0] == '@' else 0
         filename = name[i:] + '.py'
         key = os.path.basename(name[i:])
         if not os.path.exists(filename):
@@ -368,19 +368,20 @@ def search_plugins(plugins):
             if not os.path.exists(filename):
                 raise RuntimeError('No script found for plugin %s' % name)
         logging.info('Found plugin %s at: %s', key, filename)
-        result.append((key, filename, i))
+        result.append((key, filename, not i))
     return result
 
 
 def _patch_plugins(plugins, pnames):
     result = []
-    for key, filename, i in plugins:
-        if i or key in pnames:
+    for key, filename, x in plugins:
+        if x or (key in pnames):
+            logging.info('Apply plugin %s', key)
             lines = _readlines(filename)
             result.append(''.join(lines))
     if pnames and not result:
         raise RuntimeError('There are plugin calls, but no plugin definition')
-    return result
+    return ['\n'.join(result)]
 
 
 def _build_source_keylist(source, code, closure):
@@ -540,14 +541,15 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                     if i > -1:
                         plist.append((n+1, i, marker))
                         name = line[i+len(marker):].strip().strip('@')
-                        pnames.append(name[:name.find('(')].strip())
+                        t = name.find('(')
+                        pnames.append((name if t == -1 else name[:t]).strip())
             n += 1
         if k > -1:
-            logging.info('Patch this entry script with plugins')
+            logging.info('Patch this script with plugins')
             lines[k:k] = _patch_plugins(plugins, pnames)
         for n, i, m in plist:
             c = '@' if m[2] == '@' else ''
-            lines[n] = lines[n][:i] + c + lines[n][i+len(m):].strip()
+            lines[n] = lines[n][:i] + c + lines[n][i+len(m):].lstrip()
 
     if protection:
         n = 0
