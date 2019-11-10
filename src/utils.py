@@ -360,7 +360,7 @@ def search_plugins(plugins):
     result = []
     path = os.getenv('PYARMOR_PLUGIN', '')
     for name in plugins:
-        i = 1 if name[0] == '@' else 0
+        i = 0 if name[0] == '@' else 1
         filename = name[i:] + '.py'
         key = os.path.basename(name[i:])
         if not os.path.exists(filename):
@@ -530,26 +530,24 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         k = -1
         plist = []
         pnames = []
-        marker = '# PyArmor Plugin:'
+        markers = '# PyArmor Plugin:', '# pyarmor_', '# @pyarmor_'
         for line in lines:
             if line.startswith('# {PyArmor Plugins}'):
                 k = n + 1
             else:
-                i = line.find(marker)
-                if i > -1:
-                    plist.append((n+1, i))
-                    name = line[i+len(marker):].strip().strip('@')
-                    t = name.find('(')
-                    if t == -1:
-                        raise RuntimeError('Invalid plugin marker '
-                                           'at line %d\n\t%s' % (n, line))
-                    pnames.append(name[:t].strip())
+                for marker in markers:
+                    i = line.find(marker)
+                    if i > -1:
+                        plist.append((n+1, i, marker))
+                        name = line[i+len(marker):].strip().strip('@')
+                        pnames.append(name[:name.find('(')].strip())
             n += 1
         if k > -1:
             logging.info('Patch this entry script with plugins')
             lines[k:k] = _patch_plugins(plugins, pnames)
-        for n, i in plist:
-            lines[n] = lines[n][:i] + lines[n][i+len(marker):].strip()
+        for n, i, m in plist:
+            c = '@' if m[2] == '@' else ''
+            lines[n] = lines[n][:i] + c + lines[n][i+len(m):].strip()
 
     if protection:
         n = 0
