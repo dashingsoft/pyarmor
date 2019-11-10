@@ -357,19 +357,20 @@ def get_registration_code():
 
 
 def search_plugins(plugins):
-    result = []
-    path = os.getenv('PYARMOR_PLUGIN', '')
-    for name in plugins:
-        i = 1 if name[0] == '@' else 0
-        filename = name[i:] + '.py'
-        key = os.path.basename(name[i:])
-        if not os.path.exists(filename):
-            filename = build_path(filename, path)
+    if plugins:
+        result = []
+        path = os.getenv('PYARMOR_PLUGIN', '')
+        for name in plugins:
+            i = 1 if name[0] == '@' else 0
+            filename = name[i:] + '.py'
+            key = os.path.basename(name[i:])
             if not os.path.exists(filename):
-                raise RuntimeError('No script found for plugin %s' % name)
-        logging.info('Found plugin %s at: %s', key, filename)
-        result.append((key, filename, not i))
-    return result
+                filename = build_path(filename, path)
+                if not os.path.exists(filename):
+                    raise RuntimeError('No script found for plugin %s' % name)
+            logging.info('Found plugin %s at: %s', key, filename)
+            result.append((key, filename, not i))
+        return result
 
 
 def _patch_plugins(plugins, pnames):
