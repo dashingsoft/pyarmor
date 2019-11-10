@@ -951,6 +951,77 @@ echo ""
 
 # ======================================================================
 #
+#  Test plugins
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test plugins --------------------"
+echo ""
+
+csih_inform "Case Plugin-1: test base features of plugins"
+casepath=test-plugins
+mkdir $casepath
+cat <<EOF > $casepath/foo.py
+# {PyArmor Plugins}
+# PyArmor Plugin: msg = "This is print function"
+# PyArmor Plugin: print(msg)
+# pyarmor_on_p4()
+
+# @pyarmor_test_decorator
+def hello():
+    pass
+hello()
+EOF
+cat <<EOF > $casepath/on_p4.py
+def on_p4():
+    print('This is on demand plugin')
+EOF
+cat <<EOF > $casepath/test_decorator.py
+def test_decorator(f):
+    def wrap():
+        print('This is decorator plugin')
+    return wrap
+EOF
+echo "print('The unconditional plugin1 works')" > $casepath/p1.py
+echo "print('The unconditional plugin2 works')" > $casepath/p2.py
+echo "print('The plugin3 should not work')" > $casepath/p3.py
+
+$PYARMOR obfuscate --plugin $casepath/p1 --plugin $casepath/p2 \
+         --plugin @$casepath/p3 --plugin @$casepath/on_p4 \
+         --plugin @$casepath/test_decorator \
+         -O $casepath/dist --exact $casepath/foo.py > result.log 2>&1
+check_return_value
+
+(cd $casepath/dist; $PYTHON foo.py > result.log 2>&1)
+check_return_value
+check_file_content $casepath/dist/result.log 'The unconditional plugin1 works'
+check_file_content $casepath/dist/result.log 'The unconditional plugin2 works'
+check_file_content $casepath/dist/result.log 'The plugin3 should not work' not
+check_file_content $casepath/dist/result.log 'This is print function'
+check_file_content $casepath/dist/result.log 'This is on demand plugin'
+check_file_content $casepath/dist/result.log 'This is decorator plugin'
+
+csih_inform "Case Plugin-2: test plugin in the path PYARMOR_PLUGIN"
+echo "# {PyArmor Plugins}" > $casepath/foo2.py
+echo "# PyArmor Plugin: on_p4()" >> $casepath/foo2.py
+
+PYARMOR_PLUGIN=$casepath $PYARMOR obfuscate --plugin p1 --plugin @on_p4 \
+              -O $casepath/dist2 --exact $casepath/foo2.py > result.log 2>&1
+check_return_value
+
+(cd $casepath/dist2; $PYTHON foo2.py > result.log 2>&1)
+check_return_value
+check_file_content $casepath/dist2/result.log 'The unconditional plugin1 works'
+check_file_content $casepath/dist/result.log 'This is on demand plugin'
+
+
+echo ""
+echo "-------------------- Test plugins END ----------------"
+echo ""
+
+# ======================================================================
+#
 # Finished and cleanup.
 #
 # ======================================================================
