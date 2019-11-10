@@ -108,18 +108,23 @@ When PyArmor obfuscates the script, it will scan each line, and do something if
 the comment line is plugin marker. The following plugin markers are supported:
 
 * Plugin definition marker ``# {PyArmor Plugins}``
-* Plugin call marker ``# PyArmor Plugin:  plugin_name(arguments...)`` or ``# pyarmor_plugin_name(arguments...)``
+* Plugin call marker ``# PyArmor Plugin:`` or ``# pyarmor_``
 * Plugin decorator marker ``# @pyarmor_``
 
 Plugin definition marker must be in model level, that is to say, no
 indentation. The plugin script will be inserted here as it was.
 
 Plugin call maker could be in anywhere. PyArmor just removes the first part ``#
-PyArmor Plugin:`` or ``# pyarmor_`` , strip the whitespace around the rest, then
-place it according to original indentation. For example::
+PyArmor Plugin:`` or ``# pyarmor_`` , strip the whitespace around the rest part,
+then place it according to original indentation. For examples::
 
     # PyArmor Plugin: check_ntp_time() => check_ntp_time()
     # pyarmor_check_multi_mac() => check_multi_mac()
+
+The rest part could be any valid Python code. For examples::
+
+    # PyArmor Plugin: print('This is plugin code') => print('This is plugin code')
+    # pyarmor_print('This is plugin code') => print('This is plugin code')
 
 Plugin decorator marker is almost same as plugin call marker, except that it
 will replace ``# @pyarmor_`` with ``@``. For example::
@@ -134,7 +139,8 @@ example::
 
 However, if there is a leading ``@``, it couldn't be injected into the
 obfuscated scripts, until this plugin name appears in any plugin call marker or
-plugin decorator marker. For example::
+plugin decorator marker. For examples, if there is no any plugin call marker or
+decorator marker in the `foo.py`, both of plugins will be ignored::
 
     pyarmor obfuscate --plugin @assert_armored foo.py
     pyarmor obfuscate --plugin @/path/to/check_ntp_time foo.py
