@@ -65,9 +65,9 @@ Obfuscate python scripts.
 --exact                     Only obfuscate list scripts
 --no-bootstrap              Do not insert bootstrap code to entry script
 --no-cross-protection       Do not insert protection code to entry script
---plugin NAME               Insert extra code to entry script
+--plugin NAME               Insert extra code to entry script, it could be used multiple times
 --platform NAME             Distribute obfuscated scripts to other platform
---advanced <0,1>            Enable advanced mode
+--advanced <0,1>            Disable or enable advanced mode
 --restrict <0,1,2,3,4>      Set restrict mode
 --package-runtime <0,1,2>   Save the runtime files as a package or not
 -n, --no-runtime            DO NOT generate runtime files
@@ -485,7 +485,7 @@ Update project settings.
 --advanced-mode <0,1>           Disable or enable advanced  mode
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
 --runtime-path RPATH            Set the path of runtime files in target machine
---plugin NAME                   Insert extra code to entry script
+--plugin NAME                   Insert extra code to entry script, it could be used multiple times
 --package-runtime <0,1,2>       Save the runtime files as a package or not
 
 **DESCRIPTION**
@@ -498,11 +498,14 @@ Or specify the project path at the end::
 
     pyarmor config --option new-value /path/to/project
 
-Option --manifest is comma-separated list of manifest template
-command, same as MANIFEST.in of Python Distutils.
+Option --manifest is comma-separated list of manifest template command, same as
+MANIFEST.in of Python Distutils.
 
-Option --entry is comma-separated list of entry scripts, relative to
-src path of project.
+Option --entry is comma-separated list of entry scripts, relative to src path of
+project.
+
+There is a special value `clear` for ``--plugin`` which used to clear all the
+plugins.
 
 **EXAMPLES**
 

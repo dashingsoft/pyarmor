@@ -743,7 +743,8 @@ def main(args):
                          help=argparse.SUPPRESS)
     cparser.add_argument('--plugin', dest='plugins', metavar='NAME',
                          action='append',
-                         help='Insert extra code to entry script')
+                         help='Insert extra code to entry script, '
+                         'it could be used multiple times')
     cparser.add_argument('--restrict', type=int, choices=range(5),
                          default=1, help='Set restrict mode')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
@@ -871,7 +872,8 @@ def main(args):
     cparser.add_argument('--runtime-path', metavar="RPATH")
     cparser.add_argument('--plugin', dest='plugins', metavar='NAME',
                          action='append',
-                         help='Insert extra code to entry script')
+                         help='Insert extra code to entry script, '
+                         'it could be used multiple times')
     cparser.add_argument('--advanced-mode', type=int, choices=(0, 1))
     cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
                          help='Save runtime files as a package or not')
