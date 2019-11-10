@@ -244,7 +244,7 @@ First create plugin :file:`check_ntp_time.py`:
         index = rcode.find(';', rcode.find('*CODE:'))
         return rcode[index+1:]
 
-    def check_expired():
+    def check_ntp_time():
         NTP_SERVER = 'europe.pool.ntp.org'
         EXPIRED_DATE = get_license_data()
         c = NTPClient()
@@ -261,7 +261,7 @@ Then insert 2 comments in the entry script :file:`foo.py`::
     ...
 
     def main():
-        # PyArmor Plugin: check_expired()
+        # PyArmor Plugin: check_ntp_time()
 
     if __name__ == '__main__':
         logging.basicConfig(level=logging.INFO)
@@ -281,8 +281,8 @@ after the first comment::
 At the same time, the prefix of second comment will be stripped::
 
     def main():
-        # PyArmor Plugin: check_expired()
-        check_expired()
+        # PyArmor Plugin: check_ntp_time()
+        check_ntp_time()
 
 So the plugin takes effect.
 
@@ -304,6 +304,11 @@ Finally generate one license file for this obfuscated script::
 
    It's better to insert the content of `ntplib.py` into the plugin so
    that `NTPClient` needn't be imported out of obfuscated scripts.
+
+.. important::
+
+   The output function name in the plugin must be same as plugin name, otherwise
+   the plugin will not take effects.
 
 .. _bundle obfuscated scripts to one executable file:
 
@@ -429,14 +434,62 @@ One solution is to check imported functions by decorator `assert_armored` in the
                     # For Python3
                     if not (s.__code__.co_flags & 0x20000000):
                         raise RuntimeError('Access violate')
+                    # Also check a piece of byte code for special function
+                    if s.__name__ == 'connect':
+                        if s.__code__.co_code[10:12] != b'\x90\xA2':
+                            raise RuntimeError('Access violate')
                 return func(*args, **kwargs)
             return _execute
         return wrapper
 
-    @assert_armored(foo.connect, foo.connect2)
+    @ assert_armored(foo.connect, foo.connect2)
     def start_server():
         foo.connect('root', 'root password')
         foo.connect2('user', 'user password')
+
+Plugin Implementation
+~~~~~~~~~~~~~~~~~~~~~
+First write a plugin script `asser_armored.py`::
+
+    def assert_armored(*names):
+        def wrapper(func):
+            def _execute(*args, **kwargs):
+                for s in names:
+                    # For Python2
+                    # if not (s.func_code.co_flags & 0x20000000):
+                    # For Python3
+                    if not (s.__code__.co_flags & 0x20000000):
+                        raise RuntimeError('Access violate')
+                    # Also check a piece of byte code for special function
+                    if s.__name__ == 'connect':
+                        if s.__code__.co_code[10:12] != b'\x90\xA2':
+                            raise RuntimeError('Access violate')
+                return func(*args, **kwargs)
+            return _execute
+        return wrapper
+
+Then edit `main.py` , insert plugin markers. For examples::
+
+    import foo
+
+    # {PyArmor Plugins}
+
+    # PyArmor Plugin:  @assert_armored(foo.connect, foo.connect2)
+    def start_server():
+        foo.connect('root', 'root password')
+        ...
+
+So the original script could be run normally when it's not obfuscated. Only when
+it's distributed, obfuscating the script with this plugin::
+
+    pyarmor obfuscate --plugin assert_armored main.py
+
+.. note::
+
+   After v5.7.2, if you prefer, the marker could be this form::
+
+       # @pyarmor_assert_armored(foo.connect, foo.connect2)
+
 
 About Third-Party Interpreter
 -----------------------------
@@ -452,7 +505,7 @@ least to run the obfuscated scripts:
 * On Linux, `RTLD_GLOBAL` must be set as loading `libpythonXY.so` by
   `dlopen`, otherwise obfuscated scripts couldn't work.
 
-.. note::  
+.. note::
 
    Boost::python does not load `libpythonXY.so` with `RTLD_GLOBAL` by
    default, so it will raise error "No PyCode_Type found" as running
@@ -462,7 +515,7 @@ least to run the obfuscated scripts:
 * The module `ctypes` must be exists and `ctypes.pythonapi._handle`
   must be set as the real handle of Python dynamic library, PyArmor
   will query some Python C APIs by this handle.
-        
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt

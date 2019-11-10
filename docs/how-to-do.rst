@@ -89,6 +89,57 @@ The obfuscated script is a normal Python script, it looks like this::
 
     __pyarmor__(__name__, __file__, b'\x01\x0a...')
 
+
+.. _how to deal with plugins:
+
+How to Deal With Plugins
+------------------------
+
+In PyArmor, the plugin is used to inject python code into the obfuscted
+scripts. Each plugin is a normal Python script, PyArmor searches it by this way:
+
+* If the plugin is absolute path, then find the corresponding `.py` file exactly
+* If it's not absolute path, find the corresponding `.py` file in the current
+  path. If not found, search the path specifed by environment variable
+  ``PYARMOR_PLGUIN``
+* Raise exception if not found
+
+When PyArmor obfuscates the script, it will scan each line, and do something if
+the comment line is plugin marker. The following plugin markers are supported::
+
+* Plugin definition marker ``# {PyArmor Plugins}``
+* Plugin call marker ``# PyArmor Plugin:  plugin_name(arguments...)`` or ``# pyarmor_plugin_name(arguments...)``
+* Plugin decorator marker ``# @pyarmor_``
+
+Plugin definition marker must be in model level, that is to say, no
+indentation. The plugin script will be insert here as it was.
+
+Plugin call maker could be in anywhere. PyArmor just removes the first part ``#
+PyArmor Plugin:`` or ``# pyarmor_`` , strip the whitespace around the rest, then
+place it according to original indentation. For example::
+
+    # PyArmor Plugin: check_ntp_time() => check_ntp_time()
+    # pyarmor_check_multi_mac() => check_multi_mac()
+
+Plugin decorator marker is almost same as plugin call marker, except that it
+will replace ``# @pyarmor_`` with ``@``. For example::
+
+    # @pyarmor_assert_obfuscated(foo.connect) => @assert_obfuscated(foo.connect)
+
+When obfuscating the scripts in command line, if the plugin doesn't include a
+leading ``@``, it will be always injected into the obfuscated scripts. For
+example::
+
+    pyarmor obfuscate --plugin check_multi_mac --plugin assert_armored foo.py
+
+However, if there is a leading ``@``, it couldn't be injected into the
+obfuscated scripts, until this plugin name appears in any plugin call marker or
+plugin decorator marker. For example::
+
+    pyarmor obfuscate --plugin @assert_armored foo.py
+    pyarmor obfuscate --plugin @/path/to/check_ntp_time foo.py
+
+
 .. _special handling of entry script:
 
 Special Handling of Entry Script

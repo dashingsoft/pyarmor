@@ -103,10 +103,13 @@ most path. For example::
     pyarmor obfuscate --src "." --recursive mysite/wsgi.py
 
 Option ``--plugin`` is used to extend license type of obfuscated scripts, it
-will insert the content of plugin into entry script. The corresponding filename
-of plugin is `NAME.py`. `Name` may be absolute path if it's not in the current
-path, or specify plugin path by environment variable `PYARMOR_PLUGIN`. About the
-usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
+will inject the content of plugin into the obfuscated scripts. The corresponding
+filename of plugin is `NAME.py`. `Name` may be absolute path if it's not in the
+current path, or specify plugin path by environment variable `PYARMOR_PLUGIN`.
+
+More information about plugin, refer to :ref:`How to Deal with Plugins`, and
+here is a real example to show usage of plugin :ref:`Using Plugin to Extend
+License Type`
 
 Option ``--platform`` is used to specify the target platform of obfuscated
 scripts if target platform is different from build platform.
@@ -133,7 +136,7 @@ obfuscated scripts as four separated files::
 If ``--package-runtime`` is set to `2`, it means the :ref:`runtime package` will
 be in other path, so the :ref:`bootstrap code` always makes absolute import
 without leading dots.
-    
+
 Otherwise when the entry script is `__init__.py`, it will make a relative import
 by using leading dots like this::
 
@@ -195,6 +198,10 @@ by using leading dots like this::
   obfuscating `foo.py`::
 
      pyarmor obfuscate --plugin check_ntp_time foo.py
+
+* Only plugin `assert_armored` is called then inject it into the `foo.py`::
+
+     pyarmor obfuscate --plugin @assert_armored foo.py
 
 * Obfuscate the scripts in Macos and run obfuscated scripts in
   Ubuntu::

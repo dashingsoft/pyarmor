@@ -140,7 +140,8 @@ after it is obfuscated, so do whatever you want in your script. In this case the
 
 The prefer way is :ref:`using plugin to extend license type`. The advantage is
 that your scripts needn't be changed at all. Just write authentication code in a
-separated script, and inject it in the obfuscated scripts as obfuscating.
+separated script, and inject it in the obfuscated scripts as obfuscating. For
+more information, refer to :ref:`How to Deal with Plugins`
 
 Here are some plugin examples
 
@@ -210,7 +211,6 @@ Generate an expired license for the bundle::
 
     dist/myscript/myscript
 
-For complicated cases, refer to command :ref:`pack` and :ref:`How to pack
-obfuscated scripts`.
+For complicated cases, refer to command :ref:`pack` and :ref:`How to pack obfuscated scripts`.
 
 .. include:: _common_definitions.txt
