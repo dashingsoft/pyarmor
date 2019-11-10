@@ -256,27 +256,26 @@ check_return_value
 check_file_exists test-no-cross-protection/main.py
 
 csih_inform "C-18. Test option --plugin for obfuscate"
+echo "# {PyArmor Plugins}" > test_plugin.py
 echo "print('Hello Plugin')" > plugin_hello.py
 $PYARMOR obfuscate -O dist-plugin --plugin "plugin_hello" \
-         examples/simple/queens.py >result.log 2>&1
+         --exact test_plugin.py >result.log 2>&1
 check_return_value
 
-(cd dist-plugin; $PYTHON queens.py >result.log 2>&1 )
+(cd dist-plugin; $PYTHON test_plugin.py >result.log 2>&1 )
 check_return_value
 check_file_content dist-plugin/result.log 'Hello Plugin'
-check_file_content dist-plugin/result.log 'Found 92 solutions'
 
 csih_inform "C-19. Test option --plugin with PYARMOR_PLUGIN for obfuscate"
 mkdir test-plugins
 echo "print('Hello World')" > test-plugins/hello2.py
 PYARMOR_PLUGIN=test-plugins $PYARMOR obfuscate -O dist-plugin2 \
-              --plugin hello2 examples/simple/queens.py >result.log 2>&1
+              --plugin hello2 --exact test_plugin.py >result.log 2>&1
 check_return_value
 
-(cd dist-plugin2; $PYTHON queens.py >result.log 2>&1 )
+(cd dist-plugin2; $PYTHON test_plugin.py >result.log 2>&1 )
 check_return_value
 check_file_content dist-plugin2/result.log 'Hello World'
-check_file_content dist-plugin2/result.log 'Found 92 solutions'
 
 csih_inform "C-20. Test absolute jump critical value in wrap mode"
 $PYARMOR obfuscate -O dist-pop-jmp --exact test/data/pop_jmp.py >result.log 2>&1
@@ -960,7 +959,7 @@ echo "-------------------- Test plugins --------------------"
 echo ""
 
 csih_inform "Case Plugin-1: test base features of plugins"
-casepath=test-plugins
+casepath=test-plugins2
 mkdir $casepath
 cat <<EOF > $casepath/foo.py
 # {PyArmor Plugins}
