@@ -14,7 +14,7 @@ protects Python scripts by the following ways:
 * Clear f_locals of frame as soon as code object completed execution.
 * Verify the license file of obfuscated scripts while running it.
 
-Refer to [Protect Python Scripts By PyArmor](docs/protect-python-scripts-by-pyarmor.md)
+Refer to [How PyArmor Does It](https://pyarmor.readthedocs.io/en/latest/how-to-do.html)
 
 ## Support Platforms
 
