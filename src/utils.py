@@ -539,7 +539,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         k = -1
         plist = []
         pnames = []
-        markers = '# PyArmor Plugin:', '# pyarmor_', '# @pyarmor_'
+        markers = '# PyArmor Plugin: ', '# pyarmor_', '# @pyarmor_'
         for line in lines:
             if line.startswith('# {PyArmor Plugins}'):
                 k = n + 1
@@ -559,7 +559,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             lines[k:k] = _patch_plugins(plugins, pnames)
         for n, i, m in plist:
             c = '@' if m[2] == '@' else ''
-            lines[n] = lines[n][:i] + c + lines[n][i+len(m):].lstrip()
+            lines[n] = lines[n][:i] + c + lines[n][i+len(m):]
 
     if protection:
         n = 0
