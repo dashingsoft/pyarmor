@@ -688,7 +688,7 @@ def _version_info(verbose=2):
     return '\n'.join(info)
 
 
-def main(args):
+def _parser():
     parser = argparse.ArgumentParser(
         prog='pyarmor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -1027,22 +1027,7 @@ def main(args):
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
 
-    args = parser.parse_args(args)
-    if args.silent:
-        logging.getLogger().setLevel(100)
-    if args.debug:
-        logging.getLogger().setLevel(logging.DEBUG)
-    else:
-        sys.excepthook = excepthook
-
-    if not hasattr(args, 'func'):
-        parser.print_help()
-        return
-
-    logging.info(_version_info(verbose=0))
-    logging.debug('PyArmor install path: %s', PYARMOR_PATH)
-
-    args.func(args)
+    return parser
 
 
 def excepthook(type, value, traceback):
@@ -1055,9 +1040,25 @@ def main_entry():
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
-    if 'download' not in sys.argv[1:2]:
+    parser = _parser()
+    args = parser.parse_args(sys.argv[1:])
+    if not hasattr(args, 'func'):
+        parser.print_help()
+        return
+
+    if args.silent:
+        logging.getLogger().setLevel(100)
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+    else:
+        sys.excepthook = excepthook
+
+    if args.func.__name__[1:] not in ['download']:
         pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
-    main(sys.argv[1:])
+
+    logging.info(_version_info(verbose=0))
+    logging.debug('PyArmor install path: %s', PYARMOR_PATH)
+    args.func(args)
 
 
 if __name__ == '__main__':
