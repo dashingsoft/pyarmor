@@ -89,7 +89,7 @@ class Project(dict):
             src = self[name]
             if not os.path.isabs(src):
                 src = os.path.normpath(os.path.join(self._path, src))
-            return src
+            return os.path.normpath(src)
         if name in self:
             return self[name]
         raise AttributeError(name)
