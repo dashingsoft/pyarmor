@@ -1014,7 +1014,7 @@ class _VersionAction(Action):
         version = self.version
         if version is None:
             version = parser.version
-        elif callable(version):
+        elif hasattr(version, '__name__'):
             version = version()
         formatter = parser._get_formatter()
         formatter.add_text(version)
