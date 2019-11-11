@@ -1014,6 +1014,8 @@ class _VersionAction(Action):
         version = self.version
         if version is None:
             version = parser.version
+        elif callable(version):
+            version = version()
         formatter = parser._get_formatter()
         formatter.add_text(version)
         parser.exit(message=formatter.format_help())

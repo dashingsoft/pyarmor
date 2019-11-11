@@ -669,6 +669,11 @@ def _runtime(args):
                  package=package)
 
 
+def _version_action():
+    pytransform_bootstrap()
+    return _version_info()
+
+
 def _version_info(verbose=2):
     rcode = get_registration_code()
     if rcode:
@@ -698,7 +703,7 @@ def _parser():
                'https://pyarmor.readthedocs.io'
     )
     parser.add_argument('-v', '--version', action='version',
-                        version=_version_info())
+                        version=_version_action)
     parser.add_argument('-q', '--silent', action='store_true',
                         help='Suppress all normal output')
     parser.add_argument('-d', '--debug', action='store_true',
@@ -1053,8 +1058,8 @@ def main_entry():
     else:
         sys.excepthook = excepthook
 
-    if args.func.__name__[1:] not in ['download']:
-        pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
+    ignored = args.func.__name__[1:] in ('download', 'register')
+    pytransform_bootstrap(capsule=DEFAULT_CAPSULE, ignored=ignored)
 
     logging.info(_version_info(verbose=0))
     logging.debug('PyArmor install path: %s', PYARMOR_PATH)
