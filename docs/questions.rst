@@ -3,9 +3,14 @@
 When Things Go Wrong
 ====================
 
-Turn on python debug option to get more error information::
+Where there is any trouble, first turn on debug mode to get more information.
 
-    PYTHONDEBUG=y pyarmor ...    
+As running ``pyarmor``, by passing common option ``-d``::
+
+    pyarmor -d ...
+
+As running the obfuscated scripts, turn on Python debug option::
+
     python -d obfuscated_scripts.py ...
 
 Segment fault
@@ -17,9 +22,10 @@ In the following cases, obfuscated scripts will crash
 * Obfuscating scripts by Python 2.6 but running the obfuscated scripts by Python 2.7
 
 After PyArmor 5.5.0, some machines may be crashed because of advanced mode. A
-quick workaround is to diable advanced mode by editing the file `pytransform.py`
-which locates in the installed path of `pyarmor` , in the function
-`_load_library`, uncomment about line 202. The final code looks like this::
+quick workaround is to disable advanced mode by editing the file
+:file:`pytransform.py` which locates in the installed path of ``pyarmor`` , in
+the function ``_load_library``, uncomment about line 202. The final code looks
+like this::
 
     # Disable advanced mode if required
     m.set_option(5, c_char_p(1))
@@ -241,7 +247,7 @@ Even obfuscated with purchased version, license from trial version works:
 
 * Make sure command `pyarmor register` shows correct registration information
 * Make sure :ref:`global capsule` file `~/.pyarmor_capsule.zip` is same as the one in the keyfile `pyarmor-regfile-1.zip`
-* Try to reboot system.  
+* Try to reboot system.
 
 No module name pytransform
 --------------------------
@@ -262,5 +268,16 @@ If report this error as running command `pyarmor pack`:
     them start to reverse, he/she must step by step thousands of
     machine instruction, and research the algorithm by machine
     codes. So it's not an easy thing to reverse pyarmor.
+
+.. Catalog:
+
+   Commen Problem
+   Obfuscating Scripts Problem
+   License Of Obfuscated Scripts Problem
+   Packing Obfuscated Scripts Problem
+   PyArmor Registration Problem
+   Running Obfuscated Scripts Problem
+   Know Issues
+   Misc. Questions
 
 .. include:: _common_definitions.txt

@@ -542,6 +542,10 @@ build
 
 Build project, obfuscate all scripts in the project.
 
+**SYNOPSIS**::
+
+    pyarmor config <options> [PATH]
+
 **OPTIONS**
 
 -B, --force                   Force to obfuscate all scripts
