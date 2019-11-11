@@ -124,26 +124,29 @@ The plugin definition marker has this form::
 It must be one leading comment line, no indentation. Generally there is only one
 in a script, all the plugins will be injected here.
 
-The plugin call maker has 3 forms::
+The plugin call maker has 3 forms, any comment line starts with these patterns
+is call marker::
 
     # PyArmor Plugin:
     # pyarmor_
     # @pyarmor_
 
-They could be any indentation, appear many times, but have to behind plugin
+They could appear many times, any indentation, but have to behind plugin
 definition marker.
 
-For the first form ``# PyArmor Plugin:``, PyArmor will remove this pattern and
-the following whitespace, and leave the rest part of this line as it is. For
-example::
+For the first form ``# PyArmor Plugin:``, PyArmor just remove this pattern and
+one following whitespace exactly, and leave the rest part of this line as it
+is. For example::
 
     # PyArmor Plugin: check_ntp_time() ==> check_ntp_time()
 
 So long as there is any plugin specified to obfuscate the script, these
 replacements will be taken place. The rest part could be any valid Python
-code. For example::
+code. For examples::
 
     # PyArmor Plugin: print('This is plugin code') ==> print('This is plugin code')
+    # PyArmor Plugin: if sys.flags.debug:          ==> if sys.flags.debug:
+    # PyArmor Plugin:     check_something():       ==>     check_something()
 
 For the second form ``# pyarmor_``, it's only used to call plugin function. And
 if this function name is not specified as plugin name, PyArmor doesn't touch
