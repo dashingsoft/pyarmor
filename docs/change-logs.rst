@@ -9,8 +9,8 @@ Change Logs
 * Project src may be relative path base on project path
 * Refine plugin and document it in details: https://pyarmor.readthedocs.io/en/v5.7.2/how-to-do.html#how-to-deal-with-plugins
 * Add common option `--debug` for `pyarmor` to show more information in the console
-* In most of project commands, for examples `build`, `cofig`, the last argument supports any valid project configuration file
-  
+* Project commands, for examples `build`, `cofig`, the last argument supports any valid project configuration file
+
 5.7.1
 -----
 * Add command `runtime` to generate runtime package separately
