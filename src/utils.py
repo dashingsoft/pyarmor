@@ -384,6 +384,14 @@ def _patch_plugins(plugins, pnames):
     return ['\n'.join(result)]
 
 
+def _filter_call_marker(plugins, marker, name):
+    if marker.startswith('# PyArmor'):
+        return True
+    for key, filename, x in plugins:
+        if name == key:
+            return True
+
+
 def _build_source_keylist(source, code, closure):
     result = []
     flist = ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library',
@@ -539,10 +547,12 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 for marker in markers:
                     i = line.find(marker)
                     if i > -1:
-                        plist.append((n+1, i, marker))
                         name = line[i+len(marker):].strip().strip('@')
                         t = name.find('(')
-                        pnames.append((name if t == -1 else name[:t]).strip())
+                        name = (name if t == -1 else name[:t]).strip()
+                        if _filter_call_marker(plugins, marker, name):
+                            plist.append((n+1, i, marker))
+                            pnames.append(name)
             n += 1
         if k > -1:
             logging.info('Patch this script with plugins')
