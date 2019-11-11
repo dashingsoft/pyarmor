@@ -441,6 +441,17 @@ check_file_exists $PROPATH/dist/mypkg/pytransform/license.lic
 check_file_exists $PROPATH/dist/mypkg/__init__.py
 check_file_not_exists $PROPATH/dist/mypkg/license.lic
 
+csih_inform "Case P-8: open project with other configure filename"
+PROPATH=projects/test-p8
+$PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
+$PYARMOR config --name="Alias-Project-8" $PROPATH  >result.log 2>&1
+check_return_value
+
+cp $PROPATH/.pyarmor_config $PROPATH/project.json
+(cd $PROPATH; $ARMOR info project.json > result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/result.log 'Alias-Project-8'
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""
@@ -971,6 +982,11 @@ cat <<EOF > $casepath/foo.py
 def hello():
     pass
 hello()
+
+def p5(msg):
+    print(msg)
+# pyarmor_p5('Plugin 5 should now work')
+p5('Call p5 should work')
 EOF
 cat <<EOF > $casepath/on_p4.py
 def on_p4():
@@ -1000,6 +1016,8 @@ check_file_content $casepath/dist/result.log 'The plugin3 should not work' not
 check_file_content $casepath/dist/result.log 'This is print function'
 check_file_content $casepath/dist/result.log 'This is on demand plugin'
 check_file_content $casepath/dist/result.log 'This is decorator plugin'
+check_file_content $casepath/dist/result.log 'Call p5 should work'
+check_file_content $casepath/dist/result.log 'Plugin 5 should now work' not
 
 csih_inform "Case Plugin-2: test plugin in the path PYARMOR_PLUGIN"
 echo "# {PyArmor Plugins}" > $casepath/foo2.py
