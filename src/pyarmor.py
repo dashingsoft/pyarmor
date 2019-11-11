@@ -1040,13 +1040,13 @@ def excepthook(type, value, traceback):
     sys.exit(1)
 
 
-def main_entry():
+def main(argv):
     logging.basicConfig(
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
     parser = _parser()
-    args = parser.parse_args(sys.argv[1:])
+    args = parser.parse_args(argv)
     if not hasattr(args, 'func'):
         parser.print_help()
         return
@@ -1068,6 +1068,10 @@ def main_entry():
     logging.info(_version_info(verbose=0))
     logging.debug('PyArmor install path: %s', PYARMOR_PATH)
     args.func(args)
+
+
+def main_entry():
+    main(sys.argv[1:])
 
 
 if __name__ == '__main__':

@@ -521,6 +521,33 @@ least to run the obfuscated scripts:
   must be set as the real handle of Python dynamic library, PyArmor
   will query some Python C APIs by this handle.
 
+Call `pyarmor` From Python Script
+---------------------------------
+
+It's also possible to call PyArmor methods inside Python script not by `os.exec`
+or `subprocess.Popen` etc. For example
+
+.. code-block:: python
+                
+    from pyarmor.pyarmor import main as call_pyarmor
+    call_pyarmor(['obfuscate', '--recursive', '--output', 'dist', 'foo.py'])
+
+In order to suppress all normal output of pyarmor, call it with ``--silent``
+
+.. code-block:: python
+
+    from pyarmor.pyarmor import main as call_pyarmor
+    call_pyarmor(['--silent', 'obfuscate', '--recursive', '--output', 'dist', 'foo.py'])
+
+In order to raise exception other than call `sys.exit` when pyarmor fails, call
+it with ``--debug``. The disadvantage is that it will print extra debugging
+information in the console.
+
+.. code-block:: python
+
+    from pyarmor.pyarmor import main as call_pyarmor
+    call_pyarmor(['--debug', 'obfuscate', '--recursive', '--output', 'dist', 'foo.py'])
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt
