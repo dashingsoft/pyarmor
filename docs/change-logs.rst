@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.7.3
+-----
+* Refine :mod:`pytransform` to handle error message of core library
+* Refine command online help message
+* Refine error messages so that the users could solve most of problems by the hints
+
 5.7.2
 -----
 * Fix plugin codec issue (#138): 'gbk' codec can't decode byte 0x82 in position 590: illegal multibyte sequence

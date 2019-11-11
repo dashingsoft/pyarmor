@@ -3,20 +3,20 @@
 When Things Go Wrong
 ====================
 
-Where things go wrong, try to solve it by these ways.
+When there is in trouble, try to solve it by these ways.
 
 As running ``pyarmor``:
 
-* Check the console output, is there any wrong path, or any useful information
+* Check the console output, is there any wrong path, or any odd information
 * Run `pyarmor` with debug option ``-d`` to get more information. For example::
 
-      pyarmor -d obfuscate foo.py
+      pyarmor -d obfuscate --recurisve foo.py
 
 As running the obfuscated scripts:
 
-* Turn on Python debug option to print more information. For example::
+* Turn on Python debug option by ``-d`` to print more information. For example::
 
-      python -d obfuscated_scripts.py
+      python -d obf_foo.py
 
 * After debug option is on, there will be a log file `pytransform.log` generated
   in the current path. Check its content to find where the problem is.
