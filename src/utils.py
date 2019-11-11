@@ -48,7 +48,7 @@ from config import dll_ext, dll_name, entry_lines, protect_code_template, \
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 
 
-def pytransform_bootstrap(path=None, capsule=None, ignored=False):
+def pytransform_bootstrap(path=None, capsule=None):
     path = PYARMOR_PATH if path is None else path
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
@@ -75,10 +75,9 @@ def pytransform_bootstrap(path=None, capsule=None, ignored=False):
     logging.debug('Build platform is %s', platname)
     pytransform.pyarmor_init(platname=platname)
 
-    if capsule is not None and not ignored:
-        if not os.path.exists(capsule):
-            logging.info('Generating public capsule ...')
-            make_capsule(capsule)
+    if capsule is not None and not os.path.exists(capsule):
+        logging.info('Generating public capsule ...')
+        make_capsule(capsule)
 
 
 def _get_remote_file(urls, path, timeout=3.0):

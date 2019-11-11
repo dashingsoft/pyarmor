@@ -1058,8 +1058,12 @@ def main_entry():
     else:
         sys.excepthook = excepthook
 
-    ignored = args.func.__name__[1:] in ('download', 'register')
-    pytransform_bootstrap(capsule=DEFAULT_CAPSULE, ignored=ignored)
+    try:
+        pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
+    except Exception as e:
+        if not args.func.__name__[1:] in ('download', 'register'):
+            raise
+        logging.warning(str(e))
 
     logging.info(_version_info(verbose=0))
     logging.debug('PyArmor install path: %s', PYARMOR_PATH)
