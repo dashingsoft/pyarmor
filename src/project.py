@@ -137,7 +137,8 @@ class Project(dict):
 
     def _project_filename(self, path):
         if path == '' or os.path.exists(path):
-            filename = os.path.join(path, config_filename)
+            filename = os.path.join(path, config_filename) \
+                if os.path.isdir(path) else path
         else:
             name = os.path.basename(path)
             filename = os.path.join(os.path.dirname(path),
