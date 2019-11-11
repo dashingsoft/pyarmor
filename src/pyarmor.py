@@ -701,6 +701,8 @@ def main(args):
                         version=_version_info())
     parser.add_argument('-q', '--silent', action='store_true',
                         help='Suppress all normal output')
+    parser.add_argument('-d', '--debug', action='store_true',
+                        help='Print exception traceback and debugging message')
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
@@ -1028,6 +1030,10 @@ def main(args):
     args = parser.parse_args(args)
     if args.silent:
         logging.getLogger().setLevel(100)
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+    else:
+        sys.excepthook = excepthook
 
     if not hasattr(args, 'func'):
         parser.print_help()
@@ -1039,23 +1045,19 @@ def main(args):
     args.func(args)
 
 
+def excepthook(type, value, traceback):
+    logging.error('%s', value)
+    sys.exit(1)
+
+
 def main_entry():
     logging.basicConfig(
-        level=logging.DEBUG if sys.flags.debug else logging.INFO,
+        level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
-    try:
-        try:
-            pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
-        except Exception:
-            if 'download' not in sys.argv[1:2]:
-                raise
-        main(sys.argv[1:])
-    except Exception as e:
-        if sys.flags.debug:
-            raise
-        logging.error('%s', e)
-        sys.exit(1)
+    if 'download' not in sys.argv[1:2]:
+        pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
+    main(sys.argv[1:])
 
 
 if __name__ == '__main__':
