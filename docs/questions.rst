@@ -3,15 +3,23 @@
 When Things Go Wrong
 ====================
 
-Where there is any trouble, first turn on debug mode to get more information.
+Where things go wrong, try to solve it by these ways.
 
-As running ``pyarmor``, by passing common option ``-d``::
+As running ``pyarmor``:
 
-    pyarmor -d ...
+* Check the console output, is there any wrong path, or any useful information
+* Run `pyarmor` with debug option ``-d`` to get more information. For example::
 
-As running the obfuscated scripts, turn on Python debug option::
+      pyarmor -d obfuscate foo.py
 
-    python -d obfuscated_scripts.py ...
+As running the obfuscated scripts:
+
+* Turn on Python debug option to print more information. For example::
+
+      python -d obfuscated_scripts.py
+
+* After debug option is on, there will be a log file `pytransform.log` generated
+  in the current path. Check its content to find where the problem is.
 
 Segment fault
 -------------

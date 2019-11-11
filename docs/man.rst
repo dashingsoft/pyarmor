@@ -498,11 +498,11 @@ Or specify the project path at the end::
 
     pyarmor config --option new-value /path/to/project
 
-Option --manifest is comma-separated list of manifest template command, same as
-MANIFEST.in of Python Distutils.
+Option ``--manifest`` is comma-separated list of manifest template command, same
+as MANIFEST.in of Python Distutils.
 
-Option --entry is comma-separated list of entry scripts, relative to src path of
-project.
+Option ``--entry`` is comma-separated list of entry scripts, relative to src
+path of project.
 
 There is a special value `clear` for ``--plugin`` which used to clear all the
 plugins.

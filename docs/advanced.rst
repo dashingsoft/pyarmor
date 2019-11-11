@@ -44,6 +44,11 @@ Check all the output and test these obfuscated packages::
    The runtime package :mod:`pytransform` in the output path `dist` also could
    be move to any other Python path, only if it could be imported.
 
+   From v5.7.2, the :ref:`runtime package` also could be generate by command
+   :ref:`runtime` separately::
+
+       pyarmor runtime
+
 .. _distributing obfuscated scripts to other platform:
 
 Distributing Obfuscated Scripts To Other Platform
