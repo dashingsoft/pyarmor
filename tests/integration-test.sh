@@ -341,6 +341,8 @@ cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
 cp ../../data/project.zip ./ && \
     cp ../../data/foo.zip ./ && \
     cp ../../data/foo-key.zip ./ || csih_error "Copy capsule files FAILED"
+# From pyarmor v5.7.2, pyarmor-deprecated.py has been removed from source package
+cp ../../../src/pyarmor-deprecated.py .|| csih_error "Copy pyarmor-deprecated.py FAILED"
 
 # From pyarmor 4.5.4, platform name is renamed
 if [[ -d platforms/windows32 ]] ; then
@@ -353,8 +355,8 @@ if [[ -d platforms/windows32 ]] ; then
         mv darwin64 macosx_x86_64;)
 fi
 
-PYARMOR="$PYTHON pyarmor.py"
-[[ -f pyarmor-deprecated.py ]] && PYARMOR="$PYTHON pyarmor-deprecated.py"
+PYARMOR="$PYTHON pyarmor-deprecated.py"
+[[ -f pyarmor-deprecated.py ]] || csih_error "No pyarmor-deprecated.py found"
 csih_inform "PYARMOR is $PYARMOR"
 
 csih_inform "Prepare for testing"
