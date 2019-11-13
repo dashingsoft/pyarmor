@@ -18,7 +18,6 @@ HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_IPV6, HT_DOMAIN = range(5)
 # Global
 #
 _pytransform = None
-_get_error_msg = None
 
 
 class PytransformError(Exception):
@@ -28,14 +27,15 @@ class PytransformError(Exception):
 def dllmethod(func):
     def wrap(*args, **kwargs):
         # args = [(s.encode() if isinstance(s, str) else s) for s in args]
-        result = func(*args, **kwargs)
-        if isinstance(result, int) and result != 0:
-            errmsg = _get_error_msg()
-            if not isinstance(errmsg, str):
-                errmsg = errmsg.decode()
-            raise PytransformError(errmsg)
-        return result
+        return func(*args, **kwargs)
     return wrap
+
+
+@dllmethod
+def version_info():
+    prototype = PYFUNCTYPE(py_object)
+    dlfunc = prototype(('version_info', _pytransform))
+    return dlfunc()
 
 
 @dllmethod
@@ -45,7 +45,10 @@ def init_pytransform():
     # bitness = 64 if sys.maxsize > 2**32 else 32
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_void_p)
     init_module = prototype(('init_module', _pytransform))
-    return init_module(major, minor, pythonapi._handle)
+    ret = init_module(major, minor, pythonapi._handle)
+    if (ret & 0xFFFF) == 0x1001:
+        raise PytransformError('Cound not load CPython API(r%d)' % (ret >> 16))
+    return ret
 
 
 @dllmethod
@@ -88,7 +91,7 @@ def get_hd_info(hdtype, size=256):
     t_buf = c_char * size
     buf = t_buf()
     if (_pytransform.get_hd_info(hdtype, buf, size) == -1):
-        raise PytransformError(_get_error_msg())
+        raise PytransformError('Get hardware information failed')
     return buf.value.decode()
 
 
@@ -98,18 +101,19 @@ def show_hd_info():
 
 def get_license_info():
     info = {
-        'expired': 'Never',
-        'restrict_mode': 'Enabled',
-        'HARDDISK': 'Any',
-        'IFMAC': 'Any',
-        'IFIPV4': 'Any',
-        'DOMAIN': 'Any',
-        'DATA': '',
+        'expired': -1,
+        'restrict_mode': True,
+        'HARDDISK': None,
+        'IFMAC': None,
+        'IFIPV4': None,
+        'DOMAIN': None,
+        'DATA': None,
         'CODE': '',
     }
-    rcode = get_registration_code().decode()
-    if rcode is None:
-        raise PytransformError(_get_error_msg())
+    try:
+        rcode = get_registration_code().decode()
+    except Exception as e:
+        raise PytransformError(e)
     index = 0
     if rcode.startswith('*TIME:'):
         from time import ctime
@@ -118,7 +122,7 @@ def get_license_info():
         index += 1
 
     if rcode[index:].startswith('*FLAGS:'):
-        info['restrict_mode'] = 'Disabled'
+        info['restrict_mode'] = False
         index += len('*FLAGS:') + 1
 
     prev = None
@@ -206,10 +210,7 @@ def _load_library(path=None, is_runtime=0, platname=None):
 
 def pyarmor_init(path=None, is_runtime=0, platname=None):
     global _pytransform
-    global _get_error_msg
     _pytransform = _load_library(path, is_runtime, platname)
-    _get_error_msg = _pytransform.get_error_msg
-    _get_error_msg.restype = c_char_p
     return init_pytransform()
 
 
