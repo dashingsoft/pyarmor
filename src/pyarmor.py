@@ -264,7 +264,7 @@ def _build(args):
             elif not isinstance(protection, int):
                 protection = ','.join([protection, platform])
 
-        for x in files:
+        for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
             logging.info('\t%s -> %s', x, b)
 
@@ -526,7 +526,7 @@ def _obfuscate(args):
     restrict = args.restrict
     logging.info('Restrict mode is %d', restrict)
 
-    for x in files:
+    for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
         else:
