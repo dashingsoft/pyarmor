@@ -75,6 +75,12 @@ def pytransform_bootstrap(path=None, capsule=None):
     logging.debug('Build platform is %s', platname)
     pytransform.pyarmor_init(platname=platname)
 
+    ver = pytransform.version_info()
+    logging.debug('The version of _pyransform is %s', ver)
+    if ver[0] < 6:
+        raise RuntimeError('The major version of dynamic library '
+                           '`_pytransform` is less than 6')
+
     if capsule is not None and not os.path.exists(capsule):
         logging.info('Generating public capsule ...')
         make_capsule(capsule)

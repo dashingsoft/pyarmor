@@ -32,6 +32,13 @@ def dllmethod(func):
 
 
 @dllmethod
+def version_info():
+    prototype = PYFUNCTYPE(py_object)
+    dlfunc = prototype(('version_info', _pytransform))
+    return dlfunc()
+
+
+@dllmethod
 def init_pytransform():
     major, minor = sys.version_info[0:2]
     # Python2.5 no sys.maxsize but sys.maxint
