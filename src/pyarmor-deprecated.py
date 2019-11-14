@@ -44,8 +44,44 @@ try:
 except Exception:
     from binascii import a2b_hex as unhexlify
 
-from config import (version, version_info, trial_info, help_footer,
-                    ext_char, plat_name, dll_ext, dll_name, wrap_runner)
+from config import (version, version_info, plat_name, dll_ext, dll_name)
+
+# Extra suffix char for encrypted python scripts
+ext_char = 'e'
+
+wrap_runner = '''import pyimcore
+from pytransform import exec_file
+exec_file('%s')
+'''
+
+trial_info = '''
+You're using trail version. Free trial version never expires,
+the limitations are
+
+- The maximum size of code object is 35728 bytes in trial version
+- The scripts obfuscated by trial version are not private. It means
+  anyone could generate the license file which works for these
+  obfuscated scripts.
+
+A registration code is required to obfuscate big code object or
+generate private obfuscated scripts.
+
+If PyArmor is helpful for you, please purchase one by visiting
+
+  https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
+
+If you have received a registration code, run the following command to
+make it effective::
+
+  pyarmor register REGISTRATION_CODE
+
+Enjoy it!
+
+'''
+
+help_footer = '''
+For more information, refer to http://pyarmor.dashingsoft.com
+'''
 
 def _import_pytransform():
     try:

@@ -45,9 +45,6 @@ license_filename = 'license.lic'
 default_output_path = 'dist'
 default_manifest_template = 'global-include *.py'
 
-default_obf_module_mode = 'des'
-default_obf_code_mode = 'des'
-
 platform_urls = [
     'https://github.com/dashingsoft/pyarmor-core/raw/%s/platforms' %
     core_version,
@@ -56,65 +53,3 @@ platform_urls = [
 platform_config = 'index.json'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
-
-#
-# DEPRECATED From v3.4.0, all the follwing lines will be removed from v4
-#
-
-# Extra suffix char for encrypted python scripts
-ext_char = 'e'
-
-wrap_runner = '''import pyimcore
-from pytransform import exec_file
-exec_file('%s')
-'''
-
-trial_info = '''
-You're using trail version. Free trial version never expires,
-the limitations are
-
-- The maximum size of code object is 35728 bytes in trial version
-- The scripts obfuscated by trial version are not private. It means
-  anyone could generate the license file which works for these
-  obfuscated scripts.
-
-A registration code is required to obfuscate big code object or
-generate private obfuscated scripts.
-
-If PyArmor is helpful for you, please purchase one by visiting
-
-  https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
-
-If you have received a registration code, run the following command to
-make it effective::
-
-  pyarmor register REGISTRATION_CODE
-
-Enjoy it!
-
-'''
-
-help_footer = '''
-For more information, refer to http://pyarmor.dashingsoft.com
-'''
-
-download_url = 'https://pyarmor.dashingsoft.com/downloads/platforms'
-support_platforms = [
-    (
-        ('win32', 'win32'),
-        ('win_amd64', 'win_amd64'),
-        ('manylinux1_i686', 'linux_i386'),
-        ('manylinux1_x86_64', 'linux_x86_64'),
-        ('macosx_10_11_x86_64', 'macosx_x86_64'),
-    ),
-    (
-        ('linux_ppc64', 'ppc64le'),
-        ('linux_armv5', 'armv5'),
-        ('linux_armv7', 'armv7'),
-        ('linux_aarch32', 'armv8.32-bit'),
-        ('linux_aarch64', 'armv8.64-bit'),
-        ('linux.musl_x86_64', 'alpine'),
-        ('ios_arm64', 'ios.arm64'),
-        ('freebsd_x86_64', 'freebsd'),
-    )
-]

@@ -42,8 +42,7 @@ from io import StringIO
 from json import dump as json_dump, load as json_load
 
 from config import config_filename, capsule_filename, default_output_path, \
-                   default_manifest_template, \
-                   default_obf_module_mode, default_obf_code_mode
+                   default_manifest_template
 
 
 class Project(dict):
@@ -66,8 +65,8 @@ class Project(dict):
         ('capsule', capsule_filename), \
         ('runtime_path', None), \
         ('restrict_mode', 1), \
-        ('obf_module_mode', default_obf_module_mode), \
-        ('obf_code_mode', default_obf_code_mode), \
+        ('obf_module_mode', 'des'), \
+        ('obf_code_mode', 'des'), \
         ('obf_code', 1), \
         ('obf_mod', 1), \
         ('wrap_mode', 1), \
