@@ -39,12 +39,14 @@ Contents
 
    It returns a dict with keys:
 
-   * expired: how many days left for this licenses, ``-1`` means no time limitation
+   * expired: Expired date
    * IFMAC: mac address bind to this license
    * HARDDISK: serial number of harddisk bind to this license
    * IPV4: ipv4 address bind to this license
    * DATA: any data stored in this licese, used by extending license type
    * CODE: registration code of this license
+
+   The value `None` means no this key in the license.
 
    Raise :exc:`PytransformError` if license is invalid, for example,
    it has been expired.

@@ -101,14 +101,14 @@ def show_hd_info():
 
 def get_license_info():
     info = {
-        'expired': -1,
+        'expired': None,
         'restrict_mode': True,
         'HARDDISK': None,
         'IFMAC': None,
         'IFIPV4': None,
         'DOMAIN': None,
         'DATA': None,
-        'CODE': '',
+        'CODE': None,
     }
     try:
         rcode = get_registration_code().decode()
