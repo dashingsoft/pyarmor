@@ -624,7 +624,12 @@ def _hdinfo(args):
 def _register(args):
     '''Make registration keyfile work.'''
     if args.filename is None:
-        print(_version_info(verbose=1))
+        msg = _version_info(verbose=1)
+        print(msg)
+        if msg.find('Registration Code') > 0:
+            print('Please send request by this email if you would like to '
+                  'change the registration information.')
+            print('Any issue feel free to contact jondy.zhao@gmail.com')
         return
 
     logging.info('Start to register keyfile: %s', args.filename)
