@@ -539,14 +539,8 @@ In order to suppress all normal output of pyarmor, call it with ``--silent``
     from pyarmor.pyarmor import main as call_pyarmor
     call_pyarmor(['--silent', 'obfuscate', '--recursive', '--output', 'dist', 'foo.py'])
 
-In order to raise exception other than call `sys.exit` when pyarmor fails, call
-it with ``--debug``. The disadvantage is that it will print extra debugging
-information in the console.
-
-.. code-block:: python
-
-    from pyarmor.pyarmor import main as call_pyarmor
-    call_pyarmor(['--debug', 'obfuscate', '--recursive', '--output', 'dist', 'foo.py'])
+From v5.7.3, when `pyarmor` called by this way and something is wrong, it will
+raise exception other than call `sys.exit`.
 
 .. customizing protection code:
 

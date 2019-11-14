@@ -1055,7 +1055,7 @@ def main(argv):
         logging.getLogger().setLevel(100)
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
-    else:
+    elif sys.argv[0] == 'pyarmor.py':
         sys.excepthook = excepthook
 
     try:
