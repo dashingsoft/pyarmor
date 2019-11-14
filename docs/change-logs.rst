@@ -3,14 +3,19 @@
 Change Logs
 ===========
 
+.. 5.7.4:
+   
+   Refine error messages so that the users could solve most of problems by the hints, document it here https://pyarmor.readthedocs.io/en/v5.7.3/questions.html#error-message-list
+
 5.7.3
 -----
 * Refine :mod:`pytransform` to handle error message of core library
 * Refine command online help message
-* Refine error messages so that the users could solve most of problems by the hints
-* Sort the scripts as obfuscating to fix some random errors (#143)
+* Sort the scripts being to obfuscated to fix some random errors (#143)
 * Raise exception other than call `sys.exit` if `pyarmor` is called from another Python script directly
-* Change the value to `None` for missing key in the function `get_license_info` of module :mod:`pytransform`
+* In the function `get_license_info` of module :mod:`pytransform`
+      - Change the value to `None` if there is no corresponding information
+      - Change the key name `expired` to upper case `EXPIRED`
 
 5.7.2
 -----

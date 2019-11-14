@@ -288,4 +288,9 @@ If report this error as running command `pyarmor pack`:
    Know Issues
    Misc. Questions
 
+   Error Message List
+       Common Messages
+       Build Messages
+       Runtime Messages
+
 .. include:: _common_definitions.txt
