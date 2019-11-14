@@ -101,8 +101,8 @@ def show_hd_info():
 
 def get_license_info():
     info = {
-        'expired': None,
         'restrict_mode': True,
+        'EXPIRED': None,
         'HARDDISK': None,
         'IFMAC': None,
         'IFIPV4': None,
@@ -118,7 +118,7 @@ def get_license_info():
     if rcode.startswith('*TIME:'):
         from time import ctime
         index = rcode.find('\n')
-        info['expired'] = ctime(float(rcode[6:index]))
+        info['EXPIRED'] = ctime(float(rcode[6:index]))
         index += 1
 
     if rcode[index:].startswith('*FLAGS:'):
