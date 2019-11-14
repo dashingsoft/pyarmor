@@ -171,8 +171,8 @@ Then register this keyfile in the new version of pyarmor
 
 2. Use new key file.
 
-It's recommanded that you have not issued any customized "license.lic" to your
-customers.
+It's recommanded that you have not yet issued any customized "license.lic" to
+your customers.
 
 Forward the purchased email received from MyCommerce to jondy.zhao@gmail.com,
 and the new key file will be sent to the registration email, no fee for this
