@@ -63,7 +63,7 @@ def arcommand(func):
 
 @arcommand
 def _init(args):
-    '''Create an project to manage the obfuscated scripts.'''
+    '''Create a project to manage the obfuscated scripts.'''
     path = os.path.normpath(args.project)
 
     if args.child is not None:
@@ -617,12 +617,13 @@ def _benchmark(args):
 
 @arcommand
 def _hdinfo(args):
+    print('')
     show_hd_info()
 
 
 @arcommand
 def _register(args):
-    '''Make registration keyfile work.'''
+    '''Make registration keyfile work, or show registration information.'''
     if args.filename is None:
         msg = _version_info(verbose=1)
         print(msg)
@@ -803,7 +804,8 @@ def _parser():
                        help=argparse.SUPPRESS)
     cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
     cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('-O', '--output', help='Output path')
+    cparser.add_argument('-O', '--output',
+                         help='Output path, default is `licenses`')
     cparser.add_argument('--disable-restrict-mode', action='store_true',
                          help='Disable all the restrict modes')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
@@ -865,9 +867,11 @@ def _parser():
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', help=argparse.SUPPRESS)
     cparser.add_argument('--manifest', metavar='TEMPLATE',
-                         help='Manifest template string')
+                         help='Filter the project scritps by these manifest '
+                         'template commands')
     cparser.add_argument('--entry', metavar='SCRIPT',
-                         help='Entry script of this project')
+                         help='Entry script of this project, sperated by "," '
+                         'for multiple entry scripts')
     cparser.add_argument('--is-package', type=int, choices=(0, 1))
     cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1),
                          help=argparse.SUPPRESS)
@@ -880,13 +884,18 @@ def _parser():
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2))
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
-    cparser.add_argument('--cross-protection', type=int, choices=(0, 1))
-    cparser.add_argument('--runtime-path', metavar="RPATH")
+    cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
+                         help='Insert cross protection code to entry script '
+                         'or not')
+    cparser.add_argument('--runtime-path', metavar="RPATH",
+                         help='The path to search dynamic library in runtime, '
+                         'if it is not within the runtime package')
     cparser.add_argument('--plugin', dest='plugins', metavar='NAME',
                          action='append',
                          help='Insert extra code to entry script, '
                          'it could be used multiple times')
-    cparser.add_argument('--advanced-mode', type=int, choices=(0, 1))
+    cparser.add_argument('--advanced-mode', type=int, choices=(0, 1),
+                         help='Enable or disable advanced mode')
     cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_config)
@@ -901,11 +910,12 @@ def _parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Obfuscate all the scripts in the project')
     cparser.add_argument('project', nargs='?', metavar='PATH', default='',
-                         help='Project path')
+                         help='Project path, or project configuratioin file')
     cparser.add_argument('-B', '--force', action='store_true',
-                         help='Force to obfuscate all scripts')
+                         help='Force to obfuscate all scripts, otherwise '
+                         'only obfuscate the changed scripts since last build')
     cparser.add_argument('-r', '--only-runtime', action='store_true',
-                         help='Generate extra runtime files only')
+                         help='Generate runtime files only')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate runtime files')
     cparser.add_argument('-O', '--output',
@@ -1008,12 +1018,13 @@ def _parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Download platform-dependent dynamic libraries')
     cparser.add_argument('-O', '--output', metavar='PATH',
-                         help='Save library to this path, default is `PLAT`')
+                         help='Save downloaded library to this path, '
+                         'default is `PLAT-ID`')
     cparser.add_argument('--url', help='Download from this mirror site')
     group = cparser.add_mutually_exclusive_group()
     group.add_argument('--list', nargs='?', const='', dest='pattern',
                        help='List all the available platforms')
-    group.add_argument('platid', nargs='?', metavar='PLAT',
+    group.add_argument('platid', nargs='?', metavar='PLAT-ID',
                        help='Download dynamic library of this platform')
     cparser.set_defaults(func=_download)
 
