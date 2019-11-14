@@ -27,6 +27,8 @@
 #
 from distutils.filelist import FileList
 from distutils.text_file import TextFile
+from distutils.util import get_platform
+
 import fnmatch
 import getopt
 import glob
@@ -44,7 +46,7 @@ try:
 except Exception:
     from binascii import a2b_hex as unhexlify
 
-from config import (version, version_info, plat_name, dll_ext, dll_name)
+from config import (version, version_info, dll_ext, dll_name)
 
 # Extra suffix char for encrypted python scripts
 ext_char = 'e'
@@ -82,6 +84,17 @@ Enjoy it!
 help_footer = '''
 For more information, refer to http://pyarmor.dashingsoft.com
 '''
+
+# The last three components of the filename before the extension are
+# called "compatibility tags." The compatibility tags express the
+# package's basic interpreter requirements and are detailed in PEP
+# 425(https://www.python.org/dev/peps/pep-0425).
+plat_name = get_platform().split('-')
+plat_name = '_'.join(plat_name if len(plat_name) < 3 else plat_name[0:3:2])
+plat_name = plat_name.replace('i586', 'i386') \
+                     .replace('i686', 'i386') \
+                     .replace('armv7l', 'armv7') \
+                     .replace('intel', 'x86_64')
 
 def _import_pytransform():
     try:

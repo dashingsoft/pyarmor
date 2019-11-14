@@ -28,6 +28,7 @@ import logging
 import os
 import re
 import shutil
+import struct
 import sys
 import tempfile
 from codecs import BOM_UTF8
@@ -460,7 +461,7 @@ def make_protect_pytransform(template=None, filename=None, rpath=None):
     with open(filename, 'rb') as f:
         buf = f.read(size)
     fmt = 'I' * n
-    cosum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
+    cosum = sum(struct.unpack(fmt, buf)) & 0xFFFFFFFF
 
     with open(template) as f:
         buf = f.read()

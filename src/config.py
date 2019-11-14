@@ -1,4 +1,4 @@
-from distutils.util import get_platform
+from sys import platform
 
 version = '5.7.3'
 
@@ -20,20 +20,10 @@ https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
 '''
 
-# The last three components of the filename before the extension are
-# called "compatibility tags." The compatibility tags express the
-# package's basic interpreter requirements and are detailed in PEP
-# 425(https://www.python.org/dev/peps/pep-0425).
-plat_name = get_platform().split('-')
-plat_name = '_'.join(plat_name if len(plat_name) < 3 else plat_name[0:3:2])
-plat_name = plat_name.replace('i586', 'i386') \
-                     .replace('i686', 'i386') \
-                     .replace('armv7l', 'armv7') \
-                     .replace('intel', 'x86_64')
-dll_ext = '.so' if plat_name.startswith('linux') else \
-          '.dylib' if plat_name.startswith('macosx') else \
-          '.dll'
 dll_name = '_pytransform'
+dll_ext = '.dylib' if platform == 'darwin' \
+    else '.dll' if platform in ('win32', 'cygwin') else '.so'
+
 
 entry_lines = 'from %spytransform import pyarmor_runtime\n', \
               'pyarmor_runtime(%s)\n'
