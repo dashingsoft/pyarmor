@@ -8,6 +8,9 @@ Change Logs
 * Refine :mod:`pytransform` to handle error message of core library
 * Refine command online help message
 * Refine error messages so that the users could solve most of problems by the hints
+* Sort the scripts as obfuscating to fix some random errors (#143)
+* Raise exception other than call `sys.exit` if `pyarmor` is called from another Python script directly
+* Change the value to `None` for missing key in the function `get_license_info` of module :mod:`pytransform`
 
 5.7.2
 -----
