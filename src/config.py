@@ -49,7 +49,8 @@ default_obf_module_mode = 'des'
 default_obf_code_mode = 'des'
 
 platform_urls = [
-    'https://github.com/dashingsoft/pyarmor-core/raw/v%s/platforms' % core_version,
+    'https://github.com/dashingsoft/pyarmor-core/raw/%s/platforms' %
+    core_version,
     'https://pyarmor.dashingsoft.com/downloads/latest'
     ]
 platform_config = 'index.json'
