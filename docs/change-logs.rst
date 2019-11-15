@@ -3,10 +3,14 @@
 Change Logs
 ===========
 
-.. 5.7.4:
+.. 5.7.5:
 
    Refine error messages so that the users could solve most of problems by the hints, document it here https://pyarmor.readthedocs.io/en/v5.7.3/questions.html#error-message-list
 
+5.7.4
+-----
+* Fix issue: command `obfuscate` fails if the option `--src` is specifed
+   
 5.7.3
 -----
 * Refine :mod:`pytransform` to handle error message of core library
