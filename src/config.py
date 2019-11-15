@@ -21,7 +21,6 @@ https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 '''
 
 platform_path = 'platforms'
-cross_platform_path = '~/.pyarmor/' + platform_path
 
 dll_name = '_pytransform'
 dll_ext = '.dylib' if platform == 'darwin' \

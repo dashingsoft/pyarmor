@@ -49,7 +49,8 @@ from utils import PYARMOR_PATH, make_capsule, make_runtime, relpath, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, search_plugins, \
                   get_product_key, register_keyfile, query_keyinfo, \
-                  get_platform_list, download_pytransform, check_cross_platform
+                  get_platform_list, download_pytransform, \
+                  check_cross_platform, compatible_platform_names
 
 import packer
 
@@ -199,6 +200,7 @@ def _build(args):
     logging.info('Output path is: %s', output)
 
     platforms = args.platforms if args.platforms else project.get('platform')
+    platforms = compatible_platform_names(platforms)
     if platforms:
         logging.info('Taget platforms: %s', platforms)
         check_cross_platform(platforms)
@@ -435,7 +437,10 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project.'''
-    check_cross_platform(args.platform)
+    platforms = compatible_platform_names(args.platforms)
+    if platforms:
+        logging.info('Target platforms: %s', platforms)
+        check_cross_platform(platforms)
 
     for x in ('entry', 'cross-protection'):
         if getattr(args, x.replace('-', '_')) is not None:
@@ -511,8 +516,6 @@ def _obfuscate(args):
     logging.info('Obfuscate scripts with default mode')
     cross_protection = 0 if args.no_cross_protection else \
         1 if args.cross_protection is None else args.cross_protection
-    if args.platforms:
-        logging.info('Target platforms: %s', args.platforms)
 
     advanced = 1 if args.advanced else 0
     logging.info('Advanced mode is %d', advanced)
@@ -536,7 +539,7 @@ def _obfuscate(args):
 
         vmode = advanced | (8 if is_entry else 0)
         encrypt_script(prokey, a, b, adv_mode=vmode, rest_mode=restrict,
-                       protection=protection, platforms=args.platforms,
+                       protection=protection, platforms=platforms,
                        plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
@@ -553,7 +556,7 @@ def _obfuscate(args):
         logging.info('Obfuscate %d scripts OK.', len(files))
         return
 
-    make_runtime(capsule, output, platforms=args.platforms,
+    make_runtime(capsule, output, platforms=platforms,
                  package=args.package_runtime)
 
     logging.info('Obfuscate scripts with restrict mode %s',
@@ -687,7 +690,7 @@ def _runtime(args):
     capsule = DEFAULT_CAPSULE
     output = args.output
     package = not args.no_package
-    platforms = args.platforms
+    platforms = compatible_platform_names(args.platforms)
     make_runtime(capsule, output, licfile=args.with_license,
                  platforms=platforms, package=package)
 

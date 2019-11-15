@@ -45,10 +45,12 @@ except ImportError:
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
                    platform_urls, platform_config, key_url, version, \
-                   platform_path, cross_platform_path
+                   platform_path
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
+
 pytransform.plat_path = platform_path
+cross_platform_path = os.path.join('~', '.pyarmor', platform_path)
 
 
 def _format_platid(platid=None):
@@ -753,12 +755,20 @@ def register_keyfile(filename):
         f.close()
 
 
+def relpath(path, start=os.curdir):
+    try:
+        return os.path.relpath(path, start)
+    except Exception:
+        return path
+
+
 def check_cross_platform(platforms):
     if os.getenv('PYARMOR_PLATFORM'):
         return
     for name in platforms:
-        if name in ('armv5', 'android.aarch64', 'ppc64le', 'ios.arm64',
-                    'freebsd', 'alpine', 'alpine.arm', 'poky-i586'):
+        if name in ('linux.arm', 'android.aarch64', 'linux.ppc64',
+                    'darwin.arm64', 'freebsd.x86_64', 'alpine.x86_64',
+                    'alpine.arm', 'poky.x86'):
             logging.info('===========================================')
             logging.info('Reboot PyArmor to obfuscate the scripts for '
                          'platform %s', name)
@@ -769,15 +779,11 @@ def check_cross_platform(platforms):
         sys.exit(p.returncode)
 
 
-def relpath(path, start=os.curdir):
-    try:
-        return os.path.relpath(path, start)
-    except Exception:
-        return path
-
-
-def check_platform_name(name):
+def compatible_platform_names(platforms):
     '''Only for compatibility, it will be removed in next major version.'''
+    if not platforms:
+        return platforms
+
     platnames = {
         'armv5': 'linux.arm',
         'ppc64le': 'linux.ppc64',
@@ -786,13 +792,18 @@ def check_platform_name(name):
         'alpine': 'alpine.x86_64',
         'poky-i586': 'poky.x86',
     }
-    if name in platnames:
-        logging.warning('This platform name `%s` has been deprecated, '
-                        'use `%s` instead. Display all standard platform '
-                        'names by `pyarmor download --help-platorm`',
-                        name, platnames[name])
-        return platnames[name]
-    return name
+
+    stdnames = []
+    for name in platforms:
+        if name in platnames:
+            logging.warning('This platform name `%s` has been deprecated, '
+                            'use `%s` instead. Display all standard platform '
+                            'names by `pyarmor download --help-platorm`',
+                            name, platnames[name])
+            stdnames.append(platnames[name])
+        else:
+            stdnames.append(name)
+    return stdnames
 
 
 if __name__ == '__main__':
