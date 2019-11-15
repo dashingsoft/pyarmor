@@ -26,8 +26,8 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are in directory "src"
 cd src/
 
-chmod +x platforms/windows32/_pytransform$DLLEXT
-chmod +x platforms/windows64/_pytransform$DLLEXT
+csih_inform "Add execute permission to dynamic library"
+find ./platforms -name _pytransform.dll -exec chmod +x {} \;
 
 csih_inform "Prepare for packer testing"
 echo ""

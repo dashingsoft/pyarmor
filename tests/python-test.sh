@@ -29,9 +29,9 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 [[ -d src ]] && cd src/
 
 # From pyarmor 4.5.4, platform name is renamed
-csih_inform "Add execute permission to dynamic library"    
-[[ -d platforms/windows32 ]] && chmod +x platforms/windows32/_pytransform.dll
-[[ -d platforms/windows64 ]] && chmod +x platforms/windows64/_pytransform.dll
+# From pyarmor 5.7.5, platform name is changed
+csih_inform "Add execute permission to dynamic library"
+find ./platforms -name _pytransform.dll -exec chmod +x {} \;
 
 csih_inform "Prepare for python features testing at $(pwd)"
 echo ""
@@ -111,7 +111,7 @@ mv ../../lib/test $TESTLIB
 #
 # Python27
 #     Hangup: test_argparse.TestFileTypeR* (win32)
-#     
+#
 NOTESTS="test_argparse test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
 csih_inform "Run obfuscated test scripts without $NOTESTS"
 # (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1

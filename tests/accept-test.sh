@@ -31,11 +31,9 @@ mkdir data && (cd data; tar xzf $datafile)
 cp $capsulefile data/
 
 # From pyarmor 4.5.4, platform name is renamed
-if [[ -d platforms/windows32 ]] ; then
-    csih_inform "Add execute permission to dynamic library"
-    chmod +x platforms/windows32/_pytransform.dll
-    chmod +x platforms/windows64/_pytransform.dll
-fi
+# From pyarmor 5.7.5, platform name is changed
+csih_inform "Add execute permission to dynamic library"
+find ./platforms -name _pytransform.dll -exec chmod +x {} \;
 
 csih_inform "Prepare for function testing"
 echo ""
