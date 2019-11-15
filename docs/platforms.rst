@@ -43,7 +43,7 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * poky.x86
 
 .. list-table:: Table-1. Prebuilt Libraries Distributed with PyArmor
-   :widths: 10 10 20 10 50
+   :widths: 10 10 10 20 10 40
    :name: Prebuilt Libraries Distributed with PyArmor
    :header-rows: 1
 
@@ -86,7 +86,7 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 
 .. list-table:: Table-2. All The Others Prebuilt Libraries For PyArmor
    :name: All The Others Prebuilt Libraries For PyArmor
-   :widths: 10 10 20 10 50
+   :widths: 10 10 10 20 10 40
    :header-rows: 1
 
    * - Name
