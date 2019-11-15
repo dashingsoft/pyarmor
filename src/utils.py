@@ -44,9 +44,19 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_urls, platform_config, key_url, version
+                   platform_urls, platform_config, key_url, version, \
+                   platform_path, cross_platform_path
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
+pytransform.plat_path = platform_path
+
+
+def _format_platid(platid=None):
+    if platid is None:
+        platid = pytransform.format_platform()
+    if os.path.isabs(platid):
+        return os.path.normpath(platid)
+    return platid.replace('\\', '/').replace('/', '.')
 
 
 def pytransform_bootstrap(path=None, capsule=None):
@@ -60,27 +70,31 @@ def pytransform_bootstrap(path=None, capsule=None):
             raise RuntimeError('No write permission for target path')
         shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), licfile)
 
+    libpath = os.path.join(path, platform_path)
     libname = dll_name + dll_ext
-    platname = None
-    if not os.path.exists(os.path.join(path, libname)):
-        libpath = os.path.join(path, 'platforms')
-        platname = os.getenv('PYARMOR_PLATFORM')
-        if platname == 'simple':
-            platid = '%s/simple' % pytransform.format_platname()
-            platname = platid
-        else:
-            platid = pytransform.format_platname(platname)
-        if not os.path.exists(os.path.join(libpath, platid, libname)):
-            download_pytransform(platid)
-            logging.info('Bootstrap OK.\n')
-    logging.debug('Build platform is %s', platname)
-    pytransform.pyarmor_init(platname=platname)
+    platid = pytransform.format_platform()
+    logging.debug('Native platform is %s', platid)
+
+    p = os.getenv('PYARMOR_PLATFORM')
+    if p:
+        logging.info('PYARMOR_PLATFORM is set to %s', p)
+        platid = os.path.normpath(platid)
+        platid = os.path.join(*platid.split('.'))
+
+    if (not os.path.isabs(platid)) and \
+       (not os.path.exists(os.path.join(libpath, platid, libname))):
+        download_pytransform(platid)
+        logging.info('Bootstrap OK.\n')
+
+    logging.debug('Build platform is %s', platid)
+    pytransform.pyarmor_init(platid=platid)
 
     ver = pytransform.version_info()
     logging.debug('The version of _pyransform is %s', ver)
     if ver[0] < 6:
         logging.warning('PyArmor may not work with this dynamic '
                         'library `_pytransform` (reversion < 6)')
+
     if capsule is not None and not os.path.exists(capsule):
         logging.info('Generating public capsule ...')
         make_capsule(capsule)
@@ -104,31 +118,28 @@ def _get_platform_list(urls, platid=None):
         raise RuntimeError('No available site to download library file')
 
     if platid is not None:
-        platid = platid.replace('\\', '/')
-        if platid.find('/') == -1:
-            name, mach = platid, pytransform.platform.machine().lower()
-        else:
-            name, mach = platid.split('/', 1)
-        logging.info('Search library for %s and arch %s', name, mach)
+        logging.info('Search library for plat-id: %s', platid)
 
     logging.info('Loading platforms information')
     cfg = json_loads(f.read().decode())
 
     compatible = cfg.get('compatible', '').split()
     if compatible and compatible[-1] > version:
-        raise RuntimeError('The core library v%s is not compatible with '
+        raise RuntimeError('The core library %s is not compatible with '
                            'PyArmor v%s' % (compatible[-1], version))
     return cfg.get('platforms', []) if platid is None \
         else [x for x in cfg.get('platforms', [])
-              if platid == x['path'] or (
-                      name == x['platname'] and mach in x['machines'])]
+              if (platid is None
+                  or (x['id'].find(platid) > -1)
+                  or (x['path'] == platid))]
 
 
 def get_platform_list():
     return _get_platform_list(platform_urls[:])
 
 
-def download_pytransform(platid, saveas=None, url=None):
+def download_pytransform(platid, output=None, url=None):
+    platid = _format_platid(platid)
     urls = platform_urls[:] if url is None else ([url] + platform_urls)
     plist = _get_platform_list(urls, platid)
     if not plist:
@@ -138,30 +149,34 @@ def download_pytransform(platid, saveas=None, url=None):
     p = plist[0]
     libname = p['filename']
     path = '/'.join([p['path'], libname])
-    logging.info('Found available library %s', path)
-
-    if not os.access(PYARMOR_PATH, os.W_OK):
-        logging.error('Cound not download library file to %s', PYARMOR_PATH)
-        raise RuntimeError('No write permission for target path')
+    logging.info('Found available library %s at %s', p['id'], path)
 
     logging.info('Downloading library file ...')
     res = _get_remote_file(urls, path, timeout=60)
 
-    dest = os.path.join(PYARMOR_PATH, 'platforms',
-                        platid if saveas is None else saveas)
+    if output is None:
+        output = os.path.expanduser(cross_platform_path)
+    elif output == 'PYARMOR':
+        output = os.path.join(PYARMOR_PATH, platform_path)
+        if not os.access(PYARMOR_PATH, os.W_OK):
+            logging.error('Cound not download library file to %s',
+                          PYARMOR_PATH)
+            raise RuntimeError('No write permission for target path')
+
+    dest = os.path.join(output, *platid.split('.'))
     if not os.path.exists(dest):
         logging.info('Create target path: %s', dest)
         os.makedirs(dest)
 
     data = res.read()
     if hashlib.sha256(data).hexdigest() != p['sha256']:
-        raise RuntimeError('Verify downloaded library failed')
+        raise RuntimeError('Verify dynamic library failed')
 
     target = os.path.join(dest, libname)
     logging.info('Writing target file: %s', target)
     with open(target, 'wb') as f:
         f.write(data)
-    logging.info('Download pytransform library file successfully.')
+    logging.info('Download dynamic library file successfully.')
 
 
 def make_capsule(filename):
@@ -304,7 +319,7 @@ def make_runtime(capsule, output, licfile=None, platform=None, package=False):
             libname = dll_name + dll_ext
             libfile = os.path.join(PYARMOR_PATH, libname)
             if not os.path.exists(libfile):
-                pname = pytransform.format_platname()
+                pname = pytransform.format_platform()
                 libpath = os.path.join(PYARMOR_PATH, 'platforms')
                 libfile = os.path.join(libpath, pname, libname)
         logging.info('Copying %s', relpath(libfile))
@@ -402,7 +417,7 @@ def _build_source_keylist(source, code, closure):
     result = []
     flist = ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library',
              'get_registration_code', 'get_expired_days', 'get_hd_info',
-             'get_license_info', 'get_license_code', 'format_platname',
+             'get_license_info', 'get_license_code', 'format_platform',
              'pyarmor_init', 'pyarmor_runtime')
 
     def _make_value(co):
@@ -431,7 +446,7 @@ def _build_pytransform_keylist(mod, code, closure):
     result = []
     flist = ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library',
              'get_registration_code', 'get_expired_days', 'get_hd_info',
-             'get_license_info', 'get_license_code', 'format_platname',
+             'get_license_info', 'get_license_code', 'format_platform',
              'pyarmor_init', 'pyarmor_runtime')
 
     def _make_value(co):
@@ -701,7 +716,7 @@ def check_cross_platform(platname):
         logging.info('Reboot PyArmor to obfuscate the scripts for platform %s',
                      platname)
         logging.info('===========================================')
-        os.putenv('PYARMOR_PLATFORM', 'simple')
+        os.putenv('PYARMOR_PLATFORM', '.'.join(_format_platid(), '0'))
         p = Popen([sys.executable] + sys.argv)
         p.wait()
         sys.exit(p.returncode)

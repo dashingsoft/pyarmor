@@ -1,13 +1,37 @@
+import os
+import platform
+import sys
+
 # Because ctypes is new from Python 2.5, so pytransform doesn't work
 # before Python 2.5
 #
 from ctypes import cdll, c_char, c_char_p, c_int, c_void_p, \
                    pythonapi, py_object, PYFUNCTYPE
+from fnmatch import fnmatch
 
-import os
-import sys
-import platform
-import struct
+#
+# Support Platforms
+#
+plat_path = 'lib'
+
+plat_table = (
+    ('windows', ('windows', 'cygwin-*')),
+    ('darwin', ('darwin', 'ios')),
+    ('linux', ('linux*',)),
+    ('freebsd', ('freebsd*', 'openbsd*')),
+    ('alpine', ('linux*',)),
+    ('android', ('linux*',)),
+    ('poky', ('poky',)),
+    )
+
+arch_table = (
+    ('x86', ('i?86', )),
+    ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
+    ('arm', ('armv5',)),
+    ('armv7', ('armv7l',)),
+    ('aarch32', ('aarch32',)),
+    ('aarch64', ('aarch64', 'arm64'))
+    )
 
 #
 # Hardware type
@@ -101,7 +125,6 @@ def show_hd_info():
 
 def get_license_info():
     info = {
-        'restrict_mode': True,
         'EXPIRED': None,
         'HARDDISK': None,
         'IFMAC': None,
@@ -122,7 +145,7 @@ def get_license_info():
         index += 1
 
     if rcode[index:].startswith('*FLAGS:'):
-        info['restrict_mode'] = False
+        info['FLAGS'] = 1
         index += len('*FLAGS:') + 1
 
     prev = None
@@ -146,20 +169,37 @@ def get_license_code():
     return get_license_info()['CODE']
 
 
-def format_platname(platname=None):
-    if platname is None:
-        plat = platform.system().lower()
-        bitness = struct.calcsize('P'.encode()) * 8
-        platname = '%s%s' % (plat, bitness)
+def format_platform(platid=None):
+    if platid:
+        return os.path.normpath(platid)
+
+    # bitness = struct.calcsize('P'.encode()) * 8
+    plat = platform.system().lower()
     mach = platform.machine().lower()
-    return platname if mach in (
-        'intel', 'x86', 'i386', 'i486', 'i586', 'i686',
-        'x64', 'x86_64', 'amd64'
-        ) else os.path.join(platname, mach)
+
+    for alias, platlist in plat_table:
+        for pat in platlist:
+            if fnmatch(plat, pat):
+                plat = alias
+                break
+    if plat == 'linux':
+        cname, cver = platform.libc_ver()
+        if cname == 'musl':
+            plat = 'alpine'
+        elif cname == 'libc':
+            plat = 'android'
+
+    for alias, archlist in arch_table:
+        for pat in archlist:
+            if fnmatch(mach, pat):
+                mach = alias
+                break
+
+    return os.path.join(plat, mach)
 
 
 # Load _pytransform library
-def _load_library(path=None, is_runtime=0, platname=None):
+def _load_library(path=None, is_runtime=0, platid=None):
     path = os.path.dirname(__file__) if path is None \
         else os.path.normpath(path)
 
@@ -175,13 +215,13 @@ def _load_library(path=None, is_runtime=0, platname=None):
     else:
         raise PytransformError('Platform %s not supported' % plat)
 
-    if not os.path.exists(filename):
-        if is_runtime:
-            raise PytransformError('Could not find "%s"' % filename)
-        libpath = os.path.join(path, 'platforms', format_platname(platname))
+    if platid is not None or not os.path.exists(filename):
+        libpath = platid if platid is not None and os.path.isabs(platid) else \
+            os.path.join(path, plat_path, format_platform(platid))
         filename = os.path.join(libpath, os.path.basename(filename))
-        if not os.path.exists(filename):
-            raise PytransformError('Could not find "%s"' % filename)
+
+    if not os.path.exists(filename):
+        raise PytransformError('Could not find "%s"' % filename)
 
     try:
         m = cdll.LoadLibrary(filename)
@@ -208,16 +248,16 @@ def _load_library(path=None, is_runtime=0, platname=None):
     return m
 
 
-def pyarmor_init(path=None, is_runtime=0, platname=None):
+def pyarmor_init(path=None, is_runtime=0, platid=None):
     global _pytransform
-    _pytransform = _load_library(path, is_runtime, platname)
+    _pytransform = _load_library(path, is_runtime, platid)
     return init_pytransform()
 
 
 def pyarmor_runtime(path=None):
     try:
-        if pyarmor_init(path, is_runtime=1) == 0:
-            init_runtime()
+        pyarmor_init(path, is_runtime=1)
+        init_runtime()
     except PytransformError as e:
         print(e)
         sys.exit(1)

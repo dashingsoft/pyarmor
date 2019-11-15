@@ -643,25 +643,42 @@ def _register(args):
 def _download(args):
     '''List and download platform-dependent dynamic libraries.'''
     if args.platid:
-        logging.info('Download dynamic library for %s', args.platid)
-        download_pytransform(args.platid, saveas=args.output, url=args.url)
+        for platid in args.platid:
+            logging.info('Downloading dynamic library: %s', platid)
+            download_pytransform(platid, output=args.output, url=args.url)
 
     else:
         lines = []
         plist = get_platform_list()
-        pat = None if args.pattern is None else args.pattern.lower()
+        patterns = args.pattern.split('.') if args.pattern else []
+        if patterns:
+            logging.info('Search the available libraries for %s:', patterns)
+        else:
+            logging.info('All the available libraries:')
+        if not args.verbose:
+            logging.info('Use -v to display information in details')
+
+        def match_platform(item):
+            for pat in patterns:
+                if ((item['id'].find(pat) == -1)
+                    and (pat != item['platform'])
+                    and (pat not in item['machines'])
+                    and (pat not in item['features'])):
+                    return False
+            return True
+
         for p in plist:
-            if pat and pat not in p['platname'] \
-               and pat not in ' '.join(p['machines']) \
-               and pat not in ' '.join(p['features']).lower():
+            if not match_platform(p):
                 continue
             lines.append('')
-            lines.append('%16s: %s' % ('id', p['path']))
-            lines.append('%16s: %s' % ('platname', p['platname']))
+            lines.append('%16s: %s' % ('id', p['id']))
+            lines.append('%16s: %s' % ('platform', ', '.join(p['platform'])))
+            if not args.verbose:
+                continue
             lines.append('%16s: %s' % ('machines', ', '.join(p['machines'])))
             lines.append('%16s: %s' % ('features', ', '.join(p['features'])))
             lines.append('%16s: %s' % ('remark', p['remark']))
-        logging.info('All the available libraries:\n%s', '\n'.join(lines))
+        logging.info('\n%s', '\n'.join(lines))
 
 
 @arcommand
@@ -1017,15 +1034,17 @@ def _parser():
         epilog=_download.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Download platform-dependent dynamic libraries')
+    cparser.add_argument('-v', '--verbose', action='store_true',
+                         help='Display dynamic library information in details')
     cparser.add_argument('-O', '--output', metavar='PATH',
-                         help='Save downloaded library to this path, '
-                         'default is `PLAT-ID`')
+                         help='Save downloaded library to this path, default '
+                         'is `~/.pyarmor/platforms`')
     cparser.add_argument('--url', help='Download from this mirror site')
     group = cparser.add_mutually_exclusive_group()
-    group.add_argument('--list', nargs='?', const='', dest='pattern',
-                       help='List all the available platforms')
-    group.add_argument('platid', nargs='?', metavar='PLAT-ID',
-                       help='Download dynamic library of this platform')
+    group.add_argument('-L', '--list', nargs='?', const='', dest='pattern',
+                       help='List available dynamic libraries')
+    group.add_argument('platid', nargs=1, metavar='PLAT-ID',
+                       help='Download dynamic library by plat-id')
     cparser.set_defaults(func=_download)
 
     #

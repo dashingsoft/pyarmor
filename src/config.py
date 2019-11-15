@@ -1,6 +1,6 @@
 from sys import platform
 
-version = '5.7.3'
+version = '5.7.4'
 
 # The corresponding version of _pytransform.so
 core_version = 'r6.0'
@@ -19,6 +19,9 @@ If there is no registration code yet, please purchase one by visiting
 https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
 '''
+
+platform_path = 'platforms'
+cross_platform_path = '~/.pyarmor/' + platform_path
 
 dll_name = '_pytransform'
 dll_ext = '.dylib' if platform == 'darwin' \
