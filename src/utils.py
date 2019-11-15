@@ -75,7 +75,7 @@ def pytransform_bootstrap(path=None, capsule=None):
     libpath = os.path.join(path, platform_path)
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
-    logging.debug('Native platform is %s', platid)
+    logging.debug('Native platform is %s', _format_platid(platid))
 
     p = os.getenv('PYARMOR_PLATFORM')
     if p:
@@ -87,7 +87,7 @@ def pytransform_bootstrap(path=None, capsule=None):
         path = os.path.abspath(os.path.join(libpath, platid))
         download_pytransform(platid, path, alias='', maxfiles=1)
 
-    logging.debug('Build platform is %s', platid)
+    logging.debug('Build platform is %s', _format_platid(platid))
     pytransform.pyarmor_init(platid=platid)
     logging.debug('Loaded dynamic library: %s', pytransform._pytransform._name)
 
@@ -100,8 +100,6 @@ def pytransform_bootstrap(path=None, capsule=None):
     if capsule is not None and not os.path.exists(capsule):
         logging.info('Generating public capsule ...')
         make_capsule(capsule)
-
-    logging.info('Bootstrap OK.\n')
 
 
 def _get_remote_file(urls, path, timeout=3.0):
