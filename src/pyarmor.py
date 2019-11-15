@@ -652,7 +652,10 @@ def _download(args):
         if patterns:
             logging.info('Search the available libraries for %s:', patterns)
         else:
-            logging.info('All the available libraries:')
+            if args.pattern is None:
+                args.help_platform = True
+            else:
+                logging.info('All the available libraries:')
         if args.help_platform:
             # logging.info('Current platform name: %s')
             logging.info('All available standard platform names:')
@@ -668,7 +671,7 @@ def _download(args):
 
         for p in plist:
             if args.help_platform:
-                pname = p['id'].rsplit('.', 1)[0]
+                pname = '\t ' + p['name']
                 if pname not in lines:
                     lines.append(pname)
                 continue
@@ -677,7 +680,7 @@ def _download(args):
                 continue
             lines.append('')
             lines.append('%16s: %s' % ('id', p['id']))
-            lines.append('%16s: %s' % ('platform', ', '.join(p['platform'])))
+            lines.append('%16s: %s' % ('name', p['name']))
             lines.append('%16s: %s' % ('machines', ', '.join(p['machines'])))
             lines.append('%16s: %s' % ('features', ', '.join(p['features'])))
             lines.append('%16s: %s' % ('remark', p['remark']))
@@ -1044,13 +1047,14 @@ def _parser():
     cparser.add_argument('-O', '--output', metavar='PATH',
                          help='Save downloaded library to this path, default '
                          'is `~/.pyarmor/platforms`')
-    cparser.add_argument('--url', help='Download from this mirror site')
+    cparser.add_argument('--url', help='Set download mirror site')
     group = cparser.add_mutually_exclusive_group()
     group.add_argument('--help-platform', action='store_true',
                        help='Display all available platform names')
-    group.add_argument('-L', '--list', nargs='?', const='', dest='pattern',
+    group.add_argument('-L', '--list', nargs='?', const='',
+                       dest='pattern', metavar='FILTER',
                        help='List available dynamic libraries')
-    group.add_argument('platnames', nargs='+', metavar='NAME',
+    group.add_argument('platnames', nargs='?', metavar='NAME',
                        help='Download dynamic library for this platform')
     cparser.set_defaults(func=_download)
 
@@ -1072,7 +1076,6 @@ def _parser():
                          action='append',
                          help='Generate runtime package for this platform, '
                          'use this option multiple times for more platforms')
-    cparser.add_argument('--platform', help='')
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
