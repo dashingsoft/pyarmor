@@ -331,6 +331,14 @@ $PYARMOR runtime > result.log 2>&1
 check_return_value
 check_file_exists dist/pytransform/__init__.py
 
+csih_inform "C-26. Test command obfuscation with --src"
+$PYARMOR obfuscate -r --src examples/testpkg -O test-src-path \
+         mypkg/foo.py > result.log 2>&1
+check_return_value
+check_file_exists test-src-path/main.py
+check_file_exists test-src-path/mypkg/foo.py
+check_file_exists test-src-path/mypkg/__init__.py
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
