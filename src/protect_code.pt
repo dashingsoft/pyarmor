@@ -43,7 +43,7 @@ def protect_pytransform():
             buf = f.read(size)
         fmt = 'I' * n
         checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
-        if not checksum == {checksum}:
+        if checksum not in {checksum}:
             raise RuntimeError('unexpected %s' % filename)
     try:
         check_obfuscated_script()

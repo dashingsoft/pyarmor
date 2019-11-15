@@ -198,10 +198,10 @@ def _build(args):
         if args.output is None else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
 
-    platform = args.platform if args.platform else project.get('platform')
-    if platform:
-        logging.info('Taget platform is: %s', platform)
-        check_cross_platform(platform)
+    platforms = args.platforms if args.platforms else project.get('platform')
+    if platforms:
+        logging.info('Taget platforms: %s', platforms)
+        check_cross_platform(platforms)
 
     restrict = project.get('restrict_mode',
                            0 if project.get('disable_restrict_mode') else 1)
@@ -258,11 +258,6 @@ def _build(args):
                    for s in project.entry.split(',')] if project.entry else []
         protection = project.cross_protection \
             if hasattr(project, 'cross_protection') else 1
-        if platform:
-            if protection == 1:
-                protection = platform
-            elif not isinstance(protection, int):
-                protection = ','.join([protection, platform])
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -272,20 +267,23 @@ def _build(args):
             if not os.path.exists(d):
                 os.makedirs(d)
 
+            if hasattr(project, 'plugins'):
+                plugins = search_plugins(project.plugins)
+            else:
+                plugins = None
+
             if entries and (os.path.abspath(a) in entries):
                 vmode = adv_mode | 8
                 pcode = protection
-                if hasattr(project, 'plugins'):
-                    plugins = search_plugins(project.plugins)
             else:
                 vmode = adv_mode
                 pcode = 0
-                plugins = None
 
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
                            wrap_mode=wrap_mode, adv_mode=vmode,
                            rest_mode=restrict, protection=pcode,
-                           plugins=plugins, rpath=project.runtime_path)
+                           platforms=platforms, plugins=plugins,
+                           rpath=project.runtime_path)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
@@ -310,7 +308,7 @@ def _build(args):
 
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
-        make_runtime(capsule, routput, platform=platform, package=package)
+        make_runtime(capsule, routput, platforms=platforms, package=package)
 
         if not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
@@ -453,7 +451,7 @@ def _obfuscate(args):
                 raise RuntimeError('Only one path is allowed')
             args.scripts = []
     else:
-        for s in args.scrips:
+        for s in args.scripts:
             if not s.lower().endswith('.py'):
                 raise RuntimeError('Only one path is allowed')
         path = os.path.abspath(args.src)
@@ -513,12 +511,8 @@ def _obfuscate(args):
     logging.info('Obfuscate scripts with default mode')
     cross_protection = 0 if args.no_cross_protection else \
         1 if args.cross_protection is None else args.cross_protection
-    if args.platform:
-        logging.info('Target platform is %s', args.platform)
-        if cross_protection == 1:
-            cross_protection = args.platform
-        elif isinstance(cross_protection, str):
-            cross_protection = ','.join([cross_protection, args.platform])
+    if args.platforms:
+        logging.info('Target platforms: %s', args.platforms)
 
     advanced = 1 if args.advanced else 0
     logging.info('Advanced mode is %d', advanced)
@@ -534,7 +528,7 @@ def _obfuscate(args):
         logging.info('\t%s -> %s', x, b)
         is_entry = entry and (os.path.abspath(a) == os.path.abspath(entry))
         protection = is_entry and cross_protection
-        plugins = protection and search_plugins(args.plugins)
+        plugins = search_plugins(args.plugins)
 
         d = os.path.dirname(b)
         if not os.path.exists(d):
@@ -542,7 +536,8 @@ def _obfuscate(args):
 
         vmode = advanced | (8 if is_entry else 0)
         encrypt_script(prokey, a, b, adv_mode=vmode, rest_mode=restrict,
-                       protection=protection, plugins=plugins)
+                       protection=protection, platforms=args.platforms,
+                       plugins=plugins)
     logging.info('%d scripts have been obfuscated', len(files))
 
     if (not args.no_bootstrap) and entry and os.path.exists(entry):
@@ -558,7 +553,7 @@ def _obfuscate(args):
         logging.info('Obfuscate %d scripts OK.', len(files))
         return
 
-    make_runtime(capsule, output, platform=args.platform,
+    make_runtime(capsule, output, platforms=args.platforms,
                  package=args.package_runtime)
 
     logging.info('Obfuscate scripts with restrict mode %s',
@@ -642,10 +637,10 @@ def _register(args):
 @arcommand
 def _download(args):
     '''List and download platform-dependent dynamic libraries.'''
-    if args.platid:
-        for platid in args.platid:
-            logging.info('Downloading dynamic library: %s', platid)
-            download_pytransform(platid, output=args.output, url=args.url)
+    if args.platnames:
+        for name in args.platnames:
+            logging.info('Downloading dynamic library: %s', name)
+            download_pytransform(name, args.output, url=args.url)
 
     else:
         lines = []
@@ -655,8 +650,9 @@ def _download(args):
             logging.info('Search the available libraries for %s:', patterns)
         else:
             logging.info('All the available libraries:')
-        if not args.verbose:
-            logging.info('Use -v to display information in details')
+        if args.help_platform:
+            # logging.info('Current platform name: %s')
+            logging.info('All available standard platform names:')
 
         def match_platform(item):
             for pat in patterns:
@@ -668,13 +664,17 @@ def _download(args):
             return True
 
         for p in plist:
+            if args.help_platform:
+                pname = p['id'].rsplit('.', 1)[0]
+                if pname not in lines:
+                    lines.append(pname)
+                continue
+
             if not match_platform(p):
                 continue
             lines.append('')
             lines.append('%16s: %s' % ('id', p['id']))
             lines.append('%16s: %s' % ('platform', ', '.join(p['platform'])))
-            if not args.verbose:
-                continue
             lines.append('%16s: %s' % ('machines', ', '.join(p['machines'])))
             lines.append('%16s: %s' % ('features', ', '.join(p['features'])))
             lines.append('%16s: %s' % ('remark', p['remark']))
@@ -687,9 +687,9 @@ def _runtime(args):
     capsule = DEFAULT_CAPSULE
     output = args.output
     package = not args.no_package
-    platform = args.platform
-    make_runtime(capsule, output, licfile=args.with_license, platform=platform,
-                 package=package)
+    platforms = args.platforms
+    make_runtime(capsule, output, licfile=args.with_license,
+                 platforms=platforms, package=package)
 
 
 def _version_action():
@@ -778,8 +778,10 @@ def _parser():
     cparser.add_argument('--restrict', type=int, choices=range(5),
                          default=1, help='Set restrict mode')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('--platform', metavar='PLAT-ID',
-                         help='Target platform to run obfuscated scripts')
+    cparser.add_argument('--platform', dest='platforms', metavar='NAME',
+                         action='append',
+                         help='Target platform to run obfuscated scripts, '
+                         'use this option multiple times for more platforms')
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
@@ -937,8 +939,10 @@ def _parser():
                          help='DO NOT generate runtime files')
     cparser.add_argument('-O', '--output',
                          help='Output path, override project configuration')
-    cparser.add_argument('--platform', metavar='PLAT-ID',
-                         help='Target platform to run obfuscated scripts')
+    cparser.add_argument('--platform', dest='platforms', metavar='NAME',
+                         action='append',
+                         help='Target platform to run obfuscated scripts, '
+                         'use this option multiple times for more platforms')
     cparser.add_argument('--package-runtime', choices=(0, 1, 2), type=int,
                          help='Save runtime files as a package or not')
     cparser.set_defaults(func=_build)
@@ -1034,17 +1038,17 @@ def _parser():
         epilog=_download.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Download platform-dependent dynamic libraries')
-    cparser.add_argument('-v', '--verbose', action='store_true',
-                         help='Display dynamic library information in details')
     cparser.add_argument('-O', '--output', metavar='PATH',
                          help='Save downloaded library to this path, default '
                          'is `~/.pyarmor/platforms`')
     cparser.add_argument('--url', help='Download from this mirror site')
     group = cparser.add_mutually_exclusive_group()
+    group.add_argument('--help-platform', action='store_true',
+                       help='Display all available platform names')
     group.add_argument('-L', '--list', nargs='?', const='', dest='pattern',
                        help='List available dynamic libraries')
-    group.add_argument('platid', nargs=1, metavar='PLAT-ID',
-                       help='Download dynamic library by plat-id')
+    group.add_argument('platnames', nargs='+', metavar='NAME',
+                       help='Download dynamic library for this platform')
     cparser.set_defaults(func=_download)
 
     #
@@ -1061,8 +1065,11 @@ def _parser():
                          help='Generate runtime files without package')
     cparser.add_argument('-L', '--with-license', metavar='FILE',
                          help='Replace default license with this file')
-    cparser.add_argument('--platform', help='Generate runtime package '
-                         'for specified platform')
+    cparser.add_argument('--platform', dest='platforms', metavar='NAME',
+                         action='append',
+                         help='Generate runtime package for this platform, '
+                         'use this option multiple times for more platforms')
+    cparser.add_argument('--platform', help='')
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
