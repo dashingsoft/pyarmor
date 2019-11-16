@@ -643,7 +643,7 @@ def _download(args):
     if args.platnames:
         for name in args.platnames:
             logging.info('Downloading dynamic library: %s', name)
-            download_pytransform(name, args.output, url=args.url)
+            download_pytransform(name, output=args.output, url=args.url)
 
     else:
         lines = []

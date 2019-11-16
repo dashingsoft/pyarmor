@@ -61,9 +61,19 @@ def _format_platid(platid=None):
     return platid.replace('\\', '/').replace('/', '.')
 
 
+def _search_downloaded_files(path, platid, libname):
+    libpath = os.path.join(path, platid)
+    if os.path.exists(libpath):
+        for x in os.listdir(libpath):
+            if os.path.exists(libpath, x, libname):
+                return os.path.join(platid, x)
+
+
 def pytransform_bootstrap(path=None, capsule=None):
     logging.debug('PyArmor install path: %s', PYARMOR_PATH)
     path = PYARMOR_PATH if path is None else path
+    if path is not None:
+        logging.debug('Bootstrap path: %s', path)
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
         if not os.access(path, os.W_OK):
@@ -73,32 +83,32 @@ def pytransform_bootstrap(path=None, capsule=None):
             raise RuntimeError('No write permission for target path')
         shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), licfile)
 
-    libpath = os.path.join(path, platform_path)
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
+    logging.debug('Native platform is %s', _format_platid(platid))
 
     p = os.getenv('PYARMOR_PLATFORM')
     if p:
         logging.info('PYARMOR_PLATFORM is set to %s', p)
         platid = os.path.join(*os.path.normpath(p).split('.'))
         logging.debug('Build platform is %s', _format_platid(platid))
-        path = os.path.expanduser(cross_platform_path)
-        logging.debug('Search dynamic library in the path: %s',
-                      platid if os.path.isabs(platid)
-                      else os.path.join(path, platid))
-        if (not os.path.isabs(platid)) and \
-           (not os.path.exists(os.path.join(path, platid, libname))):
-            download_pytransform(platid, path, maxfiles=1)
+
+    if os.path.isabs(platid):
+        if not os.path.exists(os.path.join(platid, dll_name)):
+            raise RuntimeError('No dynamic library found at %s', platid)
     else:
-        path = os.path.join(libpath, platid)
-        logging.debug('Native platform is %s', _format_platid(platid))
-        logging.debug('Search dynamic library in the path: %s',
-                      platid if os.path.isabs(platid)
-                      else os.path.join(libpath, platid))
-        if (not os.path.isabs(platid)) and \
-           (not os.path.exists(os.path.join(libpath, platid, libname))):
-            path = os.path.abspath(os.path.join(libpath, platid))
-            download_pytransform(platid, path, alias='', maxfiles=1)
+        libpath = os.path.join(path, platform_path)
+        logging.debug('Search dynamic library in the path: %s', libpath)
+        if not os.path.exists(os.path.join(path, platid, libname)):
+            libpath = os.path.expanduser(cross_platform_path)
+            logging.debug('Search dynamic library in the path: %s', libpath)
+            if not os.path.exists(os.path.join(libpath, platid, libname)):
+                found = _search_downloaded_files(libpath, platid, libname)
+                if found:
+                    logging.debug('Found available dynamic library %s', found)
+                    platid = found
+                else:
+                    platid = download_pytransform(platid, libpath, index=0)[0]
 
     pytransform.pyarmor_init(platid=platid)
     logging.debug('Loaded dynamic library: %s', pytransform._pytransform._name)
@@ -152,7 +162,7 @@ def get_platform_list():
     return _get_platform_list(platform_urls[:])
 
 
-def download_pytransform(platid, output, url=None, alias=None, maxfiles=None):
+def download_pytransform(platid, output=None, url=None, index=None):
     platid = _format_platid(platid)
     urls = platform_urls[:] if url is None else ([url] + platform_urls)
     plist = _get_platform_list(urls, platid)
@@ -160,12 +170,11 @@ def download_pytransform(platid, output, url=None, alias=None, maxfiles=None):
         logging.error('Unsupport platform %s', platid)
         raise RuntimeError('No available library for this platform')
 
-    if maxfiles is not None:
-        plist = plist[:maxfiles]
+    if index is not None:
+        plist = plist[index:index + 1]
 
     if output is None:
         output = os.path.expanduser(cross_platform_path)
-        # output = os.path.join(PYARMOR_PATH, platform_path)
     if not os.access(output, os.W_OK):
         logging.error('Cound not download library file to %s', output)
         raise RuntimeError('No write permission for target path')
@@ -173,13 +182,12 @@ def download_pytransform(platid, output, url=None, alias=None, maxfiles=None):
     for p in plist:
         libname = p['filename']
         path = '/'.join([p['path'], libname])
-        logging.info('Found available library %s at %s', p['id'], path)
+        logging.info('Found available library %s', p['id'])
 
         logging.info('Downloading library file ...')
         res = _get_remote_file(urls, path, timeout=60)
 
-        dest = os.path.join(output,
-                            *platid.split('.') if alias is None else alias)
+        dest = os.path.join(output, *p['id'].split('.'))
         if not os.path.exists(dest):
             logging.info('Create target path: %s', dest)
             os.makedirs(dest)
@@ -193,7 +201,9 @@ def download_pytransform(platid, output, url=None, alias=None, maxfiles=None):
         with open(target, 'wb') as f:
             f.write(data)
 
-    logging.info('Download dynamic library file successfully.')
+        logging.info('Download dynamic library %s OK', p['id'])
+
+    return [p['id'] for p in plist]
 
 
 def make_capsule(filename):
