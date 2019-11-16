@@ -134,7 +134,7 @@ def init_pytransform(m):
 
 @metricmethod
 def load_pytransform():
-    return pytransform._load_library(PYARMOR_PATH)
+    return pytransform._load_library(PYARMOR_PATH, is_runtime=1)
 
 
 @metricmethod
