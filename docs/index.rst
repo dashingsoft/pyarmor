@@ -47,9 +47,9 @@ Contents:
    advanced
    man
    examples
+   platforms
    questions
    license
-   platforms
    change-logs
 
 Indices and tables

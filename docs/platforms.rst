@@ -6,13 +6,35 @@ Support Platfroms
 The core of PyArmor is written by C, the prebuilt dynamic libraries
 include the common platforms and some embeded platforms.
 
-Some of them are distributed with PyArmor package, refer to
+Some of them are distributed with PyArmor source package, in these
+platforms, `pyarmor` could run without downloading anything. Refer to
 `Prebuilt Libraries Distributed with PyArmor`_.
 
-Some of them are not, refer to `All The Others Prebuilt Libraries For
-PyArmor`_. In these platforms, in order to run pyarmor, first
-download the corresponding prebuilt dynamic library, then put it in
-the installed path of PyArmor package.
+For the other platforms, `pyarmor` first searches path
+``PYARMOR_PACKAGE/platforms/SYSTEM/ARCH``, ``SYSTEM.ARCH`` is one of
+`Standard Platform Names`_. If there is none, download it from remote
+server. Refer to `The Others Prebuilt Libraries For PyArmor`_.
+
+In some platforms, `pyarmor` doesn't know it but there is available
+dynamic library in the table `The Others Prebuilt Libraries For
+PyArmor`_. Just download it and save it in the right path, this
+command `pyarmor -d download` will also display this path at the
+beginning. It's appreicated to send this platform information to
+jondy.zhao@gmail.com so that it could be recognized by `pyarmor`
+autmatically. This script will display the required information by
+`pyarmor`:
+
+.. code-block:: python
+
+   from platform import *
+   print('system name: %s' % system())
+   print('machine: %s' % machine())
+   print('processor: %s' % processor())
+   print('aliased terse platform: %s' % platform(aliased=1, terse=1))
+   
+   if system().lower().startswith('linux'):
+       print('libc: %s' % libc_ver())
+       print('distribution: %s' % linux_distribution())
 
 Contact jondy.zhao@gmail.com if you'd like to run PyArmor in other
 platform.
@@ -41,6 +63,9 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * alpine.x86_64
 * alpine.arm
 * poky.x86
+
+Platform Tables
+---------------
 
 .. list-table:: Table-1. Prebuilt Libraries Distributed with PyArmor
    :widths: 10 10 10 20 10 40
@@ -84,8 +109,9 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
      - `_pytransform.dylib <http://pyarmor.dashingsoft.com/downloads/latest/macosx_x86_64/_pytransform.dylib>`_
      - Built by CLang with MacOSX10.11
 
-.. list-table:: Table-2. All The Others Prebuilt Libraries For PyArmor
-   :name: All The Others Prebuilt Libraries For PyArmor
+
+.. list-table:: Table-2. The Others Prebuilt Libraries For PyArmor
+   :name: The Others Prebuilt Libraries For PyArmor
    :widths: 10 10 10 20 10 40
    :header-rows: 1
 

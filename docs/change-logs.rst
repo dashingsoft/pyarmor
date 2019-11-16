@@ -3,14 +3,22 @@
 Change Logs
 ===========
 
-.. 5.7.5:
+5.7.5
+-----
 
-   Refine error messages so that the users could solve most of problems by the hints, document it here https://pyarmor.readthedocs.io/en/v5.7.3/questions.html#error-message-list
+* Standardize platform names, refer to
+* Refine `platforms` folder structure according to new standard platform name
+* In command `obfuscate`, `build`, `runtime`, specify the option `--platform`
+  multiple times, so that the obfuscated scripts could run in these platforms
+
+.. note:
+
+   Refine error messages so that the users could solve most of problems by the hints, document it here
 
 5.7.4
 -----
 * Fix issue: command `obfuscate` fails if the option `--src` is specifed
-   
+
 5.7.3
 -----
 * Refine :mod:`pytransform` to handle error message of core library

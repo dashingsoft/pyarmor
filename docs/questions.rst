@@ -267,6 +267,19 @@ If report this error as running command `pyarmor pack`:
 
     pyarmor pack --clean foo.py
 
+ERROR: Unsupport platform linux.xxx
+-----------------------------------
+
+In some machines `pyarmor` could not recognize the platform and raise
+error. If there is available dynamic library in the table :ref:`The
+Others Prebuilt Libraries For PyArmor`. Just download it and save it
+in the right path, this command `pyarmor -d download` will also
+display this path at the beginning.
+
+If there is no any available one, contact jondy.zhao@gmail.com if
+you'd like to run `pyarmor` in this platform.
+
+
 .. How easy is to recover obfuscated code?:
 
     If someone tries to break the obfuscation, he first must be an
@@ -279,7 +292,7 @@ If report this error as running command `pyarmor pack`:
 
 .. Catalog:
 
-   Commen Problem
+   Bootstrap Problem
    Obfuscating Scripts Problem
    License Of Obfuscated Scripts Problem
    Packing Obfuscated Scripts Problem
@@ -289,7 +302,7 @@ If report this error as running command `pyarmor pack`:
    Misc. Questions
 
    Error Message List
-       Common Messages
+       Bootstrap Messages
        Build Messages
        Runtime Messages
 

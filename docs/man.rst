@@ -112,9 +112,13 @@ here is a real example to show usage of plugin :ref:`Using Plugin to Extend
 License Type`
 
 Option ``--platform`` is used to specify the target platform of obfuscated
-scripts if target platform is different from build platform.
+scripts if target platform is different from build platform. Use this option
+multiple times if the obfuscated scripts are being to run many platforms. From
+v5.7.5, the platform names are standardized, all the available platform names
+list here :ref:`Standard Platform Names`
 
-Option ``--restrict`` is used to set restrict mode, :ref:`Restrict Mode`
+Option ``--restrict`` is used to set restrict mode, :ref:`Restrict
+Mode`
 
 By default the runtime files will be saved in the separated folder ``pytransform``
 as package::
@@ -206,10 +210,10 @@ by using leading dots like this::
 * Obfuscate the scripts in Macos and run obfuscated scripts in
   Ubuntu::
 
-    pyarmor download --list
-    pyarmor download linux_x86_64
+    pyarmor download
+    pyarmor download linux.x86_64
 
-    pyarmor obfuscate --platform linux_x86_64 foo.py
+    pyarmor obfuscate --platform linux.x86_64 foo.py
 
 * Obfuscate the scripts in advanced mode::
 
@@ -565,6 +569,8 @@ Or specify the project path at the end::
 
     pyarmor build /path/to/project
 
+About option ``--platform`` and ``--package-runtime``, refer to command `obfuscate`_
+
 **EXAMPLES**
 
 * Only obfuscate the scripts which have been changed since last
@@ -591,10 +597,10 @@ Or specify the project path at the end::
 
 * Build project in Macos and run obfuscated scripts in Ubuntu::
 
-    pyarmor download --list
-    pyarmor download linux_x86_64
+    pyarmor download
+    pyarmor download linux.x86_64
 
-    pyarmor build -B --platform linux_x86_64
+    pyarmor build -B --platform linux.x86_64
 
 .. _info:
 
@@ -706,37 +712,40 @@ List and download platform-dependent dynamic libraries.
 
 **SYNOPSIS**::
 
-    pyarmor download <options> PLAT-ID
+    pyarmor download <options> NAME
 
 **OPTIONS**:
 
---list PATTERN        List available dynamic libraries in different platforms
--O, --output PATH     Save downloaded library to this path, default is `PLAT-ID`
+--help-platform       Display all available standard platform names
+-L, --list FILTER     List available dynamic libraries in different platforms
+-O, --output PATH     Save downloaded library to this path
 
 **DESCRIPTION**
 
-In some machines maybe PyArmor could not recognize the platform and
-raise error. For example::
+This command mainly used to download available dynamic libraries for cross
+platform.
 
-    ERROR: Unsupport platform linux32/armv7l
+List all available standard platform names. For examples::
 
-In this case, check all the available prebuilt libraries::
+    pyarmor download
+    pyarmor download --help-platform
+
+Then download one from the list. For example::
+
+    pyarmor download linux.armv7
+    pyarmor download linux.x86_64
+
+By default the download file will be saved in the path ``~/.pyarmor/platforms``
+with different platform names.
+
+Option ``--list`` could filter the platform by name, arch, features, and display
+the information in details. For examples::
 
     pyarmor download --list
-
-And download `armv7` from this list::
-
-    pyarmor download --output linux32/armv7l armv7
-
-Filter could be applied to list the platforms, for example::
-
-    pyarmor download --list linux32
-
-If the scripts is obfuscated for other platform, the library of target platform
-need to be downloaded first. For example::
-
-    pyarmor download armv5
-    pyarmor obfuscate --platform armv5 foo.py
+    pyarmor download --list windows
+    pyarmor download --list windows.x86_64
+    pyarmor download --list JIT
+    pyarmor download --list armv7
 
 .. _runtime:
 
@@ -763,6 +772,8 @@ This command is used to generate the runtime package separately.
 The :ref:`runtiem package` could be shared if the scripts are obufscated by same
 :ref:`Global Capsule`. So generate it once, then need not generate the runtime
 files when obfuscating the scripts later.
+
+About option ``--platform``, refer to command `obfuscate`_
 
 **EXAMPLES**
 

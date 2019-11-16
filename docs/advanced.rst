@@ -54,40 +54,54 @@ Check all the output and test these obfuscated packages::
 Distributing Obfuscated Scripts To Other Platform
 -------------------------------------------------
 
-First list all the prebuilt dynamic libraries by command :ref:`download`::
+First list all the avaliable platform names by command :ref:`download`::
+
+    pyarmor download
+    pyarmor download --help-platform
+
+Display the detials with option ``--list`::
 
     pyarmor download --list
+    pyarmor download --list windows
+    pyarmor download --list windows.x86_64
 
-Find the right one for target platform, download it by platform id::
+If the target platform is one of :ref:`Prebuilt Libraries Distributed
+with PyArmor`, it could be used directly. Otherwise download it by
+platform name::
 
-    pyarmor download armv7
+    pyarmor download linux.armv7
 
-Then specify platform id when obfuscating the scripts::
+Then specify platform name when obfuscating the scripts::
 
-    pyarmor obfuscate --platform armv7 foo.py
+    pyarmor obfuscate --platform linux.armv7 foo.py
 
 For project::
 
-    pyarmor build --platform armv7
+    pyarmor build --platform linux.armv7
 
+Obfuscate the scripts for multiple platforms::
+
+    pyarmor obfuscate --platform windows.x86_64 \
+                      --platform linux.x86_64 \
+                      --platform darwin.x86_64 \
+                      foo.py
+
+From v5.7.5, the platform names are standardized, all the available
+platform names list here :ref:`Standard Platform Names`
 
 .. note::
 
-   From v5.6.0 to v5.7.0, there is a bug for cross platform. The scripts
-   obfuscated in linux64/windows64/darwin64 don't work after copied to one of
-   this target platform::
+   After `pyarmor` is upgraded, these downloaded dynamic libraries are
+   still old. If the obfuscated scripts don't work in other platforms,
+   run command :ref:`download` again to download the latest dynami.
+
+.. note::
+
+   From v5.6.0 to v5.7.0, there is a bug for cross platform. The
+   scripts obfuscated in linux64/windows64/darwin64 don't work after
+   copied to one of this target platform::
 
        armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm, poky-i586
-
-   After v5.7.0, if the obfuscated scripts still don't work in these platforms,
-   set environment variable `PYARMOR_PLATFORM` to `simple`, then obfuscate the
-   scripts again::
-
-       PYARMOR_PLATFORM=simple pyarmor obfuscate --platform armv5 foo.py
-
-       # For windows
-       SET PYARMOR_PLATFORM=simple
-       pyarmor obfuscate --platform armv5 foo.py
 
 .. _obfuscating scripts by different python version:
 
@@ -528,7 +542,7 @@ It's also possible to call PyArmor methods inside Python script not by `os.exec`
 or `subprocess.Popen` etc. For example
 
 .. code-block:: python
-                
+
     from pyarmor.pyarmor import main as call_pyarmor
     call_pyarmor(['obfuscate', '--recursive', '--output', 'dist', 'foo.py'])
 
