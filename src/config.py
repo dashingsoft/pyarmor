@@ -20,8 +20,6 @@ https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
 '''
 
-platform_path = 'platforms'
-
 dll_name = '_pytransform'
 dll_ext = '.dylib' if platform == 'darwin' \
     else '.dll' if platform in ('win32', 'cygwin') else '.so'

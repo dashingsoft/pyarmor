@@ -44,13 +44,11 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_urls, platform_config, key_url, version, \
-                   platform_path
+                   platform_urls, platform_config, key_url, version
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
-
-pytransform.plat_path = platform_path
-cross_platform_path = os.path.join('~', '.pyarmor', platform_path)
+PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
+CROSS_PLATFORM_PATH = os.path.expanduser(os.path.join('~', '.pyarmor', pytransform.plat_path))
 
 
 def _format_platid(platid=None):
@@ -69,11 +67,9 @@ def _search_downloaded_files(path, platid, libname):
                 return os.path.join(platid, x)
 
 
-def pytransform_bootstrap(path=None, capsule=None):
-    logging.debug('PyArmor install path: %s', PYARMOR_PATH)
-    path = PYARMOR_PATH if path is None else path
-    if path is not None:
-        logging.debug('Bootstrap path: %s', path)
+def pytransform_bootstrap(capsule=None):
+    logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
+    path = PYARMOR_PATH
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
         if not os.access(path, os.W_OK):
@@ -81,7 +77,7 @@ def pytransform_bootstrap(path=None, capsule=None):
                           'please run pyarmor with sudo for first time',
                           path)
             raise RuntimeError('No write permission for target path')
-        shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), licfile)
+        shutil.copy(os.path.join(path, 'license.tri'), licfile)
 
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
@@ -97,10 +93,10 @@ def pytransform_bootstrap(path=None, capsule=None):
         if not os.path.exists(os.path.join(platid, dll_name)):
             raise RuntimeError('No dynamic library found at %s', platid)
     else:
-        libpath = os.path.join(path, platform_path)
+        libpath = PLATFORM_PATH
         logging.debug('Search dynamic library in the path: %s', libpath)
         if not os.path.exists(os.path.join(libpath, platid, libname)):
-            libpath = os.path.expanduser(cross_platform_path)
+            libpath = CROSS_PLATFORM_PATH
             logging.debug('Search dynamic library in the path: %s', libpath)
             if not os.path.exists(os.path.join(libpath, platid, libname)):
                 found = _search_downloaded_files(libpath, platid, libname)
@@ -174,7 +170,7 @@ def download_pytransform(platid, output=None, url=None, index=None):
         plist = plist[index:index + 1]
 
     if output is None:
-        output = os.path.expanduser(cross_platform_path)
+        output = CROSS_PLATFORM_PATH
     if not os.access(output, os.W_OK):
         logging.error('Cound not download library file to %s', output)
         raise RuntimeError('No write permission for target path')
@@ -280,7 +276,7 @@ def make_entry(entris, path, output, rpath=None, inner=True):
             logging.info('Copy entry script %s to %s', src, filename)
             shutil.copy(src, filename)
         if shell:
-            logging.info('Insert shell line: %s', shell)
+            logging.info('Insert shell line: %s', shell.strip())
         logging.info('Insert bootstrap code to entry script %s', filename)
         _make_entry(filename, rpath, inner=inner, shell=shell)
 
@@ -310,17 +306,17 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
 
 def _get_platform_library(platid):
     if os.path.isabs(platid):
-        paths = [platid]
+        plist = [platid]
     else:
-        t = platid.split('.')
-        paths.append(os.path.join(PYARMOR_PATH, platform_path, *t))
+        t = list(platid.split('.'))
+        plist = [os.path.join(PLATFORM_PATH, *t)]
 
         if len(t) == 2:
             n = str(pytransform.version_info()[2])
-            t = t + (n,)
-        paths.append(os.path.join(os.path.expanduser(cross_platform_path), *t))
+            t.append(n)
+        plist.append(os.path.join(CROSS_PLATFORM_PATH, *t))
 
-    for path in paths:
+    for path in plist:
         for x in os.listdir(path):
             if x.startswith('_pytransform.'):
                 return os.path.join(path, x)
@@ -792,11 +788,11 @@ def check_cross_platform(platforms):
             logging.info('===========================================')
             logging.info('Reboot PyArmor to obfuscate the scripts for '
                          'platform %s', name)
-        logging.info('===========================================')
-        os.putenv('PYARMOR_PLATFORM', '.'.join(_format_platid(), '0'))
-        p = Popen([sys.executable] + sys.argv)
-        p.wait()
-        sys.exit(p.returncode)
+            logging.info('===========================================')
+            os.putenv('PYARMOR_PLATFORM', '.'.join([_format_platid(), '0']))
+            p = Popen([sys.executable] + sys.argv)
+            p.wait()
+            sys.exit(p.returncode)
 
 
 def compatible_platform_names(platforms):

@@ -15,7 +15,7 @@ from fnmatch import fnmatch
 #
 # Support Platforms
 #
-plat_path = 'lib'
+plat_path = 'platforms'
 
 plat_table = (
     ('windows', ('windows', 'cygwin-*')),
