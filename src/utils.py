@@ -547,7 +547,9 @@ def _make_protect_pytransform(template, filenames=None, rpath=None):
     keylist = _build_pytransform_keylist(pytransform, code, closure)
     rpath = 'pytransform.os.path.dirname(pytransform.__file__)' \
         if rpath is None else repr(rpath)
-    return buf.format(code=code, closure=closure, size=size, rpath=rpath,
+    spath = 'pytransform.os.path.join(pytransform.plat_path, ' \
+        'pytransform.format_platform())' if len(filenames) > 1 else repr('')
+    return buf.format(code=code, closure=closure, rpath=rpath, spath=spath,
                       checksum=str(checksums), keylist=keylist)
 
 
@@ -620,6 +622,7 @@ def _build_platforms(platforms):
         # plat, mach, x = p.split('.')
         results.append(_get_platform_library(p))
     logging.info('Target dynamic library: %s', results)
+    return results
 
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
@@ -674,7 +677,9 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             n += 1
 
     if sys.flags.debug and (protection or plugins):
-        with open(filename + '.pyarmor-patched', 'w') as f:
+        patched_script = filename + '.pyarmor-patched'
+        logging.info('Write patched script for debugging: %s', patched_script)
+        with open(patched_script, 'w') as f:
             f.write(''.join(lines))
 
     modname = _frozen_modname(filename, destname)
