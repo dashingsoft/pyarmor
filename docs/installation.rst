@@ -39,4 +39,22 @@ Python scripts found in the distribution folder.  The equivalent of
 the ``pyarmor`` command is :file:`{pyarmor-folder}/pyarmor.py`, and of
 ``pyarmor-webui`` is :file:`{pyarmor-folder}/pyarmor-webui.py`.
 
+Clean uninstallation
+--------------------
+
+The following files are created by `pyarmor` after it has been installed::
+
+    {pyarmor-folder}/license.lic
+    
+    ~/.pyarmor_capsule.zip
+    ~/.pyarmor/platforms/
+
+Run the following commands to make clean uninstallation::
+
+    pip uninstall pyarmor
+    rm -rf {pyarmor-folder}
+
+    rm ~/.pyarmor_capsule.zip
+    rm -rf ~/.pyarmor/platforms
+    
 .. include:: _common_definitions.txt
