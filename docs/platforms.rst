@@ -39,6 +39,8 @@ will display the required information by `pyarmor`:
 Contact jondy.zhao@gmail.com if you'd like to run PyArmor in other
 platform.
 
+.. _standard platform names:
+
 Standard Platform Names
 -----------------------
 
