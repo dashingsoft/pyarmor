@@ -2,6 +2,9 @@ import os
 import platform
 import sys
 
+# Used by protection code
+import struct
+
 # Because ctypes is new from Python 2.5, so pytransform doesn't work
 # before Python 2.5
 #

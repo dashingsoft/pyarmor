@@ -351,7 +351,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
         logging.info('Copying %s as license file', licfile)
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
-    if platforms is None:
+    if not platforms:
         libfile = pytransform._pytransform._name
         if not os.path.exists(libfile):
             libname = dll_name + dll_ext
