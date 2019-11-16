@@ -626,10 +626,9 @@ def _register(args):
 @arcommand
 def _download(args):
     '''List and download platform-dependent dynamic libraries.'''
-    if args.platnames:
-        for name in args.platnames:
-            logging.info('Downloading dynamic library: %s', name)
-            download_pytransform(name, output=args.output, url=args.url)
+    if args.platname:
+        logging.info('Downloading dynamic library for %s', args.platname)
+        download_pytransform(args.platname, output=args.output, url=args.url)
 
     else:
         lines = []
@@ -1039,7 +1038,7 @@ def _parser():
     group.add_argument('-L', '--list', nargs='?', const='',
                        dest='pattern', metavar='FILTER',
                        help='List available dynamic libraries')
-    group.add_argument('platnames', nargs='?', metavar='NAME',
+    group.add_argument('platname', nargs='?', metavar='NAME',
                        help='Download dynamic library for this platform')
     cparser.set_defaults(func=_download)
 

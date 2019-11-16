@@ -48,7 +48,8 @@ from config import dll_ext, dll_name, entry_lines, protect_code_template, \
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
-CROSS_PLATFORM_PATH = os.path.expanduser(os.path.join('~', '.pyarmor', pytransform.plat_path))
+CROSS_PLATFORM_PATH = os.path.expanduser(os.path.join('~', '.pyarmor',
+                                                      pytransform.plat_path))
 
 
 def _format_platid(platid=None):
@@ -104,7 +105,14 @@ def pytransform_bootstrap(capsule=None):
                     logging.debug('Found available dynamic library %s', found)
                     platid = found
                 else:
-                    platid = download_pytransform(platid, libpath, index=0)[0]
+                    if not os.path.exists(libpath):
+                        logging.info('Create cross platform libraries path %s',
+                                     libpath)
+                        os.makedirs(libpath)
+                    rid = download_pytransform(platid, libpath, index=0)[0]
+                    platid = os.path.join(*rid.split('.'))
+        if libpath == CROSS_PLATFORM_PATH:
+            platid = os.path.abspath(os.path.join(libpath, platid))
 
     pytransform.pyarmor_init(platid=platid)
     logging.debug('Loaded dynamic library: %s', pytransform._pytransform._name)
@@ -312,11 +320,17 @@ def _get_platform_library(platid):
         plist = [os.path.join(PLATFORM_PATH, *t)]
 
         if len(t) == 2:
-            n = str(pytransform.version_info()[2])
+            n = pytransform.version_info()[2]
             t.append(n)
-        plist.append(os.path.join(CROSS_PLATFORM_PATH, *t))
+            for k in ([3, 7] if n & 2 else [0, 4, 5]):
+                t[-1] = str(k)
+                plist.append(os.path.join(CROSS_PLATFORM_PATH, *t))
+        else:
+            plist.append(os.path.join(CROSS_PLATFORM_PATH, *t))
 
     for path in plist:
+        if not os.path.exists(path):
+            continue
         for x in os.listdir(path):
             if x.startswith('_pytransform.'):
                 return os.path.join(path, x)
