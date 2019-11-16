@@ -49,11 +49,11 @@ The following files are created by `pyarmor` after it has been installed::
     ~/.pyarmor_capsule.zip
     ~/.pyarmor/platforms/
 
-Run the following commands to make clean uninstallation::
+Run the following commands to make a clean uninstallation::
 
     pip uninstall pyarmor
+    
     rm -rf {pyarmor-folder}
-
     rm ~/.pyarmor_capsule.zip
     rm -rf ~/.pyarmor/platforms
     
