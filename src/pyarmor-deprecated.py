@@ -99,7 +99,9 @@ plat_name = plat_name.replace('i586', 'i386') \
 def _import_pytransform():
     try:
         m = __import__('pytransform')
-        m.pyarmor_init()
+        if hasattr(m, 'plat_path'):
+            m.plat_path = 'platforms'
+        m.pyarmor_init(is_runtime=1)
         return m
     except Exception:
         pass
@@ -112,7 +114,9 @@ def _import_pytransform():
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
         m = __import__('pytransform')
-        m.pyarmor_init()
+        if hasattr(m, 'plat_path'):
+            m.plat_path = 'platforms'
+        m.pyarmor_init(is_runtime=1)
         logging.info('Load pytransform OK.')
         return m
     logging.error('No library %s found', src)

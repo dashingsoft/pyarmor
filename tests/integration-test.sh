@@ -355,6 +355,17 @@ if [[ -d platforms/windows32 ]] ; then
         mv darwin64 macosx_x86_64;)
 fi
 
+# From pyarmor 5.7.5, platform name is changed
+if [[ -d platforms/windows ]] ; then
+    csih_inform "Restore the name of platforms"
+    (cd platforms;
+        mv windows/x86 win32;
+        mv windows/x86_64 win_amd64;
+        mv linux/x86 linux_i386;
+        mv linux/x86_64 linux_x86_64;
+        mv darwin/x86_64 macosx_x86_64;)
+fi
+
 PYARMOR="$PYTHON pyarmor-deprecated.py"
 [[ -f pyarmor-deprecated.py ]] || csih_error "No pyarmor-deprecated.py found"
 csih_inform "PYARMOR is $PYARMOR"
