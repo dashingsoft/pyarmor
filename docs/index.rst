@@ -37,12 +37,12 @@ Contents:
 
    installation
    usage
-   understand-obfuscated-scripts
-   how-to-do
    advanced
    examples
    project
    man
+   understand-obfuscated-scripts
+   how-to-do
    pytransform
    platforms
    mode
