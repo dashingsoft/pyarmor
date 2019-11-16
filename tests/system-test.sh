@@ -346,7 +346,7 @@ csih_inform "Case 7.2: Show license info"
 
 cat <<EOF > projects/pybench/dist/info.py
 from pytransform import pyarmor_init, get_license_info
-pyarmor_init()
+pyarmor_init(is_runtime=1)
 print(get_license_info())
 EOF
 
@@ -411,8 +411,10 @@ check_return_value
 csih_inform "Case 8.2: get hardware info"
 
 cat <<EOF > test_get_hd_info.py
+import pytransform
 from pytransform import pyarmor_init, get_hd_info
-pyarmor_init()
+pytransform.plat_path = 'platforms'
+pyarmor_init(path='.', is_runtime=1)
 print(get_hd_info(0))
 EOF
 
