@@ -62,6 +62,7 @@ def _format_platid(platid=None):
 
 
 def pytransform_bootstrap(path=None, capsule=None):
+    logging.debug('PyArmor install path: %s', PYARMOR_PATH)
     path = PYARMOR_PATH if path is None else path
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
@@ -75,19 +76,30 @@ def pytransform_bootstrap(path=None, capsule=None):
     libpath = os.path.join(path, platform_path)
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
-    logging.debug('Native platform is %s', _format_platid(platid))
 
     p = os.getenv('PYARMOR_PLATFORM')
     if p:
         logging.info('PYARMOR_PLATFORM is set to %s', p)
         platid = os.path.join(*os.path.normpath(p).split('.'))
+        logging.debug('Build platform is %s', _format_platid(platid))
+        path = os.path.expanduser(cross_platform_path)
+        logging.debug('Search dynamic library in the path: %s',
+                      platid if os.path.isabs(platid)
+                      else os.path.join(path, platid))
+        if (not os.path.isabs(platid)) and \
+           (not os.path.exists(os.path.join(path, platid, libname))):
+            download_pytransform(platid, path, maxfiles=1)
+    else:
+        path = os.path.join(libpath, platid)
+        logging.debug('Native platform is %s', _format_platid(platid))
+        logging.debug('Search dynamic library in the path: %s',
+                      platid if os.path.isabs(platid)
+                      else os.path.join(libpath, platid))
+        if (not os.path.isabs(platid)) and \
+           (not os.path.exists(os.path.join(libpath, platid, libname))):
+            path = os.path.abspath(os.path.join(libpath, platid))
+            download_pytransform(platid, path, alias='', maxfiles=1)
 
-    if (not os.path.isabs(platid)) and \
-       (not os.path.exists(os.path.join(libpath, platid, libname))):
-        path = os.path.abspath(os.path.join(libpath, platid))
-        download_pytransform(platid, path, alias='', maxfiles=1)
-
-    logging.debug('Build platform is %s', _format_platid(platid))
     pytransform.pyarmor_init(platid=platid)
     logging.debug('Loaded dynamic library: %s', pytransform._pytransform._name)
 

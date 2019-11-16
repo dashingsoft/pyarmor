@@ -44,7 +44,7 @@ from config import version, version_info, purchase_info, \
                    config_filename, capsule_filename, license_filename
 
 from project import Project
-from utils import PYARMOR_PATH, make_capsule, make_runtime, relpath, \
+from utils import make_capsule, make_runtime, relpath, \
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, search_plugins, \
@@ -662,10 +662,10 @@ def _download(args):
 
         def match_platform(item):
             for pat in patterns:
-                if ((item['id'].find(pat) == -1)
-                    and (pat != item['platform'])
-                    and (pat not in item['machines'])
-                    and (pat not in item['features'])):
+                if (item['id'].find(pat) == -1) and \
+                   (pat != item['platform']) and \
+                   (pat not in item['machines']) and \
+                   (pat not in item['features']):
                     return False
             return True
 
@@ -1114,7 +1114,6 @@ def main(argv):
         logging.warning(str(e))
 
     logging.info(_version_info(verbose=0))
-    logging.debug('PyArmor install path: %s', PYARMOR_PATH)
     args.func(args)
 
 
