@@ -99,7 +99,7 @@ def pytransform_bootstrap(path=None, capsule=None):
     else:
         libpath = os.path.join(path, platform_path)
         logging.debug('Search dynamic library in the path: %s', libpath)
-        if not os.path.exists(os.path.join(path, platid, libname)):
+        if not os.path.exists(os.path.join(libpath, platid, libname)):
             libpath = os.path.expanduser(cross_platform_path)
             logging.debug('Search dynamic library in the path: %s', libpath)
             if not os.path.exists(os.path.join(libpath, platid, libname)):
