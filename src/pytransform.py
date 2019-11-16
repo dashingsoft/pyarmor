@@ -180,11 +180,16 @@ def format_platform(platid=None):
     plat = platform.system().lower()
     mach = platform.machine().lower()
 
+    def _match_names(patterns, s):
+        for pat in patterns:
+            if fnmatch(s, pat):
+                return True
+
     for alias, platlist in plat_table:
-        for pat in platlist:
-            if fnmatch(plat, pat):
-                plat = alias
-                break
+        if _match_names(platlist, plat):
+            plat = alias
+            break
+
     if plat == 'linux':
         cname, cver = platform.libc_ver()
         if cname == 'musl':
@@ -193,10 +198,9 @@ def format_platform(platid=None):
             plat = 'android'
 
     for alias, archlist in arch_table:
-        for pat in archlist:
-            if fnmatch(mach, pat):
-                mach = alias
-                break
+        if _match_names(archlist, mach):
+            mach = alias
+            break
 
     return os.path.join(plat, mach)
 
