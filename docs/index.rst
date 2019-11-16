@@ -37,17 +37,17 @@ Contents:
 
    installation
    usage
-   pytransform
    understand-obfuscated-scripts
+   how-to-do
+   advanced
+   examples
+   project
+   man
+   pytransform
+   platforms
    mode
    performance
    security
-   how-to-do
-   project
-   advanced
-   platforms
-   man
-   examples
    questions
    license
    change-logs
