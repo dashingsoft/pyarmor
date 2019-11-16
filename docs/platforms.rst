@@ -92,7 +92,7 @@ Platform Tables
      - Anti-Debug, JIT, ADV
      - `_pytransform.dll <http://pyarmor.dashingsoft.com/downloads/latest/win_amd64/_pytransform.dll>`_
      - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - linux_x86
+   * - linux.x86
      - Linux
      - i686
      - Anti-Debug, JIT, ADV

@@ -298,7 +298,15 @@ you'd like to run `pyarmor` in this platform.
    Packing Obfuscated Scripts Problem
    PyArmor Registration Problem
    Running Obfuscated Scripts Problem
-   Know Issues
+   Known Issues
+   
+   From v5.6.0 to v5.7.0, there is a bug for cross platform. The
+   scripts obfuscated in linux64/windows64/darwin64 don't work after
+   copied to one of this target platform::
+
+       armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm, poky-i586
+
+
    Misc. Questions
 
    Error Message List

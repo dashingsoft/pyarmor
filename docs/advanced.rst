@@ -59,7 +59,7 @@ First list all the avaliable platform names by command :ref:`download`::
     pyarmor download
     pyarmor download --help-platform
 
-Display the detials with option ``--list`::
+Display the detials with option ``--list``::
 
     pyarmor download --list
     pyarmor download --list windows
@@ -112,17 +112,9 @@ the dynamic library, so no platform is required. For example::
 
 .. note::
 
-   After `pyarmor` is upgraded, these downloaded dynamic libraries are
-   still old. If the obfuscated scripts don't work in other platforms,
-   run command :ref:`download` again to download the latest dynami.
-
-.. note::
-
-   From v5.6.0 to v5.7.0, there is a bug for cross platform. The
-   scripts obfuscated in linux64/windows64/darwin64 don't work after
-   copied to one of this target platform::
-
-       armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm, poky-i586
+   After `pyarmor` is upgraded, these downloaded dynamic libraries are still
+   old. If the obfuscated scripts don't work in other platforms, run command
+   :ref:`download` again to download the latest dynamic library.
 
 .. _obfuscating scripts by different python version:
 
