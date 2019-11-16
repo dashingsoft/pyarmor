@@ -5,9 +5,12 @@ Change Logs
 
 5.7.5
 -----
+* Standardize platform names, refer to
+  https://pyarmor.readthedocs.io/en/v5.7.5/platforms.html#standard-platform-names
+* Run obfuscated scripts in multiple platforms, refer to
+  https://pyarmor.readthedocs.io/en/v5.7.5/advanced.html#running-obfuscated-scripts-in-multiple-platforms
 * Downloaded dynamic library files by command `command` will be saved in the
   `~/.pyarmor/platforms` other than the installed path of pyarmor package.
-* Standardize platform names, refer to
 * Refine `platforms` folder structure according to new standard platform name
 * In command `obfuscate`, `build`, `runtime`, specify the option `--platform`
   multiple times, so that the obfuscated scripts could run in these platforms
