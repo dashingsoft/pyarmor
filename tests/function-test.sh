@@ -464,58 +464,6 @@ echo ""
 
 # ======================================================================
 #
-#  Project Child
-#
-# ======================================================================
-
-echo ""
-echo "-------------------- Test Project Child -----------------------"
-echo ""
-
-csih_inform "Case PC-1: create child project 1"
-PROPATH=projects/test-child-project
-$PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
-$PYARMOR init --child 1 $PROPATH >result.log 2>&1
-
-check_return_value
-check_file_exists $PROPATH/.pyarmor_config.1
-
-csih_inform "Case PC-2: config child project 1"
-(cd $PROPATH;
- $ARMOR config --plugin="hello" --plugin="hello2" \
-        --manifest "include queens.py" 1 >result.log 2>&1)
-
-check_return_value
-
-csih_inform "Case PC-3: show information of child project 1"
-(cd $PROPATH;  $ARMOR info 1 >result.log 2>&1)
-
-check_return_value
-check_file_content $PROPATH/result.log "manifest: include queens.py"
-check_file_content $PROPATH/result.log "hello2"
-
-csih_inform "Case PC-4: build child project 1"
-(cd $PROPATH; $ARMOR build --no-runtime 1 >result.log 2>&1)
-
-check_return_value
-check_file_exists $PROPATH/dist/queens.py
-check_file_not_exists $PROPATH/dist/pytransform.py
-
-csih_inform "Case PC-5: clear plugin for child project 1"
-(cd $PROPATH;
- $ARMOR config --plugin clear 1 >result.log 2>&1)
-check_return_value
-
-(cd $PROPATH;  $ARMOR info 1 >result.log 2>&1)
-check_return_value
-check_file_content $PROPATH/result.log "hello2" not
-
-echo ""
-echo "-------------------- Test Project Child End -------------------"
-echo ""
-
-# ======================================================================
-#
 #  Cross Publish
 #
 # ======================================================================

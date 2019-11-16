@@ -135,14 +135,8 @@ class Project(dict):
         self._check(os.path.dirname(filename))
 
     def _project_filename(self, path):
-        if path == '' or os.path.exists(path):
-            filename = path if os.path.isfile(path) else \
-                os.path.join(path, config_filename)
-        else:
-            name = os.path.basename(path)
-            filename = os.path.join(os.path.dirname(path),
-                                    '%s.%s' % (config_filename, name))
-        return filename
+        return path if path and os.path.isfile(path) else \
+            os.path.join(path, config_filename)
 
     def open(self, path):
         filename = self._project_filename(path)
