@@ -2,7 +2,8 @@ import os
 import platform
 import sys
 
-# Used by protection code
+# Used by protection code, so that protection code needn't import
+# anything
 import struct
 
 # Because ctypes is new from Python 2.5, so pytransform doesn't work
@@ -172,6 +173,12 @@ def get_license_code():
     return get_license_info()['CODE']
 
 
+def _match_features(patterns, s):
+    for pat in patterns:
+        if fnmatch(s, pat):
+            return True
+
+
 def format_platform(platid=None):
     if platid:
         return os.path.normpath(platid)
@@ -180,13 +187,8 @@ def format_platform(platid=None):
     plat = platform.system().lower()
     mach = platform.machine().lower()
 
-    def _match_names(patterns, s):
-        for pat in patterns:
-            if fnmatch(s, pat):
-                return True
-
     for alias, platlist in plat_table:
-        if _match_names(platlist, plat):
+        if _match_features(platlist, plat):
             plat = alias
             break
 
@@ -198,7 +200,7 @@ def format_platform(platid=None):
             plat = 'android'
 
     for alias, archlist in arch_table:
-        if _match_names(archlist, mach):
+        if _match_features(archlist, mach):
             mach = alias
             break
 

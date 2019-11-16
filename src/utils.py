@@ -507,7 +507,7 @@ def _build_pytransform_keylist(mod, code, closure):
     flist = ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library',
              'get_registration_code', 'get_expired_days', 'get_hd_info',
              'get_license_info', 'get_license_code', 'format_platform',
-             'pyarmor_init', 'pyarmor_runtime')
+             'pyarmor_init', 'pyarmor_runtime', '_match_features')
 
     def _make_value(co):
         return len(co.co_names), len(co.co_consts), len(co.co_code)
