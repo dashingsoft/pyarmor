@@ -21,7 +21,7 @@ PyArmor`_. Just download it and save it in the right path, this
 command `pyarmor -d download` will also display this path at the
 beginning. It's appreicated to send this platform information to
 jondy.zhao@gmail.com so that it could be recognized by `pyarmor`
-autmatically. This script will display the required information by
+automatically. This script will display the required information by
 `pyarmor`:
 
 .. code-block:: python

@@ -114,8 +114,8 @@ License Type`
 Option ``--platform`` is used to specify the target platform of obfuscated
 scripts if target platform is different from build platform. Use this option
 multiple times if the obfuscated scripts are being to run many platforms. From
-v5.7.5, the platform names are standardized, all the available platform names
-list here :ref:`Standard Platform Names`
+v5.7.5, the platform names are standardized, command `download` could list all
+the available platform names.
 
 Option ``--restrict`` is used to set restrict mode, :ref:`Restrict
 Mode`
@@ -788,6 +788,6 @@ About option ``--platform``, refer to command `obfuscate`_
 * Generate :ref:`runtime package` for platform `armv7` with expired license::
 
     pyarmor licenses --expired 2020-01-01 code-001
-    pyarmor runtime --with-license licenses/code-001/license.lic --platform armv7
+    pyarmor runtime --with-license licenses/code-001/license.lic --platform linux.armv7
 
 .. include:: _common_definitions.txt

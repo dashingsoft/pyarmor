@@ -75,19 +75,17 @@ Then specify platform name when obfuscating the scripts::
 
     pyarmor obfuscate --platform linux.armv7 foo.py
 
-For project::
-
+    # For project
     pyarmor build --platform linux.armv7
 
-Obfuscate the scripts for multiple platforms::
+From v5.7.5, the platform names are standardized, all the available
+platform names list here :ref:`Standard Platform Names`. And the
+obfuscated scripts could be run in multiple platforms. For example::
 
     pyarmor obfuscate --platform windows.x86_64 \
                       --platform linux.x86_64 \
                       --platform darwin.x86_64 \
                       foo.py
-
-From v5.7.5, the platform names are standardized, all the available
-platform names list here :ref:`Standard Platform Names`
 
 .. note::
 

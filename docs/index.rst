@@ -45,9 +45,9 @@ Contents:
    how-to-do
    project
    advanced
+   platforms
    man
    examples
-   platforms
    questions
    license
    change-logs
