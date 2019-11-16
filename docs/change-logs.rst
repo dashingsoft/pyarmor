@@ -5,7 +5,8 @@ Change Logs
 
 5.7.5
 -----
-
+* Downloaded dynamic library files by command `command` will be saved in the
+  `~/.pyarmor/platforms` other than the installed path of pyarmor package.
 * Standardize platform names, refer to
 * Refine `platforms` folder structure according to new standard platform name
 * In command `obfuscate`, `build`, `runtime`, specify the option `--platform`

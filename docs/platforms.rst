@@ -11,18 +11,18 @@ platforms, `pyarmor` could run without downloading anything. Refer to
 `Prebuilt Libraries Distributed with PyArmor`_.
 
 For the other platforms, `pyarmor` first searches path
-``PYARMOR_PACKAGE/platforms/SYSTEM/ARCH``, ``SYSTEM.ARCH`` is one of
+``~/.pyarmor/platforms/SYSTEM/ARCH``, ``SYSTEM.ARCH`` is one of
 `Standard Platform Names`_. If there is none, download it from remote
 server. Refer to `The Others Prebuilt Libraries For PyArmor`_.
 
 In some platforms, `pyarmor` doesn't know it but there is available
 dynamic library in the table `The Others Prebuilt Libraries For
-PyArmor`_. Just download it and save it in the right path, this
-command `pyarmor -d download` will also display this path at the
-beginning. It's appreicated to send this platform information to
-jondy.zhao@gmail.com so that it could be recognized by `pyarmor`
-automatically. This script will display the required information by
-`pyarmor`:
+PyArmor`_. Just download it and save it in the path
+``~/.pyarmor/platforms/SYSTEM/ARCH``, this command ``pyarmor -d
+download`` will also display this path at the beginning. It's
+appreicated to send this platform information to jondy.zhao@gmail.com
+so that it could be recognized by `pyarmor` automatically. This script
+will display the required information by `pyarmor`:
 
 .. code-block:: python
 
