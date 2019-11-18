@@ -249,8 +249,11 @@ def update_pytransform(pattern):
             else:
                 plist.append(p['id'])
 
-    for platid in plist:
-        download_pytransform(platid)
+    if plist:
+        for platid in plist:
+            download_pytransform(platid)
+    else:
+        logging.info('Nothing updated')
 
 
 def make_capsule(filename):
@@ -359,11 +362,10 @@ def _get_platform_library_filename(platid):
     if os.path.isabs(platid):
         plist = [platid]
     else:
+        n = pytransform.version_info()[2]
         t = list(platid.split('.'))
-        plist = [os.path.join(PLATFORM_PATH, *t)]
-
+        plist = [os.path.join(PLATFORM_PATH, *t)] if n & 2 else []
         if len(t) == 2:
-            n = pytransform.version_info()[2]
             t.append(n)
             for k in ([3, 7] if n & 2 else [0, 4, 5]):
                 t[-1] = str(k)
@@ -392,6 +394,9 @@ def _build_platforms(platforms):
         if filename is None:
             logging.info('No dynamic library found for %s' % platid)
             download_pytransform(platid)
+            filename = _get_platform_library_filename(platid)
+            if filename is None:
+                raise RuntimeError('No dynamic library found for %s' % platid)
 
         if platid in checksums:
             with open(filename, 'rb') as f:
