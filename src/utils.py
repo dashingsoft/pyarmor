@@ -384,6 +384,19 @@ def _get_platform_library(platid):
     raise RuntimeError('No dynamic library found for %s' % platid)
 
 
+def _build_platforms(platforms):
+    results = []
+    n = len(platforms)
+    for platid in platforms:
+        if (n > 1) and os.path.isabs(platid):
+            raise RuntimeError('Invalid platform `%s`, for multiple '
+                               'platforms it must be `platform.machine`',
+                               platid)
+        results.append(_get_platform_library(platid))
+    logging.info('Target dynamic library: %s', results)
+    return results
+
+
 def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
     if package:
         output = os.path.join(output, 'pytransform')
@@ -420,7 +433,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
         logging.info('Copying %s', libfile)
         shutil.copy2(libfile, output)
     elif len(platforms) == 1:
-        filename = _get_platform_library(platforms[0])
+        filename = _build_platforms(platforms)[0]
         logging.info('Copying %s', filename)
         shutil.copy2(filename, output)
     else:
@@ -430,24 +443,13 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
         if not os.path.exists(libpath):
             os.mkdir(libpath)
 
-        for platid in platforms:
-            if os.path.isabs(platid):
-                raise RuntimeError('Invalid platform `%s`, for multiple '
-                                   'platforms it must be `platform.machine`',
-                                   platid)
-            path = platid.split('.')
-            if len(path) != 2:
-                raise RuntimeError('Invalid platform `%s`, for multiple '
-                                   'platforms it must be `platform.machine`',
-                                   platid)
-            filename = _get_platform_library(platid)
+        filenames = _build_platforms(platforms)
+        for platid, filename in list(zip(platforms, filenames)):
             logging.info('Copying %s', filename)
-
-            path = os.path.join(libpath, *path)
+            path = os.path.join(libpath, *platid.split('.'))
             logging.info('To %s', path)
             if not os.path.exists(path):
                 os.makedirs(path)
-
             shutil.copy2(filename, path)
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
@@ -672,18 +674,6 @@ def _readlines(filename):
             if i:
                 lines[0] = lines[0][i:]
     return lines
-
-
-def _build_platforms(platforms):
-    results = []
-    for p in platforms:
-        if p.find('.') == -1:
-            logging.warning('This format is deprecated, '
-                            'use `platform.machine` instead')
-        # plat, mach, x = p.split('.')
-        results.append(_get_platform_library(p))
-    logging.info('Target dynamic library: %s', results)
-    return results
 
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
