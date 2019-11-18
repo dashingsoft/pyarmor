@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.7.6
+-----
+* Add option `--update` for command `download` to update all the downloaded dynamic libraries automatically
+* Fix issue: the obfuscated script raises unexpected exception when the license is expired
+
 5.7.5
 -----
 * Standardize platform names, refer to
