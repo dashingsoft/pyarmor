@@ -378,12 +378,13 @@ def _get_platform_library_filename(platid):
         for x in os.listdir(path):
             if x.startswith('_pytransform.'):
                 return os.path.join(path, x)
+
     raise RuntimeError('No dynamic library found for %s' % platid)
 
 
 def _build_platforms(platforms):
     results = []
-    checks = dict([(p['id'], p['sha256']) for p in get_platform_list()])
+    checksums = dict([(p['id'], p['sha256']) for p in get_platform_list()])
     n = len(platforms)
     for platid in platforms:
         if (n > 1) and os.path.isabs(platid):
@@ -391,10 +392,10 @@ def _build_platforms(platforms):
                                'platforms it must be `platform.machine`',
                                platid)
         filename = _get_platform_library_filename(platid)
-        if platid in checks:
+        if platid in checksums:
             with open(filename, 'rb') as f:
                 data = f.read()
-            if hashlib.sha256(data).hexdigest() != checks[platid]:
+            if hashlib.sha256(data).hexdigest() != checksums[platid]:
                 logging.info('The platform %s is out of date', platid)
                 download_pytransform(platid)
         results.append(filename)
