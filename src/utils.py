@@ -146,7 +146,7 @@ def _get_platform_list(urls, platid=None):
         raise RuntimeError('No available site to download library file')
 
     if platid is not None:
-        logging.info('Search library for plat-id: %s', platid)
+        logging.info('Search library for platform: %s', platid)
 
     logging.info('Loading platforms information')
     cfg = json_loads(f.read().decode())
@@ -370,11 +370,11 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
                 pname = pytransform.format_platform()
                 libpath = os.path.join(PYARMOR_PATH, 'platforms')
                 libfile = os.path.join(libpath, pname, libname)
-        logging.info('Copying %s', relpath(libfile))
+        logging.info('Copying %s', libfile)
         shutil.copy2(libfile, output)
     elif len(platforms) == 1:
         filename = _get_platform_library(platforms[0])
-        logging.info('Copying %s', relpath(filename))
+        logging.info('Copying %s', filename)
         shutil.copy2(filename, output)
     else:
         libpath = os.path.join(output, pytransform.plat_path)
@@ -385,19 +385,19 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
 
         for platid in platforms:
             if os.path.isabs(platid):
-                raise RuntimeError('Invalid plat-id `%s`, for multiple '
+                raise RuntimeError('Invalid platform `%s`, for multiple '
                                    'platforms it must be `platform.machine`',
                                    platid)
             path = platid.split('.')
             if len(path) != 2:
-                raise RuntimeError('Invalid plat-id `%s`, for multiple '
+                raise RuntimeError('Invalid platform `%s`, for multiple '
                                    'platforms it must be `platform.machine`',
                                    platid)
             filename = _get_platform_library(platid)
-            logging.info('Copying %s', relpath(filename))
+            logging.info('Copying %s', filename)
 
             path = os.path.join(libpath, *path)
-            logging.info('To %s', relpath(path))
+            logging.info('To %s', path)
             if not os.path.exists(path):
                 os.makedirs(path)
 
@@ -424,8 +424,8 @@ def show_hd_info():
     pytransform.show_hd_info()
 
 
-def build_path(path, relpath):
-    return path if os.path.isabs(path) else os.path.join(relpath, path)
+def build_path(path, start):
+    return path if os.path.isabs(path) else os.path.join(start, path)
 
 
 def make_project_command(platform, python, pyarmor, output):
