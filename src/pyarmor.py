@@ -49,7 +49,7 @@ from utils import make_capsule, make_runtime, relpath, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, search_plugins, \
                   get_product_key, register_keyfile, query_keyinfo, \
-                  get_platform_list, download_pytransform, \
+                  get_platform_list, download_pytransform, update_pytransform, \
                   check_cross_platform, compatible_platform_names
 
 import packer
@@ -630,6 +630,9 @@ def _download(args):
         logging.info('Downloading dynamic library for %s', args.platname)
         download_pytransform(args.platname, output=args.output, url=args.url)
 
+    elif args.update is not None:
+        update_pytransform(args.update)
+
     else:
         lines = []
         plist = get_platform_list()
@@ -642,7 +645,6 @@ def _download(args):
             else:
                 logging.info('All the available libraries:')
         if args.help_platform:
-            # logging.info('Current platform name: %s')
             logging.info('All available standard platform names:')
 
         def match_platform(item):
@@ -1038,6 +1040,8 @@ def _parser():
     group.add_argument('-L', '--list', nargs='?', const='',
                        dest='pattern', metavar='FILTER',
                        help='List available dynamic libraries')
+    group.add_argument('-u', '--update', nargs='?', const='*', metavar='NAME',
+                       help='Update all the downloaded dynamic libraries')
     group.add_argument('platname', nargs='?', metavar='NAME',
                        help='Download dynamic library for this platform')
     cparser.set_defaults(func=_download)

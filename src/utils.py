@@ -32,6 +32,7 @@ import struct
 import sys
 import tempfile
 from codecs import BOM_UTF8
+from glob import glob
 from json import dumps as json_dumps, loads as json_loads
 from subprocess import Popen
 from time import gmtime, strftime
@@ -224,6 +225,36 @@ def download_pytransform(platid, output=None, url=None, index=None):
         logging.info('Download dynamic library %s OK', p['id'])
 
     return [p['id'] for p in plist]
+
+
+def update_pytransform(pattern):
+
+    platforms = get_platform_list()
+    path = os.path.join(CROSS_PLATFORM_PATH, '*', '*', '*', '_pytransform.*')
+    flist = glob(path)
+
+    plist = []
+    n = len(CROSS_PLATFORM_PATH)
+    for filename in flist:
+        platid = _format_platid(os.path.dirname(filename)[n:])
+        for p in platforms:
+            if p['id'] == platid:
+                break
+        else:
+            logging.warning('No %s found in supported platforms', platid)
+            p = None
+        if p:
+            with open(filename, 'rb') as f:
+                data = f.read()
+            if hashlib.sha256(data).hexdigest() == p['sha256']:
+                logging.info('The platform %s has been latest', platid)
+            else:
+                plist.append(p['id'])
+
+    for p in plist:
+        # if fnmatch(p, pattern):
+        if (pattern == '*') or p.startswith(pattern):
+            download_pytransform(p)
 
 
 def make_capsule(filename):
