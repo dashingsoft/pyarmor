@@ -229,7 +229,7 @@ def download_pytransform(platid, output=None, url=None, index=None):
 
 def update_pytransform(pattern):
 
-    platforms = get_platform_list()
+    platforms = dict([(p['id'], p) for p in get_platform_list()])
     path = os.path.join(CROSS_PLATFORM_PATH, '*', '*', '*', '_pytransform.*')
     flist = glob(path)
 
@@ -237,13 +237,10 @@ def update_pytransform(pattern):
     n = len(CROSS_PLATFORM_PATH)
     for filename in flist:
         platid = _format_platid(os.path.dirname(filename)[n:])
-        for p in platforms:
-            if p['id'] == platid:
-                break
-        else:
+        p = platforms.get(platid)
+        if p is None:
             logging.warning('No %s found in supported platforms', platid)
-            p = None
-        if p:
+        else:
             with open(filename, 'rb') as f:
                 data = f.read()
             if hashlib.sha256(data).hexdigest() == p['sha256']:
