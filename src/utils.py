@@ -819,7 +819,7 @@ def compatible_platform_names(platforms):
     if not platforms:
         return platforms
 
-    platnames = {
+    old_forms = {
         'armv5': 'linux.arm',
         'ppc64le': 'linux.ppc64',
         'ios.arm64': 'darwin.arm64',
@@ -828,17 +828,17 @@ def compatible_platform_names(platforms):
         'poky-i586': 'poky.x86',
     }
 
-    stdnames = []
+    names = []
     for name in platforms:
-        if name in platnames:
+        if name in old_forms:
             logging.warning('This platform name `%s` has been deprecated, '
                             'use `%s` instead. Display all standard platform '
                             'names by `pyarmor download --help-platorm`',
-                            name, platnames[name])
-            stdnames.append(platnames[name])
+                            name, old_forms[name])
+            names.append(old_forms[name])
         else:
-            stdnames.append(name)
-    return stdnames
+            names.append(name)
+    return names
 
 
 if __name__ == '__main__':
