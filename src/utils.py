@@ -44,7 +44,8 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_urls, platform_config, key_url, version
+                   platform_urls, platform_config, key_url, version, \
+                   core_version
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
@@ -141,15 +142,30 @@ def _get_remote_file(urls, path, timeout=3.0):
 
 
 def _get_platform_list(urls, platid=None):
-    f = _get_remote_file(urls, platform_config)
-    if f is None:
-        raise RuntimeError('No available site to download library file')
+    cfg = None
+    filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
+    if os.path.exists(filename):
+        with open(filename) as f:
+            cfg = json_loads(f.read())
+        if cfg.get('version') == core_version:
+            logging.info('Loading platforms information from cached file')
+        else:
+            cfg = None
+    if cfg is None:
+        f = _get_remote_file(urls, platform_config)
+        if f is None:
+            raise RuntimeError('No available site to download library file')
+
+        logging.info('Loading platforms information from remote file')
+        data = f.read().decode()
+        cfg = json_loads(data)
+
+        logging.info('Cached platforms information to file %s', filename)
+        with open(filename, 'w') as f:
+            f.write(data)
 
     if platid is not None:
         logging.info('Search library for platform: %s', platid)
-
-    logging.info('Loading platforms information')
-    cfg = json_loads(f.read().decode())
 
     compatible = cfg.get('compatible', '').split()
     if compatible and compatible[-1] > version:
