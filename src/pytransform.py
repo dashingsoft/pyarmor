@@ -54,8 +54,10 @@ class PytransformError(Exception):
 
 def dllmethod(func):
     def wrap(*args, **kwargs):
-        # args = [(s.encode() if isinstance(s, str) else s) for s in args]
-        return func(*args, **kwargs)
+        try:
+            return func(*args, **kwargs)
+        except RuntimeError as e:
+            raise PytransformError(e)
     return wrap
 
 
@@ -137,10 +139,7 @@ def get_license_info():
         'DATA': None,
         'CODE': None,
     }
-    try:
-        rcode = get_registration_code().decode()
-    except Exception as e:
-        raise PytransformError(e)
+    rcode = get_registration_code().decode()
     index = 0
     if rcode.startswith('*TIME:'):
         from time import ctime
