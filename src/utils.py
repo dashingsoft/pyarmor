@@ -233,9 +233,11 @@ def update_pytransform(pattern):
     flist = glob(path)
 
     plist = []
-    n = len(CROSS_PLATFORM_PATH)
+    n = len(CROSS_PLATFORM_PATH) + 1
     for filename in flist:
         platid = _format_platid(os.path.dirname(filename)[n:])
+        if not ((pattern == '*') or platid.startswith(pattern)):
+            continue
         p = platforms.get(platid)
         if p is None:
             logging.warning('No %s found in supported platforms', platid)
@@ -247,10 +249,8 @@ def update_pytransform(pattern):
             else:
                 plist.append(p['id'])
 
-    for p in plist:
-        # if fnmatch(p, pattern):
-        if (pattern == '*') or p.startswith(pattern):
-            download_pytransform(p)
+    for platid in plist:
+        download_pytransform(platid)
 
 
 def make_capsule(filename):
