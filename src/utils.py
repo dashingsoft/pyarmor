@@ -45,8 +45,7 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_urls, platform_config, key_url, version, \
-                   core_version
+                   platform_urls, platform_config, key_url, core_version
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
@@ -379,8 +378,6 @@ def _get_platform_library_filename(platid):
             if x.startswith('_pytransform.'):
                 return os.path.join(path, x)
 
-    raise RuntimeError('No dynamic library found for %s' % platid)
-
 
 def _build_platforms(platforms):
     results = []
@@ -392,6 +389,10 @@ def _build_platforms(platforms):
                                'platforms it must be `platform.machine`',
                                platid)
         filename = _get_platform_library_filename(platid)
+        if filename is None:
+            logging.info('No dynamic library found for %s' % platid)
+            download_pytransform(platid)
+
         if platid in checksums:
             with open(filename, 'rb') as f:
                 data = f.read()
@@ -399,7 +400,8 @@ def _build_platforms(platforms):
                 logging.info('The platform %s is out of date', platid)
                 download_pytransform(platid)
         results.append(filename)
-    logging.info('Target dynamic library: %s', results)
+
+    logging.debug('Target dynamic library: %s', results)
     return results
 
 
