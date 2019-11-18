@@ -77,7 +77,7 @@ def pytransform_bootstrap(capsule=None):
     if not os.path.exists(licfile):
         if not os.access(path, os.W_OK):
             logging.error('Bootstrap need write file "license.lic" to %s, '
-                          'please run pyarmor with sudo for first time',
+                          'please run `sudo pyarmor` at first time',
                           path)
             raise RuntimeError('No write permission for target path')
         shutil.copy(os.path.join(path, 'license.tri'), licfile)
@@ -86,8 +86,8 @@ def pytransform_bootstrap(capsule=None):
     platid = pytransform.format_platform()
     logging.debug('Native platform is %s', _format_platid(platid))
 
-    p = os.getenv('PYARMOR_PLATFORM')
-    if p:
+    if os.getenv('PYARMOR_PLATFORM'):
+        p = os.getenv('PYARMOR_PLATFORM')
         logging.info('PYARMOR_PLATFORM is set to %s', p)
         platid = os.path.join(*os.path.normpath(p).split('.'))
         logging.debug('Build platform is %s', _format_platid(platid))
@@ -149,29 +149,30 @@ def _get_platform_list(urls, platid=None):
         with open(filename) as f:
             cfg = json_loads(f.read())
         if cfg.get('version') == core_version:
-            logging.info('Loading platforms information from cached file')
+            logging.info('Load platforms information from cached file')
         else:
             cfg = None
     if cfg is None:
         f = _get_remote_file(urls, platform_config)
         if f is None:
-            raise RuntimeError('No available site to download library file')
+            raise RuntimeError('Download platform list file failed')
 
-        logging.info('Loading platforms information from remote file')
+        logging.info('Load platform informations from remote file')
         data = f.read().decode()
         cfg = json_loads(data)
 
-        logging.info('Cached platforms information to file %s', filename)
-        with open(filename, 'w') as f:
-            f.write(data)
+        if cfg.get('version') == core_version:
+            logging.info('Cache platform informations to %s', filename)
+            with open(filename, 'w') as f:
+                f.write(data)
+        else:
+            logging.warning('The core library excepted version is %s, '
+                            'but got %s from remote server',
+                            core_version, cfg.get('version'))
 
     if platid is not None:
         logging.info('Search library for platform: %s', platid)
 
-    compatible = cfg.get('compatible', '').split()
-    if compatible and compatible[-1] > version:
-        raise RuntimeError('The core library %s is not compatible with '
-                           'PyArmor v%s' % (compatible[-1], version))
     return cfg.get('platforms', []) if platid is None \
         else [x for x in cfg.get('platforms', [])
               if (platid is None
@@ -228,7 +229,6 @@ def download_pytransform(platid, output=None, url=None, index=None):
 
 
 def update_pytransform(pattern):
-
     platforms = dict([(p['id'], p) for p in get_platform_list()])
     path = os.path.join(CROSS_PLATFORM_PATH, '*', '*', '*', '_pytransform.*')
     flist = glob(path)
