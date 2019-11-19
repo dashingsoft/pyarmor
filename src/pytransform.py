@@ -1,9 +1,8 @@
+# These module alos are used by protection code, so that protection
+# code needn't import anything
 import os
 import platform
 import sys
-
-# Used by protection code, so that protection code needn't import
-# anything
 import struct
 
 # Because ctypes is new from Python 2.5, so pytransform doesn't work
@@ -182,7 +181,6 @@ def format_platform(platid=None):
     if platid:
         return os.path.normpath(platid)
 
-    # bitness = struct.calcsize('P'.encode()) * 8
     plat = platform.system().lower()
     mach = platform.machine().lower()
 
@@ -202,6 +200,11 @@ def format_platform(platid=None):
         if _match_features(archlist, mach):
             mach = alias
             break
+
+    if plat == 'windows' and mach == 'x86_64':
+        bitness = struct.calcsize('P'.encode()) * 8
+        if bitness == 32:
+            mach = 'x86'
 
     return os.path.join(plat, mach)
 
