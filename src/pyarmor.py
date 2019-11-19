@@ -1042,14 +1042,14 @@ def _parser():
     cparser.add_argument('-O', '--output', metavar='PATH',
                          help='Save downloaded library to this path, default '
                          'is `~/.pyarmor/platforms`')
-    cparser.add_argument('--url', help='Set download mirror site')
+    cparser.add_argument('--url', help=argparse.SUPPRESS)
     group = cparser.add_mutually_exclusive_group()
     group.add_argument('--help-platform', nargs='?', const='',
                        metavar='FILTER',
                        help='Display all available platform names')
     group.add_argument('-L', '--list', nargs='?', const='',
                        dest='pattern', metavar='FILTER',
-                       help='List available dynamic libraries')
+                       help='List available dynamic libraries in details')
     group.add_argument('-u', '--update', nargs='?', const='*', metavar='NAME',
                        help='Update all the downloaded dynamic libraries')
     group.add_argument('platname', nargs='?', metavar='NAME',
