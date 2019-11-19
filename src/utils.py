@@ -162,6 +162,8 @@ def _get_platform_list(urls, platid=None):
 
         if cfg.get('version') == core_version:
             logging.info('Cache platform informations to %s', filename)
+            if not os.path.exists(CROSS_PLATFORM_PATH):
+                os.makedirs(CROSS_PLATFORM_PATH)
             with open(filename, 'w') as f:
                 f.write(data)
         else:
@@ -175,7 +177,8 @@ def _get_platform_list(urls, platid=None):
     return cfg.get('platforms', []) if platid is None \
         else [x for x in cfg.get('platforms', [])
               if (platid is None
-                  or (x['id'].find(platid) > -1)
+                  or (x['id'] == platid)
+                  or (x['id'].find(platid + '.') == 0)
                   or (x['path'] == platid))]
 
 
@@ -194,6 +197,9 @@ def download_pytransform(platid, output=None, url=None, index=None):
     if index is not None:
         plist = plist[index:index + 1]
 
+    result = [p['id'] for p in plist]
+    logging.info('Found available libraries: %s', result)
+
     if output is None:
         output = CROSS_PLATFORM_PATH
     if not os.access(output, os.W_OK):
@@ -203,9 +209,8 @@ def download_pytransform(platid, output=None, url=None, index=None):
     for p in plist:
         libname = p['filename']
         path = '/'.join([p['path'], libname])
-        logging.info('Found available library %s', p['id'])
 
-        logging.info('Downloading library file ...')
+        logging.info('Downloading library file for %s ...', p['id'])
         res = _get_remote_file(urls, path, timeout=60)
 
         dest = os.path.join(output, *p['id'].split('.'))
@@ -224,7 +229,7 @@ def download_pytransform(platid, output=None, url=None, index=None):
 
         logging.info('Download dynamic library %s OK', p['id'])
 
-    return [p['id'] for p in plist]
+    return result
 
 
 def update_pytransform(pattern):

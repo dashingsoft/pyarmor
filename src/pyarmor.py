@@ -649,7 +649,7 @@ def _download(args):
 
         def match_platform(item):
             for pat in patterns:
-                if (item['id'].find(pat) == -1) and \
+                if (pat not in item['id'].split('.')) and \
                    (pat != item['platform']) and \
                    (pat not in item['machines']) and \
                    (pat not in item['features']):
@@ -668,6 +668,7 @@ def _download(args):
             lines.append('')
             lines.append('%16s: %s' % ('id', p['id']))
             lines.append('%16s: %s' % ('name', p['name']))
+            lines.append('%16s: %s' % ('platform', p['platform']))
             lines.append('%16s: %s' % ('machines', ', '.join(p['machines'])))
             lines.append('%16s: %s' % ('features', ', '.join(p['features'])))
             lines.append('%16s: %s' % ('remark', p['remark']))
