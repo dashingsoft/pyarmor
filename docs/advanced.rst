@@ -116,6 +116,10 @@ the dynamic library, so no platform is required. For example::
    old. If the obfuscated scripts don't work in other platforms, run command
    :ref:`download` again to download the latest dynamic library.
 
+   From v5.7.6, the following command could update all these downloaded files::
+
+       pyarmor download --update
+
 .. _obfuscating scripts by different python version:
 
 Obfuscating Scripts By Other Version Of Python

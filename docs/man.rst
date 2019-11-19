@@ -719,6 +719,7 @@ List and download platform-dependent dynamic libraries.
 --help-platform       Display all available standard platform names
 -L, --list FILTER     List available dynamic libraries in different platforms
 -O, --output PATH     Save downloaded library to this path
+--update              Update all the downloaded dynamic libraries
 
 **DESCRIPTION**
 
@@ -729,7 +730,9 @@ List all available standard platform names. For examples::
 
     pyarmor download
     pyarmor download --help-platform
-
+    pyarmor download --help-platform windows
+    pyarmor download --help-platform linux.x86_64
+    
 Then download one from the list. For example::
 
     pyarmor download linux.armv7
@@ -747,6 +750,11 @@ the information in details. For examples::
     pyarmor download --list JIT
     pyarmor download --list armv7
 
+After `pyarmor` is upgraded, however these downloaded dynamic libraries won't be
+upgraded. The option ``--update`` used to update all these files. For example::
+
+    pyarmor download --update
+    
 .. _runtime:
 
 runtime
