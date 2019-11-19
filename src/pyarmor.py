@@ -612,9 +612,10 @@ def _register(args):
         msg = _version_info(verbose=1)
         print(msg)
         if msg.find('Registration Code') > 0:
+            print('')
             print('Please send request by this email if you would like to '
-                  'change the registration information.')
-            print('Any issue feel free to contact jondy.zhao@gmail.com')
+                  'change the registration information. Any issue feel free '
+                  'to contact jondy.zhao@gmail.com')
         return
 
     logging.info('Start to register keyfile: %s', args.filename)
@@ -641,11 +642,17 @@ def _download(args):
             logging.info('Search the available libraries for %s:', patterns)
         else:
             if args.pattern is None:
-                args.help_platform = True
+                if args.help_platform is None:
+                    args.help_platform = ''
             else:
                 logging.info('All the available libraries:')
-        if args.help_platform:
-            logging.info('All available standard platform names:')
+        help_platform = args.help_platform
+        if help_platform is not None:
+            patterns = help_platform.split('.') if help_platform else []
+            if patterns:
+                logging.info('All available platform names for %s:', patterns)
+            else:
+                logging.info('All available standard platform names:')
 
         def match_platform(item):
             for pat in patterns:
@@ -657,14 +664,15 @@ def _download(args):
             return True
 
         for p in plist:
-            if args.help_platform:
+            if not match_platform(p):
+                continue
+
+            if help_platform is not None:
                 pname = '\t ' + p['name']
                 if pname not in lines:
                     lines.append(pname)
                 continue
 
-            if not match_platform(p):
-                continue
             lines.append('')
             lines.append('%16s: %s' % ('id', p['id']))
             lines.append('%16s: %s' % ('name', p['name']))
@@ -1036,7 +1044,8 @@ def _parser():
                          'is `~/.pyarmor/platforms`')
     cparser.add_argument('--url', help='Set download mirror site')
     group = cparser.add_mutually_exclusive_group()
-    group.add_argument('--help-platform', action='store_true',
+    group.add_argument('--help-platform', nargs='?', const='',
+                       metavar='FILTER',
                        help='Display all available platform names')
     group.add_argument('-L', '--list', nargs='?', const='',
                        dest='pattern', metavar='FILTER',

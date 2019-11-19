@@ -143,6 +143,9 @@ def _get_remote_file(urls, path, timeout=3.0):
 
 def _get_platform_list(urls, platid=None):
     cfg = None
+    if not os.path.exists(CROSS_PLATFORM_PATH):
+        logging.info('Create cross platforms path: %s', CROSS_PLATFORM_PATH)
+        os.makedirs(CROSS_PLATFORM_PATH)
     filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
     if os.path.exists(filename):
         with open(filename) as f:
@@ -162,8 +165,6 @@ def _get_platform_list(urls, platid=None):
 
         if cfg.get('version') == core_version:
             logging.info('Cache platform informations to %s', filename)
-            if not os.path.exists(CROSS_PLATFORM_PATH):
-                os.makedirs(CROSS_PLATFORM_PATH)
             with open(filename, 'w') as f:
                 f.write(data)
         else:
