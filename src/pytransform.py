@@ -110,6 +110,7 @@ def get_registration_code():
     return dlfunc()
 
 
+@dllmethod
 def get_expired_days():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_expired_days', _pytransform))
