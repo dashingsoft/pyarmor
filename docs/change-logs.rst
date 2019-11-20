@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.7.7
+-----
+* Fix issue: `pyarmor` load `_pytransform.dll` faild by 32-bit Python in 64-bit Windows.
+
 5.7.6
 -----
 * Add option `--update` for command `download` to update all the downloaded dynamic libraries automatically
