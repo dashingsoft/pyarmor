@@ -22,8 +22,6 @@ plat_table = (
     ('darwin', ('darwin', 'ios')),
     ('linux', ('linux*',)),
     ('freebsd', ('freebsd*', 'openbsd*')),
-    ('alpine', ('linux*',)),
-    ('android', ('linux*',)),
     ('poky', ('poky',)),
     )
 
