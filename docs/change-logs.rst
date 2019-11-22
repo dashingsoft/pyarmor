@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.7.8
+-----
+* When the obfuscated scripts raise exception, eliminate the very long line from traceback to make it clear
+
 5.7.7
 -----
 * Fix issue: `pyarmor` load `_pytransform.dll` faild by 32-bit Python in 64-bit Windows.
