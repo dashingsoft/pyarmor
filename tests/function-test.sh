@@ -341,6 +341,16 @@ check_file_exists test-src-path/main.py
 check_file_exists test-src-path/mypkg/foo.py
 check_file_exists test-src-path/mypkg/__init__.py
 
+csih_inform "C-27. Test no very long line in traceback"
+echo "raise Exception('Elinimate long line from traceback')" > e.py
+$PYARMOR obfuscate --exact -O test-exception e.py > result.log 2>&1
+check_return_value
+check_file_exists test-exception/e.py
+
+(cd test-exception; $PYTHON e.py >result.log 2>&1 )
+check_file_content test-exception/result.log 'Elinimate long line from traceback'
+check_file_content test-exception/result.log '__pyarmor__' not
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
