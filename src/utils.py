@@ -214,6 +214,9 @@ def download_pytransform(platid, output=None, url=None, index=None):
         logging.info('Downloading library file for %s ...', p['id'])
         res = _get_remote_file(urls, path, timeout=60)
 
+        if res is None:
+            raise RuntimeError('Download library file failed')
+
         dest = os.path.join(output, *p['id'].split('.'))
         if not os.path.exists(dest):
             logging.info('Create target path: %s', dest)
