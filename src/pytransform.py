@@ -194,6 +194,10 @@ def format_platform(platid=None):
             plat = 'alpine'
         elif cname == 'libc':
             plat = 'android'
+        elif cname == 'glibc' and cver.find('.') > 0:
+            v = cver.split('.')
+            if len(v) == 2 and (int(v[0]) * 100 + int(v[1])) < 214:
+                plat = 'centos6'
 
     for alias, archlist in arch_table:
         if _match_features(archlist, mach):
