@@ -248,6 +248,15 @@ Here are sample commands::
     xxd -s 0x56f8 -l 4 _pytransform.so | sed "s/56f8/5728/" | xxd -r - _pytransform.so
     xxd -s 0x5700 -l 4 _pytransform.so | sed "s/5700/5730/" | xxd -r - _pytransform.so
 
+.. note::
+
+   From v5.7.8, this patch is not required for any linux/x86_64 platform, for example, CentOS6.
+
+   And the scripts also could be obfuscated in other platform by this command::
+
+     pyarmor obfuscate --platform centos6.x86_64 foo.py
+
+    
 Purchased pyarmor is not private
 --------------------------------
 
