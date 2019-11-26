@@ -250,7 +250,7 @@ Here are sample commands::
 
 .. note::
 
-   From v5.7.8, this patch is not required for any linux/x86_64 platform, for example, CentOS6.
+   From v5.7.9, this patch is not required for any linux/x86_64 platform, for example, CentOS6.
 
    And the scripts also could be obfuscated in other platform by this command::
 

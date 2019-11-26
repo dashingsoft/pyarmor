@@ -3,10 +3,14 @@
 Change Logs
 ===========
 
+5.7.9
+-----
+* Support new linux platform `centos6.x86_64`, arch is x86_64, glibc < 2.14
+* Do not print traceback if no option `--debug` specified as running `pyarmor`
+
 5.7.8
 -----
 * When the obfuscated scripts raise exception, eliminate the very long line from traceback to make it clear
-* Support new linux platform `centos6.x86_64`, arch is x86_64, glibc < 2.14
 
 5.7.7
 -----
