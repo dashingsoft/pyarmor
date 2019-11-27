@@ -335,11 +335,6 @@ example::
 
     pyinstaller myscript.spec
 
-If you have a `.spec` file worked, specified by ``-s``, thus `pack`_ will use it
-other than generate new one ::
-
-    pyarmor pack -s /path/to/myself.spec foo.py
-
 Then `pack`_ will obfuscates all the `.py` files in the same path of entry
 script. It will call `pyarmor obfuscate` with options ``-r``, ``--output``, and
 the extra options specified by ``--xoptions``.
@@ -356,6 +351,14 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
    The command `pack` will obfuscate the scripts automatically, do not
    try to pack the obfuscated the scripts.
+
+.. comment:
+
+    If you have a `.spec` file worked, specified by ``-s``, thus `pack`_ will use it
+    other than generate new one ::
+
+    pyarmor pack -s /path/to/myself.spec foo.py
+
 
 **EXAMPLES**
 
@@ -732,7 +735,7 @@ List all available standard platform names. For examples::
     pyarmor download --help-platform
     pyarmor download --help-platform windows
     pyarmor download --help-platform linux.x86_64
-    
+
 Then download one from the list. For example::
 
     pyarmor download linux.armv7
@@ -754,7 +757,7 @@ After `pyarmor` is upgraded, however these downloaded dynamic libraries won't be
 upgraded. The option ``--update`` used to update all these files. For example::
 
     pyarmor download --update
-    
+
 .. _runtime:
 
 runtime
