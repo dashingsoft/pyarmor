@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.7.10
+------
+* Fix new linux platform `centos6.x86_64` issue: raise TypeError when run `pyarmor` twice.
+
 5.7.9
 -----
 * Support new linux platform `centos6.x86_64`, arch is x86_64, glibc < 2.14

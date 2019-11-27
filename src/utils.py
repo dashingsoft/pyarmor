@@ -65,7 +65,7 @@ def _search_downloaded_files(path, platid, libname):
     libpath = os.path.join(path, platid)
     if os.path.exists(libpath):
         for x in os.listdir(libpath):
-            if os.path.exists(libpath, x, libname):
+            if os.path.exists(os.path.join(libpath, x, libname)):
                 return os.path.join(platid, x)
 
 
