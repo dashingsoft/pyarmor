@@ -122,10 +122,11 @@ The plugin definition marker has this form::
     # {PyArmor Plugins}
 
 It must be one leading comment line, no indentation. Generally there is only one
-in a script, all the plugins will be injected here.
+in a script, all the plugins will be injected here. If there is no plugin
+definition marker, none of plugins will be injected.
 
 The plugin call maker has 3 forms, any comment line starts with these patterns
-is call marker::
+is Call Marker::
 
     # PyArmor Plugin:
     # pyarmor_
@@ -140,18 +141,18 @@ is. For example::
 
     # PyArmor Plugin: check_ntp_time() ==> check_ntp_time()
 
-So long as there is any plugin specified to obfuscate the script, these
-replacements will be taken place. The rest part could be any valid Python
-code. For examples::
+So long as there is any plugin specified in the command line, these replacements
+will be taken place. The rest part could be any valid Python code. For
+examples::
 
     # PyArmor Plugin: print('This is plugin code') ==> print('This is plugin code')
     # PyArmor Plugin: if sys.flags.debug:          ==> if sys.flags.debug:
     # PyArmor Plugin:     check_something():       ==>     check_something()
 
-For the second form ``# pyarmor_``, it's only used to call plugin function. And
-if this function name is not specified as plugin name, PyArmor doesn't touch
-this markd. For example, obfuscating a script with plugin `check_multi_mac`, the
-first marker is replaced, the second not::
+For the second form ``# pyarmor_``, it's only used to call function deinfed in
+the plugin. And if this function name is not specified as plugin name, PyArmor
+doesn't touch this marker. For example, obfuscating a script with plugin
+`check_multi_mac`, the first marker is replaced, the second not::
 
     # pyarmor_check_multi_mac() ==> check_multi_mac()
     # pyarmor_check_code() ==> # pyarmor_check_code()
@@ -161,9 +162,8 @@ with ``@``, it's mainly used to inject a decorator. For example::
 
     # @pyarmor_assert_obfuscated(foo.connect) ==> @assert_obfuscated(foo.connect)
 
-When obfuscating the scripts in command line, if the plugin doesn't include a
-leading ``@``, it will be always injected into the obfuscated scripts. For
-example::
+If the plugin doesn't include a leading ``@`` in command line, it will be always
+injected into the obfuscated scripts. For example::
 
     pyarmor obfuscate --plugin check_multi_mac --plugin assert_armored foo.py
 
@@ -174,9 +174,6 @@ decorator marker in the `foo.py`, both of plugins will be ignored::
 
     pyarmor obfuscate --plugin @assert_armored foo.py
     pyarmor obfuscate --plugin @/path/to/check_ntp_time foo.py
-
-And in any case, if there is no plugin definition marker, none of plugin code
-will be injected.
 
 .. _special handling of entry script:
 
