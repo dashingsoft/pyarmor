@@ -398,6 +398,39 @@ later easily. Here are basic steps:
 
     dist/foo.exe
 
+.. _bundle obfuscated scripts with customized spec file:
+
+Bundle obfuscated scripts with customized spec file
+---------------------------------------------------
+
+If there is a customized spec file works, for example::
+
+    pyinstaller myscript.spec
+
+It could be used to pack obfuscated scripts by little changed:
+
+* Add module ``pytransform`` to `hiddenimports`
+* Add extra path ``DISTPATH/obf`` to `pathex` and `hookspath`
+
+After patched, it should be like these::
+
+    a = Analysis(['myscript.py'],
+                 pathex=[os.path.join(DISTPATH, 'obf'), ...],
+                 binaries=[],
+                 datas=[],
+                 hiddenimports=['pytransform', ...],
+                 hookspath=[os.path.join(DISTPATH, 'obf'), ...],
+
+Now run command :ref:`pack` by this way::
+
+    pyarmor pack -s myscript.spec myscript.py
+
+That's all.
+
+.. note::
+
+   This featuer is introduced since v5.8.0
+
 .. _improving the security by restrict mode:
 
 Improving The Security By Restrict Mode
