@@ -99,6 +99,11 @@ dist=examples/simple/dist
 check_file_exists $dist/queens/license.lic
 check_file_content $dist/queens/result.log 'Found 92 solutions'
 
+rm $dist/queens/license.lic
+( cd $dist/queens; ./queens.exe  >result.log 2>&1 )
+check_file_content $dist/queens/result.log 'Found 92 solutions' not
+check_file_content $dist/queens/result.log 'Initialize key/iv failed'
+
 csih_inform "Case 3-2: Test extra pack option with PyInstaller"
 $PYARMOR pack --clean --options " --name foo2 " -s "foo2.spec" \
          examples/simple/queens.py >result.log 2>&1
