@@ -389,7 +389,8 @@ scripts::
     pyinstaller --add-data dist/obf/license.lic
                 --add-data dist/obf/pytransform.key
                 --add-data dist/obf/_pytransform.*
-                hello.py dist/obf/hello.py
+                -p dist/obf --hidden-import pytransform
+                hello.py
 
 And patch specfile ``hello.spec``, insert the following lines after the
 ``Analysis`` object. The purpose is to replace all the original scripts with

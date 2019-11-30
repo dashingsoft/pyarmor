@@ -412,7 +412,7 @@ It could be used to pack obfuscated scripts by little changed:
 * Add module ``pytransform`` to `hiddenimports`
 * Add extra path ``DISTPATH/obf`` to `pathex` and `hookspath`
 
-After patched, it may be like this::
+After changed, it may be like this::
 
     a = Analysis(['myscript.py'],
                  pathex=[os.path.join(DISTPATH, 'obf'), ...],
