@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.8.0
+-----
+* Refine command `pack`, use hook `hook-pytransform.py` to add the runtime files.
+* The command `pack` supports customized spec file, refer to
+  https://pyarmor.readthedocs.io/en/v5.8.0/advanced.html#
+
 5.7.10
 ------
 * Fix new linux platform `centos6.x86_64` issue: raise TypeError when run `pyarmor` twice.
