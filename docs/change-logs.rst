@@ -7,7 +7,7 @@ Change Logs
 -----
 * Refine command `pack`, use hook `hook-pytransform.py` to add the runtime files.
 * The command `pack` supports customized spec file, refer to
-  https://pyarmor.readthedocs.io/en/v5.8.0/advanced.html#bundle-obfuscated-scripts-with-customized-spec-file
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-with-customized-spec-file
 
 5.7.10
 ------
