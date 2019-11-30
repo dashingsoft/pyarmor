@@ -225,39 +225,52 @@ def check_setup_script(_type, setup):
     raise RuntimeError('No setup script %s found' % setup)
 
 
-def run_pyi_makespec(project, obfdist, src, entry, packcmd, nolicense):
-    s = os.pathsep
-    # d = os.path.relpath(obfdist, project)
-    d = obfdist
-    datas = [
-        '--add-data', '%s%s.' % (os.path.join(d, 'pytransform.key'), s),
-        '--add-binary', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
-    ]
-    if not nolicense:
-        datas.append('--add-data')
-        datas.append('%s%s.' % (os.path.join(d, 'license.lic'), s))
+def _make_hook_pytransform(hookfile, obfdist, nolicense=False):
+    p = obfdist + os.sep
+    d = 'datas = [(r"{0}pytransform.key", ".")' + (
+        ']' if nolicense else ', (r"{0}license.lic", ".")]')
+    b = 'binaries = [(r"{0}_pytransform.*", ".")]'
+    with open(hookfile, 'w') as f:
+        f.write('\n'.join([d, b]).format(p))
 
-    scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
 
-    options = ['-y']
-    options.extend(datas)
-    options.extend(scripts)
+def _pyi_makespec(obfdist, src, entry, packcmd):
+    # options = ['-y']
+    # s = os.pathsep
+    # d = obfdist
+    # datas = [
+    #     '--add-data', '%s%s.' % (os.path.join(d, 'pytransform.key'), s),
+    #     '--add-binary', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
+    # ]
+    # if not nolicense:
+    #     datas.append('--add-data')
+    #     datas.append('%s%s.' % (os.path.join(d, 'license.lic'), s))
+    # options.extend(datas)
+    #
+    # scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
+    # options.extend(scripts)
 
+    options = ['-y', '-p', obfdist, '--hidden-import', 'pytransform',
+               '--additional-hooks-dir', obfdist, os.path.join(src, entry)]
     run_command([sys.executable] + packcmd + options)
 
 
-def update_specfile(project, obfdist, src, entry, specfile):
+def _patch_specfile(obfdist, src, specfile):
     with open(specfile) as f:
         lines = f.readlines()
 
     p = os.path.abspath(obfdist)
     patched_lines = (
         "", "# Patched by PyArmor",
-        "a.scripts[-1] = '%s', r'%s', 'PYSOURCE'" % (
-            entry[:-3], os.path.join(obfdist, entry)),
+        "obf_src = %s" % repr(os.path.abspath(src)),
+        "for i in range(len(a.scripts)):",
+        "    if a.scripts[i][1].startswith(obf_src):",
+        "        x = a.scripts[i][1].replace(obf_src, r'%s')" % p,
+        "        if os.path.exists(x):",
+        "            a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]",
         "for i in range(len(a.pure)):",
-        "    if a.pure[i][1].startswith(a.pathex[0]):",
-        "        x = a.pure[i][1].replace(a.pathex[0], r'%s')" % p,
+        "    if a.pure[i][1].startswith(obf_src):",
+        "        x = a.pure[i][1].replace(obf_src, r'%s')" % p,
         "        if os.path.exists(x):",
         "            if hasattr(a.pure, '_code_cache'):",
         "                with open(x) as f:",
@@ -267,10 +280,10 @@ def update_specfile(project, obfdist, src, entry, specfile):
 
     for i in range(len(lines)):
         if lines[i].startswith("pyz = PYZ(a.pure"):
+            lines[i:i] = '\n'.join(patched_lines)
             break
     else:
         raise RuntimeError('Unsupport specfile, no PYZ line found')
-    lines[i:i] = '\n'.join(patched_lines)
 
     patched_file = specfile[:-5] + '-patched.spec'
     with open(patched_file, 'w') as f:
@@ -286,30 +299,35 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
     output = relpath(output)
     packcmd = DEFAULT_PACKER['PyInstaller'][2] + [output] + options
 
-    project = os.path.join(output, 'obf')
-    obfdist = os.path.join(project, 'dist')
+    obfdist = os.path.join(output, 'obf')
     if specfile is None:
         specfile = os.path.join(os.path.basename(entry)[:-3] + '.spec')
 
-    logging.info('build path: %s', relpath(project))
-    if clean and os.path.exists(project):
+    logging.info('build path: %s', relpath(obfdist))
+    if clean and os.path.exists(obfdist):
         logging.info('Remove build path')
-        shutil.rmtree(project)
+        shutil.rmtree(obfdist)
 
     logging.info('Run PyArmor to obfuscate scripts...')
     call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
                   '--package-runtime', '0']
                  + xoptions + [os.path.join(src, entry)])
 
-    if clean or (not os.path.exists(specfile)):
+    hookfile = os.path.join(obfdist, 'hook-pytransform.py')
+    logging.info('Generate hook script: %s', hookfile)
+    _make_hook_pytransform(hookfile, obfdist, nolicense)
+
+    if clean or args.setup is None or (not os.path.exists(specfile)):
         logging.info('Run PyInstaller to generate .spec file...')
-        run_pyi_makespec(project, obfdist, src, entry, packcmd, nolicense)
+        _pyi_makespec(obfdist, src, entry, packcmd)
+        if not os.path.exists(specfile):
+            raise RuntimeError('No specfile "%s" found', specfile)
         logging.info('Save .spec file to %s', specfile)
     else:
         logging.info('Use cached .spec file: %s', specfile)
 
     logging.info('Patching .spec file...')
-    patched_spec = update_specfile(project, obfdist, src, entry, specfile)
+    patched_spec = _patch_specfile(obfdist, src, specfile)
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
@@ -321,8 +339,8 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
             os.remove(specfile)
         logging.info('Remove patched .spec file %s', patched_spec)
         os.remove(patched_spec)
-        logging.info('Remove build path %s', project)
-        shutil.rmtree(project)
+        logging.info('Remove build path %s', obfdist)
+        shutil.rmtree(obfdist)
 
 
 def packer(args):
