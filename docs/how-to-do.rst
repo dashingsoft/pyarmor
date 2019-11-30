@@ -395,10 +395,18 @@ And patch specfile ``hello.spec``, insert the following lines after the
 ``Analysis`` object. The purpose is to replace all the original scripts with
 obfuscated ones::
 
-    a.scripts[-1] = 'hello', r'dist/obf/hello.py', 'PYSOURCE'
+    src = os.path.abspath(a.pathex[0])
+    obf_src = os.path.abspath('dist/obf')
+
+    for i in range(len(a.scripts)):
+        if a.scripts[i][1].startswith(src):
+            x = a.scripts[i][1].replace(src, obf_src)
+            if os.path.exists(x):
+                a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
+
     for i in range(len(a.pure)):
-        if a.pure[i][1].startswith(a.pathex[0]):
-            x = a.pure[i][1].replace(a.pathex[0], os.path.abspath('dist/obf'))
+        if a.pure[i][1].startswith(src):
+            x = a.pure[i][1].replace(src, obf_src)
             if os.path.exists(x):
                 if hasattr(a.pure, '_code_cache'):
                     with open(x) as f:
