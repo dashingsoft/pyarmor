@@ -396,7 +396,7 @@ And patch specfile ``hello.spec``, insert the following lines after the
 ``Analysis`` object. The purpose is to replace all the original scripts with
 obfuscated ones::
 
-    src = os.path.abspath(a.pathex[0])
+    src = os.path.abspath('.')
     obf_src = os.path.abspath('dist/obf')
 
     for i in range(len(a.scripts)):
