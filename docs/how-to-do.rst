@@ -383,8 +383,8 @@ Then obfuscate scripts to ``dist/obf``::
 
     pyarmor obfuscate --output dist/obf hello.py
 
-Next generate specfile, add the obfuscated entry script and data files required
-by obfuscated scripts::
+Next generate specfile, add runtime files required by obfuscated
+scripts::
 
     pyinstaller --add-data dist/obf/license.lic
                 --add-data dist/obf/pytransform.key
