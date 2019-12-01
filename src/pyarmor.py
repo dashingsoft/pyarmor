@@ -619,7 +619,7 @@ def _register(args):
         return
 
     logging.info('Start to register keyfile: %s', args.filename)
-    register_keyfile(args.filename)
+    register_keyfile(args.filename, legency=args.legency)
     logging.info('This keyfile has been registered successfully.')
     logging.info('Run "pyarmor register" to check registration information.')
 
@@ -1026,9 +1026,10 @@ def _parser():
         epilog=_register.__doc__ + purchase_info,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Make registration keyfile work')
-    group = cparser.add_mutually_exclusive_group()
-    group.add_argument('filename', nargs='?', metavar='KEYFILE',
-                       help='Filename of registration keyfile')
+    cparser.add_argument('-n', '--legency', action='store_true',
+                         help='Store `license.lic` in the traditional way')
+    cparser.add_argument('filename', nargs='?', metavar='KEYFILE',
+                         help='Filename of registration keyfile')
     cparser.set_defaults(func=_register)
 
     #
