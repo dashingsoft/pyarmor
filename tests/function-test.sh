@@ -16,6 +16,10 @@ csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf $USERPROFILE\\.pyarmor $USERPROFILE\\.pyarmor_capsule.*
+
 [[ -d data ]] || csih_error "No path 'data' found in current path"
 datapath=$(pwd)/data
 

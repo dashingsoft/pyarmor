@@ -21,6 +21,10 @@ csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf $USERPROFILE\\.pyarmor $USERPROFILE\\.pyarmor_capsule.*
+
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
