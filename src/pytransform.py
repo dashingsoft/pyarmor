@@ -70,7 +70,7 @@ def init_pytransform():
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_void_p)
     init_module = prototype(('init_module', _pytransform))
     ret = init_module(major, minor, pythonapi._handle)
-    if (ret & 0xF000) == 0x2000:
+    if (ret & 0xF000) == 0x1000:
         raise PytransformError('Initialize python wrapper failed (%d)'
                                % (ret & 0xFFF))
     return ret
