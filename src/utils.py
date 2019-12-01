@@ -49,8 +49,8 @@ from config import dll_ext, dll_name, entry_lines, protect_code_template, \
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
-CROSS_PLATFORM_PATH = os.path.expanduser(os.path.join('~', '.pyarmor',
-                                                      pytransform.plat_path))
+DATA_PATH = os.path.expanduser(os.path.join('~', '.pyarmor'))
+CROSS_PLATFORM_PATH = os.path.join(DATA_PATH, pytransform.plat_path)
 
 
 def _format_platid(platid=None):
@@ -72,14 +72,15 @@ def _search_downloaded_files(path, platid, libname):
 def pytransform_bootstrap(capsule=None):
     logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
     path = PYARMOR_PATH
-    licfile = os.path.join(path, 'license.lic')
+    licfile = os.path.join(path, 'license.lic'):
     if not os.path.exists(licfile):
-        if not os.access(path, os.W_OK):
-            logging.error('Bootstrap need write file "license.lic" to %s, '
-                          'please run `sudo pyarmor` at first time',
-                          path)
-            raise RuntimeError('No write permission for target path')
-        shutil.copy(os.path.join(path, 'license.tri'), licfile)
+        licfile = os.path.join(DATA_PATH, 'license.lic')
+        if not os.path.exists(licfile):
+            if not os.path.exists(DATA_PATH):
+                logging.info('Create pyarmor data path: %s', DATA_PATH)
+                os.makedirs(licpath)
+            logging.info('Create trial license file: %s', licfile)
+            shutil.copy(os.path.join(path, 'license.tri'), licfile)
 
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
@@ -119,10 +120,10 @@ def pytransform_bootstrap(capsule=None):
     logging.debug('Loaded dynamic library: %s', pytransform._pytransform._name)
 
     ver = pytransform.version_info()
-    logging.debug('The version of _pyransform is %s', ver)
-    if ver[0] < 6:
-        logging.warning('PyArmor may not work with this dynamic '
-                        'library `_pytransform` (reversion < 6)')
+    logging.debug('The version of core library is %s', ver)
+    if ver[0] < 8:
+        raise RuntimeError('PyArmor does not work with this core library '
+                           '(reversion < %d)' % ver[0])
 
     if capsule is not None and not os.path.exists(capsule):
         logging.info('Generating public capsule ...')
@@ -837,12 +838,22 @@ def query_keyinfo(key):
     return info
 
 
-def register_keyfile(filename):
+def register_keyfile(filename, legency=False):
+    old_license = os.path.exists(PYARMOR_PATH, 'license.lic')
+    if os.path.exists(old_license):
+        logging.info('Remove old license file `%s`', old_license)
+        os.path.remove(old_license)
+
+    home = os.path.expanduser('~')
+    path = PYARMOR_PATH if legency else DATA_PATH
+    if not os.path.exists(DATA_PATH):
+        logging.info('Create pyarmor data path: %s', path)
+        os.makedirs(path)
+
     f = ZipFile(filename, 'r')
     try:
-        homepath = os.path.expanduser('~')
-        for item in [('license key', 'license.lic', PYARMOR_PATH),
-                     ('private capsule', '.pyarmor_capsule.zip', homepath)]:
+        for item in [('license key', 'license.lic', path),
+                     ('private capsule', '.pyarmor_capsule.zip', home)]:
             logging.info('Extract %s "%s" to %s' % item)
             f.extract(item[1], path=item[-1])
     finally:
