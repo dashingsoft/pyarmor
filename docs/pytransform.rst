@@ -48,15 +48,15 @@ Contents
 
    The value `None` means no this key in the license.
 
-   Raise :exc:`PytransformError` if license is invalid, for example,
-   it has been expired.
+   Raise :exc:`Exception` if license is invalid, for example, it has
+   been expired.
 
 .. function:: get_license_code()
 
    Return a string, which is specified as generating the licenses for
    obfucated scripts.
 
-   Raise :exc:`PytransformError` if license is invalid.
+   Raise :exc:`Exception` if license is invalid.
 
 .. function:: get_hd_info(hdtype, size=256)
 
@@ -66,7 +66,7 @@ Contents
 
    *HT_IFMAC* return mac address of first network card
 
-   Raise :exc:`PytransformError` if something is wrong.
+   Raise :exc:`Exception` if something is wrong.
 
 .. attribute:: HT_HARDDISK, HT_IFMAC
 
@@ -90,7 +90,7 @@ Show left days of license
            print('This license for %s is never expired' % code)
        else:
            print('This license for %s will be expired in %d days' % (code, left_days))
-   except PytransformError as e:
+   except Exception as e:
        print(e)
 
 More usage refer to :ref:`Using Plugin to Extend License Type`

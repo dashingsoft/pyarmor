@@ -51,10 +51,7 @@ class PytransformError(Exception):
 
 def dllmethod(func):
     def wrap(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except RuntimeError as e:
-            raise PytransformError(e)
+        return func(*args, **kwargs)
     return wrap
 
 
@@ -73,8 +70,9 @@ def init_pytransform():
     prototype = PYFUNCTYPE(c_int, c_int, c_int, c_void_p)
     init_module = prototype(('init_module', _pytransform))
     ret = init_module(major, minor, pythonapi._handle)
-    if (ret & 0xFFFF) == 0x1001:
-        raise PytransformError('Cound not load CPython API(r%d)' % (ret >> 16))
+    if (ret & 0xF000) == 0x2000:
+        raise PytransformError('Initialize python wrapper failed (%d)'
+                               % (ret & 0xFFF))
     return ret
 
 
@@ -272,7 +270,7 @@ def pyarmor_runtime(path=None):
     try:
         pyarmor_init(path, is_runtime=1)
         init_runtime()
-    except PytransformError as e:
+    except Exception as e:
         print(e)
         sys.exit(1)
 
