@@ -8,6 +8,11 @@ Change Logs
 * Refine command `pack`, use hook `hook-pytransform.py` to add the runtime files.
 * The command `pack` supports customized spec file, refer to
   https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-with-customized-spec-file
+  
+.. note:
+
+   Refine error messages so that the users could solve most of problems by the hints, document it here
+   https://pyarmor.readthedocs.io/en/latest/questions.html#
 
 5.7.10
 ------
@@ -42,10 +47,6 @@ Change Logs
 * Refine `platforms` folder structure according to new standard platform name
 * In command `obfuscate`, `build`, `runtime`, specify the option `--platform`
   multiple times, so that the obfuscated scripts could run in these platforms
-
-.. note:
-
-   Refine error messages so that the users could solve most of problems by the hints, document it here
 
 5.7.4
 -----
