@@ -5,16 +5,14 @@ Change Logs
 
 5.8.0
 -----
+* Move the license file of pyarmor from the install path of pyarmor package to user home path `~/.pyarmor`
+* Refine error messages so that the users could solve most of problems by the hints.
 * Refine command `pack`, use hook `hook-pytransform.py` to add the runtime files.
 * The command `pack` supports customized spec file, refer to
   https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-with-customized-spec-file
 * In runtime module `pytransform`, the functions may raise `Exception` instead of `PytransformError` in some cases.
-
-.. note:
-
-   Refine error messages so that the users could solve most of problems by the hints, document it here
-   https://pyarmor.readthedocs.io/en/latest/questions.html#
-
+* In command `register`, add option `--legency` to store `license.lic` in the traditional way
+  
 5.7.10
 ------
 * Fix new linux platform `centos6.x86_64` issue: raise TypeError when run `pyarmor` twice.
