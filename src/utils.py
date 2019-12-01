@@ -78,7 +78,7 @@ def pytransform_bootstrap(capsule=None):
         if not os.path.exists(licfile):
             if not os.path.exists(DATA_PATH):
                 logging.info('Create pyarmor data path: %s', DATA_PATH)
-                os.makedirs(licpath)
+                os.makedirs(DATA_PATH)
             logging.info('Create trial license file: %s', licfile)
             shutil.copy(os.path.join(path, 'license.tri'), licfile)
 
