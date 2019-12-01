@@ -139,7 +139,7 @@ with open('$ascript', 'w') as f:
   for i in range(100):
     f.write('a{0} = {1}\n'.format(i, [1] * 1000))"
 $PYARMOR obfuscate --exact -O dist-big-array $ascript >result.log 2>&1
-check_file_content result.log 'Obfuscate co failed'
+check_file_content result.log 'Check license failed'
 check_file_content result.log 'Too big code object, the limitation is'
 
 csih_inform "11. Obfuscate big code object without wrap mode"
@@ -153,7 +153,7 @@ $PYARMOR init --src=. --entry=big_array.py -t app $PROPATH >result.log 2>&1
 $PYARMOR config --wrap-mode=0 --manifest="include big_array.py" $PROPATH >result.log 2>&1
 (cd $PROPATH; $ARMOR build >result.log 2>&1)
 
-check_file_content $PROPATH/result.log 'Obfuscate co failed'
+check_file_content $PROPATH/result.log 'Check license failed'
 check_file_content $PROPATH/result.log 'Too big code object, the limitation is'
 
 # ======================================================================
