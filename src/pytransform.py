@@ -9,7 +9,7 @@ import struct
 # before Python 2.5
 #
 from ctypes import cdll, c_char, c_char_p, c_int, c_void_p, \
-                   pythonapi, py_object, PYFUNCTYPE, CFUNCTYPE, CDLL
+                   pythonapi, py_object, PYFUNCTYPE, CFUNCTYPE
 from fnmatch import fnmatch
 
 #
@@ -177,8 +177,7 @@ def _match_features(patterns, s):
 def _gnu_get_libc_version():
     try:
         prototype = CFUNCTYPE(c_char_p)
-        dlfunc = prototype(('gnu_get_libc_version', CDLL('')))
-        ver = dlfunc()
+        ver = prototype(('gnu_get_libc_version', cdll.LoadLibrary('')))()
         return ver.decode().split('.')
     except Exception:
         pass
