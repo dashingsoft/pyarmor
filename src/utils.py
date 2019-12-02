@@ -71,6 +71,7 @@ def _search_downloaded_files(path, platid, libname):
 
 def pytransform_bootstrap(capsule=None):
     logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
+    logging.debug('PyArmor data path: %s', DATA_PATH)
     path = PYARMOR_PATH
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
