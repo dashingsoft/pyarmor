@@ -44,17 +44,18 @@ Clean uninstallation
 
 The following files are created by `pyarmor` after it has been installed::
 
-    {pyarmor-folder}/license.lic
-    
     ~/.pyarmor_capsule.zip
+    ~/.pyarmor/license.lic (since v5.8.0)
     ~/.pyarmor/platforms/
+
+    {pyarmor-folder}/license.lic (before v5.8.0)
 
 Run the following commands to make a clean uninstallation::
 
     pip uninstall pyarmor
-    
+
     rm -rf {pyarmor-folder}
-    rm ~/.pyarmor_capsule.zip
-    rm -rf ~/.pyarmor/platforms
-    
+    rm -rf ~/.pyarmor_capsule.zip
+    rm -rf ~/.pyarmor
+
 .. include:: _common_definitions.txt
