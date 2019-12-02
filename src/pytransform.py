@@ -178,7 +178,8 @@ def _gnu_get_libc_version():
     try:
         prototype = CFUNCTYPE(c_char_p)
         dlfunc = prototype(('gnu_get_libc_version', CDLL('')))
-        return dlfunc()
+        ver = dlfunc()
+        return ver.decode().split('.')
     except Exception:
         pass
 
@@ -202,11 +203,9 @@ def format_platform(platid=None):
         elif cname == 'libc':
             plat = 'android'
         elif cname == 'glibc':
-            cver = _gnu_get_libc_version()
-            if cver:
-                v = cver.split('.')
-                if len(v) >= 2 and (int(v[0]) * 100 + int(v[1])) < 214:
-                    plat = 'centos6'
+            v = _gnu_get_libc_version()
+            if v and len(v) >= 2 and (int(v[0]) * 100 + int(v[1])) < 214:
+                plat = 'centos6'
 
     for alias, archlist in arch_table:
         if _match_features(archlist, mach):
