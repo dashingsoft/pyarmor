@@ -9,7 +9,7 @@ import struct
 # before Python 2.5
 #
 from ctypes import cdll, c_char, c_char_p, c_int, c_void_p, \
-                   pythonapi, py_object, PYFUNCTYPE
+                   pythonapi, py_object, PYFUNCTYPE, CFUNCTYPE, CDLL
 from fnmatch import fnmatch
 
 #
@@ -174,6 +174,15 @@ def _match_features(patterns, s):
             return True
 
 
+def _gnu_get_libc_version():
+    try:
+        prototype = CFUNCTYPE(c_char_p)
+        dlfunc = prototype(('gnu_get_libc_version', CDLL('')))
+        return dlfunc()
+    except Exception:
+        pass
+
+
 def format_platform(platid=None):
     if platid:
         return os.path.normpath(platid)
@@ -192,10 +201,12 @@ def format_platform(platid=None):
             plat = 'alpine'
         elif cname == 'libc':
             plat = 'android'
-        elif cname == 'glibc' and cver.find('.') > 0:
-            v = cver.split('.')
-            if len(v) >= 2 and (int(v[0]) * 100 + int(v[1])) < 214:
-                plat = 'centos6'
+        elif cname == 'glibc':
+            cver = _gnu_get_libc_version()
+            if cver:
+                v = cver.split('.')
+                if len(v) >= 2 and (int(v[0]) * 100 + int(v[1])) < 214:
+                    plat = 'centos6'
 
     for alias, archlist in arch_table:
         if _match_features(archlist, mach):
