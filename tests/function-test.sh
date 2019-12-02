@@ -45,6 +45,8 @@ cp ${datapath}/project.zip test/data/project-orig.zip
 csih_inform "Make cross platforms path ~/.pyarmor/platforms"
 mkdir -p ~/.pyarmor/platforms
 cp ../../../../pyarmor-core/platforms/index.json ~/.pyarmor/platforms
+[[ -n "$USERPROFILE" ]] && mkdir -p $USERPROFILE\\.pyarmor\\platforms \
+    && cp ../../../../pyarmor-core/platforms/index.json $USERPROFILE\\.pyarmor\\platforms
 
 csih_inform "Prepare for function testing"
 echo ""
