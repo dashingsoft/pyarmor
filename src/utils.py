@@ -75,7 +75,8 @@ def pytransform_bootstrap(capsule=None):
     path = PYARMOR_PATH
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
-        if os.access(path, os.W_OK):
+        if not os.getenv('HOME', os.getenv('USERPROFILE')):
+            logging.info('Create trial license file: %s', licfile)
             shutil.copy(os.path.join(path, 'license.tri'), licfile)
         else:
             licfile = os.path.join(DATA_PATH, 'license.lic')
@@ -843,6 +844,9 @@ def query_keyinfo(key):
 
 
 def register_keyfile(filename, legency=False):
+    if not legency and not os.getenv('HOME', os.getenv('USERPROFILE')):
+        logging.debug('Force traditional way because no HOME set')
+        legency = True
     old_path = DATA_PATH if legency else PYARMOR_PATH
     old_license = os.path.join(old_path, 'license.lic')
     if os.path.exists(old_license):
