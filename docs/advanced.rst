@@ -199,8 +199,9 @@ Here are the base steps:
 It also could be inserted into the end of function `site.main`, or anywhere they
 could be executed as module `site` is imported.
 
-After that `python` could run the obfuscated scripts directly, becausee the
-module `site` is automatically imported during Python initialization.
+After that in the virtual environment `python` could run the obfuscated scripts
+directly, becausee the module `site` is automatically imported during Python
+initialization.
 
 Refer to https://docs.python.org/3/library/site.html
 
