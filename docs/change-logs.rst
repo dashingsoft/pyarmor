@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.8.1
+-----
+* Fix issue: check license failed if there is no environment variable `HOME`
+
 5.8.0
 -----
 * Move the license file of pyarmor from the install path of pyarmor package to user home path `~/.pyarmor`
