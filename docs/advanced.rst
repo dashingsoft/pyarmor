@@ -163,6 +163,7 @@ In a few cases, if Python Interpreter could recognize obfuscated
 scripts automatically, it will make everything simple:
 
 * Almost all the obfuscated scripts will be run as main script
+* Run unittest of the obfuscated scripts
 * In the obfuscated scripts call `multiprocessing` to create new process
 * Or call `Popen`, `os.exec` etc. to run any other obfuscated scripts
 * ...
@@ -174,23 +175,21 @@ Here are the base steps:
     echo "" > pytransform_bootstrap.py
     pyarmor obfuscate pytransform_bootstrap.py
 
-2. Move the :ref:`runtime package` `dist/pytransform` to Python system library. For
+2. Then create virtual python environment to run the obfuscated scripts, move
+   the obfuscated bootstrap script ``dist/pytransform_bootstrap.py`` and the
+   :ref:`runtime package` ``dist/pytransform`` to virtual python library. For
    example::
 
     # For windows
-    mv dist/pytransform C:/Python37/Lib/site-packages/
+    mv dist/pytransform venv/Lib/
+    mv dist/pytransform_bootstrap.py venv/Lib/
 
     # For linux
-    mv dist/pytransform /usr/local/lib/python3.5/dist-packages/
+    mv dist/pytransform venv/lib/python3.5/
+    mv dist/pytransform_bootstrap.py venv/lib/python3.5/
 
-3. Move obfuscated bootstrap script `dist/pytransform_bootstrap.py` to Python
-   system library::
-
-     mv dist/pytransform_bootstrap.py C:/Python37/Lib/
-     mv dist/pytransform_bootstrap.py /usr/lib/python3.5/
-
-4. Edit `lib/site.py` (on Windows) or `lib/pythonX.Y/site.py` (on Linux), import
-   `pytransform_bootstrap` before the line `if __name__ == '__main__'`::
+4. Edit `venv/lib/site.py` (on Windows) or `venv/lib/pythonX.Y/site.py` (on
+   Linux), import `pytransform_bootstrap` before the main line::
 
     import pytransform_bootstrap
 
@@ -204,6 +203,11 @@ After that `python` could run the obfuscated scripts directly, becausee the
 module `site` is automatically imported during Python initialization.
 
 Refer to https://docs.python.org/3/library/site.html
+
+.. note::
+
+    The command `pyarmor` doesn't work in this virtual environment, it's only
+    used to run the obfuscated scripts.
 
 .. note::
 
