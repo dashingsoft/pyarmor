@@ -18,7 +18,7 @@ mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
 csih_inform "Clean pyarmor data"
 rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-[[ -n "$USERPROFILE" ]] && rm -rf $USERPROFILE\\.pyarmor $USERPROFILE\\.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
 
 [[ -d data ]] || csih_error "No path 'data' found in current path"
 datapath=$(pwd)/data
@@ -45,8 +45,8 @@ cp ${datapath}/project.zip test/data/project-orig.zip
 csih_inform "Make cross platforms path ~/.pyarmor/platforms"
 mkdir -p ~/.pyarmor/platforms
 cp ../../../../pyarmor-core/platforms/index.json ~/.pyarmor/platforms
-[[ -n "$USERPROFILE" ]] && mkdir -p $USERPROFILE\\.pyarmor\\platforms \
-    && cp ../../../../pyarmor-core/platforms/index.json $USERPROFILE\\.pyarmor\\platforms
+[[ -n "$USERPROFILE" ]] && mkdir -p "$USERPROFILE\\.pyarmor\\platforms" \
+    && cp ../../../../pyarmor-core/platforms/index.json "$USERPROFILE\\.pyarmor\\platforms"
 
 csih_inform "Prepare for function testing"
 echo ""

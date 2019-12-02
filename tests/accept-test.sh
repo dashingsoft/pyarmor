@@ -18,7 +18,7 @@ mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
 csih_inform "Clean pyarmor data"
 rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-[[ -n "$USERPROFILE" ]] && rm -rf $USERPROFILE\\.pyarmor $USERPROFILE\\.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
 
 datafile=$(pwd)/data/pyarmor-data.tar.gz
 capsulefile=$(pwd)/data/pyarmor-test-0001.zip
@@ -284,7 +284,7 @@ check_file_content $PROPATH/dist/result.log 'a99 ='
 echo "" && csih_inform "Remove global capsule"
 rm -rf ~/.pyarmor_capsule.zip ~/.pyarmor
 if ! [[ -z "$USERPROFILE" ]] ; then
-   rm -rf $USERPROFILE\\.pyarmor_capsule.zip $USERPROFILE\\.pyarmor
+   rm -rf "$USERPROFILE\\.pyarmor_capsule.zip" "$USERPROFILE\\.pyarmor"
 fi
 
 # Return test root
