@@ -75,13 +75,16 @@ def pytransform_bootstrap(capsule=None):
     path = PYARMOR_PATH
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
-        licfile = os.path.join(DATA_PATH, 'license.lic')
-        if not os.path.exists(licfile):
-            if not os.path.exists(DATA_PATH):
-                logging.info('Create pyarmor data path: %s', DATA_PATH)
-                os.makedirs(DATA_PATH)
-            logging.info('Create trial license file: %s', licfile)
+        if os.access(path, os.W_OK):
             shutil.copy(os.path.join(path, 'license.tri'), licfile)
+        else:
+            licfile = os.path.join(DATA_PATH, 'license.lic')
+            if not os.path.exists(licfile):
+                if not os.path.exists(DATA_PATH):
+                    logging.info('Create pyarmor data path: %s', DATA_PATH)
+                    os.makedirs(DATA_PATH)
+                logging.info('Create trial license file: %s', licfile)
+                shutil.copy(os.path.join(path, 'license.tri'), licfile)
 
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
@@ -840,15 +843,16 @@ def query_keyinfo(key):
 
 
 def register_keyfile(filename, legency=False):
-    old_license = os.path.join(PYARMOR_PATH, 'license.lic')
+    old_path = DATA_PATH if legency else PYARMOR_PATH
+    old_license = os.path.join(old_path, 'license.lic')
     if os.path.exists(old_license):
         logging.info('Remove old license file `%s`', old_license)
         os.remove(old_license)
 
     home = os.path.expanduser('~')
     path = PYARMOR_PATH if legency else DATA_PATH
-    if not os.path.exists(DATA_PATH):
-        logging.info('Create pyarmor data path: %s', path)
+    if not os.path.exists(path):
+        logging.info('Create path: %s', path)
         os.makedirs(path)
 
     f = ZipFile(filename, 'r')
