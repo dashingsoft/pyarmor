@@ -160,8 +160,8 @@ Run bootstrap code in plain scripts
 -----------------------------------
 
 Before v5.7.0 the :ref:`bootstrap code` could be inserted into plain scripts
-directly, but now, for the sake of security, the :ref:``bootstrap code` must be
-in the obfuscated scripts. It need another way to run the :ref:``bootstrap code`
+directly, but now, for the sake of security, the :ref:`bootstrap code` must be
+in the obfuscated scripts. It need another way to run the :ref:`bootstrap code`
 in plain scripts.
 
 First create one bootstrap package :mod:`pytransform_bootstrap` by command
@@ -188,7 +188,7 @@ Run unittest of obfuscated scripts
 In most of obfuscated scripts there are no :ref:`bootstrap code`. So the
 unittest scripts may not work with the obfuscated scripts.
 
-Suppose the test script is :path:`/path/to/tests/test_foo.py`, in order to solve
+Suppose the test script is :file:`/path/to/tests/test_foo.py`, in order to solve
 this problem, first create one bootstrap package :mod:`pytransform_bootstrap`::
 
     pyarmor runtime -i
@@ -205,7 +205,7 @@ After that this test script works with the obfuscated modules::
     python test_foo.py
 
 The other way is patch system package :mod:`unittest` directly. Suppose it
-locates in the :path:`/path/to/unittest`::
+locates in the :file:`/path/to/unittest`::
 
     pyarmor runtime -i
     mv dist/pytransform_bootstrap /path/to/unittest
