@@ -44,12 +44,12 @@ from config import version, version_info, purchase_info, \
                    config_filename, capsule_filename, license_filename
 
 from project import Project
-from utils import make_capsule, make_runtime, relpath, \
+from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   make_project_license, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, search_plugins, \
                   get_product_key, register_keyfile, query_keyinfo, \
-                  get_platform_list, download_pytransform, update_pytransform, \
+                  get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names
 
 import packer
@@ -695,6 +695,11 @@ def _runtime(args):
     make_runtime(capsule, output, licfile=args.with_license,
                  platforms=platforms, package=package)
 
+    filename = os.path.join(output, 'pytransform_bootstrap.py')
+    logging.info('Generating bootstrap script ...')
+    make_bootstrap_script(filename, capsule=capsule, relative=args.relative)
+    logging.info('Generating bootstrap script %s OK', filename)
+
 
 def _version_action():
     pytransform_bootstrap()
@@ -1073,6 +1078,8 @@ def _parser():
                          help='Output path, default is "%(default)s"')
     cparser.add_argument('-n', '--no-package', action='store_true',
                          help='Generate runtime files without package')
+    cparser.add_argument('-r', '--relative', action='store_true',
+                         help='Make bootstrap code with leading dots')
     cparser.add_argument('-L', '--with-license', metavar='FILE',
                          help='Replace default license with this file')
     cparser.add_argument('--platform', dest='platforms', metavar='NAME',

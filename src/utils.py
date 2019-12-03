@@ -921,5 +921,16 @@ def compatible_platform_names(platforms):
     return names
 
 
+def make_bootstrap_script(output, capsule=None, relative=None):
+    filename = os.path.basename(output)
+    co = compile('', filename, 'exec')
+    flags = 0x18000000
+    prokey = get_product_key(capsule)
+    buf = pytransform.encrypt_code_object(prokey, co, flags)
+    with open(output, 'w') as f:
+        f.write(buf.decode())
+    _make_entry(output, relative=relative)
+
+
 if __name__ == '__main__':
     make_entry(sys.argv[1])

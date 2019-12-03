@@ -7,6 +7,8 @@ Change Logs
 -----
 * Fix issue: check license failed if there is no environment variable `HOME` in linux platform
 * Add new value `3` for option `--package-runtime`, the bootstrap code will always use relative import with an extra leading dot
+* The command `runtime` also generates bootstrap script `pytransform_bootstrap.py`
+* Add option `--relative` in command `runtime` to make bootstrap code with leading dots
 
 5.8.0
 -----
