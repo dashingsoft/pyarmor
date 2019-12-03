@@ -58,19 +58,19 @@ Obfuscate python scripts.
 
 **OPTIONS**
 
--O, --output PATH           Output path, default is `dist`
--r, --recursive             Search scripts in recursive mode
--s, --src PATH              Specify source path if entry script is not in the top most path
---exclude PATH              Exclude the path in recusrive mode. Multiple paths are allowed, separated by ",", or use this option multiple times
---exact                     Only obfuscate list scripts
---no-bootstrap              Do not insert bootstrap code to entry script
---no-cross-protection       Do not insert protection code to entry script
---plugin NAME               Insert extra code to entry script, it could be used multiple times
---platform NAME             Distribute obfuscated scripts to other platform
---advanced <0,1>            Disable or enable advanced mode
---restrict <0,1,2,3,4>      Set restrict mode
---package-runtime <0,1,2>   Save the runtime files as a package or not
--n, --no-runtime            DO NOT generate runtime files
+-O, --output PATH             Output path, default is `dist`
+-r, --recursive               Search scripts in recursive mode
+-s, --src PATH                Specify source path if entry script is not in the top most path
+--exclude PATH                Exclude the path in recusrive mode. Multiple paths are allowed, separated by ",", or use this option multiple times
+--exact                       Only obfuscate list scripts
+--no-bootstrap                Do not insert bootstrap code to entry script
+--no-cross-protection         Do not insert protection code to entry script
+--plugin NAME                 Insert extra code to entry script, it could be used multiple times
+--platform NAME               Distribute obfuscated scripts to other platform
+--advanced <0,1>              Disable or enable advanced mode
+--restrict <0,1,2,3,4>        Set restrict mode
+--package-runtime <0,1,2,3>   Where to save runtime files, and how to make bootstrap code
+-n, --no-runtime              DO NOT generate runtime files
 
 **DESCRIPTION**
 
@@ -117,8 +117,9 @@ multiple times if the obfuscated scripts are being to run many platforms. From
 v5.7.5, the platform names are standardized, command `download` could list all
 the available platform names.
 
-Option ``--restrict`` is used to set restrict mode, :ref:`Restrict
-Mode`
+Option ``--restrict`` is used to set restrict mode, :ref:`Restrict Mode`
+
+**RUNTIME FILES**
 
 By default the runtime files will be saved in the separated folder ``pytransform``
 as package::
@@ -129,7 +130,7 @@ as package::
         pytransform.key
         license.lic
 
-If ``--package-runtime`` is `0`, they will be saved in the same path with
+But if ``--package-runtime`` is `0`, they will be saved in the same path with
 obfuscated scripts as four separated files::
 
     pytransform.py
@@ -137,16 +138,25 @@ obfuscated scripts as four separated files::
     pytransform.key
     license.lic
 
-If ``--package-runtime`` is set to `2`, it means the :ref:`runtime package` will
-be in other path, so the :ref:`bootstrap code` always makes absolute import
-without leading dots.
+**BOOTSTRAP CODE**
 
-Otherwise when the entry script is `__init__.py`, it will make a relative import
-by using leading dots like this::
+By default, the following :ref:`bootstrap code` will be inserted into the entry
+script::
+
+    from pytransform import pyarmor_runtime
+    pyarmor_runtime()
+
+If the entry script is ``__init__.py``, the :ref:`bootstrap code` will make a
+relative import by using leading dots like this::
 
     from .pytransform import pyarmor_runtime
     pyarmor_runtime()
 
+
+But the option ``--package-runtime`` will change this behaviour. If it is set to
+`2`, the :ref:`bootstrap code` always makes absolute import without leading
+dots. If it is set to `3`, the :ref:`bootstrap code` always makes relative
+import with leading dots.
 
 **EXAMPLES**
 
@@ -493,7 +503,7 @@ Update project settings.
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
 --runtime-path RPATH            Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script, it could be used multiple times
---package-runtime <0,1,2>       Save the runtime files as a package or not
+--package-runtime <0,1,2,3>     Where to save runtime files, and how to make bootstrap code
 
 **DESCRIPTION**
 
@@ -560,7 +570,7 @@ Build project, obfuscate all scripts in the project.
 -n, --no-runtime              DO NOT generate runtime files
 -O, --output OUTPUT           Output path, override project configuration
 --platform NAME               Distribute obfuscated scripts to other platform
---package-runtime <0,1,2>     Save the runtime files as a package or not
+--package-runtime <0,1,2,3>   Where to save runtime files, and how to make bootstrap code
 
 **DESCRIPTION**
 
