@@ -42,12 +42,6 @@ cp ${datapath}/*.py test/data
 cp ${datapath}/project.zip test/data
 cp ${datapath}/project.zip test/data/project-orig.zip
 
-csih_inform "Make cross platforms path ~/.pyarmor/platforms"
-mkdir -p ~/.pyarmor/platforms
-cp ../../../../pyarmor-core/platforms/index.json ~/.pyarmor/platforms
-[[ -n "$USERPROFILE" ]] && mkdir -p "$USERPROFILE\\.pyarmor\\platforms" \
-    && cp ../../../../pyarmor-core/platforms/index.json "$USERPROFILE\\.pyarmor\\platforms"
-
 csih_inform "Prepare for function testing"
 echo ""
 
@@ -504,57 +498,6 @@ check_file_content $PROPATH/dist/queens.py 'from .pytransform import pyarmor_run
 
 echo ""
 echo "-------------------- Test Project End ------------------------"
-echo ""
-
-# ======================================================================
-#
-#  Cross Publish
-#
-# ======================================================================
-
-echo ""
-echo "-------------------- Test Cross Publish --------------------"
-echo ""
-
-csih_inform "Case CP-1: cross publish by obfuscate"
-$PYARMOR obfuscate --platform linux.x86_64 -O test-cross-publish \
-         examples/simple/queens.py >result.log 2>&1
-check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
-
-csih_inform "Case CP-2: cross publish by obfuscate with no-cross-protection"
-$PYARMOR obfuscate --platform linux.x86_64 -O test-cross-publish \
-         --no-cross-protection examples/simple/queens.py >result.log 2>&1
-check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
-
-csih_inform "Case CP-3: cross publish by project"
-PROPATH=projects/test-cross-publish
-$PYARMOR init --src examples/simple --entry queens.py $PROPATH >result.log 2>&1
-$PYARMOR build --platform linux.x86_64 $PROPATH >result.log 2>&1
-check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
-
-csih_inform "Case CP-4: cross publish by project without cross-protection"
-$PYARMOR config --cross-protection 0 $PROPATH >result.log 2>&1
-check_return_value
-
-$PYARMOR build -B --platform linux.x86_64 $PROPATH >result.log 2>&1
-check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
-
-csih_inform "Case CP-5: cross publish by project with custom cross protection"
-$SED -i -e 's/"cross_protection": [01]/"cross_protection": "protect_code.pt"/g' \
-    $PROPATH/.pyarmor_config >result.log 2>&1
-check_return_value
-check_file_content $PROPATH/.pyarmor_config "protect_code.pt"
-
-$PYARMOR build -B --platform linux.x86_64 $PROPATH >result.log 2>&1
-check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
-
-echo ""
-echo "-------------------- Test Cross Publish END ------------------------"
 echo ""
 
 # ======================================================================
@@ -1028,6 +971,48 @@ check_file_content $casepath/dist/result.log 'This is on demand plugin'
 
 echo ""
 echo "-------------------- Test plugins END ----------------"
+echo ""
+
+# ======================================================================
+#
+#  Test bootstrap package
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test bootstrap package --------------------"
+echo ""
+
+csih_inform "Case BP-01: generate runtime package and bootstrap script"
+output=test-bootstrap-1
+$PYARMOR runtime -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform/__init__.py
+check_file_exists  $output/pytransform_bootstrap.py
+check_file_content $output/pytransform_bootstrap.py 'from pytransform import pyarmor_runtime'
+
+echo "import pytransform_bootstrap" > $output/main.py
+echo "print('OK')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'OK'
+
+csih_inform "Case BP-02: generate runtime package and bootstrap package"
+output=test-bootstrap-2
+$PYARMOR runtime -O $output -i > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform_bootstrap/pytransform/__init__.py
+check_file_exists  $output/pytransform_bootstrap/__init__.py
+check_file_content $output/pytransform_bootstrap/__init__.py 'from .pytransform import pyarmor_runtime'
+
+echo "import pytransform_bootstrap" > $output/main.py
+echo "print('OK2')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'OK2'
+
+echo ""
+echo "-------------------- Test bootstrap package END ----------------"
 echo ""
 
 # ======================================================================
