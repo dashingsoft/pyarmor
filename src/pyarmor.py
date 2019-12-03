@@ -689,15 +689,17 @@ def _download(args):
 def _runtime(args):
     '''Generate runtime package separately.'''
     capsule = DEFAULT_CAPSULE
-    output = args.output
+    name = 'pytransform_bootstrap'
+    output = os.path.join(args.output, name) if args.inside else args.output
     package = not args.no_package
     platforms = compatible_platform_names(args.platforms)
     make_runtime(capsule, output, licfile=args.with_license,
                  platforms=platforms, package=package)
 
-    filename = os.path.join(output, 'pytransform_bootstrap.py')
+    filename = os.path.join(output, '__init__.py') if args.inside else \
+        os.path.join(args.output, name + '.py')
     logging.info('Generating bootstrap script ...')
-    make_bootstrap_script(filename, capsule=capsule, relative=args.relative)
+    make_bootstrap_script(filename, capsule=capsule)
     logging.info('Generating bootstrap script %s OK', filename)
 
 
@@ -1078,8 +1080,9 @@ def _parser():
                          help='Output path, default is "%(default)s"')
     cparser.add_argument('-n', '--no-package', action='store_true',
                          help='Generate runtime files without package')
-    cparser.add_argument('-r', '--relative', action='store_true',
-                         help='Make bootstrap code with leading dots')
+    cparser.add_argument('-i', '--inside', action='store_true',
+                         help='Generate bootstrap script which is used '
+                         'inside one package')
     cparser.add_argument('-L', '--with-license', metavar='FILE',
                          help='Replace default license with this file')
     cparser.add_argument('--platform', dest='platforms', metavar='NAME',
