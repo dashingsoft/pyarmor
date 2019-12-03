@@ -280,11 +280,12 @@ def _build(args):
         if project.entry:
             soutput = os.path.join(output, os.path.basename(project.src)) \
                 if project.get('is_package') else output
-            pr = project.get('package_runtime', 0) \
+            x = project.get('package_runtime', 0) \
                 if args.package_runtime is None else args.package_runtime
-            inner = pr if pr > 1 else 2 if args.no_runtime else 1
+            relative = True if x == 3 else \
+                False if (x == 2 or args.no_runtime) else None
             make_entry(project.entry, project.src, soutput,
-                       rpath=project.runtime_path, inner=inner)
+                       rpath=project.runtime_path, relative=relative)
 
     if not args.no_runtime:
         routput = output if args.output is not None and args.only_runtime \
@@ -530,13 +531,14 @@ def _obfuscate(args):
     logging.info('%d scripts have been obfuscated', len(files))
 
     if (not args.no_bootstrap) and entry and os.path.exists(entry):
-        inner = args.package_runtime if args.package_runtime > 1 else 1
+        x = args.package_runtime
+        relative = True if x == 3 else False if x == 2 else None
         entryname = entry if args.src else os.path.basename(entry)
         if os.path.exists(os.path.join(output, entryname)):
-            make_entry(entryname, path, output, inner=inner)
+            make_entry(entryname, path, output, relative=relative)
         else:
             logging.info('Use outer entry script "%s"', entry)
-            make_entry(entry, path, output, inner=inner)
+            make_entry(entry, path, output, relative=relative)
 
     if args.no_runtime:
         logging.info('Obfuscate %d scripts OK.', len(files))
@@ -787,9 +789,9 @@ def _parser():
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
-    cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3),
-                         type=int, default=1,
-                         help='Save runtime files as a package or not')
+    cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
+                         default=1, help='Where to save runtime files, '
+                         'and how to make bootstrap code')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate runtime files')
     cparser.set_defaults(func=_obfuscate)
@@ -917,7 +919,8 @@ def _parser():
     cparser.add_argument('--advanced-mode', type=int, choices=(0, 1),
                          help='Enable or disable advanced mode')
     cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
-                         help='Save runtime files as a package or not')
+                         help='Where to save runtime files, '
+                         'and how to make bootstrap code')
     cparser.set_defaults(func=_config)
 
     #
@@ -945,7 +948,8 @@ def _parser():
                          help='Target platform to run obfuscated scripts, '
                          'use this option multiple times for more platforms')
     cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
-                         help='Save runtime files as a package or not')
+                         help='Where to save runtime files, '
+                         'and how to make bootstrap code')
     cparser.set_defaults(func=_build)
 
     #
