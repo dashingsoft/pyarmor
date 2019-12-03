@@ -295,9 +295,10 @@ def check_capsule(capsule):
     return True
 
 
-def _make_entry(filename, rpath=None, inner=True, shell=None):
+def _make_entry(filename, rpath=None, inner=1, shell=None):
     pkg = os.path.basename(filename) == '__init__.py'
-    entry_code = entry_lines[0] % ('.' if inner and pkg else '')
+    entry_code = entry_lines[0] % (
+        '.' if (inner == 3) or ((inner == 1) and pkg) else '')
 
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -333,7 +334,7 @@ def _get_script_shell(script):
             pass
 
 
-def make_entry(entris, path, output, rpath=None, inner=True):
+def make_entry(entris, path, output, rpath=None, inner=1):
     for entry in entris.split(','):
         entry = entry.strip()
         filename = build_path(entry, output)

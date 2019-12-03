@@ -5,7 +5,8 @@ Change Logs
 
 5.8.1
 -----
-* Fix issue: check license failed if there is no environment variable `HOME`
+* Fix issue: check license failed if there is no environment variable `HOME` in linux platform
+* Add new value `3` for option `--package-runtime`, the bootstrap code will always use relative import with an extra leading dot
 
 5.8.0
 -----
