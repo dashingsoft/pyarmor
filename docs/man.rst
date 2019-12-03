@@ -786,6 +786,7 @@ Geneate :ref:`runtime package` separately.
 
 -O, --output PATH             Output path, default is `dist`
 -n, --no-package              Generate runtime files without package
+-r, --relative                Make bootstrap code with leading dots
 -L, --with-license FILE       Replace default license with this file
 --platform NAME               Generate runtime package for specified platform
 
@@ -796,6 +797,14 @@ This command is used to generate the runtime package separately.
 The :ref:`runtiem package` could be shared if the scripts are obufscated by same
 :ref:`Global Capsule`. So generate it once, then need not generate the runtime
 files when obfuscating the scripts later.
+
+It also generates a bootstrap script ``pytransform_bootstrap.py`` in the output
+path. This script is obfuscated from an empty script, and there is
+:ref:`bootstrap code` in it. It could be imported from plain scripts, then all
+the other obfuscated modules could be imported. For example::
+
+    import pytransform_bootstrap
+    import obf_mod_a
 
 About option ``--platform``, refer to command `obfuscate`_
 
@@ -808,6 +817,11 @@ About option ``--platform``, refer to command `obfuscate`_
 * Not generate a package, but four separate files :ref:`runtime files`::
 
     pyarmor runtime -n
+
+* Generate bootstrap script ``dist/pytransform_boostrap.py`` by relative import,
+  there is leading dots in the :ref:`bootstrap code`::
+
+    pyarmor runtime -r
 
 * Generate :ref:`runtime package` for platform `armv7` with expired license::
 
