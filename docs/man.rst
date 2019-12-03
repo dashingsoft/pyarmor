@@ -154,8 +154,8 @@ relative import by using leading dots like this::
 
 
 But the option ``--package-runtime`` will change this behaviour. If it is set to
-`2`, the :ref:`bootstrap code` always makes absolute import without leading
-dots. If it is set to `3`, the :ref:`bootstrap code` always makes relative
+``2``, the :ref:`bootstrap code` always makes absolute import without leading
+dots. If it is set to ``3``, the :ref:`bootstrap code` always makes relative
 import with leading dots.
 
 **EXAMPLES**
@@ -581,6 +581,9 @@ Run this command in project path::
 Or specify the project path at the end::
 
     pyarmor build /path/to/project
+
+The option ``--no-runtime`` may impact on the :ref:`bootstrap code`, the
+bootstrap code will make absolute import without leading dots in entry script.
 
 About option ``--platform`` and ``--package-runtime``, refer to command `obfuscate`_
 

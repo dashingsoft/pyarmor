@@ -10,7 +10,7 @@ There are several advantages to manage obfuscated scripts by Project:
 
 * Increment build, only updated scripts are obfuscated since last build
 * Filter obfuscated scripts in the project, exclude some scripts
-* Obfuscate the scripts with different modes  
+* Obfuscate the scripts with different modes
 * More convenient to manage obfuscated scripts
 
 Managing Obfuscated Scripts With Project
@@ -235,7 +235,7 @@ Each project has a configure file. It's a json file named
 
   How to save the runtime files:
 
-        - 0 
+        - 0
 
         Save them in the same path with the obufscated scripts
 
@@ -245,9 +245,17 @@ Each project has a configure file. It's a json file named
 
         - 2
 
-        Same as 1, but the package `pytransform` may be in other path
-        in runtime. So the bootstrap code will not be made a relative
-        import when inserting entry script.
+        Same as 1, but it's implied the package `pytransform` is not
+        in same path with obfuscated scripts in runtime. So the
+        bootstrap code will always make absolute import without
+        leading dots in entry script.
+
+        -3
+
+        Same as 1, but it's implied the package `pytransform` is in
+        the same path with obfuscated scripts in runtime. So the
+        bootstrap code will always make a relative import with leading
+        dots in the entry script.
 
 * plugins
 
