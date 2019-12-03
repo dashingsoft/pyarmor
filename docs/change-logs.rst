@@ -9,6 +9,8 @@ Change Logs
 * Add new value `3` for option `--package-runtime`, the bootstrap code will always use relative import with an extra leading dot
 * The command `runtime` also generates bootstrap script `pytransform_bootstrap.py`
 * Add option `--inside` in command `runtime` to generate bootstrap package `pytransform_bootstrap`
+* Document how to run unittest of obfuscated scripts, refer to
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#run-unittest-of-obfuscated-scripts
 
 5.8.0
 -----

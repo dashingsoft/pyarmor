@@ -154,6 +154,69 @@ In the Windows, create a bat file `pyarmor3.bat`, the content would be like this
 
     C:\Python36\python C:\Python27\Lib\site-packages\pyarmor\pyarmor.py %*
 
+.. _run bootstrap code in plain scripts:
+
+Run bootstrap code in plain scripts
+-----------------------------------
+
+Before v5.7.0 the :ref:`bootstrap code` could be inserted into plain scripts
+directly, but now, for the sake of security, the :ref:``bootstrap code` must be
+in the obfuscated scripts. It need another way to run the :ref:``bootstrap code`
+in plain scripts.
+
+First create one bootstrap package :mod:`pytransform_bootstrap` by command
+:ref:`runtime`::
+
+    pyarmor runtime -i
+
+Then import this package in plain scripts, now any other obfuscated modules
+could be imported. For example::
+
+    import pytransform_bootstrap
+
+Before v5.8.1, create this bootstrap package by this way::
+
+    mkdir pytransform_bootstrap
+    echo "" > __init__.py
+    pyarmor obfuscate -O dist/pytransform_bootstrap --exact __init__.py
+
+.. _run unittest of obfuscated scripts:
+
+Run unittest of obfuscated scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In most of obfuscated scripts there are no :ref:`bootstrap code`. So the
+unittest scripts may not work with the obfuscated scripts.
+
+Suppose the test script is :path:`/path/to/tests/test_foo.py`, in order to solve
+this problem, first create one bootstrap package :mod:`pytransform_bootstrap`::
+
+    pyarmor runtime -i
+    mv dist/pytransform_bootstrap /path/to/tests
+
+Then edit the test script, insert one line before importing any obfuscated
+module::
+
+    import pytransform_bootstrap
+
+After that this test script works with the obfuscated modules::
+
+    cd /path/to/tests
+    python test_foo.py
+
+The other way is patch system package :mod:`unittest` directly. Suppose it
+locates in the :path:`/path/to/unittest`::
+
+    pyarmor runtime -i
+    mv dist/pytransform_bootstrap /path/to/unittest
+
+Edit :file:`/path/to/unittest/__init__.py`, insert one line::
+
+    from . import pytransform_bootstrap
+
+Now all the unittest scripts could work with the obfuscated scripts. It's useful
+if there are many unittest scripts.
+
 .. _let python interpreter recognize obfuscated scripts automatically:
 
 Let Python Interpreter Recognize Obfuscated Scripts Automatically
@@ -163,45 +226,44 @@ In a few cases, if Python Interpreter could recognize obfuscated
 scripts automatically, it will make everything simple:
 
 * Almost all the obfuscated scripts will be run as main script
-* Run unittest of the obfuscated scripts
 * In the obfuscated scripts call `multiprocessing` to create new process
 * Or call `Popen`, `os.exec` etc. to run any other obfuscated scripts
 * ...
 
 Here are the base steps:
 
-1. First create the :ref:`runtime package` with empty entry script::
+1. First create one bootstrap package :mod:`pytransform_bootstrap`::
 
-    echo "" > pytransform_bootstrap.py
-    pyarmor obfuscate pytransform_bootstrap.py
+    pyarmor runtime -i
+
+   Before v5.8.1, it need be created by obfuscating an empty package::
+
+    echo "" > __init__.py
+    pyarmor obfuscate -O dist/pytransform_bootstrap --exact __init__.py
 
 2. Then create virtual python environment to run the obfuscated scripts, move
-   the obfuscated bootstrap script ``dist/pytransform_bootstrap.py`` and the
-   :ref:`runtime package` ``dist/pytransform`` to virtual python library. For
-   example::
+   the bootstrap package to virtual python library. For example::
 
     # For windows
-    mv dist/pytransform venv/Lib/
-    mv dist/pytransform_bootstrap.py venv/Lib/
+    mv dist/pytransform_bootstrap venv/Lib/
 
     # For linux
-    mv dist/pytransform venv/lib/python3.5/
-    mv dist/pytransform_bootstrap.py venv/lib/python3.5/
+    mv dist/pytransform_bootstrap venv/lib/python3.5/
 
-4. Edit `venv/lib/site.py` (on Windows) or `venv/lib/pythonX.Y/site.py` (on
-   Linux), import `pytransform_bootstrap` before the main line::
+4. Edit `venv/lib/site.py` or `venv/lib/pythonX.Y/site.py`, import
+   `pytransform_bootstrap` before the main line::
 
     import pytransform_bootstrap
 
     if __name__ == '__main__':
         ...
 
-It also could be inserted into the end of function `site.main`, or anywhere they
-could be executed as module `site` is imported.
+It also could be inserted into the end of function ``main``, or anywhere they
+could be executed as module :mod:`site` is imported.
 
-After that in the virtual environment `python` could run the obfuscated scripts
-directly, because the module `site` is automatically imported during Python
-initialization.
+After that in the virtual environment ``python`` could run the obfuscated
+scripts directly, because the module :mod:`site` is automatically imported
+during Python initialization.
 
 Refer to https://docs.python.org/3/library/site.html
 
@@ -212,8 +274,8 @@ Refer to https://docs.python.org/3/library/site.html
 
 .. note::
 
-    Before v5.7.0, you need create the :ref:`runtime package` by the
-    :ref:`runtime files` manually.
+    Before v5.7.0, you need create the bootstrap package by the :ref:`runtime
+    files` manually.
 
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
