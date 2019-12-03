@@ -174,9 +174,10 @@ could be imported. For example::
 
     import pytransform_bootstrap
 
-Before v5.8.1, create this bootstrap package by this way::
+.. note::
 
-    mkdir pytransform_bootstrap
+   Before v5.8.1, create this bootstrap package by this way::
+
     echo "" > __init__.py
     pyarmor obfuscate -O dist/pytransform_bootstrap --exact __init__.py
 
