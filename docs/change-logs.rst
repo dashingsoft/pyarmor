@@ -21,7 +21,7 @@ Change Logs
   https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-with-customized-spec-file
 * In runtime module `pytransform`, the functions may raise `Exception` instead of `PytransformError` in some cases.
 * In command `register`, add option `--legency` to store `license.lic` in the traditional way
-* Fix format platform name issue: in some linux platforms the platform name may be not right
+* Fix platform name issue: in some linux platforms the platform name may not be right
 
 5.7.10
 ------
