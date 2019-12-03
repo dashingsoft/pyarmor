@@ -357,6 +357,15 @@ check_file_exists test-exception/e.py
 check_file_content test-exception/result.log 'Elinimate long line from traceback'
 check_file_content test-exception/result.log '__pyarmor__' not
 
+csih_inform "C-28. Test option --package-runtime=3 for obfuscate"
+$PYARMOR obfuscate --package-runtime 3 --output test-package-runtime3 \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists test-package-runtime3/pytransform/__init__.py
+check_file_content test-package-runtime3/pytransform/__init__.py 'def init_runtime'
+check_file_exists test-package-runtime3/queens.py
+check_file_content test-package-runtime3/queens.py 'from .pytransform import pyarmor_runtime'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
@@ -477,6 +486,21 @@ cp $PROPATH/.pyarmor_config $PROPATH/project.json
 (cd $PROPATH; $ARMOR info project.json > result.log 2>&1)
 check_return_value
 check_file_content $PROPATH/result.log 'Alias-Project-8'
+
+csih_inform "Case P-9: build project with --package-runtime=3"
+PROPATH=projects/test-package-runtime3
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --package-runtime=3 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/pytransform/__init__.py
+check_file_content $PROPATH/dist/pytransform/__init__.py 'def pyarmor_runtime'
+check_file_exists $PROPATH/dist/queens.py
+check_file_content $PROPATH/dist/queens.py 'from .pytransform import pyarmor_runtime'
 
 echo ""
 echo "-------------------- Test Project End ------------------------"
