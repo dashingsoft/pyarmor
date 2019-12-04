@@ -447,7 +447,7 @@ later easily. Here are basic steps:
 
 2. Then pack the scirpt with extra options::
 
-    pyarmor pack --clean --without-license -x " --exclude copy_license.py" \
+    pyarmor pack --clean --without-license \
             -e " --onefile --icon logo.ico --runtime-hook copy_license.py" foo.py
 
   Option ``--without-license`` tells :ref:`pack` not to bundle the `license.lic`
@@ -479,16 +479,16 @@ If there is a customized spec file works, for example::
 It could be used to pack obfuscated scripts by little changed:
 
 * Add module ``pytransform`` to `hiddenimports`
-* Add extra path ``DISTPATH/obf`` to `pathex` and `hookspath`
+* Add extra path ``DISTPATH/obf/temp`` to `pathex` and `hookspath`
 
 After changed, it may be like this::
 
     a = Analysis(['myscript.py'],
-                 pathex=[os.path.join(DISTPATH, 'obf'), ...],
+                 pathex=[os.path.join(DISTPATH, 'obf', 'temp'), ...],
                  binaries=[],
                  datas=[],
                  hiddenimports=['pytransform', ...],
-                 hookspath=[os.path.join(DISTPATH, 'obf'), ...],
+                 hookspath=[os.path.join(DISTPATH, 'obf', 'temp'), ...],
 
 Now run command :ref:`pack` by this way::
 
@@ -499,6 +499,8 @@ That's all.
 .. note::
 
    This featuer is introduced since v5.8.0
+
+   Before v5.8.2, the extra path is ``DISTPATH/obf``, not ``DISTPATH/obf/temp``
 
 .. _improving the security by restrict mode:
 
