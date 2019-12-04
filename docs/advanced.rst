@@ -169,10 +169,20 @@ First create one bootstrap package :mod:`pytransform_bootstrap` by command
 
     pyarmor runtime -i
 
-Then import this package in plain scripts, now any other obfuscated modules
-could be imported. For example::
+Next move bootstrap package to the path of plain script::
+
+    mv dist/pytransform_bootstrap /path/to/script
+
+It also could be copied to python system library, for examples::
+
+    mv dist/pytransform_bootstrap /usr/lib/python3.5/ (For Linux)
+    mv dist/pytransform_bootstrap C:/Python35/Lib/ (For Windows)
+
+Then edit the plain script, insert one line::
 
     import pytransform_bootstrap
+
+Now any other obfuscated modules could be imported after this line.
 
 .. note::
 
@@ -189,31 +199,21 @@ Run unittest of obfuscated scripts
 In most of obfuscated scripts there are no :ref:`bootstrap code`. So the
 unittest scripts may not work with the obfuscated scripts.
 
-Suppose the test script is :file:`/path/to/tests/test_foo.py`, in order to solve
-this problem, first create one bootstrap package :mod:`pytransform_bootstrap`::
+Suppose the test script is :file:`/path/to/tests/test_foo.py`, first patch this
+test script, refer to `run bootstrap code in plain scripts`_
 
-    pyarmor runtime -i
-    mv dist/pytransform_bootstrap /path/to/tests
-
-Then edit the test script, insert one line before importing any obfuscated
-module::
-
-    import pytransform_bootstrap
-
-After that this test script works with the obfuscated modules::
+After that it works with the obfuscated modules::
 
     cd /path/to/tests
     python test_foo.py
 
-The other way is patch system package :mod:`unittest` directly. Suppose it
-locates in the :file:`/path/to/unittest`::
+The other way is patch system package :mod:`unittest` directly. Make sure the
+bootstrap package :mod:`pytransform_bootstrap` is copied in the Python system
+library, refer to `run bootstrap code in plain scripts`_
 
-    pyarmor runtime -i
-    mv dist/pytransform_bootstrap /path/to/unittest
+Then edit :file:`/path/to/unittest/__init__.py`, insert one line::
 
-Edit :file:`/path/to/unittest/__init__.py`, insert one line::
-
-    from . import pytransform_bootstrap
+    import pytransform_bootstrap
 
 Now all the unittest scripts could work with the obfuscated scripts. It's useful
 if there are many unittest scripts.
