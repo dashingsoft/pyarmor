@@ -171,14 +171,14 @@ check_file_content $dist/main/result.log 'Hello! PyArmor Test Case'
 
 csih_inform "Case 3-7: Test runtime hook in the src path"
 dist=test-runtime-hook
-echo "print('Test runtime hook OK')" > test_hook_main.py
-echo "print('This is myhook')" > myhook.py
-$PYARMOR pack --output $dist -x " --exclude myhook.py" \
-         -e " --runtime-hook myhook.py" \
-         test_hook_main.py >result.log 2>&1
+mkdir $dist
+echo "print('Test runtime hook OK')" > $dist/test_hook_main.py
+echo "print('This is myhook')" > $dist/myhook.py
+(cd $dist; $PYTHON ../pyarmor.py pack --output dist -x " --exclude myhook.py" \
+         -e " --runtime-hook myhook.py" test_hook_main.py >result.log 2>&1)
 check_return_value
 
-( cd $dist/; ./test_hook_main/test_hook_main.exe  >result.log 2>&1 )
+( cd $dist; dist/test_hook_main/test_hook_main.exe  >result.log 2>&1 )
 check_return_value
 check_file_content $dist/result.log 'This is myhook'
 check_file_content $dist/result.log 'Test runtime hook OK'
