@@ -472,8 +472,12 @@ def _obfuscate(args):
         if args.exclude:
             for item in args.exclude:
                 for x in item.split(','):
-                    logging.info('Exclude path "%s"', x)
-                    pats.append('prune %s' % x)
+                    if x.endswith('*.py'):
+                        logging.info('Exclude pattern "%s"', x)
+                        pats.append('exclude %s' % x)
+                    else:
+                        logging.info('Exclude path "%s"', x)
+                        pats.append('prune %s' % x)
 
         if os.path.abspath(output).startswith(path):
             x = os.path.abspath(output)[len(path):].strip('/\\')
