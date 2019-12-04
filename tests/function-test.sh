@@ -360,6 +360,13 @@ check_file_content test-package-runtime3/pytransform/__init__.py 'def init_runti
 check_file_exists test-package-runtime3/queens.py
 check_file_content test-package-runtime3/queens.py 'from .pytransform import pyarmor_runtime'
 
+csih_inform "C-29. Test option --exclude .py file for obfuscate"
+$PYARMOR obfuscate -O test-exclude3 -r --exclude "mypkg/foo.py" \
+         examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists test-exclude3/main.py
+check_file_not_exists test-exclude3/mypkg/foo.py
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
