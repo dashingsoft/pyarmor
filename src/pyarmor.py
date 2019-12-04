@@ -472,7 +472,7 @@ def _obfuscate(args):
         if args.exclude:
             for item in args.exclude:
                 for x in item.split(','):
-                    if x.endswith('*.py'):
+                    if x.endswith('.py'):
                         logging.info('Exclude pattern "%s"', x)
                         pats.append('exclude %s' % x)
                     else:
