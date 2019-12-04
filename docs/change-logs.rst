@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.8.2
+-----
+* Fix issue: In command `obfuscate` the option `--exclude` could not exclude `.py` files
+
 5.8.1
 -----
 * Fix issue: check license failed if there is no environment variable `HOME` in linux platform
