@@ -447,7 +447,7 @@ later easily. Here are basic steps:
 
 2. Then pack the scirpt with extra options::
 
-    pyarmor pack --clean --without-license \
+    pyarmor pack --clean --without-license -x " --exclude copy_license.py" \
             -e " --onefile --icon logo.ico --runtime-hook copy_license.py" foo.py
 
   Option ``--without-license`` tells :ref:`pack` not to bundle the `license.lic`
