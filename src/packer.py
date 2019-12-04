@@ -313,13 +313,19 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
                   '--package-runtime', '0']
                  + xoptions + [os.path.join(src, entry)])
 
-    hookfile = os.path.join(obfdist, 'hook-pytransform.py')
+    obftemp = os.path.join(obfdist, 'temp')
+    if not os.path.exists(obftemp):
+        logging.info('Create temp path: %s', obftemp)
+        os.makedirs(obftemp)
+    shutil.copy(os.path.join(obfdist, 'pytransform.py'), obftemp)
+
+    hookfile = os.path.join(obftemp, 'hook-pytransform.py')
     logging.info('Generate hook script: %s', hookfile)
     _make_hook_pytransform(hookfile, obfdist, nolicense)
 
     if clean or args.setup is None or (not os.path.exists(specfile)):
         logging.info('Run PyInstaller to generate .spec file...')
-        _pyi_makespec(obfdist, src, entry, packcmd)
+        _pyi_makespec(obftemp, src, entry, packcmd)
         if not os.path.exists(specfile):
             raise RuntimeError('No specfile "%s" found', specfile)
         logging.info('Save .spec file to %s', specfile)
