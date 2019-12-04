@@ -447,19 +447,20 @@ later easily. Here are basic steps:
 
 2. Then pack the scirpt with extra options::
 
-    pyarmor pack --clean --without-license \
+    pyarmor pack --clean --without-license -x " --exclude copy_license.py" \
             -e " --onefile --icon logo.ico --runtime-hook copy_license.py" foo.py
 
   Option ``--without-license`` tells :ref:`pack` not to bundle the `license.lic`
   of obfuscated scripts to the final executable file. By option
-  ``--runtime-hook`` of `PyInstaller`_, the specified script `copy_licesen.py`
-  will be executed before any obfuscated scripts are imported. It will copy
-  outer `license.lic` to right path.
+  ``--runtime-hook`` of `PyInstaller`_, the specified script
+  :file:`copy_licesen.py` will be executed before any obfuscated scripts are
+  imported. It will copy outer :file:`license.lic` to right path.
 
-  Try to run `dist/foo.exe`, it should report license error.
+  Try to run :file:`dist/foo.exe`, it should report license error.
 
 3. Finally run :ref:`licenses` to generate new license for the obfuscated
-   scripts, and copy new `license.lic` and `dist/foo.exe` to end users::
+   scripts, and copy new :file:`license.lic` and :file:`dist/foo.exe` to end
+   users::
 
     pyarmor licenses -e 2020-01-01 code-001
     cp license/code-001/license.lic dist/
