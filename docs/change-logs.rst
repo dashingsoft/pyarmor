@@ -5,8 +5,8 @@ Change Logs
 
 5.8.2
 -----
-* Fix issue: In command `obfuscate` the option `--exclude` could not exclude `.py` files
-* Refine command `pack`  
+* Fix issue: the option `--exclude` in command `obfuscate` could not exclude `.py` files
+* Refine command `pack`
 
 5.8.1
 -----
