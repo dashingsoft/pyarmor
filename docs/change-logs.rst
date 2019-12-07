@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.8.3
+-----
+* Fix issue: the `_pytransform.dll` for windows.x86_64 is not latest
+
 5.8.2
 -----
 * Fix issue: the option `--exclude` in command `obfuscate` could not exclude `.py` files
