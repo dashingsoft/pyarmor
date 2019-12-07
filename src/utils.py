@@ -45,7 +45,7 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-                   platform_urls, platform_config, key_url, core_version
+    platform_urls, platform_config, key_url, core_version
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
