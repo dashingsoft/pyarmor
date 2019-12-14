@@ -1,6 +1,6 @@
 from sys import platform
 
-version = '5.8.3'
+version = '5.8.4'
 
 # The corresponding version of _pytransform.so
 core_version = 'r8.2.1'
@@ -39,7 +39,7 @@ platform_urls = [
     'https://github.com/dashingsoft/pyarmor-core/raw/%s/platforms' %
     core_version,
     'https://pyarmor.dashingsoft.com/downloads/latest'
-    ]
+]
 platform_config = 'index.json'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
