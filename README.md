@@ -1,8 +1,8 @@
 # PyArmor
 
-* [Homepage](http://pyarmor.dashingsoft.com) ([中文版网站](http://pyarmor.dashingsoft.com/index-zh.html))
+* [Homepage](https://pyarmor.dashingsoft.com) ([中文版网站](https://pyarmor.dashingsoft.com/index-zh.html))
 * [Documentation](https://pyarmor.readthedocs.io/en/latest/)
-* [WebUI Demo](http://pyarmor.dashingsoft.com/demo/index.html)
+* [WebUI Demo](https://pyarmor.dashingsoft.com/demo/index.html)
 * [Examples](src/examples)
 
 PyArmor is a command line tool used to obfuscate python scripts, bind
