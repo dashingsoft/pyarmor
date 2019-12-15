@@ -11,7 +11,7 @@ test -f $PYTHON || PYTHON=python
 clear_build()
 {
     echo Remove build files: pyarmor.egg-info build src/__pycache__
-    rm -rf pyarmor.egg-info build src/__pycache__
+    rm -rf pyarmor.egg-info build src/__pycache__ src/*.pyc
 }
 
 clear_platform_files()
@@ -42,8 +42,9 @@ $PYTHON setup.py sdist --formats=zip,bztar,gztar
 clear_build
 
 # Build universal wheel
-$PYTHON setup.py bdist_wheel --universal
-clear_build
+# $PYTHON setup.py bdist_wheel --universal
+# clear_build
+
 clear_platform_files
 
 # Build binary wheel
