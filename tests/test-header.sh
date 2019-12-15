@@ -80,7 +80,7 @@ case ${PLATFORM} in
         # declare -r ifmac_address=08:00:27:b0:b3:94
         declare -r harddisk_sn=FV994730S6LLF07AY
         declare -r ifmac_address=f8:ff:c2:27:00:7f
-        declare -r ifip_address=10.0.2.15
+        declare -r ifip_address=$(ipconfig getifaddr en0)
         declare -r domain_name=
         ;;
     *)
