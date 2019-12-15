@@ -1,5 +1,6 @@
 ARCH := $(shell arch)
 UNAME := $(shell uname)
+BASH := bash
 
 ifeq ($(findstring Linux,$(UNAME)),Linux)
 
@@ -13,6 +14,7 @@ else
 
 ifeq ($(findstring Darwin,$(UNAME)),Darwin)
 PLATFORM := macosx_x86_64
+BASH := /usr/local/bin/bash
 else
 
 ifeq ($(ARCH),x86_64)
@@ -79,41 +81,41 @@ WORKPATH = __runtime__
 
 test:
 	for pyver in  $(VERSIONS) ; do \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash integration-test.sh || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            echo "" && echo "******************** Testing Python$${pyver} ..." && echo "" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) $(BASH) integration-test.sh || exit 1; \
+            echo "" && echo "******************** Test Python$${pyver} End." && echo "" ; \
 	done
 	make clean
 
 stest:
 	for pyver in  $(VERSIONS) ; do \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash system-test.sh || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            echo "" && echo "******************** Testing Python$${pyver} ..." && echo "" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) $(BASH) system-test.sh || exit 1; \
+            echo "" && echo "******************** Test Python$${pyver} End." && echo "" ; \
 	done
 	make clean
 
 ftest:
 	for pyver in  $(VERSIONS) ; do \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash function-test.sh || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            echo "" && echo "******************** Testing Python$${pyver} ..." && echo "" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) $(BASH) function-test.sh || exit 1; \
+            echo "" && echo "******************** Test Python$${pyver} End." && echo "" ; \
 	done
 	make clean
 
 atest:
 	for pyver in  $(VERSIONS) ; do \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash accept-test.sh || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            echo "" && echo "******************** Testing Python$${pyver} ..." && echo "" ; \
+            $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) $(BASH) accept-test.sh || exit 1; \
+            echo "" && echo "******************** Test Python$${pyver} End." && echo "" ; \
 	done
 	make clean
 
 ptest:
 	for pyver in  $(VERSIONS) ; do \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
-            TESTLIB=$(subst XY,$${pyver},$(PYLIB))/test $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) bash python-test.sh || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            echo "" && echo "******************** Testing Python$${pyver} ..." && echo "" ; \
+            TESTLIB=$(subst XY,$${pyver},$(PYLIB))/test $(CMDPREFIX) PYTHON=$(subst XY,$${pyver},$(PYCMD)) $(BASH) python-test.sh || exit 1; \
+            echo "" && echo "******************** Test Python$${pyver} End." && echo "" ; \
 	done
 	make clean
 
@@ -126,9 +128,9 @@ build:
 unit:
 	for pyver in  $(VERSIONS) ; do \
             make build ; \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
+            echo "" && echo "******************** Testing Python$${pyver} ..." && echo "" ; \
             $(CMDPREFIX) $(subst XY,$${pyver},$(PYCMD)) test-pyarmor.py || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            echo "" && echo "******************** Test Python$${pyver} End." && echo "" ; \
             make clean; \
 	done
 
@@ -136,9 +138,9 @@ unit:
 trial:
 	for pyver in  $(VERSIONS) ; do \
             make build ; \
-            echo -e "\n******************** Testing Python$${pyver} ...\n" ; \
+            echo "" && echo "******************** Testing Python$${pyver} ..." && echo "" ; \
             $(CMDPREFIX) $(subst XY,$${pyver},$(PYCMD)) test-trial-pyarmor.py || exit 1; \
-            echo -e "\n******************** Test Python$${pyver} End.\n" ; \
+            echo "" && echo "******************** Test Python$${pyver} End." && echo "" ; \
             make clean; \
 	done
 
