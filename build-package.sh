@@ -6,7 +6,9 @@
 PLATFORMS="win32 win_amd64 manylinux1_x86_64 macosx_10_11_x86_64 macosx_10_11_intel"
 
 PYTHON=C:/Python34/python
-test -f $PYTHON || PYTHON=python
+test -x $PYTHON || PYTHON=/usr/local/bin/python3
+test -x $PYTHON || PYTHON=python
+echo "PYTHON is $PYTHON"
 
 clear_build()
 {
@@ -42,8 +44,8 @@ $PYTHON setup.py sdist --formats=zip,bztar,gztar
 clear_build
 
 # Build universal wheel
-# $PYTHON setup.py bdist_wheel --universal
-# clear_build
+$PYTHON setup.py bdist_wheel --universal
+clear_build
 
 clear_platform_files
 
