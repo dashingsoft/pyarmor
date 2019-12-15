@@ -3,7 +3,7 @@
 Change Logs
 ===========
 
-5.8.3
+5.8.4
 -----
 * Fix issue: advanced mode doesn't work in some MacOSX machines.
 * Fix issue: can't get the serial number of SSD harddisk in MacOSX platform
