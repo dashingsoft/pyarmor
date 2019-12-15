@@ -5,6 +5,11 @@ Change Logs
 
 5.8.3
 -----
+* Fix issue: advanced mode doesn't work in some MacOSX machines.
+* Fix issue: can't get the serial number of SSD harddisk in MacOSX platform
+
+5.8.3
+-----
 * Fix issue: the `_pytransform.dll` for windows.x86_64 is not latest
 
 5.8.2
