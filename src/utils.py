@@ -152,12 +152,12 @@ def _get_platform_list(urls, platid=None):
     if not os.path.exists(CROSS_PLATFORM_PATH):
         logging.info('Create cross platforms path: %s', CROSS_PLATFORM_PATH)
         os.makedirs(CROSS_PLATFORM_PATH)
-    filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
+    filename = os.path.join(PLATFORM_PATH, platform_config)
     if os.path.exists(filename):
         with open(filename) as f:
             cfg = json_loads(f.read())
         if cfg.get('version') == core_version:
-            logging.info('Load platforms information from cached file')
+            logging.info('Load platforms information from %s', filename)
         else:
             cfg = None
     if cfg is None:

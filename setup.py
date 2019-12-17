@@ -30,12 +30,13 @@ pyarmor_data_files = [
 ]
 
 platform_data_files = [
+    'platforms/index.json',
     'platforms/windows/x86/_pytransform.dll',
     'platforms/windows/x86_64/_pytransform.dll',
     'platforms/linux/x86/_pytransform.so',
     'platforms/linux/x86_64/_pytransform.so',
     'platforms/darwin/x86_64/_pytransform.dylib',
-    ]
+]
 
 if argv[1] == 'bdist_wheel':
     for opt in argv[1:]:
