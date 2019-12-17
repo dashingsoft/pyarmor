@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.8.5
+-----
+* Add platform data file `index.json` to source package
+* Refine core library for platform MacOSX
+
 5.8.4
 -----
 * Fix issue: advanced mode doesn't work in some MacOSX machines.
