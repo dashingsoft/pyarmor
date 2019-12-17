@@ -32,13 +32,7 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 csih_inform "Add execute permission to dynamic library"
 find ./platforms -name _pytransform.dll -exec chmod +x {} \;
 
-csih_inform "Make cross platforms path ~/.pyarmor/platforms"
-mkdir -p ~/.pyarmor/platforms
-cp ../../../../pyarmor-core/platforms/index.json ~/.pyarmor/platforms
-[[ -n "$USERPROFILE" ]] && mkdir -p "$USERPROFILE\\.pyarmor\\platforms" \
-    && cp ../../../../pyarmor-core/platforms/index.json "$USERPROFILE\\.pyarmor\\platforms"
-
-csih_inform "Prepare for function testing"
+csih_inform "Prepare for cross-platform testing"
 echo ""
 
 
