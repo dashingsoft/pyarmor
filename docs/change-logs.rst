@@ -7,7 +7,7 @@ Change Logs
 -----
 * Raise exception other than `sys.exit(1)` when pyarmor_runtime fails
 * Refine cross protection code to improve the security
-* Fix issue: advanced mode failes in some MacOSX machines with python2.7
+* Fix issue: advanced mode fails in some MacOSX machines with python2.7
 
 5.8.5
 -----
