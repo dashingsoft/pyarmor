@@ -5,6 +5,12 @@ def protect_pytransform():
     except ImportError:
         from . import pytransform
 
+    def assert_builtin(func):
+        type = ''.__class__.__class__
+        builtin_function = type(''.join)
+        if type(func) is not builtin_function:
+            raise RuntimeError('%s() is not a builtin' % func.__name__)
+
     def check_obfuscated_script():
         CO_SIZES = 49, 46, 38, 36
         CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
@@ -34,7 +40,8 @@ def protect_pytransform():
                   '_pytransform.dll' if platname.startswith('win') else \
                   '_pytransform.so'
         if getattr(pytransform.sys, 'frozen', False):
-            filename = pytransform.os.path.join(pytransform.sys._MEIPASS, libname)
+            filename = pytransform.os.path.join(
+                pytransform.sys._MEIPASS, libname)
         else:
             filename = pytransform.os.path.join({rpath}, {spath}, libname)
 
@@ -46,12 +53,17 @@ def protect_pytransform():
         checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
         if checksum not in {checksum}:
             raise RuntimeError('unexpected %s' % filename)
+
     try:
+        assert_builtin(sum)
+        assert_builtin(open)
+        assert_builtin(len)
+
         check_obfuscated_script()
         check_mod_pytransform()
         check_lib_pytransform()
     except Exception as e:
-        print('Protection Fault: %s' % e)
-        pytransform.sys.exit(1)
+        raise RuntimeError("Protection Fault: %s" % e)
+
 
 protect_pytransform()
