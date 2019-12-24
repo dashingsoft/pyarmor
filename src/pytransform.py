@@ -9,7 +9,7 @@ import struct
 # before Python 2.5
 #
 from ctypes import cdll, c_char, c_char_p, c_int, c_void_p, \
-                   pythonapi, py_object, PYFUNCTYPE, CFUNCTYPE
+    pythonapi, py_object, PYFUNCTYPE, CFUNCTYPE
 from fnmatch import fnmatch
 
 #
@@ -23,7 +23,7 @@ plat_table = (
     ('linux', ('linux*',)),
     ('freebsd', ('freebsd*', 'openbsd*')),
     ('poky', ('poky',)),
-    )
+)
 
 arch_table = (
     ('x86', ('i?86', )),
@@ -32,7 +32,7 @@ arch_table = (
     ('armv7', ('armv7l',)),
     ('aarch32', ('aarch32',)),
     ('aarch64', ('aarch64', 'arm64'))
-    )
+)
 
 #
 # Hardware type
@@ -280,8 +280,7 @@ def pyarmor_runtime(path=None):
         pyarmor_init(path, is_runtime=1)
         init_runtime()
     except Exception as e:
-        print(e)
-        sys.exit(1)
+        raise PytransformError(e)
 
 
 #
