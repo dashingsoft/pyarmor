@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.8.6
+-----
+* Raise exception other than sys.exit(1) when pyarmor_runtime fails
+* Refine cross protection code to improve the security
+* Fix issue: advanced mode failes in some MacOSX machines with python2.7
+
 5.8.5
 -----
 * Add platform data file `index.json` to source package
