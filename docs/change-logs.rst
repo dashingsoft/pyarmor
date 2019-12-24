@@ -5,7 +5,7 @@ Change Logs
 
 5.8.6
 -----
-* Raise exception other than sys.exit(1) when pyarmor_runtime fails
+* Raise exception other than `sys.exit(1)` when pyarmor_runtime fails
 * Refine cross protection code to improve the security
 * Fix issue: advanced mode failes in some MacOSX machines with python2.7
 
