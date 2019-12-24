@@ -381,3 +381,15 @@ check_python_version_for_auto_wrap_mode()
         | grep -q "\(Python 3.0\|Python 3.1\|Python 3.2\)" \
         && csih_inform "The auto wrap mode doesn't work for $PYTHON"
 }
+
+# ======================================================================
+# Routine: patch_cross_protection_code_for_python3.0
+#
+#   Remove "assert_buildin(open)" from cross protection code if python
+#   version is 3.0, because it return OpenWrapper in Python3.0
+# ======================================================================
+patch_cross_protection_code_for_python3.0()
+{
+    $PYTHON --version 2>&1 | grep -q "Python 3.0" \
+        && $SED -i -e "/assert_builtin.open./d" protect_code.pt
+}

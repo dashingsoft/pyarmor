@@ -30,6 +30,9 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are moved to src
 [[ -d src ]] && mv src/* ./
 
+# Fix issue: assert_builtin(open) fails in python 3.0
+patch_cross_protection_code_for_python3.0
+
 csih_inform "Extract test data"
 mkdir data && (cd data; tar xzf $datafile)
 cp $capsulefile data/

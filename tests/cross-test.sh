@@ -27,6 +27,9 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are moved to src
 [[ -d src ]] && mv src/* ./
 
+# Fix issue: assert_builtin(open) fails in python 3.0
+patch_cross_protection_code_for_python3.0
+
 # From pyarmor 4.5.4, platform name is renamed
 # From pyarmor 5.7.5, platform name is changed
 csih_inform "Add execute permission to dynamic library"
