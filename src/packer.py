@@ -226,10 +226,15 @@ def check_setup_script(_type, setup):
 
 
 def _make_hook_pytransform(hookfile, obfdist, nolicense=False):
+    # On Mac OS X pyinstaller will call mac_set_relative_dylib_deps to
+    # modify .dylib file, it results in the cross protection of pyarmor fails.
+    # In order to fix this problem, we need add .dylib as data file
+    is_darwin = sys.platform == 'darwin'
     p = obfdist + os.sep
     d = 'datas = [(r"{0}pytransform.key", ".")' + (
+        ', (r"{0}_pytransform.*", ".")' if is_darwin else '') + (
         ']' if nolicense else ', (r"{0}license.lic", ".")]')
-    b = 'binaries = [(r"{0}_pytransform.*", ".")]'
+    b = '' if is_darwin else 'binaries = [(r"{0}_pytransform.*", ".")]'
     with open(hookfile, 'w') as f:
         f.write('\n'.join([d, b]).format(p))
 
