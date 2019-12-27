@@ -654,10 +654,10 @@ def _make_protect_pytransform(template, filenames=None, rpath=None, suffix=''):
     code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
     keylist = _build_pytransform_keylist(pytransform, code, closure)
-    rpath = 'pytransform.os.path.dirname(pytransform.__file__)' \
-        if rpath is None else repr(rpath)
-    spath = 'pytransform.os.path.join(pytransform.plat_path, ' \
-        'pytransform.format_platform())' if len(filenames) > 1 else repr('')
+    rpath = '{0}.os.path.dirname({0}.__file__)'.format(
+        'pytransform') if rpath is None else repr(rpath)
+    spath = '{0}.os.path.join({0}.plat_path, {0}.format_platform())'.format(
+        'pytransform') if len(filenames) > 1 else repr('')
     return buf.format(code=code, closure=closure, rpath=rpath, spath=spath,
                       checksum=str(checksums), keylist=keylist, suffix=suffix)
 
@@ -786,7 +786,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     flags = obf_code | obf_mod << 8 | wrap_mode << 16 | adv_mode << 24 \
         | (11 if rest_mode == 4 else 15 if rest_mode == 3 else
            7 if rest_mode == 2 else rest_mode) << 28
-    s = pytransform.encrypt_code_object(pubkey, co, flags)
+    s = pytransform.encrypt_code_object(pubkey, co, flags, suffix=suffix)
 
     with open(destname, 'w') as f:
         f.write(s.decode())
@@ -944,7 +944,7 @@ def make_bootstrap_script(output, capsule=None, relative=None, suffix=''):
     co = compile('', filename, 'exec')
     flags = 0x18000000
     prokey = get_product_key(capsule)
-    buf = pytransform.encrypt_code_object(prokey, co, flags)
+    buf = pytransform.encrypt_code_object(prokey, co, flags, suffix=suffix)
     with open(output, 'w') as f:
         f.write(buf.decode())
     _make_entry(output, relative=relative, suffix=suffix)

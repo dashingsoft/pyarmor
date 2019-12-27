@@ -1,9 +1,9 @@
 def protect_pytransform():
 
     try:
-        import pytransform
+        import pytransform{suffix} as pytransform
     except ImportError:
-        from . import pytransform
+        from . import pytransform{suffix} as pytransform
 
     def assert_builtin(func):
         type = ''.__class__.__class__
@@ -12,7 +12,7 @@ def protect_pytransform():
             raise RuntimeError('%s() is not a builtin' % func.__name__)
 
     def check_obfuscated_script():
-        CO_SIZES = 49, 46, 38, 36
+        CO_SIZES = 55, 52, 49, 46, 42, 40, 38, 36
         CO_NAMES = set(['pytransform{suffix}', 'pyarmor_runtime',
                         '__pyarmor{suffix}__', '__name__', '__file__'])
         co = pytransform.sys._getframe(3).f_code
@@ -40,8 +40,7 @@ def protect_pytransform():
                   '_pytransform{suffix}.dll' if platname.startswith('win') else \
                   '_pytransform{suffix}.so'
         if getattr(pytransform.sys, 'frozen', False):
-            filename = pytransform.os.path.join(
-                pytransform.sys._MEIPASS, libname)
+            filename = pytransform.os.path.join(pytransform.sys._MEIPASS, libname)
         else:
             filename = pytransform.os.path.join({rpath}, {spath}, libname)
 
