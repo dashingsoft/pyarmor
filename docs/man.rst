@@ -324,6 +324,7 @@ Obfuscate the scripts and pack them into one bundle.
 -x, --xoptions OPTIONS  Pass these extra options to `pyarmor obfuscate`
 -s FILE                 Specify .spec file used by `pyinstaller`
 --without-license       Do not generate license for obfuscated scripts
+--with-license FILE     Use this license file other than default one
 --clean                 Remove cached .spec file before packing
 --debug                 Do not remove build files after packing
 
@@ -395,6 +396,11 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 * Pack the obfuscated script to one file and in advanced mode::
 
     pyarmor pack -e " --onefile" -x " --advanced" foo.py
+
+* Pack the obfuscated scripts and expired on 2020-12-25::
+
+    pyarmor licenses -e 2020-12-25 cy2020
+    pyarmor pack --with-license licenses/cy2020/license.lic foo.py
 
 * If the application name is changed by option `-n` of `PyInstaller`, the option
   `-s` must be specified at the same time. For example::
