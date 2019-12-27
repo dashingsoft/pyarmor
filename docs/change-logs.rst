@@ -3,6 +3,23 @@
 Change Logs
 ===========
 
+5.8.7
+-----
+
+In this version, the scripts could be obfuscated with new option `--suffix`,
+then the name of the runtime package and builtin functions will be unique. By
+this way the scripts obfuscated by different capsule could run in the same
+Python interpreter.
+
+For example, the bootstrap code may like this with suffix `_vax_000001`:
+
+    from pytransform_vax_000001 import pyarmor_runtime
+    pyarmor_runtime(suffix="_vax_000001")
+
+* Add option `--with-license` in the command `pack`
+* Fix issue: the final bundle made by `pack` raises protection fault exception on MacOSX
+* Add option `--enable-suffix` in the commands `obfuscate`, `config` and `runtime`
+
 5.8.6
 -----
 * Raise exception other than `sys.exit(1)` when pyarmor_runtime fails
