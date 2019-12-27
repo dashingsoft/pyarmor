@@ -713,7 +713,7 @@ def _runtime(args):
     filename = os.path.join(output, '__init__.py') if args.inside else \
         os.path.join(args.output, name + '.py')
     logging.info('Generating bootstrap script ...')
-    make_bootstrap_script(filename, capsule=capsule)
+    make_bootstrap_script(filename, capsule=capsule, suffix=suffix)
     logging.info('Generating bootstrap script %s OK', filename)
 
 
