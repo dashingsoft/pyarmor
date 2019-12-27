@@ -321,7 +321,7 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
 
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
-        shutil.copy2(licfile, obfdist)
+        shutil.copy2(licfile, os.path.join(obfdist, 'license.lic'))
 
     obftemp = os.path.join(obfdist, 'temp')
     if not os.path.exists(obftemp):
