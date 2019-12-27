@@ -7,6 +7,9 @@ source test-header.sh
 # ======================================================================
 
 PYTHON=C:/Python34/python
+if [[ "$PLATFORM" == "macosx_x86_64" ]] ; then
+    PYTHON=python3
+fi
 
 PYARMOR="${PYTHON} pyarmor.py"
 
@@ -44,6 +47,11 @@ echo ""
 
 csih_inform "Show help and import pytransform"
 $PYARMOR --help >result.log 2>&1 || csih_error "PyArmor bootstrap failed"
+
+# --------------------------------
+# Run this testcases only in Win32
+# --------------------------------
+if [[ "$PLATFORM" == "win32" ]] ; then
 
 # ======================================================================
 #
@@ -84,6 +92,11 @@ check_file_content $dist/result.log 'Found 92 solutions'
 
 echo -e "\n-------------------- cx_Freeze End ---------------------------\n"
 
+fi
+# --------------------------------
+# Run this testcases only in Win32
+# --------------------------------
+
 # ======================================================================
 #
 #  Command: pack with PyInstaller
@@ -97,13 +110,13 @@ $PYARMOR pack examples/simple/queens.py >result.log 2>&1
 check_return_value
 
 dist=examples/simple/dist
-( cd $dist/queens; ./queens.exe  >result.log 2>&1 )
+( cd $dist/queens; ./queens  >result.log 2>&1 )
 
 check_file_exists $dist/queens/license.lic
 check_file_content $dist/queens/result.log 'Found 92 solutions'
 
 rm $dist/queens/license.lic
-( cd $dist/queens; ./queens.exe  >result.log 2>&1 )
+( cd $dist/queens; ./queens  >result.log 2>&1 )
 check_file_content $dist/queens/result.log 'Found 92 solutions' not
 check_file_content $dist/queens/result.log 'No such file or directory'
 
@@ -112,7 +125,7 @@ $PYARMOR pack --clean --options " --name foo2 " -s "foo2.spec" \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 
-( cd dist/foo2; ./foo2.exe  >result.log 2>&1 )
+( cd dist/foo2; ./foo2  >result.log 2>&1 )
 check_file_content dist/foo2/result.log 'Found 92 solutions'
 
 csih_inform "Case 3-3: Test one file with PyInstaller"
@@ -120,7 +133,7 @@ $PYARMOR pack --clean --options " --name foo3 -F" -s "foo3.spec" \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 
-( cd dist/; ./foo3.exe  >result.log 2>&1 )
+( cd dist/; ./foo3  >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions'
 
 csih_inform "Case 3-4: Test one file without license by PyInstaller"
@@ -136,13 +149,13 @@ $PYARMOR pack --clean --without-license \
          -s "foo4.spec" examples/simple/queens.py >result.log 2>&1
 check_return_value
 
-( cd dist/; ./foo4.exe  >result.log 2>&1 )
+( cd dist/; ./foo4  >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions' not
 
 $PYARMOR licenses test-packer >result.log 2>&1
 cp licenses/test-packer/license.lic dist/
 
-( cd dist/; mkdir other; cd other; ../foo4.exe > ../result.log )
+( cd dist/; mkdir other; cd other; ../foo4 > ../result.log )
 check_return_value
 check_file_content dist/result.log 'Found 92 solutions'
 
@@ -156,7 +169,7 @@ sed -i -e "s/'exec'/'eval'/g" main-patched.spec >/dev/null 2>&1
 $PYTHON -m PyInstaller --clean -y --distpath $output main-patched.spec >result.log 2>&1
 check_return_value
 
-(cd $output; ./main/main.exe >result.log 2>&1)
+(cd $output; ./main/main >result.log 2>&1)
 check_file_content $output/result.log "RuntimeError: Check restrict mode failed"
 
 csih_inform "Case 3-6: Test the scripts is obfuscated with restrict mode 2"
@@ -164,7 +177,7 @@ dist=test-pyinstaller-restrict-mode
 $PYARMOR pack --output $dist -x " --restrict 2" examples/testpkg/main.py >result.log 2>&1
 check_return_value
 
-( cd $dist/main; ./main.exe  >result.log 2>&1 )
+( cd $dist/main; ./main  >result.log 2>&1 )
 
 check_file_exists $dist/main/license.lic
 check_file_content $dist/main/result.log 'Hello! PyArmor Test Case'
@@ -178,7 +191,7 @@ echo "print('This is myhook')" > $dist/myhook.py
          -e " --runtime-hook myhook.py" test_hook_main.py >result.log 2>&1)
 check_return_value
 
-( cd $dist; dist/test_hook_main/test_hook_main.exe  >result.log 2>&1 )
+( cd $dist; dist/test_hook_main/test_hook_main  >result.log 2>&1 )
 check_return_value
 check_file_content $dist/result.log 'This is myhook'
 check_file_content $dist/result.log 'Test runtime hook OK'
