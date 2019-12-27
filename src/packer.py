@@ -300,6 +300,7 @@ def _patch_specfile(obfdist, src, specfile):
 def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
     clean = args.clean
     nolicense = args.without_license
+    licfile = args.with_license
     src = relpath(src)
     output = relpath(output)
     packcmd = DEFAULT_PACKER['PyInstaller'][2] + [output] + options
@@ -317,6 +318,10 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
     call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
                   '--package-runtime', '0']
                  + xoptions + [os.path.join(src, entry)])
+
+    if licfile:
+        logging.info('Copy license file %s to %s', licfile, obfdist)
+        shutil.copy2(licfile, obfdist)
 
     obftemp = os.path.join(obfdist, 'temp')
     if not os.path.exists(obftemp):
@@ -405,6 +410,8 @@ def add_arguments(parser):
                         help='Pass these extra options to `pyarmor obfuscate`')
     parser.add_argument('--without-license', action='store_true',
                         help='Do not generate license for obfuscated scripts')
+    parser.add_argument('--with-license', metavar='FILE',
+                        help='Use this license file other than default one')
     parser.add_argument('--clean', action="store_true",
                         help='Remove cached .spec file before packing')
     parser.add_argument('--debug', action="store_true",
