@@ -182,7 +182,7 @@ def _build(args):
     capsule = build_path(project.capsule, pro_path)
     logging.info('Use capsule: %s', capsule)
 
-    suffix = get_name_suffix() if args.enable_suffix else ''
+    suffix = get_name_suffix() if project.get('enable_suffix') else ''
 
     output = build_path(project.output, pro_path) \
         if args.output is None else os.path.normpath(args.output)
