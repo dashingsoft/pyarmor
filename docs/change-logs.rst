@@ -16,9 +16,12 @@ For example, the bootstrap code may like this with suffix `_vax_000001`:
     from pytransform_vax_000001 import pyarmor_runtime
     pyarmor_runtime(suffix="_vax_000001")
 
-* Add option `--with-license` in the command `pack`
-* Fix issue: the final bundle made by `pack` raises protection fault exception on MacOSX
+Refer to
+https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-conflict-with-others
+
 * Add option `--enable-suffix` in the commands `obfuscate`, `config` and `runtime`
+* Add option `--with-license` in the command `pack`
+* Fix issue: the executable file made by `pack` raises protection fault exception on MacOSX
 
 5.8.6
 -----
