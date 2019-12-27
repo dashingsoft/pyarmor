@@ -196,6 +196,20 @@ check_return_value
 check_file_content $dist/result.log 'This is myhook'
 check_file_content $dist/result.log 'Test runtime hook OK'
 
+csih_inform "Case 3-8: Test option --with-license"
+dist=test-with-license
+mkdir $dist
+echo "Fake license file" > $dist/fake-license.lic
+echo "print('Hello test --with-license')" > $dist/main.py
+(cd $dist; $PYTHON ../pyarmor.py pack --output dist \
+                   --with-license fake-license.lic main.py >result.log 2>&1)
+check_return_value
+check_file_exists $dist/dist/main/license.lic
+
+( cd $dist; dist/main/main  >result.log 2>&1 )
+check_file_content $dist/result.log 'Hello test --with-license' not
+check_file_content $dist/result.log 'Invalid product license file'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
