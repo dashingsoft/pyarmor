@@ -159,6 +159,45 @@ $PYARMOR config --wrap-mode=0 --manifest="include big_array.py" $PROPATH >result
 check_file_content $PROPATH/result.log 'Check license failed'
 check_file_content $PROPATH/result.log 'Too big code object, the limitation is'
 
+csih_inform "12. Obfuscate the scripts with option --enable-suffix"
+$PYARMOR obfuscate -O dist-suffix --enable-suffix \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists dist-suffix/pytransform/__init__.py
+
+(cd dist-suffix; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content dist-suffix/result.log 'Found 92 solutions'
+
+csih_inform "13. Generate runtime package with option --enable-suffix"
+$PYARMOR runtime -O test-runtime-suffix --enable-suffix >result.log 2>&1
+check_return_value
+check_file_exists test-runtime-suffix/pytransform/__init__.py
+check_file_content test-runtime-suffix/pytransform_bootstrap.py \
+                   'from pytransform import pyarmor_runtime'
+
+$PYARMOR runtime -O test-runtime-suffix-2 --enable-suffix \
+         --no-package >result.log 2>&1
+check_return_value
+check_file_exists test-runtime-suffix-2/pytransform.py
+check_file_content test-runtime-suffix-2/pytransform_bootstrap.py \
+                   'from pytransform import pyarmor_runtime'
+
+csih_inform "14. Build project with option --enable-suffix"
+PROPATH=projects/test_suffix
+mkdir $PROPATH
+echo "print('Hello this is a project with suffix')" > $PROPATH/main.py
+$PYARMOR init --src=$PROPATH --entry=main.py $PROPATH >result.log 2>&1
+$PYARMOR config --enable-suffix 1 $PROPATH >result.log 2>&1
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+
+check_return_value
+check_file_exists $PROPATH/dist/pytransform/__init__.py
+
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'Hello this is a project with suffix'
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -168,6 +207,8 @@ check_file_content $PROPATH/result.log 'Too big code object, the limitation is'
 echo ""
 echo "-------------------- Test Normal Version ------------------------"
 echo ""
+
+test_suffix="_unk_0001"
 
 csih_inform "0. Register keyfile"
 $PYARMOR register data/pyarmor-test-0001.zip >result.log 2>&1
@@ -278,6 +319,57 @@ check_file_content $PROPATH/dist/big_array.py '__pyarmor__(__name__'
 check_return_value
 check_file_content $PROPATH/dist/result.log 'a99 ='
 
+csih_inform "12. Obfuscate the scripts with option --enable-suffix"
+$PYARMOR obfuscate -O dist-suffix --enable-suffix \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists dist-suffix/pytransform${test_suffix}/__init__.py
+check_file_exists dist-suffix/queens.py
+check_file_content dist-suffix/queens.py "from pytransform${test_suffix} import"
+check_file_content dist-suffix/queens.py "pyarmor_runtime(suffix="
+
+(cd dist-suffix; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content dist-suffix/result.log 'Found 92 solutions'
+
+csih_inform "13. Generate runtime package with option --enable-suffix"
+$PYARMOR runtime -O test-runtime-suffix --enable-suffix >result.log 2>&1
+check_return_value
+check_file_exists test-runtime-suffix/pytransform${test_suffix}/__init__.py
+check_file_content test-runtime-suffix/pytransform_bootstrap.py \
+                   "from pytransform${test_suffix} import pyarmor_runtime"
+check_file_content test-runtime-suffix/pytransform_bootstrap.py \
+                   "pyarmor_runtime(suffix="
+
+$PYARMOR runtime -O test-runtime-suffix-2 --enable-suffix \
+         --no-package >result.log 2>&1
+check_return_value
+check_file_exists test-runtime-suffix-2/pytransform${test_suffix}.py
+check_file_content test-runtime-suffix-2/pytransform_bootstrap.py \
+                   "from pytransform${test_suffix} import pyarmor_runtime"
+check_file_content test-runtime-suffix-2/pytransform_bootstrap.py \
+                   "pyarmor_runtime(suffix="
+
+csih_inform "14. Build project with option --enable-suffix"
+PROPATH=projects/test_suffix
+[[ -d "$PROPATH" ]] && rm -rf $PROPATH
+mkdir $PROPATH
+echo "print('Hello this is a project with suffix')" > $PROPATH/main.py
+$PYARMOR init --src=$PROPATH --entry=main.py $PROPATH >result.log 2>&1
+$PYARMOR config --enable-suffix 1 $PROPATH >result.log 2>&1
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+
+check_return_value
+check_file_exists $PROPATH/dist/pytransform${test_suffix}/__init__.py
+check_file_content $PROPATH/dist/main.py \
+                   "from pytransform${test_suffix} import pyarmor_runtime"
+check_file_content $PROPATH/dist/main.py \
+                   "pyarmor_runtime(suffix="
+
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'Hello this is a project with suffix'
+
 # ======================================================================
 #
 # Finished and cleanup.
@@ -286,7 +378,7 @@ check_file_content $PROPATH/dist/result.log 'a99 ='
 
 echo "" && csih_inform "Remove global capsule"
 rm -rf ~/.pyarmor_capsule.zip ~/.pyarmor
-if ! [[ -z "$USERPROFILE" ]] ; then
+if [[ -n "$USERPROFILE" ]] ; then
    rm -rf "$USERPROFILE\\.pyarmor_capsule.zip" "$USERPROFILE\\.pyarmor"
 fi
 
