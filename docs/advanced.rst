@@ -49,6 +49,46 @@ Check all the output and test these obfuscated packages::
 
        pyarmor runtime
 
+
+.. _obfuscating package no conflict with others:
+
+Obfuscating Package No Conflict With Others
+-------------------------------------------
+
+Suppose there are 2 packages obfuscated by different developers, could they be
+imported in the same Python interpreter?
+
+If both of them are obfuscated by trial version of pyarmor, no problem, the
+answer is yes. But if anyone is obfuscated by registerred version, the answer is
+no.
+
+This problem is fixed since v5.8.7. If the package is obfuscated with option
+``--enable-suffix``, the name of :ref:`Runtime Package` will be unique with a
+suffix, other than fixed name ``pytransform``. For example::
+
+    pyarmor obfuscate --enable-suffix foo.py
+
+The output would be like this::
+
+    dist/
+        foo.py
+        pytransform_vax_000001/
+            __init__.py
+            ...
+
+The suffix ``_vax_000001`` is based on the registration code of PyArmor.
+
+For project, set ``enable-suffix`` by command :ref:`config`::
+
+    pyarmor config --enable-suffix 1
+    pyarmor build -B
+
+Or disable it by this way::
+
+    pyarmor config --enable-suffix 0
+    pyarmor build -B
+
+
 .. _distributing obfuscated scripts to other platform:
 
 Distributing Obfuscated Scripts To Other Platform

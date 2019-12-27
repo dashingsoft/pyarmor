@@ -75,6 +75,7 @@ Then obfuscating scripts in new mode::
 
     pyarmor build -B
 
+.. _project configuration file:
 
 Project Configuration File
 --------------------------
@@ -267,5 +268,18 @@ Each project has a configure file. It's a json file named
         plugins: ["check_ntp_time", "show_license_info"]
 
     About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
+
+* enable_suffix
+
+  How to generate runtime package (module) and bootstrap code:
+
+        - 0 (Default)
+
+        There is no suffix for the name of runtime package (module)
+
+        - 1
+
+        The name of runtime package (module) has a suffix, for
+        example, ``pytransform_vax_00001``
 
 .. include:: _common_definitions.txt

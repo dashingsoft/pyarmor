@@ -85,6 +85,11 @@ scripts::
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/runtime')
 
+Since v5.8.7, the runtime package may has a suffix. For example::
+
+    from pytransform_vax_000001 import pyarmor_runtime
+    pyarmor_runtime(suffix='_vax_000001')
+
 .. _runtime package:
 
 Runtime Package
@@ -107,7 +112,6 @@ There are 4 files in this package::
         pytransform.key              Data file
         license.lic                  The license file for obfuscated scripts
 
-
 Before v5.7.0, the runtime package has another form `Runtime Files`
 
 .. _runtime files:
@@ -123,6 +127,15 @@ They're not in one package, but as four separated files::
     license.lic                  The license file for obfuscated scripts
 
 Obviously `Runtime Package` is more clear than `Runtime Files`.
+
+Since v5.8.7, the runtime package (module) may has a suffix, for example::
+
+    pytransform_vax_000001/
+        __init__.py
+        ...
+
+    pytransform_vax_000001.py
+    ...
 
 .. _the license file for obfuscated script:
 

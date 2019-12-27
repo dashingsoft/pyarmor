@@ -71,6 +71,7 @@ Obfuscate python scripts.
 --restrict <0,1,2,3,4>        Set restrict mode
 --package-runtime <0,1,2,3>   Where to save runtime files, and how to make bootstrap code
 -n, --no-runtime              DO NOT generate runtime files
+--enable-suffix               Generate the runtime package with unique name
 
 **DESCRIPTION**
 
@@ -138,6 +139,10 @@ obfuscated scripts as four separated files::
     pytransform.key
     license.lic
 
+If the option ``--enable-suffix`` is set, the runtime package or module name
+will be ``pytransform_xxx``, here ``xxx`` is unique suffix based on the
+registration code of PyArmor.
+
 **BOOTSTRAP CODE**
 
 By default, the following :ref:`bootstrap code` will be inserted into the entry
@@ -152,11 +157,15 @@ relative import by using leading dots like this::
     from .pytransform import pyarmor_runtime
     pyarmor_runtime()
 
-
 But the option ``--package-runtime`` will change this behaviour. If it is set to
 ``2``, the :ref:`bootstrap code` always makes absolute import without leading
 dots. If it is set to ``3``, the :ref:`bootstrap code` always makes relative
 import with leading dots.
+
+If the option ``--enable-suffix`` is set, the bootstrap code may like this::
+
+    from pytransform_vax_000001 import pyarmor_runtime
+    pyarmor_runtime(suffix='vax_000001')
 
 **EXAMPLES**
 
@@ -510,6 +519,7 @@ Update project settings.
 --runtime-path RPATH            Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script, it could be used multiple times
 --package-runtime <0,1,2,3>     Where to save runtime files, and how to make bootstrap code
+--enable-suffix <0,1>           Generate the runtime package with unique name
 
 **DESCRIPTION**
 
@@ -529,6 +539,8 @@ path of project.
 
 There is a special value `clear` for ``--plugin`` which used to clear all the
 plugins.
+
+For the details of each option, refer to :ref:`Project Configuration File`
 
 **EXAMPLES**
 
@@ -795,6 +807,7 @@ Geneate :ref:`runtime package` separately.
 -i, --inside                  Generate bootstrap script which is used inside one package
 -L, --with-license FILE       Replace default license with this file
 --platform NAME               Generate runtime package for specified platform
+--enable-suffix               Generate the runtime package with unique name
 
 **DESCRIPTION**
 
@@ -816,7 +829,8 @@ modules could be imported in one plain script::
 If option ``--inside`` is specified, it will generate bootstrap package
 ``pytransform_bootstrap`` other than one single script.
 
-About option ``--platform``, refer to command `obfuscate`_
+About option ``--platform`` and ``--enable-suffix``, refer to command
+`obfuscate`_
 
 **EXAMPLES**
 
