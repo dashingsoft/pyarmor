@@ -50,7 +50,8 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   pytransform_bootstrap, encrypt_script, search_plugins, \
                   get_product_key, register_keyfile, query_keyinfo, \
                   get_platform_list, download_pytransform, update_pytransform,\
-                  check_cross_platform, compatible_platform_names
+                  check_cross_platform, compatible_platform_names, \
+                  get_name_suffix
 
 import packer
 
@@ -181,6 +182,8 @@ def _build(args):
     capsule = build_path(project.capsule, pro_path)
     logging.info('Use capsule: %s', capsule)
 
+    suffix = get_name_suffix() if args.enable_suffix else ''
+
     output = build_path(project.output, pro_path) \
         if args.output is None else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
@@ -271,7 +274,7 @@ def _build(args):
                            wrap_mode=wrap_mode, adv_mode=vmode,
                            rest_mode=restrict, protection=pcode,
                            platforms=platforms, plugins=plugins,
-                           rpath=project.runtime_path)
+                           rpath=project.runtime_path, suffix=suffix)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
@@ -285,7 +288,8 @@ def _build(args):
             relative = True if x == 3 else \
                 False if (x == 2 or args.no_runtime) else None
             make_entry(project.entry, project.src, soutput,
-                       rpath=project.runtime_path, relative=relative)
+                       rpath=project.runtime_path, relative=relative,
+                       suffix=suffix)
 
     if not args.no_runtime:
         routput = output if args.output is not None and args.only_runtime \
@@ -297,7 +301,8 @@ def _build(args):
 
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
-        make_runtime(capsule, routput, platforms=platforms, package=package)
+        make_runtime(capsule, routput, platforms=platforms, package=package,
+                     suffix=suffix)
 
         if not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
@@ -465,6 +470,8 @@ def _obfuscate(args):
     if os.path.abspath(output) == path:
         raise RuntimeError('Output path can not be same as src')
 
+    suffix = get_name_suffix() if args.enable_suffix else ''
+
     if args.recursive:
         logging.info('Recursive mode is on')
         pats = ['global-include *.py']
@@ -531,7 +538,7 @@ def _obfuscate(args):
         vmode = advanced | (8 if is_entry else 0)
         encrypt_script(prokey, a, b, adv_mode=vmode, rest_mode=restrict,
                        protection=protection, platforms=platforms,
-                       plugins=plugins)
+                       plugins=plugins, suffix=suffix)
     logging.info('%d scripts have been obfuscated', len(files))
 
     if (not args.no_bootstrap) and entry and os.path.exists(entry):
@@ -539,17 +546,19 @@ def _obfuscate(args):
         relative = True if x == 3 else False if x == 2 else None
         entryname = entry if args.src else os.path.basename(entry)
         if os.path.exists(os.path.join(output, entryname)):
-            make_entry(entryname, path, output, relative=relative)
+            make_entry(entryname, path, output, relative=relative,
+                       suffix=suffix)
         else:
             logging.info('Use outer entry script "%s"', entry)
-            make_entry(entry, path, output, relative=relative)
+            make_entry(entry, path, output, relative=relative,
+                       suffix=suffix)
 
     if args.no_runtime:
         logging.info('Obfuscate %d scripts OK.', len(files))
         return
 
     make_runtime(capsule, output, platforms=platforms,
-                 package=args.package_runtime)
+                 package=args.package_runtime, suffix=suffix)
 
     logging.info('Obfuscate scripts with restrict mode %s',
                  'on' if args.restrict else 'off')
@@ -697,8 +706,9 @@ def _runtime(args):
     output = os.path.join(args.output, name) if args.inside else args.output
     package = not args.no_package
     platforms = compatible_platform_names(args.platforms)
+    suffix = get_name_suffix() if args.enable_suffix else ''
     make_runtime(capsule, output, licfile=args.with_license,
-                 platforms=platforms, package=package)
+                 platforms=platforms, package=package, suffix=suffix)
 
     filename = os.path.join(output, '__init__.py') if args.inside else \
         os.path.join(args.output, name + '.py')
@@ -805,6 +815,8 @@ def _parser():
                          'and how to make bootstrap code')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate runtime files')
+    cparser.add_argument('--enable-suffix', action='store_true',
+                         help='Generate runtime package with unique name')
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -932,6 +944,8 @@ def _parser():
     cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
                          help='Where to save runtime files, '
                          'and how to make bootstrap code')
+    cparser.add_argument('--enable-suffix', type=int, choices=(0, 1),
+                         help='Generate runtime package with unique name')
     cparser.set_defaults(func=_config)
 
     #
@@ -1093,6 +1107,8 @@ def _parser():
                          action='append',
                          help='Generate runtime package for this platform, '
                          'use this option multiple times for more platforms')
+    cparser.add_argument('--enable-suffix', action='store_true',
+                         help='Generate runtime package with unique name')
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)

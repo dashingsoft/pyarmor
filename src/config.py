@@ -1,9 +1,9 @@
 from sys import platform
 
-version = '5.8.6'
+version = '5.8.7'
 
 # The corresponding version of _pytransform.so
-core_version = 'r11.5'
+core_version = 'r12.6'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
@@ -25,7 +25,7 @@ dll_ext = '.dylib' if platform == 'darwin' \
     else '.dll' if platform in ('win32', 'cygwin') else '.so'
 
 
-entry_lines = 'from %spytransform import pyarmor_runtime\n', \
+entry_lines = 'from %spytransform%s import pyarmor_runtime\n', \
               'pyarmor_runtime(%s)\n'
 protect_code_template = 'protect_code.pt'
 

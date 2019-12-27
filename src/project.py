@@ -32,6 +32,7 @@
 #    1.2.1: Add advanced_mode
 #    1.2.2: Remove disable_restrice_mode, add restrict_mode
 #    1.2.3: Add package_runtime
+#    1.2.4: Add enable_suffix
 #
 import os
 import time
@@ -75,6 +76,7 @@ class Project(dict):
         ('plugins', None), \
         ('platform', None), \
         ('package_runtime', 1), \
+        ('enable_suffix', 0), \
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):

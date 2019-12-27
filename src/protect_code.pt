@@ -13,8 +13,8 @@ def protect_pytransform():
 
     def check_obfuscated_script():
         CO_SIZES = 49, 46, 38, 36
-        CO_NAMES = set(['pytransform', 'pyarmor_runtime', '__pyarmor__',
-                        '__name__', '__file__'])
+        CO_NAMES = set(['pytransform{suffix}', 'pyarmor_runtime',
+                        '__pyarmor{suffix}__', '__name__', '__file__'])
         co = pytransform.sys._getframe(3).f_code
         if not ((set(co.co_names) <= CO_NAMES)
                 and (len(co.co_code) in CO_SIZES)):
@@ -36,9 +36,9 @@ def protect_pytransform():
 
     def check_lib_pytransform():
         platname = pytransform.sys.platform
-        libname = '_pytransform.dylib' if platname.startswith('darwin') else \
-                  '_pytransform.dll' if platname.startswith('win') else \
-                  '_pytransform.so'
+        libname = '_pytransform{suffix}.dylib' if platname.startswith('darwin') else \
+                  '_pytransform{suffix}.dll' if platname.startswith('win') else \
+                  '_pytransform{suffix}.so'
         if getattr(pytransform.sys, 'frozen', False):
             filename = pytransform.os.path.join(
                 pytransform.sys._MEIPASS, libname)

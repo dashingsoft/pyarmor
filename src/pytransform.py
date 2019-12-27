@@ -84,7 +84,8 @@ def init_runtime():
 
 
 @dllmethod
-def encrypt_code_object(pubkey, co, flags):
+def encrypt_code_object(pubkey, co, flags, suffix=''):
+    _pytransform.set_option(6, suffix.encode())
     prototype = PYFUNCTYPE(py_object, py_object, py_object, c_int)
     dlfunc = prototype(('encrypt_code_object', _pytransform))
     return dlfunc(pubkey, co, flags)
@@ -220,19 +221,20 @@ def format_platform(platid=None):
 
 
 # Load _pytransform library
-def _load_library(path=None, is_runtime=0, platid=None):
+def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
     path = os.path.dirname(__file__) if path is None \
         else os.path.normpath(path)
 
     plat = platform.system().lower()
+    name = '_pytransform' + suffix
     if plat == 'linux':
-        filename = os.path.abspath(os.path.join(path, '_pytransform.so'))
+        filename = os.path.abspath(os.path.join(path, name + '.so'))
     elif plat == 'darwin':
-        filename = os.path.join(path, '_pytransform.dylib')
+        filename = os.path.join(path, name + '.dylib')
     elif plat == 'windows':
-        filename = os.path.join(path, '_pytransform.dll')
+        filename = os.path.join(path, name + '.dll')
     elif plat == 'freebsd':
-        filename = os.path.join(path, '_pytransform.so')
+        filename = os.path.join(path, name + '.so')
     else:
         raise PytransformError('Platform %s not supported' % plat)
 
@@ -266,26 +268,35 @@ def _load_library(path=None, is_runtime=0, platid=None):
     # Disable advanced mode if required
     # m.set_option(5, c_char_p(1))
 
+    # Set suffix for private package
+    if suffix:
+        m.set_option(6, suffix.encode())
+
     return m
 
 
-def pyarmor_init(path=None, is_runtime=0, platid=None):
+def pyarmor_init(path=None, is_runtime=0, platid=None, suffix=''):
     global _pytransform
-    _pytransform = _load_library(path, is_runtime, platid)
+    _pytransform = _load_library(path, is_runtime, platid, suffix)
     return init_pytransform()
 
 
-def pyarmor_runtime(path=None):
+def pyarmor_runtime(path=None, suffix=''):
     try:
-        pyarmor_init(path, is_runtime=1)
+        pyarmor_init(path, is_runtime=1, suffix=suffix)
         init_runtime()
     except Exception as e:
         raise PytransformError(e)
 
+# ----------------------------------------------------------
+# End of pytransform
+# ----------------------------------------------------------
 
 #
 # Not available from v5.6
 #
+
+
 def generate_capsule(licfile):
     prikey, pubkey, prolic = _generate_project_capsule()
     capkey, newkey = _generate_pytransform_key(licfile, pubkey)

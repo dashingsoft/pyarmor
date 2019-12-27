@@ -295,10 +295,11 @@ def check_capsule(capsule):
     return True
 
 
-def _make_entry(filename, rpath=None, relative=None, shell=None):
+def _make_entry(filename, rpath=None, relative=None, shell=None, suffix=''):
     pkg = os.path.basename(filename) == '__init__.py'
     entry_code = entry_lines[0] % (
-        '.' if (relative is True) or ((relative is None) and pkg) else '')
+        '.' if (relative is True) or ((relative is None) and pkg) else '',
+        suffix)
 
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -318,7 +319,12 @@ def _make_entry(filename, rpath=None, relative=None, shell=None):
         if shell:
             f.write(shell)
         f.write(entry_code)
-        f.write(entry_lines[1] % ('' if rpath is None else repr(rpath)))
+        paras = []
+        if rpath is not None:
+            paras.append(repr(rpath))
+        if suffix:
+            paras.append('suffix=%s' % repr(suffix))
+        f.write(entry_lines[1] % ', '.join(paras))
         f.write(''.join(lines[n:]))
 
 
@@ -334,7 +340,7 @@ def _get_script_shell(script):
             pass
 
 
-def make_entry(entris, path, output, rpath=None, relative=None):
+def make_entry(entris, path, output, rpath=None, relative=None, suffix=''):
     for entry in entris.split(','):
         entry = entry.strip()
         filename = build_path(entry, output)
@@ -348,7 +354,8 @@ def make_entry(entris, path, output, rpath=None, relative=None):
         if shell:
             logging.info('Insert shell line: %s', shell.strip())
         logging.info('Insert bootstrap code to entry script %s', filename)
-        _make_entry(filename, rpath, relative=relative, shell=shell)
+        _make_entry(filename, rpath, relative=relative, shell=shell,
+                    suffix=suffix)
 
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
@@ -426,9 +433,10 @@ def _build_platforms(platforms):
     return results
 
 
-def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
+def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
+                 suffix=''):
     if package:
-        output = os.path.join(output, 'pytransform')
+        output = os.path.join(output, 'pytransform' + suffix)
         if not os.path.exists(output):
             os.makedirs(output)
     logging.info('Generating runtime files to %s', output)
@@ -450,6 +458,13 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
         logging.info('Copying %s as license file', licfile)
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
+    def copy3(src, dst):
+        if suffix:
+            x = os.path.basename(src).replace('.', ''.join([suffix, '.']))
+            shutil.copy2(src, os.path.join(dst, x))
+        else:
+            shutil.copy2(src, dst)
+
     if not platforms:
         libfile = pytransform._pytransform._name
         if not os.path.exists(libfile):
@@ -460,11 +475,11 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
                 libpath = os.path.join(PYARMOR_PATH, 'platforms')
                 libfile = os.path.join(libpath, pname, libname)
         logging.info('Copying %s', libfile)
-        shutil.copy2(libfile, output)
+        copy3(libfile, output)
     elif len(platforms) == 1:
         filename = _build_platforms(platforms)[0]
         logging.info('Copying %s', filename)
-        shutil.copy2(filename, output)
+        copy3(filename, output)
     else:
         libpath = os.path.join(output, pytransform.plat_path)
         logging.info('Create library path to support multiple platforms: %s',
@@ -479,11 +494,13 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False):
             logging.info('To %s', path)
             if not os.path.exists(path):
                 os.makedirs(path)
-            shutil.copy2(filename, path)
+            copy3(filename, path)
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
-    shutil.copy2(filename, os.path.join(output, '__init__.py') if package
-                 else output)
+    if package:
+        shutil.copy2(filename, os.path.join(output, '__init__.py'))
+    else:
+        copy3(filename, output)
 
     logging.info('Generate runtime files OK')
 
@@ -618,7 +635,7 @@ def _build_pytransform_keylist(mod, code, closure):
     return result
 
 
-def _make_protect_pytransform(template, filenames=None, rpath=None):
+def _make_protect_pytransform(template, filenames=None, rpath=None, suffix=''):
     if filenames is None:
         filenames = [pytransform._pytransform._name]
     checksums = []
@@ -642,7 +659,7 @@ def _make_protect_pytransform(template, filenames=None, rpath=None):
     spath = 'pytransform.os.path.join(pytransform.plat_path, ' \
         'pytransform.format_platform())' if len(filenames) > 1 else repr('')
     return buf.format(code=code, closure=closure, rpath=rpath, spath=spath,
-                      checksum=str(checksums), keylist=keylist)
+                      checksum=str(checksums), keylist=keylist, suffix=suffix)
 
 
 def _frozen_modname(filename, filename2):
@@ -707,7 +724,7 @@ def _readlines(filename):
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, adv_mode=0, rest_mode=1, protection=0,
-                   platforms=None, plugins=None, rpath=None):
+                   platforms=None, plugins=None, rpath=None, suffix=''):
     lines = _readlines(filename)
     if plugins:
         n = 0
@@ -752,7 +769,8 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 targets = _build_platforms(platforms) if platforms else None
                 lines[n:n] = [_make_protect_pytransform(template=template,
                                                         filenames=targets,
-                                                        rpath=rpath)]
+                                                        rpath=rpath,
+                                                        suffix=suffix)]
                 break
             n += 1
 
@@ -840,7 +858,7 @@ def query_keyinfo(key):
         info = 'This code is authorized to %s <%s>' % (name, email)
     else:
         info = 'Warning: this code may NOT be issued by PyArmor officially.' \
-               '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'
+            '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'
     return info
 
 
@@ -921,7 +939,7 @@ def compatible_platform_names(platforms):
     return names
 
 
-def make_bootstrap_script(output, capsule=None, relative=None):
+def make_bootstrap_script(output, capsule=None, relative=None, suffix=''):
     filename = os.path.basename(output)
     co = compile('', filename, 'exec')
     flags = 0x18000000
@@ -929,7 +947,23 @@ def make_bootstrap_script(output, capsule=None, relative=None):
     buf = pytransform.encrypt_code_object(prokey, co, flags)
     with open(output, 'w') as f:
         f.write(buf.decode())
-    _make_entry(output, relative=relative)
+    _make_entry(output, relative=relative, suffix=suffix)
+
+
+def get_name_suffix():
+    rcode = get_registration_code()
+    if rcode is None:
+        return ''
+
+    m, n = rcode.replace('-sn-1.txt', '').split('-')[-2:]
+    d = {
+        'vax': 'vax',
+        'clickbank': 'vac',
+        'shareit': 'vas',
+        'regnow': 'var',
+        'Pyarmor': 'vad',
+    }
+    return '_'.join(['', d.get(m, 'unk'), n])
 
 
 if __name__ == '__main__':
