@@ -198,6 +198,31 @@ check_file_exists $PROPATH/dist/pytransform/__init__.py
 check_return_value
 check_file_content $PROPATH/dist/result.log 'Hello this is a project with suffix'
 
+csih_inform "15. Import the package obfuscated by others"
+PROPATH=test-import-other-package
+mkdir -p $PROPATH/pkg1 $PROPATH/pkg2
+echo "print('This is package 1')" > $PROPATH/pkg1/__init__.py
+echo "print('This is package 2')" > $PROPATH/pkg2/__init__.py
+echo "import pkg1, pkg2" > $PROPATH/main.py
+echo "print('This is main script')" >> $PROPATH/main.py
+$PYARMOR obfuscate -O $PROPATH/dist/pkg1 $PROPATH/pkg1/__init__.py >result.log 2>&1
+$PYARMOR obfuscate -O $PROPATH/dist/pkg2 --advanced 1 $PROPATH/pkg2/__init__.py >result.log 2>&1
+$PYARMOR obfuscate -O $PROPATH/dist --exact $PROPATH/main.py >result.log 2>&1
+
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is package 1'
+check_file_content $PROPATH/dist/result.log 'This is package 2'
+check_file_content $PROPATH/dist/result.log 'This is main script'
+
+csih_inform "16. Import the package obfuscated by others with advanced mode"
+$PYARMOR obfuscate -O $PROPATH/dist --advanced 1 --exact $PROPATH/main.py >result.log 2>&1
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is package 1'
+check_file_content $PROPATH/dist/result.log 'This is package 2'
+check_file_content $PROPATH/dist/result.log 'This is main script'
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -369,6 +394,25 @@ check_file_content $PROPATH/dist/main.py \
 (cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
 check_return_value
 check_file_content $PROPATH/dist/result.log 'Hello this is a project with suffix'
+
+csih_inform "15. Import the package obfuscated by others"
+PROPATH=test-import-other-package
+$PYARMOR obfuscate -O $PROPATH/dist --enable-suffix --exact $PROPATH/main.py >result.log 2>&1
+
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is package 1'
+check_file_content $PROPATH/dist/result.log 'This is package 2'
+check_file_content $PROPATH/dist/result.log 'This is main script'
+
+csih_inform "16. Import the package obfuscated by others with advanced mode"
+$PYARMOR obfuscate -O $PROPATH/dist --enable-suffix --advanced 1 --exact \
+         $PROPATH/main.py >result.log 2>&1
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is package 1'
+check_file_content $PROPATH/dist/result.log 'This is package 2'
+check_file_content $PROPATH/dist/result.log 'This is main script'
 
 # ======================================================================
 #
