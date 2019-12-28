@@ -203,8 +203,13 @@ PROPATH=test-import-other-package
 mkdir -p $PROPATH/pkg1 $PROPATH/pkg2
 echo "print('This is package 1')" > $PROPATH/pkg1/__init__.py
 echo "print('This is package 2')" > $PROPATH/pkg2/__init__.py
-echo "import pkg1, pkg2" > $PROPATH/main.py
-echo "print('This is main script')" >> $PROPATH/main.py
+cat <<EOF > $PROPATH/main.py
+from time import sleep
+sleep(1.0)
+import pkg1, pkg2
+print('This is main script')
+EOF
+
 $PYARMOR obfuscate -O $PROPATH/dist/pkg1 $PROPATH/pkg1/__init__.py >result.log 2>&1
 $PYARMOR obfuscate -O $PROPATH/dist/pkg2 --advanced 1 $PROPATH/pkg2/__init__.py >result.log 2>&1
 $PYARMOR obfuscate -O $PROPATH/dist --exact $PROPATH/main.py >result.log 2>&1
