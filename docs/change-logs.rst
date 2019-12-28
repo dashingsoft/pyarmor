@@ -3,9 +3,13 @@
 Change Logs
 ===========
 
+5.8.8
+-----
+* Fix crash issue: the obfuscated scripts will crash when importing
+  the packages obfuscated by other registered pyarmor in advanced mode
+
 5.8.7
 -----
-
 In this version, the scripts could be obfuscated with option `--enable-suffix`,
 then the name of the runtime package and builtin functions will be unique. By
 this way the scripts obfuscated by different capsule could run in the same
