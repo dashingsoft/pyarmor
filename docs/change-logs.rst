@@ -5,8 +5,8 @@ Change Logs
 
 5.8.8
 -----
-* Fix crash issue: the obfuscated scripts will crash when importing
-  the packages obfuscated by other registered pyarmor in advanced mode
+* Fix issue: the obfuscated scripts will crash when importing the
+  packages obfuscated with advanced mode by other registered pyarmor
 
 5.8.7
 -----
