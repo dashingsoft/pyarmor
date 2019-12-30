@@ -32,7 +32,7 @@
 #    1.2.1: Add advanced_mode
 #    1.2.2: Remove disable_restrice_mode, add restrict_mode
 #    1.2.3: Add package_runtime
-#    1.2.4: Add enable_suffix
+#    1.2.4: Add enable_suffix, remove obf_module_mode and obf_code_mode
 #
 import os
 import time
@@ -48,7 +48,7 @@ from config import config_filename, capsule_filename, default_output_path, \
 
 class Project(dict):
 
-    VERSION = 1, 2, 3
+    VERSION = 1, 2, 4
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -66,8 +66,6 @@ class Project(dict):
         ('capsule', capsule_filename), \
         ('runtime_path', None), \
         ('restrict_mode', 1), \
-        ('obf_module_mode', 'des'), \
-        ('obf_code_mode', 'des'), \
         ('obf_code', 1), \
         ('obf_mod', 1), \
         ('wrap_mode', 1), \
