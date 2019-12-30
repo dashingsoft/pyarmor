@@ -901,7 +901,7 @@ def check_cross_platform(platforms):
     for name in platforms:
         if name in ('linux.arm', 'android.aarch64', 'linux.ppc64',
                     'darwin.arm64', 'freebsd.x86_64', 'alpine.x86_64',
-                    'alpine.arm', 'poky.x86'):
+                    'alpine.arm', 'poky.x86', 'vs2015.x86_64', 'vs2015.x86'):
             logging.info('===========================================')
             logging.info('Reboot PyArmor to obfuscate the scripts for '
                          'platform %s', name)
