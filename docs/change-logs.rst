@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.8.9
+-----
+* Fix cross platform issue for vs2015.x86 and vs2015.x86_64
+* In command `config` add option `--advanced` as alias of `--advanced-mode`
+
 5.8.8
 -----
 * Fix issue: the obfuscated scripts will crash when importing the
