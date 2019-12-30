@@ -939,7 +939,8 @@ def _parser():
                          action='append',
                          help='Insert extra code to entry script, '
                          'it could be used multiple times')
-    cparser.add_argument('--advanced-mode', type=int, choices=(0, 1),
+    cparser.add_argument('--advanced', '--advanced-mode', dest='advanced_mode',
+                         type=int, choices=(0, 1),
                          help='Enable or disable advanced mode')
     cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
                          help='Where to save runtime files, '
