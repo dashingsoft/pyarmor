@@ -1123,10 +1123,6 @@ def excepthook(type, value, traceback):
 
 
 def main(argv):
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(levelname)-8s %(message)s',
-    )
     parser = _parser()
     args = parser.parse_args(argv)
     if not hasattr(args, 'func'):
@@ -1152,6 +1148,10 @@ def main(argv):
 
 
 def main_entry():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(levelname)-8s %(message)s',
+    )
     main(sys.argv[1:])
 
 
