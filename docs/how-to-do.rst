@@ -378,16 +378,20 @@ First install ``pyinstaller``::
 
 Then obfuscate scripts to ``dist/obf``::
 
-    pyarmor obfuscate --output dist/obf hello.py
+    pyarmor obfuscate --output dist/obf --package-runtime 0 hello.py
 
 Next generate specfile, add runtime files required by obfuscated
 scripts::
 
-    pyinstaller --add-data dist/obf/license.lic
-                --add-data dist/obf/pytransform.key
-                --add-data dist/obf/_pytransform.*
-                -p dist/obf --hidden-import pytransform
+    pyinstaller --add-data dist/obf/license.lic:. \
+                --add-data dist/obf/pytransform.key:. \
+                --add-data dist/obf/_pytransform.*:. \
+                -p dist/obf --hidden-import pytransform \
                 hello.py
+
+.. _note:
+
+    In windows, the ``:`` should be replace with ``;`` in the command line.
 
 And patch specfile ``hello.spec``, insert the following lines after the
 ``Analysis`` object. The purpose is to replace all the original scripts with
