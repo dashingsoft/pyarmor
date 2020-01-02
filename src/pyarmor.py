@@ -41,7 +41,8 @@ import time
 import polyfills.argparse as argparse
 
 from config import version, version_info, purchase_info, \
-                   config_filename, capsule_filename, license_filename
+                   config_filename, capsule_filename, license_filename, \
+                   DEFAULT_CAPSULE
 
 from project import Project
 from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
@@ -54,9 +55,6 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   get_name_suffix
 
 import packer
-
-DEFAULT_CAPSULE = os.path.expanduser(os.path.join('~', capsule_filename))
-DEFAULT_CONFIG = os.path.expanduser(os.path.join('~', config_filename))
 
 
 def arcommand(func):

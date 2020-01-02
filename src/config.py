@@ -1,3 +1,4 @@
+import os
 from sys import platform
 
 version = '5.9.0'
@@ -43,3 +44,8 @@ platform_urls = [
 platform_config = 'index.json'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
+
+PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
+PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.expanduser('~'))
+
+DEFAULT_CAPSULE = os.path.join(PYARMOR_HOME, capsule_filename)

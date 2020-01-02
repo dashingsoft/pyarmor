@@ -45,11 +45,11 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-    platform_urls, platform_config, key_url, core_version
+    platform_urls, platform_config, key_url, core_version, \
+    PYARMOR_HOME, PYARMOR_PATH
 
-PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
+DATA_PATH = os.path.join(PYARMOR_HOME, '.pyarmor')
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
-DATA_PATH = os.path.expanduser(os.path.join('~', '.pyarmor'))
 CROSS_PLATFORM_PATH = os.path.join(DATA_PATH, pytransform.plat_path)
 
 
@@ -75,7 +75,8 @@ def pytransform_bootstrap(capsule=None):
     path = PYARMOR_PATH
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
-        if not os.getenv('HOME', os.getenv('USERPROFILE')):
+        if not os.getenv('PYARMOR_HOME',
+                         os.getenv('HOME', os.getenv('USERPROFILE'))):
             logging.info('Create trial license file: %s', licfile)
             shutil.copy(os.path.join(path, 'license.tri'), licfile)
         else:
@@ -863,7 +864,9 @@ def query_keyinfo(key):
 
 
 def register_keyfile(filename, legency=False):
-    if not legency and not os.getenv('HOME', os.getenv('USERPROFILE')):
+    if not legency and \
+       not os.getenv('PYARMOR_HOME',
+                     os.getenv('HOME', os.getenv('USERPROFILE'))):
         logging.debug('Force traditional way because no HOME set')
         legency = True
     old_path = DATA_PATH if legency else PYARMOR_PATH
