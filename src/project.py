@@ -33,6 +33,9 @@
 #    1.2.2: Remove disable_restrice_mode, add restrict_mode
 #    1.2.3: Add package_runtime
 #    1.2.4: Add enable_suffix, remove obf_module_mode and obf_code_mode
+#    2.0.0: Add license, target
+#           A target is a dict, each target has the following keys:
+#               output, license, platform, pack
 #
 import os
 import time
@@ -46,9 +49,15 @@ from config import config_filename, capsule_filename, default_output_path, \
                    default_manifest_template
 
 
+class Target(dict):
+
+    DEFAULT_VALUE = ('output', None), ('license', None), \
+        ('platform', None), ('pack', None)
+
+
 class Project(dict):
 
-    VERSION = 1, 2, 4
+    VERSION = 2, 0, 0
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -75,6 +84,8 @@ class Project(dict):
         ('platform', None), \
         ('package_runtime', 1), \
         ('enable_suffix', 0), \
+        ('license', None), \
+        ('target', None), \
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):
