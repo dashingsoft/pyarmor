@@ -3,6 +3,24 @@
 Change Logs
 ===========
 
+5.9.0 (developing)
+------------------
+pyarmor-webui is published as a separated package, it has been removed from
+package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
+
+The projects could have many targets, each target includes one or more
+platforms. So one project could be built for different platforms.
+
+* Add project command `target`
+* Add new option `--target` in the command `build`
+* The last argument in command `pack` could be a project path or .json file
+* Support environment variable `PYARMOR_HOME` as finding default `license.lic`
+  of pyarmor. Now the search order is:
+    - The package path of pyarmor
+    - `$PYARMOR_HOME/.pyarmor/license.lic`
+    - `$HOME/.pyarmor/license.lic`
+    - `$USERPROFILE/.pyarmor/license.lic` (Only for Windows)
+
 5.8.9
 -----
 * Fix cross platform issue for vs2015.x86 and vs2015.x86_64
