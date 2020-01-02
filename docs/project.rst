@@ -282,4 +282,50 @@ Each project has a configure file. It's a json file named
         The name of runtime package (module) has a suffix, for
         example, ``pytransform_vax_00001``
 
+  .. _note:
+
+      New at v5.8.7
+
+* platform
+
+  None, string or list of string
+
+  The string must be one standard platform name.
+
+  .. _note:
+
+      New at v5.9.0
+
+* license
+
+  None or file name
+
+  If this file exists, it will replace the default license.
+
+  .. _note:
+
+      New at v5.9.0
+
+* target
+
+  None or dict, each item has the following keys::
+
+      output, license, platform, pack
+
+  If there is key `pack` and not None in the target, this target will
+  be pack into bundle, otherwise only obfuscating the scripts.
+
+  For example, the target `win7`::
+
+    'win7': {
+        'output': 'dist/win7',
+        'platform': 'windows.x86_64',
+        'license': 'licenses/ta-0001/license.lic',
+        'pack': '--onefile'
+    }
+
+  .. _note:
+
+      New at v5.9.0
+
 .. include:: _common_definitions.txt
