@@ -20,6 +20,8 @@ platforms. So one project could be built for different platforms.
     - `$PYARMOR_HOME/.pyarmor/license.lic`
     - `$HOME/.pyarmor/license.lic`
     - `$USERPROFILE/.pyarmor/license.lic` (Only for Windows)
+* In command `licenses` if option `output` is set, do not append extra path
+  `licenses` in the final output path
 
 5.8.9
 -----
