@@ -337,9 +337,8 @@ def _licenses(args):
         project = dict(restrict_mode=args.restrict)
     restrict_mode = 0 if args.disable_restrict_mode else args.restrict
 
-    licpath = os.path.join(
-        args.project if args.output is None else args.output,
-        'licenses')
+    licpath = os.path.join(args.project, 'licenses') if args.output is None \
+        else args.output
     if os.path.exists(licpath):
         logging.info('Output path of licenses: %s', licpath)
     else:
