@@ -187,7 +187,10 @@ def _build(args):
     logging.info('Output path is: %s', output)
 
     platforms = args.platforms if args.platforms else project.get('platform')
-    platforms = compatible_platform_names(platforms)
+    if '' in args.platforms:
+        platforms = None
+    else:
+        platforms = compatible_platform_names(platforms)
     if platforms:
         logging.info('Taget platforms: %s', platforms)
         check_cross_platform(platforms)
