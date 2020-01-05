@@ -537,8 +537,7 @@ as MANIFEST.in of Python Distutils.
 Option ``--entry`` is comma-separated list of entry scripts, relative to src
 path of project.
 
-There is a special value `clear` for ``--plugin`` which used to clear all the
-plugins.
+If option ``--plugin`` is set to empty string, all the plugins will be removed.
 
 For the details of each option, refer to :ref:`Project Configuration File`
 
@@ -566,9 +565,9 @@ For the details of each option, refer to :ref:`Project Configuration File`
 
     pyarmor config --plugin check_ntp_time.py
 
-* Clear all plugins::
+* Remove all plugins::
 
-    pyarmor config --plugin clear
+    pyarmor config --plugin ''
 
 .. _build:
 

@@ -8,11 +8,6 @@ Change Logs
 pyarmor-webui is published as a separated package, it has been removed from
 package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
 
-The projects could have many targets, each target includes one or more
-platforms. So one project could be built for different platforms.
-
-* Add project command `target`
-* Add new option `--target` in the command `build`
 * The last argument in command `pack` could be a project path or .json file
 * Support environment variable `PYARMOR_HOME` as finding default `license.lic`
   of pyarmor. Now the search order is:

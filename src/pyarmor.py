@@ -136,7 +136,7 @@ def _config(args):
         logging.info('Change capsule to absolute path: %s', args.capsule)
     if args.plugins is not None:
         # plugins = project.get('plugins', [])
-        if 'clear' in args.plugins:
+        if ('clear' in args.plugins) or ('' in args.plugins):
             logging.info('Clear all plugins')
             args.plugins = []
     if args.disable_restrict_mode is not None:
