@@ -875,7 +875,7 @@ def register_keyfile(filename, legency=False):
         logging.info('Remove old license file `%s`', old_license)
         os.remove(old_license)
 
-    home = os.path.expanduser('~')
+    home = PYARMOR_HOME
     path = PYARMOR_PATH if legency else DATA_PATH
     if not os.path.exists(path):
         logging.info('Create path: %s', path)
