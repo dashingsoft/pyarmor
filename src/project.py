@@ -33,9 +33,7 @@
 #    1.2.2: Remove disable_restrice_mode, add restrict_mode
 #    1.2.3: Add package_runtime
 #    1.2.4: Add enable_suffix, remove obf_module_mode and obf_code_mode
-#    2.0.0: Add license, target
-#           A target is a dict, each target has the following keys:
-#               output, license, platform, pack
+#    2.0.0: Add license_file, bootstrap_code
 #
 import os
 import time
@@ -79,13 +77,13 @@ class Project(dict):
         ('obf_mod', 1), \
         ('wrap_mode', 1), \
         ('advanced_mode', 0), \
+        ('bootstrap_code', 1), \
         ('cross_protection', 1), \
         ('plugins', None), \
         ('platform', None), \
         ('package_runtime', 1), \
         ('enable_suffix', 0), \
-        ('license', None), \
-        ('target', None), \
+        ('license_file', None), \
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):
