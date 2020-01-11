@@ -18,8 +18,17 @@ package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
 * In command `licenses` if option `output` is set, do not append extra path
   `licenses` in the final output path
 * Add new project attribute `license_file`, `bootstrap_code`
-* Add new option `--with-license`, `--bootstrap-code` in the command `config`
+* Remove project attribute `enable_suffix`
+* Add new option `--with-license`, `--bootstrap` in the command `config`
 * Add new option `--name` in the command `pack`
+* Add new option `--bootstrap` in the command `obfuscate`
+* Change the behavior of `--package-runtime=2`
+    - old => use `--bootstrap=2` instead
+    - new => generate unique runtime module `pytransform_SUFFIX.py`
+* Change the behavior of `--package-runtime=3`
+    - old => use `--bootstrap=3` instead
+    - new => generate unique runtime package `pytransform_SUFFIX`
+* Deprecrated option `--enable-suffix`, use `--package-runtime=2` or `--package-runtime=3` instead
 
 5.8.9
 -----
