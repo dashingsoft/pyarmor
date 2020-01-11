@@ -17,6 +17,8 @@ package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
     - `$USERPROFILE/.pyarmor/license.lic` (Only for Windows)
 * In command `licenses` if option `output` is set, do not append extra path
   `licenses` in the final output path
+* Add new project attribute `license_file`, `bootstrap_code`
+* Add new option `--with-license`, `--bootstrap-code` in the command `config`
 
 5.8.9
 -----

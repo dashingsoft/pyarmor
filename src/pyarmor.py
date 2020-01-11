@@ -281,7 +281,7 @@ def _build(args):
         project['build_time'] = time.time()
         project.save(args.project)
 
-        if project.entry:
+        if project.entry and project.get('bootstrap_code', 1):
             soutput = os.path.join(output, os.path.basename(project.src)) \
                 if project.get('is_package') else output
             x = project.get('package_runtime', 0) \
@@ -305,10 +305,17 @@ def _build(args):
         make_runtime(capsule, routput, platforms=platforms, package=package,
                      suffix=suffix)
 
-        if not restrict:
+        licfile = project.get('license_file')
+        if licfile:
+            logging.info('Project has customized license file: %s', licfile)
+            licpath = os.path.join(routput, 'pytransform' + suffix) \
+                if package else routput
+            logging.info('Copy project license file to %s', licpath)
+            shutil.copy(licfile, licpath)
+        elif not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
-            licpath = os.path.join(routput, 'pytransform') if package \
-                else routput
+            licpath = os.path.join(routput, 'pytransform' + suffix) \
+                if package else routput
             licfile = os.path.join(licpath, license_filename)
             logging.info('Generate no restrict mode license file: %s', licfile)
             make_project_license(capsule, licode, licfile)
@@ -932,6 +939,8 @@ def _parser():
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
                          help='Insert cross protection code to entry script '
                          'or not')
+    cparser.add_argument('--bootstrap-code', type=int, choices=(0, 1),
+                         help='Insert bootstrap code to entry script or not')
     cparser.add_argument('--runtime-path', metavar="RPATH",
                          help='The path to search dynamic library in runtime, '
                          'if it is not within the runtime package')
@@ -947,6 +956,8 @@ def _parser():
                          'and how to make bootstrap code')
     cparser.add_argument('--enable-suffix', type=int, choices=(0, 1),
                          help='Generate runtime package with unique name')
+    cparser.add_argument('--with-license', dest='license_file',
+                         help='Use this license file other than default')
     cparser.set_defaults(func=_config)
 
     #
