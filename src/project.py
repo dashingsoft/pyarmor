@@ -47,12 +47,6 @@ from config import config_filename, capsule_filename, default_output_path, \
                    default_manifest_template
 
 
-class Target(dict):
-
-    DEFAULT_VALUE = ('output', None), ('license', None), \
-        ('platform', None), ('pack', None)
-
-
 class Project(dict):
 
     VERSION = 2, 0, 0
