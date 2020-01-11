@@ -299,17 +299,31 @@ def _patch_specfile(obfdist, src, specfile):
     return os.path.normpath(patched_file)
 
 
-def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
+def _pyinstaller(src, entry, output, options, xoptions, args):
     clean = args.clean
     nolicense = args.without_license
     licfile = args.with_license
     src = relpath(src)
     output = relpath(output)
+    obfdist = os.path.join(output, 'obf')
     packcmd = DEFAULT_PACKER['PyInstaller'][2] + [output] + options
 
-    obfdist = os.path.join(output, 'obf')
+    if args.name:
+        packcmd.extend(['--name', args.name])
+    else:
+        args.name = os.path.basename(entry)[:-3]
+
+    specfile = args.setup
     if specfile is None:
-        specfile = os.path.join(os.path.basename(entry)[:-3] + '.spec')
+        specfile = os.path.join(args.name + '.spec')
+        if hasattr(args, 'project'):
+            specpath = args.project
+            if specpath.endswith('.json'):
+                specpath = os.path.dirname(specpath)
+            packcmd.extend(['--specpath', specpath])
+            specfile = os.path.join(specpath, specfile)
+    elif not os.path.exists(specfile):
+        raise RuntimeError('No specfile %s found' % specfile)
 
     logging.info('build path: %s', relpath(obfdist))
     if clean and os.path.exists(obfdist):
@@ -318,6 +332,8 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
 
     logging.info('Run PyArmor to obfuscate scripts...')
     if hasattr(args, 'project'):
+        if xoptions:
+            logging.warning('Ignore xoptions as packing project')
         call_pyarmor(['build', '-O', obfdist, '--package-runtime', '0',
                       args.project])
     else:
@@ -339,7 +355,7 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
     logging.info('Generate hook script: %s', hookfile)
     _make_hook_pytransform(hookfile, obfdist, nolicense)
 
-    if clean or args.setup is None or (not os.path.exists(specfile)):
+    if args.setup is not None and (clean or not os.path.exists(specfile)):
         logging.info('Run PyInstaller to generate .spec file...')
         _pyi_makespec(obftemp, src, entry, packcmd)
         if not os.path.exists(specfile):
@@ -419,7 +435,7 @@ def packer(args):
     logging.info('src for searching scripts: %s', relpath(src))
 
     if t == 'PyInstaller':
-        _pyinstaller(src, entry, output, script, extra_options, xoptions, args)
+        _pyinstaller(src, entry, output, extra_options, xoptions, args)
     else:
         logging.warning('Deprecated way, use PyInstaller instead')
         _packer(t, src, entry, build, script, output,
@@ -436,6 +452,8 @@ def add_arguments(parser):
                         choices=DEFAULT_PACKER.keys(), help=argparse.SUPPRESS)
     parser.add_argument('-s', '--setup', metavar='FILE',
                         help='Specify .spec file used by `pyinstaller`')
+    parser.add_argument('-n', '--name', help='Name to assign to the bundled '
+                        'app (default: first script’s basename)')
     parser.add_argument('-O', '--output', metavar='PATH',
                         help='Directory to put final built distributions in')
     parser.add_argument('-e', '--options', metavar='EXTRA_OPTIONS',

@@ -19,6 +19,7 @@ package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
   `licenses` in the final output path
 * Add new project attribute `license_file`, `bootstrap_code`
 * Add new option `--with-license`, `--bootstrap-code` in the command `config`
+* Add new option `--name` in the command `pack`
 
 5.8.9
 -----
