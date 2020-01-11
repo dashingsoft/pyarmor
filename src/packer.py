@@ -45,6 +45,7 @@ import sys
 
 from distutils.util import get_platform
 from glob import glob
+from json import load as json_load
 from py_compile import compile as compile_file
 from shlex import split
 from zipfile import PyZipFile
@@ -89,7 +90,8 @@ def run_command(cmdlist):
 
 def relpath(path, start=os.curdir):
     try:
-        return os.path.relpath(path, start)
+        r = os.path.relpath(path, start)
+        return path if r.count('..') > 2 else r
     except Exception:
         return path
 
@@ -315,9 +317,13 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
         shutil.rmtree(obfdist)
 
     logging.info('Run PyArmor to obfuscate scripts...')
-    call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
-                  '--package-runtime', '0']
-                 + xoptions + [os.path.join(src, entry)])
+    if hasattr(args, 'project'):
+        call_pyarmor(['build', '-O', obfdist, '--package-runtime', '0',
+                      args.project])
+    else:
+        call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
+                      '--package-runtime', '0']
+                     + xoptions + [os.path.join(src, entry)])
 
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
@@ -359,10 +365,38 @@ def _pyinstaller(src, entry, output, specfile, options, xoptions, args):
         shutil.rmtree(obfdist)
 
 
+def _get_project_entry(self, project):
+    if project.endswith('.json'):
+        filename = project
+        path = os.path.dirname(project)
+    else:
+        path = project
+        filename = os.path.join(project, '.pyarmor_config')
+    if not os.path.exists(filename):
+        raise RuntimeError('No project %s found' % project)
+    with open(filename, 'r') as f:
+        obj = json_load(f)
+        src = obj['src']
+        if not src:
+            raise RuntimeError('No src in this project %s' % project)
+        if not os.path.isabs(src):
+            src = os.path.join(path, src)
+        if not os.path.exists(src):
+            raise RuntimeError('The project src %s does not exists' % project)
+        if not obj['entry']:
+            raise RuntimeError('No entry in this project %s' % project)
+        entry = obj['entry'].split(',')[0]
+    return src, entry
+
+
 def packer(args):
     t = args.type
-    src = os.path.abspath(os.path.dirname(args.entry[0]))
-    entry = os.path.basename(args.entry[0])
+    if args.entry[0].endswith('.py'):
+        src = os.path.abspath(os.path.dirname(args.entry[0]))
+        entry = os.path.basename(args.entry[0])
+    else:
+        src, entry = _get_project_entry(args.entry[0])
+        args.project = args.entry[0]
     extra_options = [] if args.options is None else split(args.options)
     xoptions = [] if args.xoptions is None else split(args.xoptions)
 
