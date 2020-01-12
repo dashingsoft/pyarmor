@@ -720,9 +720,9 @@ def _runtime(args):
     capsule = DEFAULT_CAPSULE
     name = 'pytransform_bootstrap'
     output = os.path.join(args.output, name) if args.inside else args.output
-    package = not args.no_package
+    package = (not args.no_package) and args.package_runtime
     platforms = compatible_platform_names(args.platforms)
-    suffix = get_name_suffix() if args.enable_suffix else ''
+    suffix = get_name_suffix() if (args.enable_suffix or package > 1) else ''
     make_runtime(capsule, output, licfile=args.with_license,
                  platforms=platforms, package=package, suffix=suffix)
 
@@ -1138,7 +1138,10 @@ def _parser():
                          help='Generate runtime package for this platform, '
                          'use this option multiple times for more platforms')
     cparser.add_argument('--enable-suffix', action='store_true',
-                         help='Generate runtime package with unique name')
+                         help=argparse.SUPPRESS)
+    cparser.add_argument('--runtime', '--package-runtime', type=int, default=1,
+                         dest='package_runtime', choices=(0, 1, 2, 3),
+                         help='Where and how to save runtime files')
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
