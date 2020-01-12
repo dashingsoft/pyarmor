@@ -125,6 +125,10 @@ def _config(args):
     project.open(args.project)
     logging.info('Update project %s ...', args.project)
 
+    # Fix compatibility: enable_suffix
+    if args.enable_suffix and args.package_runtime is None:
+        args.package_runtime = 3
+
     if args.src is not None:
         src = os.path.abspath(args.src)
         if os.path.abspath(args.src):
@@ -140,6 +144,10 @@ def _config(args):
         if ('clear' in args.plugins) or ('' in args.plugins):
             logging.info('Clear all plugins')
             args.plugins = []
+    if args.platforms is not None:
+        if '' in args.platforms:
+            logging.info('Clear platforms')
+            args.platforms = []
     if args.disable_restrict_mode is not None:
         if args.restrict_mode is not None:
             logging.warning('Option --disable_restrict_mode is ignored')
@@ -191,7 +199,7 @@ def _build(args):
     logging.info('Output path is: %s', output)
 
     platforms = args.platforms if args.platforms else project.get('platform')
-    if '' in args.platforms:
+    if platforms is None or '' in args.platforms:
         platforms = None
     else:
         platforms = compatible_platform_names(platforms)
@@ -922,7 +930,10 @@ def _parser():
     cparser.add_argument('--output',
                          help='Output path for obfuscated scripts')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('--platform', help=argparse.SUPPRESS)
+    cparser.add_argument('--platform', dest='platforms', metavar='NAME',
+                         action='append',
+                         help='Target platform to run obfuscated scripts, '
+                         'use this option multiple times for more platforms')
     cparser.add_argument('--manifest', metavar='TEMPLATE',
                          help='Filter the project scritps by these manifest '
                          'template commands')
