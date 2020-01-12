@@ -9,9 +9,9 @@ pyarmor-webui is published as a separated package, it has been removed from
 package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
 
 * The last argument in command `pack` could be a project path or .json file
-* Support environment variable `PYARMOR_HOME` as finding default `license.lic`
-  of pyarmor. Now the search order is:
-    - The package path of pyarmor
+* Support environment variable `PYARMOR_HOME` as one extra path to find the
+  `license.lic` of pyarmor. Now the search order is:
+    - In the package path of pyarmor
     - `$PYARMOR_HOME/.pyarmor/license.lic`
     - `$HOME/.pyarmor/license.lic`
     - `$USERPROFILE/.pyarmor/license.lic` (Only for Windows)
@@ -23,12 +23,14 @@ package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
 * Add new option `--name` in the command `pack`
 * Add new option `--bootstrap` in the command `obfuscate`
 * Change the behavior of `--package-runtime=2`
-    - old => use `--bootstrap=2` instead
-    - new => generate unique runtime module `pytransform_SUFFIX.py`
+    - old behavior => use `--bootstrap=2` instead
+    - now => generate unique runtime module `pytransform_SUFFIX.py`
 * Change the behavior of `--package-runtime=3`
-    - old => use `--bootstrap=3` instead
+    - old behavior => use `--bootstrap=3` instead
     - new => generate unique runtime package `pytransform_SUFFIX`
 * Deprecrated option `--enable-suffix`, use `--package-runtime=2` or `--package-runtime=3` instead
+* In command `obfuscate`, if `--exact` is set, then all the scripts list in the
+  command line will be taken as entry script.
 
 5.8.9
 -----

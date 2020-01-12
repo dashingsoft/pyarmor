@@ -116,7 +116,8 @@ def _init(args):
 @arcommand
 def _config(args):
     '''Update project settings.'''
-    for x in ('obf-module-mode', 'obf-code-mode', 'disable-restrict-mode'):
+    for x in ('obf-module-mode', 'obf-code-mode', 'disable-restrict-mode',
+              'enable_suffix'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -180,7 +181,10 @@ def _build(args):
     capsule = build_path(project.capsule, pro_path)
     logging.info('Use capsule: %s', capsule)
 
-    suffix = get_name_suffix() if project.get('enable_suffix') else ''
+    if project.get('enable_suffix') or project.get('package_runtime', 0) > 1:
+        suffix = get_name_suffix()
+    else:
+        suffix = ''
 
     output = build_path(project.output, pro_path) \
         if args.output is None else os.path.normpath(args.output)
@@ -284,10 +288,9 @@ def _build(args):
         if project.entry and project.get('bootstrap_code', 1):
             soutput = os.path.join(output, os.path.basename(project.src)) \
                 if project.get('is_package') else output
-            x = project.get('package_runtime', 0) \
-                if args.package_runtime is None else args.package_runtime
-            relative = True if x == 3 else \
-                False if (x == 2 or args.no_runtime) else None
+            n = project.get('bootstrap_code', 1)
+            relative = True if n == 3 else \
+                False if (n == 2 or args.no_runtime) else None
             make_entry(project.entry, project.src, soutput,
                        rpath=project.runtime_path, relative=relative,
                        suffix=suffix)
@@ -441,7 +444,7 @@ def _obfuscate(args):
         logging.info('Target platforms: %s', platforms)
         check_cross_platform(platforms)
 
-    for x in ('entry', 'cross-protection'):
+    for x in ('entry', 'cross-protection', 'enable_suffix'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -463,8 +466,8 @@ def _obfuscate(args):
         raise RuntimeError('Not found source path: %s' % path)
     logging.info('Source path is "%s"', path)
 
-    entry = args.entry or (args.scripts and args.scripts[0])
-    logging.info('Entry script is %s', entry)
+    entries = [args.entry] if args.entry else args.scripts
+    logging.info('Entry scripts are %s', entries)
 
     capsule = args.capsule if args.capsule else DEFAULT_CAPSULE
     if os.path.exists(capsule):
@@ -477,7 +480,8 @@ def _obfuscate(args):
     if os.path.abspath(output) == path:
         raise RuntimeError('Output path can not be same as src')
 
-    suffix = get_name_suffix() if args.enable_suffix else ''
+    suffix = get_name_suffix() \
+        if (args.enable_suffix or args.package_runtime > 1) else ''
 
     if args.recursive:
         logging.info('Recursive mode is on')
@@ -528,13 +532,17 @@ def _obfuscate(args):
     restrict = args.restrict
     logging.info('Restrict mode is %d', restrict)
 
+    n = args.bootstrap_code
+    relative = True if n == 3 else False if n == 2 else None
+    bootstrap = (not args.no_bootstrap) and n
+    elist = [os.path.abspath(x) for x in entries]
     for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
         else:
             a, b = os.path.join(path, x), os.path.join(output, x)
         logging.info('\t%s -> %s', x, b)
-        is_entry = entry and (os.path.abspath(a) == os.path.abspath(entry))
+        is_entry = os.path.abspath(a) in elist
         protection = is_entry and cross_protection
         plugins = search_plugins(args.plugins)
 
@@ -546,19 +554,12 @@ def _obfuscate(args):
         encrypt_script(prokey, a, b, adv_mode=vmode, rest_mode=restrict,
                        protection=protection, platforms=platforms,
                        plugins=plugins, suffix=suffix)
-    logging.info('%d scripts have been obfuscated', len(files))
 
-    if (not args.no_bootstrap) and entry and os.path.exists(entry):
-        x = args.package_runtime
-        relative = True if x == 3 else False if x == 2 else None
-        entryname = entry if args.src else os.path.basename(entry)
-        if os.path.exists(os.path.join(output, entryname)):
-            make_entry(entryname, path, output, relative=relative,
-                       suffix=suffix)
-        else:
-            logging.info('Use outer entry script "%s"', entry)
-            make_entry(entry, path, output, relative=relative,
-                       suffix=suffix)
+        if is_entry and bootstrap:
+            name = os.path.abspath(a)[len(path)+1:]
+            make_entry(name, path, output, relative=relative, suffix=suffix)
+
+    logging.info('%d scripts have been obfuscated', len(files))
 
     if args.no_runtime:
         logging.info('Obfuscate %d scripts OK.', len(files))
@@ -790,6 +791,10 @@ def _parser():
                          help='Only obfusate list scripts')
     cparser.add_argument('--no-bootstrap', action='store_true',
                          help='Do not insert bootstrap code to entry script')
+    cparser.add_argument('--bootstrap', '--bootstrap-code',
+                         dest='bootstrap_code',
+                         type=int, default=1, choices=(0, 1, 2, 3),
+                         help='How to insert bootstrap code to entry script')
     cparser.add_argument('--no-cross-protection', action='store_true',
                          help='Do not insert cross protection code to entry '
                          'script')
@@ -817,13 +822,13 @@ def _parser():
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
-    cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
-                         default=1, help='Where to save runtime files, '
-                         'and how to make bootstrap code')
+    cparser.add_argument('--runtime', '--package-runtime', type=int, default=1,
+                         dest='package_runtime', choices=(0, 1, 2, 3),
+                         help='Where and how to save runtime files')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate runtime files')
     cparser.add_argument('--enable-suffix', action='store_true',
-                         help='Generate runtime package with unique name')
+                         help=argparse.SUPPRESS)
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -939,8 +944,9 @@ def _parser():
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
                          help='Insert cross protection code to entry script '
                          'or not')
-    cparser.add_argument('--bootstrap-code', type=int, choices=(0, 1),
-                         help='Insert bootstrap code to entry script or not')
+    cparser.add_argument('--bootstrap', '--bootstrap-code', type=int,
+                         dest='bootstrap_code', choices=(0, 1, 2, 3),
+                         help='How to insert bootstrap code to entry script')
     cparser.add_argument('--runtime-path', metavar="RPATH",
                          help='The path to search dynamic library in runtime, '
                          'if it is not within the runtime package')
@@ -951,11 +957,12 @@ def _parser():
     cparser.add_argument('--advanced', '--advanced-mode', dest='advanced_mode',
                          type=int, choices=(0, 1),
                          help='Enable or disable advanced mode')
-    cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
-                         help='Where to save runtime files, '
-                         'and how to make bootstrap code')
+    cparser.add_argument('--runtime', '--package-runtime',
+                         dest='package_runtime',
+                         choices=(0, 1, 2, 3), type=int,
+                         help='Where and how to save runtime files')
     cparser.add_argument('--enable-suffix', type=int, choices=(0, 1),
-                         help='Generate runtime package with unique name')
+                         help=argparse.SUPPRESS)
     cparser.add_argument('--with-license', dest='license_file',
                          help='Use this license file other than default')
     cparser.set_defaults(func=_config)
@@ -984,9 +991,9 @@ def _parser():
                          action='append',
                          help='Target platform to run obfuscated scripts, '
                          'use this option multiple times for more platforms')
-    cparser.add_argument('--package-runtime', choices=(0, 1, 2, 3), type=int,
-                         help='Where to save runtime files, '
-                         'and how to make bootstrap code')
+    cparser.add_argument('--runtime', '--package-runtime', type=int,
+                         dest='package_runtime', choices=(0, 1, 2, 3),
+                         help='Where and how to save runtime files')
     cparser.set_defaults(func=_build)
 
     #

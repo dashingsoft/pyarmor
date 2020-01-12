@@ -34,6 +34,7 @@
 #    1.2.3: Add package_runtime
 #    1.2.4: Add enable_suffix, remove obf_module_mode and obf_code_mode
 #    2.0.0: Add license_file, bootstrap_code
+#           Remove attribute enable_suffix
 #
 import os
 import time
@@ -76,7 +77,6 @@ class Project(dict):
         ('plugins', None), \
         ('platform', None), \
         ('package_runtime', 1), \
-        ('enable_suffix', 0), \
         ('license_file', None), \
         ('build_time', 0.)
 
