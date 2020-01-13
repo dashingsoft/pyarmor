@@ -8,19 +8,19 @@ Change Logs
 pyarmor-webui is published as a separated package, it has been removed from
 package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
 
-* The last argument in command `pack` could be a project path or .json file
 * Support environment variable `PYARMOR_HOME` as one extra path to find the
   `license.lic` of pyarmor. Now the search order is:
     - In the package path of pyarmor
     - `$PYARMOR_HOME/.pyarmor/license.lic`
     - `$HOME/.pyarmor/license.lic`
     - `$USERPROFILE/.pyarmor/license.lic` (Only for Windows)
+* The last argument in command `pack` could be a project path or .json file
+* Add new option `--name` in the command `pack`
 * In command `licenses` if option `output` is set, do not append extra path
   `licenses` in the final output path
-* Add new project attribute `license_file`, `bootstrap_code`
-* Remove project attribute `enable_suffix`
-* Add new option `--with-license`, `--bootstrap` in the command `config`
-* Add new option `--name` in the command `pack`
+* Add new project attribute `license_file`, `bootstrap_code`, `runtime_mode`
+* Remove project attribute `enable_suffix`, `package_runtime`
+* Add new option `--with-license`, `--bootstrap`, `--runtime-mode` in the command `config`
 * Add new option `--bootstrap` in the command `obfuscate`
 * Change the behavior of `--package-runtime=2`
     - old behavior => use `--bootstrap=2` instead
@@ -28,11 +28,11 @@ package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
 * Change the behavior of `--package-runtime=3`
     - old behavior => use `--bootstrap=3` instead
     - new => generate unique runtime package `pytransform_SUFFIX`
-* Deprecrated option `--enable-suffix`, use `--package-runtime=2` or `--package-runtime=3` instead
-* In command `obfuscate`, if `--exact` is set, then all the scripts list in the
+* Deprecrated option `--package-runtime`, use `--runtime-mode` instead
+* Deprecrated option `--enable-suffix`, use `--runtime-mode=2` or `--runtime-mode=3` instead
+* In command `obfuscate` with option `--exact`, all the scripts list in the
   command line will be taken as entry script.
-* In command `runtime`, add new option `--package-runtime`
-* Add alias `--runtime` for option `--package-runtime`
+* In command `runtime`, add new option `--mode`
 
 5.8.9
 -----
