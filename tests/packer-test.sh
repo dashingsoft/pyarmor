@@ -210,6 +210,33 @@ check_file_exists $dist/dist/main/license.lic
 check_file_content $dist/result.log 'Hello test --with-license' not
 check_file_content $dist/result.log 'Invalid product license file'
 
+csih_inform "Case 3-9: Test pack with project"
+project=test-with-project
+$PYARMOR init --src examples/simple --entry queens.py $project >result.log 2>&1
+check_return_value
+
+$PYARMOR pack -O $project/dist $project >result.log 2>&1
+check_return_value
+check_file_exists $project/dist/queens/pytransform.key
+
+(cd $project/dist; ./queens/queens >result.log 2>&1)
+check_return_value
+check_file_content $project/dist/result.log 'Found 92 solutions'
+
+csih_inform "Case 3-10: Test pack with project .json file"
+project=test-with-project-file
+$PYARMOR init --src examples/simple --entry queens.py $project >result.log 2>&1
+check_return_value
+
+mv $project/.pyarmor_config $project/test.json
+$PYARMOR pack -O $project/dist $project/test.json >result.log 2>&1
+check_return_value
+check_file_exists $project/dist/queens/pytransform.key
+
+(cd $project/dist; ./queens/queens >result.log 2>&1)
+check_return_value
+check_file_content $project/dist/result.log 'Found 92 solutions'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
