@@ -937,7 +937,7 @@ def _parser():
                          default='', help='Project path')
     cparser.add_argument('--name')
     cparser.add_argument('--title')
-    cparser.add_argument('--src',
+    cparser.add_argument('--src', default=".",
                          help='Project src, base path for matching scripts')
     cparser.add_argument('--output',
                          help='Output path for obfuscated scripts')
@@ -987,6 +987,11 @@ def _parser():
                          help=argparse.SUPPRESS)
     cparser.add_argument('--with-license', dest='license_file',
                          help='Use this license file other than default')
+    # cparser.add_argument('--reset', choices=('all', 'glob', 'exact'),
+    #                      help='Initialize project scripts by different way')
+    # cparser.add_argument('--exclude', dest="exludes", action="append",
+    #                      help='Exclude the path or script from project. '
+    #                      'This option could be used multiple times')
     cparser.set_defaults(func=_config)
 
     #
