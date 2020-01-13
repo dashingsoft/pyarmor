@@ -120,8 +120,8 @@ rm $dist/queens/license.lic
 check_file_content $dist/queens/result.log 'Found 92 solutions' not
 check_file_content $dist/queens/result.log 'No such file or directory'
 
-csih_inform "Case 3-2: Test extra pack option with PyInstaller"
-$PYARMOR pack --clean --options " --name foo2 " -s "foo2.spec" \
+csih_inform "Case 3-2: Test option --name with PyInstaller"
+$PYARMOR pack --clean -O dist --name foo2 \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 
@@ -129,7 +129,7 @@ check_return_value
 check_file_content dist/foo2/result.log 'Found 92 solutions'
 
 csih_inform "Case 3-3: Test one file with PyInstaller"
-$PYARMOR pack --clean --options " --name foo3 -F" -s "foo3.spec" \
+$PYARMOR pack --clean --name foo3 -O dist --options " --onefile" \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 
@@ -144,9 +144,9 @@ with open(join(dirname(sys.executable), 'license.lic'), 'rb') as fs:
     with open(join(sys._MEIPASS, 'license.lic'), 'wb') as fd:
         fd.write(fs.read())
 EOF
-$PYARMOR pack --clean --without-license \
-         --options " --name foo4 -F --runtime-hook copy_license.py" \
-         -s "foo4.spec" examples/simple/queens.py >result.log 2>&1
+$PYARMOR pack --clean --without-license --name foo4 -O dist \
+         --options " -F --runtime-hook copy_license.py" \
+         examples/simple/queens.py >result.log 2>&1
 check_return_value
 
 ( cd dist/; ./foo4  >result.log 2>&1 )
