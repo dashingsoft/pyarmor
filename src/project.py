@@ -33,8 +33,9 @@
 #    1.2.2: Remove disable_restrice_mode, add restrict_mode
 #    1.2.3: Add package_runtime
 #    1.2.4: Add enable_suffix, remove obf_module_mode and obf_code_mode
-#    2.0.0: Add license_file, bootstrap_code
-#           Remove attribute enable_suffix
+#
+#    2.0: Add license_file, bootstrap_code, runtime_mode
+#         Remove attribute enable_suffix, package_runtime
 #
 import os
 import time
@@ -50,7 +51,7 @@ from config import config_filename, capsule_filename, default_output_path, \
 
 class Project(dict):
 
-    VERSION = 2, 0, 0
+    VERSION = 2, 0
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -76,7 +77,7 @@ class Project(dict):
         ('cross_protection', 1), \
         ('plugins', None), \
         ('platform', None), \
-        ('package_runtime', 1), \
+        ('runtime_mode', 1), \
         ('license_file', None), \
         ('build_time', 0.)
 
