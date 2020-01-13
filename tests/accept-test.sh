@@ -23,6 +23,10 @@ rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
 datafile=$(pwd)/data/pyarmor-data.tar.gz
 capsulefile=$(pwd)/data/pyarmor-test-0001.zip
 
+# Form v5.9.0, support PYARMOR_HOME
+workhome=${workpath}/home
+export PYARMOR_HOME="$workhome"
+
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
@@ -57,10 +61,12 @@ echo ""
 
 csih_inform "1. Show version information"
 $PYARMOR --version >result.log 2>&1 || csih_bug "show version FAILED"
+check_file_exists $workhome/.pyarmor/license.lic
 
 csih_inform "2. Obfuscate foo.py"
 $PYARMOR obfuscate examples/helloworld/foo.py >result.log 2>&1
 check_return_value
+check_file_exists $workhome/.pyarmor_capsule.zip
 
 csih_inform "3. Run obfuscated foo.py"
 (cd dist; $PYTHON foo.py >result.log 2>&1)
@@ -243,6 +249,7 @@ test_suffix="_unk_0001"
 csih_inform "0. Register keyfile"
 $PYARMOR register data/pyarmor-test-0001.zip >result.log 2>&1
 check_return_value
+check_file_exists $workhome/.pyarmor/license.lic
 
 csih_inform "1. Show version information"
 $PYARMOR --version >result.log 2>&1
@@ -251,6 +258,7 @@ check_file_content result.log "pyarmor-test-0001"
 csih_inform "2. Obfuscate foo.py"
 $PYARMOR obfuscate examples/helloworld/foo.py >result.log 2>&1
 check_return_value
+check_file_exists $workhome/.pyarmor_capsule.zip
 
 csih_inform "3. Run obfuscated foo.py"
 (cd dist; $PYTHON foo.py >result.log 2>&1)
@@ -339,7 +347,7 @@ with open('big_array.py', 'w') as f:
   f.write('print(\"a99 = %s\" % a99)')"
 $PYARMOR init --src=. --entry=big_array.py -t app $PROPATH >result.log 2>&1
 $PYARMOR config --wrap-mode=0 --manifest="include big_array.py" $PROPATH >result.log 2>&1
-(cd $PROPATH; $ARMOR build >result.log 2>&1)
+$PYARMOR build $PROPATH >$PROPATH/result.log 2>&1
 
 check_file_exists $PROPATH/dist/big_array.py
 check_file_content $PROPATH/dist/big_array.py 'pyarmor_runtime'
@@ -387,7 +395,7 @@ mkdir $PROPATH
 echo "print('Hello this is a project with suffix')" > $PROPATH/main.py
 $PYARMOR init --src=$PROPATH --entry=main.py $PROPATH >result.log 2>&1
 $PYARMOR config --enable-suffix 1 $PROPATH >result.log 2>&1
-(cd $PROPATH; $ARMOR build >result.log 2>&1)
+$PYARMOR build $PROPATH >$PROPATH/result.log 2>&1
 
 check_return_value
 check_file_exists $PROPATH/dist/pytransform${test_suffix}/__init__.py
