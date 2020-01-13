@@ -307,6 +307,10 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     output = relpath(output)
     obfdist = os.path.join(output, 'obf')
     packcmd = DEFAULT_PACKER['PyInstaller'][2] + [output] + options
+    script = os.path.join(src, entry)
+
+    if not script.endswith('.py') or not os.path.exists(script):
+        raise RuntimeError('No entry script %s found' % script)
 
     if args.name:
         packcmd.extend(['--name', args.name])
@@ -334,12 +338,11 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if hasattr(args, 'project'):
         if xoptions:
             logging.warning('Ignore xoptions as packing project')
-        call_pyarmor(['build', '-O', obfdist, '--package-runtime', '0',
+        call_pyarmor(['build', '-O', obfdist, '--runtime-mode', '0',
                       args.project])
     else:
         call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
-                      '--package-runtime', '0']
-                     + xoptions + [os.path.join(src, entry)])
+                      '--runtime-mode', '0'] + xoptions + [script])
 
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
