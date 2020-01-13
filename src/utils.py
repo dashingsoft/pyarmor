@@ -864,7 +864,7 @@ def query_keyinfo(key):
 
 
 def register_keyfile(filename, legency=False):
-    if not legency and \
+    if (not legency) and \
        not os.getenv('PYARMOR_HOME',
                      os.getenv('HOME', os.getenv('USERPROFILE'))):
         logging.debug('Force traditional way because no HOME set')
