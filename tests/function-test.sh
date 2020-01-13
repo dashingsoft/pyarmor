@@ -371,6 +371,19 @@ check_return_value
 check_file_exists test-exclude3/main.py
 check_file_not_exists test-exclude3/mypkg/foo.py
 
+csih_inform "C-30. Test many entry scripts in exact mode"
+echo "" > a.py
+echo "" > b.py
+echo "" > c.py
+output=test-many-scripts
+$PYARMOR obfuscate --exact -O $output a.py b.py > result.log 2>&1
+check_return_value
+check_file_exists $output/a.py
+check_file_exists $output/b.py
+check_file_not_exists $output/c.py
+check_file_content $output/a.py 'import pyarmor_runtime'
+check_file_content $output/b.py 'import pyarmor_runtime'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
