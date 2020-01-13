@@ -355,14 +355,14 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     logging.info('Generate hook script: %s', hookfile)
     _make_hook_pytransform(hookfile, obfdist, nolicense)
 
-    if args.setup is not None and (clean or not os.path.exists(specfile)):
+    if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
         _pyi_makespec(obftemp, src, entry, packcmd)
         if not os.path.exists(specfile):
             raise RuntimeError('No specfile "%s" found', specfile)
         logging.info('Save .spec file to %s', specfile)
     else:
-        logging.info('Use cached .spec file: %s', specfile)
+        logging.info('Use customized .spec file: %s', specfile)
 
     logging.info('Patching .spec file...')
     patched_spec = _patch_specfile(obfdist, src, specfile)
