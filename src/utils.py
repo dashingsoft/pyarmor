@@ -411,9 +411,11 @@ def _build_platforms(platforms):
     n = len(platforms)
     for platid in platforms:
         if (n > 1) and os.path.isabs(platid):
-            raise RuntimeError('Invalid platform `%s`, for multiple '
-                               'platforms it must be `platform.machine`',
-                               platid)
+            raise RuntimeError('Invalid platform `%s`, for multiple platforms '
+                               'it must be `platform.machine`' % platid)
+        if (n > 1) and platid.startswith('vs2015.'):
+            raise RuntimeError('The platform `%s` does not work '
+                               'in multiple platforms target' % platid)
         filename = _get_platform_library_filename(platid)
         if filename is None:
             logging.info('No dynamic library found for %s' % platid)
