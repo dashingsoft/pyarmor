@@ -31,6 +31,8 @@ package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
 * Deprecrated option `--enable-suffix`, use `--package-runtime=2` or `--package-runtime=3` instead
 * In command `obfuscate`, if `--exact` is set, then all the scripts list in the
   command line will be taken as entry script.
+* In command `runtime`, add new option `--package-runtime`
+* Add alias `--runtime` for option `--package-runtime`
 
 5.8.9
 -----
