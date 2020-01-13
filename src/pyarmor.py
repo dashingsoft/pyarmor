@@ -147,7 +147,9 @@ def _config(args):
     if args.platforms is not None:
         if '' in args.platforms:
             logging.info('Clear platforms')
-            args.platforms = []
+            args.platform = ''
+        else:
+            args.platform = ','.join(args.platforms)
     if args.disable_restrict_mode is not None:
         if args.restrict_mode is not None:
             logging.warning('Option --disable_restrict_mode is ignored')
@@ -203,12 +205,14 @@ def _build(args):
         if args.output is None else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
 
-    platforms = args.platforms if args.platforms else project.get('platform')
-    if platforms is None or '' in args.platforms:
-        platforms = None
+    if args.platforms:
+        platforms = [] if '' in args.platforms else args.platforms
+    elif project.get('platform'):
+        platforms = project.get('platform').split(',')
     else:
-        platforms = compatible_platform_names(platforms)
+        platforms = []
     if platforms:
+        platforms = compatible_platform_names(platforms)
         logging.info('Taget platforms: %s', platforms)
         check_cross_platform(platforms)
 
@@ -303,7 +307,7 @@ def _build(args):
                 if project.get('is_package') else output
             n = project.get('bootstrap_code', 1)
             relative = True if n == 3 else \
-                False if (n == 2 or args.no_runtime) else None
+                False if (n == 2 or (args.no_runtime and n == 1)) else None
             make_entry(project.entry, project.src, soutput,
                        rpath=project.runtime_path, relative=relative,
                        suffix=suffix)
