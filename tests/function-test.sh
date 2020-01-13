@@ -111,7 +111,7 @@ cp test/data/project.zip .pyarmor_capsule.zip
 $PYARMOR licenses --expired=2018-05-12 Customer-Jordan >result.log 2>&1
 check_file_exists licenses/Customer-Jordan/license.lic
 
-$PYARMOR licenses --capsule=test/data/project.zip --output=projects \
+$PYARMOR licenses --capsule=test/data/project.zip --output=projects/licenses \
     --expired=2018-05-12 Customer-Jordan >result.log 2>&1
 check_file_exists projects/licenses/Customer-Jordan/license.lic
 
@@ -323,14 +323,14 @@ check_file_content test-package-runtime/result.log 'Found 92 solutions'
 check_return_value
 check_file_content test-package-runtime/result2.log 'Found 92 solutions'
 
-csih_inform "C-25. Test option --package-runtime=2 for obfuscate"
-$PYARMOR obfuscate --package-runtime 2 --output test-package-runtime2 \
+csih_inform "C-25. Test option --bootstrap=2 for obfuscate"
+$PYARMOR obfuscate --package-runtime 1 --bootstrap 2 --output test-bootstrap2 \
          examples/testpkg/mypkg/__init__.py >result.log 2>&1
 check_return_value
-check_file_exists test-package-runtime2/pytransform/__init__.py
-check_file_content test-package-runtime2/pytransform/__init__.py 'def init_runtime'
-check_file_exists test-package-runtime2/__init__.py
-check_file_content test-package-runtime2/__init__.py 'from pytransform import pyarmor_runtime'
+check_file_exists test-bootstrap2/pytransform/__init__.py
+check_file_content test-bootstrap2/pytransform/__init__.py 'def init_runtime'
+check_file_exists test-bootstrap2/__init__.py
+check_file_content test-bootstrap2/__init__.py 'from pytransform import pyarmor_runtime'
 
 csih_inform "C-25. Test command runtime with default option"
 $PYARMOR runtime > result.log 2>&1
@@ -355,14 +355,14 @@ check_file_exists test-exception/e.py
 check_file_content test-exception/result.log 'Elinimate long line from traceback'
 check_file_content test-exception/result.log '__pyarmor__' not
 
-csih_inform "C-28. Test option --package-runtime=3 for obfuscate"
-$PYARMOR obfuscate --package-runtime 3 --output test-package-runtime3 \
+csih_inform "C-28. Test option --bootstrap=3 for obfuscate"
+$PYARMOR obfuscate --package-runtime 1 --bootstrap 3 --output test-bootstrap3 \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
-check_file_exists test-package-runtime3/pytransform/__init__.py
-check_file_content test-package-runtime3/pytransform/__init__.py 'def init_runtime'
-check_file_exists test-package-runtime3/queens.py
-check_file_content test-package-runtime3/queens.py 'from .pytransform import pyarmor_runtime'
+check_file_exists test-bootstrap3/pytransform/__init__.py
+check_file_content test-bootstrap3/pytransform/__init__.py 'def init_runtime'
+check_file_exists test-bootstrap3/queens.py
+check_file_content test-bootstrap3/queens.py 'from .pytransform import pyarmor_runtime'
 
 csih_inform "C-29. Test option --exclude .py file for obfuscate"
 $PYARMOR obfuscate -O test-exclude3 -r --exclude "mypkg/foo.py" \
@@ -452,11 +452,11 @@ check_file_content $PROPATH/dist/pytransform/__init__.py 'def pyarmor_runtime'
 check_return_value
 check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
 
-csih_inform "Case P-6: build project with --package-runtime=2"
-PROPATH=projects/test-package-runtime2
+csih_inform "Case P-6: build project with --bootstrap=2"
+PROPATH=projects/test-bootstrap2
 $PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
 
-$PYARMOR config --package-runtime=2 $PROPATH  >result.log 2>&1
+$PYARMOR config --package-runtime=1 --bootstrap=2 $PROPATH  >result.log 2>&1
 check_return_value
 
 (cd $PROPATH; $ARMOR build >result.log 2>&1)
@@ -492,11 +492,11 @@ cp $PROPATH/.pyarmor_config $PROPATH/project.json
 check_return_value
 check_file_content $PROPATH/result.log 'Alias-Project-8'
 
-csih_inform "Case P-9: build project with --package-runtime=3"
-PROPATH=projects/test-package-runtime3
+csih_inform "Case P-9: build project with --bootstrap=3"
+PROPATH=projects/test-bootstrap3
 $PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
 
-$PYARMOR config --package-runtime=3 $PROPATH  >result.log 2>&1
+$PYARMOR config --package-runtime=1 --bootstrap 3 $PROPATH  >result.log 2>&1
 check_return_value
 
 (cd $PROPATH; $ARMOR build >result.log 2>&1)
@@ -1021,6 +1021,33 @@ echo "print('OK2')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_return_value
 check_file_content $output/result.log 'OK2'
+
+csih_inform "Case BP-03: generate runtime files with --no-package"
+output=test-runtime-no-package
+$PYARMOR runtime --no-package -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform.py
+
+csih_inform "Case BP-04: generate runtime files with --package-runtime"
+output=test-runtime-mode-0
+$PYARMOR runtime --package-runtime 0 -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform.py
+
+output=test-runtime-mode-1
+$PYARMOR runtime --package-runtime 1 -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform/__init__.py
+
+output=test-runtime-mode-2
+$PYARMOR runtime --package-runtime 2 -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform.py
+
+output=test-runtime-mode-3
+$PYARMOR runtime --package-runtime 3 -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform/__init__.py
 
 echo ""
 echo "-------------------- Test bootstrap package END ----------------"
