@@ -384,7 +384,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         shutil.rmtree(obfdist)
 
 
-def _get_project_entry(self, project):
+def _get_project_entry(project):
     if project.endswith('.json'):
         filename = project
         path = os.path.dirname(project)
