@@ -507,6 +507,25 @@ check_file_content $PROPATH/dist/pytransform/__init__.py 'def pyarmor_runtime'
 check_file_exists $PROPATH/dist/queens.py
 check_file_content $PROPATH/dist/queens.py 'from .pytransform import pyarmor_runtime'
 
+csih_inform "Case P-10: Set and clear project plugins and platforms"
+PROPATH=projects/test-clear-plugin-platform
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --platform linux.x86_64 --plugin check_ntp_time \
+         $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "linux.x86_64"
+check_file_content result.log "check_ntp_time"
+
+$PYARMOR config --platform "" --plugin "" $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "linux.x86_64" not
+check_file_content result.log "check_ntp_time" not
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""
@@ -1028,24 +1047,24 @@ $PYARMOR runtime --no-package -O $output > result.log 2>&1
 check_return_value
 check_file_exists  $output/pytransform.py
 
-csih_inform "Case BP-04: generate runtime files with --package-runtime"
+csih_inform "Case BP-04: generate runtime files with --mode"
 output=test-runtime-mode-0
-$PYARMOR runtime --package-runtime 0 -O $output > result.log 2>&1
+$PYARMOR runtime --mode 0 -O $output > result.log 2>&1
 check_return_value
 check_file_exists  $output/pytransform.py
 
 output=test-runtime-mode-1
-$PYARMOR runtime --package-runtime 1 -O $output > result.log 2>&1
+$PYARMOR runtime --mode 1 -O $output > result.log 2>&1
 check_return_value
 check_file_exists  $output/pytransform/__init__.py
 
 output=test-runtime-mode-2
-$PYARMOR runtime --package-runtime 2 -O $output > result.log 2>&1
+$PYARMOR runtime --mode 2 -O $output > result.log 2>&1
 check_return_value
 check_file_exists  $output/pytransform.py
 
 output=test-runtime-mode-3
-$PYARMOR runtime --package-runtime 3 -O $output > result.log 2>&1
+$PYARMOR runtime --mode 3 -O $output > result.log 2>&1
 check_return_value
 check_file_exists  $output/pytransform/__init__.py
 
