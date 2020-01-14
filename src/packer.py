@@ -85,7 +85,7 @@ def run_command(cmdlist):
     if p.returncode != 0:
         if not sys.flags.debug:
             logging.error('\n\n%s\n\n', output.decode())
-        raise RuntimeError('Run command failed')
+        raise RuntimeError(output.decode())
 
 
 def relpath(path, start=os.curdir):
