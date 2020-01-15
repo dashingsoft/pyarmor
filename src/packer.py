@@ -454,7 +454,7 @@ def add_arguments(parser):
     parser.add_argument('-t', '--type', default='PyInstaller', metavar='TYPE',
                         choices=DEFAULT_PACKER.keys(), help=argparse.SUPPRESS)
     parser.add_argument('-s', '--setup', metavar='FILE',
-                        help='Specify .spec file used by `pyinstaller`')
+                        help='Use external .spec file to pack the script')
     parser.add_argument('-n', '--name', help='Name to assign to the bundled '
                         'app (default: first script’s basename)')
     parser.add_argument('-O', '--output', metavar='PATH',
