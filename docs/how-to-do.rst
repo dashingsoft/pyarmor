@@ -378,7 +378,7 @@ First install ``pyinstaller``::
 
 Then obfuscate scripts to ``dist/obf``::
 
-    pyarmor obfuscate --output dist/obf --package-runtime 0 hello.py
+    pyarmor obfuscate --output dist/obf --runtime-mode 0 hello.py
 
 Next generate specfile, add runtime files required by obfuscated
 scripts::

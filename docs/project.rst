@@ -309,8 +309,8 @@ Each project has a configure file. It's a json file named
 
 * package_runtime
 
-    .. note::
-       Removed from v5.9.0, use `runtime_mode` and `bootstrap_code` instead
+    .. warning::
+       Removed from v5.9.0, use ``runtime_mode`` and ``bootstrap_code`` instead
 
     How to save the runtime files:
 
@@ -338,8 +338,8 @@ Each project has a configure file. It's a json file named
 
 * enable_suffix
 
-    .. note::
-       Removed from v5.9.0, use `runtime_mode` instead
+    .. warning::
+       Removed from v5.9.0, use ``runtime_mode`` instead
 
     How to generate runtime package (module) and bootstrap code:
 
