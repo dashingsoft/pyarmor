@@ -264,23 +264,23 @@ Each project has a configure file. It's a json file named
 
       - 0
 
-        Do not insert bootstrap code into entry script
+      Do not insert bootstrap code into entry script
 
       - 1 (Default)
 
-        Insert the bootstrap code into entry script. If the script name is
-        ``__init__.py``, make a relative import with leading dots, otherwise make
-        absolute import.
+      Insert the bootstrap code into entry script. If the script name is
+      ``__init__.py``, make a relative import with leading dots, otherwise make
+      absolute import.
 
       - 2
 
-        The bootstrap code will always be made an absolute import without leading
-        dots in the entry script.
+      The bootstrap code will always be made an absolute import without leading
+      dots in the entry script.
 
       - 3
 
-        The bootstrap code will always be made a relative import with leading dots
-        in the entry script.
+      The bootstrap code will always be made a relative import with leading dots
+      in the entry script.
 
 * runtime_mode
 
@@ -291,21 +291,21 @@ Each project has a configure file. It's a json file named
 
        - 0
 
-          Save the runtime files in the same path with the obufscated scripts
+       Save the runtime files in the same path with the obufscated scripts
 
        - 1 (Default)
 
-          Save the runtime files as a package `pytransform`
+       Save the runtime files as a package `pytransform`
 
        - 2
 
-          Same as 0, but append an unique suffix to runtime module name, for
-          example, ``pytransform_vax_00001.py``.
+       Same as 0, but append an unique suffix to runtime module name, for
+       example, ``pytransform_vax_00001.py``.
 
        - 3
 
-          Same as 1, but append an unique suffix for runtime package, for
-          example, ``pytransform_vax_00001``
+       Same as 1, but append an unique suffix for runtime package, for
+       example, ``pytransform_vax_00001``
 
 * package_runtime
 
@@ -316,25 +316,23 @@ Each project has a configure file. It's a json file named
 
        - 0
 
-          Save them in the same path with the obufscated scripts
+       Save them in the same path with the obufscated scripts
 
        - 1 (Default)
 
-          Save them in the sub-path `pytransform` as a package
+       Save them in the sub-path `pytransform` as a package
 
        - 2
 
-          Same as 1, but it's implied the package `pytransform` is not
-          in same path with obfuscated scripts in runtime. So the
-          bootstrap code will always make absolute import without
-          leading dots in entry script.
+       Same as 1, but it's implied the package `pytransform` is not in same path
+       with obfuscated scripts in runtime. So the bootstrap code will always
+       make absolute import without leading dots in entry script.
 
        - 3
 
-          Same as 1, but it's implied the package `pytransform` is in
-          the same path with obfuscated scripts in runtime. So the
-          bootstrap code will always make a relative import with leading
-          dots in the entry script.
+       Same as 1, but it's implied the package `pytransform` is in the same path
+       with obfuscated scripts in runtime. So the bootstrap code will always
+       make a relative import with leading dots in the entry script.
 
 * enable_suffix
 
@@ -345,11 +343,11 @@ Each project has a configure file. It's a json file named
 
        - 0 (Default)
 
-         There is no suffix for the name of runtime package (module)
+       There is no suffix for the name of runtime package (module)
 
        - 1
 
-         The name of runtime package (module) has a suffix, for example,
-         ``pytransform_vax_00001``
+       The name of runtime package (module) has a suffix, for example,
+       ``pytransform_vax_00001``
 
 .. include:: _common_definitions.txt
