@@ -53,19 +53,6 @@ if argv[1] == 'bdist_wheel':
                     break
             break
 
-# def _build_file_list(d):
-#     return [d + '/' + x for x in listdir(d) if path.isfile(x)]
-
-# other_data_files = [
-#     ('docs', ['docs/user-guide.md', 'docs/rationale.md']),
-#     ('examples/simple', _build_file_list('docs/examples/simple')),
-#     ('examples/py2exe', _build_file_list('docs/examples/py2exe')),
-#     ('examples/pybench', _build_file_list('docs/examples/pybench')),
-#     ('examples/pybench/package', _build_file_list('docs/examples/pybench/package')),
-#     ('examples/odoo', _build_file_list('docs/examples/odoo')),
-#     ('examples/odoo/weblogin', _build_file_list('docs/examples/odoo/weblogin')),
-#     ('examples/odoo/weblogin2', _build_file_list('docs/examples/odoo/weblogin2')),]
-
 setup(
     name='pyarmor',
 
