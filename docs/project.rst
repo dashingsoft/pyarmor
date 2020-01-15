@@ -245,29 +245,44 @@ Each project has a configure file. It's a json file named
 
 * platform :sup:`New in v5.9.0`
 
+  | New in v5.9.0
+
   A string includes one or many platforms. Multi platforms are separated by
   comma.
 
-  None or empth string means native platform.
+  Leave it to None or blank if not cross-platform obfuscating
 
-* license_file :sup:`New in v5.9.0`
+* license_file
 
-  Use this license file other than default one.
+  > New in v5.9.0
 
-  None or empth string means the default one.
+  Use this license file other than the default one.
+
+  Leave it to None or blank to use the default one.
 
 * bootstrap_code :sup:`New in v5.9.0`
 
   How to generate :ref:`Bootstrap Code` for the obfuscated entry scripts:
 
-    - 0: Do not insert bootstrap code into entry script
-    - 1: (Default) Insert the bootstrap code into entry script. If the script
-         name is ``__init__.py``, make a relative import with leading dots,
-         otherwise make absolute import.
-    - 2: The bootstrap code will always be made an absolute import without
-         leading dots in the entry script.
-    - 3: The bootstrap code will always be made a relative import with leading
-         dots in the entry script.
+    - 0
+
+      Do not insert bootstrap code into entry script
+
+    - 1 (Default)
+
+      Insert the bootstrap code into entry script. If the script name is
+      ``__init__.py``, make a relative import with leading dots, otherwise make
+      absolute import.
+
+    - 2
+
+      The bootstrap code will always be made an absolute import without leading
+      dots in the entry script.
+
+    - 3
+
+      The bootstrap code will always be made a relative import with leading dots
+      in the entry script.
 
 * runtime_mode :sup:`New in v5.9.0`
 
@@ -284,14 +299,17 @@ Each project has a configure file. It's a json file named
         - 2
 
         Same as 0, but append an unique suffix to runtime module name, for
-        example, ``pytransform_vax_00001.py``
+        example, ``pytransform_vax_00001.py``.
 
-        -3
+        - 3
 
         Same as 1, but append an unique suffix for runtime package, for
         example, ``pytransform_vax_00001``
 
-* package_runtime :sup:`Removed from v5.9.0`
+  The mode `2` and `3` is useful if try to import the scripts obfuscated by
+  different developer
+
+* package_runtime :sub:`Removed from v5.9.0`
 
   How to save the runtime files:
 
@@ -310,7 +328,7 @@ Each project has a configure file. It's a json file named
         bootstrap code will always make absolute import without
         leading dots in entry script.
 
-        -3
+        - 3
 
         Same as 1, but it's implied the package `pytransform` is in
         the same path with obfuscated scripts in runtime. So the
