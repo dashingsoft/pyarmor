@@ -232,7 +232,66 @@ Each project has a configure file. It's a json file named
     runtime_path to an empty string, and copy :ref:`Runtime Files` to
     same path of zip file, will solve this problem.
 
-* package_runtime
+* plugins
+
+    None or list of string
+
+    Extend license type of obfuscated scripts, multi-plugins are
+    supported. For example::
+
+        plugins: ["check_ntp_time", "show_license_info"]
+
+    About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
+
+* platform :sup:`New in v5.9.0`
+
+  A string includes one or many platforms. Multi platforms are separated by
+  comma.
+
+  None or empth string means native platform.
+
+* license_file :sup:`New in v5.9.0`
+
+  Use this license file other than default one.
+
+  None or empth string means the default one.
+
+* bootstrap_code :sup:`New in v5.9.0`
+
+  How to generate :ref:`Bootstrap Code` for the obfuscated entry scripts:
+
+    - 0: Do not insert bootstrap code into entry script
+    - 1: (Default) Insert the bootstrap code into entry script. If the script
+         name is ``__init__.py``, make a relative import with leading dots,
+         otherwise make absolute import.
+    - 2: The bootstrap code will always be made an absolute import without
+         leading dots in the entry script.
+    - 3: The bootstrap code will always be made a relative import with leading
+         dots in the entry script.
+
+* runtime_mode :sup:`New in v5.9.0`
+
+  How to save the runtime files:
+
+        - 0
+
+        Save the runtime files in the same path with the obufscated scripts
+
+        - 1 (Default)
+
+        Save the runtime files as a package `pytransform`
+
+        - 2
+
+        Same as 0, but append an unique suffix to runtime module name, for
+        example, ``pytransform_vax_00001.py``
+
+        -3
+
+        Same as 1, but append an unique suffix for runtime package, for
+        example, ``pytransform_vax_00001``
+
+* package_runtime :sup:`Removed from v5.9.0`
 
   How to save the runtime files:
 
@@ -258,18 +317,7 @@ Each project has a configure file. It's a json file named
         bootstrap code will always make a relative import with leading
         dots in the entry script.
 
-* plugins
-
-    None or list of string
-
-    Extend license type of obfuscated scripts, multi-plugins are
-    supported. For example::
-
-        plugins: ["check_ntp_time", "show_license_info"]
-
-    About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
-
-* enable_suffix
+* enable_suffix :sub:`Removed in v5.9.0`
 
   How to generate runtime package (module) and bootstrap code:
 
@@ -281,51 +329,5 @@ Each project has a configure file. It's a json file named
 
         The name of runtime package (module) has a suffix, for
         example, ``pytransform_vax_00001``
-
-  .. _note:
-
-      New at v5.8.7
-
-* platform
-
-  None, string or list of string
-
-  The string must be one standard platform name.
-
-  .. _note:
-
-      New at v5.9.0
-
-* license
-
-  None or file name
-
-  If this file exists, it will replace the default license.
-
-  .. _note:
-
-      New at v5.9.0
-
-* target
-
-  None or dict, each item has the following keys::
-
-      output, license, platform, pack
-
-  If there is key `pack` and not None in the target, this target will
-  be pack into bundle, otherwise only obfuscating the scripts.
-
-  For example, the target `win7`::
-
-    'win7': {
-        'output': 'dist/win7',
-        'platform': 'windows.x86_64',
-        'license': 'licenses/ta-0001/license.lic',
-        'pack': '--onefile'
-    }
-
-  .. _note:
-
-      New at v5.9.0
 
 .. include:: _common_definitions.txt
