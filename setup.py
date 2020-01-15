@@ -63,7 +63,7 @@ setup(
                 ' scripts to fixed machine or expire obfuscated scripts.',
     long_description=long_description,
 
-    license_file='LICENSE',
+    license='Free To Use But Restricted',
 
     url='https://github.com/dashingsoft/pyarmor',
     author='Jondy Zhao',
