@@ -22,16 +22,16 @@ by `pip install pyarmor-webui`.
   `licenses` in the final output path
 * Add new project attribute `license_file`, `bootstrap_code`, `runtime_mode`
 * Remove project attribute `enable_suffix`, `package_runtime`
-* Add new option `--with-license`, `--bootstrap`, `--runtime-mode` in the command `config`
-* Add new option `--bootstrap` in the command `obfuscate`
+* Add new option `--with-license`, `--bootstrap`, `--runtime` in the command `config`
+* Add new option `--bootstrap`, `--runtime` in the command `obfuscate`
 * Change the behavior of `--package-runtime=2`
     - old behavior => use `--bootstrap=2` instead
     - now => generate unique runtime module `pytransform_SUFFIX.py`
 * Change the behavior of `--package-runtime=3`
     - old behavior => use `--bootstrap=3` instead
     - new => generate unique runtime package `pytransform_SUFFIX`
-* Deprecrated option `--package-runtime`, use `--runtime-mode` instead
-* Deprecrated option `--enable-suffix`, use `--runtime-mode=2` or `--runtime-mode=3` instead
+* Deprecrated option `--package-runtime`, use `--runtime` instead
+* Deprecrated option `--enable-suffix`, use `--runtime=2` or `--runtime=3` instead
 * In command `obfuscate` with option `--exact`, all the scripts list in the
   command line will be taken as entry script.
 * In command `runtime`, add new option `--mode`
