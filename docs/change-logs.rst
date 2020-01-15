@@ -5,8 +5,10 @@ Change Logs
 
 5.9.0 (developing)
 ------------------
+
 pyarmor-webui is published as a separated package, it has been removed from
-package pyarmor. Now it's a full feature webui, and could be installed by `pip`.
+source package of pyarmor. Now it's a full feature webui, and could be installed
+by `pip install pyarmor-webui`.
 
 * Support environment variable `PYARMOR_HOME` as one extra path to find the
   `license.lic` of pyarmor. Now the search order is:
