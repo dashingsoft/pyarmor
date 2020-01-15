@@ -163,13 +163,13 @@ Each project has a configure file. It's a json file named
 
 * obf_code
 
-  How to obfuscate byte code of each code object:
+    How to obfuscate byte code of each code object, refer to :ref:`Obfuscating Code Mode`:
 
         - 0
 
         No obfuscate
 
-        - 1
+        - 1 (Default)
 
         Obfuscate each code object by default algorithm
 
@@ -177,33 +177,29 @@ Each project has a configure file. It's a json file named
 
         Obfuscate each code object by more complex algorithm
 
-  The default value is `1`, refer to :ref:`Obfuscating Code Mode`
-
 * wrap_mode
 
-  Available values: 0, 1, None
+    Available values: 0, 1, None
 
-  Whether to wrap code object with `try..final` block.
+    Whether to wrap code object with `try..final` block.
 
-  The default value is `1`, refer to :ref:`Wrap Mode`
+    The default value is `1`, refer to :ref:`Wrap Mode`
 
 * obf_mod
 
-  How to obfuscate whole code object of module:
+    How to obfuscate whole code object of module, refer to :ref:`Obfuscating Module Mode`:
 
         - 0
 
         No obfuscate
 
-        - 1
+        - 1 (Default)
 
         Obfuscate byte-code by DES algorithm
 
-  The default value is `1`, refer to :ref:`Obfuscating Module Mode`
-
 * cross_protection
 
-  How to proect dynamic library in obfuscated scripts:
+    How to proect dynamic library in obfuscated scripts:
 
         - 0
 
@@ -243,109 +239,117 @@ Each project has a configure file. It's a json file named
 
     About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
 
-* platform :sup:`New in v5.9.0`
+* platform
 
-  | New in v5.9.0
+    .. note:: New in v5.9.0
 
-  A string includes one or many platforms. Multi platforms are separated by
-  comma.
+    A string includes one or many platforms. Multi platforms are separated by
+    comma.
 
-  Leave it to None or blank if not cross-platform obfuscating
+    Leave it to None or blank if not cross-platform obfuscating
 
 * license_file
 
-  > New in v5.9.0
+    .. note:: New in v5.9.0
 
-  Use this license file other than the default one.
+    Use this license file other than the default one.
 
-  Leave it to None or blank to use the default one.
+    Leave it to None or blank to use the default one.
 
-* bootstrap_code :sup:`New in v5.9.0`
+* bootstrap_code
 
-  How to generate :ref:`Bootstrap Code` for the obfuscated entry scripts:
+    .. note:: New in v5.9.0
 
-    - 0
+    How to generate :ref:`Bootstrap Code` for the obfuscated entry scripts:
 
-      Do not insert bootstrap code into entry script
+      - 0
 
-    - 1 (Default)
+        Do not insert bootstrap code into entry script
 
-      Insert the bootstrap code into entry script. If the script name is
-      ``__init__.py``, make a relative import with leading dots, otherwise make
-      absolute import.
+      - 1 (Default)
 
-    - 2
+        Insert the bootstrap code into entry script. If the script name is
+        ``__init__.py``, make a relative import with leading dots, otherwise make
+        absolute import.
 
-      The bootstrap code will always be made an absolute import without leading
-      dots in the entry script.
+      - 2
 
-    - 3
-
-      The bootstrap code will always be made a relative import with leading dots
-      in the entry script.
-
-* runtime_mode :sup:`New in v5.9.0`
-
-  How to save the runtime files:
-
-        - 0
-
-        Save the runtime files in the same path with the obufscated scripts
-
-        - 1 (Default)
-
-        Save the runtime files as a package `pytransform`
-
-        - 2
-
-        Same as 0, but append an unique suffix to runtime module name, for
-        example, ``pytransform_vax_00001.py``.
-
-        - 3
-
-        Same as 1, but append an unique suffix for runtime package, for
-        example, ``pytransform_vax_00001``
-
-  The mode `2` and `3` is useful if try to import the scripts obfuscated by
-  different developer
-
-* package_runtime :sub:`Removed from v5.9.0`
-
-  How to save the runtime files:
-
-        - 0
-
-        Save them in the same path with the obufscated scripts
-
-        - 1 (Default)
-
-        Save them in the sub-path `pytransform` as a package
-
-        - 2
-
-        Same as 1, but it's implied the package `pytransform` is not
-        in same path with obfuscated scripts in runtime. So the
-        bootstrap code will always make absolute import without
-        leading dots in entry script.
-
-        - 3
-
-        Same as 1, but it's implied the package `pytransform` is in
-        the same path with obfuscated scripts in runtime. So the
-        bootstrap code will always make a relative import with leading
+        The bootstrap code will always be made an absolute import without leading
         dots in the entry script.
 
-* enable_suffix :sub:`Removed in v5.9.0`
+      - 3
 
-  How to generate runtime package (module) and bootstrap code:
+        The bootstrap code will always be made a relative import with leading dots
+        in the entry script.
 
-        - 0 (Default)
+* runtime_mode
 
-        There is no suffix for the name of runtime package (module)
+    .. note:: New in v5.9.0
 
-        - 1
+    How to save the runtime files. It's useful if try to import the scripts
+    obfuscated by different developer:
 
-        The name of runtime package (module) has a suffix, for
-        example, ``pytransform_vax_00001``
+       - 0
+
+          Save the runtime files in the same path with the obufscated scripts
+
+       - 1 (Default)
+
+          Save the runtime files as a package `pytransform`
+
+       - 2
+
+          Same as 0, but append an unique suffix to runtime module name, for
+          example, ``pytransform_vax_00001.py``.
+
+       - 3
+
+          Same as 1, but append an unique suffix for runtime package, for
+          example, ``pytransform_vax_00001``
+
+* package_runtime
+
+    .. note::
+       Removed from v5.9.0, use `runtime_mode` and `bootstrap_code` instead
+
+    How to save the runtime files:
+
+       - 0
+
+          Save them in the same path with the obufscated scripts
+
+       - 1 (Default)
+
+          Save them in the sub-path `pytransform` as a package
+
+       - 2
+
+          Same as 1, but it's implied the package `pytransform` is not
+          in same path with obfuscated scripts in runtime. So the
+          bootstrap code will always make absolute import without
+          leading dots in entry script.
+
+       - 3
+
+          Same as 1, but it's implied the package `pytransform` is in
+          the same path with obfuscated scripts in runtime. So the
+          bootstrap code will always make a relative import with leading
+          dots in the entry script.
+
+* enable_suffix
+
+    .. note::
+       Removed from v5.9.0, use `runtime_mode` instead
+
+    How to generate runtime package (module) and bootstrap code:
+
+       - 0 (Default)
+
+         There is no suffix for the name of runtime package (module)
+
+       - 1
+
+         The name of runtime package (module) has a suffix, for example,
+         ``pytransform_vax_00001``
 
 .. include:: _common_definitions.txt
