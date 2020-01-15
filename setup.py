@@ -17,6 +17,7 @@ with open(path.join(here, 'src', 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 pyarmor_data_files = [
+    'LICENSE', 'LICENSE-ZH',
     'pyshield.key', 'pyshield.lic', 'public.key',
     'product.key', 'license.tri', 'README.rst',
     'protect_code.pt', 'public_capsule.zip',
@@ -75,6 +76,8 @@ setup(
                 ' scripts to fixed machine or expire obfuscated scripts.',
     long_description=long_description,
 
+    license_file='LICENSE',
+
     url='https://github.com/dashingsoft/pyarmor',
     author='Jondy Zhao',
     author_email='jondy.zhao@gmail.com',
@@ -115,20 +118,15 @@ setup(
     # Note that this is a string of words separated by whitespace, not a list.
     keywords='protect obfuscate encrypt obfuscation distribute',
 
-    packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.webui'],
+    packages=['pyarmor', 'pyarmor.polyfills'],
     package_dir={'pyarmor': 'src'},
     package_data={
         'pyarmor': pyarmor_data_files + platform_data_files,
-        'pyarmor.webui': ['css/*.css', 'js/*.js', '*.html', '*.js',
-                          'manager.*'],
     },
-
-    # data_files=other_data_files,
 
     entry_points={
         'console_scripts': [
             'pyarmor=pyarmor.pyarmor:main_entry',
-            'pyarmor-webui=pyarmor.webui.server:main',
         ],
     },
 )
