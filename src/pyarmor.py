@@ -93,8 +93,9 @@ def _init(args):
         src = os.path.abspath(args.src)
         pro_src = relpath(src, path)
     logging.info('Python scripts base path: %s', src)
+    logging.info('Project src is: %s', pro_src)
 
-    args.entry = _format_entry(args.entry, pro_src)
+    args.entry = _format_entry(args.entry, src)
     if args.entry:
         logging.info('Format entry: %s', args.entry)
 
@@ -153,8 +154,8 @@ def _config(args):
         args.license_file = _relpath(args.license_file)
         logging.info('Format license_file to %s', args.license_file)
     if args.entry is not None:
-        args.entry = _format_entry(args.entry,
-                                   args.src if args.src else project.src)
+        src = os.path.abspath(args.src) if args.src else project.src
+        args.entry = _format_entry(args.entry, src)
         logging.info('Format entry: %s', args.entry)
     if args.capsule is not None:
         args.capsule = os.path.abspath(args.capsule)
@@ -969,7 +970,8 @@ def _parser():
     cparser.add_argument('--is-package', type=int, choices=(0, 1))
     cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1),
                          help=argparse.SUPPRESS)
-    cparser.add_argument('--restrict-mode', type=int, choices=range(5),
+    cparser.add_argument('--restrict', '--restrict-mode', dest='restrict_mode',
+                         type=int, choices=range(5),
                          help='Set restrict mode')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
                          help=argparse.SUPPRESS)
