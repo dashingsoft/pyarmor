@@ -255,6 +255,8 @@ Each project has a configure file. It's a json file named
 
 * enable_suffix
 
+    .. note:: New in v5.8.7
+
     How to generate runtime package (module) and bootstrap code, it's useful as
     importing the scripts obfuscated by different developer:
 
