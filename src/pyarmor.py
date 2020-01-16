@@ -66,10 +66,10 @@ def _format_entry(entry, src):
         result = []
         for x in entry.split(','):
             x = x.strip()
-            if os.path.exists(x):
+            if os.path.exists(os.path.join(src, x)):
+                result.append(relpath(os.path.join(src, x), src))
+            elif os.path.exists(x):
                 result.append(relpath(os.path.abspath(x), src))
-            elif os.path.exists(os.path.join(src, x)):
-                result.append(x)
             else:
                 raise RuntimeError('No entry script %s found' % x)
         return ','.join(result)
