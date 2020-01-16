@@ -16,25 +16,17 @@ by `pip install pyarmor-webui`.
     - `$PYARMOR_HOME/.pyarmor/license.lic`
     - `$HOME/.pyarmor/license.lic`
     - `$USERPROFILE/.pyarmor/license.lic` (Only for Windows)
-* The last argument in command `pack` could be a project path or .json file
-* Add new option `--name` in the command `pack`
 * In command `licenses` if option `output` is set, do not append extra path
   `licenses` in the final output path
-* Add new project attribute `license_file`, `bootstrap_code`, `runtime_mode`
-* Remove project attribute `enable_suffix`, `package_runtime`, `capsule`
-* Add new option `--with-license`, `--bootstrap`, `--runtime` in the command `config`
-* Add new option `--bootstrap`, `--runtime` in the command `obfuscate`
-* Change the behavior of `--package-runtime=2`
-    - old behavior => use `--bootstrap=2` instead
-    - now => generate unique runtime module `pytransform_SUFFIX.py`
-* Change the behavior of `--package-runtime=3`
-    - old behavior => use `--bootstrap=3` instead
-    - new => generate unique runtime package `pytransform_SUFFIX`
-* Deprecrated option `--package-runtime`, use `--runtime` instead
-* Deprecrated option `--enable-suffix`, use `--runtime=2` or `--runtime=3` instead
 * In command `obfuscate` with option `--exact`, all the scripts list in the
   command line will be taken as entry script.
-* In command `runtime`, add new option `--mode`
+* The last argument in command `pack` could be a project path or .json file
+* Add new option `--name` in the command `pack`
+* Add new project attribute `license_file`, `bootstrap_code`
+* Add new option `--with-license`, `--bootstrap` in the command `config`
+* Add new option `--bootstrap` in the command `obfuscate`
+* The options `--package-runtime` doesn't support `2` and `3`, use
+  `--bootstrap=2` or `--bootstrap=3` instead
 
 5.8.9
 -----
