@@ -366,7 +366,7 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 
    Since v5.9.0, possible pack one project directly by specify the project path
    in the command line. For example, create a project in the current path, then
-   pack it:::
+   pack it::
 
      pyarmor init --entry main.py
      pyarmor pack .
