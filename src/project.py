@@ -35,7 +35,7 @@
 #    1.2.4: Add enable_suffix, remove obf_module_mode and obf_code_mode
 #
 #    2.0: Add license_file, bootstrap_code, runtime_mode
-#         Remove attribute enable_suffix, package_runtime
+#         Remove attribute enable_suffix, package_runtime, capsule
 #
 import os
 import time
@@ -66,7 +66,6 @@ class Project(dict):
         ('manifest', default_manifest_template), \
         ('entry', None), \
         ('output', default_output_path), \
-        ('capsule', capsule_filename), \
         ('runtime_path', None), \
         ('restrict_mode', 1), \
         ('obf_code', 1), \
@@ -88,13 +87,15 @@ class Project(dict):
         super(Project, self).__init__(*args, **kwargs)
 
     def _format_path(self, path):
-        return os.path.normpath(
-            path if os.path.isabs(path)
-            else os.path.normpath(os.path.join(self._path, path)))
+        return os.path.normpath(path if os.path.isabs(path)
+                                else os.path.join(self._path, path))
 
     def __getattr__(self, name):
-        if name in ('src', 'output', 'license_file', 'capsule'):
-            return self._format_path(self[name]) if name in self else None
+        if name in ('src', 'output'):
+            return self._format_path(self[name])
+        elif name == 'license_file':
+            v = self[name] if name in self else None
+            return self._format_path(v) if v else None
         if name in self:
             return self[name]
         raise AttributeError(name)
@@ -110,25 +111,19 @@ class Project(dict):
         return result
 
     def _check(self, path):
-        pro_path = path if (path == '' or os.path.exists(path)) \
-            else os.path.dirname(path)
-        assert os.path.exists(os.path.normpath(pro_path)), \
-            'Project path %s does not exists' % pro_path
+        assert os.path.exists(os.path.normpath(path)), \
+            'Project path %s does not exists' % path
 
         assert os.path.exists(self.src), \
             'The src of this project is not found: %s' % self.src
         assert os.path.isabs(self.src), \
             'The src of this project is not absolute path'
-
-        assert self.src != os.path.abspath(self.output), \
+        assert self.src != self.output, \
             'The output path can not be same as src in the project'
 
-        capsule = self.capsule if os.path.isabs(self.capsule) \
-            else os.path.join(pro_path, self.capsule)
-        assert os.path.exists(os.path.normpath(capsule)), \
-            'No project capsule found: %s' % capsule
-        assert self.capsule.endswith('.zip'), \
-            'Invalid capsule, not a zip file'
+        assert self.license_file is None \
+            or self.license_file.endswith('license.lic'), \
+            'The output path can not be same as src in the project'
 
     def _dump(self, filename):
         with open(filename, 'w') as f:
@@ -152,6 +147,9 @@ class Project(dict):
     def save(self, path):
         filename = self._project_filename(path)
         self._dump(filename)
+
+    def check(self):
+        self._check(self._path)
 
     @classmethod
     def map_obfuscate_mode(cls, mode, comode):

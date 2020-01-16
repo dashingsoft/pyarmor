@@ -61,6 +61,20 @@ def arcommand(func):
     return func
 
 
+def _format_entry(entry, src):
+    if entry is not None:
+        result = []
+        for x in entry.split(','):
+            x = x.strip()
+            if os.path.exists(x):
+                result.append(relpath(os.path.abspath(x), src))
+            elif os.path.exists(os.path.join(src, x)):
+                result.append(x)
+            else:
+                raise RuntimeError('No entry script %s found' % x)
+        return ','.join(result)
+
+
 @arcommand
 def _init(args):
     '''Create a project to manage the obfuscated scripts.'''
@@ -77,8 +91,12 @@ def _init(args):
         pro_src = src = os.path.normpath(args.src)
     else:
         src = os.path.abspath(args.src)
-        pro_src = relpath(src, os.path.abspath(path))
+        pro_src = relpath(src, path)
     logging.info('Python scripts base path: %s', src)
+
+    args.entry = _format_entry(args.entry, pro_src)
+    if args.entry:
+        logging.info('Format entry: %s', args.entry)
 
     name = os.path.basename(os.path.abspath(path))
     if (args.type == 'pkg') or \
@@ -90,14 +108,6 @@ def _init(args):
     else:
         logging.info('Project is configured as standalone application.')
         project = Project(name=name, title=name, src=pro_src, entry=args.entry)
-
-    if args.capsule:
-        capsule = os.path.abspath(args.capsule)
-        logging.info('Set project capsule to %s', capsule)
-    else:
-        capsule = os.path.abspath(DEFAULT_CAPSULE)
-        logging.info('Use global capsule as project capsule: %s', capsule)
-    project._update(dict(capsule=capsule))
 
     logging.info('Create configure file ...')
     filename = os.path.join(path, config_filename)
@@ -117,7 +127,7 @@ def _init(args):
 def _config(args):
     '''Update project settings.'''
     for x in ('obf-module-mode', 'obf-code-mode', 'disable-restrict-mode',
-              'enable_suffix'):
+              'enable_suffix', 'capsule'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -142,8 +152,12 @@ def _config(args):
     if args.license_file is not None:
         args.license_file = _relpath(args.license_file)
         logging.info('Format license_file to %s', args.license_file)
+    if args.entry is not None:
+        args.entry = _format_entry(args.entry,
+                                   args.src if args.src else project.src)
+        logging.info('Format entry: %s', args.entry)
     if args.capsule is not None:
-        args.capsule = _relpath(args.capsule)
+        args.capsule = os.path.abspath(args.capsule)
         logging.info('Format capsule to %s', args.capsule)
     if args.plugins is not None:
         if ('clear' in args.plugins) or ('' in args.plugins):
@@ -187,9 +201,9 @@ def _build(args):
     logging.info('Build project %s ...', args.project)
 
     logging.info('Check project')
-    project._check(args.project)
+    project.check()
 
-    capsule = project.capsule
+    capsule = project.get('capsule', DEFAULT_CAPSULE)
     logging.info('Use capsule: %s', capsule)
 
     if args.runtime_mode is not None:
@@ -275,7 +289,7 @@ def _build(args):
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
-            logging.info('\t%s -> %s', x, b)
+            logging.info('\t%s -> %s', x, relpath(b))
 
             d = os.path.dirname(b)
             if not os.path.exists(d):
@@ -350,19 +364,18 @@ def _licenses(args):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
+    capsule = DEFAULT_CAPSULE if args.capsule is None else args.capsule
+    if not os.path.exists(capsule):
+        logging.info('Generating public capsule ...')
+        make_capsule(capsule)
+
     if os.path.exists(os.path.join(args.project, config_filename)):
         logging.info('Generate licenses for project %s ...', args.project)
         project = Project()
         project.open(args.project)
-        capsule = build_path(project.capsule, args.project) \
-            if args.capsule is None else args.capsule
     else:
         if args.project != '':
             logging.warning('Ignore option --project, there is no project')
-        capsule = DEFAULT_CAPSULE if args.capsule is None else args.capsule
-        if not os.path.exists(capsule):
-            logging.info('Generating public capsule ...')
-            make_capsule(capsule)
         logging.info('Generate licenses with capsule %s ...', capsule)
         project = dict(restrict_mode=args.restrict)
     restrict_mode = 0 if args.disable_restrict_mode else args.restrict
@@ -560,7 +573,7 @@ def _obfuscate(args):
             a, b = x, os.path.join(output, os.path.basename(x))
         else:
             a, b = os.path.join(path, x), os.path.join(output, x)
-        logging.info('\t%s -> %s', x, b)
+        logging.info('\t%s -> %s', x, relpath(b))
         is_entry = os.path.abspath(a) in elist
         protection = is_entry and cross_protection
         plugins = search_plugins(args.plugins)
@@ -607,7 +620,7 @@ def _check(args):
     project = Project()
     project.open(args.project)
     logging.info('Check project %s ...', args.project)
-    project._check(args.project)
+    project.check()
     logging.info('Check project OK.')
 
 
@@ -938,7 +951,7 @@ def _parser():
                          default='', help='Project path')
     cparser.add_argument('--name')
     cparser.add_argument('--title')
-    cparser.add_argument('--src', default=".",
+    cparser.add_argument('--src',
                          help='Project src, base path for matching scripts')
     cparser.add_argument('--output',
                          help='Output path for obfuscated scripts')

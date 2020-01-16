@@ -351,11 +351,12 @@ def make_entry(entris, path, output, rpath=None, relative=None, suffix=''):
             shell = _get_script_shell(src)
         else:
             shell = None
-            logging.info('Copy entry script %s to %s', src, filename)
+            logging.info('Copy entry script %s to %s', src, relpath(filename))
             shutil.copy(src, filename)
         if shell:
             logging.info('Insert shell line: %s', shell.strip())
-        logging.info('Insert bootstrap code to entry script %s', filename)
+        logging.info('Insert bootstrap code to entry script %s',
+                     relpath(filename))
         _make_entry(filename, rpath, relative=relative, shell=shell,
                     suffix=suffix)
 
@@ -443,7 +444,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         output = os.path.join(output, 'pytransform' + suffix)
         if not os.path.exists(output):
             os.makedirs(output)
-    logging.info('Generating runtime files to %s', output)
+    logging.info('Generating runtime files to %s', relpath(output))
 
     myzip = ZipFile(capsule, 'r')
     if 'pytransform.key' in myzip.namelist():
@@ -459,7 +460,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         logging.info('Extract license.lic')
         myzip.extract('license.lic', output)
     else:
-        logging.info('Copying %s as license file', licfile)
+        logging.info('Copying %s as license file', relpath(licfile))
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
 
     def copy3(src, dst):
