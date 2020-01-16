@@ -338,11 +338,11 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if hasattr(args, 'project'):
         if xoptions:
             logging.warning('Ignore xoptions as packing project')
-        call_pyarmor(['build', '-O', obfdist, '--runtime-mode', '0',
+        call_pyarmor(['build', '-O', obfdist, '--package-runtime', '0',
                       args.project])
     else:
         call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
-                      '--runtime-mode', '0'] + xoptions + [script])
+                      '--package-runtime', '0'] + xoptions + [script])
 
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
