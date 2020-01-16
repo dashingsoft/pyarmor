@@ -129,18 +129,23 @@ def _config(args):
     if args.enable_suffix and args.runtime_mode is None:
         args.runtime_mode = 3
 
+    def _relpath(p):
+        return p if os.path.abspath(p) \
+            else relpath(os.path.abspath(p), project._path)
+
     if args.src is not None:
-        src = os.path.abspath(args.src)
-        if os.path.abspath(args.src):
-            args.src = src
-        else:
-            args.src = relpath(src, project._path)
+        args.src = _relpath(args.src)
         logging.info('Format src to %s', args.src)
+    if args.output is not None:
+        args.output = _relpath(args.output)
+        logging.info('Format output to %s', args.output)
+    if args.license_file is not None:
+        args.license_file = _relpath(args.license_file)
+        logging.info('Format license_file to %s', args.license_file)
     if args.capsule is not None:
-        args.capsule = os.path.abspath(args.capsule)
-        logging.info('Change capsule to absolute path: %s', args.capsule)
+        args.capsule = _relpath(args.capsule)
+        logging.info('Format capsule to %s', args.capsule)
     if args.plugins is not None:
-        # plugins = project.get('plugins', [])
         if ('clear' in args.plugins) or ('' in args.plugins):
             logging.info('Clear all plugins')
             args.plugins = []
@@ -184,11 +189,7 @@ def _build(args):
     logging.info('Check project')
     project._check(args.project)
 
-    pro_path = args.project \
-        if args.project == '' or os.path.exists(args.project) \
-        else os.path.dirname(args.project)
-
-    capsule = build_path(project.capsule, pro_path)
+    capsule = project.capsule
     logging.info('Use capsule: %s', capsule)
 
     if args.runtime_mode is not None:
@@ -201,8 +202,8 @@ def _build(args):
     logging.info('Runtime mode is: %s', runtime_mode)
     suffix = get_name_suffix() if runtime_mode > 1 else ''
 
-    output = build_path(project.output, pro_path) \
-        if args.output is None else os.path.normpath(args.output)
+    output = project.output if args.output is None \
+        else os.path.normpath(args.output)
     logging.info('Output path is: %s', output)
 
     if args.platforms:
@@ -324,7 +325,7 @@ def _build(args):
         make_runtime(capsule, routput, platforms=platforms, package=ispkg,
                      suffix=suffix)
 
-        licfile = project.get('license_file')
+        licfile = project.license_file
         if licfile:
             logging.info('Project has customized license file: %s', licfile)
             licpath = os.path.join(routput, 'pytransform' + suffix) \

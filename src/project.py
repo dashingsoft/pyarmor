@@ -87,12 +87,14 @@ class Project(dict):
             kwargs.setdefault(k, v)
         super(Project, self).__init__(*args, **kwargs)
 
+    def _format_path(self, path):
+        return os.path.normpath(
+            path if os.path.isabs(path)
+            else os.path.normpath(os.path.join(self._path, path)))
+
     def __getattr__(self, name):
-        if name == 'src':
-            src = self[name]
-            if not os.path.isabs(src):
-                src = os.path.normpath(os.path.join(self._path, src))
-            return os.path.normpath(src)
+        if name in ('src', 'output', 'license_file', 'capsule'):
+            return self._format_path(self[name]) if name in self else None
         if name in self:
             return self[name]
         raise AttributeError(name)

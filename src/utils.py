@@ -51,6 +51,7 @@ from config import dll_ext, dll_name, entry_lines, protect_code_template, \
 DATA_PATH = os.path.join(PYARMOR_HOME, '.pyarmor')
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 CROSS_PLATFORM_PATH = os.path.join(DATA_PATH, pytransform.plat_path)
+PLUGINS_PATH = os.path.join(DATA_PATH, 'plugins')
 
 
 def _format_platid(platid=None):
@@ -551,10 +552,10 @@ def get_registration_code():
 def search_plugins(plugins):
     if plugins:
         result = []
-        path = os.getenv('PYARMOR_PLUGIN', '')
+        path = os.getenv('PYARMOR_PLUGIN', PLUGINS_PATH)
         for name in plugins:
             i = 1 if name[0] == '@' else 0
-            filename = name[i:] + '.py'
+            filename = name[i:] + ('' if name.endswith('.py') else '.py')
             key = os.path.basename(name[i:])
             if not os.path.exists(filename):
                 filename = build_path(filename, path)
@@ -895,7 +896,8 @@ def register_keyfile(filename, legency=False):
 
 def relpath(path, start=os.curdir):
     try:
-        return os.path.relpath(path, start)
+        r = os.path.relpath(path, start)
+        return path if r.count('..') > 1 else r
     except Exception:
         return path
 
