@@ -64,29 +64,30 @@ Obfuscate python scripts.
 --exclude PATH                Exclude the path in recusrive mode. Multiple paths are allowed, separated by ",", or use this option multiple times
 --exact                       Only obfuscate list scripts
 --no-bootstrap                Do not insert bootstrap code to entry script
+--bootstrap <0,1,2,3>         How to insert bootstrap code to entry script
 --no-cross-protection         Do not insert protection code to entry script
 --plugin NAME                 Insert extra code to entry script, it could be used multiple times
 --platform NAME               Distribute obfuscated scripts to other platform
 --advanced <0,1>              Disable or enable advanced mode
 --restrict <0,1,2,3,4>        Set restrict mode
---runtime <0,1,2,3>           Where to save runtime files
 -n, --no-runtime              DO NOT generate runtime files
---bootstrap <0,1,2,3>         How to insert bootstrap code to entry script
+--package-runtime <0,1>       Save the runtime files as package or not
+--enable-suffix               Generate the runtime package with unique name
 
 **DESCRIPTION**
 
-PyArmor first checks whether :ref:`Global Capsule` exists in the
-``HOME`` path. If not, make it.
+PyArmor first checks whether :ref:`Global Capsule` exists in the ``HOME``
+path. If not, make it.
 
-Then find all the scripts to be obfuscated. There are 3 modes to
-search the scripts:
+Then find all the scripts to be obfuscated. There are 3 modes to search the
+scripts:
 
 * Normal: find all the `.py` files in the same path of entry script
 * Recursive: find all the `.py` files in the path of entry script recursively
 * Exact: only these scripts list in the command line
 
-If there is an entry script, PyArmor will modify it, insert cross
-protection code into the entry script.
+If there is an entry script, PyArmor will modify it, insert cross protection
+code into the entry script.
 
 Next obfuscate all these scripts in the default output path `dist`.
 
@@ -131,10 +132,7 @@ as package::
         pytransform.key
         license.lic
 
-If ``--runtime`` is `3`, the package name will be ``pytransform_xxx``, here
-``xxx`` is unique suffix based on the registration code of PyArmor.
-
-But if ``--runtime`` is `0` or `2`, they will be saved in the same path with
+But if ``--package-runtime`` is `0`, they will be saved in the same path with
 obfuscated scripts as four separated files::
 
     pytransform.py
@@ -142,7 +140,9 @@ obfuscated scripts as four separated files::
     pytransform.key
     license.lic
 
-The runtime module name will be ``pytransform_xxx.py`` if ``--runtime`` is `2`.
+If the option ``--enable-suffix`` is set, the runtime package or module name
+will be ``pytransform_xxx``, here ``xxx`` is unique suffix based on the
+registration code of PyArmor.
 
 **BOOTSTRAP CODE**
 
@@ -162,7 +162,7 @@ But the option ``--bootstrap`` is set to ``2``, the :ref:`bootstrap code` always
 makes absolute import without leading dots. If it is set to ``3``, the
 :ref:`bootstrap code` always makes relative import with leading dots.
 
-If the option ``--runtime`` is `2` or `3`, the bootstrap code may like this::
+If the option ``--enable-suffix`` is set, the bootstrap code may like this::
 
     from pytransform_vax_000001 import pyarmor_runtime
     pyarmor_runtime(suffix='vax_000001')
@@ -247,10 +247,10 @@ will be inserted into the entry scripts.
 
     pyarmor obfuscate --restrict 4 --exclude __init__.py --recursive .
 
-* Obfuscate a package and generate runtime files as package::
+* Obfuscate a package with unique runtime package name::
 
     cd /path/to/mypkg
-    pyarmor obfuscate -r --runtime-mode 2 --output dist/mypkg __init__.py
+    pyarmor obfuscate -r --enable-suffix --output dist/mypkg __init__.py
 
 .. _licenses:
 
@@ -362,6 +362,17 @@ the final distributions.
 
 For more information, refer to :ref:`How to pack obfuscated scripts`.
 
+.. note::
+
+   Since v5.9.0, possible pack one project directly by specify the project path
+   in the command line. For example, create a project in the current path, then
+   pack it:::
+
+     pyarmor init --entry main.py
+     pyarmor pack .
+
+   By this way the obfuscated scripts could be fully controlled.
+
 .. important::
 
    The command `pack` will obfuscate the scripts automatically, do not
@@ -409,6 +420,12 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
 * Change the final bundle name to `my_app` other than `foo`::
 
     pyarmor pack --name my_app foo.py
+
+* Pack a project with advanced mode::
+
+    pyarmor init --entry main.py
+    pyarmor config --advanced 1
+    pyarmor pack .
 
 .. _hdinfo:
 
@@ -512,8 +529,9 @@ Update project settings.
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
 --runtime-path RPATH            Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script, it could be used multiple times
---runtime <0,1,2,3>             How to save runtime files
+--package-runtime <0,1>         Save the runtime files as package or not
 --bootstrap <0,1,2,3>           How to insert bootstrap code to entry script
+--enable-suffix <0,1>           Generate the runtime package with unique name
 --with-license FILENAME         Use this license file other than the default one
 
 **DESCRIPTION**
@@ -582,7 +600,7 @@ Build project, obfuscate all scripts in the project.
 -n, --no-runtime              DO NOT generate runtime files
 -O, --output OUTPUT           Output path, override project configuration
 --platform NAME               Distribute obfuscated scripts to other platform
---runtime <0,1,2,3>           How to save runtime files
+--package-runtime <0,1>       Save the runtime files as package or not
 
 **DESCRIPTION**
 
@@ -597,7 +615,7 @@ Or specify the project path at the end::
 The option ``--no-runtime`` may impact on the :ref:`bootstrap code`, the
 bootstrap code will make absolute import without leading dots in entry script.
 
-About option ``--platform`` and ``--runtime``, refer to command `obfuscate`_
+About option ``--platform`` and ``--package-runtime``, refer to command `obfuscate`_
 
 **EXAMPLES**
 
@@ -799,7 +817,7 @@ Geneate :ref:`runtime package` separately.
 -i, --inside                  Generate bootstrap script which is used inside one package
 -L, --with-license FILE       Replace default license with this file
 --platform NAME               Generate runtime package for specified platform
---mode <0,1,2,3>              How to save runtime files
+--enable-suffix               Generate the runtime package with unique name
 
 **DESCRIPTION**
 
@@ -821,8 +839,8 @@ modules could be imported in one plain script::
 If option ``--inside`` is specified, it will generate bootstrap package
 ``pytransform_bootstrap`` other than one single script.
 
-About option ``--platform`` and ``--mode``, refer to ``--platform`` and
-``--runtime`` respectively in the command `obfuscate`_
+About option ``--platform`` and ``--enable-suffix``, refer to command
+`obfuscate`_
 
 **EXAMPLES**
 

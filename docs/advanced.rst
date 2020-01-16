@@ -55,6 +55,8 @@ Check all the output and test these obfuscated packages::
 Obfuscating Package No Conflict With Others
 -------------------------------------------
 
+.. note:: New in v5.8.7
+
 Suppose there are 2 packages obfuscated by different developers, could they be
 imported in the same Python interpreter?
 
@@ -62,11 +64,11 @@ If both of them are obfuscated by trial version of pyarmor, no problem, the
 answer is yes. But if anyone is obfuscated by registerred version, the answer is
 no.
 
-Since v5.9.0, the package could be obfuscated with option ``--runtime-mode`` to
+Since v5.8.7, the scripts could be obfuscated with option ``--enable-suffix`` to
 generate the :ref:`Runtime Package` with an unique suffix, other than fixed name
 ``pytransform``. For example::
 
-    pyarmor obfuscate --runtime-mode 3 foo.py
+    pyarmor obfuscate --enable-suffix foo.py
 
 The output would be like this::
 
@@ -78,20 +80,15 @@ The output would be like this::
 
 The suffix ``_vax_000001`` is based on the registration code of PyArmor.
 
-For project, set ``runtime-mode`` by command :ref:`config`::
+For project, set ``enable-suffix`` by command :ref:`config`::
 
-    pyarmor config --runtime-mode 3
+    pyarmor config --enable-suffix 0
     pyarmor build -B
 
 Or disable it by this way::
 
-    pyarmor config --runtime-mode 1
+    pyarmor config --enable-suffix 1
     pyarmor build -B
-
-.. note::
-
-   From v5.8.7 to v5.8.9, use option ``--enable-suffix`` to achieve this.
-
 
 .. _distributing obfuscated scripts to other platform:
 
