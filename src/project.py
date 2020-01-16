@@ -45,7 +45,7 @@ from glob import glob
 from io import StringIO
 from json import dump as json_dump, load as json_load
 
-from config import config_filename, capsule_filename, default_output_path, \
+from config import config_filename, default_output_path, \
                    default_manifest_template
 
 
