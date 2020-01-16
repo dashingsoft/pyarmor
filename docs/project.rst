@@ -158,6 +158,8 @@ Each project has a configure file. It's a json file named
 
 * capsule
 
+    .. warning:: Removed since v5.9.0
+
     Filename of project capsule. It's relative to project path if it's
     not absolute path.
 
