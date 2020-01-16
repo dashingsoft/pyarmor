@@ -536,6 +536,31 @@ $PYARMOR info $PROPATH  >result.log 2>&1
 check_file_content result.log "linux.x86_64" not
 check_file_content result.log "check_ntp_time" not
 
+csih_inform "Case P-11: Init project with multiple entries"
+PROPATH=projects/test-init-multiple-entry
+$PYARMOR init --src=examples --entry simple/queens.py,examples/helloworld/foo.py \
+         $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "simple[/\\]queens.py,helloworld[/\\]foo.py"
+
+csih_inform "Case P-12: Config project in other path"
+PROPATH=projects/test-config-outer-path
+$PYARMOR init --src=examples $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR config --entry "simple/queens.py, examples/helloworld/foo.py" \
+         --output $PROPATH/mydist --with-license licpath/license.lic \
+         $PROPATH >result.log 2>&1
+check_return_value
+check_file_content result.log "Format output to mydist"
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "simple[/\\]queens.py,helloworld[/\\]foo.py"
+check_file_content result.log "mydist"
+check_file_content result.log "licpath[/\\]license.lic"
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""
