@@ -108,7 +108,8 @@ Each plugin is a normal Python script, PyArmor searches it by this way:
 
 * If the plugin has absolute path, then find the corresponding `.py` file exactly.
 * If it has relative path, first search the related `.py` file in the current
-  path, then in the path specified by environment variable ``PYARMOR_PLGUIN``
+  path, then ``$HOME/.pyarmor/plugins``, finally in the path specified by
+  environment variable ``PYARMOR_PLGUIN``
 * Raise exception if not found
 
 When there is plugin specified as obfuscating the script, each comment line will

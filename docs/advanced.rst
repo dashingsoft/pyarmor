@@ -461,7 +461,8 @@ At the same time, the prefix of second comment will be stripped::
 
 So the plugin takes effect.
 
-If the plugin file isn't in the current path, use absolute path instead::
+If the plugin file isn't in the current path, or ``$HOME/.pyarmor/plugins``, use
+absolute path instead::
 
     pyarmor obfuscate --plugin /usr/share/pyarmor/check_ntp_time foo.py
 
