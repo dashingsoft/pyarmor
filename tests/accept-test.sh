@@ -175,27 +175,28 @@ check_file_exists dist-suffix/pytransform/__init__.py
 check_return_value
 check_file_content dist-suffix/result.log 'Found 92 solutions'
 
-csih_inform "13. Generate runtime package with option --mode 3"
-$PYARMOR runtime -O test-runtime-suffix --mode 3 >result.log 2>&1
+csih_inform "13. Generate runtime package with option --enable-suffix"
+$PYARMOR runtime -O test-runtime-suffix --enable-suffix >result.log 2>&1
 check_return_value
 check_file_exists test-runtime-suffix/pytransform/__init__.py
 check_file_content test-runtime-suffix/pytransform_bootstrap.py \
                    'from pytransform import pyarmor_runtime'
 
-$PYARMOR runtime -O test-runtime-suffix-2 --mode 2 >result.log 2>&1
+$PYARMOR runtime -O test-runtime-suffix-2 --no-package --enable-suffix >result.log 2>&1
 check_return_value
 check_file_exists test-runtime-suffix-2/pytransform.py
 check_file_content test-runtime-suffix-2/pytransform_bootstrap.py \
                    'from pytransform import pyarmor_runtime'
 
-csih_inform "14. Build project with option --runtime-mode"
-PROPATH=projects/test_runtime_mode
+csih_inform "14. Build project with option --enable-suffix"
+PROPATH=projects/test_enable_suffix
 mkdir $PROPATH
 echo "print('Hello this is a project with suffix')" > $PROPATH/main.py
 $PYARMOR init --src=$PROPATH --entry=main.py $PROPATH >result.log 2>&1
-$PYARMOR config --runtime-mode 3 $PROPATH >result.log 2>&1
-(cd $PROPATH; $ARMOR build >result.log 2>&1)
+$PYARMOR config --enable-suffix 1 $PROPATH >result.log 2>&1
+check_return_value
 
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
 check_return_value
 check_file_exists $PROPATH/dist/pytransform/__init__.py
 
@@ -369,8 +370,8 @@ check_file_content dist-suffix/queens.py "pyarmor_runtime(suffix="
 check_return_value
 check_file_content dist-suffix/result.log 'Found 92 solutions'
 
-csih_inform "13. Generate runtime package with option --mode 3"
-$PYARMOR runtime -O test-runtime-suffix --mode 3 >result.log 2>&1
+csih_inform "13. Generate runtime package with option --enable-suffix"
+$PYARMOR runtime -O test-runtime-suffix --enable-suffix >result.log 2>&1
 check_return_value
 check_file_exists test-runtime-suffix/pytransform${test_suffix}/__init__.py
 check_file_content test-runtime-suffix/pytransform_bootstrap.py \
@@ -378,7 +379,7 @@ check_file_content test-runtime-suffix/pytransform_bootstrap.py \
 check_file_content test-runtime-suffix/pytransform_bootstrap.py \
                    "pyarmor_runtime(suffix="
 
-$PYARMOR runtime -O test-runtime-suffix-2 --mode 2 >result.log 2>&1
+$PYARMOR runtime -O test-runtime-suffix-2 --no-package --enable-suffix >result.log 2>&1
 check_return_value
 check_file_exists test-runtime-suffix-2/pytransform${test_suffix}.py
 check_file_content test-runtime-suffix-2/pytransform_bootstrap.py \
@@ -386,15 +387,16 @@ check_file_content test-runtime-suffix-2/pytransform_bootstrap.py \
 check_file_content test-runtime-suffix-2/pytransform_bootstrap.py \
                    "pyarmor_runtime(suffix="
 
-csih_inform "14. Build project with option --runtime-mode"
-PROPATH=projects/test_runtime_mode
+csih_inform "14. Build project with option --enable-suffix"
+PROPATH=projects/test_enable_suffix
 [[ -d "$PROPATH" ]] && rm -rf $PROPATH
 mkdir $PROPATH
 echo "print('Hello this is a project with suffix')" > $PROPATH/main.py
 $PYARMOR init --src=$PROPATH --entry=main.py $PROPATH >result.log 2>&1
-$PYARMOR config --runtime-mode 3 $PROPATH >result.log 2>&1
-$PYARMOR build $PROPATH >$PROPATH/result.log 2>&1
+$PYARMOR config --enable-suffix 1 $PROPATH >result.log 2>&1
+check_return_value
 
+$PYARMOR build $PROPATH >$PROPATH/result.log 2>&1
 check_return_value
 check_file_exists $PROPATH/dist/pytransform${test_suffix}/__init__.py
 check_file_content $PROPATH/dist/main.py \

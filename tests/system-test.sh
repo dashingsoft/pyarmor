@@ -110,8 +110,8 @@ check_file_content dist2-2/queens.py '__pyarmor__(__name__'
 check_return_value
 check_file_content dist2-2/result.log 'Found 92 solutions'
 
-csih_inform "Case 1.2-3: obfuscate script with --runtime=0 and --restrict=0"
-$PYARMOR obfuscate --runtime=0 --restrict=0 --output dist2-3 \
+csih_inform "Case 1.2-3: obfuscate script with --package-runtime=0 and --restrict=0"
+$PYARMOR obfuscate --package-runtime=0 --restrict=0 --output dist2-3 \
                    -r examples/py2exe/hello.py >result.log 2>&1
 
 check_return_value
