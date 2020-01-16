@@ -83,14 +83,11 @@ csih_inform "C-1. Test option --capsule for init"
 $PYARMOR init --src=examples/simple --capsule=test/data/project.zip \
     projects/test-capsule >result.log 2>&1
 check_return_value
-check_file_content projects/test-capsule/.pyarmor_config "project.zip"
 
 csih_inform "C-2. Test option --capsule for config"
 cp test/data/project.zip projects/test-capsule/project2.zip
 $PYARMOR config --capsule=project2.zip projects/test-capsule >result.log 2>&1
-
 check_return_value
-check_file_content projects/test-capsule/.pyarmor_config "project2.zip"
 
 csih_inform "C-3. Test option --capsule for obfuscate"
 $PYARMOR init --src=examples/simple test-capsule >result.log 2>&1
@@ -404,7 +401,7 @@ $PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
 check_return_value
 
 (cd $PROPATH;
- $ARMOR config --output="." --package-runtime=0 >result.log 2>&1;
+ $ARMOR config --output="." --runtime=0 >result.log 2>&1;
  $ARMOR build >result.log 2>&1)
 check_return_value
 check_file_exists $PROPATH/queens.py
