@@ -21,7 +21,7 @@ by `pip install pyarmor-webui`.
 * In command `licenses` if option `output` is set, do not append extra path
   `licenses` in the final output path
 * Add new project attribute `license_file`, `bootstrap_code`, `runtime_mode`
-* Remove project attribute `enable_suffix`, `package_runtime`
+* Remove project attribute `enable_suffix`, `package_runtime`, `capsule`
 * Add new option `--with-license`, `--bootstrap`, `--runtime` in the command `config`
 * Add new option `--bootstrap`, `--runtime` in the command `obfuscate`
 * Change the behavior of `--package-runtime=2`

@@ -504,11 +504,11 @@ Update project settings.
 --manifest TEMPLATE             Manifest template string
 --entry SCRIPT                  Entry script of this project
 --is-package <0,1>              Set project as package or not
---restrict-mode <0,1,2,3,4>     Set restrict mode
+--restrict <0,1,2,3,4>          Set restrict mode
 --obf-mod <0,1>                 Disable or enable to obfuscate module
 --obf-code <0,1,2>              Disable or enable to obfuscate function
 --wrap-mode <0,1>               Disable or enable wrap mode
---advanced-mode <0,1>           Disable or enable advanced  mode
+--advanced <0,1>                Disable or enable advanced  mode
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
 --runtime-path RPATH            Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script, it could be used multiple times
