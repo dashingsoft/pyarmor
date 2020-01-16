@@ -127,18 +127,13 @@ def _init(args):
 @arcommand
 def _config(args):
     '''Update project settings.'''
-    for x in ('obf-module-mode', 'obf-code-mode', 'disable-restrict-mode',
-              'enable_suffix', 'capsule'):
+    for x in ('obf-module-mode', 'obf-code-mode', 'disable-restrict-mode'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
     project = Project()
     project.open(args.project)
     logging.info('Update project %s ...', args.project)
-
-    # Fix compatibility: enable_suffix
-    if args.enable_suffix and args.runtime_mode is None:
-        args.runtime_mode = 3
 
     def _relpath(p):
         return p if os.path.isabs(p) \
@@ -158,8 +153,7 @@ def _config(args):
         args.entry = _format_entry(args.entry, src)
         logging.info('Format entry: %s', args.entry)
     if args.capsule is not None:
-        args.capsule = os.path.abspath(args.capsule)
-        logging.info('Format capsule to %s', args.capsule)
+        logging.warning('The capsule %s is ignored', args.capsule)
     if args.plugins is not None:
         if ('clear' in args.plugins) or ('' in args.plugins):
             logging.info('Clear all plugins')
@@ -204,18 +198,9 @@ def _build(args):
     logging.info('Check project')
     project.check()
 
+    suffix = get_name_suffix() if project.get('enable_suffix', 0) else ''
     capsule = project.get('capsule', DEFAULT_CAPSULE)
     logging.info('Use capsule: %s', capsule)
-
-    if args.runtime_mode is not None:
-        runtime_mode = args.runtime_mode
-    elif hasattr(project, 'runtime_mode'):
-        runtime_mode = project.get('runtime_mode')
-    else:
-        runtime_mode = 1 if project.get('package_runtime', 0) else 0
-        runtime_mode += 2 if project.get('enable_suffix') else 0
-    logging.info('Runtime mode is: %s', runtime_mode)
-    suffix = get_name_suffix() if runtime_mode > 1 else ''
 
     output = project.output if args.output is None \
         else os.path.normpath(args.output)
@@ -336,21 +321,22 @@ def _build(args):
             logging.info('Make path: %s', routput)
             os.mkdir(routput)
 
-        ispkg = runtime_mode in (1, 3)
-        make_runtime(capsule, routput, platforms=platforms, package=ispkg,
+        package = project.get('package_runtime', 0) \
+            if args.package_runtime is None else args.package_runtime
+        make_runtime(capsule, routput, platforms=platforms, package=package,
                      suffix=suffix)
 
         licfile = project.license_file
         if licfile:
             logging.info('Project has customized license file: %s', licfile)
             licpath = os.path.join(routput, 'pytransform' + suffix) \
-                if ispkg else routput
+                if package else routput
             logging.info('Copy project license file to %s', licpath)
             shutil.copy(licfile, licpath)
         elif not restrict:
             licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
             licpath = os.path.join(routput, 'pytransform' + suffix) \
-                if ispkg else routput
+                if package else routput
             licfile = os.path.join(licpath, license_filename)
             logging.info('Generate no restrict mode license file: %s', licfile)
             make_project_license(capsule, licode, licfile)
@@ -475,7 +461,7 @@ def _obfuscate(args):
         logging.info('Target platforms: %s', platforms)
         check_cross_platform(platforms)
 
-    for x in ('entry', 'cross-protection', 'enable_suffix'):
+    for x in ('entry', 'cross-protection'):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -513,8 +499,7 @@ def _obfuscate(args):
     if os.path.abspath(output) == path:
         raise RuntimeError('Output path can not be same as src')
 
-    suffix = get_name_suffix() \
-        if (args.enable_suffix or args.runtime_mode > 1) else ''
+    suffix = get_name_suffix() if args.enable_suffix else ''
 
     if args.recursive:
         logging.info('Recursive mode is on')
@@ -598,15 +583,15 @@ def _obfuscate(args):
         logging.info('Obfuscate %d scripts OK.', len(files))
         return
 
-    ispkg = args.runtime_mode in (1, 3)
+    package = args.package_runtime
     make_runtime(capsule, output, platforms=platforms,
-                 package=ispkg, suffix=suffix)
+                 package=package, suffix=suffix)
 
     logging.info('Obfuscate scripts with restrict mode %s',
                  'on' if args.restrict else 'off')
     if not args.restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
-        licpath = (os.path.join(output, 'pytransform' + suffix) if ispkg
+        licpath = (os.path.join(output, 'pytransform' + suffix) if package
                    else output)
         licfile = os.path.join(licpath, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
@@ -746,12 +731,11 @@ def _runtime(args):
     capsule = DEFAULT_CAPSULE
     name = 'pytransform_bootstrap'
     output = os.path.join(args.output, name) if args.inside else args.output
-    mode = args.runtime_mode
-    ispkg = not args.no_package and mode in (1, 3)
+    package = not args.no_package
     platforms = compatible_platform_names(args.platforms)
-    suffix = get_name_suffix() if args.enable_suffix or mode > 1 else ''
+    suffix = get_name_suffix() if args.enable_suffix else ''
     make_runtime(capsule, output, licfile=args.with_license,
-                 platforms=platforms, package=ispkg, suffix=suffix)
+                 platforms=platforms, package=package, suffix=suffix)
 
     filename = os.path.join(output, '__init__.py') if args.inside else \
         os.path.join(args.output, name + '.py')
@@ -857,13 +841,12 @@ def _parser():
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1),
                          help='Enable advanced mode')
-    cparser.add_argument('--runtime', '--runtime-mode', '--package-runtime',
-                         type=int, default=1, choices=(0, 1, 2, 3),
-                         dest='runtime_mode', help='How to save runtime files')
+    cparser.add_argument('--package-runtime', type=int, default=1,
+                         choices=(0, 1), help='Package runtime files or not')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate runtime files')
     cparser.add_argument('--enable-suffix', action='store_true',
-                         help=argparse.SUPPRESS)
+                         help='Make unique runtime files and bootstrap code')
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -996,11 +979,10 @@ def _parser():
     cparser.add_argument('--advanced', '--advanced-mode', dest='advanced_mode',
                          type=int, choices=(0, 1),
                          help='Enable or disable advanced mode')
-    cparser.add_argument('--runtime', '--runtime-mode', '--package-runtime',
-                         dest='runtime_mode', choices=(0, 1, 2, 3), type=int,
-                         help='How to save runtime files')
+    cparser.add_argument('--package-runtime', choices=(0, 1), type=int,
+                         help='Package runtime files or not')
     cparser.add_argument('--enable-suffix', type=int, choices=(0, 1),
-                         help=argparse.SUPPRESS)
+                         help='Make unique runtime files and bootstrap code')
     cparser.add_argument('--with-license', dest='license_file',
                          help='Use this license file other than default')
     # cparser.add_argument('--reset', choices=('all', 'glob', 'exact'),
@@ -1034,9 +1016,8 @@ def _parser():
                          action='append',
                          help='Target platform to run obfuscated scripts, '
                          'use this option multiple times for more platforms')
-    cparser.add_argument('--runtime', '--runtime-mode', '--package-runtime',
-                         dest='runtime_mode', choices=(0, 1, 2, 3), type=int,
-                         help='How to save runtime files')
+    cparser.add_argument('--package-runtime', choices=(0, 1), type=int,
+                         help='Package runtime files or not')
     cparser.set_defaults(func=_build)
 
     #
@@ -1170,10 +1151,7 @@ def _parser():
                          help='Generate runtime package for this platform, '
                          'use this option multiple times for more platforms')
     cparser.add_argument('--enable-suffix', action='store_true',
-                         help=argparse.SUPPRESS)
-    cparser.add_argument('--mode', '--runtime-mode', dest='runtime_mode',
-                         type=int, default=1, choices=(0, 1, 2, 3),
-                         help='How to save runtime files')
+                         help='Make unique runtime files and bootstrap code')
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
