@@ -334,7 +334,7 @@ Obfuscate the scripts and pack them into one bundle.
 -s FILE                 Use external .spec file to pack the scripts
 --without-license       Do not generate license for obfuscated scripts
 --with-license FILE     Use this license file other than default one
---clean                 Remove cached .spec file before packing
+--clean                 Remove cached files before packing
 --debug                 Do not remove build files after packing
 --name                  Name to assign to the bundled (default: the script’s basename)
 
@@ -514,7 +514,7 @@ Update project settings.
 --plugin NAME                   Insert extra code to entry script, it could be used multiple times
 --runtime <0,1,2,3>             How to save runtime files
 --bootstrap <0,1,2,3>           How to insert bootstrap code to entry script
-
+--with-license FILENAME         Use this license file other than the default one
 
 **DESCRIPTION**
 
@@ -776,7 +776,8 @@ the information in details. For examples::
     pyarmor download --list armv7
 
 After `pyarmor` is upgraded, however these downloaded dynamic libraries won't be
-upgraded. The option ``--update`` used to update all these files. For example::
+upgraded. The option ``--update`` could be used to update all these downloaded
+files. For example::
 
     pyarmor download --update
 
@@ -820,7 +821,8 @@ modules could be imported in one plain script::
 If option ``--inside`` is specified, it will generate bootstrap package
 ``pytransform_bootstrap`` other than one single script.
 
-About option ``--platform`` and ``--mode``, refer to command `obfuscate`_
+About option ``--platform`` and ``--mode``, refer to ``--platform`` and
+``--runtime`` respectively in the command `obfuscate`_
 
 **EXAMPLES**
 
