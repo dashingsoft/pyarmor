@@ -141,7 +141,7 @@ def _config(args):
         args.runtime_mode = 3
 
     def _relpath(p):
-        return p if os.path.abspath(p) \
+        return p if os.path.isabs(p) \
             else relpath(os.path.abspath(p), project._path)
 
     if args.src is not None:
@@ -152,7 +152,7 @@ def _config(args):
         logging.info('Format output to %s', args.output)
     if args.license_file is not None:
         args.license_file = _relpath(args.license_file)
-        logging.info('Format license_file to %s', args.license_file)
+        logging.info('Format license file to %s', args.license_file)
     if args.entry is not None:
         src = os.path.abspath(args.src) if args.src else project.src
         args.entry = _format_entry(args.entry, src)
