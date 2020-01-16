@@ -15,6 +15,19 @@ For the other platforms, `pyarmor` first searches path
 `Standard Platform Names`_. If there is none, download it from remote
 server. Refer to `The Others Prebuilt Libraries For PyArmor`_.
 
+There may be serveral dynamic libraries with different features in
+each platform. The platform name with feature number suffix combines
+an unique name. For example, ``windows.x86_64.7`` means anti-debug,
+JIT and andvanced mode supported, ``windows.x86_64.0`` means no any
+feature.
+
+Note that the dynamic library with different features aren't
+compatible. For example, try to obfuscate the scripts with target
+platform ``linux.x86_64.0`` in the Windows, the obfuscated scripts
+don't work in the target machine. Because the full features dynamic
+library ``windows.x86_64.7`` is used in the Windows by default. Now
+the common platforms are full features, most of the others not yet.
+
 In some platforms, `pyarmor` doesn't know it but there is available
 dynamic library in the table `The Others Prebuilt Libraries For
 PyArmor`_. Just download it and save it in the path
@@ -31,7 +44,7 @@ will display the required information by `pyarmor`:
    print('machine: %s' % machine())
    print('processor: %s' % processor())
    print('aliased terse platform: %s' % platform(aliased=1, terse=1))
-   
+
    if system().lower().startswith('linux'):
        print('libc: %s' % libc_ver())
        print('distribution: %s' % linux_distribution())
