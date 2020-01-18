@@ -221,13 +221,6 @@ check_return_value
 check_file_exists test-exclude/main.py
 check_file_not_exists test-exclude/mypkg/foo.py
 
-csih_inform "C-13-a. Test multiple option --exclude for obfuscate"
-$PYARMOR obfuscate -O test-exclude2 -r --exclude mypkg --exclude dist \
-         examples/testpkg/main.py >result.log 2>&1
-check_return_value
-check_file_exists test-exclude2/main.py
-check_file_not_exists test-exclude2/mypkg/foo.py
-
 csih_inform "C-14. Test option --exact for obfuscate"
 $PYARMOR obfuscate -O test-exact --exact \
          examples/testpkg/mypkg/foo.py >result.log 2>&1
@@ -380,6 +373,18 @@ check_file_exists $output/b.py
 check_file_not_exists $output/c.py
 check_file_content $output/a.py 'import pyarmor_runtime'
 check_file_content $output/b.py 'import pyarmor_runtime'
+
+csih_inform "C-31. Output license key to stdout"
+$PYARMOR licenses --output stdout reg0001 > result.log 2>&1
+check_return_value
+check_file_content result.log 'Generate 1 licenses OK.'
+
+csih_inform "C-32. Test multiple option --exclude for obfuscate"
+$PYARMOR obfuscate -O test-exclude2 -r --exclude mypkg --exclude dist \
+         examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists test-exclude2/main.py
+check_file_not_exists test-exclude2/mypkg/foo.py
 
 echo ""
 echo "-------------------- Command End -----------------------------"
