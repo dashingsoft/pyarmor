@@ -46,7 +46,7 @@ from config import version, version_info, purchase_info, \
 
 from project import Project
 from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
-                  make_project_license, make_entry, show_hd_info, \
+                  make_license_key, make_entry, show_hd_info, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, search_plugins, \
                   get_product_key, register_keyfile, query_keyinfo, \
@@ -339,7 +339,7 @@ def _build(args):
                 if package else routput
             licfile = os.path.join(licpath, license_filename)
             logging.info('Generate no restrict mode license file: %s', licfile)
-            make_project_license(capsule, licode, licfile)
+            make_license_key(capsule, licode, licfile)
 
     logging.info('Build project OK.')
 
@@ -371,7 +371,7 @@ def _licenses(args):
         else args.output
     if os.path.exists(licpath):
         logging.info('Output path of licenses: %s', licpath)
-    else:
+    elif licpath not in ('stdout', 'stderr'):
         logging.info('Make output path of licenses: %s', licpath)
         os.mkdir(licpath)
 
@@ -420,24 +420,27 @@ def _licenses(args):
     extra_data = '' if args.bind_data is None else (';' + args.bind_data)
 
     for rcode in args.codes:
-        output = os.path.join(licpath, rcode)
-        if not os.path.exists(output):
-            logging.info('Make path: %s', output)
-            os.mkdir(output)
-
-        licfile = os.path.join(output, license_filename)
+        if args.output in ('stderr', 'stdout'):
+            licfile = args.output
+        else:
+            output = os.path.join(licpath, rcode)
+            if not os.path.exists(output):
+                logging.info('Make path: %s', output)
+                os.mkdir(output)
+            licfile = os.path.join(output, license_filename)
         licode = fmt + rcode + extra_data
         txtinfo = licode.replace('\n', r'\n')
         if args.expired:
             txtinfo = '"Expired:%s%s"' % (args.expired,
                                           txtinfo[txtinfo.find(r'\n')+2:])
         logging.info('Generate license: %s', txtinfo)
-        make_project_license(capsule, licode, licfile)
+        make_license_key(capsule, licode, licfile)
         logging.info('Write license file: %s', licfile)
 
-        logging.info('Write information to %s.txt', licfile)
-        with open(os.path.join(licfile + '.txt'), 'w') as f:
-            f.write(txtinfo)
+        if licfile not in ('stderr', 'stdout'):
+            logging.info('Write information to %s.txt', licfile)
+            with open(os.path.join(licfile + '.txt'), 'w') as f:
+                f.write(txtinfo)
 
     logging.info('Generate %d licenses OK.', len(args.codes))
 
@@ -595,7 +598,7 @@ def _obfuscate(args):
                    else output)
         licfile = os.path.join(licpath, license_filename)
         logging.info('Generate no restrict mode license file: %s', licfile)
-        make_project_license(capsule, licode, licfile)
+        make_license_key(capsule, licode, licfile)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 

@@ -101,6 +101,14 @@ def generate_license_file(filename, priname, rcode, start=-1, count=1):
 
 
 @dllmethod
+def generate_license_key(prikey, keysize, rcode):
+    prototype = PYFUNCTYPE(py_object, c_char_p, c_int, c_char_p)
+    dlfunc = prototype(('generate_license_key', _pytransform))
+    return dlfunc(prikey, keysize, rcode) if sys.version_info[0] == 2 \
+        else dlfunc(prikey, keysize, rcode.encode())
+
+
+@dllmethod
 def get_registration_code():
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_registration_code', _pytransform))

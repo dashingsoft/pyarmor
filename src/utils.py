@@ -128,9 +128,9 @@ def pytransform_bootstrap(capsule=None):
 
     ver = pytransform.version_info()
     logging.debug('The version of core library is %s', ver)
-    if ver[0] < 8:
+    if ver[0] < 14:
         raise RuntimeError('PyArmor does not work with this core library '
-                           '(r%d), which reversion < 8' % ver[0])
+                           '(r%d), which reversion < 14' % ver[0])
 
     if capsule is not None and not os.path.exists(capsule):
         logging.info('Generating public capsule ...')
@@ -518,6 +518,19 @@ def make_project_license(capsule, code, output):
         pytransform.generate_license_file(output, prikey, code)
     finally:
         os.remove(prikey)
+
+
+def make_license_key(capsule, code, output):
+    myzip = ZipFile(capsule, 'r')
+    prikey = myzip.read('private.key')
+    size = len(prikey)
+    lickey = pytransform.generate_license_key(prikey, size, code)
+    if output in ('stdout', 'stderr'):
+        getattr(sys, output).write(
+            lickey.decode() if hasattr(lickey, 'decode') else lickey)
+    else:
+        with open(output, 'wb') as f:
+            f.write(lickey)
 
 
 def show_hd_info():
