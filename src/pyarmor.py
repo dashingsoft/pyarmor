@@ -346,6 +346,8 @@ def _build(args):
 
 def licenses(name='reg-001', expired=None, bind_disk=None,
              bind_mac=None, bind_ipv4=None, bind_data=None):
+    pytransform_bootstrap()
+
     capsule = DEFAULT_CAPSULE
     if not os.path.exists(capsule):
         make_capsule(capsule)
