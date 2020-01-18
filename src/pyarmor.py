@@ -344,6 +344,28 @@ def _build(args):
     logging.info('Build project OK.')
 
 
+def licenses(name='reg-001', expired=None, bind_disk=None,
+             bind_mac=None, bind_ipv4=None, bind_data=None):
+    fmt = '' if expired is None else '*TIME:%.0f\n' % (
+        expired if isinstance(expired, (int, float))
+        else float(expired) if expired.find('-') == -1
+        else time.mktime(time.strptime(expired, '%Y-%m-%d')))
+
+    if bind_disk:
+        fmt = '%s*HARDDISK:%s' % (fmt, bind_disk)
+
+    if bind_mac:
+        fmt = '%s*IFMAC:%s' % (fmt, bind_mac)
+
+    if bind_ipv4:
+        fmt = '%s*IFIPV4:%s' % (fmt, bind_ipv4)
+
+    fmt = fmt + '*CODE:'
+    extra_data = '' if bind_data is None else (';' + bind_data)
+
+    return make_license_key(DEFAULT_CAPSULE, fmt + name + extra_data)
+
+
 @arcommand
 def _licenses(args):
     '''Generate licenses for obfuscated scripts.'''
@@ -375,11 +397,9 @@ def _licenses(args):
         logging.info('Make output path of licenses: %s', licpath)
         os.mkdir(licpath)
 
-    if args.expired is None:
-        fmt = ''
-    else:
-        fmt = '*TIME:%.0f\n' % \
-              time.mktime(time.strptime(args.expired, '%Y-%m-%d'))
+    fmt = '' if args.expired is None else '*TIME:%.0f\n' % (
+        float(args.expired) if args.expired.find('-') == -1
+        else time.mktime(time.strptime(args.expired, '%Y-%m-%d')))
 
     if not restrict_mode:
         logging.info('The license file generated is in disable restrict mode')

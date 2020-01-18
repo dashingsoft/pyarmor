@@ -520,12 +520,14 @@ def make_project_license(capsule, code, output):
         os.remove(prikey)
 
 
-def make_license_key(capsule, code, output):
+def make_license_key(capsule, code, output=None):
     myzip = ZipFile(capsule, 'r')
     prikey = myzip.read('private.key')
     size = len(prikey)
     lickey = pytransform.generate_license_key(prikey, size, code)
-    if output in ('stdout', 'stderr'):
+    if output is None:
+        return lickey
+    elif output in ('stdout', 'stderr'):
         getattr(sys, output).write(
             lickey.decode() if hasattr(lickey, 'decode') else lickey)
     else:
