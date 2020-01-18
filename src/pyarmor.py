@@ -883,8 +883,8 @@ def _parser():
                        help=argparse.SUPPRESS)
     cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
     cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
-    cparser.add_argument('-O', '--output',
-                         help='Output path, default is `licenses`')
+    cparser.add_argument('-O', '--output', help='Output path, default is '
+                         '`licenses` (`stdout` is also supported)')
     cparser.add_argument('--disable-restrict-mode', action='store_true',
                          help='Disable all the restrict modes')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),

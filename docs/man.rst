@@ -265,7 +265,7 @@ Generate new licenses for obfuscated scripts.
 
 **OPTIONS**
 
--O, --output OUTPUT         Output path
+-O, --output OUTPUT         Output path, `stdout` is supported
 -e, --expired YYYY-MM-DD    Expired date for this license
 -d, --bind-disk SN          Bind license to serial number of harddisk
 -4, --bind-ipv4 IPV4        Bind license to ipv4 addr
@@ -310,6 +310,10 @@ In the obfuscated scripts, the data passed by `-x` could be got by this way::
     from pytransfrom import get_license_info
     info = get_license_info()
     print(info['DATA'])
+
+It also could output the license key in the stdout other than a file::
+
+    pyarmor --silent licenses --output stdout -x "2019-05-20" reg-0001
 
 .. note::
 

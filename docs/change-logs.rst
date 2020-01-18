@@ -27,6 +27,8 @@ by `pip install pyarmor-webui`.
 * Add new option `--bootstrap` in the command `obfuscate`
 * The options `--package-runtime` doesn't support `2` and `3`, use
   `--bootstrap=2` or `--bootstrap=3` instead
+* In command `licenses` support output generated license to stdout by
+  `--output stdout`
 
 5.8.9
 -----
