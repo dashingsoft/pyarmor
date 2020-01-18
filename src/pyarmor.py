@@ -344,8 +344,8 @@ def _build(args):
     logging.info('Build project OK.')
 
 
-def licenses(name='reg-001', expired=None, bind_disk=None,
-             bind_mac=None, bind_ipv4=None, bind_data=None):
+def licenses(name='reg-001', expired=None, bind_disk=None, bind_mac=None,
+             bind_ipv4=None, bind_data=None, key=None):
     pytransform_bootstrap()
 
     capsule = DEFAULT_CAPSULE
@@ -369,7 +369,7 @@ def licenses(name='reg-001', expired=None, bind_disk=None,
     fmt = fmt + '*CODE:'
     extra_data = '' if bind_data is None else (';' + bind_data)
 
-    return make_license_key(capsule, fmt + name + extra_data)
+    return make_license_key(capsule, fmt + name + extra_data, key=key)
 
 
 @arcommand

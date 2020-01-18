@@ -71,6 +71,8 @@ def _search_downloaded_files(path, platid, libname):
 
 
 def pytransform_bootstrap(capsule=None):
+    if pytransform._pytransform is not None:
+        return
     logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
     logging.debug('PyArmor data path: %s', DATA_PATH)
     path = PYARMOR_PATH
@@ -520,9 +522,9 @@ def make_project_license(capsule, code, output):
         os.remove(prikey)
 
 
-def make_license_key(capsule, code, output=None):
-    myzip = ZipFile(capsule, 'r')
-    prikey = myzip.read('private.key')
+def make_license_key(capsule, code, output=None, key=None):
+    prikey = ZipFile(capsule, 'r').read('private.key') \
+        if key is None else key
     size = len(prikey)
     lickey = pytransform.generate_license_key(prikey, size, code)
     if output is None:
@@ -813,14 +815,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
 
 
 def get_product_key(capsule):
-    output = tempfile.gettempdir()
-    keyfile = os.path.join(output, 'product.key')
-    ZipFile(capsule).extract('product.key', path=output)
-    try:
-        with open(keyfile, 'rb') as f:
-            return f.read()
-    finally:
-        os.remove(keyfile)
+    return ZipFile(capsule).read('product.key')
 
 
 def upgrade_capsule(capsule):
