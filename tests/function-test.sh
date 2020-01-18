@@ -386,6 +386,12 @@ check_return_value
 check_file_exists test-exclude2/main.py
 check_file_not_exists test-exclude2/mypkg/foo.py
 
+csih_inform "C-33. Generate license with epoch expired"
+$PYARMOR licenses --expired 1579316961.2 reg-epoch-1 > result.log 2>&1
+check_return_value
+check_file_content result.log 'Generate 1 licenses OK.'
+check_file_exists licenses/reg-epoch-1/license.lic
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
