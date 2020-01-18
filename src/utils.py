@@ -280,9 +280,9 @@ def make_capsule(filename):
                       'to restore your private capsule.')
         raise RuntimeError('Could not generate private capsule.')
     public_capsule = os.path.join(PYARMOR_PATH, 'public_capsule.zip')
-    logging.info('Copy %s to %s', public_capsule, filename)
+    logging.debug('Copy %s to %s', public_capsule, filename)
     shutil.copy(public_capsule, filename)
-    logging.info('Generate public capsule %s OK.', filename)
+    logging.debug('Generate public capsule %s OK.', filename)
 
 
 def check_capsule(capsule):

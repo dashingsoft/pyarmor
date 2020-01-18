@@ -346,6 +346,10 @@ def _build(args):
 
 def licenses(name='reg-001', expired=None, bind_disk=None,
              bind_mac=None, bind_ipv4=None, bind_data=None):
+    capsule = DEFAULT_CAPSULE
+    if not os.path.exists(capsule):
+        make_capsule(capsule)
+
     fmt = '' if expired is None else '*TIME:%.0f\n' % (
         expired if isinstance(expired, (int, float))
         else float(expired) if expired.find('-') == -1
@@ -363,7 +367,7 @@ def licenses(name='reg-001', expired=None, bind_disk=None,
     fmt = fmt + '*CODE:'
     extra_data = '' if bind_data is None else (';' + bind_data)
 
-    return make_license_key(DEFAULT_CAPSULE, fmt + name + extra_data)
+    return make_license_key(capsule, fmt + name + extra_data)
 
 
 @arcommand
