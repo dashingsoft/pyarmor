@@ -945,7 +945,7 @@ def compatible_platform_names(platforms):
         'poky-i586': 'poky.x86',
     }
 
-    names = []
+    result = []
     for names in platforms:
         for name in names.split(','):
             name = name.strip()
@@ -955,10 +955,10 @@ def compatible_platform_names(platforms):
                     'use `%s` instead. Display all standard platform '
                     'names by `pyarmor download --help-platorm`',
                     name, old_forms[name])
-                names.append(old_forms[name])
+                result.append(old_forms[name])
             else:
-                names.append(name)
-    return names
+                result.append(name)
+    return result
 
 
 def make_bootstrap_script(output, capsule=None, relative=None, suffix=''):
