@@ -497,7 +497,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         filenames = _build_platforms(platforms)
         for platid, filename in list(zip(platforms, filenames)):
             logging.info('Copying %s', filename)
-            path = os.path.join(libpath, *platid.split('.'))
+            path = os.path.join(libpath, *platid.split('.')[:2])
             logging.info('To %s', path)
             if not os.path.exists(path):
                 os.makedirs(path)
@@ -915,7 +915,7 @@ def relpath(path, start=os.curdir):
 
 def check_cross_platform(platforms):
     if os.getenv('PYARMOR_PLATFORM'):
-        return
+        return False
     for name in platforms:
         if name.endswith('.0') or \
            name in ('linux.arm', 'android.aarch64', 'linux.ppc64',
@@ -928,7 +928,8 @@ def check_cross_platform(platforms):
             os.putenv('PYARMOR_PLATFORM', '.'.join([_format_platid(), '0']))
             p = Popen([sys.executable] + sys.argv)
             p.wait()
-            sys.exit(p.returncode)
+            return p.returncode
+    return False
 
 
 def compatible_platform_names(platforms):

@@ -215,7 +215,8 @@ def _build(args):
     if platforms:
         platforms = compatible_platform_names(platforms)
         logging.info('Taget platforms: %s', platforms)
-        check_cross_platform(platforms)
+        if check_cross_platform(platforms) is not False:
+            return
 
     restrict = project.get('restrict_mode',
                            0 if project.get('disable_restrict_mode') else 1)
@@ -488,7 +489,8 @@ def _obfuscate(args):
     platforms = compatible_platform_names(args.platforms)
     if platforms:
         logging.info('Target platforms: %s', platforms)
-        check_cross_platform(platforms)
+        if check_cross_platform(platforms) is not False:
+            return
 
     for x in ('entry', 'cross-protection'):
         if getattr(args, x.replace('-', '_')) is not None:
