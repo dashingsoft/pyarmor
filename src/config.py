@@ -4,7 +4,7 @@ from sys import platform
 version = '5.9.0'
 
 # The corresponding version of _pytransform.so
-core_version = 'r13.7'
+core_version = 'r14.8'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
@@ -39,7 +39,7 @@ default_manifest_template = 'global-include *.py'
 platform_urls = [
     'https://github.com/dashingsoft/pyarmor-core/raw/%s/platforms' %
     core_version,
-    'https://pyarmor.dashingsoft.com/downloads/latest'
+    'https://pyarmor.dashingsoft.com/downloads/%s' % core_version
 ]
 platform_config = 'index.json'
 
