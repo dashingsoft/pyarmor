@@ -10,6 +10,10 @@ or upgrade to a newer version::
 
     pip install --upgrade pyarmor
 
+There is also web ui for pyarmor, install it by this command::
+
+    pip install pyarmor-webui
+
 Verifying the installation
 --------------------------
 
@@ -30,14 +34,15 @@ The complete installation places these commands on the execution path:
 
 * ``pyarmor`` is the main command. See :ref:`Using PyArmor`.
 
-* ``pyarmor-webui`` is used to open a simple web ui of PyArmor.
+* ``pyarmor-webui`` is used to open web ui of PyArmor.
 
 If you do not perform a complete installation (installing via
 ``pip``), these commands will not be installed as commands.  However,
 you can still execute all the functions documented below by running
 Python scripts found in the distribution folder.  The equivalent of
-the ``pyarmor`` command is :file:`{pyarmor-folder}/pyarmor.py`, and of
-``pyarmor-webui`` is :file:`{pyarmor-folder}/pyarmor-webui.py`.
+the ``pyarmor`` command is :file:`{pyarmor-folder}/pyarmor.py`.
+
+``pyarmor-webui`` is :file:`{pyarmor-folder}/webui/server.py`.
 
 Clean uninstallation
 --------------------
