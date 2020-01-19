@@ -917,7 +917,8 @@ def check_cross_platform(platforms):
     if os.getenv('PYARMOR_PLATFORM'):
         return
     for name in platforms:
-        if name in ('linux.arm', 'android.aarch64', 'linux.ppc64',
+        if name.endswith('.0') or \
+           name in ('linux.arm', 'android.aarch64', 'linux.ppc64',
                     'darwin.arm64', 'freebsd.x86_64', 'alpine.x86_64',
                     'alpine.arm', 'poky.x86', 'vs2015.x86_64', 'vs2015.x86'):
             logging.info('===========================================')
@@ -945,15 +946,18 @@ def compatible_platform_names(platforms):
     }
 
     names = []
-    for name in platforms:
-        if name in old_forms:
-            logging.warning('This platform name `%s` has been deprecated, '
-                            'use `%s` instead. Display all standard platform '
-                            'names by `pyarmor download --help-platorm`',
-                            name, old_forms[name])
-            names.append(old_forms[name])
-        else:
-            names.append(name)
+    for names in platforms:
+        for name in names.split(','):
+            name = name.strip()
+            if name in old_forms:
+                logging.warning(
+                    'This platform name `%s` has been deprecated, '
+                    'use `%s` instead. Display all standard platform '
+                    'names by `pyarmor download --help-platorm`',
+                    name, old_forms[name])
+                names.append(old_forms[name])
+            else:
+                names.append(name)
     return names
 
 
