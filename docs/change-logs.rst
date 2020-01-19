@@ -3,8 +3,8 @@
 Change Logs
 ===========
 
-5.9.0 (developing)
-------------------
+5.9.0
+-----
 
 pyarmor-webui is published as a separated package, it has been removed from
 source package of pyarmor. Now it's a full feature webui, and could be installed
