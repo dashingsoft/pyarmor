@@ -619,6 +619,99 @@ echo ""
 
 # ======================================================================
 #
+#  Test settrace/setprofile
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test trace/profile --------------------"
+echo ""
+
+csih_inform "Case TD-1: run obfuscated functions with sys.settrace"
+PROPATH=test-sys-trace-profile
+mkdir -p $PROPATH
+cat <<EOF > $PROPATH/foo.py
+def hello(n):
+    n += 1
+    return n
+print('This is foo.py')
+EOF
+$PYARMOR obfuscate --exact -O $PROPATH/dist $PROPATH/foo.py >result.log 2>&1
+check_return_value
+
+cat <<EOF > $PROPATH/dist/main.py
+import sys
+import foo
+
+def hello2(n):
+    n += 2
+    return n
+
+def callback(frame, event, arg):
+    print('%s:%s:%s' % (event, frame.f_code.co_name, frame.f_lineno))
+    return callback
+
+sys.settrace(callback)
+print('foo.hello got %d' % foo.hello(2))
+print('hello2 got %d' % hello2(2))
+sys.settrace(None)
+EOF
+
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is foo.py'
+check_file_content $PROPATH/dist/result.log 'call:hello:1'
+check_file_content $PROPATH/dist/result.log 'line:hello:2'
+check_file_content $PROPATH/dist/result.log 'foo.hello got 3'
+check_file_content $PROPATH/dist/result.log 'line:hello:3' not
+check_file_content $PROPATH/dist/result.log 'return:hello:3' not
+check_file_content $PROPATH/dist/result.log 'call:hello2:4'
+check_file_content $PROPATH/dist/result.log 'line:hello2:5'
+check_file_content $PROPATH/dist/result.log 'line:hello2:6'
+check_file_content $PROPATH/dist/result.log 'return:hello2:6'
+check_file_content $PROPATH/dist/result.log 'hello2 got 4'
+
+csih_inform "Case TD-2: run obfuscated functions with threading.settrace"
+cat <<EOF > $PROPATH/dist/tmain.py
+import sys
+import foo
+
+def hello2(n):
+    n += 2
+    return n
+
+def callback(frame, event, arg):
+    print('%s:%s:%s' % (event, frame.f_code.co_name, frame.f_lineno))
+    return callback
+
+import threading
+def target():
+    print('foo.hello got %d' % foo.hello(2))
+    print('hello2 got %d' % hello2(2))
+threading.settrace(callback)
+threading.Thread(target=target).start()
+threading.settrace(None)
+EOF
+(cd $PROPATH/dist; $PYTHON tmain.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is foo.py'
+check_file_content $PROPATH/dist/result.log 'call:hello:1'
+check_file_content $PROPATH/dist/result.log 'line:hello:2'
+check_file_content $PROPATH/dist/result.log 'foo.hello got 3'
+check_file_content $PROPATH/dist/result.log 'line:hello:3' not
+check_file_content $PROPATH/dist/result.log 'return:hello:3' not
+check_file_content $PROPATH/dist/result.log 'call:hello2:4'
+check_file_content $PROPATH/dist/result.log 'line:hello2:5'
+check_file_content $PROPATH/dist/result.log 'line:hello2:6'
+check_file_content $PROPATH/dist/result.log 'return:hello2:6'
+check_file_content $PROPATH/dist/result.log 'hello2 got 4'
+
+echo ""
+echo "-------------------- Test trace/profile END ------------------"
+echo ""
+
+# ======================================================================
+#
 #  Test empty script
 #
 # ======================================================================
