@@ -52,11 +52,15 @@ Generate an expired license and run obfuscated scripts with new license
     cd dist/
     python foo.py
 
-Start webui, open web page in browser for basic usage of PyArmor
+There is also a web-ui package [pyarmor-webui](https://github.com/dashingsoft/pyarmor-webui)
+
+    pip install pyarmor-webui
+
+Start webui, open web page in browser
 
     pyarmor-webui
 
-More usage, refer to 
+More usage, refer to
 
 * [Examples](src/examples/README.md)
 * [Documentation](https://pyarmor.readthedocs.io/en/latest/)

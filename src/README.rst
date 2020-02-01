@@ -65,7 +65,7 @@ Generate an expired license and run obfuscated scripts with new license::
     cd dist/
     python foo.py
 
-Pack obfuscated scripts with PyInstaller.::
+Pack obfuscated scripts with PyInstaller::
 
     pip install pyinstaller
     pyarmor pack foo.py
@@ -73,7 +73,11 @@ Pack obfuscated scripts with PyInstaller.::
     cd dist/foo
     ./foo
 
-Start webui, open web page in browser for basic usage of PyArmor::
+There is also a web-ui package `pyarmor-webui`::
+
+    pip install pyarmor-webui
+
+Start webui, open web page in browser::
 
     pyarmor-webui
 
@@ -83,6 +87,6 @@ More Resources
 - `Website <http://pyarmor.dashingsoft.com>`_
   `中文网站 <http://pyarmor.dashingsoft.com/index-zh.html>`_
 - `Documentation <https://pyarmor.readthedocs.io/en/latest/>`_
-- `WebUI Demo <http://pyarmor.dashingsoft.com/demo/index.html>`_
+- `pyarmor-webui <http://github.com/dashingsoft/pyarmor-webui>`_
 - `Source Code <https://github.com/dashingsoft/pyarmor>`_
 - `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
