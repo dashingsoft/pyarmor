@@ -364,7 +364,7 @@ PyInstaller:
 
 To solve this problem, the common solution is
 
-1. Find all the dependenices by original scripts.
+1. Find all the dependencies by original scripts.
 2. Add runtimes files required by obfuscated scripts to the bundle
 3. Replace original scripts with obfuscated in the bundle
 4. Replace entry script with obfuscated one
