@@ -366,8 +366,8 @@ To solve this problem, the common solution is
 
 1. Find all the dependenices by original scripts.
 2. Add runtimes files required by obfuscated scripts to the bundle
-3. Replace original scipts with obfuscated in the bundle
-4. Replace entry scrirpt with obfuscated one
+3. Replace original scripts with obfuscated in the bundle
+4. Replace entry script with obfuscated one
 
 PyArmor provides command :ref:`pack` to achieve this. But in some cases maybe it
 doesn't work. This document describes what the command `pack` does, and also
