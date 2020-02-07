@@ -204,7 +204,7 @@ There are something changed after Python scripts are obfuscated:
   all the Python versions as the original scripts could. Especially
   for Python 3.6, it introduces word size instructions, and it's
   totally different from Python 3.5 and before. It's recommeded to run
-  the obfuscated scripts with same major version of Python.
+  the obfuscated scripts with same major and minor version of Python.
 
 * If Python interpreter is compiled with Py_TRACE_REFS or Py_DEBUG, it
   will crash to run obfuscated scripts.
