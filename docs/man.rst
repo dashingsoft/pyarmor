@@ -86,6 +86,12 @@ scripts:
 * Recursive: find all the `.py` files in the path of entry script recursively
 * Exact: only these scripts list in the command line
 
+Note that only the obfuscated `.py` files are touched by this command, all the
+other files aren't copied to output path. If there are many data files in the
+package, first copy the whole package to the output path, then obfuscate all the
+`.py` files to output path, thus all the `.py` files are overwritten by the
+obfuscated ones.
+
 If there is an entry script, PyArmor will modify it, insert cross protection
 code into the entry script.
 
