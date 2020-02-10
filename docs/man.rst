@@ -16,7 +16,6 @@ The most commonly used pyarmor commands are::
     licenses     Generate new licenses for obfuscated scripts
     pack         Pack obfuscated scripts to one bundle
     hdinfo       Show hardware information
-    runtime      Generate runtime package separately
 
 The commands for project::
 
@@ -32,6 +31,7 @@ The other commands::
     benchmark    Run benchmark test in current machine
     register     Make registration file work
     download     Download platform-dependent dynamic libraries
+    runtime      Generate runtime package separately
 
 See `pyarmor <command> -h` for more information on a specific command.
 
