@@ -470,7 +470,7 @@ Or set environment variable `PYARMOR_PLUGIN`. For example::
 
 Finally generate one license file for this obfuscated script::
 
-    pyarmor licenses -x 20190501 MYPRODUCT-0001
+    pyarmor licenses --bind-data 20190501 MYPRODUCT-0001
     cp licenses/MYPRODUCT-0001/license.lic dist/
 
 .. note::
