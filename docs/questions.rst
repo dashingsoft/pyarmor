@@ -122,9 +122,8 @@ Here are sample commands::
 
 .. note::
 
-   From v5.7.9, this patch is not required for any linux/x86_64 platform, for example, CentOS6.
-
-   And the scripts also could be obfuscated in other platform by this command::
+   From v5.7.9, this patch is not required. In cross-platform all you need to do
+   is specify the platform to `centos6.x86_64` to fix this issue. For example::
 
      pyarmor obfuscate --platform centos6.x86_64 foo.py
 
