@@ -198,8 +198,8 @@ The Differences of Obfuscated Scripts
 
 There are something changed after Python scripts are obfuscated:
 
-* The major version of Python in build machine should be same as in
-  target machine. Because the scripts will be compiled to byte-code
+* The major/minor version of Python in build machine should be same as
+  in target machine. Because the scripts will be compiled to byte-code
   before they're obfuscated, so the obfuscated scripts can't be run by
   all the Python versions as the original scripts could. Especially
   for Python 3.6, it introduces word size instructions, and it's
