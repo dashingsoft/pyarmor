@@ -259,7 +259,12 @@ def _pyi_makespec(obfdist, src, entry, packcmd):
 
     options = ['-y', '-p', obfdist, '--hidden-import', 'pytransform',
                '--additional-hooks-dir', obfdist, os.path.join(src, entry)]
-    run_command([sys.executable] + packcmd + options)
+    try:
+        cmdlist = packcmd + options
+        cmdlist[:2] = 'pyi-makespec'
+        run_command(cmdlist)
+    except Exception:
+        run_command([sys.executable] + packcmd + options)
 
 
 def _patch_specfile(obfdist, src, specfile):
