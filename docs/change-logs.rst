@@ -3,6 +3,15 @@
 Change Logs
 ===========
 
+5.9.1
+-----
+* Python debugger and profile tool could work with the plain python
+  scripts even if the obfuscated packages are imported. Note that the
+  obfuscated scripts still couldn't be traced.
+* Refine `pack` command, use `pyi-makespec` to generate `.spec` file
+* Fix advanced mode fails in some linux platforms
+* Support platform `linux.armv6`
+
 5.9.0
 -----
 
