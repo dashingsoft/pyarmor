@@ -627,6 +627,9 @@ echo ""
 echo "-------------------- Test trace/profile --------------------"
 echo ""
 
+if [[ "$PYTHON" == C:/Python30/python || "$PYTHON" == *python3.0 ]] ; then
+csih_inform "These testcases are ignored in Python30"
+else
 csih_inform "Case TD-1: run obfuscated functions with sys.settrace"
 PROPATH=test-sys-trace-profile
 mkdir -p $PROPATH
@@ -716,6 +719,7 @@ check_file_content $PROPATH/dist/result.log 'line:hello2:5'
 check_file_content $PROPATH/dist/result.log 'line:hello2:6'
 check_file_content $PROPATH/dist/result.log 'return:hello2:6'
 check_file_content $PROPATH/dist/result.log 'hello2 got 4'
+fi
 
 echo ""
 echo "-------------------- Test trace/profile END ------------------"
