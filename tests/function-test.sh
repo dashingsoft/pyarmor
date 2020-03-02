@@ -672,6 +672,17 @@ check_file_content $PROPATH/dist/result.log 'return:hello2:6'
 check_file_content $PROPATH/dist/result.log 'hello2 got 4'
 
 csih_inform "Case TD-2: run obfuscated functions with threading.settrace"
+PROPATH=test-thread-trace-profile
+mkdir -p $PROPATH
+cat <<EOF > $PROPATH/foo.py
+def hello(n):
+    n += 1
+    return n
+print('This is foo.py')
+EOF
+$PYARMOR obfuscate --exact -O $PROPATH/dist $PROPATH/foo.py >result.log 2>&1
+check_return_value
+
 cat <<EOF > $PROPATH/dist/tmain.py
 import sys
 import foo
