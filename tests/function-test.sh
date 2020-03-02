@@ -698,10 +698,10 @@ def callback(frame, event, arg):
     print('%s:%s:%s' % (event, frame.f_code.co_name, frame.f_lineno))
     return callback
 
-import threading
 def target():
     print('foo.hello got %d' % foo.hello(2))
     print('hello2 got %d' % hello2(2))
+import threading
 threading.settrace(callback)
 threading.Thread(target=target).start()
 EOF
