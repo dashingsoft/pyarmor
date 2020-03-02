@@ -11,10 +11,10 @@ Change Logs
 * Refine `pack` command, use `pyi-makespec` to generate `.spec` file
 * Fix advanced mode fails in some linux platforms
 * Support platform `linux.armv6`
+* Fix python38 issue: in the wrap mode the footer block isn't executed
 
 5.9.0
 -----
-
 pyarmor-webui is published as a separated package, it has been removed from
 source package of pyarmor. Now it's a full feature webui, and could be installed
 by `pip install pyarmor-webui`.
