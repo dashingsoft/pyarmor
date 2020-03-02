@@ -68,6 +68,7 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * vs2015.x86
 * vs2015.x86_64
 * linux.arm
+* linux.armv6
 * linux.armv7
 * linux.aarch32
 * linux.aarch64
@@ -154,6 +155,12 @@ Platform Tables
      -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/armv5/_pytransform.so>`_
      - 32-bit Armv5 (arm926ej-s)
+   * - linxu.armv6
+     - Linux
+     - armv6
+     -
+     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv6.0/_pytransform.so>`_
+     - Built with `-march=armv6`
    * - linux.armv7
      - Linux
      - armv7
