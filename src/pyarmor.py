@@ -766,7 +766,8 @@ def _runtime(args):
     platforms = compatible_platform_names(args.platforms)
     suffix = get_name_suffix() if args.enable_suffix else ''
     make_runtime(capsule, output, licfile=args.with_license,
-                 platforms=platforms, package=package, suffix=suffix)
+                 platforms=platforms, package=package, suffix=suffix,
+                 restrict=False)
 
     filename = os.path.join(output, '__init__.py') if args.inside else \
         os.path.join(args.output, name + '.py')

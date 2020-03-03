@@ -386,16 +386,17 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
     return filepairs
 
 
-def _get_platform_library_filename(platid):
+def _get_platform_library_filename(platid, features):
     if os.path.isabs(platid):
         plist = [platid]
     else:
-        n = pytransform.version_info()[2]
         t = list(platid.split('.'))
-        plist = [os.path.join(PLATFORM_PATH, *t)] if n & 2 else []
+        plist = []
         if len(t) == 2:
-            t.append(n)
-            for k in ([3, 7] if n & 2 else [0, 4, 5]):
+            if 7 in features or 3 in features:
+                plist.append(os.path.join(PLATFORM_PATH, *t))
+            t.append(None)
+            for k in features:
                 t[-1] = str(k)
                 plist.append(os.path.join(CROSS_PLATFORM_PATH, *t))
         else:
@@ -409,10 +410,14 @@ def _get_platform_library_filename(platid):
                 return os.path.join(path, x)
 
 
-def _build_platforms(platforms):
+def _build_platforms(platforms, restrict=True):
     results = []
     checksums = dict([(p['id'], p['sha256']) for p in get_platform_list()])
     n = len(platforms)
+    if restrict:
+        features = [7, 3] if (pytransform.version_info()[2] & 2) else [5, 4, 0]
+    else:
+        features = [7, 3, 5, 4, 0]
     for platid in platforms:
         if (n > 1) and os.path.isabs(platid):
             raise RuntimeError('Invalid platform `%s`, for multiple platforms '
@@ -420,11 +425,11 @@ def _build_platforms(platforms):
         if (n > 1) and platid.startswith('vs2015.'):
             raise RuntimeError('The platform `%s` does not work '
                                'in multiple platforms target' % platid)
-        filename = _get_platform_library_filename(platid)
+        filename = _get_platform_library_filename(platid, features)
         if filename is None:
             logging.info('No dynamic library found for %s' % platid)
             download_pytransform(platid)
-            filename = _get_platform_library_filename(platid)
+            filename = _get_platform_library_filename(platid, features)
             if filename is None:
                 raise RuntimeError('No dynamic library found for %s' % platid)
 
@@ -441,7 +446,7 @@ def _build_platforms(platforms):
 
 
 def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
-                 suffix=''):
+                 suffix='', restrict=True):
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
         if not os.path.exists(output):
@@ -484,7 +489,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         logging.info('Copying %s', libfile)
         copy3(libfile, output)
     elif len(platforms) == 1:
-        filename = _build_platforms(platforms)[0]
+        filename = _build_platforms(platforms, restrict)[0]
         logging.info('Copying %s', filename)
         copy3(filename, output)
     else:
@@ -494,7 +499,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         if not os.path.exists(libpath):
             os.mkdir(libpath)
 
-        filenames = _build_platforms(platforms)
+        filenames = _build_platforms(platforms, restrict)
         for platid, filename in list(zip(platforms, filenames)):
             logging.info('Copying %s', filename)
             path = os.path.join(libpath, *platid.split('.')[:2])
