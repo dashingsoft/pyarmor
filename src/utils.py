@@ -407,10 +407,10 @@ def _get_platform_library_filename(platid, features):
             continue
         for x in os.listdir(path):
             if x.startswith('_pytransform.'):
-                if path.starswith(PLATFORM_PATH):
+                if path.startswith(PLATFORM_PATH):
                     features[:] = [7, 3]
                 else:
-                    n = int(path[-2:])
+                    n = int(path[-1])
                     features[:] = [7, 3] if n & 2 else [5, 4, 0]
                 return os.path.join(path, x)
 
