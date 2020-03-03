@@ -959,7 +959,7 @@ def compatible_platform_names(platforms):
                 logging.warning(
                     'This platform name `%s` has been deprecated, '
                     'use `%s` instead. Display all standard platform '
-                    'names by `pyarmor download --help-platorm`',
+                    'names by `pyarmor download --help-platform`',
                     name, old_forms[name])
                 result.append(old_forms[name])
             else:
