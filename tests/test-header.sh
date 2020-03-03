@@ -393,3 +393,14 @@ patch_cross_protection_code_for_python3.0()
     $PYTHON --version 2>&1 | grep -q "Python 3.0" \
         && $SED -i -e "/assert_builtin.open./d" protect_code.pt
 }
+
+
+# ======================================================================
+# Routine: clear_pyarmor_installed_data
+#
+# ======================================================================
+clear_pyarmor_installed_data()
+{
+    rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+    [[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
+}

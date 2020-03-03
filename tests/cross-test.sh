@@ -17,8 +17,7 @@ rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
 csih_inform "Clean pyarmor data"
-rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
+clear_pyarmor_installed_data
 
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
@@ -112,6 +111,73 @@ echo ""
 
 # ======================================================================
 #
+#  Generate runtime package with different platform
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test Cross Runtime --------------------"
+echo ""
+
+OUTPUT=./dist
+
+csih_inform "Case CR-1: cross runtime with one platform"
+rm -rf $OUTPUT
+$PYARMOR runtime --platform windows.x86 >result.log 2>&1
+check_return_value
+check_file_content result.log "windows/x86/_pytransform.dll"
+check_file_exists $OUTPUT/pytransform/_pytransform.dll
+
+rm -rf $OUTPUT
+$PYARMOR runtime --platform alpine.x86_64 >result.log 2>&1
+check_return_value
+check_file_content result.log "alpine/x86_64/0/_pytransform.so"
+check_file_exists $OUTPUT/pytransform/_pytransform.so
+
+rm -rf $OUTPUT
+$PYARMOR runtime --platform linux.armv7 >result.log 2>&1
+check_return_value
+check_file_content result.log "linux/armv7/3/_pytransform.so"
+check_file_exists $OUTPUT/pytransform/_pytransform.so
+
+csih_inform "Case CR-2: cross runtime with multi-platforms"
+rm -rf $OUTPUT
+$PYARMOR runtime --platform linux.armv7,linux.aarch32 >result.log 2>&1
+check_return_value
+check_file_content result.log "linux/armv7/3/_pytransform.so"
+check_file_content result.log "linux/aarch32/3/_pytransform.so"
+check_file_exists $OUTPUT/pytransform/linux/armv7/_pytransform.so
+check_file_exists $OUTPUT/pytransform/linux/aarch32/_pytransform.so
+
+rm -rf $OUTPUT
+$PYARMOR runtime --platform linux.x86_64,darwin.x86_64,linux.aarch64 >result.log 2>&1
+check_return_value
+check_file_content result.log "linux/x86_64/_pytransform.so"
+check_file_content result.log "darwin/x86_64/_pytransform.so"
+check_file_content result.log "linux/aarch64/3/_pytransform.so"
+check_file_exists $OUTPUT/pytransform/linux/x86_64/_pytransform.so
+check_file_exists $OUTPUT/pytransform/darwin/x86_64/_pytransform.dylib
+check_file_exists $OUTPUT/pytransform/linux/aarch32/_pytransform.so
+
+rm -rf $OUTPUT
+$PYARMOR runtime --platform linux.arm,windows.x86_64 >result.log 2>&1
+check_return_value
+check_file_content result.log "linux/arm/0/_pytransform.so"
+check_file_content result.log "windows/x86_64/0/_pytransform.dll"
+check_file_exists $OUTPUT/pytransform/linux/arm/_pytransform.so
+check_file_exists $OUTPUT/pytransform/windows/x86_64/_pytransform.dll
+
+csih_inform "Case CR-3: cross runtime with multi-platforms and different features"
+rm -rf $OUTPUT
+$PYARMOR runtime --platform windows.x86,linux.x86_64,linux.arm >result.log 2>&1
+check_file_content result.log "No dynamic library found for linux.arm with features"
+
+echo ""
+echo "-------------------- Test Cross Runtime END ------------------------"
+echo ""
+
+# ======================================================================
+#
 # Finished and cleanup.
 #
 # ======================================================================
@@ -129,4 +195,5 @@ echo           "" \
 && csih_inform "Remove workpath ${workpath}" \
 && echo        "" \
 && rm -rf ${workpath} \
+&& clear_pyarmor_installed_data \
 && csih_inform "Congratulations, there is no bug found"
