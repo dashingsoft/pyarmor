@@ -12,8 +12,12 @@ platforms, `pyarmor` could run without downloading anything. Refer to
 
 For the other platforms, `pyarmor` first searches path
 ``~/.pyarmor/platforms/SYSTEM/ARCH``, ``SYSTEM.ARCH`` is one of
-`Standard Platform Names`_. If there is none, download it from remote
-server. Refer to `The Others Prebuilt Libraries For PyArmor`_.
+`Standard Platform Names`_. If there is none, PyArmor will download it
+from remote server automatically. Refer to `The Others Prebuilt
+Libraries For PyArmor`_.
+
+For all the latest platforms, refer to
+https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json
 
 There may be serveral dynamic libraries with different features in
 each platform. The platform name with feature number suffix combines
