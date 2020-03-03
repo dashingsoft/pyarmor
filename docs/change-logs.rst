@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.9.2
+-----
+* Fix bug: the command `pyarmor runtime --platform alpine.x86_64` raises error (#201)
+* Fix bug: the platform `linux.armv6` doesn't work in Raspberry PI Zero W,
+  rebuild the dynamic library with `-mcpu=arm1136j-s`
+
 5.9.1
 -----
 * Python debugger and profile tool could work with the plain python
