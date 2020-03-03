@@ -427,11 +427,13 @@ def _build_platforms(platforms, restrict=True):
                                'in multiple platforms target' % platid)
         filename = _get_platform_library_filename(platid, features)
         if filename is None:
-            logging.info('No dynamic library found for %s' % platid)
+            logging.info('No dynamic library found for %s with features %s',
+                         platid, features)
             download_pytransform(platid)
             filename = _get_platform_library_filename(platid, features)
             if filename is None:
-                raise RuntimeError('No dynamic library found for %s' % platid)
+                raise RuntimeError('No dynamic library found for %s '
+                                   'with features %s' % (platid, features))
 
         if platid in checksums:
             with open(filename, 'rb') as f:
