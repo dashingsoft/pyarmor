@@ -164,7 +164,7 @@ Platform Tables
      - armv6
      -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv6.0/_pytransform.so>`_
-     - 32-bit Armv6 (arm1136j-s)
+     - 32-bit Armv6 (-marm -march=armv6 -mfloat-abi=hard)
    * - linux.armv7
      - Linux
      - armv7
