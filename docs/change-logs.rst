@@ -8,7 +8,6 @@ Change Logs
 * Fix bug: the command `pyarmor runtime --platform alpine.x86_64` raises error (#201)
 * Fix bug: the platform `linux.armv6` doesn't work in Raspberry PI Zero W,
   rebuild the dynamic library with `-march=armv6 -mfloat-abi=hard -marm`
-* Fix bug: in Raspberry pi 4 with OpenCV it doesn't work because of `NEON - NOT AVAILABLE`
 
 5.9.1
 -----
