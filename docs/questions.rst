@@ -280,6 +280,37 @@ the path of runtime module `pytransform.py` to find the file `license.lic` and
 error will be reported.
 
 
+OpenCV fails because of `NEON - NOT AVAILABLE`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In some Raspberry Pi platform, run the obfuscated scripts to import
+OpenCV fails::
+
+    ************************************************** ****************
+    * FATAL ERROR: *
+    * This OpenCV build doesn't support current CPU / HW configuration *
+    * *
+    * Use OPENCV_DUMP_CONFIG = 1 environment variable for details *
+    ************************************************** ****************
+
+    Required baseline features:
+    NEON - NOT AVAILABLE
+    terminate called after throwing an instance of 'cv :: Exception'
+      what (): OpenCV (3.4.6) /home/pi/opencv-python/opencv/modules/core/src/system.cpp:538: error:
+    (-215: Assertion failed) Missing support for required CPU baseline features. Check OpenCV build
+    configuration and required CPU / HW setup. in function 'initialize'
+
+One solution is to set environment variable
+`PYARMOR_PLATFORM=linux.armv7.0`. For examples::
+
+    PYARMOR_PLATFORM=linux.armv7.0 pyarmor obfuscate foo.py
+    PYARMOR_PLATFORM=linux.armv7.0 pyarmor build
+
+Or::
+   export PYARMOR_PLATFORM=linux.armv7.0
+   pyarmor obfuscate foo.py
+   pyarmor build
+
+
 Packing Obfuscated Scripts Problem
 ----------------------------------
 
