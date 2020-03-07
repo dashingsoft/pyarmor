@@ -299,16 +299,23 @@ OpenCV fails::
     (-215: Assertion failed) Missing support for required CPU baseline features. Check OpenCV build
     configuration and required CPU / HW setup. in function 'initialize'
 
-One solution is to set environment variable
-`PYARMOR_PLATFORM=linux.armv7.0`. For examples::
+One solution is to specify optioin ``--platform`` to `linux.armv7.0`::
+
+    pyarmor obfuscate --platform linux.armv7.0 foo.py
+    pyarmor build --platform linux.armv7.0
+    pyarmor runtime --platform linux.armv7.0
+
+The other solution is to set environment variable `PYARMOR_PLATFORM`
+to `linux.armv7.0`. For examples::
 
     PYARMOR_PLATFORM=linux.armv7.0 pyarmor obfuscate foo.py
     PYARMOR_PLATFORM=linux.armv7.0 pyarmor build
 
-Or::
-   export PYARMOR_PLATFORM=linux.armv7.0
-   pyarmor obfuscate foo.py
-   pyarmor build
+    Or,
+
+    export PYARMOR_PLATFORM=linux.armv7.0
+    pyarmor obfuscate foo.py
+    pyarmor build
 
 
 Packing Obfuscated Scripts Problem
