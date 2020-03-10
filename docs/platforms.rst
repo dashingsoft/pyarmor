@@ -77,6 +77,7 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * linux.aarch32
 * linux.aarch64
 * android.aarch64
+* android.armv7 (New in 5.9.3)
 * linux.ppc64
 * darwin.arm64
 * freebsd.x86_64
@@ -225,3 +226,9 @@ Platform Tables
      -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/android.aarch64/_pytransform.so>`_
      - Build by android-ndk-r20/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang
+   * - android.armv7
+     - Android
+     - armv7l
+     -
+     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/android.armv7.0/_pytransform.so>`_
+     - Build by android-ndk-r20/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-android21-clang
