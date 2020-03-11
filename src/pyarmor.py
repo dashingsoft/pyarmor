@@ -410,12 +410,17 @@ def _licenses(args):
     flags = 0
     restrict_mode = 0 if args.disable_restrict_mode else args.restrict
     period_mode = 1 if args.enable_period_mode else 0
-    logging.info('The license file generated is in restrict mode'
-                 if restrict_mode else
-                 'The license file generated is in disable restrict mode')
-    logging.info('The license file generated is in period mode'
-                 if period_mode else
-                 'The license file generated is in disable period mode')
+    if restrict_mode:
+        logging.info('The license file generated is in restrict mode')
+    else:
+        logging.info('The license file generated is in disable restrict mode')
+        flags |= 1
+    if period_mode:
+        logging.info('The license file generated is in period mode')
+        flags |= 2
+    else:
+        logging.info('The license file generated is in diable period mode')
+
     if flags:
         fmt = '%s*FLAGS:%c' % (fmt, chr(flags))
 
