@@ -234,6 +234,17 @@ check_file_content $PROPATH/dist/result.log 'This is package 1'
 check_file_content $PROPATH/dist/result.log 'This is package 2'
 check_file_content $PROPATH/dist/result.log 'This is main script'
 
+csih_inform "17. Obfuscate big script"
+ascript="big_script.py"
+$PYTHON -c"
+with open('$ascript', 'w') as f:
+  for i in range(200):
+    f.write('def test_{0}(n):\n'.format(i))
+    f.write('    return n + {0}\n'.format(i))"
+$PYARMOR obfuscate --exact -O dist-big-script $ascript >result.log 2>&1
+check_file_content result.log 'Check license failed'
+check_file_content result.log 'Too big code object, the limitation is'
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -426,6 +437,18 @@ check_return_value
 check_file_content $PROPATH/dist/result.log 'This is package 1'
 check_file_content $PROPATH/dist/result.log 'This is package 2'
 check_file_content $PROPATH/dist/result.log 'This is main script'
+
+csih_inform "17. Obfuscate big script"
+ascript="big_script.py"
+$PYTHON -c"
+with open('$ascript', 'w') as f:
+  for i in range(200):
+    f.write('def test_{0}(n):\n'.format(i))
+    f.write('    return n + {0}\n'.format(i))"
+$PYARMOR obfuscate --exact -O dist-big-script $ascript >result.log 2>&1
+check_return_value
+check_file_content result.log 'Check license failed' not
+check_file_content result.log 'Too big code object, the limitation is' not
 
 # ======================================================================
 #
