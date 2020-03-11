@@ -394,7 +394,6 @@ def _licenses(args):
             logging.warning('Ignore option --project, there is no project')
         logging.info('Generate licenses with capsule %s ...', capsule)
         project = dict(restrict_mode=args.restrict)
-    restrict_mode = 0 if args.disable_restrict_mode else args.restrict
 
     licpath = os.path.join(args.project, 'licenses') if args.output is None \
         else args.output
@@ -408,11 +407,17 @@ def _licenses(args):
         float(args.expired) if args.expired.find('-') == -1
         else time.mktime(time.strptime(args.expired, '%Y-%m-%d')))
 
-    if not restrict_mode:
-        logging.info('The license file generated is in disable restrict mode')
-        fmt = '%s*FLAGS:%c' % (fmt, 1)
-    else:
-        logging.info('The license file generated is in restrict mode')
+    flags = 0
+    restrict_mode = 0 if args.disable_restrict_mode else args.restrict
+    period_mode = 1 if args.enable_period_mode else 0
+    logging.info('The license file generated is in restrict mode'
+                 if restrict_mode else
+                 'The license file generated is in disable restrict mode')
+    logging.info('The license file generated is in period mode'
+                 if period_mode else
+                 'The license file generated is in disable period mode')
+    if flags:
+        fmt = '%s*FLAGS:%c' % (fmt, chr(flags))
 
     if args.bind_disk:
         fmt = '%s*HARDDISK:%s' % (fmt, args.bind_disk)
@@ -916,6 +921,8 @@ def _parser():
                          '`licenses` (`stdout` is also supported)')
     cparser.add_argument('--disable-restrict-mode', action='store_true',
                          help='Disable all the restrict modes')
+    cparser.add_argument('--enable-period-mode', action='store_true',
+                         help='Check license periodly (per hour)')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          default=1, help=argparse.SUPPRESS)
 

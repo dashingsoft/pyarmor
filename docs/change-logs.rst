@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.9.3
+-----
+* Add new option `--enable-period-mode` in the command `licenses`
+* When running the obfuscated scripts it will check license periodly (per hour)
+  if the option `--enable-period-mode` is set in the license file
+
 5.9.2
 -----
 * Fix bug: the command `pyarmor runtime --platform alpine.x86_64` raises error (#201)
