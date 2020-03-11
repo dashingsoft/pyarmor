@@ -213,6 +213,8 @@ There are something changed after Python scripts are obfuscated:
   ``threading.settrace`` and ``threading.setprofile`` will be ignored by
   obfuscated scripts.
 
+* In the module ``inspect`` some functions may not work
+
 * The attribute ``__file__`` of code object in the obfuscated scripts
   will be ``<frozen name>`` other than real filename. So in the
   traceback, the filename is shown as ``<frozen name>``.
