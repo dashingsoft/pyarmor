@@ -276,6 +276,8 @@ Generate new licenses for obfuscated scripts.
 -4, --bind-ipv4 IPV4        Bind license to ipv4 addr
 -m, --bind-mac MACADDR      Bind license to mac addr
 -x, --bind-data DATA        Pass extra data to license, used to extend license type
+--disable-restrict-mode     Disable all the restrict modes
+--enable-period-mode        Check license per hour when the obfuscated script is running
 
 **DESCRIPTION**
 
