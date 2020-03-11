@@ -746,6 +746,18 @@ In order to suppress all normal output of pyarmor, call it with ``--silent``
 From v5.7.3, when `pyarmor` called by this way and something is wrong, it will
 raise exception other than call `sys.exit`.
 
+Check license periodly when the obfuscated script is running
+------------------------------------------------------------
+
+Generally only at the startup of the obfuscated scripts the license is
+checked. Since v5.9.3, it also could check the license per hour. Just generate a
+new license with ``--enable-period-mode`` and overwrite the default one. For
+example::
+
+    pyarmor obfuscate foo.py
+    pyarmor licenses --enable-period-mode code-001
+    cp licenses/code-001/license.lic ./dist
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt
