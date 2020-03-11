@@ -42,9 +42,9 @@ It is recommended to upgrade in the next minor version.
 
 .. note::
 
-   In trial version if there are more than about 30 functions in one module,
-   this module could not be obfuscated by advanced mdoe (It still could be
-   obfuscated by non-advanced mode).
+   In trial version the module could not be obfuscated by advanced
+   mdoe if there are more than about 30 functions in this module, (It
+   still could be obfuscated by non-advanced mode).
 
 .. _obfuscating code mode:
 

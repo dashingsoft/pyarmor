@@ -6,10 +6,13 @@ License
 The software is distributed as Free To Use But Restricted. Free trial
 version never expires, the limitations are
 
-- The maximum size of code object is 35728 bytes in trial version
+- The maximum size of code object is 32756 bytes in trial version
 - The scripts obfuscated by trial version are not private. It means
   anyone could generate the license file which works for these
   obfuscated scripts.
+- In trial version if obfuscating the Python scripts in advanced mode,
+  the limitation is no more than about 32 functions (code objects) in
+  one module.
 - Without permission the trial version may not be used for the Python
   scripts of any commercial product.
 
@@ -29,9 +32,15 @@ There are 2 basic types of licenses issued for the software. These are:
   private license files for the obfuscated scripts and distribute them
   and all the required files to any other machine or device.
 
+  Home users could NOT obfuscate any python script which is NOT
+  property of the license owner.
+
 * A enterprise license for business users. The user purchases one
   license to use the software for one product serials of an
   organization.
+
+  One product serials include the current version and any other latter
+  versions of the same product.
 
   Business users may use their enterprise license on all computers and
   embedded devices to obfuscate all the python scripts of this product

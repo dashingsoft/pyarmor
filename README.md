@@ -54,7 +54,7 @@ There is also a web-ui package [pyarmor-webui](https://github.com/dashingsoft/py
 
     pip install pyarmor-webui
 
-Start webui, open web page in browser
+Start webui, open web page in browser ([snapshots](https://github.com/dashingsoft/pyarmor-webui/tree/master/snapshots))
 
     pyarmor-webui
 
@@ -70,6 +70,8 @@ some limitations:
 
 * The maximum size of code object is 35728 bytes in trial version
 * All the trial version uses same public capsule other than private capsule
+* In trial version the module could not be obfuscated by advanced mode
+  if there are more than about 30 functions (code objects) in this module.
 * ...
 
 For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
