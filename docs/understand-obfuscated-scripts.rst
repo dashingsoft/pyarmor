@@ -213,7 +213,12 @@ There are something changed after Python scripts are obfuscated:
   ``threading.settrace`` and ``threading.setprofile`` will be ignored by
   obfuscated scripts.
 
-* In the module ``inspect`` some functions may not work
+* Some function in the module ``inspect`` may not work, and any other
+  module or package may not work if it visits the source or byte code
+  of the obfuscated scripts.
+
+* It will crash to visit the attribute ``co_const`` of code object
+  directly if the script is obfuscated in advanced mode.
 
 * The attribute ``__file__`` of code object in the obfuscated scripts
   will be ``<frozen name>`` other than real filename. So in the
@@ -230,5 +235,32 @@ There are something changed after Python scripts are obfuscated:
 
       # The output will be '<frozen foo>'
       print(hello.__file__)
+
+
+About Third-Party Interpreter
+-----------------------------
+
+About third-party interperter, for example Jython, and any embeded
+Python C/C++ code, they should satisfy the following conditions at
+least to run the obfuscated scripts:
+
+* They must be load offical Python dynamic library, which should be
+  built from the soure https://github.com/python/cpython , and the
+  core source code should not be modified.
+
+* On Linux, `RTLD_GLOBAL` must be set as loading `libpythonXY.so` by
+  `dlopen`, otherwise obfuscated scripts couldn't work.
+
+.. note::
+
+   Boost::python does not load `libpythonXY.so` with `RTLD_GLOBAL` by
+   default, so it will raise error "No PyCode_Type found" as running
+   obfuscated scripts. To solve this problem, try to call the method
+   `sys.setdlopenflags(os.RTLD_GLOBAL)` as initializing.
+
+* The module `ctypes` must be exists and `ctypes.pythonapi._handle`
+  must be set as the real handle of Python dynamic library, PyArmor
+  will query some Python C APIs by this handle.
+
 
 .. include:: _common_definitions.txt
