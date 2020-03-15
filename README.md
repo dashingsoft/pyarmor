@@ -68,7 +68,7 @@ More usage, refer to
 PyArmor is published as shareware, free trial version never expires, but there are
 some limitations:
 
-* The maximum size of code object is 35728 bytes in trial version
+* The maximum size of code object is about 32768 bytes in trial version
 * All the trial version uses same public capsule other than private capsule
 * In trial version the module could not be obfuscated by advanced mode
   if there are more than about 30 functions (code objects) in this module.
