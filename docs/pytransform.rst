@@ -66,9 +66,13 @@ Contents
 
    *HT_IFMAC* return mac address of first network card
 
+   *HT_IPV4* return ipv4 address of first network card
+
+   *HT_DOMAIN* return domain name of target machine
+
    Raise :exc:`Exception` if something is wrong.
 
-.. attribute:: HT_HARDDISK, HT_IFMAC
+.. attribute:: HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_DOMAIN
 
    Constant for `hdtype` when calling :func:`get_hd_info`
 
