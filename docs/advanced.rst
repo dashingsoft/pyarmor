@@ -764,8 +764,8 @@ one. For example::
     cd dist/
     python -m nuitka --module mymodule.py
 
-But it may not take advantage of Nuitak features, most of byte codes aren't
-translated to c code indeed.
+But it may not take advantage of Nuitak features by this way, because most of
+byte codes aren't translated to c code indeed.
 
 .. note::
 
