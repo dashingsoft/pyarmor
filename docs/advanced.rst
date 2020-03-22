@@ -739,10 +739,10 @@ Work with Nuitka
 Because the obfuscated scripts could be taken as normal scripts with an extra
 runtime package `pytransform`, they also could be translated to C program by
 Nuitka. When obfuscating the scprits, the option ``--restrict 0`` and
-``--disable-cross-protection`` should be set, otherwise the final C program
-could not work. For example, first obfustate the scripts::
+``--no-cross-protection`` should be set, otherwise the final C program could not
+work. For example, first obfustate the scripts::
 
-    pyarmor obfuscate --restrict 0 --disable-cross-protection foo.py
+    pyarmor obfuscate --restrict 0 --no-cross-protection foo.py
 
 Then translate the obfuscated one as normal python scripts by Nuitka::
 
