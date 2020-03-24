@@ -6,6 +6,8 @@ Change Logs
 5.9.4
 -----
 * Fix pack issue: `pyi-makespec` doesn't work
+* Document how to work with Nuitka,
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#work-with-nuitka
 
 5.9.3
 -----
