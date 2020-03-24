@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+5.9.4
+-----
+* Fix pack issue: `pyi-makespec` doesn't work
+
 5.9.3
 -----
 * Add new option `--enable-period-mode` in the command `licenses`
