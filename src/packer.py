@@ -261,7 +261,7 @@ def _pyi_makespec(obfdist, src, entry, packcmd):
                '--additional-hooks-dir', obfdist, os.path.join(src, entry)]
     try:
         cmdlist = packcmd + options
-        cmdlist[:2] = 'pyi-makespec'
+        cmdlist[:5] = ['pyi-makespec']
         run_command(cmdlist)
     except Exception:
         run_command([sys.executable] + packcmd + options)
