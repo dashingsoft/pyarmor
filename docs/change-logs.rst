@@ -6,6 +6,8 @@ Change Logs
 5.9.4
 -----
 * Fix pack issue: `pyi-makespec` doesn't work
+* Add new platform: `uclibc-armv7`
+* Fix issue: guess encoding failed if there are non-ascii characters in the second line
 * Document how to work with Nuitka,
   https://pyarmor.readthedocs.io/en/latest/advanced.html#work-with-nuitka
 
