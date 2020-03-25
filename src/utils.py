@@ -722,13 +722,14 @@ def _guess_encoding(filename):
             return 'utf-8'
         if line and line[0] == 35:
             n = line.find(b'\n')
-            if n == -1:
-                n = 80
-            elif len(line) > (n+1) and line[n+1] == 35:
-                k = line[n+1:].find(b'\n')
-                n += k + 1
             m = re.search(r'coding[=:]\s*([-\w.]+)', line[:n].decode())
-            return m and m.group(1)
+            if m:
+                return m.group(1)
+            if n > -1 and len(line) > (n+1) and line[n+1] == 35:
+                k = n + 1
+                n = line[k:].find(b'\n')
+                m = re.search(r'coding[=:]\s*([-\w.]+)', line[k:n].decode())
+                return m and m.group(1)
 
 
 def _readlines(filename):
