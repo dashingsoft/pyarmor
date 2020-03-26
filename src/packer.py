@@ -83,8 +83,6 @@ def run_command(cmdlist):
     output, _ = p.communicate()
 
     if p.returncode != 0:
-        if not sys.flags.debug:
-            logging.error('\n\n%s\n\n', output.decode())
         raise RuntimeError(output.decode())
 
 
