@@ -394,9 +394,14 @@ Using Plugin to Extend License Type
 PyArmor could extend license type for obfuscated scripts by plugin. For example,
 check internet time other than local time.
 
-First create plugin `check_ntp_time.py <https://github.com/dashingsoft/pyarmor/blob/master/plugins/check_ntp_time.py>`_
+First create plugin script `check_ntp_time.py
+<https://github.com/dashingsoft/pyarmor/blob/master/plugins/check_ntp_time.py>`_. The
+key function in this script is `check_ntp_time`, the other important function is
+`_get_license_data` which used to get extra data from the `license.lic` of
+obfuscated scripts.
 
-Then insert 2 comments in the entry script `foo.py <https://github.com/dashingsoft/pyarmor/blob/master/plugins/foo.py>`_::
+Then insert 2 comments in the entry script `foo.py
+<https://github.com/dashingsoft/pyarmor/blob/master/plugins/foo.py>`_::
 
     # {PyArmor Plugins}
     # PyArmor Plugin: check_ntp_time()
@@ -409,12 +414,16 @@ If the plugin file isn't in the current path, use absolute path instead::
 
     pyarmor obfuscate --plugin /usr/share/pyarmor/check_ntp_time foo.py
 
-Finally generate one license file for this obfuscated script::
+Finally generate one license file for this obfuscated script, pass extra license
+data by option ``-x``, this data could be got by function `_get_license_data` in
+the plugin script::
 
-    pyarmor licenses --bind-data 20190501 rcode-001
+    pyarmor licenses -x 20190501 rcode-001
     cp licenses/rcode-001/license.lic dist/
 
 More examples, refer to https://github.com/dashingsoft/pyarmor/tree/master/plugins
+
+About how plugins work, refer to :ref:`How to Deal With Plugins`
 
 .. important::
 
