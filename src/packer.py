@@ -411,6 +411,17 @@ def _get_project_entry(project):
     return src, entry
 
 
+def _check_extra_options(options):
+    for x in ('-y', '--noconfirm'):
+        if x in options:
+            options.remove(x)
+    for item in options:
+        for x in item.split('='):
+            if x in ('-n', '--name', '--distpath'):
+                raise RuntimeError('The option "%s" could not be used '
+                                   'as the extra options' % x)
+
+
 def packer(args):
     t = args.type
     if args.entry[0].endswith('.py'):
@@ -419,8 +430,10 @@ def packer(args):
     else:
         src, entry = _get_project_entry(args.entry[0])
         args.project = args.entry[0]
-    extra_options = [] if args.options is None else split(args.options)
+
     xoptions = [] if args.xoptions is None else split(args.xoptions)
+    extra_options = [] if args.options is None else split(args.options)
+    _check_extra_options(extra_options)
 
     if args.setup is None:
         build = src
