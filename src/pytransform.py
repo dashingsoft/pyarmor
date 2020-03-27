@@ -124,6 +124,8 @@ def get_expired_days():
 
 
 def get_hd_info(hdtype, size=256):
+    if hdtype not in range(HT_DOMAIN + 1):
+        raise RuntimeError('Invalid parameter hdtype: %s' % hdtype)
     t_buf = c_char * size
     buf = t_buf()
     if (_pytransform.get_hd_info(hdtype, buf, size) == -1):
