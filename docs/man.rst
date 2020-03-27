@@ -373,30 +373,6 @@ the final distributions.
 
 For more information, refer to :ref:`How to pack obfuscated scripts`.
 
-.. note::
-
-   Since v5.9.0, possible pack one project directly by specify the project path
-   in the command line. For example, create a project in the current path, then
-   pack it::
-
-     pyarmor init --entry main.py
-     pyarmor pack .
-
-   By this way the obfuscated scripts could be fully controlled.
-
-.. important::
-
-   The command `pack` will obfuscate the scripts automatically, do not
-   try to pack the obfuscated the scripts.
-
-.. comment:
-
-    If you have a `.spec` file worked, specified by ``-s``, thus `pack`_ will use it
-    other than generate new one ::
-
-    pyarmor pack -s /path/to/myself.spec foo.py
-
-
 **EXAMPLES**
 
 * Obfuscate `foo.py` and pack them into the bundle `dist/foo`::
@@ -437,6 +413,29 @@ For more information, refer to :ref:`How to pack obfuscated scripts`.
     pyarmor init --entry main.py
     pyarmor config --advanced 1
     pyarmor pack .
+
+.. note::
+
+   Since v5.9.0, possible pack one project directly by specify the project path
+   in the command line. For example, create a project in the current path, then
+   pack it::
+
+     pyarmor init --entry main.py
+     pyarmor pack .
+
+   By this way the obfuscated scripts could be fully controlled.
+
+.. important::
+
+   The command `pack` will obfuscate the scripts automatically, do not
+   try to pack the obfuscated the scripts.
+
+.. comment:
+
+    If you have a `.spec` file worked, specified by ``-s``, thus `pack`_ will use it
+    other than generate new one ::
+
+    pyarmor pack -s /path/to/myself.spec foo.py
 
 .. _hdinfo:
 
