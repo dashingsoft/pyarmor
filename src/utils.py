@@ -51,7 +51,7 @@ from config import dll_ext, dll_name, entry_lines, protect_code_template, \
 DATA_PATH = os.path.join(PYARMOR_HOME, '.pyarmor')
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 CROSS_PLATFORM_PATH = os.path.join(DATA_PATH, pytransform.plat_path)
-PLUGINS_PATH = os.path.join(DATA_PATH, 'plugins')
+PLUGINS_PATH = [os.path.join(x, 'plugins') for x in (DATA_PATH, PYARMOR_PATH)]
 
 
 def _format_platid(platid=None):
@@ -582,7 +582,6 @@ def get_registration_code():
 def search_plugins(plugins):
     if plugins:
         result = []
-        path = os.getenv('PYARMOR_PLUGIN', PLUGINS_PATH)
         for name in plugins:
             if name == 'enabled':
                 logging.info('Enable internal plugin')
@@ -592,8 +591,13 @@ def search_plugins(plugins):
             filename = name[i:] + ('' if name.endswith('.py') else '.py')
             key = os.path.basename(name[i:])
             if not os.path.exists(filename):
-                filename = build_path(filename, path)
-                if not os.path.exists(filename):
+                if os.path.isabs(filename):
+                    raise RuntimeError('No script found for plugin %s' % name)
+                for path in PLUGINS_PATH:
+                    filename = build_path(filename, path)
+                    if os.path.exists(filename):
+                        break
+                else:
                     raise RuntimeError('No script found for plugin %s' % name)
             logging.info('Found plugin %s at: %s', key, filename)
             result.append((key, filename, not i))
