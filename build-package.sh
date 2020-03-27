@@ -22,6 +22,7 @@ clear_platform_files()
     rm -rf src/platforms/windows
     rm -rf src/platforms/linux
     rm -rf src/platforms/darwin
+    rm -rf src/plugins
 }
 
 make_platform_files()
@@ -35,6 +36,7 @@ make_platform_files()
     cp -a ${src}/linux_i386 ${dst}/linux/x86;
     cp -a ${src}/linux_x86_64 ${dst}/linux/x86_64;
     cp -a ${src}/macosx_x86_64 ${dst}/darwin/x86_64;
+    (cd src; ln -s ../plugins)
 }
 
 # Make platform files
