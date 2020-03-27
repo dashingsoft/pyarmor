@@ -95,14 +95,13 @@ The obfuscated script is a normal Python script, it looks like this::
 How to Deal With Plugins
 ------------------------
 
-In PyArmor, the plugin is used to inject python code into the obfuscted scripts
-before the script is obfuscated, thus the plugin code will be executed when the
-obfuscated scripts are running. For example, use a plugin to check internet
-time::
+In PyArmor, the plugin is used to inject python code into the obfuscted script
+before the script is obfuscated, thus the plugin code could be executed when the
+obfuscated script is running. For example, use a plugin to check internet time::
 
     pyarmor obfuscate --plugin check_ntp_time foo.py
 
-Why not insert these code into the script directly? Because most of these code
+Why not insert the plugin code into the script directly? Because most of them
 must be called in the obufscated scripts. For example, get the license
 information of the obfuscated scripts.
 
