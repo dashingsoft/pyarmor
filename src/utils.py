@@ -584,6 +584,10 @@ def search_plugins(plugins):
         result = []
         path = os.getenv('PYARMOR_PLUGIN', PLUGINS_PATH)
         for name in plugins:
+            if name == 'enabled':
+                logging.info('Enable internal plugin')
+                result.append(('<internal>', '<plugin>', 0))
+                continue
             i = 1 if name[0] == '@' else 0
             filename = name[i:] + ('' if name.endswith('.py') else '.py')
             key = os.path.basename(name[i:])
@@ -603,8 +607,6 @@ def _patch_plugins(plugins, pnames):
             logging.info('Apply plugin %s', key)
             lines = _readlines(filename)
             result.append(''.join(lines))
-    if pnames and not result:
-        raise RuntimeError('There are plugin calls, but no plugin definition')
     return ['\n'.join(result)]
 
 
