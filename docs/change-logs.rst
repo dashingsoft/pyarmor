@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.9.5
+-----
+* Change the plugin search policy, do not support enviorment variable
+  `PYARMOR_PLUGIN`, but search folder `plugins` in the pyarmor package path.
+
 5.9.4
 -----
 * Fix pack issue: `pyi-makespec` doesn't work
