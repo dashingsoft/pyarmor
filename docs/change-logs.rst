@@ -8,6 +8,8 @@ Change Logs
 * Change the plugin search policy, do not support enviorment variable
   `PYARMOR_PLUGIN`, but search folder `plugins` in the pyarmor package path.
 * Fix pack bug: `pyi-makespec: error: unrecognized arguments: -y`
+* Document command `pack` in details:
+  https://pyarmor.readthedocs.io/en/latest/man.html#pack
 
 5.9.4
 -----
