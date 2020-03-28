@@ -468,8 +468,7 @@ def _get_license_data():
     return rcode[index+1:]
 
 
-def check_ntp_time():
-    NTP_SERVER = 'europe.pool.ntp.org'
+def check_ntp_time(NTP_SERVER='europe.pool.ntp.org'):
     EXPIRED_DATE = _get_license_data()
     c = NTPClient()
     response = c.request(NTP_SERVER, version=3)
