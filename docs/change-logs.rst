@@ -7,6 +7,7 @@ Change Logs
 -----
 * Change the plugin search policy, do not support enviorment variable
   `PYARMOR_PLUGIN`, but search folder `plugins` in the pyarmor package path.
+* Fix pack bug: `pyi-makespec: error: unrecognized arguments: -y`
 
 5.9.4
 -----
@@ -18,9 +19,9 @@ Change Logs
 
 5.9.3
 -----
-* Add new option `--enable-period-mode` in the command `licenses`
+* Add new option ``--enable-period-mode`` in the command `licenses`
 * When running the obfuscated scripts it will check license periodly (per hour)
-  if the option `--enable-period-mode` is set in the license file
+  if the option ``--enable-period-mode`` is set in the license file
 
 5.9.2
 -----
@@ -55,19 +56,19 @@ by `pip install pyarmor-webui`.
 * In command `obfuscate` with option `--exact`, all the scripts list in the
   command line will be taken as entry script.
 * The last argument in command `pack` could be a project path or .json file
-* Add new option `--name` in the command `pack`
+* Add new option ``--name`` in the command `pack`
 * Add new project attribute `license_file`, `bootstrap_code`
-* Add new option `--with-license`, `--bootstrap` in the command `config`
-* Add new option `--bootstrap` in the command `obfuscate`
-* The options `--package-runtime` doesn't support `2` and `3`, use
-  `--bootstrap=2` or `--bootstrap=3` instead
+* Add new option ``--with-license``, ``--bootstrap`` in the command `config`
+* Add new option ``--bootstrap`` in the command `obfuscate`
+* The options ``--package-runtime`` doesn't support `2` and `3`, use
+  ``--bootstrap=2`` or ``--bootstrap=3`` instead
 * For command `licenses` the generated license could be printed to stdout by
-  setting the option `--output` to `stdout`
+  setting the option ``--output`` to `stdout`
 
 5.8.9
 -----
 * Fix cross platform issue for vs2015.x86 and vs2015.x86_64
-* In command `config` add option `--advanced` as alias of `--advanced-mode`
+* In command `config` add option ``--advanced`` as alias of ``--advanced-mode``
 
 5.8.8
 -----
