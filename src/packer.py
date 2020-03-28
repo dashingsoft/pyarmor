@@ -240,7 +240,6 @@ def _make_hook_pytransform(hookfile, obfdist, nolicense=False):
 
 
 def _pyi_makespec(obfdist, src, entry, packcmd):
-    # options = ['-y']
     # s = os.pathsep
     # d = obfdist
     # datas = [
@@ -250,19 +249,18 @@ def _pyi_makespec(obfdist, src, entry, packcmd):
     # if not nolicense:
     #     datas.append('--add-data')
     #     datas.append('%s%s.' % (os.path.join(d, 'license.lic'), s))
-    # options.extend(datas)
     #
     # scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
-    # options.extend(scripts)
+    # options = datas + scripts
 
-    options = ['-y', '-p', obfdist, '--hidden-import', 'pytransform',
+    options = ['-p', obfdist, '--hidden-import', 'pytransform',
                '--additional-hooks-dir', obfdist, os.path.join(src, entry)]
     try:
         cmdlist = packcmd + options
-        cmdlist[:5] = ['pyi-makespec']
+        cmdlist[:4] = ['pyi-makespec']
         run_command(cmdlist)
     except Exception:
-        run_command([sys.executable] + packcmd + options)
+        run_command([sys.executable] + packcmd + ['-y'] + options)
 
 
 def _patch_specfile(obfdist, src, specfile):
