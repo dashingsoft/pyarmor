@@ -7,6 +7,16 @@ Change Logs
 -----
 * Change the plugin search policy, do not support enviorment variable
   `PYARMOR_PLUGIN`, but search folder `plugins` in the pyarmor package path.
+* Add a new path `plugins` in the package source, there are several common
+  plugins. So it's easy to check internet time time by this way::
+
+      pyarmor obfuscate --plugin check_ntp_time foo.py
+
+  Before that both of these lines should be inserted into ``foo.py``::
+
+      # {PyArmor Plugins}
+      # PyArmor Plugin: check_ntp_time()
+
 * Fix pack bug: `pyi-makespec: error: unrecognized arguments: -y` if
   extra options are passed
 * Document command `pack` in details:
