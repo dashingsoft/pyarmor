@@ -52,8 +52,10 @@ Check all the output and test these obfuscated packages::
 
 .. _obfuscating package no conflict with others:
 
-Obfuscating Package No Conflict With Others
--------------------------------------------
+.. _solve conflicts with other obfuscated libraries:
+
+Solve Conflicts With Other Obfuscated Libraries
+-----------------------------------------------
 
 .. note:: New in v5.8.7
 
@@ -129,16 +131,25 @@ It's possible to obfuscate the scripts with special feature. For example::
     pyarmor obfuscate --platform linux.x86_64.7 foo.py
 
 Note that the dynamic library with different features aren't compatible. For
-example, try to obfuscate the scripts with ``--platform linux.x86_64.0`` in the
-Windows, the obfuscated scripts don't work in the target machine::
+example, try to obfuscate the scripts with ``--platform linux.arm.0`` in
+Windows::
 
-    pyarmor obfuscate --platform linux.x86_64.0 foo.py
+    pyarmor obfuscate --platform linux.arm.0 foo.py
 
-Because the full features dynamic library is used in the Windows by default. To
-fix this problem, set the enviornment variable ``PYARMOR_PLATFORM`` to same
+Because the default platform is full features ``windows.x86_64.7`` in Windows,
+so PyArmor have to reboot with platform ``windows.x86_64.0``, then obfuscate the
+script for this low feature platform ``linux.arm.0``.
+
+It also could be set the enviornment variable ``PYARMOR_PLATFORM`` to same
 feature platform as target machine. For example::
 
-    PYARMOR_PLATFORM=windows.x86_64.0 pyarmor obfuscate --platform linux.x86_64.0 foo.py
+    PYARMOR_PLATFORM=windows.x86_64.0 pyarmor obfuscate --platform linux.arm.0 foo.py
+
+    # In Windows
+    set PYARMOR_PLATFORM=windows.x86_64.0
+    pyarmor obfuscate --platform linux.arm.0 foo.py
+    set PYARMOR_PLATFORM=
+
 
 .. _running obfuscated scripts in multiple platforms:
 

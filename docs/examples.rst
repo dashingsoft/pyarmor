@@ -25,8 +25,9 @@ There is a tool `easy-han` based on PyQt. Here list the main files::
 Here the shell script used to pack this tool by PyArmor::
 
     cd /path/to/src
-    pyarmor pack -e " --name easy-han --hidden-import comtypes --add-data 'config.json;.'" \
-                 -x " --exclude vnev --exclude tests" -s "easy-han.spec" main.py
+    pyarmor pack --name easy-han \
+                 -e " --hidden-import comtypes --add-data 'config.json;.'" \
+                 -x " --exclude vnev --exclude tests" main.py
 
     cd dist/easy-han
     ./easy-han
@@ -48,10 +49,6 @@ options work with command :ref:`obfuscate`::
     cd /path/to/src
     pyarmor obfuscate --exclude vnev --exclude tests main.py
 
-By option ``-s`` to specify the `.spec` filename, because `PyInstaller`_ changes
-the default filename of `.spec` by option ``--name``, so it tell command
-:ref:`pack` the right filename.
-
 .. important::
 
    The command :ref:`pack` will obfuscate the scripts automatically, do not try
@@ -60,7 +57,7 @@ the default filename of `.spec` by option ``--name``, so it tell command
 .. note::
 
    From PyArmor 5.5.0, it could improve the security by passing the obfuscated
-   option ``--advanced`` to enable :ref:`Advanced Mode`. For example::
+   option ``--advanced 1`` to enable :ref:`Advanced Mode`. For example::
 
        pyarmor pack -x " --advanced 1 --exclude tests" foo.py
 
