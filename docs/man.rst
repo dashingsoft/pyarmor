@@ -92,9 +92,13 @@ copy the whole package to the output path, then obfuscate the `.py` files, thus
 all the `.py` files in the output path are overwritten by the obfuscated ones.
 
 If there is an entry script, PyArmor will modify it, insert cross protection
-code into the entry script.
+code into the entry script. Refer to :ref:`Special Handling of Entry Script`
 
-Next obfuscate all these scripts in the default output path `dist`.
+If there is any plugin specified in the command line, PyArmor will scan all the
+source scripts and inject the plugin code into them before obfuscating. Refer to
+:ref:`How to Deal with Plugins`
+
+Next obfuscate all found scripts, save them in the default output path `dist`.
 
 After that make the :ref:`runtime package` in the `dist` path.
 
@@ -349,42 +353,33 @@ Obfuscate the scripts and pack them into one bundle.
 **DESCRIPTION**
 
 The command `pack`_ first calls `PyInstaller`_ to generate `.spec` file which
-name is same as entry script. The options specified by ``--options`` will be
-pass to `PyInstaller`_ to generate `.spec` file. It could any option accepted by
-`PyInstaller`_ except ``-y``, ``--noconfirm``, ``-n``, ``--name``, ``--distpath``.
+name is same as entry script. The options specified by ``--e`` will be pass to
+`PyInstaller`_ to generate `.spec` file. It could be any option accepted by
+`PyInstaller`_ except ``-y``, ``--noconfirm``, ``-n``, ``--name``,
+``--distpath``, ``--specpath``.
 
-If there is in trouble, make sure this `.spec` works with `PyInstaller`_. For
-example::
+If there is in trouble, make sure the script could be bundled by `PyInstaller`_
+directly. For example::
 
-    pyinstaller myscript.spec
+    pyinstaller foo.py
+
+So long as `PyInstaller`_ could work, just pass those options by ``-e``, the
+command `pack`_ should work either.
 
 Then `pack`_ will obfuscates all the `.py` files in the same path of entry
-script. It will call `pyarmor obfuscate` with options ``-r``, ``--output``, and
-the extra options specified by ``--xoptions``. However if packing a project,
-that is to say, the last argument is project path other than one script, `pack`_
-will obfuscate the scripts by command `build`_ with option `-B`, and all the
-``--xoptons`` will be ignored. In this case config the project to control how to
-obfuscate the scripts.
+script recursively. It will call `pyarmor obfuscate` with options ``-r``,
+``--output``, and the extra options specified by ``-x``. However if packing a
+project, that is to say, the last argument is project path other than one
+script, `pack`_ will obfuscate the scripts by command `build`_ with option
+``-B``, and all the ``-x`` will be ignored. In this case config the project to
+control how to obfuscate the scripts.
 
 Next `pack`_ patches the `.spec` file so that the original scripts could be
 replaced with the obfuscated ones.
 
 Finally `pack`_ call `PyInstaller`_ with this pacthed `.spec` file to generate
-the final distributions.
-
-For more information, refer to :ref:`How to pack obfuscated scripts`.
-
-If you'd like to change the final bundle name, specify the option ``--name``
-directly, do not pass it by the option ``-e``.
-
-If you have a worked `.spec` file, just specify it by option ``-s``, for
-example::
-
-    pyarmor pack -s foo.spec foo.py
-
-The main script must be list in the command line, otherwise `pack`_ doesn't know
-where to find the scripts to be obfuscated. And in this case the option ``-e``
-will be ignored.
+the output bundle with obfuscated scripts. Refer to :ref:`How to pack obfuscated
+scripts`.
 
 If the option ``--debug`` is set, for example::
 
@@ -393,6 +388,7 @@ If the option ``--debug`` is set, for example::
 The following generated files will be kept, generally all of them are removed
 after packing end::
 
+    foo.spec
     foo-patched.spec
     dist/obf/temp/hook-pytransform.py
     dist/obf/*.py                       # All the obfuscated scripts
@@ -406,6 +402,18 @@ If some scripts are modified, just obfuscate them again, then run this command
 to pack them quickly. All the options for command `obfuscate`_ could be got from
 the output of command `pack`_.
 
+If you'd like to change the final bundle name, specify the option ``--name``
+directly, do not pass it by the option ``-e``.
+
+If you have a worked `.spec` file, just specify it by option ``-s``, for
+example::
+
+    pyarmor pack -s foo.spec foo.py
+
+The main script must be list in the command line, otherwise `pack`_ doesn't know
+where to find the scripts to be obfuscated. And in this case the option ``-e``
+will be ignored.
+
 If there are many data files or hidden imports, it's better to write a hook file
 to find them easily. First create a hook file named ``hook-sys.py``::
 
@@ -415,7 +423,7 @@ to find them easily. First create a hook file named ``hook-sys.py``::
     hiddenimports += ['_gdbm', 'socket', 'h5py.defs']
     datas += [ ('/usr/share/icons/education_*.png', 'icons') ]
 
-Then call pack with extra option ``--additional-hooks-dir .`` to tell
+Then call `pack`_ with extra option ``--additional-hooks-dir .`` to tell
 pyinstaller find the hook in the current path::
 
     pyarmor pack -e " --additional-hooks-dir ." foo.py
@@ -455,7 +463,7 @@ When something is wrong, turn on Python debug flag to show more information::
 
 * Pack the obfuscated script to one file and in advanced mode::
 
-    pyarmor pack -e " --onefile" -x " --advanced" foo.py
+    pyarmor pack -e " --onefile" -x " --advanced 1" foo.py
 
 * Pack the obfuscated scripts and expired on 2020-12-25::
 
