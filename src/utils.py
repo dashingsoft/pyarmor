@@ -594,8 +594,9 @@ def search_plugins(plugins):
                 if os.path.isabs(filename):
                     raise RuntimeError('No script found for plugin %s' % name)
                 for path in PLUGINS_PATH:
-                    filename = build_path(filename, path)
-                    if os.path.exists(filename):
+                    testname = build_path(filename, path)
+                    if os.path.exists(testname):
+                        filename = testname
                         break
                 else:
                     raise RuntimeError('No script found for plugin %s' % name)
@@ -784,7 +785,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                         t = name.find('(')
                         name = (name if t == -1 else name[:t]).strip()
                         if _filter_call_marker(plugins, marker, name):
-                            plist.append((n+1, i, marker))
+                            plist.append((n if k == -1 else n+1, i, marker))
                             pnames.append(name)
             n += 1
         if k > -1:
