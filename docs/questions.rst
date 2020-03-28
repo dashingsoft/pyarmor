@@ -11,7 +11,14 @@ As running ``pyarmor``:
 * Run `pyarmor` with debug option ``-d`` to get more information. For example::
 
       pyarmor -d obfuscate --recurisve foo.py
-      PYTHONDEBUG=y pyarmor -d obfuscate --recurisve foo.py
+
+* Set Python debug flag to get more information. For example::
+
+      PYTHONDEBUG=y pyarmor obfuscate --recurisve foo.py
+
+      # In Windows
+      set PYTHONDEBUG=y
+      pyarmor obfuscate --recurisve foo.py
 
 As running the obfuscated scripts:
 
@@ -19,6 +26,10 @@ As running the obfuscated scripts:
 
       python -d obf_foo.py
       PYTHONDEBUG=y python obf_foo.py
+
+      # In Windows
+      set PYTHONDEBUG=y
+      python obf_foo.py
 
 After python debug option is on, there will be a log file `pytransform.log`
 generated in the current path, which includes more debug information.
@@ -171,6 +182,24 @@ Add the exact source encode at the begin of the script. For example::
     # -*- coding: utf-8 -*-
 
 Refer to https://docs.python.org/2.7/tutorial/interpreter.html#source-code-encoding
+
+
+Why plugin doesn't work
+~~~~~~~~~~~~~~~~~~~~~~~
+
+If the plugin script doesn't work as expected, first check the plugin script
+could be injected into the entry script by set Python debug flag::
+
+  # In linux
+  export PYTHONDEBUG=y
+  # In Windows
+  set PYTHONDEBUG=y
+
+  pyarmor obfuscate --exact --plugin check_ntp_time foo.py
+
+It will generate patched file ``foo.py.pyarmor-patched``, make sure the content
+of plugin script has been inserted into the right place, and the verify function
+will be executed.
 
 
 Running Obfuscated Scripts Problem
