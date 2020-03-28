@@ -108,8 +108,10 @@ information of the obfuscated scripts.
 Each plugin is a normal Python script, PyArmor searches it by this way:
 
 * If the plugin has absolute path, then find the corresponding `.py` file exactly.
-* If it has relative path, first search the related `.py` file in the current
-  path, then ``$HOME/.pyarmor/plugins``, finally ``{pyarmor_folder}/plugins``.
+* If it has relative path, search the `.py` file in:
+    - The current path
+    - ``$HOME/.pyarmor/plugins``
+    - ``{pyarmor_folder}/plugins``
 * Raise exception if not found
 
 When there is plugin specified as obfuscating the script, each comment line will
@@ -140,7 +142,7 @@ For the first form ``# PyArmor Plugin:``, PyArmor just remove this pattern and
 one following whitespace exactly, and leave the rest part of this line as it
 is. For example::
 
-    # PyArmor Plugin: check_ntp_time() ==> check_ntp_time()
+    # PyArmor Plugin: check_ntp_time()            ==> check_ntp_time()
 
 So long as there is any plugin specified in the command line, these replacements
 will be taken place. The rest part could be any valid Python code. For
@@ -156,7 +158,7 @@ doesn't touch this marker. For example, obfuscating a script with plugin
 `check_multi_mac`, the first marker is replaced, the second not::
 
     # pyarmor_check_multi_mac() ==> check_multi_mac()
-    # pyarmor_check_code() ==> # pyarmor_check_code()
+    # pyarmor_check_code()      ==> # pyarmor_check_code()
 
 The last form is almost same as the second, but ``# @pyarmor_`` will be replaced
 with ``@``, it's mainly used to inject a decorator. For example::
