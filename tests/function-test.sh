@@ -262,14 +262,14 @@ check_return_value
 check_return_value
 check_file_content dist-plugin/result.log 'Hello Plugin'
 
-csih_inform "C-19. Test option --plugin with PYARMOR_PLUGIN for obfuscate"
+csih_inform "C-19. Test option --plugin with special value 'enabled'"
 mkdir test-plugins
-echo "print('Hello World')" > test-plugins/hello2.py
-PYARMOR_PLUGIN=test-plugins $PYARMOR obfuscate -O dist-plugin2 \
-              --plugin hello2 --exact test_plugin.py >result.log 2>&1
+echo "# PyArmor Plugin: print('Hello World')" > test-plugins/foo.py
+$PYARMOR obfuscate -O dist-plugin2 --plugin enabled \
+         --exact test-plugins/foo.py >result.log 2>&1
 check_return_value
 
-(cd dist-plugin2; $PYTHON test_plugin.py >result.log 2>&1 )
+(cd dist-plugin2; $PYTHON foo.py >result.log 2>&1 )
 check_return_value
 check_file_content dist-plugin2/result.log 'Hello World'
 
@@ -1138,19 +1138,16 @@ check_file_content $casepath/dist/result.log 'This is decorator plugin'
 check_file_content $casepath/dist/result.log 'Call p5 should work'
 check_file_content $casepath/dist/result.log 'Plugin 5 should now work' not
 
-csih_inform "Case Plugin-2: test plugin in the path PYARMOR_PLUGIN"
+csih_inform "Case Plugin-2: test plugin in the default path"
 echo "# {PyArmor Plugins}" > $casepath/foo2.py
-echo "# PyArmor Plugin: on_p4()" >> $casepath/foo2.py
+echo "# {PyArmor Plugin} check_ntp_time()" >> $casepath/foo2.py
 
-PYARMOR_PLUGIN=$casepath $PYARMOR obfuscate --plugin p1 --plugin @on_p4 \
+PYTHONDEBUG=y $PYARMOR obfuscate --plugin check_ntp_time \
               -O $casepath/dist2 --exact $casepath/foo2.py > result.log 2>&1
 check_return_value
 
-(cd $casepath/dist2; $PYTHON foo2.py > result.log 2>&1)
-check_return_value
-check_file_content $casepath/dist2/result.log 'The unconditional plugin1 works'
-check_file_content $casepath/dist/result.log 'This is on demand plugin'
-
+check_file_exists $casepath/foo2.py.pyarmor-patched
+check_file_content $casepath/foo2.py.pyarmor-patched 'class NTPClient'
 
 echo ""
 echo "-------------------- Test plugins END ----------------"
