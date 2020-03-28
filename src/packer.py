@@ -415,7 +415,7 @@ def _check_extra_options(options):
             options.remove(x)
     for item in options:
         for x in item.split('='):
-            if x in ('-n', '--name', '--distpath'):
+            if x in ('-n', '--name', '--distpath', '--specpath'):
                 raise RuntimeError('The option "%s" could not be used '
                                    'as the extra options' % x)
 
