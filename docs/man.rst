@@ -410,9 +410,11 @@ example::
 
     pyarmor pack -s foo.spec foo.py
 
-The main script must be list in the command line, otherwise `pack`_ doesn't know
-where to find the scripts to be obfuscated. And in this case the option ``-e``
-will be ignored.
+In this case the option ``-e`` will be ignored, and the main script (here it's
+`foo.py`) must be list in the command line, otherwise `pack`_ doesn't know where
+to find the scripts to be obfuscated. Besides, the `.spec` file need to be
+changed a little, refer to :ref:`Bundle obfuscated scripts with customized spec
+file`
 
 If there are many data files or hidden imports, it's better to write a hook file
 to find them easily. First create a hook file named ``hook-sys.py``::

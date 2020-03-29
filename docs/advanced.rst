@@ -201,8 +201,10 @@ the dynamic library, so no platform is required. For example::
 
 .. _obfuscating scripts by different python version:
 
-Obfuscating Scripts By Other Version Of Python
-----------------------------------------------
+.. _obfuscating scripts by other python version:
+
+Obfuscating Scripts By Other Python Version
+-------------------------------------------
 
 If there are multiple Python versions installed in the machine, the
 command `pyarmor` uses default Python. In case the scripts need to be
