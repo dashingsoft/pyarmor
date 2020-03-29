@@ -367,12 +367,11 @@ So long as `PyInstaller`_ could work, just pass those options by ``-e``, the
 command `pack`_ should work either.
 
 Then `pack`_ will obfuscates all the `.py` files in the same path of entry
-script recursively. It will call `pyarmor obfuscate` with options ``-r``,
+script recursively. It will call command `obfuscate`_ with options ``-r``,
 ``--output``, and the extra options specified by ``-x``. However if packing a
-project, that is to say, the last argument is project path in the command line,
-`pack`_ will obfuscate the scripts by command `build`_ with option ``-B``, and
-all the options specifed by ``-x`` will be ignored. In this case config the
-project to control how to obfuscate the scripts.
+project, `pack`_ will obfuscate the project by command `build`_ with option
+``-B``, and all the options specifed by ``-x`` will be ignored. In this case
+config the project to control how to obfuscate the scripts.
 
 Next `pack`_ patches the `.spec` file so that the original scripts could be
 replaced with the obfuscated ones.
@@ -403,7 +402,7 @@ to pack them quickly. All the options for command `obfuscate`_ could be got from
 the output of command `pack`_.
 
 If you'd like to change the final bundle name, specify the option ``--name``
-directly, do not pass it by the option ``-e``.
+directly, do not pass it by the option ``-e``, it need some special handling.
 
 If you have a worked `.spec` file, just specify it by option ``-s``, for
 example::
@@ -417,7 +416,7 @@ changed a little, refer to :ref:`Bundle obfuscated scripts with customized spec
 file`
 
 If there are many data files or hidden imports, it's better to write a hook file
-to find them easily. First create a hook file named ``hook-sys.py``::
+to find them easily. For example, create a hook file named ``hook-sys.py``::
 
     from PyInstaller.utils.hooks import collect_data_files, collect_all
     datas, binaries, hiddenimports = collect_all('my_module_name')
