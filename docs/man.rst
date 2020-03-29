@@ -390,8 +390,7 @@ after packing end::
 
     foo.spec
     foo-patched.spec
-    dist/obf/temp/hook-sys.py           # Since v5.9.6
-    dist/obf/temp/hook-pytransform.py   # Before v5.9.6
+    dist/obf/temp/hook-pytransform.py
     dist/obf/*.py                       # All the obfuscated scripts
 
 The patched `foo-patched.spec` could be used by pyinstaller to pack the

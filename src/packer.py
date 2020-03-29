@@ -229,21 +229,9 @@ def _make_hook_pytransform(hookfile, obfdist, nolicense=False):
     # On Mac OS X pyinstaller will call mac_set_relative_dylib_deps to
     # modify .dylib file, it results in the cross protection of pyarmor fails.
     # In order to fix this problem, we need add .dylib as data file
-    is_darwin = sys.platform == 'darwin'
-    p = obfdist + os.sep
-    d = 'datas = [(r"{0}pytransform.key", ".")' + (
-        ', (r"{0}_pytransform.*", ".")' if is_darwin else '') + (
-        ']' if nolicense else ', (r"{0}license.lic", ".")]')
-    b = '' if is_darwin else 'binaries = [(r"{0}_pytransform.*", ".")]'
-    with open(hookfile, 'w') as f:
-        f.write('\n'.join([d, b]).format(p))
-
-
-def _make_hook_sys(hookfile, obfdist, nolicense=False):
     p = obfdist + os.sep
     lines = [
         'from PyInstaller.compat import is_darwin',
-        'hiddenimports=["pytransform"]',
         'datas=[(r"{0}pytransform.key", ".")]',
         'if is_darwin:',
         '    datas.append((r"{0}_pytransform.*", "."))',
@@ -257,9 +245,8 @@ def _make_hook_sys(hookfile, obfdist, nolicense=False):
 
 
 def _pyi_makespec(hookpath, src, entry, packcmd):
-    options = ['--hidden-import', 'sys', '-p', hookpath,
-               '--additional-hooks-dir', hookpath,
-               os.path.join(src, entry)]
+    options = ['-p', hookpath, '--hidden-import', 'pytransform',
+               '--additional-hooks-dir', hookpath, os.path.join(src, entry)]
     cmdlist = packcmd + options
     cmdlist[:4] = ['pyi-makespec']
     run_command(cmdlist)
@@ -307,6 +294,9 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None):
             if lines[i].lstrip().startswith("pathex="):
                 lines[i] = lines[i].replace("pathex=",
                                             "pathex=[r'%s']+" % hookpath, 1)
+            elif lines[i].lstrip().startswith("hiddenimports="):
+                lines[i] = lines[i].replace("hiddenimports=",
+                                            "hiddenimports=['pytransform']+", 1)
             elif lines[i].lstrip().startswith("hookspath="):
                 lines[i] = lines[i].replace("hookspath=",
                                             "hookspath=[r'%s']+" % hookpath, 1)
@@ -376,13 +366,9 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         os.makedirs(obftemp)
     shutil.copy(os.path.join(obfdist, 'pytransform.py'), obftemp)
 
-    # hookfile = os.path.join(obftemp, 'hook-pytransform.py')
-    # logging.info('Generate hook script: %s', hookfile)
-    # _make_hook_pytransform(hookfile, obfdist, nolicense)
-
-    hookfile = os.path.join(obftemp, 'hook-sys.py')
+    hookfile = os.path.join(obftemp, 'hook-pytransform.py')
     logging.info('Generate hook script: %s', hookfile)
-    _make_hook_sys(hookfile, obfdist, nolicense)
+    _make_hook_pytransform(hookfile, obfdist, nolicense)
 
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
