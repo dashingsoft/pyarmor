@@ -8,7 +8,7 @@ Change Logs
 * Change the plugin search policy, do not support enviorment variable
   `PYARMOR_PLUGIN`, but search folder `plugins` in the pyarmor package path.
 * Add a new path `plugins` in the package source, there are several common
-  plugins. So it's easy to check internet time time by this way::
+  plugins. So it's easy to check internet time by this way::
 
       pyarmor obfuscate --plugin check_ntp_time foo.py
 
@@ -103,8 +103,8 @@ For example, the bootstrap code may like this with suffix `_vax_000001`::
 Refer to
 https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-conflict-with-others
 
-* Add option `--enable-suffix` in the commands `obfuscate`, `config` and `runtime`
-* Add option `--with-license` in the command `pack`
+* Add option ``--enable-suffix`` in the commands `obfuscate`, `config` and `runtime`
+* Add option ``--with-license`` in the command `pack`
 * Fix issue: the executable file made by `pack` raises protection fault exception on MacOSX
 
 5.8.6
@@ -129,15 +129,15 @@ https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-co
 
 5.8.2
 -----
-* Fix issue: the option `--exclude` in command `obfuscate` could not exclude `.py` files
+* Fix issue: the option ``--exclude`` in command `obfuscate` could not exclude `.py` files
 * Refine command `pack`
 
 5.8.1
 -----
 * Fix issue: check license failed if there is no environment variable `HOME` in linux platform
-* Add new value `3` for option `--package-runtime`, the bootstrap code will always use relative import with an extra leading dot
+* Add new value `3` for option ``--package-runtime``, the bootstrap code will always use relative import with an extra leading dot
 * The command `runtime` also generates bootstrap script `pytransform_bootstrap.py`
-* Add option `--inside` in command `runtime` to generate bootstrap package `pytransform_bootstrap`
+* Add option ``--inside`` in command `runtime` to generate bootstrap package `pytransform_bootstrap`
 * Document how to run unittest of obfuscated scripts, refer to
   https://pyarmor.readthedocs.io/en/latest/advanced.html#run-unittest-of-obfuscated-scripts
 
@@ -149,7 +149,7 @@ https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-co
 * The command `pack` supports customized spec file, refer to
   https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-with-customized-spec-file
 * In runtime module `pytransform`, the functions may raise `Exception` instead of `PytransformError` in some cases.
-* In command `register`, add option `--legency` to store `license.lic` in the traditional way
+* In command `register`, add option ``--legency`` to store `license.lic` in the traditional way
 * Fix platform name issue: in some linux platforms the platform name may not be right
 
 5.7.10
@@ -159,7 +159,7 @@ https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-co
 5.7.9
 -----
 * Support new linux platform `centos6.x86_64`, arch is x86_64, glibc < 2.14
-* Do not print traceback if no option `--debug` specified as running `pyarmor`
+* Do not print traceback if no option ``--debug`` specified as running `pyarmor`
 
 5.7.8
 -----
@@ -171,7 +171,7 @@ https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-co
 
 5.7.6
 -----
-* Add option `--update` for command `download` to update all the downloaded dynamic libraries automatically
+* Add option ``--update`` for command `download` to update all the downloaded dynamic libraries automatically
 * Fix issue: the obfuscated script raises unexpected exception when the license is expired
 
 5.7.5
@@ -183,12 +183,12 @@ https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-co
 * Downloaded dynamic library files by command `command` will be saved in the
   `~/.pyarmor/platforms` other than the installed path of pyarmor package.
 * Refine `platforms` folder structure according to new standard platform name
-* In command `obfuscate`, `build`, `runtime`, specify the option `--platform`
+* In command `obfuscate`, `build`, `runtime`, specify the option ``--platform``
   multiple times, so that the obfuscated scripts could run in these platforms
 
 5.7.4
 -----
-* Fix issue: command `obfuscate` fails if the option `--src` is specifed
+* Fix issue: command `obfuscate` fails if the option ``--src`` is specifed
 
 5.7.3
 -----
@@ -205,7 +205,7 @@ https://pyarmor.readthedocs.io/en/latest/advanced.html#obfuscating-package-no-co
 * Fix plugin codec issue (#138): 'gbk' codec can't decode byte 0x82 in position 590: illegal multibyte sequence
 * Project src may be relative path base on project path
 * Refine plugin and document it in details: https://pyarmor.readthedocs.io/en/v5.7.2/how-to-do.html#how-to-deal-with-plugins
-* Add common option `--debug` for `pyarmor` to show more information in the console
+* Add common option ``--debug`` for `pyarmor` to show more information in the console
 * Project commands, for examples `build`, `cofig`, the last argument supports any valid project configuration file
 
 5.7.1
@@ -265,16 +265,16 @@ Upgrade notes:
 Other changes:
 
 * Change default value of project attribute `package_runtime` from 0 to 1
-* Change default value of option `--package-runtime` from 0 to 1 in command `obfuscate`
-* Add option `--no-runtime` for command `obfuscate`
-* Add optioin `--disable-restrict-mode` for command `licenses`
+* Change default value of option ``--package-runtime`` from 0 to 1 in command `obfuscate`
+* Add option ``--no-runtime`` for command `obfuscate`
+* Add optioin ``--disable-restrict-mode`` for command `licenses`
 
 5.6.8
 -----
-* Add option `--package-runtime` in command `obfuscate`, `config` and `build`
+* Add option ``--package-runtime`` in command `obfuscate`, `config` and `build`
 * Add attribute `package_runtime` for project
 * Refine default cross protection code
-* Remove deprecated flag for option `--src` in command `obfuscate`
+* Remove deprecated flag for option ``--src`` in command `obfuscate`
 * Fix help message errors in command `obfuscate`
 
 5.6.7
@@ -368,9 +368,9 @@ upgrading.
 5.5.6
 -----
 * Add new restrict mode 2, 3 and 4 to improve security of the obfuscated scripts, refer to :ref:`Restrict Mode`
-* In command `obfuscate`, option `--restrict` supports new value 2, 3 and 4
-* In command `config`, option `--disable-restrict-mode` is deprecrated
-* In command `config`, add new option `--restrict`
+* In command `obfuscate`, option ``--restrict`` supports new value 2, 3 and 4
+* In command `config`, option ``--disable-restrict-mode`` is deprecrated
+* In command `config`, add new option ``--restrict``
 * In command `obfuscate` the last argument could be a directory
 
 5.5.5
@@ -404,7 +404,7 @@ upgrading.
 * Fix issue: Warning: code object xxxx isn't wrapped (#59)
 * Refine command `download`, fix some users could not download library file from pyarmor.dashingsoft.com
 * Introduce advanced mode for x86/x64 arch, it has some limitations in trial version
-* Add option `--advanced` for command `obfuscate`
+* Add option ``--advanced`` for command `obfuscate`
 * Add new property `advanced_mode` for project
 
 A new feature **Advanced Mode** is introduced in this version. In this mode the
@@ -418,7 +418,7 @@ gcc or some other `C` compiles. It's welcome to report the issue if Python
 interpreter doesn't work in advanced mode.
 
 Take this into account, the advanced mode is disabled by default. In order to
-enable it, pass option `--advanced` to command `obfuscate`. But in next minor
+enable it, pass option ``--advanced`` to command `obfuscate`. But in next minor
 version, this mode may be enable by default.
 
 **Upgrade Notes**:
@@ -432,9 +432,9 @@ It is recommended to upgrade in the next minor version.
 
 5.4.6
 -----
-* Add option `--without-license` for command `pack`. Sample usage refer to
+* Add option ``--without-license`` for command `pack`. Sample usage refer to
   https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-to-one-executable-file
-* Add option `--debug` for command `pack`. If this option isn't set, all the build files will be removed after packing.
+* Add option ``--debug`` for command `pack`. If this option isn't set, all the build files will be removed after packing.
 
 5.4.5
 -----
@@ -454,7 +454,7 @@ It is recommended to upgrade in the next minor version.
 
 5.4.2
 -----
-* Option `--exclude` can use multiple times in command `obfuscate`
+* Option ``--exclude`` can use multiple times in command `obfuscate`
 * Exclude build path automatically in command `pack`
 
 5.4.1
@@ -469,7 +469,7 @@ It is recommended to upgrade in the next minor version.
 
 5.3.13
 ------
-* Add option `--url` for command `download`
+* Add option ``--url`` for command `download`
 
 5.3.12
 ------
@@ -532,15 +532,15 @@ It is recommended to upgrade in the next minor version.
 5.3.0
 -----
 * In the trial version of PyArmor, it will raise error as obfuscating the code object which size is greater than 32768 bytes.
-* Add option `--plugin` in command `obfuscate`
-* Add property `plugins` for Project, and add option `--plugin` in command `config`
+* Add option ``--plugin`` in command `obfuscate`
+* Add property `plugins` for Project, and add option ``--plugin`` in command `config`
 * Change default build path for command `pack`, and do not remove it after command finished.
 
 5.2.9
 -----
 * Fix segmentation fault issue for python3.5 and before: run too big obfuscated code object (>65536 bytes) will crash (#67)
 * Fix issue: missing bootstrap code for command `pack` (#68)
-* Fix issue: the output script is same as original script if obfuscating scripts with option `--exact`
+* Fix issue: the output script is same as original script if obfuscating scripts with option ``--exact``
 
 5.2.8
 -----
@@ -548,11 +548,11 @@ It is recommended to upgrade in the next minor version.
 
 5.2.7
 -----
-* In command `obfuscate` add new options `--exclude`, `--exact`,
-  `--no-bootstrap`, `--no-cross-protection`.
-* In command `obfuscate` deprecate the options `--src`, `--entry`,
-  `--cross-protection`.
-* In command `licenses` deprecate the option `--bind-file`.
+* In command `obfuscate` add new options ``--exclude``, ``--exact``,
+  ``--no-bootstrap``, ``--no-cross-protection``.
+* In command `obfuscate` deprecate the options ``--src``, ``--entry``,
+  ``--cross-protection``.
+* In command `licenses` deprecate the option ``--bind-file``.
 
 5.2.6
 -----
@@ -584,18 +584,18 @@ It is recommended to upgrade in the next minor version.
 5.2.1
 -----
 * Fix issue: in restrict mode the bootstrap code in `__init__.py` will raise exception.
-* Add option `--cross-protection` in command `obfuscate`
+* Add option ``--cross-protection`` in command `obfuscate`
 
 5.2.0
 -----
 * Use global capsule as default capsule for project, other than creating new one for each project
-* Add option `--obf-code`, `--obf-mod`, `--wrap-mode`, `--cross-protection` in command `config`
+* Add option ``--obf-code``, ``--obf-mod``, ``--wrap-mode``, ``--cross-protection`` in command `config`
 * Add new attributes for project: `obf_code`, `obf_mod`, `wrap_mode`, `cross_protection`
 * Deprecrated project attributes `obf_code_mode`, `obf_module_mode`, use `obf_code`, `obf_mod`, `wrap_mode` instead
 * Change the behaviours of `restrict mode`, refer to https://pyarmor.readthedocs.io/en/latest/advanced.html#restrict-mode
-* Change option `--restrict` in command `obfuscate` and `licenses`
-* Remove option `--no-restrict` in command `obfuscate`
-* Remove option `--clone` in command `init`
+* Change option ``--restrict`` in command `obfuscate` and `licenses`
+* Remove option ``--no-restrict`` in command `obfuscate`
+* Remove option ``--clone`` in command `init`
 
 5.1.2
 -----
@@ -607,7 +607,7 @@ It is recommended to upgrade in the next minor version.
 * Reform module `pytransform.py`
 * Fix issue: it will raise exception if no entry script when obfuscating scripts
 * Fix issue: 'gbk' codec can't decode byte 0xa1 in position 28 (#51)
-* Add option `--upgrade` for command `capsule`
+* Add option ``--upgrade`` for command `capsule`
 * Merge runtime files `pyshield.key`, `pyshield.lic` and `product.key` into `pytransform.key`
 
 **Upgrade notes**
@@ -642,7 +642,7 @@ new capsule effects.
 
 5.0.3
 -----
-* Add option `-q`, `--silent`, suppress all normal output when running any PyArmor command
+* Add option `-q`, ``--silent``, suppress all normal output when running any PyArmor command
 * Refine runtime error message, make it clear and more helpful
 * Add new function `get_hd_info` in module `pytransform` to get hardware information
 * Remove function `get_hd_sn` from module `pytransform`, use `get_hd_info` instead
@@ -681,7 +681,7 @@ Fixed issues:
 
 4.6.2
 -----
-* Add option `--options` for command `pack`
+* Add option ``--options`` for command `pack`
 * For Python 3, there is no new line in the output when `pack` command fails
 
 4.6.1
@@ -731,7 +731,7 @@ This patch mainly changes webui, make it simple more:
 4.4.1
 -----
 * Support Py2Installer by a simple way
-* For command `obfuscate`, get default `src` and `entry` from first argument, `--src` is not required.
+* For command `obfuscate`, get default `src` and `entry` from first argument, ``--src`` is not required.
 * Set no restrict mode as default for new project and command `obfuscate`, `licenses`
 
 4.4.0
@@ -788,7 +788,7 @@ In this version, there are three significant changes:
   import pyarmor runtime`
 * Rewrite examples/README.md, make it clear and easy to understand
 * Do not generate entry scripts if only runtime files are generated
-* Remove choice `package` for option `--type` in command `init`, only `pkg` reserved.
+* Remove choice `package` for option ``--type`` in command `init`, only `pkg` reserved.
 
 4.2.3
 -----
@@ -802,7 +802,7 @@ In this version, there are three significant changes:
 
 4.2.1
 -----
-* Add option `--recursive` for command `obfuscate`
+* Add option ``--recursive`` for command `obfuscate`
 
 4.1.4
 -----
@@ -823,19 +823,19 @@ In this version, there are three significant changes:
 4.0.3
 -----
 * Add command `capsule`
-* Find default capsule in the current path other than `--src` in command `obfuscate`
+* Find default capsule in the current path other than ``--src`` in command `obfuscate`
 * Fix pip install issue #30
 
 4.0.2
 -----
 * Rename `pyarmor.py` to `pyarmor-depreted.py`
 * Rename `pyarmor2.py` to `pyarmor.py`
-* Add option `--capsule`, `-disable-restrict-mode` and `--output` for command `licenses`
+* Add option ``--capsule``, `-disable-restrict-mode` and ``--output`` for command `licenses`
 
 4.0.1
 -----
-* Add option `--capsule` for command `init`, `config` and `obfuscate`
-* Deprecate option `--clone` for command `init`, use `--capsule` instead
+* Add option ``--capsule`` for command `init`, `config` and `obfuscate`
+* Deprecate option ``--clone`` for command `init`, use ``--capsule`` instead
 * Fix `sys.settrace` and `sys.setprofile` issues for auto-wrap mode
 
 3.9.9
@@ -869,14 +869,14 @@ In this version, there are three significant changes:
 
 3.9.2
 -----
-* Replace option `--disable-restrict-mode` with `--no-restrict` in command `obfuscate`
-* Add option `--title` in command `config`
+* Replace option ``--disable-restrict-mode`` with ``--no-restrict`` in command `obfuscate`
+* Add option ``--title`` in command `config`
 * Change the output path of entry scripts when entry scripts belong to package
 * Refine document `user-guide.md` and `mechanism.md`
 
 3.9.1
 -----
-* Add option `--type` for command `init`
+* Add option ``--type`` for command `init`
 * Refine document `user-guide.md` and `mechanism.md`
 
 3.9.0
@@ -885,11 +885,11 @@ This version introduces a new way `auto-wrap` to protect python code when it's i
 
 Refer to [Mechanism Without Restrict Mode](src/mechanism.md#mechanism-without-restrict-mode)
 
-* Add new mode `wrap` for `--obf-code-mode`
+* Add new mode `wrap` for ``--obf-code-mode``
 * Remove `func.__refcalls__` in `__wraparmor__`
 * Add new project attribute `is_package`
-* Add option `--is-package` in command `config`
-* Add option `--disable-restrict-mode` in command `obfuscate`
+* Add option ``--is-package`` in command `config`
+* Add option ``--disable-restrict-mode`` in command `obfuscate`
 * Reset `build_time` when project configuration is changed
 * Change output path when `is_package` is set in command `build`
 * Change default value of project when find `__init__.py` in comand `init`
@@ -927,7 +927,7 @@ Refer to [Mechanism Without Restrict Mode](src/mechanism.md#mechanism-without-re
 
 3.8.3
 -----
-* Fix issue: option `--disable-restrict-mode` doesn't work in command `licenses`
+* Fix issue: option ``--disable-restrict-mode`` doesn't work in command `licenses`
 * Remove freevar `func` from `frame.f_locals` when raise exception in decorator `wraparmor`
 
 3.8.2
@@ -940,7 +940,7 @@ Refer to [Mechanism Without Restrict Mode](src/mechanism.md#mechanism-without-re
 
 3.8.0
 -----
-* Add option `--output` for command `build`, it will override the value in project configuration file.
+* Add option ``--output`` for command `build`, it will override the value in project configuration file.
 * Fix issue: defalut project output path isn't relative to project path.
 * Remove extra file "product.key" after obfuscating scripts.
 
