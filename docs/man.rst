@@ -332,7 +332,7 @@ It also could output the license key in the stdout other than a file::
 pack
 ----
 
-Obfuscate the scripts and pack them into one bundle.
+Obfuscate the scripts or project and pack them into one bundle.
 
 **SYNOPSIS**::
 
@@ -369,10 +369,10 @@ command `pack`_ should work either.
 Then `pack`_ will obfuscates all the `.py` files in the same path of entry
 script recursively. It will call `pyarmor obfuscate` with options ``-r``,
 ``--output``, and the extra options specified by ``-x``. However if packing a
-project, that is to say, the last argument is project path other than one
-script, `pack`_ will obfuscate the scripts by command `build`_ with option
-``-B``, and all the ``-x`` will be ignored. In this case config the project to
-control how to obfuscate the scripts.
+project, that is to say, the last argument is project path in the command line,
+`pack`_ will obfuscate the scripts by command `build`_ with option ``-B``, and
+all the options specifed by ``-x`` will be ignored. In this case config the
+project to control how to obfuscate the scripts.
 
 Next `pack`_ patches the `.spec` file so that the original scripts could be
 replaced with the obfuscated ones.
