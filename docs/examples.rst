@@ -47,7 +47,7 @@ obfuscated. By passing option ``--exclude`` to exclude them, to be sure these
 options work with command :ref:`obfuscate`::
 
     cd /path/to/src
-    pyarmor obfuscate --exclude vnev --exclude tests main.py
+    pyarmor obfuscate -r --exclude vnev --exclude tests main.py
 
 .. important::
 
