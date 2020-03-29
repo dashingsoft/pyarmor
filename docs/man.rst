@@ -368,10 +368,11 @@ command `pack`_ should work either.
 
 Then `pack`_ will obfuscates all the `.py` files in the same path of entry
 script recursively. It will call command `obfuscate`_ with options ``-r``,
-``--output``, and the extra options specified by ``-x``. However if packing a
-project, `pack`_ will obfuscate the project by command `build`_ with option
-``-B``, and all the options specifed by ``-x`` will be ignored. In this case
-config the project to control how to obfuscate the scripts.
+``--output``, ``--package-runtime 0`` and the options specified by
+``-x``. However if packing a project, `pack`_ will obfuscate the project by
+command `build`_ with option ``-B``, and all the options specifed by ``-x`` will
+be ignored. In this case config the project to control how to obfuscate the
+scripts.
 
 Next `pack`_ patches the `.spec` file so that the original scripts could be
 replaced with the obfuscated ones.

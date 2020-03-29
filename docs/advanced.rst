@@ -501,11 +501,15 @@ later easily. Here are basic steps:
 Bundle obfuscated scripts with customized spec file
 ---------------------------------------------------
 
-If there is a customized spec file works, for example::
+If there is a customized .spec file works, for example::
 
     pyinstaller myscript.spec
 
-It could be used to pack obfuscated scripts by little changed:
+It could be used to pack obfuscated scripts directly::
+
+    pyarmor pack -s myscript.spec myscript.py
+
+Before v5.9.6, it need to be changed a little:
 
 * Add module ``pytransform`` to `hiddenimports`
 * Add extra path ``DISTPATH/obf/temp`` to `pathex` and `hookspath`
@@ -518,12 +522,7 @@ After changed, it may be like this::
                  datas=[],
                  hiddenimports=['pytransform', ...],
                  hookspath=[os.path.join(DISTPATH, 'obf', 'temp'), ...],
-
-Now run command :ref:`pack` by this way::
-
-    pyarmor pack -s myscript.spec myscript.py
-
-That's all.
+                 ...
 
 .. note::
 
