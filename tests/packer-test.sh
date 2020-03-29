@@ -237,6 +237,22 @@ check_file_exists $project/dist/queens/pytransform.key
 check_return_value
 check_file_content $project/dist/result.log 'Found 92 solutions'
 
+csih_inform "Case 3-11: Test pack with an exists .spec file"
+dist=test-with-specfile
+mkdir $dist
+echo "print('Hello test with specfile')" > $dist/foo.py
+(cd $dist; pyi-makespec foo.py >result.log 2>&1)
+check_return_value
+check_file_exists $dist/foo.spec
+
+(cd $dist; $PYTHON ../pyarmor.py pack --output dist \
+                   -s foo.spec foo.py >result.log 2>&1)
+check_return_value
+check_file_exists $dist/dist/foo/foo
+
+( cd $dist; dist/foo/foo  >result.log 2>&1 )
+check_file_content $dist/result.log 'Hello test with specfile'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
