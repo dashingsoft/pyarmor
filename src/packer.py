@@ -239,31 +239,34 @@ def _make_hook_pytransform(hookfile, obfdist, nolicense=False):
         f.write('\n'.join([d, b]).format(p))
 
 
-def _pyi_makespec(obfdist, src, entry, packcmd):
-    # s = os.pathsep
-    # d = obfdist
-    # datas = [
-    #     '--add-data', '%s%s.' % (os.path.join(d, 'pytransform.key'), s),
-    #     '--add-binary', '%s%s.' % (os.path.join(d, '_pytransform.*'), s)
-    # ]
-    # if not nolicense:
-    #     datas.append('--add-data')
-    #     datas.append('%s%s.' % (os.path.join(d, 'license.lic'), s))
-    #
-    # scripts = [os.path.join(src, entry), os.path.join(obfdist, entry)]
-    # options = datas + scripts
-
-    options = ['-p', obfdist, '--hidden-import', 'pytransform',
-               '--additional-hooks-dir', obfdist, os.path.join(src, entry)]
-    try:
-        cmdlist = packcmd + options
-        cmdlist[:4] = ['pyi-makespec']
-        run_command(cmdlist)
-    except Exception:
-        run_command([sys.executable] + packcmd + ['-y'] + options)
+def _make_hook_sys(hookfile, obfdist, nolicense=False):
+    p = obfdist + os.sep
+    lines = [
+        'from PyInstaller.compat import is_darwin',
+        'hiddenimports=["pytransform"]',
+        'datas=[(r"{0}pytransform.key", ".")]',
+        'if is_darwin:',
+        '    datas.append((r"{0}_pytransform.*", "."))',
+        'else:',
+        '    binaries = [(r"{0}_pytransform.*", ".")]',
+    ]
+    if not nolicense:
+        lines.append('datas.append((r"{0}license.lic", "."))')
+    with open(hookfile, 'w') as f:
+        f.write('\n'.join(lines).format(p))
 
 
-def _patch_specfile(obfdist, src, specfile):
+def _pyi_makespec(hookpath, src, entry, packcmd):
+    options = ['--hidden-import', 'sys', '-p', hookpath,
+               '--additional-hooks-dir', hookpath,
+               os.path.join(src, entry)]
+    cmdlist = packcmd + options
+    cmdlist[:4] = ['pyi-makespec']
+    run_command(cmdlist)
+    # run_command([sys.executable] + packcmd + ['-y'] + options)
+
+
+def _patch_specfile(obfdist, src, specfile, hookpath=None):
     with open(specfile) as f:
         lines = f.readlines()
 
@@ -291,7 +294,25 @@ def _patch_specfile(obfdist, src, specfile):
             lines[i:i] = '\n'.join(patched_lines)
             break
     else:
-        raise RuntimeError('Unsupport specfile, no PYZ line found')
+        raise RuntimeError('Unsupport .spec file, no PYZ found')
+
+    if hookpath is not None:
+        for k in range(len(lines)):
+            if lines[k].startswith('a = Analysis('):
+                break
+        else:
+            raise RuntimeError('Unsupport .spec file, no Analysis found')
+        n = i
+        for i in range(k, n):
+            if lines[i].lstrip().startswith("pathex="):
+                lines[i] = lines[i].replace("pathex=",
+                                            "pathex=[r'%s']+" % hookpath, 1)
+            elif lines[i].lstrip().startswith("hookspath="):
+                lines[i] = lines[i].replace("hookspath=",
+                                            "hookspath=[r'%s']+" % hookpath, 1)
+                break
+        else:
+            raise RuntimeError('Unsupport .spec file, no hookspath found')
 
     patched_file = specfile[:-5] + '-patched.spec'
     with open(patched_file, 'w') as f:
@@ -355,9 +376,13 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         os.makedirs(obftemp)
     shutil.copy(os.path.join(obfdist, 'pytransform.py'), obftemp)
 
-    hookfile = os.path.join(obftemp, 'hook-pytransform.py')
+    # hookfile = os.path.join(obftemp, 'hook-pytransform.py')
+    # logging.info('Generate hook script: %s', hookfile)
+    # _make_hook_pytransform(hookfile, obfdist, nolicense)
+
+    hookfile = os.path.join(obftemp, 'hook-sys.py')
     logging.info('Generate hook script: %s', hookfile)
-    _make_hook_pytransform(hookfile, obfdist, nolicense)
+    _make_hook_sys(hookfile, obfdist, nolicense)
 
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
@@ -365,11 +390,13 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         if not os.path.exists(specfile):
             raise RuntimeError('No specfile "%s" found', specfile)
         logging.info('Save .spec file to %s', specfile)
+        hookpath = None
     else:
         logging.info('Use customized .spec file: %s', specfile)
+        hookpath = obftemp
 
     logging.info('Patching .spec file...')
-    patched_spec = _patch_specfile(obfdist, src, specfile)
+    patched_spec = _patch_specfile(obfdist, src, specfile, hookpath)
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
