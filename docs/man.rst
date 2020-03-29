@@ -404,16 +404,14 @@ the output of command `pack`_.
 If you'd like to change the final bundle name, specify the option ``--name``
 directly, do not pass it by the option ``-e``, it need some special handling.
 
-If you have a worked `.spec` file, just specify it by option ``-s``, for
-example::
+If you have a worked `.spec` file, just specify it by option ``-s`` (in this
+case the option ``-e`` will be ignored), for example::
 
     pyarmor pack -s foo.spec foo.py
 
-In this case the option ``-e`` will be ignored, and the main script (here it's
-`foo.py`) must be list in the command line, otherwise `pack`_ doesn't know where
-to find the scripts to be obfuscated. Besides, the `.spec` file need to be
-changed a little, refer to :ref:`Bundle obfuscated scripts with customized spec
-file`
+The main script (here it's `foo.py`) must be list in the command line, otherwise
+`pack`_ doesn't know where to find the scripts to be obfuscated. More refer to
+:ref:`Bundle obfuscated scripts with customized spec file`
 
 If there are many data files or hidden imports, it's better to write a hook file
 to find them easily. For example, create a hook file named ``hook-sys.py``::
