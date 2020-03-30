@@ -509,7 +509,26 @@ It could be used to pack obfuscated scripts directly::
 
     pyarmor pack -s myscript.spec myscript.py
 
-Before v5.9.6, it need to be changed a little:
+If it raises this error::
+
+    Unsupport .spec file, no XXX found
+
+Check .spec file, make sure there are 2 lines in top level (no identation)::
+
+    a = Analysis(...
+    pyz = PYZ(...
+
+And there are 3 key parameters when creating an `Analysis` object, for example::
+
+    a = Analysis(
+        ...
+        pathex=...,
+        hiddenimports=...,
+        hookspath=...,
+        ...
+    )
+
+PyArmor will change these lines. Before v5.9.6, it need to be patched by manual:
 
 * Add module ``pytransform`` to `hiddenimports`
 * Add extra path ``DISTPATH/obf/temp`` to `pathex` and `hookspath`
