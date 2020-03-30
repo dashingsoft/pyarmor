@@ -277,32 +277,36 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None):
         "# Patch end.", "", "")
 
     for i in range(len(lines)):
-        if lines[i].startswith("pyz = PYZ(a.pure"):
+        if lines[i].startswith("pyz = PYZ("):
             lines[i:i] = '\n'.join(patched_lines)
             break
     else:
-        raise RuntimeError('Unsupport .spec file, no PYZ found')
+        raise RuntimeError('Unsupport .spec file, no "pyz = PYZ" found')
 
     if hookpath is not None:
         for k in range(len(lines)):
             if lines[k].startswith('a = Analysis('):
                 break
         else:
-            raise RuntimeError('Unsupport .spec file, no Analysis found')
+            raise RuntimeError('Unsupport .spec file, no "a = Analysis" found')
         n = i
+        keys = []
         for i in range(k, n):
-            if lines[i].lstrip().startswith("pathex="):
-                lines[i] = lines[i].replace("pathex=",
-                                            "pathex=[r'%s']+" % hookpath, 1)
-            elif lines[i].lstrip().startswith("hiddenimports="):
-                lines[i] = lines[i].replace("hiddenimports=",
-                                            "hiddenimports=['pytransform']+", 1)
-            elif lines[i].lstrip().startswith("hookspath="):
-                lines[i] = lines[i].replace("hookspath=",
-                                            "hookspath=[r'%s']+" % hookpath, 1)
-                break
-        else:
-            raise RuntimeError('Unsupport .spec file, no hookspath found')
+            if lines[i].lstrip().startswith('pathex='):
+                lines[i] = lines[i].replace('pathex=',
+                                            'pathex=[r"%s"]+' % hookpath, 1)
+                keys.append('pathex')
+            elif lines[i].lstrip().startswith('hiddenimports='):
+                lines[i] = lines[i].replace('hiddenimports=',
+                                            'hiddenimports=["pytransform"]+', 1)
+                keys.append('hiddenimports')
+            elif lines[i].lstrip().startswith('hookspath='):
+                lines[i] = lines[i].replace('hookspath=',
+                                            'hookspath=[r"%s"]+' % hookpath, 1)
+                keys.append('hookspath')
+        d = set(['pathex', 'hiddenimports', 'hookspath']) - set(keys)
+        if d:
+            raise RuntimeError('Unsupport .spec file, no %s found' % list(d))
 
     patched_file = specfile[:-5] + '-patched.spec'
     with open(patched_file, 'w') as f:
