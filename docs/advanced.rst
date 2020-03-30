@@ -516,6 +516,7 @@ If it raises this error::
 Check .spec file, make sure there are 2 lines in top level (no identation)::
 
     a = Analysis(...
+
     pyz = PYZ(...
 
 And there are 3 key parameters when creating an `Analysis` object, for example::
@@ -528,7 +529,8 @@ And there are 3 key parameters when creating an `Analysis` object, for example::
         ...
     )
 
-PyArmor will change these lines. Before v5.9.6, it need to be patched by manual:
+PyArmor will append required options to these lines automatically. But before
+v5.9.6, it need to be patched by manual:
 
 * Add module ``pytransform`` to `hiddenimports`
 * Add extra path ``DISTPATH/obf/temp`` to `pathex` and `hookspath`
