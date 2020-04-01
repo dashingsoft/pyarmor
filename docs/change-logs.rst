@@ -90,7 +90,7 @@ by `pip install pyarmor-webui`.
 
 5.8.7
 -----
-In this version, the scripts could be obfuscated with option `--enable-suffix`,
+In this version, the scripts could be obfuscated with option ``--enable-suffix``,
 then the name of the runtime package and builtin functions will be unique. By
 this way the scripts obfuscated by different capsule could run in the same
 Python interpreter.
