@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+5.9.6
+-----
+* Refine pack command. Now it's easy to pack the obfuscated scripts with an
+  exists `.spec` file, just specify it by ``-s``, refer to
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#bundle-obfuscated-scripts-with-customized-spec-file
+
 5.9.5
 -----
 * Change the plugin search policy, do not support enviorment variable
