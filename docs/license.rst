@@ -84,6 +84,7 @@ If the version of PyArmor < 5.6, unzip this registration file, then
 After the registration keyfile takes effect, you need obfuscate the
 scripts again.
 
-**The registration code is valid forever, it can be used permanently.**
+**The registration code is valid forever, it can be used permanently. But it may
+ not work with new versions, although up to now it works with all of versions.**
 
 .. include:: _common_definitions.txt

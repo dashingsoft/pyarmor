@@ -96,7 +96,8 @@ Check the registeration information:
 
     pyarmor register
 
-**The registration code is valid forever, it can be used permanently.**
+**The registration code is valid forever, it can be used permanently. But it may
+not work with new versions, although up to now it works with all of versions.**
 
 ## [Change Log](docs/change-logs.rst)
 
