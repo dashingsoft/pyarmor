@@ -105,7 +105,3 @@ not work with new versions, although up to now it works with all of versions.**
 
 Any question feel free email to <jondy.zhao@gmail.com>, or click here
 to [report an issue](https://github.com/dashingsoft/pyarmor/issues)
-
-If you think PyArmor is awesome, please give [this
-issue](https://github.com/vinta/awesome-python/pull/1528/) an up vote on
-[awesome-python](https://github.com/vinta/awesome-python).
