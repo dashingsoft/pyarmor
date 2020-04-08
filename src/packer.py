@@ -254,8 +254,12 @@ def _pyi_makespec(hookpath, src, entry, packcmd):
 
 
 def _patch_specfile(obfdist, src, specfile, hookpath=None):
-    with open(specfile) as f:
-        lines = f.readlines()
+    if sys.version_info[0] == 2:
+        with open(specfile, 'r') as f:
+            lines = f.readlines()
+    else:
+        with open(specfile, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
 
     p = os.path.abspath(obfdist)
     patched_lines = (

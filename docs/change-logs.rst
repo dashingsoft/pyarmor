@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+5.9.7
+-----
+* Fix pack issue: it will raise `UnicodeDecodeError` when the source path
+  includes non-ascii characters(#217)
+
 5.9.6
 -----
 * Refine pack command. Now it's easy to pack the obfuscated scripts with an
