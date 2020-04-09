@@ -288,7 +288,7 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None):
         "# Patch end.", "", "")
 
     if encoding is not None and sys.version_info[0] == 2:
-        patched_lines = [x.decode('utf-8') for x in patched_lines]
+        patched_lines = [x.decode(encoding) for x in patched_lines]
 
     for i in range(len(lines)):
         if lines[i].startswith("pyz = PYZ("):
