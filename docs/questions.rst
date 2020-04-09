@@ -25,11 +25,6 @@ As running the obfuscated scripts:
 * Turn on Python debug option by ``-d`` to print more information. For example::
 
       python -d obf_foo.py
-      PYTHONDEBUG=y python obf_foo.py
-
-      # In Windows
-      set PYTHONDEBUG=y
-      python obf_foo.py
 
 After python debug option is on, there will be a log file `pytransform.log`
 generated in the current path, which includes more debug information.

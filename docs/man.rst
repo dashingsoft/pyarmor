@@ -431,13 +431,9 @@ pyinstaller find the hook in the current path::
 More information about pyinstaller hook, refer to
 https://pyinstaller.readthedocs.io/en/stable/hooks.html#understanding-pyinstaller-hooks
 
-When something is wrong, turn on Python debug flag to show more information::
+When something is wrong, turn on PyArmor debug flag to print traceback::
 
-    PYTHONDEBUG=y pyarmor pack ...
-
-    # In windows
-    set PYTHONDEBUG=y
-    pyarmor pack ...
+    pyarmor -d pack ...
 
 **EXAMPLES**
 
