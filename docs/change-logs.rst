@@ -7,6 +7,10 @@ Change Logs
 -----
 * Fix pack issue: it will raise `UnicodeDecodeError` when the source path
   includes non-ascii characters(#217)
+* Fix obfuscate issue for Python2: it will raise `UnicodeDecodeError` when the
+  source path includes non-ascii characters
+* Refine pack command: it will print the output of PyInstaller to the console
+  either
 
 5.9.6
 -----
