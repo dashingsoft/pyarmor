@@ -40,14 +40,15 @@ without Python installed.
 import logging
 import os
 import shutil
-import subprocess
 import sys
 
+from codecs import open as codecs_open
 from distutils.util import get_platform
 from glob import glob
 from json import load as json_load
 from py_compile import compile as compile_file
 from shlex import split
+from subprocess import Popen, PIPE, STDOUT
 from zipfile import PyZipFile
 
 import polyfills.argparse as argparse
@@ -72,18 +73,22 @@ def logaction(func):
     return wrap
 
 
-def run_command(cmdlist):
+def run_command(cmdlist, verbose=True):
     logging.info('\n\n%s\n\n', ' '.join(
         [x if x.find(' ') == -1 else ('"%s"' % x) for x in cmdlist]))
-    if sys.flags.debug:
-        p = subprocess.Popen(cmdlist)
+    if verbose:
+        s = '=' * 20
+        logging.info('%s Run command %s', s, s)
+        p = Popen(cmdlist)
+        p.wait()
+        logging.info('%s End command %s\n', s, s)
+        if p.returncode != 0:
+            raise RuntimeError('Run command failed')
     else:
-        p = subprocess.Popen(cmdlist, stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT)
-    output, _ = p.communicate()
-
-    if p.returncode != 0:
-        raise RuntimeError(output.decode())
+        p = Popen(cmdlist, stdout=PIPE, stderr=STDOUT)
+        output, _ = p.communicate()
+        if p.returncode != 0:
+            raise RuntimeError(output.decode())
 
 
 def relpath(path, start=os.curdir):
@@ -254,12 +259,8 @@ def _pyi_makespec(hookpath, src, entry, packcmd):
 
 
 def _patch_specfile(obfdist, src, specfile, hookpath=None):
-    if sys.version_info[0] == 2:
-        with open(specfile, 'r') as f:
-            lines = f.readlines()
-    else:
-        with open(specfile, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
+    with codecs_open(specfile, 'r', 'utf-8') as f:
+        lines = f.readlines()
 
     p = os.path.abspath(obfdist)
     patched_lines = (
@@ -279,6 +280,9 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None):
         "                    a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')",
         "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]",
         "# Patch end.", "", "")
+
+    if sys.version_info[0] == 2:
+        patched_lines = [x.decode('utf-8') for x in patched_lines]
 
     for i in range(len(lines)):
         if lines[i].startswith("pyz = PYZ("):
@@ -313,7 +317,7 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None):
             raise RuntimeError('Unsupport .spec file, no %s found' % list(d))
 
     patched_file = specfile[:-5] + '-patched.spec'
-    with open(patched_file, 'w') as f:
+    with codecs_open(patched_file, 'w', 'utf-8') as f:
         f.writelines(lines)
 
     return os.path.normpath(patched_file)
@@ -507,7 +511,7 @@ def add_arguments(parser):
     parser.add_argument('--debug', action="store_true",
                         help='Do not remove build files after packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
-                        help='Entry script')
+                        help='Entry script or project path')
 
 
 def main(args):
@@ -526,10 +530,4 @@ if __name__ == '__main__':
         level=logging.INFO,
         format='%(levelname)-8s %(message)s',
     )
-    try:
-        main(sys.argv[1:])
-    except Exception as e:
-        if sys.flags.debug:
-            raise
-        print(e)
-        sys.exit(1)
+    main(sys.argv[1:])

@@ -562,7 +562,10 @@ def _obfuscate(args):
             logging.info('Auto exclude output path "%s"', x)
 
         if hasattr('', 'decode'):
-            pats = [p.decode() for p in pats]
+            try:
+                pats = [p.decode() for p in pats]
+            except UnicodeDecodeError:
+                pats = [p.decode('utf-8') for p in pats]
 
         files = Project.build_manifest(pats, path)
 
