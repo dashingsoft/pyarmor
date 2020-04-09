@@ -36,7 +36,7 @@ make_platform_files()
     cp -a ${src}/linux_i386 ${dst}/linux/x86;
     cp -a ${src}/linux_x86_64 ${dst}/linux/x86_64;
     cp -a ${src}/macosx_x86_64 ${dst}/darwin/x86_64;
-    (cd src; ln -s ../plugins)
+    cp -a plugins ${src}
 }
 
 # Make platform files
