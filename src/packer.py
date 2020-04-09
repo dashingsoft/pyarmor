@@ -259,8 +259,14 @@ def _pyi_makespec(hookpath, src, entry, packcmd):
 
 
 def _patch_specfile(obfdist, src, specfile, hookpath=None):
-    with codecs_open(specfile, 'r', 'utf-8') as f:
-        lines = f.readlines()
+    encoding = None
+    try:
+        with open(specfile, 'r') as f:
+            lines = f.readlines()
+    except UnicodeDecodeError:
+        encoding = 'utf-8'
+        with codecs_open(specfile, 'r', encoding) as f:
+            lines = f.readlines()
 
     p = os.path.abspath(obfdist)
     patched_lines = (
@@ -281,7 +287,7 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None):
         "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]",
         "# Patch end.", "", "")
 
-    if sys.version_info[0] == 2:
+    if encoding is not None and sys.version_info[0] == 2:
         patched_lines = [x.decode('utf-8') for x in patched_lines]
 
     for i in range(len(lines)):
@@ -317,8 +323,12 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None):
             raise RuntimeError('Unsupport .spec file, no %s found' % list(d))
 
     patched_file = specfile[:-5] + '-patched.spec'
-    with codecs_open(patched_file, 'w', 'utf-8') as f:
-        f.writelines(lines)
+    if encoding is None:
+        with open(patched_file, 'w') as f:
+            f.writelines(lines)
+    else:
+        with codecs_open(patched_file, 'w', encoding) as f:
+            f.writelines(lines)
 
     return os.path.normpath(patched_file)
 
