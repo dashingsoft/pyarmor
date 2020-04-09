@@ -392,6 +392,19 @@ check_return_value
 check_file_content result.log 'Generate 1 licenses OK.'
 check_file_exists licenses/reg-epoch-1/license.lic
 
+csih_inform "C-34. Test obfuscate script in the non-ascii path"
+propath=examples/中文路径
+mkdir $propath
+cp examples/simple/queens.py $propath
+$PYARMOR obfuscate -O test-non-ascii-path $propath/queens.py > result.log 2>&1
+
+check_return_value
+check_file_exists test-non-ascii-path/queens.py
+
+(cd test-non-ascii-path; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content test-non-ascii-path/result.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""

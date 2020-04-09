@@ -253,6 +253,19 @@ check_file_exists $dist/dist/foo/foo
 ( cd $dist; dist/foo/foo  >result.log 2>&1 )
 check_file_content $dist/result.log 'Hello test with specfile'
 
+csih_inform "Case 3-12: Test pack with non-ascii source path"
+dist=test-with-non-ascii-path
+project=$dist/中文路径
+mkdir -p $project
+echo "print('Hello test non-ascii path')" > $project/foo-zh.py
+$PYTHON pyarmor.py pack --output $dist/dist \
+        $project/foo-zh.py >result.log 2>&1
+check_return_value
+check_file_exists $dist/dist/foo-zh/foo-zh
+
+( cd $dist; dist/foo-zh/foo-zh  >result.log 2>&1 )
+check_file_content $dist/result.log 'Hello test non-ascii path'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
