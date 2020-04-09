@@ -39,6 +39,7 @@ without Python installed.
 
 import logging
 import os
+import re
 import shutil
 import sys
 
@@ -230,7 +231,7 @@ def check_setup_script(_type, setup):
     raise RuntimeError('No setup script %s found' % setup)
 
 
-def _make_hook_pytransform(hookfile, obfdist, nolicense=False):
+def _make_hook_pytransform(hookfile, obfdist, nolicense=False, encoding=None):
     # On Mac OS X pyinstaller will call mac_set_relative_dylib_deps to
     # modify .dylib file, it results in the cross protection of pyarmor fails.
     # In order to fix this problem, we need add .dylib as data file
@@ -245,8 +246,13 @@ def _make_hook_pytransform(hookfile, obfdist, nolicense=False):
     ]
     if not nolicense:
         lines.append('datas.append((r"{0}license.lic", "."))')
-    with open(hookfile, 'w') as f:
-        f.write('\n'.join(lines).format(p))
+
+    if encoding is None:
+        with open(hookfile, 'w') as f:
+            f.write('\n'.join(lines).format(p))
+    else:
+        with codecs_open(hookfile, 'w', encoding) as f:
+            f.write('\n'.join(lines).format(p))
 
 
 def _pyi_makespec(hookpath, src, entry, packcmd):
@@ -258,13 +264,21 @@ def _pyi_makespec(hookpath, src, entry, packcmd):
     # run_command([sys.executable] + packcmd + ['-y'] + options)
 
 
-def _patch_specfile(obfdist, src, specfile, hookpath=None):
-    encoding = None
-    try:
+def _guess_encoding(filename):
+    with open(filename, 'rb') as f:
+        line = f.read(80)
+        if line and line[0] == 35:
+            n = line.find(b'\n')
+            m = re.search(r'coding[=:]\s*([-\w.]+)', line[:n].decode())
+            if m:
+                return m.group(1)
+
+
+def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None):
+    if encoding is None:
         with open(specfile, 'r') as f:
             lines = f.readlines()
-    except UnicodeDecodeError:
-        encoding = 'utf-8'
+    else:
         with codecs_open(specfile, 'r', encoding) as f:
             lines = f.readlines()
 
@@ -388,10 +402,6 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         os.makedirs(obftemp)
     shutil.copy(os.path.join(obfdist, 'pytransform.py'), obftemp)
 
-    hookfile = os.path.join(obftemp, 'hook-pytransform.py')
-    logging.info('Generate hook script: %s', hookfile)
-    _make_hook_pytransform(hookfile, obfdist, nolicense)
-
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
         _pyi_makespec(obftemp, src, entry, packcmd)
@@ -403,8 +413,15 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         logging.info('Use customized .spec file: %s', specfile)
         hookpath = obftemp
 
+    encoding = _guess_encoding(specfile)
+
+    hookfile = os.path.join(obftemp, 'hook-pytransform.py')
+    logging.info('Generate hook script: %s', hookfile)
+    _make_hook_pytransform(hookfile, obfdist, nolicense, encoding)
+
     logging.info('Patching .spec file...')
-    patched_spec = _patch_specfile(obfdist, src, specfile, hookpath)
+    patched_spec = _patch_specfile(obfdist, src, specfile, hookpath,
+                                   encoding)
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
