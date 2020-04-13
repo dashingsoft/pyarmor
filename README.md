@@ -14,7 +14,7 @@ protects Python scripts by the following ways:
 * Clear f_locals of frame as soon as code object completed execution.
 * Verify the license file of obfuscated scripts while running it.
 
-Refer to [The Security of PyArmor](https://pyarmor.readthedocs.io/en/latest/security.html)
+Also refer to [The Security of PyArmor](https://pyarmor.readthedocs.io/en/latest/security.html)
 
 ## Support Platforms
 
@@ -60,8 +60,11 @@ Start webui, open web page in browser ([snapshots](https://github.com/dashingsof
 
 More usage, refer to
 
-* [Examples](src/examples/README.md)
-* [Documentation](https://pyarmor.readthedocs.io/en/latest/)
+* [Examples](https://pyarmor.readthedocs.io/en/latest/examples.html)
+* [Using PyArmor](https://pyarmor.readthedocs.io/en/latest/usage.html)
+* [Advanced Usage](https://pyarmor.readthedocs.io/en/latest/advanced.html)
+* [Man Page](https://pyarmor.readthedocs.io/en/latest/man.html)
+* [Sample Shell Scripts](src/examples/README.md)
 
 ## License
 
