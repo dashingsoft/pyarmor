@@ -22,7 +22,7 @@ Also refer to [The Security of PyArmor](https://pyarmor.readthedocs.io/en/latest
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_x86_64
 - Embedded Platform: Raspberry Pi, Banana Pi, Orange Pi, TS-4600 / TS-7600
 
-Refer to [docs/platforms.rst](docs/platforms.rst)
+Refer to [Standard Platform Names](https://pyarmor.readthedocs.io/en/latest/platforms.html#standard-platform-names)
 
 ## Quick Start
 
