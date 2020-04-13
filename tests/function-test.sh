@@ -1025,6 +1025,27 @@ check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
 check_file_content $output/result.log 'Check restrict mode failed'
 
+csih_inform "Case RM-3.1: test restrict mode 3 with generator function"
+output=test-restrict-3.1
+cat <<EOF > r3.py
+def hello(n):
+    print('Hello Generator %s' % n)
+def enumerate(sequence, start=0):
+    hello(start)
+    n = start
+    for elem in sequence:
+        yield n, elem
+        n += 1
+seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+list(enumerate(seasons, start=1))
+EOF
+$PYARMOR obfuscate -O $output --exact --restrict 3 r3.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON r3.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello Generator 1'
+
 csih_inform "Case RM-4: test restrict mode 4"
 output=test-restrict-4
 $PYARMOR obfuscate -O $output/mypkg -r --restrict 1 \
