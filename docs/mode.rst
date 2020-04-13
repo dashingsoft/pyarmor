@@ -208,7 +208,7 @@ formats::
 No any other statement can be inserted into obfuscated scripts.
 
 For examples, the obfuscate scirpt `b.py` doesn't work, because there
-is an extra code "print"::
+is an extra line "print"::
 
     $ cat b.py
     from pytransform import pyarmor_runtime
@@ -220,7 +220,7 @@ is an extra code "print"::
 
 * Mode 2
 
-In this mode, except that the obfuscated can't changed, there are 2 restricts:
+In this mode, except that the obfuscated scripts can't be changed, there are 2 restricts:
 
 - The entry script must be obfuscated
 - The obfuscated scripts could not be imported out of the obfuscated script
