@@ -1076,6 +1076,16 @@ check_return_value
 check_return_value
 check_file_content $output/result.log 'Hello Lambda'
 
+csih_inform "Case RM-3.3: test restrict mode 3 with non-wrap function"
+output=test-restrict-3.3
+$PYARMOR obfuscate -O $output --exact --restrict 3 \
+         test/data/no_wrap.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON no_wrap.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Test no wrap obfuscate mode: OK'
+
 csih_inform "Case RM-4: test restrict mode 4"
 output=test-restrict-4
 $PYARMOR obfuscate -O $output/mypkg -r --restrict 1 \
