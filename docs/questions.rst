@@ -150,17 +150,15 @@ instructions will be changed to::
     JMP 11
 
 In this case, it's complex to obfuscate the code object with wrap
-mode. So the code object is left as it's, but all the other code
-objects still are obfuscated.
-
-In later version, it will be obfuscated with non wrap mode.
+mode. So the code object is obfuscated with non wrap mode, but all the
+other code objects still are obfuscated with wrap mode.
 
 In current version add some unused code in this function so that the
 operand isn't the critical value may avoid this warning.
 
 .. note::
 
-   This has been fixed in v5.5.0.
+   Before v5.5.0, in this case the code object is left as it is.
 
 
 Error: Try to run unauthorized function
