@@ -589,10 +589,7 @@ csih_inform "Case P-13: Init project with empty entry"
 PROPATH=projects/test-empty-entry-script
 $PYARMOR init --src=. --entry="" $PROPATH  >result.log 2>&1
 check_return_value
-
-$PYARMOR info $PROPATH  >result.log 2>&1
-check_return_value
-check_file_content result.log 'entry: $'
+check_file_content $PROPATH/.pyarmor_config '"entry": ""'
 
 csih_inform "Case P-14: Config project with empty entry"
 PROPATH=projects/test-config-with-empty-script
