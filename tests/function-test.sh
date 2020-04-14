@@ -585,6 +585,24 @@ check_file_content result.log "simple[/\\]queens.py,helloworld[/\\]foo.py"
 check_file_content result.log "mydist"
 check_file_content result.log "licpath[/\\]license.lic"
 
+csih_inform "Case P-13: Init project with empty entry"
+PROPATH=projects/test-empty-entry-script
+$PYARMOR init --src=. --entry="" $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_return_value
+check_file_content result.log 'entry: $'
+
+csih_inform "Case P-14: Config project with empty entry"
+PROPATH=projects/test-config-with-empty-script
+$PYARMOR init --src=examples $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR config --entry="" $PROPATH  >result.log 2>&1
+check_return_value
+check_file_content result.log 'Change project entry to ""'
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""

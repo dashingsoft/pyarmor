@@ -62,7 +62,7 @@ def arcommand(func):
 
 
 def _format_entry(entry, src):
-    if entry is not None:
+    if entry:
         result = []
         for x in entry.split(','):
             x = x.strip()
@@ -95,8 +95,8 @@ def _init(args):
     logging.info('Python scripts base path: %s', src)
     logging.info('Project src is: %s', pro_src)
 
-    args.entry = _format_entry(args.entry, src)
     if args.entry:
+        args.entry = _format_entry(args.entry, src)
         logging.info('Format entry: %s', args.entry)
 
     name = os.path.basename(os.path.abspath(path))
