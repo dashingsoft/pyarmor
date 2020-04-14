@@ -1046,6 +1046,21 @@ check_return_value
 check_return_value
 check_file_content $output/result.log 'Hello Generator 1'
 
+csih_inform "Case RM-3.2: test restrict mode 3 with lambda function"
+output=test-restrict-3.2
+cat <<EOF > r3-2.py
+def hello():
+    print('Hello Lambda')
+foo = lambda : hello()
+foo()
+EOF
+$PYARMOR obfuscate -O $output --exact --restrict 3 r3-2.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON r3-2.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello Lambda'
+
 csih_inform "Case RM-4: test restrict mode 4"
 output=test-restrict-4
 $PYARMOR obfuscate -O $output/mypkg -r --restrict 1 \
