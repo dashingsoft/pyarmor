@@ -3,6 +3,13 @@
 Change Logs
 ===========
 
+5.9.8
+-----
+* Fix restrict mode 3 bug: the obfuscated function failed if it's called from
+  generator function even in the obfuscated script.
+* In pack command it will try to use the encoding `coding: xxx` in the first
+  comment line of `.spec` file
+
 5.9.7
 -----
 * Fix pack issue: it will raise `UnicodeDecodeError` when the source path
