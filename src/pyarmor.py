@@ -104,8 +104,11 @@ def _init(args):
        (args.type == 'auto' and os.path.exists(os.path.join(src,
                                                             '__init__.py'))):
         logging.info('Project is configured as package')
+        if args.entry is None:
+            logging.info('Entry script is set to "__init__.py" implicitly')
         project = Project(name=name, title=name, src=pro_src, is_package=1,
-                          entry=args.entry if args.entry else '__init__.py')
+                          entry='__init__.py' if args.entry is None
+                          else args.entry)
     else:
         logging.info('Project is configured as standalone application.')
         project = Project(name=name, title=name, src=pro_src, entry=args.entry)
@@ -148,7 +151,7 @@ def _config(args):
     if args.license_file is not None:
         args.license_file = _relpath(args.license_file)
         logging.info('Format license file to %s', args.license_file)
-    if args.entry is not None:
+    if args.entry:
         src = os.path.abspath(args.src) if args.src else project.src
         args.entry = _format_entry(args.entry, src)
         logging.info('Format entry: %s', args.entry)
