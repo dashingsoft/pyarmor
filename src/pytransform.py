@@ -156,8 +156,8 @@ def get_license_info():
         index += 1
 
     if rcode[index:].startswith('*FLAGS:'):
-        info['FLAGS'] = 1
         index += len('*FLAGS:') + 1
+        info['FLAGS'] = ord(rcode[index - 1])
 
     prev = None
     start = index
