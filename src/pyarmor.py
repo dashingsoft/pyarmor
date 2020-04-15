@@ -635,7 +635,7 @@ def _obfuscate(args):
                  package=package, suffix=suffix)
 
     logging.info('Obfuscate scripts with restrict mode %s',
-                 'on' if args.restrict else 'off')
+                 args.restrict if args.restrict else 'off')
     if not args.restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
         licpath = (os.path.join(output, 'pytransform' + suffix) if package
