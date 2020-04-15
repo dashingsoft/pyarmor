@@ -985,10 +985,12 @@ check_file_content $output/result.log 'Hello! PyArmor Test Case'
 cp $output/main.py $output/main.bak
 rm -rf $output/main.py? __pycache__
 echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode of module failed'
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
 
 cp $output/main.bak $output/main.py
 rm -rf $output/mypkg/foo.py? __pycache__ $output/mypkg/__pycache__
@@ -1016,10 +1018,12 @@ check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'Check restrict mode of module failed'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode of module failed'
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
 
 csih_inform "Case RM-3: test restrict mode 3"
 output=test-restrict-3
@@ -1035,10 +1039,12 @@ check_file_content $output/result.log 'Hello! PyArmor Test Case'
 check_file_content $output/result.log 'Check restrict mode of module failed'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode of module failed'
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
 
 csih_inform "Case RM-3.1: test restrict mode 3 with generator function"
 output=test-restrict-3.1
