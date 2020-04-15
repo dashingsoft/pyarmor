@@ -988,14 +988,14 @@ echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 cp $output/main.bak $output/main.py
 rm -rf $output/mypkg/foo.py? __pycache__ $output/mypkg/__pycache__
 echo -e "\nprint('This is obfuscated foo')" >> $output/mypkg/foo.py
 (cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 csih_inform "Case RM-2: test restrict mode 2"
 output=test-restrict-2
@@ -1009,17 +1009,17 @@ check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
 (cd $output; $PYTHON -c 'import main' >result.log 2>&1)
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 (cd $output; echo "import main" > a.py ; $PYTHON a.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 csih_inform "Case RM-3: test restrict mode 3"
 output=test-restrict-3
@@ -1032,13 +1032,13 @@ check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
 (cd $output; $PYTHON -c"import main" >result.log 2>&1 )
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 csih_inform "Case RM-3.1: test restrict mode 3 with generator function"
 output=test-restrict-3.1
@@ -1146,7 +1146,7 @@ EOF
 
 (cd $output; $PYTHON a.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
 
 echo ""
 echo "-------------------- Test restrict mode END ----------------"
