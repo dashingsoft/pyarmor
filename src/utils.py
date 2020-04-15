@@ -471,8 +471,14 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         myzip.extract('product.key', output)
 
     if licfile is None:
-        logging.info('Extract license.lic')
-        myzip.extract('license.lic', output)
+        logging.info('Generate default license.lic')
+        make_license_key(capsule, 'Dashingsoft-PyArmor',
+                         output=os.path.join(output, 'license.lic'),
+                         key=myzip.read('private.key'))
+        # info = myzip.getinfo('license.lic')
+        # if info.date_time[0] > 2020:
+        #     logging.info('Extract license.lic')
+        #     myzip.extract('license.lic', output)
     else:
         logging.info('Copying %s as license file', relpath(licfile))
         shutil.copy2(licfile, os.path.join(output, 'license.lic'))
