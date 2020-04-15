@@ -5,10 +5,11 @@ Change Logs
 
 6.0.1
 -----
-* Fix restrict mode 3 bug: the obfuscated script crashes or complains of the
+
+* Fix restrict mode 3 bug: the obfuscated script crashes or complains of this
   error: `This function could not be called from the plain script` (#219)
-* Fix bug: the obfuscate script raises unknown opcode error when the script is
-  obfuscated by `obf_code=2`
+* Fix bug: the obfuscated script raises unknown opcode error when the script is
+  obfuscated by `obf_code=2` if there is recursive function call
 * Fix command `init` and `config` bug: the entry script is set to `.` other than
   empty when passing ``--entry=""``
 * Fix bug: the traceback will print very long line if the obfuscated script
