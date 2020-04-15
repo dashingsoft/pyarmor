@@ -260,7 +260,9 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
     try:
         m = cdll.LoadLibrary(filename)
     except Exception as e:
-        raise PytransformError('Load %s failed:\n%s' % (filename, e))
+        if sys.flags.debug:
+            print('Load %s failed:\n%s' % (filename, e))
+        raise
 
     # Removed from v4.6.1
     # if plat == 'linux':
@@ -293,11 +295,8 @@ def pyarmor_init(path=None, is_runtime=0, platid=None, suffix=''):
 
 
 def pyarmor_runtime(path=None, suffix=''):
-    try:
-        pyarmor_init(path, is_runtime=1, suffix=suffix)
-        init_runtime()
-    except Exception as e:
-        raise PytransformError(e)
+    pyarmor_init(path, is_runtime=1, suffix=suffix)
+    init_runtime()
 
 # ----------------------------------------------------------
 # End of pytransform
