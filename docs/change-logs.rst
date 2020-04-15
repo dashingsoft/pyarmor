@@ -3,6 +3,26 @@
 Change Logs
 ===========
 
+6.0.1
+-----
+* Fix restrict mode 3 bug: the obfuscated script crashes or complains of the
+  error: `This function could not be called from the plain script` (#219)
+* Fix bug: the obfuscate script raises unknown opcode error when the script is
+  obfuscated by `obf_code=2`
+* Fix command `init` and `config` bug: the entry script is set to `.` other than
+  empty when passing ``--entry=""``
+* Fix bug: the traceback will print very long line if the obfuscated script
+  raises exception
+* Fix bug: in some special cases the obfuscated scripts which are obfuscated
+  with ``--enable-suffix`` still conflict with other obfuscated packages
+* Refine the error message as violating restrict mode
+* The obfuscated script will raise exception `RuntimeError` other than quit
+  directly when something is wrong
+* When generating `license.lic` for the obfuscated scripts, the license version
+  information will be embedded into the license file implicitly
+* Do not transfer exception type to `PytransformError` as pyarmor initializes
+  failed
+
 5.9.8
 -----
 * Fix restrict mode 3 bug: the obfuscated function failed if it's called from
