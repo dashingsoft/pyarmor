@@ -115,6 +115,8 @@ Then specify platform name when obfuscating the scripts::
     # For project
     pyarmor build --platform linux.armv7
 
+.. _obfuscating scripts with different features:
+
 Obfuscating scripts with different features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -359,6 +361,9 @@ Refer to https://docs.python.org/3/library/site.html
     Before v5.7.0, you need create the bootstrap package by the :ref:`runtime
     files` manually.
 
+
+.. _obfuscating python scripts in different modes:
+
 Obfuscating Python Scripts In Different Modes
 ---------------------------------------------
 
@@ -584,6 +589,9 @@ For example::
 
 More information about restrict mode, refer to :ref:`Restrict Mode`
 
+
+.. _checking imported function is obfuscated:
+
 Checking Imported Function Is Obfuscated
 ----------------------------------------
 
@@ -680,6 +688,8 @@ it's distributed, obfuscating the script with this plugin::
        # @pyarmor_assert_armored(foo.connect, foo.connect2)
 
 
+.. _call pyarmor from python script:
+
 Call `pyarmor` From Python Script
 ---------------------------------
 
@@ -701,6 +711,9 @@ In order to suppress all normal output of pyarmor, call it with ``--silent``
 From v5.7.3, when `pyarmor` called by this way and something is wrong, it will
 raise exception other than call `sys.exit`.
 
+
+.. _check license periodly when the obfuscated script is running:
+
 Check license periodly when the obfuscated script is running
 ------------------------------------------------------------
 
@@ -712,6 +725,9 @@ example::
     pyarmor obfuscate foo.py
     pyarmor licenses --enable-period-mode code-001
     cp licenses/code-001/license.lic ./dist
+
+
+.. _work with nuitka:
 
 Work with Nuitka
 ----------------
