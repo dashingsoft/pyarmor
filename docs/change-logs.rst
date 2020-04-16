@@ -18,6 +18,7 @@ Change Logs
 * Refine the error message as violating restrict mode
 * The obfuscated script will raise exception `RuntimeError` other than quit
   directly when something is wrong
+  **Now it will print a pretty traceback to find where is the problem**
 * When generating `license.lic` for the obfuscated scripts, the license version
   information will be embedded into the license file implicitly
 * Do not transfer exception type to `PytransformError` as pyarmor initializes
