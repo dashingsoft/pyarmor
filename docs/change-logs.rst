@@ -5,7 +5,6 @@ Change Logs
 
 6.0.1
 -----
-
 * Fix restrict mode 3 bug: the obfuscated script crashes or complains of this
   error: `This function could not be called from the plain script` (#219)
 * Fix bug: the obfuscated script raises unknown opcode error when the script is
