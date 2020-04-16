@@ -414,15 +414,15 @@ def _licenses(args):
     restrict_mode = 0 if args.disable_restrict_mode else args.restrict
     period_mode = 1 if args.enable_period_mode else 0
     if restrict_mode:
-        logging.info('The license file generated is in restrict mode')
+        logging.info('The license file is generated in restrict mode')
     else:
-        logging.info('The license file generated is in disable restrict mode')
+        logging.info('The license file is generated in restrict mode disabled')
         flags |= 1
     if period_mode:
-        logging.info('The license file generated is in period mode')
+        logging.info('The license file is generated in period mode')
         flags |= 2
     else:
-        logging.info('The license file generated is in diable period mode')
+        logging.info('The license file is generated in period mode disabled')
 
     if flags:
         fmt = '%s*FLAGS:%c' % (fmt, chr(flags))
@@ -634,8 +634,6 @@ def _obfuscate(args):
     make_runtime(capsule, output, platforms=platforms,
                  package=package, suffix=suffix)
 
-    logging.info('Obfuscate scripts with restrict mode %s',
-                 args.restrict if args.restrict else 'off')
     if not args.restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
         licpath = (os.path.join(output, 'pytransform' + suffix) if package
