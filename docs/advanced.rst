@@ -774,6 +774,72 @@ byte codes aren't translated to c code indeed.
 
    In this case, pyarmor maybe not work with Nuitka.
 
+
+.. _work with cython:
+
+Work with Cython
+----------------
+
+Here it's an example show how to `cythonize` a python script `foo.py` obfuscated
+by pyarmor with Python37::
+
+    print('Hello Cython')
+
+First obfuscate it with some extra options::
+
+    pyarmor obfuscate --package-runtime 0 --no-cross-protection --restrict 0 foo.py
+
+The obfuscated script and runtime files will be saved in the path `dist`, about
+the meaning of each options, refer to command :ref:`obfuscate`.
+
+Next `cythonize` both `foo.py` and `pytransform.py` with extra options ``-k``
+and ``--lenient`` to generate `foo.c` and `pytransform.c`::
+
+    cd dist
+    cythonize -3 -k --lenient foo.py pytransform.py
+
+Without options ``-k`` and ``--lenient``, it will raise exception::
+
+    undeclared name not builtin: __pyarmor__
+
+Then compile `foo.c` and `pytransform.c` to the extension modules::
+
+    gcc -shared $(python-config --cflags) $(python-config --ldflags) \
+         -o foo$(python-config --extension-suffix) foo.c
+
+    gcc -shared $(python-config --cflags) $(python-config --ldflags) \
+        -o pytransform$(python-config --extension-suffix) pytransform.c
+
+Finally test it, remove all the `.py` files and import the extension modules::
+
+    mv foo.py pytransform.py /tmp
+    python -c 'import foo'
+
+It will print `Hello Cython` as expected.
+
+
+.. _work with pyupdater:
+
+Work with PyUpdater
+-------------------
+
+PyArmor should work with PyUpdater by this way, for example, there is a script
+`foo.py`:
+
+1. Generate `foo.spec` by PyUpdater
+
+2. Generate `foo-patched.spec` by pyarmor with option ``--debug``::
+
+    pyarmor pack --debug -s foo.spec foo.py
+
+This patched `foo-patched.spec` could be used by PyUpdater in build command
+
+If your Python scripts are modified, just obfuscate them again, all the options
+for command :ref:`obfuscate` could be got from the output of command :ref:`pack`
+
+More information refer to the description of command :ref:`pack` and advanced
+usage :ref:`bundle-obfuscated-scripts-with-customized-spec-file`
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt
