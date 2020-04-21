@@ -590,8 +590,8 @@ def search_plugins(plugins):
         result = []
         for name in plugins:
             if name == 'on':
-                logging.info('Enable internal plugin')
-                result.append(('<internal>', '<plugin>', 0))
+                logging.info('Enable inline plugin')
+                result.append(['<inline>', '<plugin>', 0])
                 continue
             i = 1 if name[0] == '@' else 0
             filename = name[i:] + ('' if name.endswith('.py') else '.py')
@@ -607,25 +607,24 @@ def search_plugins(plugins):
                 else:
                     raise RuntimeError('No script found for plugin %s' % name)
             logging.info('Found plugin %s at: %s', key, filename)
-            result.append((key, filename, not i))
+            result.append([key, filename, not i])
         return result
 
 
-def _patch_plugins(plugins, pnames):
+def _patch_plugins(plugins):
     result = []
     for key, filename, x in plugins:
-        if x or (key in pnames):
+        if x:
             logging.info('Apply plugin %s', key)
             lines = _readlines(filename)
             result.append(''.join(lines))
     return ['\n'.join(result)]
 
 
-def _filter_call_marker(plugins, marker, name):
-    if marker.startswith('# PyArmor'):
-        return True
-    for key, filename, x in plugins:
-        if name == key:
+def _filter_call_marker(plugins, name):
+    for plugin in plugins:
+        if plugin[0] == name:
+            plugin[-1] = True
             return True
 
 
@@ -778,25 +777,28 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         n = 0
         k = -1
         plist = []
-        pnames = []
-        markers = '# PyArmor Plugin: ', '# pyarmor_', '# @pyarmor_'
+        stub_marker = '# {PyArmor Plugins}'
+        inline_marker = '# PyArmor Plugin: '
+        call_markers = '# pyarmor_', '# @pyarmor_'
         for line in lines:
-            if line.startswith('# {PyArmor Plugins}'):
+            if line.startswith(stub_marker):
                 k = n + 1
             else:
-                for marker in markers:
-                    i = line.find(marker)
-                    if i > -1:
-                        name = line[i+len(marker):].strip().strip('@')
-                        t = name.find('(')
-                        name = (name if t == -1 else name[:t]).strip()
-                        if _filter_call_marker(plugins, marker, name):
+                i = line.find(inline_marker)
+                if i > -1:
+                    plist.append((n if k == -1 else n+1, i, inline_marker))
+                else:
+                    for marker in call_markers:
+                        i = line.find(marker)
+                        if i == -1:
+                            continue
+                        name = line[i+len(marker):line.find('(')].strip()
+                        if _filter_call_marker(plugins, name):
                             plist.append((n if k == -1 else n+1, i, marker))
-                            pnames.append(name)
             n += 1
         if k > -1:
             logging.info('Patch this script with plugins')
-            lines[k:k] = _patch_plugins(plugins, pnames)
+            lines[k:k] = _patch_plugins(plugins)
         for n, i, m in plist:
             c = '@' if m[2] == '@' else ''
             lines[n] = lines[n][:i] + c + lines[n][i+len(m):]

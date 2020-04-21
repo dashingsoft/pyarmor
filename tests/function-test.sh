@@ -262,10 +262,10 @@ check_return_value
 check_return_value
 check_file_content dist-plugin/result.log 'Hello Plugin'
 
-csih_inform "C-19. Test option --plugin with special value 'enabled'"
+csih_inform "C-19. Test option --plugin with special value 'on'"
 mkdir test-plugins
 echo "# PyArmor Plugin: print('Hello World')" > test-plugins/foo.py
-$PYARMOR obfuscate -O dist-plugin2 --plugin enabled \
+$PYARMOR obfuscate -O dist-plugin2 --plugin on \
          --exact test-plugins/foo.py >result.log 2>&1
 check_return_value
 
