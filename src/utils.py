@@ -589,7 +589,7 @@ def search_plugins(plugins):
     if plugins:
         result = []
         for name in plugins:
-            if name == 'enabled':
+            if name == 'on':
                 logging.info('Enable internal plugin')
                 result.append(('<internal>', '<plugin>', 0))
                 continue
