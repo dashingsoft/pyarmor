@@ -802,7 +802,8 @@ Without options ``-k`` and ``--lenient``, it will raise exception::
 
     undeclared name not builtin: __pyarmor__
 
-Then compile `foo.c` and `pytransform.c` to the extension modules::
+Then compile `foo.c` and `pytransform.c` to the extension modules. In MacOS,
+just run the following commands, but in Linux, with extra cflag ``-fPIC``::
 
     gcc -shared $(python-config --cflags) $(python-config --ldflags) \
          -o foo$(python-config --extension-suffix) foo.c
@@ -823,8 +824,8 @@ It will print `Hello Cython` as expected.
 Work with PyUpdater
 -------------------
 
-PyArmor should work with PyUpdater by this way, for example, there is a script
-`foo.py`:
+PyArmor should work with `PyUpdater`_ by this way, for example, there is a
+script `foo.py`:
 
 1. Generate `foo.spec` by PyUpdater
 
