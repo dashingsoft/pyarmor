@@ -143,7 +143,7 @@ plugin definition marker.
 
 The first form called `Plugin Inline Marker`, PyArmor just removes this pattern
 and one following whitespace exactly, and leave the rest part as it is. For
-example, these inline markers in the script ``foo.py``::
+example, these are inline markers in the script ``foo.py``::
 
     # PyArmor Plugin: check_ntp_time()
     # PyArmor Plugin: print('This is plugin code')
@@ -159,19 +159,20 @@ In the ``dist/foo.py``, they'll be replaced as::
 
 So long as there is any plugin specified in the command line, these replacements
 will be taken place. If there is no external plugin script, use special plugin
-name ``on`` in the command line. For examples::
+name ``on`` in the command line. For example::
 
     pyarmor obfuscate --plugin on foo.py
 
 The second form called `Plugin Call Marker`, it's only used to call function
 deinfed in the plugin script. Besides, if this function name is not specified as
-plugin name, PyArmor doesn't touch this marker. For example::
+plugin name, PyArmor doesn't touch this marker. For example, obufscate the
+script by this command::
 
     pyarmor obfuscate --plugin check_ntp_time foo.py
 
-In the ``foo.py``, only the first marker works, the second marker will be kept
-as it is, because there is no plugin name specified in the command line as the
-function name ``check_multi_mac``::
+In the ``foo.py``, only the first marker will be handled, the second marker will
+be kept as it is, because there is no plugin name specified in the command line
+as the function name ``check_multi_mac``::
 
     # pyarmor_check_ntp_time()
     # pyarmor_check_multi_mac()
@@ -200,15 +201,18 @@ only when it's used in the script, otherwise it's ignored. For example::
 
     pyarmor obfuscate --plugin @check_ntp_time foo.py
 
-In the script ``foo.py`` must call plugin function ``check_ntp_time`` by one of
+The script ``foo.py`` must call plugin function ``check_ntp_time`` by one of
 `Plugin Call Marker`. For example::
 
     # pyarmor_check_ntp_time()
 
-The `Plugin Inline Marker` doesn't work. For example, this doesn't work::
+The `Plugin Inline Marker` doesn't work. For example::
 
     # PyArmor Plugin: check_ntp_time()
 
+Even this marker will be replaced with ``check_ntp_time()``, but the plugin
+script will not be injected into the obfuscated script. When it runs, it will
+complain of no function `check_ntp_name` found.
 
 .. _special handling of entry script:
 
