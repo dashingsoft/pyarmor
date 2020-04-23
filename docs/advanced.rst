@@ -593,19 +593,19 @@ More information about restrict mode, refer to :ref:`Restrict Mode`
 Using Plugin To Improve Security
 --------------------------------
 
-使用插件可以自由的加入自己的私有检查代码到被加密后的脚本，但是又不影响原来脚本的
-执行。因为这些代码一般情况下在没有加密的脚本中是无法正常运行的，如果直接把这些代
-码写到脚本里，原来的脚本就无法正常调试。
+By plugin any private check point could be injected into the obfuscated scripts,
+and it doesn't impact for debugging the original scripts. Most of them must be
+run in the obfuscated scripts, if they're not commented as plugin, it will break
+the plain scripts.
 
-通过增加私有的检查代码，可以很大程度上提高加密脚本的安全性，因为没有人知道你的检
-查逻辑，并且你可以随时更改这些检查逻辑。
+No one knows your check logic, and you can change it in anytime. So it's more security.
 
-使用内联插件检查动态库没有被修改
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using Inline Plugin To Check Dynamic Library
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Althouth `PyArmor` provides cross protection, it also could check the dynamic
-library in the startup to make sure it's changed by others. This example uses
-inline plugin to check the modified time to protect the dynamic library by
+library in the startup to make sure it's not changed by others. This example
+uses inline plugin to check the modified time to protect the dynamic library by
 inserting the following comment to ``main.py``
 
 .. code:: python
@@ -619,6 +619,15 @@ Then obfuscate the script and enable inline plugin by this way::
 
   pyarmor obfuscate --plugin on main.py
 
+Once the obfuscated script starts, the following plugin code will be run at
+first
+
+.. code:: python
+
+  import os
+  libname = os.path.join( os.path.dirname( __file__ ), '_pytransform.so' )
+  if not os.stat( libname ).st_mtime_ns == 102839284238:
+      raise RuntimeError('Invalid Library')
 
 .. _checking imported function is obfuscated:
 
