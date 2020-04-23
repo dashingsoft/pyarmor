@@ -27,6 +27,7 @@ Python script. That is to say:
 
 **The original python scripts can be replaced with obfuscated scripts seamlessly.**
 
+
 .. _how to obfuscate scripts:
 
 How to Obfuscate Python Scripts
@@ -129,7 +130,7 @@ Generally there is only one in a script, all the plugins will be injected
 here. It must be one leading comment line, no indentation. If there is no plugin
 definition marker, none of plugins will be injected.
 
-The other markers are mainly used to call the function defined in the plugin
+The others are mainly used to call the function defined in the plugin
 scripts. There are 3 forms, any comment line with this prefix will be as a
 plugin marker::
 
@@ -137,12 +138,12 @@ plugin marker::
     # pyarmor_
     # @pyarmor_
 
-They could appear many times, any indentation, generally should be behind plugin
-definition marker.
+They could appear many times, in any indentation, generally should be behind
+plugin definition marker.
 
-The first form also called `Plugin Inline Marker`, PyArmor just remove this
-pattern and one following whitespace exactly, and leave the rest part of this
-line as it is. For example::
+The first form called `Plugin Inline Marker`, PyArmor just removes this pattern
+and one following whitespace exactly, and leave the rest part as it is. For
+example::
 
     # PyArmor Plugin: check_ntp_time()             ==> check_ntp_time()
     # PyArmor Plugin: print('This is plugin code') ==> print('This is plugin code')
@@ -155,12 +156,11 @@ name ``on`` in the command line. For examples::
 
     pyarmor obfuscate --plugin on foo.py
 
-The secondæ forms called `Plugin Call Marker`, it's only used to call function
-deinfed in the plugin script. And if this function name is not specified as
-plugin name, PyArmor doesn't touch this marker. Besides, the plugin name must
-have leading ``@`` in the command line, for example::
+The second form called `Plugin Call Marker`, it's only used to call function
+deinfed in the plugin script. Besides, if this function name is not specified as
+plugin name, PyArmor doesn't touch this marker. For example::
 
-    pyarmor obfuscate --plugin @check_ntp_time foo.py
+    pyarmor obfuscate --plugin check_ntp_time foo.py
 
 In the ``foo.py``, only the first marker works, the second marker will be kept
 as it is, because there is no plugin name specified in the command line as the
@@ -174,6 +174,17 @@ replaced with ``@``, it's mainly used to inject a decorator. For example::
 
     # @pyarmor_assert_obfuscated(foo.connect) ==> @assert_obfuscated(foo.connect)
 
+If the plugin name have a leading ``@``, it will be injected into the script
+only if it's used in the script, otherwise it's ignored. For example::
+
+    pyarmor obfuscate --plugin @check_ntp_time foo.py
+
+In the script ``foo.py`` must call plugin function ``check_ntp_time`` by one of
+`Plugin Call Marker`, other form doesn't work::
+
+    # pyarmor_check_ntp_time()
+
+    
 .. _special handling of entry script:
 
 Special Handling of Entry Script
@@ -261,6 +272,7 @@ To prevent PyArmor from inserting this protection code, pass
 
 After the entry script is obfuscated, the :ref:`Bootstrap Code` will be inserted
 at the beginning of the obfuscated script.
+
 
 .. _how to run obfuscated scripts:
 
