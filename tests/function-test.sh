@@ -1121,6 +1121,49 @@ check_return_value
 check_file_content $output/result.log 'This is proxy hello: Three'
 check_file_content $output/result.log 'Hello! Three'
 
+csih_inform "Case RM-4.1: test restrict mode 4 with exception"
+output=test-restrict-4.1
+mkdir -p $output/mypkg
+cat <<EOF > $output/mypkg/__init__.py
+from .bar import Testing, print_msg
+EOF
+cat <<EOF > $output/mypkg/bar.py
+class Testing():
+    def __init__(self):
+        self.key = 'ABCD'
+def print_msg():
+    print('This is restrict mode 4 testing')
+EOF
+cat <<EOF > $output/test1.py
+from dist import Testing, print_msg
+try:
+    testing = Testing()
+except Exception:
+    testing = Testing()
+    print('Restrict mode 4 got %s' % testing.key)
+EOF
+cat <<EOF > $output/test2.py
+from dist import Testing, print_msg
+try:
+    print_msg()
+except Exception:
+    print_msg()
+EOF
+
+$PYARMOR obfuscate -O $output/dist --restrict 1 \
+         $output/mypkg/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 4 --exact \
+         $output/mypkg/bar.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON test1.py > result.log 2>&1)
+check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+(cd $output; $PYTHON test2.py > result.log 2>&1)
+check_file_content $output/result.log 'This is restrict mode 4 testing' not
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
 csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
 output=test-restrict-bootstrap
 $PYARMOR obfuscate -O $output -r --restrict 0 --no-bootstrap \
