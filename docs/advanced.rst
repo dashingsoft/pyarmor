@@ -590,13 +590,15 @@ For example::
 More information about restrict mode, refer to :ref:`Restrict Mode`
 
 
+.. _using plugin to improve security:
+
 Using Plugin To Improve Security
 --------------------------------
 
-By plugin any private check point could be injected into the obfuscated scripts,
-and it doesn't impact for debugging the original scripts. Most of them must be
-run in the obfuscated scripts, if they're not commented as plugin, it will break
-the plain scripts.
+By plugin any private checkpoint could be injected into the obfuscated scripts,
+and it doesn't impact the original scripts. Most of them must be run in the
+obfuscated scripts, if they're not commented as plugin, it will break the plain
+scripts.
 
 No one knows your check logic, and you can change it in anytime. So it's more security.
 
@@ -605,7 +607,7 @@ Using Inline Plugin To Check Dynamic Library
 
 Althouth `PyArmor` provides cross protection, it also could check the dynamic
 library in the startup to make sure it's not changed by others. This example
-uses inline plugin to check the modified time to protect the dynamic library by
+uses inline plugin to check the modified time protecting the dynamic library by
 inserting the following comment to ``main.py``
 
 .. code:: python
