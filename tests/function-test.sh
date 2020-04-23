@@ -1152,7 +1152,7 @@ EOF
 
 $PYARMOR obfuscate -O $output/dist --restrict 1 \
          $output/mypkg/__init__.py > result.log 2>&1
-$PYARMOR obfuscate -O $output/dist --restrict 4 --exact \
+$PYARMOR obfuscate -O $output/dist --restrict 4 --bootstrap 0 --exact \
          $output/mypkg/bar.py > result.log 2>&1
 check_return_value
 
