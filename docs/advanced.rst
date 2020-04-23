@@ -590,48 +590,79 @@ For example::
 More information about restrict mode, refer to :ref:`Restrict Mode`
 
 
+Using Plugin To Improve Security
+--------------------------------
+
+使用插件可以自由的加入自己的私有检查代码到被加密后的脚本，但是又不影响原来脚本的
+执行。因为这些代码一般情况下在没有加密的脚本中是无法正常运行的，如果直接把这些代
+码写到脚本里，原来的脚本就无法正常调试。
+
+通过增加私有的检查代码，可以很大程度上提高加密脚本的安全性，因为没有人知道你的检
+查逻辑，并且你可以随时更改这些检查逻辑。
+
+使用内联插件检查动态库没有被修改
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Althouth `PyArmor` provides cross protection, it also could check the dynamic
+library in the startup to make sure it's changed by others. This example uses
+inline plugin to check the modified time to protect the dynamic library by
+inserting the following comment to ``main.py``
+
+.. code:: python
+
+  # PyArmor Plugin: import os
+  # PyArmor Plugin: libname = os.path.join( os.path.dirname( __file__ ), '_pytransform.so' )
+  # PyArmor Plugin: if not os.stat( libname ).st_mtime_ns == 102839284238:
+  # PyArmor Plugin:     raise RuntimeError('Invalid Library')
+
+Then obfuscate the script and enable inline plugin by this way::
+
+  pyarmor obfuscate --plugin on main.py
+
+
 .. _checking imported function is obfuscated:
 
 Checking Imported Function Is Obfuscated
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sometimes it need to make sure the imported functions from other module are
-obfuscated. For example, there are 2 scripts `main.py` and `foo.py`::
+obfuscated. For example, there are 2 scripts `main.py` and `foo.py`
 
-    $ cat main.py
+.. code:: python
+
+    # main.py
 
     import foo
 
     def start_server():
         foo.connect('root', 'root password')
+        foo.connect2('user', 'user password')
 
-    $ cat foo.py
-
+    # foo.py
     def connect(username, password):
         mysql.dbconnect(username, password)
 
 In the obfuscated `main.py`, it need to be sure `foo.connect` is
 obfuscated. Otherwise the end users may replace the obfuscated `foo.py` with
-this plain code::
+this plain code
+
+.. code:: python
 
     def connect(username, password):
         print('password is %s', password)
 
-One solution is to check imported functions by decorator `assert_armored` in the
-`main.py`. For example::
+One solution is enable :ref:`restrict mode`, the other way is use decorator to
+make sure the function `connect` is yours.
 
-    import foo
+For example, first write a plugin script `asser_armored.py`
+
+.. code:: python
 
     def assert_armored(*names):
         def wrapper(func):
             def _execute(*args, **kwargs):
                 for s in names:
-                    # For Python2
-                    # if not (s.func_code.co_flags & 0x20000000):
-                    # For Python3
-                    if not (s.__code__.co_flags & 0x20000000):
-                        raise RuntimeError('Access violate')
-                    # Also check a piece of byte code for special function
+                    # Check a piece of byte code for special function
                     if s.__name__ == 'connect':
                         if s.__code__.co_code[10:12] != b'\x90\xA2':
                             raise RuntimeError('Access violate')
@@ -639,54 +670,26 @@ One solution is to check imported functions by decorator `assert_armored` in the
             return _execute
         return wrapper
 
-    @ assert_armored(foo.connect, foo.connect2)
-    def start_server():
-        foo.connect('root', 'root password')
-        foo.connect2('user', 'user password')
+Then edit `main.py` , insert plugin markers
 
-Plugin Implementation
-~~~~~~~~~~~~~~~~~~~~~
-First write a plugin script `asser_armored.py`::
-
-    def assert_armored(*names):
-        def wrapper(func):
-            def _execute(*args, **kwargs):
-                for s in names:
-                    # For Python2
-                    # if not (s.func_code.co_flags & 0x20000000):
-                    # For Python3
-                    if not (s.__code__.co_flags & 0x20000000):
-                        raise RuntimeError('Access violate')
-                    # Also check a piece of byte code for special function
-                    if s.__name__ == 'connect':
-                        if s.__code__.co_code[10:12] != b'\x90\xA2':
-                            raise RuntimeError('Access violate')
-                return func(*args, **kwargs)
-            return _execute
-        return wrapper
-
-Then edit `main.py` , insert plugin markers. For examples::
+.. code:: python
 
     import foo
 
     # {PyArmor Plugins}
 
-    # PyArmor Plugin:  @assert_armored(foo.connect, foo.connect2)
+    # PyArmor Plugin:  @assert_armored(foo.connect)
     def start_server():
         foo.connect('root', 'root password')
-        ...
 
-So the original script could be run normally when it's not obfuscated. Only when
-it's distributed, obfuscating the script with this plugin::
+Then obfuscate it with this command::
 
     pyarmor obfuscate --plugin assert_armored main.py
 
-.. note::
+.. important::
 
-   After v5.7.2, if you prefer, the marker could be this form::
-
-       # @pyarmor_assert_armored(foo.connect, foo.connect2)
-
+   The function ``assert_armored`` is sample code, it may not work in real
+   script. And for the sake of security, write your private check code.
 
 .. _call pyarmor from python script:
 
