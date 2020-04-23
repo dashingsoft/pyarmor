@@ -143,12 +143,19 @@ plugin definition marker.
 
 The first form called `Plugin Inline Marker`, PyArmor just removes this pattern
 and one following whitespace exactly, and leave the rest part as it is. For
-example::
+example, these inline markers in the script ``foo.py``::
 
-    # PyArmor Plugin: check_ntp_time()             ==> check_ntp_time()
-    # PyArmor Plugin: print('This is plugin code') ==> print('This is plugin code')
-    # PyArmor Plugin: if sys.flags.debug:          ==> if sys.flags.debug:
-    # PyArmor Plugin:     check_something():       ==>     check_something()
+    # PyArmor Plugin: check_ntp_time()
+    # PyArmor Plugin: print('This is plugin code')
+    # PyArmor Plugin: if sys.flags.debug:
+    # PyArmor Plugin:     check_something():
+
+In the ``dist/foo.py``, they'll be replaced as::
+
+    check_ntp_time()
+    print('This is plugin code')
+    if sys.flags.debug:
+        check_something()
 
 So long as there is any plugin specified in the command line, these replacements
 will be taken place. If there is no external plugin script, use special plugin
@@ -166,26 +173,41 @@ In the ``foo.py``, only the first marker works, the second marker will be kept
 as it is, because there is no plugin name specified in the command line as the
 function name ``check_multi_mac``::
 
-    # pyarmor_check_ntp_time()      ==>   check_ntp_time()
-    # pyarmor_check_multi_mac()     ==>   # pyarmor_check_multi_mac()
+    # pyarmor_check_ntp_time()
+    # pyarmor_check_multi_mac()
+
+    ==>
+
+    check_ntp_time()
+    # pyarmor_check_multi_mac()
 
 The last form ``# @pyarmor_`` is almost same as the second, but the comment
 prefix will be replaced with ``@``, it's mainly used to inject a decorator. For
 example::
 
-    # @pyarmor_assert_obfuscated(foo.connect) ==> @assert_obfuscated(foo.connect)
-    def login(user, name):                        def login(user, name):
-        foo.connect(user, name)                       foo.connect(user, name)
+    # @pyarmor_assert_obfuscated(foo.connect)
+    def login(user, name):
+        foo.connect(user, name)
+
+    ==>
+
+    @assert_obfuscated(foo.connect)
+    def login(user, name):
+        foo.connect(user, name)
 
 If the plugin name have a leading ``@``, it will be injected into the script
-only if it's used in the script, otherwise it's ignored. For example::
+only when it's used in the script, otherwise it's ignored. For example::
 
     pyarmor obfuscate --plugin @check_ntp_time foo.py
 
 In the script ``foo.py`` must call plugin function ``check_ntp_time`` by one of
-`Plugin Call Marker`, other form doesn't work::
+`Plugin Call Marker`. For example::
 
     # pyarmor_check_ntp_time()
+
+The `Plugin Inline Marker` doesn't work. For example, this doesn't work::
+
+    # PyArmor Plugin: check_ntp_time()
 
 
 .. _special handling of entry script:
