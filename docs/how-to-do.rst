@@ -169,10 +169,13 @@ function name ``check_multi_mac``::
     # pyarmor_check_ntp_time()      ==>   check_ntp_time()
     # pyarmor_check_multi_mac()     ==>   # pyarmor_check_multi_mac()
 
-The last form is almost same as the second, but the comment prefix will be
-replaced with ``@``, it's mainly used to inject a decorator. For example::
+The last form ``# @pyarmor_`` is almost same as the second, but the comment
+prefix will be replaced with ``@``, it's mainly used to inject a decorator. For
+example::
 
     # @pyarmor_assert_obfuscated(foo.connect) ==> @assert_obfuscated(foo.connect)
+    def login(user, name):                        def login(user, name):
+        foo.connect(user, name)                       foo.connect(user, name)
 
 If the plugin name have a leading ``@``, it will be injected into the script
 only if it's used in the script, otherwise it's ignored. For example::
@@ -184,7 +187,7 @@ In the script ``foo.py`` must call plugin function ``check_ntp_time`` by one of
 
     # pyarmor_check_ntp_time()
 
-    
+
 .. _special handling of entry script:
 
 Special Handling of Entry Script
