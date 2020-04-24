@@ -600,7 +600,8 @@ and it doesn't impact the original scripts. Most of them must be run in the
 obfuscated scripts, if they're not commented as plugin, it will break the plain
 scripts.
 
-No one knows your check logic, and you can change it in anytime. So it's more security.
+No one knows your check logic, and you can change it in anytime. So it's more
+security.
 
 Using Inline Plugin To Check Dynamic Library
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -653,43 +654,93 @@ obfuscated. For example, there are 2 scripts `main.py` and `foo.py`
     def connect(username, password):
         mysql.dbconnect(username, password)
 
-In the obfuscated `main.py`, it need to be sure `foo.connect` is
-obfuscated. Otherwise the end users may replace the obfuscated `foo.py` with
-this plain code
+    def connect2(username, password):
+        db2.dbconnect(username, password)
+
+In the `main.py`, it need to be sure `foo.connect` is obfuscated. Otherwise the
+end users may replace the obfuscated `foo.py` with this plain script, and run
+the obfuscated `main.py`
 
 .. code:: python
 
     def connect(username, password):
         print('password is %s', password)
 
-One solution is enable :ref:`restrict mode`, the other way is use decorator to
-make sure the function `connect` is yours.
+The password is stolen, in order to avoid this, the best way is enable the
+corresponding :ref:`restrict mode`, if it's not your case, use decorator function
+to make sure the function `connect` is obfuscated by plugin.
 
-For example, first write a plugin script `asser_armored.py`
-
-.. code:: python
-
-    def assert_armored(*names):
-        def wrapper(func):
-            def _execute(*args, **kwargs):
-                for s in names:
-                    # Check a piece of byte code for special function
-                    if s.__name__ == 'connect':
-                        if s.__code__.co_code[10:12] != b'\x90\xA2':
-                            raise RuntimeError('Access violate')
-                return func(*args, **kwargs)
-            return _execute
-        return wrapper
-
-Then edit `main.py` , insert plugin markers
+From v6.0.2, the :ref:`runtime package` :mod:`pytransform` provides internal
+decorator `assert_armored`, it can be used to check all the list functions are
+pyarmored in the script. Now let's edit `main.py`, insert inline plugin code
 
 .. code:: python
 
     import foo
 
-    # {PyArmor Plugins}
+    # PyArmor Plugin: from pytransform import assert_armored
 
-    # PyArmor Plugin:  @assert_armored(foo.connect)
+    # PyArmor Plugin: @assert_armored(foo.connect, foo.connect2)
+    def start_server():
+        foo.connect('root', 'root password')
+
+Then obfuscate it with plugin on::
+
+    pyarmor obfuscate --plugin on main.py
+
+The obfuscated script would be like this
+
+.. code:: python
+
+    import foo
+
+    from pytransform import assert_armored
+
+    @assert_armored(foo.connect, foo.connect2)
+    def start_server():
+        foo.connect('root', 'root password')
+
+Before call ``start_server``, the decorator function ``assert_armored`` will
+check both ``connect`` functions are pyarmored, otherwise it will raise
+exception.
+
+In order to improve security further, we implement the decorator function in the
+script, instead of importing it. First write script ``assert_armored.py`` in the
+current path
+
+.. code:: python
+
+    from pytransform import _pytransform, PYFUNCTYPE, py_object
+
+    def assert_armored(*names):
+        prototype = PYFUNCTYPE(py_object, py_object)
+        dlfunc = prototype(('assert_armored', _pytransform))
+
+        def wrapper(func):
+            def _execute(*args, **kwargs):
+
+                # Call check point provide by PyArmor
+                dlfunc(names)
+
+                # Add your private check code
+                for s in names:
+                    if s.__name__ == 'connect':
+                        if s.__code__.co_code[10:12] != b'\x90\xA2':
+                            raise RuntimeError('Access violate')
+
+                return func(*args, **kwargs)
+            return _execute
+        return wrapper
+
+Next edit `main.py` , insert plugin markers
+
+.. code:: python
+
+    import foo
+
+    # { PyArmor Plugins }
+
+    # PyArmor Plugin: @assert_armored(foo.connect, foo.connect2)
     def start_server():
         foo.connect('root', 'root password')
 
@@ -697,10 +748,6 @@ Then obfuscate it with this command::
 
     pyarmor obfuscate --plugin assert_armored main.py
 
-.. important::
-
-   The function ``assert_armored`` is sample code, it may not work in real
-   script. And for the sake of security, write your private check code.
 
 .. _call pyarmor from python script:
 
