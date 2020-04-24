@@ -633,14 +633,14 @@ def _build_source_keylist(source, code, closure):
     flist = ('dllmethod', 'init_pytransform', 'init_runtime', '_load_library',
              'get_registration_code', 'get_expired_days', 'get_hd_info',
              'get_license_info', 'get_license_code', 'format_platform',
-             'pyarmor_init', 'pyarmor_runtime')
+             'pyarmor_init', 'pyarmor_runtime', 'assert_armored')
 
     def _make_value(co):
         return len(co.co_names), len(co.co_consts), len(co.co_code)
 
     def _make_code_key(co):
         v1 = _make_value(co)
-        v2 = _make_value(co.co_consts[1]) if co.co_name == 'dllmethod'else None
+        v2 = _make_value(co.co_consts[1]) if co.co_name == 'dllmethod' else None
         co_closure = getattr(co, closure, None)
         v3 = _make_value(getattr(co_closure[0].cell_contents, code)) \
             if co_closure else None

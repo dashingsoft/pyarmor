@@ -137,6 +137,18 @@ def show_hd_info():
     return _pytransform.show_hd_info()
 
 
+def assert_armored(*names):
+    prototype = PYFUNCTYPE(py_object, py_object)
+    dlfunc = prototype(('assert_armored', _pytransform))
+
+    def wrapper(func):
+        def wrap_execute(*args, **kwargs):
+            dlfunc(names)
+            return func(*args, **kwargs)
+        return wrap_execute
+    return wrapper
+
+
 def get_license_info():
     info = {
         'EXPIRED': None,
