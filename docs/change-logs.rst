@@ -3,6 +3,14 @@
 Change Logs
 ===========
 
+6.0.2
+-----
+* Refine the obfuscated code object to improve security
+* Refine plugin code to make it clear
+  https://pyarmor.readthedocs.io/en/latest/how-to-do.html#how-to-deal-with-plugins
+* Add internal plugin `assert_armored` and document basic usage
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#checking-imported-function-is-obfuscated
+
 6.0.1
 -----
 * Fix restrict mode 3 bug: the obfuscated script crashes or complains of this
