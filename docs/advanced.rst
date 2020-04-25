@@ -642,7 +642,10 @@ obfuscated. For example, there are 2 scripts `main.py` and `foo.py`
 
 .. code:: python
 
-    # main.py
+
+    #
+    # This is main.py
+    #
 
     import foo
 
@@ -650,7 +653,10 @@ obfuscated. For example, there are 2 scripts `main.py` and `foo.py`
         foo.connect('root', 'root password')
         foo.connect2('user', 'user password')
 
-    # foo.py
+    #
+    # This is foo.py
+    #
+
     def connect(username, password):
         mysql.dbconnect(username, password)
 
