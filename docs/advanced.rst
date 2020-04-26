@@ -672,8 +672,7 @@ the obfuscated `main.py`
     def connect(username, password):
         print('password is %s', password)
 
-The password is stolen, in order to avoid this, the best way is enable the
-corresponding :ref:`restrict mode`, if it's not your case, use decorator function
+The password is stolen, in order to avoid this, use decorator function
 to make sure the function `connect` is obfuscated by plugin.
 
 From v6.0.2, the :ref:`runtime package` :mod:`pytransform` provides internal
@@ -711,7 +710,7 @@ check both ``connect`` functions are pyarmored, otherwise it will raise
 exception.
 
 In order to improve security further, we implement the decorator function in the
-script, instead of importing it. First write script ``assert_armored.py`` in the
+script, instead of importing it. First create script ``assert_armored.py`` in the
 current path
 
 .. code:: python
