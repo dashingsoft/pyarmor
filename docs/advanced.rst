@@ -897,6 +897,10 @@ script `foo.py`:
 
 2. Generate `foo-patched.spec` by pyarmor with option ``--debug``::
 
+    pyarmor pack --debug -s foo.spec foo.py
+
+    # If the final executable raises protection error, try to disable restirct mode
+    # by the following extra options
     pyarmor pack --debug -s foo.spec -x " --restrict 0 --no-cross-protection" foo.py
 
 This patched `foo-patched.spec` could be used by PyUpdater in build command
