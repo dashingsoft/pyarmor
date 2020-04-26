@@ -897,12 +897,16 @@ script `foo.py`:
 
 2. Generate `foo-patched.spec` by pyarmor with option ``--debug``::
 
-    pyarmor pack --debug -s foo.spec foo.py
+    pyarmor pack --debug -s foo.spec -x " --restrict 0 --no-cross-protection" foo.py
 
 This patched `foo-patched.spec` could be used by PyUpdater in build command
 
 If your Python scripts are modified, just obfuscate them again, all the options
 for command :ref:`obfuscate` could be got from the output of command :ref:`pack`
+
+If anybody is having issues with the above. Just normally compiling it in
+PyArmor then zipping and putting it into "/pyu-data/new" works. From there on
+you can just normally sign, process and upload your update.
 
 More information refer to the description of command :ref:`pack` and advanced
 usage :ref:`bundle-obfuscated-scripts-with-customized-spec-file`
