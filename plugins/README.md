@@ -138,12 +138,12 @@ Then edit the entry script [foo.py](foo.py), insert two comment lines:
     # {PyArmor Plugins}
     # PyArmor Plugin: check_ntp_time()
 
-Now, obfuscate the script with this plugin::
+Now, obfuscate the script with this plugin:
 
     pyarmor obfuscate --plugin check_ntp_time foo.py
 
 The last step is to generate the license file for the obfuscated script, which
-expired on Oct 31, 2020::
+expired on Oct 31, 2020:
 
     pyarmor licenses -x 20201031 CODE-0003
     cp licenses/CODE-0003/license.lic ./dist
