@@ -1,7 +1,16 @@
 # Plugins
 
-Plugin usually is used to extend license type, or write private check code to
-improve the security of obfuscated scripts.
+Plugin usually is used to extend license type, or insert some extra check code
+to obfuscated scripts to improve the security.
+
+Here are some examples:
+
+* [Check all the mac address](example-1-check-all-the-mac-address)
+* [Check docker container id](example-2-check-docker-container-id)
+* [Check internet time](example-3-check-internet-time)
+
+**The sample code is only a guide, it's strongly recommanded to write your
+private code in plugin script**
 
 ##  Example 1: Check All the Mac Address
 
@@ -34,7 +43,7 @@ Get sha384 of `extra_hdinfo.so`:
 Edit the file [check_multi_mac.py](check_multi_mac.py), replace the value of
 `lib_hdinfo_checksum` got above.
 
-Then edit the entry script [foo.py)(foo.py), insert two comment lines:
+Then edit the entry script [foo.py](foo.py), insert two comment lines:
 
     # {PyArmor Plugins}
     # PyArmor Plugin: check_multi_mac()
@@ -60,13 +69,13 @@ The last step is to generate the license file for the obfuscated script.
 
 1. Run the following command to get all mac addresses in target machine
 
-    gcc -DAPP -o hdinfo extra_hdinfo.c
-    ./hdinfo
+        gcc -DAPP -o hdinfo extra_hdinfo.c
+        ./hdinfo
 
 2. Generate the license file and copy it to dist path
 
-    pyarmor licenses -x 70:f1:a1:23:f0:94.08:00:27:51:d9:fe CODE-0001
-    cp licenses/CODE-0001/license.lic ./dist
+        pyarmor licenses -x 70:f1:a1:23:f0:94.08:00:27:51:d9:fe CODE-0001
+        cp licenses/CODE-0001/license.lic ./dist
 
 Distributing the obfuscated scripts to target machine:
 
@@ -138,5 +147,3 @@ expired on Oct 31, 2020::
 
     pyarmor licenses -x 20201031 CODE-0003
     cp licenses/CODE-0003/license.lic ./dist
-
-**Do not simply clone sample code above, it's strongly recommanded to use your private code in plugin script**
