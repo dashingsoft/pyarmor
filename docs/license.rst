@@ -53,6 +53,12 @@ There are 2 basic types of licenses issued for the software. These are:
   serials. Business users should purchase new license for different
   product serials.
 
+  In any case, the software is only used to obfuscate the Python scripts
+  owned by the authorized person or enterprise. For example, if PyCharm
+  purchases one license, it's no problem to obufscate any Python script
+  of PyCharm self, but it's not allowed to apply this license to the Python
+  scripts just written in the PyCharm by someone else.
+
 Purchase
 --------
 

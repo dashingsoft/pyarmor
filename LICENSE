@@ -54,6 +54,12 @@
      the software on as many computers as defined by the licensing terms above
      according to the number of licenses purchased, for any legal purpose.
 
+     In any case, the software is only used to obfuscate the Python scripts
+     owned by the authorized person or enterprise. For example, if PyCharm
+     purchases one license, it's no problem to obufscate any Python script
+     of PyCharm self, but it's not allowed to apply this license to the Python
+     scripts just written in the PyCharm by someone else.
+
   4. There are no additional license fees, apart from the cost of the license,
      associated with the creation and distribution of obfuscated python scripts.
      Owners of a license may use their copies of the software to produce
