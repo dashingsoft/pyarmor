@@ -170,7 +170,7 @@ $PYTHON -m PyInstaller --clean -y --distpath $output main-patched.spec >result.l
 check_return_value
 
 (cd $output; ./main/main >result.log 2>&1)
-check_file_content $output/result.log "RuntimeError: Check restrict mode failed"
+check_file_content $output/result.log "RuntimeError: Check restrict mode of module failed"
 
 csih_inform "Case 3-6: Test the scripts is obfuscated with restrict mode 2"
 dist=test-pyinstaller-restrict-mode
