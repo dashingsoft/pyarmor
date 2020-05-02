@@ -129,6 +129,7 @@ check_file_exists projects/test-licenses/licenses/Customer-B/license.lic
 check_file_exists projects/test-licenses/licenses/Customer-C/license.lic
 
 csih_inform "C-5. Test option --bind-file for licenses"
+if false; then
 $PYARMOR init --src=examples/simple --entry queens.py \
     projects/test-bind-file >result.log 2>&1
 check_return_value
@@ -146,6 +147,7 @@ EOF
   $PYTHON queens.py >result.log 2>&1 )
 check_return_value
 check_file_content projects/test-bind-file/dist/result.log 'Found 92 solutions'
+fi
 
 csih_inform "C-6. Test option --recursive for obfuscate"
 rm .pyarmor_capsule.zip
@@ -404,6 +406,26 @@ check_file_exists test-non-ascii-path/queens.py
 (cd test-non-ascii-path; $PYTHON queens.py >result.log 2>&1 )
 check_return_value
 check_file_content test-non-ascii-path/result.log 'Found 92 solutions'
+
+csih_inform "C-35. Test licenses with --fixed"
+propath=test-fixed-key
+mkdir $propath
+cp examples/simple/queens.py $propath
+$PYARMOR obfuscate -O $propath/dist $propath/queens.py > result.log 2>&1
+
+$PYARMOR licenses --fixed 1 -O $propath/dist/pytransform/license.lic > result.log 2>&1
+check_return_value
+
+(cd $propath/dist; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content $propath/dist/result.log 'Found 92 solutions'
+
+$PYARMOR licenses --fixed 101 -O $propath/dist/pytransform/license.lic > result.log 2>&1
+check_return_value
+
+(cd $propath/dist; $PYTHON queens.py >result.log 2>&1 )
+check_file_content $propath/dist/result.log 'License is not for this machine'
+check_file_content $propath/dist/result.log 'Found 92 solutions' not
 
 echo ""
 echo "-------------------- Command End -----------------------------"
