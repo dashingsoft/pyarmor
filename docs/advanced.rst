@@ -916,9 +916,9 @@ More information refer to the description of command :ref:`pack` and advanced
 usage :ref:`bundle-obfuscated-scripts-with-customized-spec-file`
 
 
-.. _binding obfuscated scripts to fixed python library:
+.. _binding obfuscated scripts to python interpreter:
 
-Binding obfuscated scripts to fixed Python library
+Binding obfuscated scripts to Python interpreter
 --------------------------------------------------
 
 In order to improve the security of obfuscated scripts, it also could bind the
@@ -986,6 +986,14 @@ It will print the bind key `xxxxxx`, then generate one fixed license with this
 bind key::
 
   pyarmor licenses --fixed xxxxxx -O dist/license.lic
+
+It also could bind the license to many Python interpreters by passing multiple
+keys separated by `,`::
+
+  pyarmor licenses --fixed 1,key2,key3 -O dist/license.lic
+  pyarmor licenses --fixed key1,key2,key3 -O dist/license.lic
+
+The special key `1` means current Python interpreter.
 
 .. customizing protection code:
 
