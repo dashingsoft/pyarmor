@@ -395,6 +395,10 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
         shutil.copy2(licfile, os.path.join(obfdist, 'license.lic'))
+    else:
+        logging.info('Generate fixed license file')
+        call_pyarmor(['licenses', '-O', os.path.join(obfdist, 'license.lic'),
+                      '--fixed', '1', 'pyarmor-packer'])
 
     obftemp = os.path.join(obfdist, 'temp')
     if not os.path.exists(obftemp):

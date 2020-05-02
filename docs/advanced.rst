@@ -915,6 +915,78 @@ you can just normally sign, process and upload your update.
 More information refer to the description of command :ref:`pack` and advanced
 usage :ref:`bundle-obfuscated-scripts-with-customized-spec-file`
 
+
+.. _binding obfuscated scripts to fixed python library:
+
+Binding obfuscated scripts to fixed Python library
+--------------------------------------------------
+
+In order to improve the security of obfuscated scripts, it also could bind the
+obfuscated scripts to one fixed Python interperter, the obfuscated scripts will
+not work if the Python dynamic library are changed.
+
+If you use command `obfuscate`, after the scripts are obfuscated, just generate
+a new `license.lic` which is bind to the current Python and overwrite the
+default license. For example::
+
+  pyarmor licenses --fixed 1 -O dist/license.lic
+
+When start the obfuscated scripts in target machine, it will check the Python
+dynamic library, it may be pythonXY.dll, libpythonXY.so or libpythonXY.dylib in
+different platforms. If this library is different from the python dynamic
+library in build machine, the obfuscated script will quit.
+
+If you use project to obfuscate scripts, first generate a fixed license::
+
+  cd /path/to/project
+  pyarmor licenses --fixed 1
+
+By default it will be saved to `licenses/pyarmor/license.lic`, then configure
+the project with this license::
+
+  pyarmor config --license=licenses/pyarmor/license.lic
+
+If obfuscate the scripts for different platform, first get the bind key in
+target platform. Create a script then run it with Python interpreter which would
+be bind to:
+
+.. _code: python
+
+  import sys
+
+  from ctypes import CFUNCTYPE, cdll, pythonapi, string_at, c_void_p, c_char_p
+
+
+  def get_bind_key():
+      c = cdll.LoadLibrary(None)
+
+      if sys.platform.startswith('win'):
+          from ctypes import windll
+          dlsym = windll.kernel32.GetProcAddressA
+      else:
+          prototype = CFUNCTYPE(c_void_p, c_void_p, c_char_p)
+          dlsym = prototype(('dlsym', c))
+
+      refunc1 = dlsym(pythonapi._handle, 'PyEval_EvalFrame')
+      refunc2 = dlsym(pythonapi._handle, 'PyEval_GetFrame')
+
+      size = refunc2 - refunc1
+      code = string_at(refunc1, size)
+
+      checksum = 0
+      for c in code:
+          checksum += ord(c)
+      print('Get bind key: %s' % checksum)
+
+
+  if __name__ == '__main__':
+      get_bind_key()
+
+It will print the bind key `xxxxxx`, then generate one fixed license with this
+bind key::
+
+  pyarmor licenses --fixed xxxxxx -O dist/license.lic
+
 .. customizing protection code:
 
 .. include:: _common_definitions.txt

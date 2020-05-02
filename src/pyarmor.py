@@ -52,7 +52,7 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   get_product_key, register_keyfile, query_keyinfo, \
                   get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names, \
-                  get_name_suffix
+                  get_name_suffix, get_bind_key
 
 import packer
 
@@ -398,8 +398,10 @@ def _licenses(args):
         logging.info('Generate licenses with capsule %s ...', capsule)
         project = dict(restrict_mode=args.restrict)
 
-    licpath = os.path.join(args.project, 'licenses') if args.output is None \
-        else args.output
+    output = args.output
+    licpath = os.path.join(args.project, 'licenses') if output is None \
+        else os.path.dirname(output) if output.endswith(license_filename) \
+        else output
     if os.path.exists(licpath):
         logging.info('Output path of licenses: %s', licpath)
     elif licpath not in ('stdout', 'stderr'):
@@ -442,25 +444,29 @@ def _licenses(args):
     if args.bind_domain:
         fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
 
+    if args.fixed:
+        fmt = '%s*FIXKEY:%s;' % (
+            fmt, '0123456789' if args.fixed == '1' else args.fixed)
+
     if args.bind_file:
-        bind_file, bind_key = args.bind_file.split(';', 2)
-        if os.path.exists(bind_file):
-            f = open(bind_file, 'rb')
-            s = f.read()
-            f.close()
-            if sys.version_info[0] == 3:
-                fmt = '%s*FIXKEY:%s;%s' % (fmt, bind_key, s.decode())
-            else:
-                fmt = '%s*FIXKEY:%s;%s' % (fmt, bind_key, s)
+        if args.bind_file.find(';') == -1:
+            bind_file, target_file = args.bind_file, ''
         else:
-            raise RuntimeError('Bind file %s not found' % bind_file)
+            bind_file, target_file = args.bind_file.split(';', 2)
+        bind_key = get_bind_key(args.bind_file)
+        fmt = '%s*FIXKEY:%s,%s;' % (fmt, target_file, bind_key)
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'
     extra_data = '' if args.bind_data is None else (';' + args.bind_data)
 
+    if not args.codes:
+        args.codes = ['pyarmor']
+
     for rcode in args.codes:
         if args.output in ('stderr', 'stdout'):
+            licfile = args.output
+        elif args.output.endswith(license_filename):
             licfile = args.output
         else:
             output = os.path.join(licpath, rcode)
@@ -905,7 +911,7 @@ def _parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Generate new licenses for obfuscated scripts'
     )
-    cparser.add_argument('codes', nargs='+', metavar='CODE',
+    cparser.add_argument('codes', nargs='*', metavar='CODE',
                          help='Registration code for this license')
     group = cparser.add_argument_group('Bind license to hardware')
     group.add_argument('-e', '--expired', metavar='YYYY-MM-DD',
@@ -922,8 +928,10 @@ def _parser():
                        'data to license, used to extend license type')
     group.add_argument('--bind-domain', metavar='DOMAIN',
                        help='Bind license to domain name')
-    group.add_argument('--bind-file', metavar='filename;target_filename',
+    group.add_argument('--bind-file', metavar='filename',
                        help=argparse.SUPPRESS)
+    group.add_argument('--fixed',
+                       help='Bind license to python dynamic library')
     cparser.add_argument('-P', '--project', default='', help=argparse.SUPPRESS)
     cparser.add_argument('-C', '--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('-O', '--output', help='Output path, default is '
