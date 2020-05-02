@@ -445,8 +445,10 @@ def _licenses(args):
         fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
 
     if args.fixed:
-        bind_key = '' if args.fixed == '1' else (',' + args.fixed)
-        fmt = '%s*FIXKEY:0123456789%s;' % (fmt, bind_key)
+        keylist = args.fixed.split(',')
+        if keylist[0] in ('1', ''):
+            keylist[0] = '0123456789'
+        fmt = '%s*FIXKEY:%s;' % (fmt, ','.join(keylist))
 
     if args.bind_file:
         if args.bind_file.find(';') == -1:
@@ -466,7 +468,7 @@ def _licenses(args):
     for rcode in args.codes:
         if args.output in ('stderr', 'stdout'):
             licfile = args.output
-        elif args.output.endswith(license_filename):
+        elif args.output and args.output.endswith(license_filename):
             licfile = args.output
         else:
             output = os.path.join(licpath, rcode)
