@@ -279,6 +279,7 @@ Generate new licenses for obfuscated scripts.
 -x, --bind-data DATA        Pass extra data to license, used to extend license type
 --disable-restrict-mode     Disable all the restrict modes
 --enable-period-mode        Check license per hour when the obfuscated script is running
+--fixed key,...             Bind license to Python interpreter
 
 **DESCRIPTION**
 
@@ -322,6 +323,19 @@ In the obfuscated scripts, the data passed by `-x` could be got by this way::
 It also could output the license key in the stdout other than a file::
 
     pyarmor --silent licenses --output stdout -x "2019-05-20" reg-0001
+
+By option ``--fixed``, the license could be bind to Python interpreter. For
+example, use special key `1` to bind the license to current Python interpreter::
+
+    pyarmor licenses --fixed 1
+
+It also could bind the license to many Python interpreters by passing multiple
+keys separated by comma::
+
+    pyarmor licenses --fixed 4265050,5386060
+
+How to get bind key of Python interpreter, refer to :ref:`Binding obfuscated
+scripts to Python interpreter`
 
 .. note::
 
