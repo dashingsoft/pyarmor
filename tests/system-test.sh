@@ -378,7 +378,7 @@ cp $output/fixkey/license.lic projects/pybench/dist/pytransform
 cp projects/pybench/id_rsa projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'\*FIXKEY\*'"
+check_file_content projects/pybench/dist/result.log "'FIXKEY'"
 
 csih_inform "Case 7.3: Generate license which disable all restricts"
 output=test-no-restrict-license
