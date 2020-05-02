@@ -129,8 +129,6 @@ check_file_exists projects/test-licenses/licenses/Customer-B/license.lic
 check_file_exists projects/test-licenses/licenses/Customer-C/license.lic
 
 csih_inform "C-5. Test option --bind-file for licenses"
-# --bind-file has been changed from v6.1.0
-if false; then
 $PYARMOR init --src=examples/simple --entry queens.py \
     projects/test-bind-file >result.log 2>&1
 check_return_value
@@ -148,7 +146,6 @@ EOF
   $PYTHON queens.py >result.log 2>&1 )
 check_return_value
 check_file_content projects/test-bind-file/dist/result.log 'Found 92 solutions'
-fi
 
 csih_inform "C-6. Test option --recursive for obfuscate"
 rm .pyarmor_capsule.zip
