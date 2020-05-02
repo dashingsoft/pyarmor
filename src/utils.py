@@ -1017,17 +1017,15 @@ def get_name_suffix():
     return '_'.join(['', d.get(m, 'unk'), n])
 
 
-def get_bind_key(filename, fmt=None):
+def get_bind_key(filename):
     if not os.path.exists(filename):
         raise RuntimeError('Bind file %s not found' % filename)
 
-    if fmt is None:
-        raise NotImplementedError('Bind key for cross platform')
-    else:
-        with open(filename, 'rb') as f:
-            buf = f.read()
-        fmt = 'I' * (len(buf) >> 2)
-        return sum(struct.unpack(fmt, buf))
+    with open(filename, 'rb') as f:
+        buf = f.read()
+    size = len(buf) >> 2
+    fmt = 'I' * size
+    return sum(struct.unpack(fmt, buf[:size*4]))
 
 
 if __name__ == '__main__':

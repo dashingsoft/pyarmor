@@ -455,7 +455,7 @@ def _licenses(args):
             bind_file, target_file = args.bind_file, ''
         else:
             bind_file, target_file = args.bind_file.split(';', 2)
-        bind_key = get_bind_key(args.bind_file)
+        bind_key = get_bind_key(bind_file)
         fmt = '%s*FIXKEY:%s;%s;' % (fmt, target_file, bind_key)
 
     # Prefix of registration code
