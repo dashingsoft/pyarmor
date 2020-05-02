@@ -129,6 +129,7 @@ check_file_exists projects/test-licenses/licenses/Customer-B/license.lic
 check_file_exists projects/test-licenses/licenses/Customer-C/license.lic
 
 csih_inform "C-5. Test option --bind-file for licenses"
+# --bind-file has been changed from v6.1.0
 if false; then
 $PYARMOR init --src=examples/simple --entry queens.py \
     projects/test-bind-file >result.log 2>&1
