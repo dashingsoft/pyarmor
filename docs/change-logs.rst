@@ -3,6 +3,24 @@
 Change Logs
 ===========
 
+6.1.0
+-----
+* Add external plugin script `assert_armored.py`
+* Enhance the command `licenses`:
+   - The final argument could be empty, for example, `pyarmor licenses` will
+     generate a default license to `licenses/pyarmor/license.lic`
+   - If the output is end with `license.lic`, it will not append any other path,
+     just save it as it is. For example, `pyarmor licenses -O dist/license.lic`
+     will save the final output to `dist/license.lic`
+   - Add new option `--fixed`, and document `how to use this option to improve
+     the security`_
+* In command `pack`, the default license will be generated with `--fixed` to
+  improve the security
+
+.. _how to use this option to improve the security: https://pyarmor.readthedocs.io/en/latest/advanced.html#binding-obfuscated-scripts-to-python-interpreter
+
+
+
 6.0.2
 -----
 * Refine the obfuscated code object to improve security
