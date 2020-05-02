@@ -445,8 +445,8 @@ def _licenses(args):
         fmt = '%s*DOMAIN:%s' % (fmt, args.bind_domain)
 
     if args.fixed:
-        fmt = '%s*FIXKEY:%s;' % (
-            fmt, '0123456789' if args.fixed == '1' else args.fixed)
+        bind_key = '' if args.fixed == '1' else (',' + args.fixed)
+        fmt = '%s*FIXKEY:0123456789%s;' % (fmt, bind_key)
 
     if args.bind_file:
         if args.bind_file.find(';') == -1:
@@ -454,7 +454,7 @@ def _licenses(args):
         else:
             bind_file, target_file = args.bind_file.split(';', 2)
         bind_key = get_bind_key(args.bind_file)
-        fmt = '%s*FIXKEY:%s,%s;' % (fmt, target_file, bind_key)
+        fmt = '%s*FIXKEY:%s;%s;' % (fmt, target_file, bind_key)
 
     # Prefix of registration code
     fmt = fmt + '*CODE:'

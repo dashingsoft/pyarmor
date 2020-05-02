@@ -967,7 +967,7 @@ be bind to:
           prototype = CFUNCTYPE(c_void_p, c_void_p, c_char_p)
           dlsym = prototype(('dlsym', c))
 
-      refunc1 = dlsym(pythonapi._handle, 'PyEval_EvalFrame')
+      refunc1 = dlsym(pythonapi._handle, 'PyEval_EvalCode')
       refunc2 = dlsym(pythonapi._handle, 'PyEval_GetFrame')
 
       size = refunc2 - refunc1
