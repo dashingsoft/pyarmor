@@ -261,7 +261,7 @@ def _build(args):
             wrap_mode = 0
             obf_code = 0 if project.obf_code_mode == 'none' else 1
 
-        adv_mode = (1 if project.advanced_mode else 0) \
+        adv_mode = (project.advanced_mode if project.advanced_mode else 0) \
             if hasattr(project, 'advanced_mode') else 0
 
         def v(t):
@@ -599,7 +599,7 @@ def _obfuscate(args):
     cross_protection = 0 if args.no_cross_protection else \
         1 if args.cross_protection is None else args.cross_protection
 
-    advanced = 1 if args.advanced else 0
+    advanced = args.advanced if args.advanced else 0
     logging.info('Advanced mode is %d', advanced)
 
     restrict = args.restrict
@@ -893,7 +893,7 @@ def _parser():
                          help='Target platform to run obfuscated scripts, '
                          'use this option multiple times for more platforms')
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
-                         default=0, choices=(0, 1),
+                         default=0, choices=(0, 1, 2),
                          help='Enable advanced mode')
     cparser.add_argument('--package-runtime', type=int, default=1,
                          choices=(0, 1), help='Package runtime files or not')
@@ -1035,7 +1035,7 @@ def _parser():
                          help='Insert extra code to entry script, '
                          'it could be used multiple times')
     cparser.add_argument('--advanced', '--advanced-mode', dest='advanced_mode',
-                         type=int, choices=(0, 1),
+                         type=int, choices=(0, 1, 2),
                          help='Enable or disable advanced mode')
     cparser.add_argument('--package-runtime', choices=(0, 1), type=int,
                          help='Package runtime files or not')
