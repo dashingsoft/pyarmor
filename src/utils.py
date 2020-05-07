@@ -53,6 +53,11 @@ PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 CROSS_PLATFORM_PATH = os.path.join(DATA_PATH, pytransform.plat_path)
 PLUGINS_PATH = [os.path.join(x, 'plugins') for x in (DATA_PATH, PYARMOR_PATH)]
 
+FEATURE_ANTI = 1
+FEATURE_JIT = 2
+FEATURE_ADV = 4
+FEATURE_MAPOP = 8
+
 
 def _format_platid(platid=None):
     if platid is None:
@@ -391,38 +396,50 @@ def _get_platform_library_filename(platid, features):
         plist = [platid]
     else:
         t = list(platid.split('.'))
+        n = len(t)
+        if n not in (2, 3):
+            raise RuntimeError('Invalid platid "%s"' % platid)
+
+        def _build_name(names):
+            x = ['%s%s' % sys.version_info[:2]] \
+                 if names[-1] == str(FEATURE_MAPOP) else []
+            return os.path.join(CROSS_PLATFORM_PATH, *(names + x))
+
         plist = []
-        if len(t) == 2:
+        if n == 2:
             if 7 in features or 3 in features:
                 plist.append(os.path.join(PLATFORM_PATH, *t))
             t.append(None)
             for k in features:
                 t[-1] = str(k)
-                plist.append(os.path.join(CROSS_PLATFORM_PATH, *t))
+                plist.append(_build_name(t))
         else:
-            plist.append(os.path.join(CROSS_PLATFORM_PATH, *t))
+            plist.append(_build_name(t))
 
     for path in plist:
         if not os.path.exists(path):
             continue
         for x in os.listdir(path):
             if x.startswith('_pytransform.'):
-                if path.startswith(PLATFORM_PATH):
-                    features[:] = [7, 3]
-                else:
-                    n = int(path[-1])
-                    features[:] = [7, 3] if n & 2 else [5, 4, 0]
                 return os.path.join(path, x)
 
 
-def _build_platforms(platforms, restrict=True):
+def _build_platforms(platforms, restrict=True, advanced=False):
     results = []
+    flist1 = [7, 3]
+    flist2 = [5, 4, 0]
+
     checksums = dict([(p['id'], p['sha256']) for p in get_platform_list()])
     n = len(platforms)
-    if restrict:
-        features = [7, 3] if (pytransform.version_info()[2] & 2) else [5, 4, 0]
+
+    t = pytransform.version_info()[-1]
+    if advanced:
+        features = [11] if (t & FEATURE_JIT) else [8]
+    elif restrict:
+        features = flist1 if (t & FEATURE_JIT) else flist2
     else:
-        features = [7, 3, 5, 4, 0]
+        features = flist1 + flist2
+
     for platid in platforms:
         if (n > 1) and os.path.isabs(platid):
             raise RuntimeError('Invalid platform `%s`, for multiple platforms '
@@ -432,13 +449,18 @@ def _build_platforms(platforms, restrict=True):
                                'in multiple platforms target' % platid)
         filename = _get_platform_library_filename(platid, features)
         if filename is None:
-            logging.info('No dynamic library found for %s with features %s',
-                         platid, features)
             download_pytransform(platid)
             filename = _get_platform_library_filename(platid, features)
             if filename is None:
-                raise RuntimeError('No dynamic library found for %s '
-                                   'with features %s' % (platid, features))
+                raise RuntimeError('No dynamic library found for %s with '
+                                   'features %s' % (platid, features))
+
+        if not advanced:
+            if filename.startswith(PLATFORM_PATH):
+                features = flist1
+            else:
+                t = int(os.path.basename(os.path.dirname(filename)))
+                features[:] = flist1 if t & FEATURE_JIT else flist2
 
         if platid in checksums:
             with open(filename, 'rb') as f:
@@ -453,7 +475,7 @@ def _build_platforms(platforms, restrict=True):
 
 
 def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
-                 suffix='', restrict=True):
+                 suffix='', restrict=True, advanced=False):
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
         if not os.path.exists(output):
@@ -491,18 +513,23 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             shutil.copy2(src, dst)
 
     if not platforms:
-        libfile = pytransform._pytransform._name
-        if not os.path.exists(libfile):
-            libname = dll_name + dll_ext
-            libfile = os.path.join(PYARMOR_PATH, libname)
+        if advanced:
+            platid = pytransform.format_platform()
+            libfile = _build_platforms([platid], restrict, advanced)[0]
+        else:
+            libfile = pytransform._pytransform._name
             if not os.path.exists(libfile):
-                pname = pytransform.format_platform()
-                libpath = os.path.join(PYARMOR_PATH, 'platforms')
-                libfile = os.path.join(libpath, pname, libname)
+                libname = dll_name + dll_ext
+                libfile = os.path.join(PYARMOR_PATH, libname)
+                if not os.path.exists(libfile):
+                    pname = pytransform.format_platform()
+                    libpath = os.path.join(PYARMOR_PATH, 'platforms')
+                    libfile = os.path.join(libpath, pname, libname)
         logging.info('Copying %s', libfile)
         copy3(libfile, output)
+
     elif len(platforms) == 1:
-        filename = _build_platforms(platforms, restrict)[0]
+        filename = _build_platforms(platforms, restrict, advanced)[0]
         logging.info('Copying %s', filename)
         copy3(filename, output)
     else:
@@ -512,7 +539,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         if not os.path.exists(libpath):
             os.mkdir(libpath)
 
-        filenames = _build_platforms(platforms, restrict)
+        filenames = _build_platforms(platforms, restrict, advanced)
         for platid, filename in list(zip(platforms, filenames)):
             logging.info('Copying %s', filename)
             path = os.path.join(libpath, *platid.split('.')[:2])
@@ -816,7 +843,9 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 template = os.path.join(PYARMOR_PATH, protect_code_template) \
                     if isinstance(protection, int) else protection
                 logging.info('Use template: %s', template)
-                targets = _build_platforms(platforms) if platforms else None
+                advanced = adv_mode > 1
+                targets = _build_platforms(platforms, advanced=advanced) \
+                    if platforms else None
                 lines[n:n] = [_make_protect_pytransform(template=template,
                                                         filenames=targets,
                                                         rpath=rpath,

@@ -328,7 +328,7 @@ def _build(args):
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
         make_runtime(capsule, routput, platforms=platforms, package=package,
-                     suffix=suffix)
+                     suffix=suffix, advanced=adv_mode > 1)
 
         licfile = project.license_file
         if licfile:
@@ -640,7 +640,7 @@ def _obfuscate(args):
 
     package = args.package_runtime
     make_runtime(capsule, output, platforms=platforms,
-                 package=package, suffix=suffix)
+                 package=package, suffix=suffix, advanced=advanced > 1)
 
     if not args.restrict:
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
@@ -789,7 +789,7 @@ def _runtime(args):
     suffix = get_name_suffix() if args.enable_suffix else ''
     make_runtime(capsule, output, licfile=args.with_license,
                  platforms=platforms, package=package, suffix=suffix,
-                 restrict=False)
+                 restrict=False, advanced=args.advanced)
 
     filename = os.path.join(output, '__init__.py') if args.inside else \
         os.path.join(args.output, name + '.py')
@@ -1210,6 +1210,8 @@ def _parser():
                          'use this option multiple times for more platforms')
     cparser.add_argument('--enable-suffix', action='store_true',
                          help='Make unique runtime files and bootstrap code')
+    cparser.add_argument('--advanced', action='store_true',
+                         help=argparse.SUPPRESS)
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
