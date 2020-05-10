@@ -626,7 +626,8 @@ def _obfuscate(args):
         vmode = advanced | (8 if is_entry else 0)
         encrypt_script(prokey, a, b, adv_mode=vmode, rest_mode=restrict,
                        protection=protection, platforms=platforms,
-                       plugins=plugins, suffix=suffix)
+                       plugins=plugins, suffix=suffix, obf_code=args.obf_code,
+                       obf_mod=args.obf_mod, wrap_mode=args.wrap_mode)
 
         if is_entry and bootstrap:
             name = os.path.abspath(a)[len(path)+1:]
@@ -892,6 +893,9 @@ def _parser():
                          action='append',
                          help='Target platform to run obfuscated scripts, '
                          'use this option multiple times for more platforms')
+    cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
+    cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2))
+    cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
     cparser.add_argument('--advanced', nargs='?', const=1, type=int,
                          default=0, choices=(0, 1, 2),
                          help='Enable advanced mode')
