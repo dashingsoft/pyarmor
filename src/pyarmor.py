@@ -52,7 +52,7 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   get_product_key, register_keyfile, query_keyinfo, \
                   get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names, \
-                  get_name_suffix, get_bind_key
+                  get_name_suffix, get_bind_key, make_super_bootstrap
 
 import packer
 
@@ -264,6 +264,11 @@ def _build(args):
         adv_mode = (project.advanced_mode if project.advanced_mode else 0) \
             if hasattr(project, 'advanced_mode') else 0
 
+        bootstrap_code = project.get('bootstrap_code', 1)
+        relative = True if bootstrap_code == 3 else \
+            False if (bootstrap_code == 2 or
+                      (args.no_runtime and bootstrap_code == 1)) else None
+
         def v(t):
             return 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
@@ -303,16 +308,16 @@ def _build(args):
                            platforms=platforms, plugins=plugins,
                            rpath=project.runtime_path, suffix=suffix)
 
+            if adv_mode > 1:
+                make_super_bootstrap(a, b, relative=relative, suffix=suffix)
+
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
         project.save(args.project)
 
-        if project.entry and project.get('bootstrap_code', 1):
+        if adv_mode < 2 and project.entry and bootstrap_code:
             soutput = os.path.join(output, os.path.basename(project.src)) \
                 if project.get('is_package') else output
-            n = project.get('bootstrap_code', 1)
-            relative = True if n == 3 else \
-                False if (n == 2 or (args.no_runtime and n == 1)) else None
             make_entry(project.entry, project.src, soutput,
                        rpath=project.runtime_path, relative=relative,
                        suffix=suffix)
@@ -629,7 +634,9 @@ def _obfuscate(args):
                        plugins=plugins, suffix=suffix, obf_code=args.obf_code,
                        obf_mod=args.obf_mod, wrap_mode=args.wrap_mode)
 
-        if is_entry and bootstrap:
+        if advanced > 1:
+            make_super_bootstrap(a, b, relative=relative, suffix=suffix)
+        elif is_entry and bootstrap:
             name = os.path.abspath(a)[len(path)+1:]
             make_entry(name, path, output, relative=relative, suffix=suffix)
 

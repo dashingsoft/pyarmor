@@ -1057,5 +1057,27 @@ def get_bind_key(filename):
     return sum(struct.unpack(fmt, buf[:size*4]))
 
 
+def make_super_bootstrap(source, filename, relative=None, suffix=''):
+    pkg = os.path.basename(filename) == '__init__.py'
+    bootstrap = 'from %spytransform%simport pyarmor' % (
+        '.' if (relative is True) or ((relative is None) and pkg) else '',
+        suffix)
+
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    for line in lines:
+        if line.startswith(bootstrap):
+            return
+
+    lines.insert(0, bootstrap)
+
+    shell = _get_script_shell(source)
+    if shell:
+        lines.insert(0, shell)
+
+    with open(filename, 'w') as f:
+        f.write(''.join(lines))
+
+
 if __name__ == '__main__':
     make_entry(sys.argv[1])
