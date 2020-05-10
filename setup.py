@@ -20,7 +20,7 @@ pyarmor_data_files = [
     'LICENSE', 'LICENSE-ZH',
     'pyshield.key', 'pyshield.lic', 'public.key',
     'product.key', 'license.tri', 'README.rst',
-    'protect_code.pt', 'public_capsule.zip',
+    'protect_code.pt', 'protect_code2.pt', 'public_capsule.zip',
     'plugins/README.md', 'plugins/check_ntp_time.py',
     'plugins/check_docker.py', 'plugins/assert_armored.py',
     'examples/README.md', 'examples/README-ZH.md',
