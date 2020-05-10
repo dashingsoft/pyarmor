@@ -424,7 +424,7 @@ def _get_platform_library_filename(platid, features):
                 return os.path.join(path, x)
 
 
-def _build_platforms(platforms, restrict=True, advanced=False):
+def _build_platforms(platforms, restrict=True, supermode=False):
     results = []
     flist1 = [7, 3]
     flist2 = [5, 4, 0]
@@ -433,7 +433,7 @@ def _build_platforms(platforms, restrict=True, advanced=False):
     n = len(platforms)
 
     t = pytransform.version_info()[-1]
-    if advanced:
+    if supermode:
         features = [11] if (t & FEATURE_JIT) else [8]
     elif restrict:
         features = flist1 if (t & FEATURE_JIT) else flist2
@@ -455,7 +455,7 @@ def _build_platforms(platforms, restrict=True, advanced=False):
                 raise RuntimeError('No dynamic library found for %s with '
                                    'features %s' % (platid, features))
 
-        if not advanced:
+        if not supermode:
             if filename.startswith(PLATFORM_PATH):
                 features = flist1
             else:
@@ -475,7 +475,7 @@ def _build_platforms(platforms, restrict=True, advanced=False):
 
 
 def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
-                 suffix='', restrict=True, advanced=False):
+                 suffix='', restrict=True, supermode=False):
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
         if not os.path.exists(output):
@@ -513,9 +513,9 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             shutil.copy2(src, dst)
 
     if not platforms:
-        if advanced:
+        if supermode:
             platid = pytransform.format_platform()
-            libfile = _build_platforms([platid], restrict, advanced)[0]
+            libfile = _build_platforms([platid], restrict, supermode)[0]
         else:
             libfile = pytransform._pytransform._name
             if not os.path.exists(libfile):
@@ -529,7 +529,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         copy3(libfile, output)
 
     elif len(platforms) == 1:
-        filename = _build_platforms(platforms, restrict, advanced)[0]
+        filename = _build_platforms(platforms, restrict, supermode)[0]
         logging.info('Copying %s', filename)
         copy3(filename, output)
     else:
@@ -539,7 +539,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         if not os.path.exists(libpath):
             os.mkdir(libpath)
 
-        filenames = _build_platforms(platforms, restrict, advanced)
+        filenames = _build_platforms(platforms, restrict, supermode)
         for platid, filename in list(zip(platforms, filenames)):
             logging.info('Copying %s', filename)
             path = os.path.join(libpath, *platid.split('.')[:2])
@@ -840,11 +840,12 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                   or line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
-                template = os.path.join(PYARMOR_PATH, protect_code_template) \
+                supermode = adv_mode > 1
+                template = os.path.join(PYARMOR_PATH, protect_code_template % (
+                    '2' if supermode else '')) \
                     if isinstance(protection, int) else protection
                 logging.info('Use template: %s', template)
-                advanced = adv_mode > 1
-                targets = _build_platforms(platforms, advanced=advanced) \
+                targets = _build_platforms(platforms, supermode=supermode) \
                     if platforms else None
                 lines[n:n] = [_make_protect_pytransform(template=template,
                                                         filenames=targets,

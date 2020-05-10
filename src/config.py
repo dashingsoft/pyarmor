@@ -28,7 +28,7 @@ dll_ext = '.dylib' if platform == 'darwin' \
 
 entry_lines = 'from %spytransform%s import pyarmor_runtime\n', \
               'pyarmor_runtime(%s)\n'
-protect_code_template = 'protect_code.pt'
+protect_code_template = 'protect_code%s.pt'
 
 config_filename = '.pyarmor_config'
 capsule_filename = '.pyarmor_capsule.zip'
