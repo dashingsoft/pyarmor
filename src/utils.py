@@ -391,7 +391,7 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
     return filepairs
 
 
-def _get_platform_library_filename(platid, features):
+def _get_library_filename(platid, features, supermode=False):
     if os.path.isabs(platid):
         plist = [platid]
     else:
@@ -420,7 +420,7 @@ def _get_platform_library_filename(platid, features):
         if not os.path.exists(path):
             continue
         for x in os.listdir(path):
-            if x.startswith('_pytransform.'):
+            if x.startswith('pytransform.' if supermode else '_pytransform.'):
                 return os.path.join(path, x)
 
 
@@ -447,10 +447,10 @@ def _build_platforms(platforms, restrict=True, supermode=False):
         if (n > 1) and platid.startswith('vs2015.'):
             raise RuntimeError('The platform `%s` does not work '
                                'in multiple platforms target' % platid)
-        filename = _get_platform_library_filename(platid, features)
+        filename = _get_library_filename(platid, features, supermode)
         if filename is None:
             download_pytransform(platid)
-            filename = _get_platform_library_filename(platid, features)
+            filename = _get_library_filename(platid, features, supermode)
             if filename is None:
                 raise RuntimeError('No dynamic library found for %s with '
                                    'features %s' % (platid, features))
@@ -476,6 +476,11 @@ def _build_platforms(platforms, restrict=True, supermode=False):
 
 def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
                  suffix='', restrict=True, supermode=False):
+    if supermode:
+        _make_super_runtime(capsule, output, licfile=licfile, suffix=suffix,
+                            platforms=platforms, restrict=restrict)
+        return
+
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
         if not os.path.exists(output):
@@ -515,7 +520,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
     if not platforms:
         if supermode:
             platid = pytransform.format_platform()
-            libfile = _build_platforms([platid], restrict, supermode)[0]
+            libfile = _build_platforms([platid], restrict)[0]
         else:
             libfile = pytransform._pytransform._name
             if not os.path.exists(libfile):
@@ -529,7 +534,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         copy3(libfile, output)
 
     elif len(platforms) == 1:
-        filename = _build_platforms(platforms, restrict, supermode)[0]
+        filename = _build_platforms(platforms, restrict)[0]
         logging.info('Copying %s', filename)
         copy3(filename, output)
     else:
@@ -539,7 +544,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         if not os.path.exists(libpath):
             os.mkdir(libpath)
 
-        filenames = _build_platforms(platforms, restrict, supermode)
+        filenames = _build_platforms(platforms, restrict)
         for platid, filename in list(zip(platforms, filenames)):
             logging.info('Copying %s', filename)
             path = os.path.join(libpath, *platid.split('.')[:2])
@@ -1078,6 +1083,79 @@ def make_super_bootstrap(source, filename, relative=None, suffix=''):
 
     with open(filename, 'w') as f:
         f.write(''.join(lines))
+
+
+def _make_super_runtime(capsule, output, licfile=None, platforms=None,
+                        restrict=True, suffix=''):
+    supermode = True
+    logging.info('Generating super runtime library to %s', relpath(output))
+    if not os.path.exists(output):
+        os.makedirs(output)
+
+    def copy3(src, dst):
+        if suffix:
+            x = os.path.basename(src).replace('.', ''.join([suffix, '.']))
+            shutil.copy2(src, os.path.join(dst, x))
+        else:
+            shutil.copy2(src, dst)
+
+    if not platforms:
+        platid = pytransform.format_platform()
+        filelist = _build_platforms([platid], restrict, supermode)[:1]
+    elif len(platforms) == 1:
+        filelist = _build_platforms(platforms, restrict, supermode)[:1]
+    else:
+        filelist = _build_platforms(platforms, restrict, supermode)
+
+    myzip = ZipFile(capsule, 'r')
+    if 'pytransform.key' not in myzip.namelist():
+        raise RuntimeError('No pytransform.key found in capsule')
+
+    logging.info('Extract pytransform.key')
+    keydata = myzip.read('pytransform.key')
+    size1 = keydata[0] + keydata[1] * 8
+    size2 = keydata[2] + keydata[2] * 8
+    if licfile is None:
+        logging.info('Generate default license.lic')
+        lickey = make_license_key(capsule, 'Dashingsoft-PyArmor',
+                                  key=myzip.read('private.key'))
+    else:
+        logging.info('Use license file %s', relpath(licfile))
+        with open(licfile, 'rb') as f:
+            lickey = f.read()
+
+    def patch_library(filename):
+        patkey = b'\x0f\x00\x07\x06'
+        patlen = len(patkey)
+        with open(filename, 'rb') as f:
+            data = bytearray(f.read())
+
+        n = len(data)
+        for i in range(n):
+            if data[i:i+patlen] == patkey:
+                fmt = 'I' * 8
+                header = struct.unpack(fmt, data[i:i+32])
+                if sum(header[2:]) != 912:
+                    continue
+                max_size = header[1]
+                if size1 + size2 + len(lickey) > max_size:
+                    raise RuntimeError('Too much license data')
+                offset = 16
+                data[i:i+size1+size2] = keydata[offset:]
+                data[i:i+len(lickey)] = lickey
+        else:
+            raise RuntimeError('Invalid dynamic library')
+
+        with open(filename, 'wb') as f:
+            f.write(data)
+
+    for filename in filelist:
+        logging.info('Copying %s', filename)
+        copy3(filename, output)
+        logging.info('Write license data')
+        patch_library(filename)
+
+    logging.info('Generate runtime files OK')
 
 
 if __name__ == '__main__':
