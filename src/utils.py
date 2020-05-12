@@ -1113,8 +1113,8 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
 
     logging.info('Extract pytransform.key')
     keydata = myzip.read('pytransform.key')
-    size1 = keydata[0] + keydata[1] * 8
-    size2 = keydata[2] + keydata[2] * 8
+    size1 = keydata[0] + keydata[1] * 256
+    size2 = keydata[2] + keydata[3] * 256
     if licfile is None:
         logging.info('Generate default license.lic')
         lickey = make_license_key(capsule, 'Dashingsoft-PyArmor',
@@ -1125,6 +1125,7 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
             lickey = f.read()
 
     def patch_library(filename):
+        logging.debug('Patching %s', relpath(filename))
         patkey = b'\x0f\x00\x07\x06'
         patlen = len(patkey)
         with open(filename, 'rb') as f:
@@ -1137,12 +1138,17 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
                 header = struct.unpack(fmt, data[i:i+32])
                 if sum(header[2:]) != 912:
                     continue
+                logging.debug('Found pattern at %x', i)
                 max_size = header[1]
                 if size1 + size2 + len(lickey) > max_size:
                     raise RuntimeError('Too much license data')
                 offset = 16
-                data[i:i+size1+size2] = keydata[offset:]
-                data[i:i+len(lickey)] = lickey
+                k = i + 32
+                j = k + size1 + size2
+                logging.debug('Patch %d bytes from %x', j - k, k)
+                data[k:j] = keydata[offset:]
+                logging.debug('Patch %d bytes from %x', len(lickey), j)
+                data[j:j+len(lickey)] = lickey
                 break
         else:
             raise RuntimeError('Invalid dynamic library, no data found')
@@ -1152,6 +1158,7 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
             k = len(marker)
             for i in range(n):
                 if data[i:i+k] == marker:
+                    logging.debug('Found marker at %x', i)
                     data[i:i+k] = bytes(suffix)
 
         with open(filename, 'wb') as f:
