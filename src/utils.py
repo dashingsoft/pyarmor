@@ -518,18 +518,14 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             shutil.copy2(src, dst)
 
     if not platforms:
-        if supermode:
-            platid = pytransform.format_platform()
-            libfile = _build_platforms([platid], restrict)[0]
-        else:
-            libfile = pytransform._pytransform._name
+        libfile = pytransform._pytransform._name
+        if not os.path.exists(libfile):
+            libname = dll_name + dll_ext
+            libfile = os.path.join(PYARMOR_PATH, libname)
             if not os.path.exists(libfile):
-                libname = dll_name + dll_ext
-                libfile = os.path.join(PYARMOR_PATH, libname)
-                if not os.path.exists(libfile):
-                    pname = pytransform.format_platform()
-                    libpath = os.path.join(PYARMOR_PATH, 'platforms')
-                    libfile = os.path.join(libpath, pname, libname)
+                pname = pytransform.format_platform()
+                libpath = os.path.join(PYARMOR_PATH, 'platforms')
+                libfile = os.path.join(libpath, pname, libname)
         logging.info('Copying %s', libfile)
         copy3(libfile, output)
 
@@ -1123,6 +1119,13 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
         logging.info('Use license file %s', relpath(licfile))
         with open(licfile, 'rb') as f:
             lickey = f.read()
+    size3 = len(lickey)
+
+    def write_integer(data, offset, value):
+        for i in range(4):
+            data[offset] = value & 0xFF
+            offset += 1
+            value >>= 8
 
     def patch_library(filename):
         logging.debug('Patching %s', relpath(filename))
@@ -1140,15 +1143,22 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
                     continue
                 logging.debug('Found pattern at %x', i)
                 max_size = header[1]
-                if size1 + size2 + len(lickey) > max_size:
+                if size1 + size2 + size3 > max_size:
                     raise RuntimeError('Too much license data')
+
+                write_integer(data, i + 12, size1)
+                write_integer(data, i + 16, size1)
+                write_integer(data, i + 20, size2)
+                write_integer(data, i + 24, size1 + size2)
+                write_integer(data, i + 28, size3)
+
                 offset = 16
                 k = i + 32
                 j = k + size1 + size2
                 logging.debug('Patch %d bytes from %x', j - k, k)
                 data[k:j] = keydata[offset:]
-                logging.debug('Patch %d bytes from %x', len(lickey), j)
-                data[j:j+len(lickey)] = lickey
+                logging.debug('Patch %d bytes from %x', size3, j)
+                data[j:j+size3] = lickey
                 break
         else:
             raise RuntimeError('Invalid dynamic library, no data found')
