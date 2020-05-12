@@ -1143,8 +1143,16 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
                 offset = 16
                 data[i:i+size1+size2] = keydata[offset:]
                 data[i:i+len(lickey)] = lickey
+                break
         else:
-            raise RuntimeError('Invalid dynamic library')
+            raise RuntimeError('Invalid dynamic library, no data found')
+
+        if suffix:
+            marker = bytes('_vax_000000')
+            k = len(marker)
+            for i in range(n):
+                if data[i:i+k] == marker:
+                    data[i:i+k] = bytes(suffix)
 
         with open(filename, 'wb') as f:
             f.write(data)
