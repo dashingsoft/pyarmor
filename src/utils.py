@@ -1115,6 +1115,9 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
         logging.info('Generate default license.lic')
         lickey = make_license_key(capsule, 'Dashingsoft-PyArmor',
                                   key=myzip.read('private.key'))
+    elif licfile is False:
+        logging.info('Generate blank license')
+        lickey = b''
     else:
         logging.info('Use license file %s', relpath(licfile))
         with open(licfile, 'rb') as f:
@@ -1157,8 +1160,9 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
                 j = k + size1 + size2
                 logging.debug('Patch %d bytes from %x', j - k, k)
                 data[k:j] = keydata[offset:]
-                logging.debug('Patch %d bytes from %x', size3, j)
-                data[j:j+size3] = lickey
+                if size3:
+                    logging.debug('Patch %d bytes from %x', size3, j)
+                    data[j:j+size3] = lickey
                 break
         else:
             raise RuntimeError('Invalid dynamic library, no data found')
