@@ -841,7 +841,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                   or line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
-                supermode = adv_mode > 1
+                supermode = (adv_mode & 7) > 1
                 template = os.path.join(PYARMOR_PATH, protect_code_template % (
                     '2' if supermode else '')) \
                     if isinstance(protection, int) else protection
