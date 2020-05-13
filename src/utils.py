@@ -1186,7 +1186,11 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
     for filename in filelist:
         logging.info('Copying %s', filename)
         copy3(filename, output)
-        logging.info('Write license data')
+        if suffix:
+            k = filename.rfind('pytransform') + len('pytransform')
+            filename = filename[:k] + suffix + filename[k:]
+            logging.info('Rename extension to %s', os.path.basename(filename))
+        logging.info('Patch extension pytransform')
         patch_library(filename)
 
     logging.info('Generate runtime files OK')
