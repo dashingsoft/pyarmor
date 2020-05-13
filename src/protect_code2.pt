@@ -12,30 +12,24 @@ def protect_pytransform():
             raise RuntimeError('%s() is not a builtin' % func.__name__)
 
     def check_obfuscated_script():
+        from sys import _getframe
         CO_SIZES = 30, 39
         CO_NAMES = set(['pytransform{suffix}', 'pyarmor',
                         '__name__', '__file__'])
-        co = pytransform.sys._getframe(1).f_code
+        co = _getframe(3).f_code
         if not ((set(co.co_names) <= CO_NAMES)
                 and (len(co.co_code) in CO_SIZES)):
             raise RuntimeError('unexpected obfuscated script')
 
     def check_lib_pytransform():
-        platname = pytransform.sys.platform
-        libname = 'pytransform{suffix}.dylib' if platname.startswith('darwin') else \
-                  'pytransform{suffix}.dll' if platname.startswith('win') else \
-                  'pytransform{suffix}.so'
-        if getattr(pytransform.sys, 'frozen', False):
-            filename = pytransform.os.path.join(pytransform.sys._MEIPASS, libname)
-        else:
-            filename = pytransform.os.path.join({rpath}, {spath}, libname)
-
-        size = pytransform.os.path.getsize(filename) & 0xFFFFFFF0
-        n = size >> 2
+        from struct import unpack
+        filename = pytransform.__file__
         with open(filename, 'rb') as f:
-            buf = f.read(size)
+            buf = f.read()
+        size = len(buf) & 0xFFFFFFF0
+        n = size >> 2
         fmt = 'I' * n
-        checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
+        checksum = sum(unpack(fmt, buf[:size])) & 0xFFFFFFFF
         if checksum not in {checksum}:
             raise RuntimeError('unexpected %s' % filename)
 
