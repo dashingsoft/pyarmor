@@ -1109,8 +1109,6 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
 
     logging.info('Extract pytransform.key')
     keydata = myzip.read('pytransform.key')
-    size1 = keydata[0] + keydata[1] * 256
-    size2 = keydata[2] + keydata[3] * 256
     if licfile is None:
         logging.info('Generate default license.lic')
         lickey = make_license_key(capsule, 'Dashingsoft-PyArmor',
@@ -1122,6 +1120,13 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
         logging.info('Use license file %s', relpath(licfile))
         with open(licfile, 'rb') as f:
             lickey = f.read()
+
+    if sys.version_info.major == 2:
+        size1 = ord(keydata[0]) + ord(keydata[1]) * 256
+        size2 = ord(keydata[2]) + ord(keydata[3]) * 256
+    else:
+        size1 = keydata[0] + keydata[1] * 256
+        size2 = keydata[2] + keydata[3] * 256
     size3 = len(lickey)
 
     def write_integer(data, offset, value):
@@ -1142,7 +1147,7 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
             if data[i:i+patlen] == patkey:
                 fmt = 'I' * 8
                 header = struct.unpack(fmt, data[i:i+32])
-                if sum(header[2:]) != 912:
+                if sum(header[2:]) not in (912, 1452):
                     continue
                 logging.debug('Found pattern at %x', i)
                 max_size = header[1]
@@ -1168,12 +1173,12 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
             raise RuntimeError('Invalid dynamic library, no data found')
 
         if suffix:
-            marker = bytes('_vax_000000')
+            marker = bytes(b'_vax_000000')
             k = len(marker)
             for i in range(n):
                 if data[i:i+k] == marker:
                     logging.debug('Found marker at %x', i)
-                    data[i:i+k] = bytes(suffix)
+                    data[i:i+k] = bytes(suffix.encode())
 
         with open(filename, 'wb') as f:
             f.write(data)
