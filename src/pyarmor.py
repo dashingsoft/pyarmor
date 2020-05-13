@@ -223,6 +223,9 @@ def _build(args):
 
     restrict = project.get('restrict_mode',
                            0 if project.get('disable_restrict_mode') else 1)
+    adv_mode = (project.advanced_mode if project.advanced_mode else 0) \
+        if hasattr(project, 'advanced_mode') else 0
+    supermode = adv_mode > 1
 
     if not args.only_runtime:
         src = project.src
@@ -261,9 +264,6 @@ def _build(args):
             wrap_mode = 0
             obf_code = 0 if project.obf_code_mode == 'none' else 1
 
-        adv_mode = (project.advanced_mode if project.advanced_mode else 0) \
-            if hasattr(project, 'advanced_mode') else 0
-
         bootstrap_code = project.get('bootstrap_code', 1)
         relative = True if bootstrap_code == 3 else \
             False if (bootstrap_code == 2 or
@@ -274,8 +274,8 @@ def _build(args):
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
         logging.info('Obfuscating each function is %s', v(obf_code))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
-        logging.info('Advanced mode is %s', v(adv_mode))
         logging.info('Restrict mode is %s', restrict)
+        logging.info('Advanced mode is %s', adv_mode)
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
@@ -308,7 +308,7 @@ def _build(args):
                            platforms=platforms, plugins=plugins,
                            rpath=project.runtime_path, suffix=suffix)
 
-            if adv_mode > 1:
+            if supermode:
                 make_super_bootstrap(a, b, relative=relative, suffix=suffix)
 
         logging.info('%d scripts has been obfuscated', len(files))
@@ -333,7 +333,7 @@ def _build(args):
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
         make_runtime(capsule, routput, platforms=platforms, package=package,
-                     suffix=suffix, supermode=adv_mode > 1)
+                     suffix=suffix, supermode=supermode)
 
         licfile = project.license_file
         if licfile:

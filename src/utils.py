@@ -1061,7 +1061,7 @@ def get_bind_key(filename):
 
 def make_super_bootstrap(source, filename, relative=None, suffix=''):
     pkg = os.path.basename(filename) == '__init__.py'
-    bootstrap = 'from %spytransform%simport pyarmor' % (
+    bootstrap = 'from %spytransform%s import pyarmor\n' % (
         '.' if (relative is True) or ((relative is None) and pkg) else '',
         suffix)
 
@@ -1088,15 +1088,8 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
     if not os.path.exists(output):
         os.makedirs(output)
 
-    def copy3(src, dst):
-        if suffix:
-            x = os.path.basename(src).replace('.', ''.join([suffix, '.']))
-            shutil.copy2(src, os.path.join(dst, x))
-        else:
-            shutil.copy2(src, dst)
-
     if not platforms:
-        platid = pytransform.format_platform()
+        platid = _format_platid()
         filelist = _build_platforms([platid], restrict, supermode)[:1]
     elif len(platforms) == 1:
         filelist = _build_platforms(platforms, restrict, supermode)[:1]
@@ -1137,7 +1130,7 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
 
     def patch_library(filename):
         logging.debug('Patching %s', relpath(filename))
-        patkey = b'\x0f\x00\x07\x06'
+        patkey = b'\x60\x70\x00\x0f'
         patlen = len(patkey)
         with open(filename, 'rb') as f:
             data = bytearray(f.read())
@@ -1183,15 +1176,25 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
         with open(filename, 'wb') as f:
             f.write(data)
 
+    names = []
     for filename in filelist:
         logging.info('Copying %s', filename)
-        copy3(filename, output)
+
+        name = os.path.basename(filename)
         if suffix:
-            k = filename.rfind('pytransform') + len('pytransform')
-            filename = filename[:k] + suffix + filename[k:]
-            logging.info('Rename extension to %s', os.path.basename(filename))
-        logging.info('Patch extension pytransform')
-        patch_library(filename)
+            k = name.rfind('pytransform') + len('pytransform')
+            name = name[:k] + suffix + name[k:]
+            logging.info('Rename extension to %s', name)
+        if name in names:
+            raise RuntimeError('Multiple platforms confilt with '
+                               'same extension name')
+        names.append(name)
+
+        target = os.path.join(output, name)
+        shutil.copy2(filename, target)
+
+        logging.info('Patch extension %s', target)
+        patch_library(target)
 
     logging.info('Generate runtime files OK')
 
