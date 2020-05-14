@@ -560,7 +560,7 @@ def _obfuscate(args):
     suffix = get_name_suffix() if args.enable_suffix else ''
 
     if args.recursive:
-        logging.info('Recursive mode is on')
+        logging.info('Search scripts mode: Recursive')
         pats = ['global-include *.py']
 
         if args.exclude:
@@ -587,11 +587,11 @@ def _obfuscate(args):
         files = Project.build_manifest(pats, path)
 
     elif args.exact:
-        logging.info('Exact mode is on')
+        logging.info('Search scripts mode: Exact')
         files = [os.path.abspath(x) for x in args.scripts]
 
     else:
-        logging.info('Normal mode is on')
+        logging.info('Search scripts mode: Normal')
         files = Project.build_globfiles(['*.py'], path)
 
     logging.info('Save obfuscated scripts to "%s"', output)
@@ -601,21 +601,23 @@ def _obfuscate(args):
     logging.info('Read public key from capsule')
     prokey = get_product_key(capsule)
 
-    logging.info('Obfuscate scripts with default mode')
     cross_protection = 0 if args.no_cross_protection else \
         1 if args.cross_protection is None else args.cross_protection
 
     advanced = args.advanced if args.advanced else 0
-    logging.info('Advanced mode is %d', advanced)
     supermode = advanced > 1
-
     restrict = args.restrict
-    logging.info('Restrict mode is %d', restrict)
 
     n = args.bootstrap_code
     relative = True if n == 3 else False if n == 2 else None
     bootstrap = (not args.no_bootstrap) and n
     elist = [os.path.abspath(x) for x in entries]
+
+    logging.info('Obfuscate module mode is %s', args.obf_mod)
+    logging.info('Obfuscate code mode is %s', args.obf_code)
+    logging.info('Wrap mode is %s', args.wrap_mode)
+    logging.info('Restrict mode is %d', restrict)
+    logging.info('Advanced mode is %d', advanced)
 
     if args.no_runtime:
         if cross_protection == 1:

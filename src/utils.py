@@ -1212,7 +1212,7 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
 
 def _make_protection_code2(relative, checklist, suffix=''):
     template = os.path.join(PYARMOR_PATH, protect_code_template % '2')
-    logging.info('Use template: %s', template)
+    logging.info('Use protection template: %s', relpath(template))
     with open(template) as f:
         buf = f.read()
 
