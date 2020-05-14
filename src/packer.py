@@ -349,8 +349,9 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None):
 
 def _pyinstaller(src, entry, output, options, xoptions, args):
     clean = args.clean
-    nolicense = args.without_license
-    licfile = args.with_license
+    licfile = args.license_file
+    if licfile in ('no', 'outer') or args.no_license:
+        licfile = False
     src = relpath(src)
     output = relpath(output)
     obfdist = os.path.join(output, 'obf')
@@ -395,10 +396,14 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
         shutil.copy2(licfile, os.path.join(obfdist, 'license.lic'))
+    elif licfile is False:
+        logging.info('Using outer license file')
     else:
+        x = [] if '='.join(xoptions).find('restrict=0') == -1 \
+            else ['--disable-restrict-mode']
         logging.info('Generate fixed license file')
         call_pyarmor(['licenses', '-O', os.path.join(obfdist, 'license.lic'),
-                      '--fixed', '1', 'pyarmor-packer'])
+                      '--fixed', '1', 'pyarmor-packer'] + x)
 
     obftemp = os.path.join(obfdist, 'temp')
     if not os.path.exists(obftemp):
@@ -421,7 +426,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
 
     hookfile = os.path.join(obftemp, 'hook-pytransform.py')
     logging.info('Generate hook script: %s', hookfile)
-    _make_hook_pytransform(hookfile, obfdist, nolicense, encoding)
+    _make_hook_pytransform(hookfile, obfdist, licfile is False, encoding)
 
     logging.info('Patching .spec file...')
     patched_spec = _patch_specfile(obfdist, src, specfile, hookpath,
@@ -534,8 +539,8 @@ def add_arguments(parser):
     parser.add_argument('-x', '--xoptions', metavar='EXTRA_OPTIONS',
                         help='Pass these extra options to `pyarmor obfuscate`')
     parser.add_argument('--without-license', action='store_true',
-                        help='Do not generate license for obfuscated scripts')
-    parser.add_argument('--with-license', metavar='FILE',
+                        dest='no_license', help=argparse.SUPPRESS)
+    parser.add_argument('--with-license', metavar='FILE', dest='license_file',
                         help='Use this license file other than default one')
     parser.add_argument('--clean', action="store_true",
                         help='Remove cached .spec file before packing')
