@@ -92,4 +92,61 @@ scripts again.
 
 **The registration code is valid forever, it can be used permanently. But it may not work with new versions, although up to now it works with all of versions.**
 
+Q & A
+-----
+
+1. Single PyArmor license purchased can be used on various machines for
+   obfuscation? or its valid only on one machine? Do we need to install license
+   on single machine and distribute obfuscate code?
+   
+A::
+   It can be used on various machines, but one license only for one product.
+
+2. Single license can be used to obfuscate Python code that will run various
+   platforms like windows, various Linux flavors?
+
+A::
+   For all the features of current version, it's yes. But in future versions,
+   I'm not sure one license could be used in all of platforms supported by PyArmor.
+
+3. How long the purchased license is valid for? is it life long?
+
+A::
+   It's life long. But I can't promise it will work for the future version of PyArmor.
+
+4. Can we use the single license to obfuscate various versions of Python package/modules?
+
+A::
+   Yes, only if they're belong to one product.
+
+5. Is there support provided in case of issues encountered?
+
+A::
+   Report issue in github or send email to me.
+
+6. Does Pyarmor works on various Python  versions?
+
+A::
+  Most of features work on Python27, and Python30~Python38, a few features may
+  only work for Python27, Python35 later.
+
+7. Are there plans to maintain PyArmor to support future released Python versions?
+
+A::
+  Yes. The goal of PyArmor is let Python could be widely used in the commercial softwares.
+
+8. What is the mechanism in PyArmor to identify whether modules belong to same
+   product? how it identifies product?
+
+A::
+
+    PyArmor could not identify it by itself, but I can check the obfuscated
+    scripts to find which registerred user distributes them. So I can find two
+    products are distributed by one same license,
+
+9. If product undergoes revision ie. version changes, can same license be used
+   or need new new license?
+
+   > Same license is OK.
+
 .. include:: _common_definitions.txt
