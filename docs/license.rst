@@ -106,45 +106,45 @@ Q & A
      It can be used on various machines, but one license only for one product.
 
 2. Single license can be used to obfuscate Python code that will run various
-   platforms like windows, various Linux flavors? ::
+   platforms like windows, various Linux flavors?
 
-     For all the features of current version, it's yes. But in future versions,
-     I'm not sure one license could be used in all of platforms supported by
-     PyArmor.
+   > For all the features of current version, it's yes. But in future versions,
+   > I'm not sure one license could be used in all of platforms supported by
+   > PyArmor.
 
-3. How long the purchased license is valid for? is it life long? ::
-   
-     It's life long. But I can't promise it will work for the future version of PyArmor.
+3. How long the purchased license is valid for? is it life long?
+
+   | It's life long. But I can't promise it will work for the future version of PyArmor.
 
 4. Can we use the single license to obfuscate various versions of Python
    package/modules?
 
    | Yes, only if they're belong to one product.
 
-5. Is there support provided in case of issues encountered? ::
-   
+5. Is there support provided in case of issues encountered?
+
      Report issue in github or send email to me.
 
-6. Does Pyarmor works on various Python versions? ::
-     
+6. Does Pyarmor works on various Python versions?
+
    | Most of features work on Python27, and Python30~Python38, a few features
    | may only work for Python27, Python35 later.
 
 7. Are there plans to maintain PyArmor to support future released Python
-   versions?  ::
-     
+   versions?
+
      Yes. The goal of PyArmor is let Python could be widely used in the
      commercial softwares.
 
 8. What is the mechanism in PyArmor to identify whether modules belong to same
-   product? how it identifies product? ::
+   product? how it identifies product?
 
      PyArmor could not identify it by itself, but I can check the obfuscated
      scripts to find which registerred user distributes them. So I can find two
      products are distributed by one same license,
 
 9. If product undergoes revision ie. version changes, can same license be used
-   or need new new license? ::
+   or need new new license?
 
      Same license is OK.
 
