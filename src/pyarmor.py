@@ -635,6 +635,7 @@ def _obfuscate(args):
                 multiple=bool(platforms),
                 supermode=supermode)
 
+    logging.info('Start obfuscating the scripts...')
     for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -1233,7 +1234,7 @@ def _parser():
     cparser.add_argument('-L', '--with-license', metavar='FILE',
                          dest='license_file',
                          help='Replace default license with this file')
-    cparser.add_argument('without-license', dest='no_license',
+    cparser.add_argument('--without-license', dest='no_license',
                          action='store_true', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', dest='platforms', metavar='NAME',
                          action='append',

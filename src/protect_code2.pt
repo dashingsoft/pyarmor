@@ -21,11 +21,10 @@ def protect_pytransform():
         filename = pytransform.__file__
         with open(filename, 'rb') as f:
             buf = bytearray(f.read())
-        value = sum(buf) & 0xFFFFFFFF
+        value = sum(buf)
         if value not in {checklist}:
             raise RuntimeError('unexpected %s' % filename)
 
-    assert_builtin(bytearray)
     assert_builtin(sum)
     assert_builtin(open)
     assert_builtin(len)
