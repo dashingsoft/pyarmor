@@ -1,9 +1,6 @@
 def protect_pytransform():
 
-    try:
-        import pytransform{suffix} as pytransform
-    except ImportError:
-        from . import pytransform{suffix} as pytransform
+    {relative}import pytransform{suffix} as pytransform
 
     def assert_builtin(func):
         type = ''.__class__.__class__
@@ -53,16 +50,13 @@ def protect_pytransform():
         if checksum not in {checksum}:
             raise RuntimeError('unexpected %s' % filename)
 
-    try:
-        assert_builtin(sum)
-        assert_builtin(open)
-        assert_builtin(len)
+    assert_builtin(sum)
+    assert_builtin(open)
+    assert_builtin(len)
 
-        check_obfuscated_script()
-        check_mod_pytransform()
-        check_lib_pytransform()
-    except Exception as e:
-        raise RuntimeError("Protection Fault: %s" % e)
+    check_obfuscated_script()
+    check_mod_pytransform()
+    check_lib_pytransform()
 
 
 protect_pytransform()

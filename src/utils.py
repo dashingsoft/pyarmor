@@ -474,12 +474,34 @@ def _build_platforms(platforms, restrict=True, supermode=False):
     return results
 
 
+def _build_license_file(capsule, licfile, output=None):
+    if licfile is None:
+        logging.info('Generate default license file')
+        lickey = make_license_key(capsule, 'PyArmor-Project')
+    elif licfile == 'no-restrict':
+        logging.info('Generate no restrict mode license file')
+        licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
+        lickey = make_license_key(capsule, licode)
+    elif licfile in ('no', 'outer', 'external'):
+        logging.info('Use outer license file')
+        lickey = b''
+    else:
+        logging.info('Generate license file from  %s', relpath(licfile))
+        with open(licfile, 'rb') as f:
+            lickey = f.read()
+    if output is not None and lickey:
+        logging.info('Write license file: %s', output)
+        with open(output, 'wb') as f:
+            f.write(lickey)
+    return lickey
+
+
 def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
                  suffix='', restrict=True, supermode=False):
     if supermode:
-        _make_super_runtime(capsule, output, licfile=licfile, suffix=suffix,
-                            platforms=platforms, restrict=restrict)
-        return
+        return _make_super_runtime(capsule, output, licfile=licfile,
+                                   suffix=suffix, platforms=platforms,
+                                   restrict=restrict)
 
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
@@ -496,19 +518,12 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         myzip.extract('pyshield.key', output)
         myzip.extract('pyshield.lic', output)
         myzip.extract('product.key', output)
+    myzip.close()
 
-    if licfile is None:
-        logging.info('Generate default license.lic')
-        make_license_key(capsule, 'Dashingsoft-PyArmor',
-                         output=os.path.join(output, 'license.lic'),
-                         key=myzip.read('private.key'))
-        # info = myzip.getinfo('license.lic')
-        # if info.date_time[0] > 2020:
-        #     logging.info('Extract license.lic')
-        #     myzip.extract('license.lic', output)
-    else:
-        logging.info('Copying %s as license file', relpath(licfile))
-        shutil.copy2(licfile, os.path.join(output, 'license.lic'))
+    licpath = os.path.join(output, 'pytransform' + suffix) if package \
+        else output
+    _build_license_file(capsule, licfile,
+                        output=os.path.join(licpath, 'license.lic'))
 
     def copy3(src, dst):
         if suffix:
@@ -516,7 +531,9 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             shutil.copy2(src, os.path.join(dst, x))
         else:
             shutil.copy2(src, dst)
+        checklist.append(_get_checksum(dst))
 
+    checklist = []
     if not platforms:
         libfile = pytransform._pytransform._name
         if not os.path.exists(libfile):
@@ -556,6 +573,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         copy3(filename, output)
 
     logging.info('Generate runtime files OK')
+    return checklist
 
 
 def make_project_license(capsule, code, output):
@@ -709,29 +727,26 @@ def _build_pytransform_keylist(mod, code, closure):
     return result
 
 
-def _make_protect_pytransform(template, filenames=None, rpath=None, suffix=''):
-    if filenames is None:
-        filenames = [pytransform._pytransform._name]
-    checksums = []
-    for name in filenames:
-        size = os.path.getsize(name) & 0xFFFFFFF0
-        n = size >> 2
-        with open(name, 'rb') as f:
-            buf = f.read(size)
-        fmt = 'I' * n
-        cosum = sum(struct.unpack(fmt, buf)) & 0xFFFFFFFF
-        checksums.append(cosum)
+def _get_checksum(filename):
+    size = os.path.getsize(filename) & 0xFFFFFFF0
+    n = size >> 2
+    with open(filename, 'rb') as f:
+        buf = f.read(size)
+    fmt = 'I' * n
+    return sum(struct.unpack(fmt, buf)) & 0xFFFFFFFF
 
+
+def _make_protection_code(relative, checksums, suffix='', multiple=False):
+    template = os.path.join(PYARMOR_PATH, protect_code_template % '2')
     with open(template) as f:
         buf = f.read()
 
     code = '__code__' if sys.version_info[0] == 3 else 'func_code'
     closure = '__closure__' if sys.version_info[0] == 3 else 'func_closure'
     keylist = _build_pytransform_keylist(pytransform, code, closure)
-    rpath = '{0}.os.path.dirname({0}.__file__)'.format(
-        'pytransform') if rpath is None else repr(rpath)
+    rpath = '{0}.os.path.dirname({0}.__file__)'.format('pytransform')
     spath = '{0}.os.path.join({0}.plat_path, {0}.format_platform())'.format(
-        'pytransform') if len(filenames) > 1 else repr('')
+        'pytransform') if multiple else repr('')
     return buf.format(code=code, closure=closure, rpath=rpath, spath=spath,
                       checksum=str(checksums), keylist=keylist, suffix=suffix)
 
@@ -841,17 +856,12 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                   or line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
-                supermode = (adv_mode & 7) > 1
-                template = os.path.join(PYARMOR_PATH, protect_code_template % (
-                    '2' if supermode else '')) \
-                    if isinstance(protection, int) else protection
-                logging.info('Use template: %s', template)
-                targets = _build_platforms(platforms, supermode=supermode) \
-                    if platforms else None
-                lines[n:n] = [_make_protect_pytransform(template=template,
-                                                        filenames=targets,
-                                                        rpath=rpath,
-                                                        suffix=suffix)]
+                if os.path.exists(protection):
+                    logging.info('Use template: %s', protection)
+                    with open(protection) as f:
+                        lines[n:n] = [f.read()]
+                else:
+                    lines[n:n] = [protection]
                 break
             n += 1
 
@@ -1081,13 +1091,68 @@ def make_super_bootstrap(source, filename, relative=None, suffix=''):
         f.write(''.join(lines))
 
 
+def _patch_extension(filename, keylist, suffix=''):
+    logging.debug('Patching %s', relpath(filename))
+    patkey = b'\x60\x70\x00\x0f'
+    patlen = len(patkey)
+    sizelist = [len(x) for x in keylist]
+
+    def write_integer(data, offset, value):
+        for i in range(4):
+            data[offset] = value & 0xFF
+            offset += 1
+            value >>= 8
+
+    with open(filename, 'rb') as f:
+        data = bytearray(f.read())
+
+    n = len(data)
+    for i in range(n):
+        if data[i:i+patlen] == patkey:
+            fmt = 'I' * 8
+            header = struct.unpack(fmt, data[i:i+32])
+            if sum(header[2:]) not in (912, 1452):
+                continue
+            logging.debug('Found pattern at %x', i)
+            max_size = header[1]
+            if sum(sizelist) > max_size:
+                raise RuntimeError('Too much license data')
+
+            write_integer(data, i + 12, sizelist[0])
+            write_integer(data, i + 16, sizelist[0])
+            write_integer(data, i + 20, sizelist[1])
+            write_integer(data, i + 24, sizelist[0] + sizelist[1])
+            write_integer(data, i + 28, sizelist[2])
+
+            offset = i + 32
+            for j in range(3):
+                size = sizelist[j]
+                if size:
+                    logging.debug('Patch %d bytes from %x', size, offset)
+                    data[offset:offset+size] = keylist[j]
+                    offset += size
+            break
+    else:
+        raise RuntimeError('Invalid extension, no data found')
+
+    if suffix:
+        marker = bytes(b'_vax_000000')
+        k = len(marker)
+        for i in range(n):
+            if data[i:i+k] == marker:
+                logging.debug('Found marker at %x', i)
+                data[i:i+k] = bytes(suffix.encode())
+
+    return data
+
+
 def _make_super_runtime(capsule, output, licfile=None, platforms=None,
                         restrict=True, suffix=''):
-    supermode = True
     logging.info('Generating super runtime library to %s', relpath(output))
     if not os.path.exists(output):
         os.makedirs(output)
 
+    supermode = True
     if not platforms:
         platid = _format_platid()
         filelist = _build_platforms([platid], restrict, supermode)[:1]
@@ -1099,20 +1164,11 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
     myzip = ZipFile(capsule, 'r')
     if 'pytransform.key' not in myzip.namelist():
         raise RuntimeError('No pytransform.key found in capsule')
-
     logging.info('Extract pytransform.key')
     keydata = myzip.read('pytransform.key')
-    if licfile is None:
-        logging.info('Generate default license.lic')
-        lickey = make_license_key(capsule, 'Dashingsoft-PyArmor',
-                                  key=myzip.read('private.key'))
-    elif licfile is False:
-        logging.info('Generate blank license')
-        lickey = b''
-    else:
-        logging.info('Use license file %s', relpath(licfile))
-        with open(licfile, 'rb') as f:
-            lickey = f.read()
+    myzip.close()
+
+    lickey = _build_license_file(capsule, licfile)
 
     if sys.version_info.major == 2:
         size1 = ord(keydata[0]) + ord(keydata[1]) * 256
@@ -1120,63 +1176,13 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
     else:
         size1 = keydata[0] + keydata[1] * 256
         size2 = keydata[2] + keydata[3] * 256
-    size3 = len(lickey)
 
-    def write_integer(data, offset, value):
-        for i in range(4):
-            data[offset] = value & 0xFF
-            offset += 1
-            value >>= 8
+    k1 = 16
+    k2 = k1 + size1
+    keylist = keydata[k1:k2], keydata[k2:k2+size2], lickey
 
-    def patch_library(filename):
-        logging.debug('Patching %s', relpath(filename))
-        patkey = b'\x60\x70\x00\x0f'
-        patlen = len(patkey)
-        with open(filename, 'rb') as f:
-            data = bytearray(f.read())
-
-        n = len(data)
-        for i in range(n):
-            if data[i:i+patlen] == patkey:
-                fmt = 'I' * 8
-                header = struct.unpack(fmt, data[i:i+32])
-                if sum(header[2:]) not in (912, 1452):
-                    continue
-                logging.debug('Found pattern at %x', i)
-                max_size = header[1]
-                if size1 + size2 + size3 > max_size:
-                    raise RuntimeError('Too much license data')
-
-                write_integer(data, i + 12, size1)
-                write_integer(data, i + 16, size1)
-                write_integer(data, i + 20, size2)
-                write_integer(data, i + 24, size1 + size2)
-                write_integer(data, i + 28, size3)
-
-                offset = 16
-                k = i + 32
-                j = k + size1 + size2
-                logging.debug('Patch %d bytes from %x', j - k, k)
-                data[k:j] = keydata[offset:]
-                if size3:
-                    logging.debug('Patch %d bytes from %x', size3, j)
-                    data[j:j+size3] = lickey
-                break
-        else:
-            raise RuntimeError('Invalid dynamic library, no data found')
-
-        if suffix:
-            marker = bytes(b'_vax_000000')
-            k = len(marker)
-            for i in range(n):
-                if data[i:i+k] == marker:
-                    logging.debug('Found marker at %x', i)
-                    data[i:i+k] = bytes(suffix.encode())
-
-        with open(filename, 'wb') as f:
-            f.write(data)
-
-    names = []
+    namelist = []
+    checklist = []
     for filename in filelist:
         logging.info('Copying %s', filename)
 
@@ -1185,18 +1191,38 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
             k = name.rfind('pytransform') + len('pytransform')
             name = name[:k] + suffix + name[k:]
             logging.info('Rename extension to %s', name)
-        if name in names:
+        if name in namelist:
             raise RuntimeError('Multiple platforms confilt with '
-                               'same extension name')
-        names.append(name)
+                               'same extension name "%s"' % name)
+        namelist.append(name)
 
         target = os.path.join(output, name)
         shutil.copy2(filename, target)
 
         logging.info('Patch extension %s', target)
-        patch_library(target)
+        data = _patch_extension(target, keylist, suffix)
+
+        with open(target, 'wb') as f:
+            f.write(data)
+        checklist.append(sum(data))
 
     logging.info('Generate runtime files OK')
+    return checklist
+
+
+def _make_protection_code2(relative, checklist, suffix=''):
+    template = os.path.join(PYARMOR_PATH, protect_code_template % '2')
+    logging.info('Use template: %s', template)
+    with open(template) as f:
+        buf = f.read()
+
+    return buf.format(relative='from . ' if relative else '',
+                      checklist=checklist, suffix=suffix)
+
+
+def make_protection_code(args, multiple=False, supermode=False):
+    return _make_protection_code2(*args) if supermode \
+        else _make_protection_code(*args, multiple=multiple)
 
 
 if __name__ == '__main__':

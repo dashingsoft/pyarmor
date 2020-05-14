@@ -52,7 +52,8 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   get_product_key, register_keyfile, query_keyinfo, \
                   get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names, \
-                  get_name_suffix, get_bind_key, make_super_bootstrap
+                  get_name_suffix, get_bind_key, make_super_bootstrap, \
+                  make_protection_code
 
 import packer
 
@@ -227,6 +228,41 @@ def _build(args):
         if hasattr(project, 'advanced_mode') else 0
     supermode = adv_mode > 1
 
+    protection = project.cross_protection \
+        if hasattr(project, 'cross_protection') else 1
+
+    bootstrap_code = project.get('bootstrap_code', 1)
+    relative = True if bootstrap_code == 3 else \
+        False if (bootstrap_code == 2 or
+                  (args.no_runtime and bootstrap_code == 1)) else None
+
+    if args.no_runtime:
+        if protection == 1:
+            logging.warning('No cross protection because no runtime generated')
+            protection = 0
+    else:
+        routput = output if args.output is not None and args.only_runtime \
+            else os.path.join(output, os.path.basename(project.src)) \
+            if project.get('is_package') else output
+        if not os.path.exists(routput):
+            logging.info('Make path: %s', routput)
+            os.mkdir(routput)
+
+        package = project.get('package_runtime', 0) \
+            if args.package_runtime is None else args.package_runtime
+
+        licfile = project.license_file
+        if not restrict and not licfile:
+            licfile = 'no-restrict'
+
+        checklist = make_runtime(capsule, routput, licfile=licfile,
+                                 platforms=platforms, package=package,
+                                 suffix=suffix, supermode=supermode)
+        if protection == 1:
+            protection = make_protection_code((relative, checklist, suffix),
+                                              multiple=bool(platforms),
+                                              supermode=supermode)
+
     if not args.only_runtime:
         src = project.src
         if os.path.abspath(output).startswith(src):
@@ -264,11 +300,6 @@ def _build(args):
             wrap_mode = 0
             obf_code = 0 if project.obf_code_mode == 'none' else 1
 
-        bootstrap_code = project.get('bootstrap_code', 1)
-        relative = True if bootstrap_code == 3 else \
-            False if (bootstrap_code == 2 or
-                      (args.no_runtime and bootstrap_code == 1)) else None
-
         def v(t):
             return 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
@@ -279,8 +310,6 @@ def _build(args):
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
-        protection = project.cross_protection \
-            if hasattr(project, 'cross_protection') else 1
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -315,40 +344,12 @@ def _build(args):
         project['build_time'] = time.time()
         project.save(args.project)
 
-        if adv_mode < 2 and project.entry and bootstrap_code:
+        if (not supermode) and project.entry and bootstrap_code:
             soutput = os.path.join(output, os.path.basename(project.src)) \
                 if project.get('is_package') else output
             make_entry(project.entry, project.src, soutput,
                        rpath=project.runtime_path, relative=relative,
                        suffix=suffix)
-
-    if not args.no_runtime:
-        routput = output if args.output is not None and args.only_runtime \
-            else os.path.join(output, os.path.basename(project.src)) \
-            if project.get('is_package') else output
-        if not os.path.exists(routput):
-            logging.info('Make path: %s', routput)
-            os.mkdir(routput)
-
-        package = project.get('package_runtime', 0) \
-            if args.package_runtime is None else args.package_runtime
-        make_runtime(capsule, routput, platforms=platforms, package=package,
-                     suffix=suffix, supermode=supermode)
-
-        licfile = project.license_file
-        if licfile:
-            logging.info('Project has customized license file: %s', licfile)
-            licpath = os.path.join(routput, 'pytransform' + suffix) \
-                if package else routput
-            logging.info('Copy project license file to %s', licpath)
-            shutil.copy(licfile, licpath)
-        elif not restrict:
-            licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
-            licpath = os.path.join(routput, 'pytransform' + suffix) \
-                if package else routput
-            licfile = os.path.join(licpath, license_filename)
-            logging.info('Generate no restrict mode license file: %s', licfile)
-            make_license_key(capsule, licode, licfile)
 
     logging.info('Build project OK.')
 
@@ -518,7 +519,7 @@ def _obfuscate(args):
         if check_cross_platform(platforms) is not False:
             return
 
-    for x in ('entry', 'cross-protection'):
+    for x in ('entry',):
         if getattr(args, x.replace('-', '_')) is not None:
             logging.warning('Option --%s has been deprecated', x)
 
@@ -606,6 +607,7 @@ def _obfuscate(args):
 
     advanced = args.advanced if args.advanced else 0
     logging.info('Advanced mode is %d', advanced)
+    supermode = advanced > 1
 
     restrict = args.restrict
     logging.info('Restrict mode is %d', restrict)
@@ -614,6 +616,25 @@ def _obfuscate(args):
     relative = True if n == 3 else False if n == 2 else None
     bootstrap = (not args.no_bootstrap) and n
     elist = [os.path.abspath(x) for x in entries]
+
+    if args.no_runtime:
+        if cross_protection == 1:
+            logging.warning('No cross protection because no runtime generated')
+            cross_protection = 0
+    else:
+        package = args.package_runtime
+        licfile = args.license_file
+        if (not restrict) and (licfile is not None):
+            licfile = 'no-restrict'
+        checklist = make_runtime(capsule, output, platforms=platforms,
+                                 licfile=licfile, package=package,
+                                 suffix=suffix, supermode=supermode)
+        if cross_protection == 1:
+            cross_protection = make_protection_code(
+                (relative, checklist, suffix),
+                multiple=bool(platforms),
+                supermode=supermode)
+
     for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -634,29 +655,11 @@ def _obfuscate(args):
                        plugins=plugins, suffix=suffix, obf_code=args.obf_code,
                        obf_mod=args.obf_mod, wrap_mode=args.wrap_mode)
 
-        if advanced > 1:
+        if supermode:
             make_super_bootstrap(a, b, relative=relative, suffix=suffix)
         elif is_entry and bootstrap:
             name = os.path.abspath(a)[len(path)+1:]
             make_entry(name, path, output, relative=relative, suffix=suffix)
-
-    logging.info('%d scripts have been obfuscated', len(files))
-
-    if args.no_runtime:
-        logging.info('Obfuscate %d scripts OK.', len(files))
-        return
-
-    package = args.package_runtime
-    make_runtime(capsule, output, platforms=platforms,
-                 package=package, suffix=suffix, supermode=advanced > 1)
-
-    if not args.restrict:
-        licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
-        licpath = (os.path.join(output, 'pytransform' + suffix) if package
-                   else output)
-        licfile = os.path.join(licpath, license_filename)
-        logging.info('Generate no restrict mode license file: %s', licfile)
-        make_license_key(capsule, licode, licfile)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
@@ -795,15 +798,26 @@ def _runtime(args):
     package = not args.no_package
     platforms = compatible_platform_names(args.platforms)
     suffix = get_name_suffix() if args.enable_suffix else ''
-    make_runtime(capsule, output, licfile=args.with_license,
-                 platforms=platforms, package=package, suffix=suffix,
-                 restrict=False, supermode=args.super_mode)
+    licfile = 'no' if args.no_license else args.license_file
+    checklist = make_runtime(capsule, output, licfile=licfile,
+                             platforms=platforms, package=package,
+                             suffix=suffix, restrict=False,
+                             supermode=args.super_mode)
 
-    filename = os.path.join(output, '__init__.py') if args.inside else \
-        os.path.join(args.output, name + '.py')
-    logging.info('Generating bootstrap script ...')
-    make_bootstrap_script(filename, capsule=capsule, suffix=suffix)
-    logging.info('Generating bootstrap script %s OK', filename)
+    logging.info('Generating protection script ...')
+    filename = os.path.join(output, 'pytransform_protection.py')
+    data = make_protection_code((args.inside, checklist, suffix),
+                                multiple=bool(platforms),
+                                supermode=args.super_mode)
+    with open(filename, 'r') as f:
+        f.write(data)
+
+    if not args.super_mode:
+        filename = os.path.join(output, '__init__.py') if args.inside else \
+            os.path.join(args.output, name + '.py')
+        logging.info('Generating bootstrap script ...')
+        make_bootstrap_script(filename, capsule=capsule, suffix=suffix)
+        logging.info('Generating bootstrap script %s OK', filename)
 
 
 def _version_action():
@@ -876,9 +890,6 @@ def _parser():
                          dest='bootstrap_code',
                          type=int, default=1, choices=(0, 1, 2, 3),
                          help='How to insert bootstrap code to entry script')
-    cparser.add_argument('--no-cross-protection', action='store_true',
-                         help='Do not insert cross protection code to entry '
-                         'script')
     cparser.add_argument('scripts', metavar='SCRIPT', nargs='+',
                          help='List scripts to obfuscated, the first script '
                          'is entry script')
@@ -886,8 +897,6 @@ def _parser():
                          help='Specify source path if entry script is not '
                          'in the top most path')
     cparser.add_argument('-e', '--entry', metavar='SCRIPT',
-                         help=argparse.SUPPRESS)
-    cparser.add_argument('--cross-protection', choices=(0, 1),
                          help=argparse.SUPPRESS)
     cparser.add_argument('--plugin', dest='plugins', metavar='NAME',
                          action='append',
@@ -912,6 +921,14 @@ def _parser():
                          help='DO NOT generate runtime files')
     cparser.add_argument('--enable-suffix', action='store_true',
                          help='Make unique runtime files and bootstrap code')
+    cparser.add_argument('--with-license', dest='license_file',
+                         help='Use this license file other than default')
+    group = cparser.add_mutually_exclusive_group()
+    group.add_argument('--no-cross-protection', action='store_true',
+                       help='Do not insert protection code to entry script')
+    group.add_argument('--cross-protection', metavar='SCRIPT',
+                       help='Specify cross protection script')
+
     cparser.set_defaults(func=_obfuscate)
 
     #
@@ -1214,7 +1231,10 @@ def _parser():
                          help='Generate bootstrap script which is used '
                          'inside one package')
     cparser.add_argument('-L', '--with-license', metavar='FILE',
+                         dest='license_file',
                          help='Replace default license with this file')
+    cparser.add_argument('without-license', dest='no_license',
+                         action='store_true', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', dest='platforms', metavar='NAME',
                          action='append',
                          help='Generate runtime package for this platform, '

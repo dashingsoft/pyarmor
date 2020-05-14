@@ -1,10 +1,5 @@
 def protect_pytransform():
 
-    try:
-        import pytransform{suffix} as pytransform
-    except ImportError:
-        from . import pytransform{suffix} as pytransform
-
     def assert_builtin(func):
         type = ''.__class__.__class__
         builtin_function = type(''.join)
@@ -22,26 +17,21 @@ def protect_pytransform():
             raise RuntimeError('unexpected obfuscated script')
 
     def check_lib_pytransform():
-        from struct import unpack
+        {relative}import pytransform{suffix} as pytransform
         filename = pytransform.__file__
         with open(filename, 'rb') as f:
-            buf = f.read()
-        size = len(buf) & 0xFFFFFFF0
-        n = size >> 2
-        fmt = 'I' * n
-        checksum = sum(unpack(fmt, buf[:size])) & 0xFFFFFFFF
-        if checksum not in {checksum}:
+            buf = bytearray(f.read())
+        value = sum(buf) & 0xFFFFFFFF
+        if value not in {checklist}:
             raise RuntimeError('unexpected %s' % filename)
 
-    try:
-        assert_builtin(sum)
-        assert_builtin(open)
-        assert_builtin(len)
+    assert_builtin(bytearray)
+    assert_builtin(sum)
+    assert_builtin(open)
+    assert_builtin(len)
 
-        check_obfuscated_script()
-        check_lib_pytransform()
-    except Exception as e:
-        raise RuntimeError("Protection Fault: %s" % e)
+    check_obfuscated_script()
+    check_lib_pytransform()
 
 
 protect_pytransform()
