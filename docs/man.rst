@@ -950,7 +950,7 @@ If option ``--inside`` is specified, it will generate bootstrap package
 ``pytransform_bootstrap`` other than one single script.
 
 The option ``--super-mode`` is used to generate runtime extension module for
-:ref:`超级模式`, it's totally different from other modes.
+:ref:`super mode`, it's totally different from other modes.
 
 About option ``--platform`` and ``--enable-suffix``, refer to command
 `obfuscate`_
