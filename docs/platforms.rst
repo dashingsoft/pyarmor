@@ -27,10 +27,11 @@ platform. The platform name with feature number suffix combines an unique
 name.
 
 Each feature has its own bit
-  - 1: Anti-Debug
-  - 2: JIT
-  - 4: ADV, advanced mode
-  - 8: SUPER, super mode
+
+* 1: Anti-Debug
+* 2: JIT
+* 4: ADV, advanced mode
+* 8: SUPER, super mode
 
 For example, ``windows.x86_64.7`` means anti-debug(1), JIT(2) and advanced
 mode(4) supported, ``windows.x86_64.0`` means no any feature, so highest speed.
