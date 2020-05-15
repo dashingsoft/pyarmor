@@ -53,8 +53,17 @@ Contents
 
 .. function:: get_license_code()
 
-   Return a string, which is specified as generating the licenses for
+   Return a string, which is specified as generating the licenses for obfucated
+   scripts.
+
+   Raise :exc:`Exception` if license is invalid.
+
+.. function:: get_user_data()
+
+   Return a string, which is specified by ``-x`` as generating the licenses for
    obfucated scripts.
+
+   Return None if no specify ``-x``.
 
    Raise :exc:`Exception` if license is invalid.
 
@@ -75,6 +84,14 @@ Contents
 .. attribute:: HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_DOMAIN
 
    Constant for `hdtype` when calling :func:`get_hd_info`
+
+.. function:: assert_armored(*args)
+
+   A decorator function used to check each function list in the args
+   is obfuscated.
+
+   Raise :exc:`Exception` if any function is not obfuscated.
+
 
 Examples
 --------
