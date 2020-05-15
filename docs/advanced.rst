@@ -9,12 +9,12 @@ Using Super Mode
 ----------------
 
 The :ref:`Super mode` is introduced since v6.2.0, there is only one extension
-module required to run the obfuscated scripts, and :ref:`bootstrap code` which
-may confused some users before, all the obfuscated scripts are same. It improves
-the security remarkablely, and makes the usage simple. The only problem is that
-not all of Python versions are supported.
+module required to run the obfuscated scripts, and the :ref:`bootstrap code`
+which may confused some users before is gone now, all the obfuscated scripts are
+same. It improves the security remarkably, and makes the usage simple. The only
+problem is that not all of Python versions are supported.
 
-Enable super mode by set option ``--advanced 2``, for example::
+Enable super mode by option ``--advanced 2``, for example::
 
   pyarmor obfuscate --advanced 2 foo.py
 
@@ -32,10 +32,10 @@ Then specify this license with option ``--with-license``, for example::
   pyarmor obufscate --with-license licenses/regcode-01/license.lic \
                     --advanced 2 foo.py
 
-By this way the specified license file will be embedded the extension module
-:mod:`pytransform`. If you prefer to use other ``license.lic``, so it can be
-replaced with the others easily, just specify option ``--with-license outer``,
-for example::
+By this way the specified license file will be embedded into the extension
+module :mod:`pytransform`. If you prefer to use other ``license.lic``, so it can
+be replaced with the others easily, just set option ``--with-license`` to
+special value ``outer``, for example::
 
   pyarmor obfuscate --with-license outer --advanced 2 foo.py
 
@@ -44,7 +44,7 @@ When the obfuscated scripts start, it will search ``license.lic`` in order:
 #. Check environment variable ``PYARMOR_LICENSE``, if set, use this filename
 #. If it's not set, search ``license.lic`` in the current path
 #. If not found, search the path of extension module :mod:`pytransform`
-#. Raise exception if there is not found
+#. Raise exception if there is still not found
 
 .. _obfuscating many packages:
 
@@ -993,7 +993,7 @@ If obfuscate the scripts for different platform, first get the bind key in
 target platform. Create a script then run it with Python interpreter which would
 be bind to:
 
-.. _code: python
+.. code-block:: python
 
   import sys
 
@@ -1059,8 +1059,8 @@ First generate protection script ``build/pytransform_protection.py``::
 
   pyarmor runtime --super-mode -O build
 
-Then edit it with your private code, after that, obfuscate the scripts with this
-script by option ``--cross-protection``, for example::
+Then edit it with your private code, after that, obfuscate the scripts and set
+option ``--cross-protection`` to this customized script, for example::
 
   pyarmor obfuscate --cross-protection build/pytransform_protection.py \
                 --advanced 2 --obf-code 2 foo.py

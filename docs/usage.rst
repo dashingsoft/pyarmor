@@ -221,8 +221,8 @@ These `PyArmor`_ features could import security further:
 1. :ref:`Using super mode` to obufscate scripts if possible, otherwise enable
    :ref:`Advanced Mode` if the platform is supported
 2. Try to :ref:`binding obfuscated scripts to Python interpreter`. Generally
-   it's not required if :ref:`Super Mode` is enabled.
-3. :ref:`Customizing cross protection code` to make sure the runtime files aren't touched
+   it's not required for :ref:`Super Mode`.
+3. :ref:`Customizing cross protection code` to make sure the runtime files aren't changed maliciously
 4. Use the corresponding :ref:`Restrict Mode`
 5. Use the high security code obfuscation `--obf-code=2`
 6. :ref:`Using plugin to improve security` by injecting your private checkpoints
