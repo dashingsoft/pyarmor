@@ -16,6 +16,10 @@ For the other platforms, `pyarmor` first searches path
 from remote server automatically. Refer to `The Others Prebuilt
 Libraries For PyArmor`_.
 
+Since v6.2.0, :ref:`super mode` is introduced, it uses the extension module
+``pytransform`` directly. All the prebuilt extension files list in the table
+`The Prebuilt Extensions For Super Mode`_
+
 For all the latest platforms, refer to
 https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json
 
@@ -239,3 +243,27 @@ Platform Tables
      -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/uclibc.armv7.0/_pytransform.so>`_
      - Build by armv7-buildroot-uclibceabihf-gcc
+
+.. list-table:: Table-3. The Prebuilt Extensions For Super Mode
+   :name: The Prebuilt Extensions For Super Mode
+   :widths: 10 10 10 20 10 40
+   :header-rows: 1
+
+   * - Name
+     - Platform
+     - Arch
+     - Features
+     - Download
+     - Description
+   * - darwin.x86_64.11.py37
+     - MacOSX
+     - x86_64, intel
+     - Anti-Debug, JIT, SUPER
+     - `_pytransform.cpython-37m-darwin.so <http://pyarmor.dashingsoft.com/downloads/latest/darwin.x86_64.11.py37/_pytransform.cpython-37m-darwin.so>`_
+     - Built by CLang with MacOSX10.11
+   * - darwin.x86_64.11.py27
+     - MacOSX
+     - x86_64, intel
+     - Anti-Debug, JIT, SUPER
+     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/darwin.x86_64.11.py27/_pytransform.so>`_
+     - Built by CLang with MacOSX10.11
