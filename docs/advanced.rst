@@ -1089,19 +1089,17 @@ Storing runtime file license.lic to any location
 ------------------------------------------------
 
 By creating a symbol link in the runtime package, it's easy to store runtime
-file `license.lic` to any location when running the obfuscated scripts.
+file ``license.lic`` to any location when running the obfuscated scripts.
 
-In linux, store license file in ``/opt/my_app``::
+In linux, for example, store license file in ``/opt/my_app``::
 
-  cd /path/to/obfuscated/pytransform
-  ln -s /opt/my_app/license.lic license.lic
+  ln -s /opt/my_app/license.lic /path/to/obfuscated/pytransform/license.lic
 
 In windows, store license file in ``C:/Users/Jondy/my_app``::
 
-  cd /path/to/obfuscated/pytransform
-  mklink license.lic C:/Users/Jondy/my_app/license.lic
+  mklink \path\to\obfuscated\pytransform\license.lic C:\Users\Jondy\my_app\license.lic
 
-When building the obfuscated package, just run this function on post-install:
+When distributing the obfuscated package, just run this function on post-install:
 
 .. code:: python
 
