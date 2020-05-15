@@ -46,12 +46,13 @@ except ImportError:
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
     platform_urls, platform_config, key_url, core_version, \
-    PYARMOR_HOME, PYARMOR_PATH
+    capsule_filename, PYARMOR_HOME, PYARMOR_PATH, OLD_CAPSULE
 
 DATA_PATH = os.path.join(PYARMOR_HOME, '.pyarmor')
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 CROSS_PLATFORM_PATH = os.path.join(DATA_PATH, pytransform.plat_path)
 PLUGINS_PATH = [os.path.join(x, 'plugins') for x in (DATA_PATH, PYARMOR_PATH)]
+DEFAULT_CAPSULE = os.path.join(DATA_PATH, capsule_filename)
 
 FEATURE_ANTI = 1
 FEATURE_JIT = 2
@@ -281,6 +282,11 @@ def update_pytransform(pattern):
 
 
 def make_capsule(filename):
+    if os.path.exists(OLD_CAPSULE):
+        logging.info('Copy old capsule %s to %s', OLD_CAPSULE, filename)
+        shutil.copy(OLD_CAPSULE, filename)
+        return
+
     if get_registration_code():
         logging.error('The registered version would use private capsule.'
                       '\n\t Please run `pyarmor register KEYFILE` '
@@ -401,8 +407,8 @@ def _get_library_filename(platid, features, supermode=False):
             raise RuntimeError('Invalid platid "%s"' % platid)
 
         def _build_name(names):
-            x = ['%s%s' % sys.version_info[:2]] \
-                 if names[-1] == str(FEATURE_MAPOP) else []
+            x = ['py%s%s' % sys.version_info[:2]] \
+                 if names[-1] in ('8', '11') else []
             return os.path.join(CROSS_PLATFORM_PATH, *(names + x))
 
         plist = []
@@ -482,7 +488,7 @@ def _build_license_file(capsule, licfile, output=None):
         logging.info('Generate no restrict mode license file')
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
         lickey = make_license_key(capsule, licode)
-    elif licfile in ('no', 'outer', 'external'):
+    elif licfile in ('no', 'outer'):
         logging.info('Use outer license file')
         lickey = b''
     else:

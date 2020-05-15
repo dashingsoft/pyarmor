@@ -41,8 +41,8 @@ import time
 import polyfills.argparse as argparse
 
 from config import version, version_info, purchase_info, \
-                   config_filename, capsule_filename, license_filename, \
-                   DEFAULT_CAPSULE
+                   config_filename, capsule_filename, license_filename
+
 
 from project import Project
 from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
@@ -53,7 +53,7 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names, \
                   get_name_suffix, get_bind_key, make_super_bootstrap, \
-                  make_protection_code
+                  make_protection_code, DEFAULT_CAPSULE
 
 import packer
 
@@ -469,7 +469,7 @@ def _licenses(args):
     extra_data = '' if args.bind_data is None else (';' + args.bind_data)
 
     if not args.codes:
-        args.codes = ['pyarmor']
+        args.codes = ['regcode-01']
 
     for rcode in args.codes:
         if args.output in ('stderr', 'stdout'):
@@ -802,10 +802,11 @@ def _runtime(args):
     platforms = compatible_platform_names(args.platforms)
     suffix = get_name_suffix() if args.enable_suffix else ''
     licfile = 'no' if args.no_license else args.license_file
+    supermode = args.super_mode or (args.advanced == 2)
     checklist = make_runtime(capsule, output, licfile=licfile,
                              platforms=platforms, package=package,
                              suffix=suffix, restrict=False,
-                             supermode=args.super_mode)
+                             supermode=supermode)
 
     logging.info('Generating protection script ...')
     filename = os.path.join(output, 'pytransform_protection.py')
@@ -1245,6 +1246,8 @@ def _parser():
     cparser.add_argument('--enable-suffix', action='store_true',
                          help='Make unique runtime files and bootstrap code')
     cparser.add_argument('--super-mode', action='store_true',
+                         help='Enable super mode')
+    cparser.add_argument('--advanced', type=int, choices=(2,),
                          help=argparse.SUPPRESS)
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)

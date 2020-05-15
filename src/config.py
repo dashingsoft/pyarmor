@@ -48,4 +48,5 @@ key_url = 'https://api.dashingsoft.com/product/key/%s/query'
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.expanduser('~'))
 
-DEFAULT_CAPSULE = os.path.join(PYARMOR_HOME, capsule_filename)
+# From v6.2.0, change the location of default capsule to ~/.pyarmor/
+OLD_CAPSULE = os.path.join(PYARMOR_HOME, capsule_filename)
