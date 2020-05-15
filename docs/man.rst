@@ -68,11 +68,16 @@ Obfuscate python scripts.
 --no-cross-protection         Do not insert protection code to entry script
 --plugin NAME                 Insert extra code to entry script, it could be used multiple times
 --platform NAME               Distribute obfuscated scripts to other platform
---advanced <0,1>              Disable or enable advanced mode
+--advanced <0,1,2>            Enable advanced mode `1` or super mode `2`
 --restrict <0,1,2,3,4>        Set restrict mode
 -n, --no-runtime              DO NOT generate runtime files
 --package-runtime <0,1>       Save the runtime files as package or not
 --enable-suffix               Generate the runtime package with unique name
+--obf-mod <0,1>               Disable or enable to obfuscate module
+--obf-code <0,1,2>            Disable or enable to obfuscate function
+--wrap-mode <0,1>             Disable or enable wrap mode
+--with-license FILENAME       Use this licese, special value `outer` means no license
+--cross-protection FILENAME   Specify customized protection script
 
 **DESCRIPTION**
 
@@ -127,6 +132,9 @@ the available platform names.
 
 Option ``--restrict`` is used to set restrict mode, :ref:`Restrict Mode`
 
+Option ``--advanced 2`` will enable :ref:`super mode`. In this mode, no runtime
+files and bootstrap code, only one extension module ``pytransform`` is required.
+
 **RUNTIME FILES**
 
 By default the runtime files will be saved in the separated folder ``pytransform``
@@ -149,6 +157,7 @@ obfuscated scripts as four separated files::
 If the option ``--enable-suffix`` is set, the runtime package or module name
 will be ``pytransform_xxx``, here ``xxx`` is unique suffix based on the
 registration code of PyArmor.
+
 
 **BOOTSTRAP CODE**
 
@@ -257,6 +266,18 @@ will be inserted into the entry scripts.
 
     cd /path/to/mypkg
     pyarmor obfuscate -r --enable-suffix --output dist/mypkg __init__.py
+
+* Obfuscate scripts by super mode with expired license::
+
+    pyarmor licenses -e 2020-10-05 regcode-01
+    pyarmor obfuscate --with-license licenses/regcode-01/license.lic \
+                      --advanced 2 foo.py
+
+* Obfuscate scripts by super mode with customized cross protection scripts, and
+  don't embed license file to extension module, but use outer ``license.lic``::
+
+    pyarmor obfuscate --cross-protection build/pytransform_protection.py \
+                      --with-license outer --advanced 2 foo.py
 
 .. _licenses:
 
@@ -611,14 +632,15 @@ Update project settings.
 --obf-mod <0,1>                 Disable or enable to obfuscate module
 --obf-code <0,1,2>              Disable or enable to obfuscate function
 --wrap-mode <0,1>               Disable or enable wrap mode
---advanced <0,1>                Disable or enable advanced  mode
---cross-protection <0,1>        Disable or enable to insert cross protection code into entry script
+--advanced <0,1,2>              Enable advanced mode `1` or super mode `2`
+--cross-protection <0,1>        Disable or enable to insert cross protection code into entry script,
+                                it also could be a filename to specify customized protection script
 --runtime-path RPATH            Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script, it could be used multiple times
 --package-runtime <0,1>         Save the runtime files as package or not
 --bootstrap <0,1,2,3>           How to insert bootstrap code to entry script
 --enable-suffix <0,1>           Generate the runtime package with unique name
---with-license FILENAME         Use this license file other than the default one
+--with-license FILENAME         Use this license file, special value `outer` means no license
 
 **DESCRIPTION**
 
@@ -901,9 +923,11 @@ Geneate :ref:`runtime package` separately.
 -O, --output PATH             Output path, default is `dist`
 -n, --no-package              Generate runtime files without package
 -i, --inside                  Generate bootstrap script which is used inside one package
--L, --with-license FILE       Replace default license with this file
+-L, --with-license FILE       Replace default license with this file, special value `outer` means
+                              no license
 --platform NAME               Generate runtime package for specified platform
 --enable-suffix               Generate the runtime package with unique name
+--super-mode                  Generate runtime extension module for super mode
 
 **DESCRIPTION**
 
@@ -924,6 +948,9 @@ modules could be imported in one plain script::
 
 If option ``--inside`` is specified, it will generate bootstrap package
 ``pytransform_bootstrap`` other than one single script.
+
+The option ``--super-mode`` is used to generate runtime extension module for
+:ref:`超级模式`, it's totally different from other modes.
 
 About option ``--platform`` and ``--enable-suffix``, refer to command
 `obfuscate`_
@@ -946,5 +973,14 @@ About option ``--platform`` and ``--enable-suffix``, refer to command
 
     pyarmor licenses --expired 2020-01-01 code-001
     pyarmor runtime --with-license licenses/code-001/license.lic --platform linux.armv7
+
+* Generate runtime module for super mode::
+
+    pyarmor runtime --super-mode
+    pyarmor runtime --advanced 2
+
+* Generate runtime module for super mode but with outer ``license.lic``::
+
+    pyarmor runtime --super-mode --with-license outer
 
 .. include:: _common_definitions.txt

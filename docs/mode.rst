@@ -9,19 +9,49 @@ the performace is to be bottle-block or in some special cases, maybe you need
 understand what the differents of these modes and obfuscate the scripts in
 different mode so that they could work as desired.
 
+.. _super mode:
+
+Super Mode
+----------
+
+This feature **Super Mode** is introduced from PyArmor 6.2.0. In this mode the
+structure of PyCode_Type is changed, and byte code or word code is mapped, it's
+the highest security level in PyArmor. In this mode, there is only one runtime
+file required, that is extension ``pytransform``, and the form of obfuscated
+scripts is unique, no so called :ref:`bootstrap code` which makes some users
+confused. All the obfuscated scripts would be like this::
+
+    from pytransform import pyarmor
+    pyarmor(__name__, __file__, b'\x0a\x02...', 1)
+
+It's recommended to enable this mode in suitable cases. Now only 2 Python
+versions are supported:
+
+* Python 2.7
+* Python 3.7
+
+The support for all the Python version >= 3.5 is coming soon, but Python 3.0~3.4
+is out of plan.
+
+In order to enable it, set option ``--advanced 2`` to :ref:`obfuscate`::
+
+    pyarmor obfuscate --advanced 2 foo.py
+
+More usage refer to :ref:`using super mode`
+
 .. _advanced mode:
 
 Advanced Mode
 -------------
 
-This feature **Advanced Mode** is introduced from PyArmor 5.5.0.In this mode the
-structure of PyCode_Type is changed a little to improve the security. And a hook
-also is injected into Python interpreter so that the modified code objects could
-run normally. Besides if some core Python C APIs are changed unexpectedly, the
-obfuscated scripts in advanced mode won't work. Because this feature is highly
-depended on the machine instruction set, it's only available for x86/x64 arch
-now. And pyarmor maybe makes mistake if Python interpreter is compiled by old
-gcc or some other `C` compiles. It's welcome to report the issue if Python
+This feature **Advanced Mode** is introduced from PyArmor 5.5.0. In this mode
+the structure of PyCode_Type is changed a little to improve the security. And a
+hook also is injected into Python interpreter so that the modified code objects
+could run normally. Besides if some core Python C APIs are changed unexpectedly,
+the obfuscated scripts in advanced mode won't work. Because this feature is
+highly depended on the machine instruction set, it's only available for x86/x64
+arch now. And pyarmor maybe makes mistake if Python interpreter is compiled by
+old gcc or some other `C` compiles. It's welcome to report the issue if Python
 interpreter doesn't work in advanced mode.
 
 Take this into account, the advanced mode is disabled by default. In order to

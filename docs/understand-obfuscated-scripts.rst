@@ -53,6 +53,34 @@ The entry script `dist/myscript.py` would be like this::
     pyarmor_runtime()
     __pyarmor__(__name__, __file__, b'\x0a\x02...', 1)
 
+Super Obfuscated Scripts
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the scripts are obfuscated by :ref:`super mode`, it's totaly different. There
+is only one runtime file, that is extension module ``pytransform``. Only these
+files in the ``dist``::
+
+    myscript.py
+    mymodule.py
+
+    pytransform.so or pytransform.dll
+
+All the obfuscated scripts would be like this::
+
+    from pytransform import pyarmor
+    pyarmor(__name__, __file__, b'\x0a\x02...', 1)
+
+Or there is a suffix in extension name, for example::
+
+    from pytransform_vax_000001 import pyarmor
+    pyarmor(__name__, __file__, b'\x0a\x02...', 1)
+
+.. note::
+
+   The `bootstrap code`_ is gone in the super mode which may make some users
+   confused. And both `runtime package`_ and `runtime files`_ now refer to the
+   extension module ``pytransform``.
+
 .. _entry script:
 
 Entry Script

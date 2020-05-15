@@ -3,6 +3,49 @@
 Advanced Topics
 ===============
 
+.. _using super mode:
+
+Using Super Mode
+----------------
+
+The :ref:`Super mode` is introduced since v6.2.0, there is only one extension
+module required to run the obfuscated scripts, and :ref:`bootstrap code` which
+may confused some users before, all the obfuscated scripts are same. It improves
+the security remarkablely, and makes the usage simple. The only problem is that
+not all of Python versions are supported.
+
+Enable super mode by set option ``--advanced 2``, for example::
+
+  pyarmor obfuscate --advanced 2 foo.py
+
+When distributing the obfuscated scripts to any other machine, so long as
+extension module :mod:`pytransform` in any Python path, the obfuscated scrips
+could work well.
+
+In order to restirct the obfuscated scripts, generate a ``license.lic`` in
+advanced. For example::
+
+  pyarmor licenses --bind-mac xx:xx:xx:xx regcode-01
+
+Then specify this license with option ``--with-license``, for example::
+
+  pyarmor obufscate --with-license licenses/regcode-01/license.lic \
+                    --advanced 2 foo.py
+
+By this way the specified license file will be embedded the extension module
+:mod:`pytransform`. If you prefer to use other ``license.lic``, so it can be
+replaced with the others easily, just specify option ``--with-license outer``,
+for example::
+
+  pyarmor obfuscate --with-license outer --advanced 2 foo.py
+
+When the obfuscated scripts start, it will search ``license.lic`` in order:
+
+#. Check environment variable ``PYARMOR_LICENSE``, if set, use this filename
+#. If it's not set, search ``license.lic`` in the current path
+#. If not found, search the path of extension module :mod:`pytransform`
+#. Raise exception if there is not found
+
 .. _obfuscating many packages:
 
 Obfuscating Many Packages
@@ -995,6 +1038,43 @@ keys separated by `,`::
 
 The special key `1` means current Python interpreter.
 
-.. customizing protection code:
+
+.. _customizing cross protection code:
+
+Customizing cross protection code
+---------------------------------
+
+In order to protect core dynamic library of PyArmor, the default protection code
+will be injected into the entry scripts, refer to :ref:`Special Handling of
+Entry Script`. However this public protection code may be bypassed deliberately,
+the better way is to write your private protection code, it could improve the
+security largely.
+
+Since v6.2.0, command :ref:`runtime` could generate the default protection code,
+it could be as template to write your own protection code. Of course, you may
+write it by yourself. Only if it could make sure the runtime files aren't
+changed by someone else as running the obfuscated scripts.
+
+First generate protection script ``build/pytransform_protection.py``::
+
+  pyarmor runtime --super-mode -O build
+
+Then edit it with your private code, after that, obfuscate the scripts with this
+script by option ``--cross-protection``, for example::
+
+  pyarmor obfuscate --cross-protection build/pytransform_protection.py \
+                --advanced 2 --obf-code 2 foo.py
+
+Note that :ref:`super mode` is total different from other modes, don't specify
+option ``--super-mode`` when generating runtime files for other modes, for
+example::
+
+  pyarmor runtime -O build
+
+.. note::
+
+   Obfuscating with ``--advanced 1`` is not super mode, only ``--advanced 2`` is
+   super mode.
+
 
 .. include:: _common_definitions.txt
