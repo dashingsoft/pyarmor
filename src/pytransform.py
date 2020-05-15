@@ -192,6 +192,10 @@ def get_license_code():
     return get_license_info()['CODE']
 
 
+def get_user_data():
+    return get_license_info()['DATA']
+
+
 def _match_features(patterns, s):
     for pat in patterns:
         if fnmatch(s, pat):
