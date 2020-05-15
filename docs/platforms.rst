@@ -20,21 +20,19 @@ Since v6.2.0, :ref:`super mode` is introduced, it uses the extension module
 ``pytransform`` directly. All the prebuilt extension files list in the table
 `The Prebuilt Extensions For Super Mode`_
 
-For all the latest platforms, refer to
-https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json
+For all the latest platforms, refer to `_pyarmor-core/platforms/index.json <https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json`_
 
 There may be serveral dynamic libraries with different features in each
 platform. The platform name with feature number suffix combines an unique
 name.
 
-Each feature has its own bit:
-
+Each feature has its own bit
   - 1: Anti-Debug
   - 2: JIT
   - 4: ADV, advanced mode
   - 8: SUPER, super mode
 
-For example, ``windows.x86_64.7`` means anti-debug(1), JIT(2) and andvanced
+For example, ``windows.x86_64.7`` means anti-debug(1), JIT(2) and advanced
 mode(4) supported, ``windows.x86_64.0`` means no any feature, so highest speed.
 
 Note that zero feature dynamic library isn't compatible with any featured
