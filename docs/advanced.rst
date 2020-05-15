@@ -1083,4 +1083,34 @@ example::
    super mode.
 
 
+.. _storing runtime file license.lic to any location:
+
+Storing runtime file license.lic to any location
+------------------------------------------------
+
+By creating a symbol link in the runtime package, it's easy to store runtime
+file `license.lic` to any location when running the obfuscated scripts.
+
+In linux::
+
+  cd /path/to/obfuscated/pytransform
+  ln -s /opt/my_app/license-a.lic license.lic
+
+In windows::
+
+  cd /path/to/obfuscated/pytransform
+  mklink license.lic C:/Users/Jondy/my_app/license-a.lic
+
+When building the obfuscated package, just run this function on post-install:
+
+.. code:: python
+
+   import os
+
+   def make_link_to_license_file(package_path, target_license="/opt/mypkg/license.lic"):
+       license_file = os.path.join(package_path, 'pytransform', 'license.lic')
+       if os.path.exists(license_file):
+           os.rename(license_file, target_license)
+       os.symlink(target_license, license_file)
+
 .. include:: _common_definitions.txt
