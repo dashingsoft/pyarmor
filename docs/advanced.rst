@@ -33,7 +33,7 @@ Then specify this license with option ``--with-license``, for example::
                     --advanced 2 foo.py
 
 By this way the specified license file will be embedded into the extension
-module :mod:`pytransform`. If you prefer to use other ``license.lic``, so it can
+module :mod:`pytransform`. If you prefer to use outer ``license.lic``, so it can
 be replaced with the others easily, just set option ``--with-license`` to
 special value ``outer``, for example::
 
