@@ -332,7 +332,7 @@ called in the obfuscated scripts. For example::
     pyarmor obfuscate --restrict 3 foo.py
 
 However restrict mode 2 and 3 aren't applied to Python package. There is another
-solutiion for Python package to improve the security:
+solution for Python package to improve the security:
 
 * The `.py` files which are used by outer scripts are obfuscated by restrice mode 1
 * All the other `.py` files which are used only in the package are obfuscated by restrict mode 4
