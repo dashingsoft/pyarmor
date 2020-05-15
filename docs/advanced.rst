@@ -796,6 +796,12 @@ Then obfuscate it with this command::
 
     pyarmor obfuscate --plugin assert_armored main.py
 
+.. note::
+
+   Since v6.2.0, if obfuscating scripts by :ref:`super mode`, it's enough to
+   import `assert_armored` from :mod:`pytransform`, do not create outer script,
+   it doesn't work.
+
 
 .. _call pyarmor from python script:
 
