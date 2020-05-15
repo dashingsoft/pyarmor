@@ -16,10 +16,10 @@ Super Mode
 
 This feature **Super Mode** is introduced from PyArmor 6.2.0. In this mode the
 structure of PyCode_Type is changed, and byte code or word code is mapped, it's
-the highest security level in PyArmor. In this mode, there is only one runtime
-file required, that is extension ``pytransform``, and the form of obfuscated
-scripts is unique, no so called :ref:`bootstrap code` which makes some users
-confused. All the obfuscated scripts would be like this::
+the highest security level in PyArmor. There is only one runtime file required,
+that is extension ``pytransform``, and the form of obfuscated scripts is unique,
+no so called :ref:`bootstrap code` which may make some users confused. All the
+obfuscated scripts would be like this::
 
     from pytransform import pyarmor
     pyarmor(__name__, __file__, b'\x0a\x02...', 1)

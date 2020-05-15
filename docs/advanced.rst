@@ -1063,19 +1063,19 @@ changed by someone else as running the obfuscated scripts.
 
 First generate protection script ``build/pytransform_protection.py``::
 
-  pyarmor runtime --super-mode -O build
+  pyarmor runtime --super-mode --output build
 
 Then edit it with your private code, after that, obfuscate the scripts and set
 option ``--cross-protection`` to this customized script, for example::
 
   pyarmor obfuscate --cross-protection build/pytransform_protection.py \
-                --advanced 2 --obf-code 2 foo.py
+                --advanced 2 foo.py
 
 Note that :ref:`super mode` is total different from other modes, don't specify
 option ``--super-mode`` when generating runtime files for other modes, for
 example::
 
-  pyarmor runtime -O build
+  pyarmor runtime --output build
 
 .. note::
 
