@@ -3,8 +3,8 @@
 Support Platfroms
 =================
 
-The core of PyArmor is written by C, the prebuilt dynamic libraries
-include the common platforms and some embeded platforms.
+The core of PyArmor is written by C, the prebuilt dynamic libraries include the
+common platforms and some embeded platforms.
 
 Some of them are distributed with PyArmor source package, in these
 platforms, `pyarmor` could run without downloading anything. Refer to
@@ -23,27 +23,33 @@ Since v6.2.0, :ref:`super mode` is introduced, it uses the extension module
 For all the latest platforms, refer to
 https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json
 
-There may be serveral dynamic libraries with different features in
-each platform. The platform name with feature number suffix combines
-an unique name. For example, ``windows.x86_64.7`` means anti-debug,
-JIT and andvanced mode supported, ``windows.x86_64.0`` means no any
-feature.
+There may be serveral dynamic libraries with different features in each
+platform. The platform name with feature number suffix combines an unique
+name.
 
-Note that the dynamic library with different features aren't
-compatible. For example, try to obfuscate the scripts with target
-platform ``linux.x86_64.0`` in the Windows, the obfuscated scripts
-don't work in the target machine. Because the full features dynamic
-library ``windows.x86_64.7`` is used in the Windows by default. Now
-the common platforms are full features, most of the others not yet.
+Each feature has its own bit:
 
-In some platforms, `pyarmor` doesn't know it but there is available
-dynamic library in the table `The Others Prebuilt Libraries For
-PyArmor`_. Just download it and save it in the path
-``~/.pyarmor/platforms/SYSTEM/ARCH``, this command ``pyarmor -d
-download`` will also display this path at the beginning. It's
-appreicated to send this platform information to jondy.zhao@gmail.com
-so that it could be recognized by `pyarmor` automatically. This script
-will display the required information by `pyarmor`:
+  - 1: Anti-Debug
+  - 2: JIT
+  - 4: ADV, advanced mode
+  - 8: SUPER, super mode
+
+For example, ``windows.x86_64.7`` means anti-debug(1), JIT(2) and andvanced
+mode(4) supported, ``windows.x86_64.0`` means no any feature, so highest speed.
+
+Note that zero feature dynamic library isn't compatible with any featured
+library. For security reason, the zero feature library uses different alogrithm
+to obfuscate the scripts. So the platform ``windows.x86_64.7`` can not share the
+same obfuscated scripts with platform ``linux.armv7.0``.
+
+In some platforms, `pyarmor` doesn't know it but there is available dynamic
+library in the table `The Others Prebuilt Libraries For PyArmor`_. Just download
+it and save it in the path ``~/.pyarmor/platforms/SYSTEM/ARCH``, this command
+``pyarmor -d download`` will also display this path at the beginning. It's
+appreicated to send this platform information to jondy.zhao@gmail.com so that it
+could be recognized by `pyarmor` automatically.
+
+This script will display the required information by `pyarmor`:
 
 .. code-block:: python
 
@@ -57,8 +63,7 @@ will display the required information by `pyarmor`:
        print('libc: %s' % libc_ver())
        print('distribution: %s' % linux_distribution())
 
-Contact jondy.zhao@gmail.com if you'd like to run PyArmor in other
-platform.
+Contact jondy.zhao@gmail.com if you'd like to run PyArmor in other platform.
 
 .. _standard platform names:
 
