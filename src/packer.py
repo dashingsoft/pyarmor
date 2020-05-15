@@ -481,6 +481,23 @@ def _check_extra_options(options):
                                    'as the extra options' % x)
 
 
+def _check_entry_script(filename):
+    try:
+        with open(filename) as f:
+            n = 0
+            for line in f:
+                if (line.startswith('__pyarmor') and
+                    line[:100].find('__name__, __file__') > 0) \
+                    or line.startswith('pyarmor(__name__, __file__'):
+                    return False
+                if n > 1:
+                    break
+                n + 1
+    except Exception:
+        # Ignore encoding error
+        pass
+
+
 def packer(args):
     t = args.type
     if args.entry[0].endswith('.py'):
@@ -489,6 +506,10 @@ def packer(args):
     else:
         src, entry = _get_project_entry(args.entry[0])
         args.project = args.entry[0]
+
+    if _check_entry_script(os.path.join(src, entry)) is False:
+        raise RuntimeError('DO NOT pack the obfuscated script, please '
+                           'pack the original script directly')
 
     xoptions = [] if args.xoptions is None else split(args.xoptions)
     extra_options = [] if args.options is None else split(args.options)
@@ -538,8 +559,9 @@ def add_arguments(parser):
                         help='Pass these extra options to `pyinstaller`')
     parser.add_argument('-x', '--xoptions', metavar='EXTRA_OPTIONS',
                         help='Pass these extra options to `pyarmor obfuscate`')
-    parser.add_argument('--without-license', action='store_true',
-                        dest='no_license', help=argparse.SUPPRESS)
+    parser.add_argument('--no-license', '--without-license',
+                        action='store_true', dest='no_license',
+                        help=argparse.SUPPRESS)
     parser.add_argument('--with-license', metavar='FILE', dest='license_file',
                         help='Use this license file other than default one')
     parser.add_argument('--clean', action="store_true",
