@@ -813,7 +813,7 @@ def _runtime(args):
     data = make_protection_code((args.inside, checklist, suffix),
                                 multiple=bool(platforms),
                                 supermode=args.super_mode)
-    with open(filename, 'r') as f:
+    with open(filename, 'w') as f:
         f.write(data)
 
     if not args.super_mode:
