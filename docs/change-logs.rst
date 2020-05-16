@@ -3,6 +3,44 @@
 Change Logs
 ===========
 
+6.2.0
+-----
+
+In this version, **super mode** is introduced to improve the security.  In this
+mode the structure of PyCode_Type is changed, and byte code or word code is
+mapped, it's the highest security level in PyArmor. There is only one runtime
+file required, that is extension module :mod:`pytransform`, and the form of
+obfuscated scripts is unique, no so called :ref:`bootstrap code` which may make
+some users confused. All the obfuscated scripts would be like this
+
+.. code:: python
+
+    from pytransform import pyarmor
+    pyarmor(__name__, __file__, b'\x0a\x02...', 1)
+
+It's recommended to enable this mode in suitable cases. Because only the latest
+Python versions are supported:
+
+* Python 2.7
+* Python 3.7
+* Python 3.8
+
+It may support Python 3.5, 3.6 later, but Python 3.0~3.4 is out of plan.
+
+* Add new option `--obf-mode`, `--obf-code`, `--wrap-mode` to command `obfuscate`
+* Add new value 2 for option `--advanced` to enable super mode, refer to :ref:`using super mode`
+* Fix multiprocessing issue: `ValueError: __mp_main__.__spec__ is None` (#232)
+* The command `runtime` will generate default protection script `pytransform_protection.py`
+* Add new option `--cross-protection` to command `obfuscate` to specify customized protection script
+* The default cross protection code will not be injected the entry script if
+  `--no-runtime` is specified as obfuscating the scripts. In this case, use
+  option `--cross-protection` to specify one protection script
+* Change the default capsule location from `~/.pyarmor_capsule.zip` to
+  `~/.pyarmor/.pyarmor_capsule.zip`
+* Add new functions `get_user_data`, `assert_armored` in runtime module `pytransform`
+* Document `how to store runtime file license.lic to any location <https://pyarmor.readthedocs.io/en/latest/advanced.html#storing-runtime-file-license-lic-to-any-location>`_
+* Remove the trailing dot from harddisk serial number, it may impact the license verified.
+
 6.1.0
 -----
 * Add external plugin script `assert_armored.py`
