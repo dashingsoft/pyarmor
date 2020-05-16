@@ -626,7 +626,7 @@ def _obfuscate(args):
     else:
         package = args.package_runtime
         licfile = args.license_file
-        if (not restrict) and (licfile is not None):
+        if (not restrict) and (not licfile):
             licfile = 'no-restrict'
         checklist = make_runtime(capsule, output, platforms=platforms,
                                  licfile=licfile, package=package,

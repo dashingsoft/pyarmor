@@ -283,8 +283,8 @@ def update_pytransform(pattern):
 
 def make_capsule(filename):
     if os.path.exists(OLD_CAPSULE):
-        logging.info('Copy old capsule %s to %s', OLD_CAPSULE, filename)
-        shutil.copy(OLD_CAPSULE, filename)
+        logging.info('Move old capsule %s to %s', OLD_CAPSULE, filename)
+        shutil.move(OLD_CAPSULE, filename)
         return
 
     if get_registration_code():
@@ -963,18 +963,16 @@ def register_keyfile(filename, legency=False):
         logging.info('Remove old license file `%s`', old_license)
         os.remove(old_license)
 
-    home = PYARMOR_HOME
     path = PYARMOR_PATH if legency else DATA_PATH
     if not os.path.exists(path):
         logging.info('Create path: %s', path)
         os.makedirs(path)
-
+    logging.info('Save registration data to: %s', path)
     f = ZipFile(filename, 'r')
     try:
-        for item in [('license key', 'license.lic', path),
-                     ('private capsule', '.pyarmor_capsule.zip', home)]:
-            logging.info('Extract %s "%s" to %s' % item)
-            f.extract(item[1], path=item[-1])
+        for item in ('license.lic', '.pyarmor_capsule.zip'):
+            logging.info('Extracting %s' % item)
+            f.extract(item, path=path)
     finally:
         f.close()
 

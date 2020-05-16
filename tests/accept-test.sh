@@ -24,7 +24,7 @@ datafile=$(pwd)/data/pyarmor-data.tar.gz
 capsulefile=$(pwd)/data/pyarmor-test-0001.zip
 
 # Form v5.9.0, support PYARMOR_HOME
-workhome=${workpath}/home
+workhome=$(cd ${workpath}; pwd)/home
 export PYARMOR_HOME="$workhome"
 
 cd ${workpath}
@@ -66,7 +66,7 @@ check_file_exists $workhome/.pyarmor/license.lic
 csih_inform "2. Obfuscate foo.py"
 $PYARMOR obfuscate examples/helloworld/foo.py >result.log 2>&1
 check_return_value
-check_file_exists $workhome/.pyarmor_capsule.zip
+check_file_exists $workhome/.pyarmor/.pyarmor_capsule.zip
 
 csih_inform "3. Run obfuscated foo.py"
 (cd dist; $PYTHON foo.py >result.log 2>&1)
@@ -269,7 +269,7 @@ check_file_content result.log "pyarmor-test-0001"
 csih_inform "2. Obfuscate foo.py"
 $PYARMOR obfuscate examples/helloworld/foo.py >result.log 2>&1
 check_return_value
-check_file_exists $workhome/.pyarmor_capsule.zip
+check_file_exists $workhome/.pyarmor/.pyarmor_capsule.zip
 
 csih_inform "3. Run obfuscated foo.py"
 (cd dist; $PYTHON foo.py >result.log 2>&1)
