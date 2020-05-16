@@ -246,7 +246,7 @@ def _build(args):
             if project.get('is_package') else output
         if not os.path.exists(routput):
             logging.info('Make path: %s', routput)
-            os.mkdir(routput)
+            os.makedirs(routput)
 
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
