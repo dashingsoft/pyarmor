@@ -44,10 +44,13 @@ pkgfile=$(pwd)/${DIST}/pyarmor-${version}.${PKGEXT}
 
 declare -i _bug_counter=0
 
+PYARMOR_CORE_PLATFORM=~/workspace/pyarmor-core/platforms
+
 case ${PLATFORM} in
 
     win32)
         PYTHON=${PYTHON:-C:/Python26/python}
+        PYARMOR_CORE_PLATFORM=D:/projects/pyarmor-core/platforms
         declare -r harddisk_sn=013040BP2N80S13FJNT5
         declare -r ifmac_address=70:f1:a1:23:f0:94
         declare -r ifip_address=192.168.121.101
@@ -55,6 +58,7 @@ case ${PLATFORM} in
         ;;
     win_amd64)
         PYTHON=${PYTHON:-C:/Python26/python}
+        PYARMOR_CORE_PLATFORM=C:/workspace/pyarmor-core/platforms
         declare -r harddisk_sn=VBa2fd0ee8-4482c1ad
         declare -r ifmac_address=08:00:27:51:d9:fe
         declare -r ifip_address=192.168.121.112

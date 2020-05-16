@@ -413,7 +413,7 @@ def _get_library_filename(platid, features, supermode=False):
 
         plist = []
         if n == 2:
-            if 7 in features or 3 in features:
+            if (not supermode) and (7 in features or 3 in features):
                 plist.append(os.path.join(PLATFORM_PATH, *t))
             t.append(None)
             for k in features:

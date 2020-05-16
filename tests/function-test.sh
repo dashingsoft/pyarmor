@@ -18,7 +18,11 @@ mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
 csih_inform "Clean pyarmor data"
 rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
+PYARMOR_DATA=~/.pyarmor
+[[ -n "$USERPROFILE" ]] \
+    && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*" \
+    && PYARMOR_DATA=$USERPROFILE/.pyarmor
+csih_inform "PyArmor data at ${PYARMOR_DATA}"
 
 [[ -d data ]] || csih_error "No path 'data' found in current path"
 datapath=$(pwd)/data
@@ -45,9 +49,18 @@ cp ${datapath}/*.py test/data
 cp ${datapath}/project.zip test/data
 cp ${datapath}/project.zip test/data/project-orig.zip
 
+csih_inform "Make link to platforms for super mode"
+mkdir -p ~/.pyarmor/platforms
+(cd ~/.pyarmor/platforms;
+ for x in ${PYARMOR_CORE_PLATFORM}/*.py?? ; do
+     name=$(basename ${x})
+     name=${name//./\/}
+     mkdir -p ${name}
+     ln -s ${x}/pytransform.* ${name}
+ done)
+
 csih_inform "Prepare for function testing"
 echo ""
-
 
 # ======================================================================
 #
@@ -425,9 +438,96 @@ check_return_value
 check_file_content $propath/dist/result.log 'License is not for this machine'
 check_file_content $propath/dist/result.log 'Found 92 solutions' not
 
+csih_inform "C-36. Test got default capsule from old location"
+mv ${PYARMOR_DATA}/.pyarmor_capsule.zip ${PYARMOR_DATA}/..
+$PYARMOR obfuscate -O test-default-capsule examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists ${PYARMOR_DATA}/.pyarmor_capsule.zip
+
+csih_inform "C-37. Test customized cross protection script"
+echo "print('This is customized protection code')" > protection.py
+dist=test-c-36
+$PYARMOR obfuscate -O $dist --cross-protection protection.py \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log 'This is customized protection code'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
+
+# ======================================================================
+#
+#  Super mode
+#
+# ======================================================================
+
+if [[ "OK" == $($PYTHON -c'from sys import version_info as ver
+print("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
+
+echo ""
+echo "-------------------- Super Mode ----------------------------"
+echo ""
+
+cat <<EOF > sufoo.py
+def empty():
+  pass
+def hello(n):
+  empty()
+  print('Hello Super Mode: %s' % n)
+hello(2)
+EOF
+
+csih_inform "S-1. Test basic function of super mode"
+dist=dist-super-mode-1
+$PYARMOR obfuscate --exact --advanced 2 -O $dist sufoo.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON sufoo.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Hello Super Mode:"
+
+csih_inform "S-2. Test super mode with jump header"
+dist=dist-super-mode-2
+$PYARMOR obfuscate --exact --advanced 2 -O $dist test/data/no_wrap.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON no_wrap.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
+
+csih_inform "S-3. Test super mode with recursive function"
+dist=dist-super-mode-3
+$PYARMOR obfuscate --exact --advanced 2 -O $dist examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Found 92 solutions"
+
+csih_inform "S-4. Test super mode with obf-code 2"
+dist=dist-super-mode-4
+$PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist sufoo.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON sufoo.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Hello Super Mode:"
+
+csih_inform "S-5. Generate runtime files with super mode"
+dist=dist-super-mode-5
+$PYARMOR runtime -O $dist --super-mode >result.log 2>&1
+check_return_value
+check_file_exists $dist/pytransform_protection.py
+
+echo ""
+echo "-------------------- Super Mode End --------------------------"
+echo ""
+
+fi
 
 # ======================================================================
 #
