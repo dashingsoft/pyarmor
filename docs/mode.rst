@@ -24,14 +24,14 @@ obfuscated scripts would be like this::
     from pytransform import pyarmor
     pyarmor(__name__, __file__, b'\x0a\x02...', 1)
 
-It's recommended to enable this mode in suitable cases. Now only 2 Python
-versions are supported:
+It's recommended to enable this mode in suitable cases. Now only the latest
+Python versions are supported:
 
 * Python 2.7
 * Python 3.7
+* Python 3.8
 
-The support for all the Python version >= 3.5 is coming soon, but Python 3.0~3.4
-is out of plan.
+It may support Python 3.5, 3.6 later, but Python 3.0~3.4 is out of plan.
 
 In order to enable it, set option ``--advanced 2`` to :ref:`obfuscate`::
 
