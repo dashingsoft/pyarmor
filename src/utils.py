@@ -526,10 +526,8 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         myzip.extract('product.key', output)
     myzip.close()
 
-    licpath = os.path.join(output, 'pytransform' + suffix) if package \
-        else output
     _build_license_file(capsule, licfile,
-                        output=os.path.join(licpath, 'license.lic'))
+                        output=os.path.join(output, 'license.lic'))
 
     def copy3(src, dst):
         if suffix:
@@ -537,7 +535,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             shutil.copy2(src, os.path.join(dst, x))
         else:
             shutil.copy2(src, dst)
-        checklist.append(_get_checksum(dst))
+        checklist.append(_get_checksum(src))
 
     checklist = []
     if not platforms:
@@ -743,7 +741,7 @@ def _get_checksum(filename):
 
 
 def _make_protection_code(relative, checksums, suffix='', multiple=False):
-    template = os.path.join(PYARMOR_PATH, protect_code_template % '2')
+    template = os.path.join(PYARMOR_PATH, protect_code_template % '')
     with open(template) as f:
         buf = f.read()
 
@@ -754,7 +752,8 @@ def _make_protection_code(relative, checksums, suffix='', multiple=False):
     spath = '{0}.os.path.join({0}.plat_path, {0}.format_platform())'.format(
         'pytransform') if multiple else repr('')
     return buf.format(code=code, closure=closure, rpath=rpath, spath=spath,
-                      checksum=str(checksums), keylist=keylist, suffix=suffix)
+                      checksum=str(checksums), keylist=keylist, suffix=suffix,
+                      relative='from . ' if relative else '')
 
 
 def _frozen_modname(filename, filename2):
