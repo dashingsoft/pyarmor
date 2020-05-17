@@ -97,8 +97,14 @@ def pytransform_bootstrap(capsule=None):
                 if not os.path.exists(HOME_PATH):
                     logging.info('Create pyarmor home path: %s', HOME_PATH)
                     os.makedirs(HOME_PATH)
-                logging.info('Create trial license file: %s', licfile)
-                shutil.copy(os.path.join(path, 'license.tri'), licfile)
+                old_license = os.path.join(HOME_PATH, '..', 'license.lic')
+                if os.path.exists(old_license):
+                    logging.info('Create license file %s from old license %s',
+                                 licfile, old_license)
+                    shutil.move(old_license, licfile)
+                else:
+                    logging.info('Create trial license file: %s', licfile)
+                    shutil.copy(os.path.join(path, 'license.tri'), licfile)
 
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
