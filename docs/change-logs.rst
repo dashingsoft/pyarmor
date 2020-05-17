@@ -18,7 +18,7 @@ some users confused. All the obfuscated scripts would be like this
     from pytransform import pyarmor
     pyarmor(__name__, __file__, b'\x0a\x02...', 1)
 
-It's recommended to enable this mode in suitable cases. Because only the latest
+It's recommended to enable this mode in suitable cases. Now only the latest
 Python versions are supported:
 
 * Python 2.7
@@ -40,6 +40,9 @@ It may support Python 3.5, 3.6 later, but Python 3.0~3.4 is out of plan.
 * Add new functions `get_user_data`, `assert_armored` in runtime module `pytransform`
 * Document `how to store runtime file license.lic to any location <https://pyarmor.readthedocs.io/en/latest/advanced.html#storing-runtime-file-license-lic-to-any-location>`_
 * Remove the trailing dot from harddisk serial number, it may impact the license verified.
+* Change the behaviour of environment variable `PYARMOR_HOME` in building time,
+  pyarmor searches `license.lic` just in the path `${PYARMOR_HOME}`, no search
+  `$PYARMOR_HOME/.pyarmor/license.lic`.
 
 6.1.0
 -----
