@@ -46,13 +46,16 @@ except ImportError:
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
     platform_urls, platform_config, key_url, core_version, \
-    capsule_filename, PYARMOR_HOME, PYARMOR_PATH, OLD_CAPSULE
+    capsule_filename, PYARMOR_HOME, PYARMOR_PATH
 
-DATA_PATH = os.path.join(PYARMOR_HOME, '.pyarmor')
+HOME_PATH = os.path.abspath(os.path.expanduser(PYARMOR_HOME))
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
-CROSS_PLATFORM_PATH = os.path.join(DATA_PATH, pytransform.plat_path)
-PLUGINS_PATH = [os.path.join(x, 'plugins') for x in (DATA_PATH, PYARMOR_PATH)]
-DEFAULT_CAPSULE = os.path.join(DATA_PATH, capsule_filename)
+CROSS_PLATFORM_PATH = os.path.join(HOME_PATH, pytransform.plat_path)
+PLUGINS_PATH = [os.path.join(x, 'plugins') for x in (HOME_PATH, PYARMOR_PATH)]
+
+DEFAULT_CAPSULE = os.path.join(HOME_PATH, capsule_filename)
+# From v6.2.0, change the location of default capsule to ~/.pyarmor/
+OLD_CAPSULE = os.path.join(HOME_PATH, '..', capsule_filename)
 
 FEATURE_ANTI = 1
 FEATURE_JIT = 2
@@ -80,7 +83,7 @@ def pytransform_bootstrap(capsule=None):
     if pytransform._pytransform is not None:
         return
     logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
-    logging.debug('PyArmor data path: %s', DATA_PATH)
+    logging.debug('PyArmor home path: %s', HOME_PATH)
     path = PYARMOR_PATH
     licfile = os.path.join(path, 'license.lic')
     if not os.path.exists(licfile):
@@ -89,11 +92,11 @@ def pytransform_bootstrap(capsule=None):
             logging.info('Create trial license file: %s', licfile)
             shutil.copy(os.path.join(path, 'license.tri'), licfile)
         else:
-            licfile = os.path.join(DATA_PATH, 'license.lic')
+            licfile = os.path.join(HOME_PATH, 'license.lic')
             if not os.path.exists(licfile):
-                if not os.path.exists(DATA_PATH):
-                    logging.info('Create pyarmor data path: %s', DATA_PATH)
-                    os.makedirs(DATA_PATH)
+                if not os.path.exists(HOME_PATH):
+                    logging.info('Create pyarmor home path: %s', HOME_PATH)
+                    os.makedirs(HOME_PATH)
                 logging.info('Create trial license file: %s', licfile)
                 shutil.copy(os.path.join(path, 'license.tri'), licfile)
 
@@ -957,13 +960,13 @@ def register_keyfile(filename, legency=False):
                      os.getenv('HOME', os.getenv('USERPROFILE'))):
         logging.debug('Force traditional way because no HOME set')
         legency = True
-    old_path = DATA_PATH if legency else PYARMOR_PATH
+    old_path = HOME_PATH if legency else PYARMOR_PATH
     old_license = os.path.join(old_path, 'license.lic')
     if os.path.exists(old_license):
         logging.info('Remove old license file `%s`', old_license)
         os.remove(old_license)
 
-    path = PYARMOR_PATH if legency else DATA_PATH
+    path = PYARMOR_PATH if legency else HOME_PATH
     if not os.path.exists(path):
         logging.info('Create path: %s', path)
         os.makedirs(path)
