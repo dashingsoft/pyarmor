@@ -259,15 +259,57 @@ Platform Tables
      - Features
      - Download
      - Description
+   * - darwin.x86_64.11.py38
+     - MacOSX
+     - x86_64, intel
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-38-darwin.so <http://pyarmor.dashingsoft.com/downloads/latest/darwin.x86_64.11.py38/pytransform.cpython-38-darwin.so>`_
+     - Built by CLang with MacOSX10.11
    * - darwin.x86_64.11.py37
      - MacOSX
      - x86_64, intel
      - Anti-Debug, JIT, SUPER
-     - `_pytransform.cpython-37m-darwin.so <http://pyarmor.dashingsoft.com/downloads/latest/darwin.x86_64.11.py37/_pytransform.cpython-37m-darwin.so>`_
+     - `pytransform.cpython-37m-darwin.so <http://pyarmor.dashingsoft.com/downloads/latest/darwin.x86_64.11.py37/pytransform.cpython-37-darwin.so>`_
      - Built by CLang with MacOSX10.11
    * - darwin.x86_64.11.py27
      - MacOSX
      - x86_64, intel
      - Anti-Debug, JIT, SUPER
-     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/darwin.x86_64.11.py27/_pytransform.so>`_
+     - `pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/darwin.x86_64.11.py27/pytransform.so>`_
      - Built by CLang with MacOSX10.11
+   * - linux.x86_64.11.py38
+     - Linux
+     - x86_64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-38-x86_64-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.x86_64.11.py38/pytransform.cpython-38-x86_64-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.x86_64.11.py37
+     - Linux
+     - x86_64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-37m-x86_64-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.x86_64.11.py37/pytransform.cpython-37m-x86_64-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.x86_64.11.py27
+     - Linux
+     - x86_64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.x86_64.11.py27/pytransform.so>`_
+     - Built by gcc
+   * - windows.x86_64.11.py38
+     - Windows
+     - AMD64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.11.py38/pytransform.pyd>`_
+     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
+   * - windows.x86_64.11.py37
+     - Windows
+     - AMD64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.11.py37/pytransform.pyd>`_
+     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
+   * - windows.x86_64.11.py27
+     - Windows
+     - AMD64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.11.py27/pytransform.pyd>`_
+     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
