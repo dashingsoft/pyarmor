@@ -49,7 +49,11 @@ cp ${datapath}/*.py test/data
 cp ${datapath}/project.zip test/data
 cp ${datapath}/project.zip test/data/project-orig.zip
 
+if [[ "${PLATFORM}" == "win_amd64" || "${PLATFORM}" == *_x86_64 ]] ; then
 csih_inform "Make link to platforms for super mode"
+if [[ "OK" == $($PYTHON -c'from sys import version_info as ver
+print("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
+SUPERMODE=yes
 mkdir -p ~/.pyarmor/platforms
 (cd ~/.pyarmor/platforms;
  for x in ${PYARMOR_CORE_PLATFORM}/*.py?? ; do
@@ -58,6 +62,9 @@ mkdir -p ~/.pyarmor/platforms
      mkdir -p ${name}
      ln -s ${x}/pytransform.* ${name}
  done)
+fi
+csih_inform "Super mode test is ${SUPERMODE}"
+fi
 
 csih_inform "Prepare for function testing"
 echo ""
@@ -465,8 +472,7 @@ echo ""
 #
 # ======================================================================
 
-if [[ "OK" == $($PYTHON -c'from sys import version_info as ver
-print("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
+if [[ "yes" == "${SUPERMODE}" ]] ; then
 
 echo ""
 echo "-------------------- Super Mode ----------------------------"
