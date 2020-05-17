@@ -1111,4 +1111,41 @@ When distributing the obfuscated package, just run this function on post-install
            os.rename(license_file, target_license)
        os.symlink(target_license, license_file)
 
+
+.. _register multiple pyarmor in same machine:
+
+Register multiple pyarmor in same machine
+-----------------------------------------
+
+From v5.9.0, pyarmor reads license and capsule data from environment variable
+`PYARMOR_HOME`, the default value is `~/.pyarmor`. So it's easy to register
+multiple pyarmor in one machine by setting environment variable `PYARMOR_HOME`
+to another path before run pyarmor.
+
+It also could create a new command `pyarmor2` for the second project by the
+following way.
+
+In Linux, create a shell script :file:`pyarmor2`
+
+.. code:: bash
+
+    export PYARMOR_HOME=$HOME/.pyarmor_2
+    pyarmor "$@"
+
+Save it to `/usr/local/pyarmor2`, and change its mode::
+
+    chmod +x /usr/local/pyarmor2
+
+In Windows, create a bat script :file:`pyarmor2.bat`
+
+.. code:: bat
+
+    SET PYARMOR_HOME=%HOME%\another_pyarmor
+    pyarmor %%*
+
+After that, run `pyarmor2` for the second project::
+
+    pyarmor2 register pyarmor-regkey-2.zip
+    pyarmor2 obfuscate foo2.py
+
 .. include:: _common_definitions.txt
