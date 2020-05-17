@@ -448,10 +448,10 @@ check_file_content $propath/dist/result.log 'License is not for this machine'
 check_file_content $propath/dist/result.log 'Found 92 solutions' not
 
 csih_inform "C-36. Test got default capsule from old location"
-mv ${PYARMOR_DATA}/.pyarmor_capsule.zip ${PYARMOR_DATA}/..
+(cd "${PYARMOR_DATA}"; mv .pyarmor_capsule.zip ..)
 $PYARMOR obfuscate -O test-default-capsule examples/simple/queens.py >result.log 2>&1
 check_return_value
-check_file_exists ${PYARMOR_DATA}/.pyarmor_capsule.zip
+(cd "${PYARMOR_DATA}" && check_file_exists .pyarmor_capsule.zip)
 
 csih_inform "C-37. Test customized cross protection script"
 echo "print('This is customized protection code')" > protection.py
