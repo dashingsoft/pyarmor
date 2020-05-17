@@ -24,7 +24,7 @@ datafile=$(pwd)/data/pyarmor-data.tar.gz
 capsulefile=$(pwd)/data/pyarmor-test-0001.zip
 
 # Form v5.9.0, support PYARMOR_HOME
-workhome=$(cd ${workpath}; pwd)/home
+workhome=pyarmor_home
 export PYARMOR_HOME="$workhome"
 
 cd ${workpath}
