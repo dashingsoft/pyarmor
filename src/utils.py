@@ -167,11 +167,16 @@ def _get_remote_file(urls, path, timeout=3.0):
 
 
 def _get_platform_list(urls, platid=None):
-    cfg = None
     if not os.path.exists(CROSS_PLATFORM_PATH):
         logging.info('Create cross platforms path: %s', CROSS_PLATFORM_PATH)
         os.makedirs(CROSS_PLATFORM_PATH)
-    filename = os.path.join(PLATFORM_PATH, platform_config)
+    filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
+    if not os.path.exists(filename):
+        x = os.path.join(PLATFORM_PATH, platform_config)
+        if os.path.exists(x):
+            logging.info('Copy platform list file %s to %s', x, filename)
+            shutil.copy2(x, filename)
+    cfg = None
     if os.path.exists(filename):
         with open(filename) as f:
             cfg = json_loads(f.read())
