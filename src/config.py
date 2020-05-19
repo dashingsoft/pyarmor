@@ -1,4 +1,3 @@
-import os
 from sys import platform
 
 version = '6.2.1'
@@ -44,6 +43,3 @@ platform_urls = [
 platform_config = 'index.json'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
-
-PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
-PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.join('~', '.pyarmor'))

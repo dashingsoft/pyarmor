@@ -45,11 +45,13 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-    platform_urls, platform_config, key_url, core_version, \
-    capsule_filename, PYARMOR_HOME, PYARMOR_PATH
+    platform_urls, platform_config, key_url, core_version, capsule_filename
+
+PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
+PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.join('~', '.pyarmor'))
+PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 
 HOME_PATH = os.path.abspath(os.path.expanduser(PYARMOR_HOME))
-PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 CROSS_PLATFORM_PATH = os.path.join(HOME_PATH, pytransform.plat_path)
 PLUGINS_PATH = [os.path.join(x, 'plugins') for x in (HOME_PATH, PYARMOR_PATH)]
 
