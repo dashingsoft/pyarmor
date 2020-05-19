@@ -46,7 +46,11 @@ try:
 except Exception:
     from binascii import a2b_hex as unhexlify
 
-from config import (version, version_info, dll_ext, dll_name)
+from config import (version, version_info)
+
+dll_name = '_pytransform'
+dll_ext = '.dylib' if sys.platform == 'darwin' \
+    else '.dll' if sys.platform in ('win32', 'cygwin') else '.so'
 
 # Extra suffix char for encrypted python scripts
 ext_char = 'e'
