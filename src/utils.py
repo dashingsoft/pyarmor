@@ -168,50 +168,21 @@ def _get_remote_file(urls, path, timeout=5.0):
             logging.info('Could not get file from %s: %s', prefix, e)
 
 
-def _get_platform_list(urls, platid=None, update=False):
+def _get_platform_list(urls, platid=None):
     if not os.path.exists(CROSS_PLATFORM_PATH):
         logging.info('Create cross platforms path: %s', CROSS_PLATFORM_PATH)
         os.makedirs(CROSS_PLATFORM_PATH)
 
-    filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
-    cfg = None
+    filename = os.path.join(PLATFORM_PATH, platform_config)
+    with open(filename) as f:
+        cfg = json_loads(f.read())
 
-    def check_cfg_version(ver):
-        v = int(ver.split('.', 1)[0][1:])
-        c1, c2 = map(int, core_version.split('.'))
-        return v >= c2 and v <= c1
-
-    if not update:
-        if not os.path.exists(filename):
-            x = os.path.join(PLATFORM_PATH, platform_config)
-            if os.path.exists(x):
-                logging.info('Copy platform list file %s to %s', x, filename)
-                shutil.copy2(x, filename)
-        if os.path.exists(filename):
-            with open(filename) as f:
-                cfg = json_loads(f.read())
-            if check_cfg_version(cfg.get('version')):
-                logging.info('Load platforms information from %s', filename)
-            else:
-                cfg = None
-
-    if cfg is None:
-        f = _get_remote_file(urls, platform_config)
-        if f is None:
-            raise RuntimeError('Download platform list file failed')
-
-        logging.info('Load platform informations from remote file')
-        data = f.read().decode()
-        cfg = json_loads(data)
-
-        if check_cfg_version(cfg.get('version')):
-            logging.info('Cache platform informations to %s', filename)
-            with open(filename, 'w') as f:
-                f.write(data)
-        else:
-            logging.warning('The core library excepted version is %s, '
-                            'but got %s from remote server',
-                            core_version, cfg.get('version'))
+    ver = cfg.get('version')
+    if not ver.split('.')[0] == core_version.split('.')[0]:
+        logging.warning('The core library excepted version is %s, '
+                        'but got %s from platform list file %s',
+                        core_version, cfg.get('version'), filename)
+    urls[:] = [x.format(version=ver) for x in urls]
 
     if platid is not None:
         logging.info('Search library for platform: %s', platid)
@@ -230,8 +201,8 @@ def get_platform_list():
 
 def download_pytransform(platid, output=None, url=None, index=None):
     platid = _format_platid(platid)
-    urls = platform_urls[:] if url is None else ([url] + platform_urls)
-    plist = _get_platform_list(urls, platid)
+    urls = platform_urls[:] if url is None else [url]
+    plist = _get_platform_list(urls, platid=platid)
     if not plist:
         logging.error('Unsupport platform %s', platid)
         raise RuntimeError('No available library for this platform')
@@ -253,7 +224,7 @@ def download_pytransform(platid, output=None, url=None, index=None):
         path = '/'.join([p['path'], libname])
 
         logging.info('Downloading library file for %s ...', p['id'])
-        res = _get_remote_file(urls, path, timeout=60)
+        res = _get_remote_file(urls, path, timeout=300)
 
         if res is None:
             raise RuntimeError('Download library file failed')
@@ -1030,7 +1001,7 @@ def check_cross_platform(platforms):
 
 
 def compatible_platform_names(platforms):
-    '''Only for compatibility, it will be removed in next major version.'''
+    '''Only for compatibility, it may be removed in next major version.'''
     if not platforms:
         return platforms
 
