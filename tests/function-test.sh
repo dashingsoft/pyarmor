@@ -51,7 +51,7 @@ cp ${datapath}/*.py test/data
 cp ${datapath}/project.zip test/data
 cp ${datapath}/project.zip test/data/project-orig.zip
 
-if [[ "${PLATFORM}" == "win_amd64" || "${PLATFORM}" == *_x86_64 ]] ; then
+if [[ "${PLATFORM}" != "win_32" ]] ; then
 csih_inform "Make link to platforms for super mode"
 if [[ "OK" == $($PYTHON -c'from sys import version_info as ver
 print("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
