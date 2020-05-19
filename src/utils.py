@@ -154,7 +154,7 @@ def pytransform_bootstrap(capsule=None):
         make_capsule(capsule)
 
 
-def _get_remote_file(urls, path, timeout=3.0):
+def _get_remote_file(urls, path, timeout=5.0):
     while urls:
         prefix = urls[0]
         url = '/'.join([prefix, path])
@@ -166,24 +166,33 @@ def _get_remote_file(urls, path, timeout=3.0):
             logging.info('Could not get file from %s: %s', prefix, e)
 
 
-def _get_platform_list(urls, platid=None):
+def _get_platform_list(urls, platid=None, update=False):
     if not os.path.exists(CROSS_PLATFORM_PATH):
         logging.info('Create cross platforms path: %s', CROSS_PLATFORM_PATH)
         os.makedirs(CROSS_PLATFORM_PATH)
+
     filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
-    if not os.path.exists(filename):
-        x = os.path.join(PLATFORM_PATH, platform_config)
-        if os.path.exists(x):
-            logging.info('Copy platform list file %s to %s', x, filename)
-            shutil.copy2(x, filename)
     cfg = None
-    if os.path.exists(filename):
-        with open(filename) as f:
-            cfg = json_loads(f.read())
-        if cfg.get('version') == core_version:
-            logging.info('Load platforms information from %s', filename)
-        else:
-            cfg = None
+
+    def check_cfg_version(ver):
+        v = int(ver.split('.', 1)[0][1:])
+        c1, c2 = map(int, core_version.split('.'))
+        return v >= c2 and v <= c1
+
+    if not update:
+        if not os.path.exists(filename):
+            x = os.path.join(PLATFORM_PATH, platform_config)
+            if os.path.exists(x):
+                logging.info('Copy platform list file %s to %s', x, filename)
+                shutil.copy2(x, filename)
+        if os.path.exists(filename):
+            with open(filename) as f:
+                cfg = json_loads(f.read())
+            if check_cfg_version(cfg.get('version')):
+                logging.info('Load platforms information from %s', filename)
+            else:
+                cfg = None
+
     if cfg is None:
         f = _get_remote_file(urls, platform_config)
         if f is None:
@@ -193,7 +202,7 @@ def _get_platform_list(urls, platid=None):
         data = f.read().decode()
         cfg = json_loads(data)
 
-        if cfg.get('version') == core_version:
+        if check_cfg_version(cfg.get('version')):
             logging.info('Cache platform informations to %s', filename)
             with open(filename, 'w') as f:
                 f.write(data)
