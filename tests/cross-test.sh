@@ -96,10 +96,11 @@ check_return_value
 check_file_content result.log "linux.x86_64._pytransform.so"
 
 csih_inform "Case CP-5: cross publish by project with custom cross protection"
-$SED -i -e 's/"cross_protection": [01]/"cross_protection": "protect_code.pt"/g' \
+echo "print('This is customized protection code')" > test_protect.pt
+$SED -i -e 's/"cross_protection": [01]/"cross_protection": "test_protect.pt"/g' \
     $PROPATH/.pyarmor_config >result.log 2>&1
 check_return_value
-check_file_content $PROPATH/.pyarmor_config "protect_code.pt"
+check_file_content $PROPATH/.pyarmor_config "test_protect.pt"
 
 $PYARMOR build -B --platform linux.x86_64 $PROPATH >result.log 2>&1
 check_return_value
