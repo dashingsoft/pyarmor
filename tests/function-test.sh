@@ -16,15 +16,16 @@ csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
-csih_inform "Clean pyarmor data"
-rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-PYARMOR_DATA=~/.pyarmor
-if [[ "${PLATFORM}" == "win_amd64" ]] ; then
-[[ -n "$USERPROFILE" ]] \
-    && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*" \
-    && PYARMOR_DATA=$USERPROFILE/.pyarmor
+home=$($PYTHON -c "import os
+print(os.path.expanduser('~'))")
+if [[ -z "$home" ]] ; then
+    csih_error "Can not get user home path"
 fi
+PYARMOR_DATA=$home/.pyarmor
 csih_inform "PyArmor data at ${PYARMOR_DATA}"
+
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.* ${PYARMOR_DATA}
 
 [[ -d data ]] || csih_error "No path 'data' found in current path"
 datapath=$(pwd)/data
@@ -51,7 +52,7 @@ cp ${datapath}/*.py test/data
 cp ${datapath}/project.zip test/data
 cp ${datapath}/project.zip test/data/project-orig.zip
 
-if [[ "${PLATFORM}" != "win_32" ]] ; then
+if [[ "${PLATFORM}" != "win32" ]] ; then
 csih_inform "Make link to platforms for super mode"
 if [[ "OK" == $($PYTHON -c'from sys import version_info as ver
 print("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
