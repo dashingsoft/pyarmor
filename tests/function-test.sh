@@ -16,16 +16,15 @@ csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
-home=$($PYTHON -c "import os
-print(os.path.expanduser('~'))")
-if [[ -z "$home" ]] ; then
-    csih_error "Can not get user home path"
-fi
-PYARMOR_DATA=$home/.pyarmor
-csih_inform "PyArmor data at ${PYARMOR_DATA}"
-
 csih_inform "Clean pyarmor data"
-rm -rf  ~/.pyarmor ~/.pyarmor_capsule.* ${PYARMOR_DATA}
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+PYARMOR_DATA=~/.pyarmor
+if [[ "${PLATFORM}" == "win_amd64" && "${PYTHON}" != *Python??-32/python ]] ; then
+    [[ -n "$USERPROFILE" ]] \
+        && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*" \
+        && PYARMOR_DATA=$USERPROFILE/.pyarmor
+fi
+csih_inform "PyArmor data at ${PYARMOR_DATA}"
 
 [[ -d data ]] || csih_error "No path 'data' found in current path"
 datapath=$(pwd)/data
@@ -429,6 +428,9 @@ check_return_value
 check_file_content test-non-ascii-path/result.log 'Found 92 solutions'
 
 csih_inform "C-35. Test licenses with --fixed"
+if [[ "${PYTHON}" == *Python??-32/python ]] ; then
+csih_inform "Ignore this case for $Python"
+else
 propath=test-fixed-key
 mkdir $propath
 cp examples/simple/queens.py $propath
@@ -447,6 +449,7 @@ check_return_value
 (cd $propath/dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content $propath/dist/result.log 'License is not for this machine'
 check_file_content $propath/dist/result.log 'Found 92 solutions' not
+fi
 
 csih_inform "C-36. Test got default capsule from old location"
 (cd "${PYARMOR_DATA}"; mv .pyarmor_capsule.zip ..)
