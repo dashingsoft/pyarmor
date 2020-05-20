@@ -53,8 +53,8 @@ cp ${datapath}/project.zip test/data/project-orig.zip
 
 if [[ "${PLATFORM}" != "win32" ]] ; then
 csih_inform "Make link to platforms for super mode"
-if [[ "OK" == $($PYTHON -c'from sys import version_info as ver
-print("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
+if [[ "OK" == $($PYTHON -c'from sys import version_info as ver, stdout
+stdout.write("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
 SUPERMODE=yes
 mkdir -p ~/.pyarmor/platforms
 (cd ~/.pyarmor/platforms;
@@ -429,7 +429,7 @@ check_file_content test-non-ascii-path/result.log 'Found 92 solutions'
 
 csih_inform "C-35. Test licenses with --fixed"
 if [[ "${PYTHON}" == *Python??-32/python ]] ; then
-csih_inform "Ignore this case for $Python"
+csih_inform "Ignore this case for $PYTHON"
 else
 propath=test-fixed-key
 mkdir $propath
