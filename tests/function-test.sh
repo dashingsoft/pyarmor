@@ -21,7 +21,7 @@ rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
 PYARMOR_DATA=~/.pyarmor
 if [[ "${PLATFORM}" == "win_amd64" && "${PYTHON}" == *Python38/python ]] ; then
     [[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*" \
-        && PYARMOR_DATA=$USERPROFILE/.pyarmor
+        && PYARMOR_DATA=$USERPROFILE\\.pyarmor
 fi
 csih_inform "PyArmor data at ${PYARMOR_DATA}"
 
@@ -55,8 +55,8 @@ csih_inform "Make link to platforms for super mode"
 if [[ "OK" == $($PYTHON -c'from sys import version_info as ver, stdout
 stdout.write("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
 SUPERMODE=yes
-mkdir -p ~/.pyarmor/platforms
-(cd ~/.pyarmor/platforms;
+mkdir -p ${PYARMOR_DATA}/platforms
+(cd ${PYARMOR_DATA}/platforms;
  for x in ${PYARMOR_CORE_PLATFORM}/*.py?? ; do
      name=$(basename ${x})
      name=${name//./\/}
