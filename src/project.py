@@ -96,7 +96,8 @@ class Project(dict):
             return self._format_path(self[name])
         elif name == 'license_file':
             v = self[name] if name in self else None
-            return self._format_path(v) if v else None
+            return v if v in ('no', 'outer') \
+                else self._format_path(v) if v else None
         if name in self:
             return self[name]
         raise AttributeError(name)

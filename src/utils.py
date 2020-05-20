@@ -156,7 +156,7 @@ def pytransform_bootstrap(capsule=None):
         make_capsule(capsule)
 
 
-def _get_remote_file(urls, path, timeout=5.0):
+def _get_remote_file(urls, path, timeout=30.0):
     while urls:
         prefix = urls[0]
         url = '/'.join([prefix, path])
@@ -224,7 +224,7 @@ def download_pytransform(platid, output=None, url=None, index=None):
         path = '/'.join([p['path'], libname])
 
         logging.info('Downloading library file for %s ...', p['id'])
-        res = _get_remote_file(urls, path, timeout=300)
+        res = _get_remote_file(urls, path, timeout=120.0)
 
         if res is None:
             raise RuntimeError('Download library file failed')
