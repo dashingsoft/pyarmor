@@ -19,7 +19,7 @@ mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 csih_inform "Clean pyarmor data"
 rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
 PYARMOR_DATA=~/.pyarmor
-if [[ "${PLATFORM}" == "win_amd64" && "${PYTHON}" == *Python38/python ]] ; then
+if [[ "${PLATFORM}" == "win_amd64" && "${PYTHON}" == *Python38*/python ]] ; then
     [[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*" \
         && PYARMOR_DATA=$USERPROFILE\\.pyarmor
 fi
