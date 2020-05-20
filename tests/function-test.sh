@@ -61,7 +61,11 @@ mkdir -p ~/.pyarmor/platforms
      name=$(basename ${x})
      name=${name//./\/}
      mkdir -p ${name}
-     ln -s ${x}/pytransform.* ${name}
+     if [[ "${PLATFORM}" == "win_amd64" ]] ; then
+         cp ${x}/pytransform.* ${name}
+     else
+         ln -s ${x}/pytransform.* ${name}
+     fi
  done)
 fi
 csih_inform "Super mode test is ${SUPERMODE}"
