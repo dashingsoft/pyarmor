@@ -18,7 +18,7 @@ mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
 csih_inform "Clean pyarmor data"
 rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*"
 
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
@@ -568,6 +568,10 @@ echo ""
 # Finished and cleanup.
 #
 # ======================================================================
+
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*"
 
 # Return test root
 cd ../..

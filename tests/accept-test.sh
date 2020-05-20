@@ -18,7 +18,7 @@ mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
 csih_inform "Clean pyarmor data"
 rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*"
 
 datafile=$(pwd)/data/pyarmor-data.tar.gz
 capsulefile=$(pwd)/data/pyarmor-test-0001.zip
@@ -456,11 +456,9 @@ check_file_content result.log 'Too big code object, the limitation is' not
 #
 # ======================================================================
 
-echo "" && csih_inform "Remove global capsule"
+echo "" && csih_inform "Clean pyarmor data"
 rm -rf ~/.pyarmor_capsule.zip ~/.pyarmor
-if [[ -n "$USERPROFILE" ]] ; then
-   rm -rf "$USERPROFILE\\.pyarmor_capsule.zip" "$USERPROFILE\\.pyarmor"
-fi
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*"
 
 # Return test root
 cd ../..
