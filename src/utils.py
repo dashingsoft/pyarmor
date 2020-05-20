@@ -1109,7 +1109,7 @@ def _patch_extension(filename, keylist, suffix=''):
     for i in range(n):
         if data[i:i+patlen] == patkey:
             fmt = 'I' * 8
-            header = struct.unpack(fmt, data[i:i+32])
+            header = struct.unpack(fmt, bytes(data[i:i+32]))
             if sum(header[2:]) not in (912, 1452):
                 continue
             logging.debug('Found pattern at %x', i)
