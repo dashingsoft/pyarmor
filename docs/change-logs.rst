@@ -3,6 +3,14 @@
 Change Logs
 ===========
 
+6.2.1
+-----
+* Fix issue(#244): when specify only one platform the obfuscated scripts raise exception::
+
+    [Errno 2] No such file or directory: 'xxx/_pytransform.so'
+
+* Super mode supports windows.x86, linux.x86, linux.aarch64, linux.aarch32, linux.armv7
+
 6.2.0
 -----
 
