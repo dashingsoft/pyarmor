@@ -259,9 +259,10 @@ def _build(args):
                                  platforms=platforms, package=package,
                                  suffix=suffix, supermode=supermode)
         if protection == 1:
-            protection = make_protection_code((relative, checklist, suffix),
-                                              multiple=bool(platforms),
-                                              supermode=supermode)
+            protection = make_protection_code(
+                (relative, checklist, suffix),
+                multiple=platforms and len(platforms),
+                supermode=supermode)
 
     if not args.only_runtime:
         src = project.src
@@ -634,7 +635,7 @@ def _obfuscate(args):
         if cross_protection == 1:
             cross_protection = make_protection_code(
                 (relative, checklist, suffix),
-                multiple=bool(platforms),
+                multiple=platforms and len(platforms),
                 supermode=supermode)
 
     logging.info('Start obfuscating the scripts...')
@@ -811,7 +812,7 @@ def _runtime(args):
     logging.info('Generating protection script ...')
     filename = os.path.join(output, 'pytransform_protection.py')
     data = make_protection_code((args.inside, checklist, suffix),
-                                multiple=bool(platforms),
+                                multiple=platforms and len(platforms),
                                 supermode=args.super_mode)
     with open(filename, 'w') as f:
         f.write(data)
