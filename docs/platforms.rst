@@ -313,3 +313,93 @@ Platform Tables
      - Anti-Debug, JIT, SUPER
      - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.11.py27/pytransform.pyd>`_
      - Cross compile by x86_64-w64-mingw32-gcc in cygwin
+   * - windows.x86.11.py38
+     - Windows
+     - i386
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.11.py38/pytransform.pyd>`_
+     - Cross compile by i686-w64-mingw32-gcc in cygwin
+   * - windows.x86.11.py37
+     - Windows
+     - i386
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.11.py37/pytransform.pyd>`_
+     - Cross compile by i686-w64-mingw32-gcc in cygwin
+   * - windows.x86.11.py27
+     - Windows
+     - i386
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.11.py27/pytransform.pyd>`_
+     - Cross compile by i686-w64-mingw32-gcc in cygwin
+   * - linux.x86.11.py38
+     - Linux
+     - i386
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-38-i386-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.x86.11.py38/pytransform.cpython-38-i386-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.x86.11.py37
+     - Linux
+     - i386
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-37m-i386-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.x86.11.py37/pytransform.cpython-37m-i386-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.x86.11.py27
+     - Linux
+     - i386
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.x86.11.py27/pytransform.so>`_
+     - Built by gcc
+   * - linux.aarch64.11.py38
+     - Linux
+     - aarch64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-38-aarch64-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.aarch64.11.py38/pytransform.cpython-38-aarch64-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.aarch64.11.py37
+     - Linux
+     - aarch64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-37m-aarch64-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.aarch64.11.py37/pytransform.cpython-37m-aarch64-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.aarch64.11.py27
+     - Linux
+     - aarch64
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.aarch64.11.py27/pytransform.so>`_
+     - Built by gcc
+   * - linux.aarch32.11.py38
+     - Linux
+     - aarch32
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-38-arm-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.aarch32.11.py38/pytransform.cpython-38-arm-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.aarch32.11.py37
+     - Linux
+     - aarch32
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-37m-arm-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.aarch32.11.py37/pytransform.cpython-37m-arm-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.aarch32.11.py27
+     - Linux
+     - aarch32
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.aarch32.11.py27/pytransform.so>`_
+     - Built by gcc
+   * - linux.armv7.11.py38
+     - Linux
+     - armv7l
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-38-arm-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv7.11.py38/pytransform.cpython-38-arm-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.armv7.11.py37
+     - Linux
+     - armv7l
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.cpython-37m-arm-linux-gnu.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv7.11.py37/pytransform.cpython-37m-arm-linux-gnu.so>`_
+     - Built by gcc
+   * - linux.armv7.11.py27
+     - Linux
+     - armv7l
+     - Anti-Debug, JIT, SUPER
+     - `pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv7.11.py27/pytransform.so>`_
+     - Built by gcc
