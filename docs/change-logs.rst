@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+6.2.2
+-----
+* Fix advanced mode issue: advanced mode 1 doesn't work in pyenv and some platforms
+* Fix issue(#244): when obfuscating the scripts for cross platform and only one
+  platform specified, the obfuscated scripts raise unexpected protection error.
+
 6.2.1
 -----
 * Fix issue(#244): when specify only one platform the obfuscated scripts raise exception::
