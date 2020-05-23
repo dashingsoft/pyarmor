@@ -20,7 +20,7 @@ Since v6.2.0, :ref:`super mode` is introduced, it uses the extension module
 ``pytransform`` directly. All the prebuilt extension files list in the table
 `The Prebuilt Extensions For Super Mode`_
 
-For all the latest platforms, refer to `_pyarmor-core/platforms/index.json <https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json`_
+For all the latest platforms, refer to `pyarmor-core/platforms/index.json <https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json>`_
 
 There may be serveral dynamic libraries with different features in each
 platform. The platform name with feature number suffix combines an unique
