@@ -933,7 +933,7 @@ Geneate :ref:`runtime package` separately.
 
 This command is used to generate the runtime package separately.
 
-The :ref:`runtiem package` could be shared if the scripts are obufscated by same
+The :ref:`runtime package` could be shared if the scripts are obufscated by same
 :ref:`Global Capsule`. So generate it once, then need not generate the runtime
 files when obfuscating the scripts later.
 
