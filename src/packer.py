@@ -393,23 +393,32 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
                       '--package-runtime', '0'] + xoptions + [script])
 
+    obftemp = os.path.join(obfdist, 'temp')
+    if not os.path.exists(obftemp):
+        logging.info('Create temp path: %s', obftemp)
+        os.makedirs(obftemp)
+    supermode = True
+    for x in glob(os.path.join(obfdist, 'pytransform.*')):
+        if x.endswith('pytransform.py'):
+            supermode = False
+        if not x.endswith('pytransform.key'):
+            logging.info('Copy %s to temp path', x)
+            shutil.copy(x, obftemp)
+
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
         shutil.copy2(licfile, os.path.join(obfdist, 'license.lic'))
+        if supermode:
+            logging.warning('This license file is useless in super mode, '
+                            'please specify license file within option -x')
     elif licfile is False:
         logging.info('Using outer license file')
-    else:
+    elif not supermode:
         x = [] if '='.join(xoptions).find('restrict=0') == -1 \
             else ['--disable-restrict-mode']
         logging.info('Generate fixed license file')
         call_pyarmor(['licenses', '-O', os.path.join(obfdist, 'license.lic'),
                       '--fixed', '1', 'pyarmor-packer'] + x)
-
-    obftemp = os.path.join(obfdist, 'temp')
-    if not os.path.exists(obftemp):
-        logging.info('Create temp path: %s', obftemp)
-        os.makedirs(obftemp)
-    shutil.copy(os.path.join(obfdist, 'pytransform.py'), obftemp)
 
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
@@ -426,7 +435,8 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
 
     hookfile = os.path.join(obftemp, 'hook-pytransform.py')
     logging.info('Generate hook script: %s', hookfile)
-    _make_hook_pytransform(hookfile, obfdist, licfile is False, encoding)
+    if not supermode:
+        _make_hook_pytransform(hookfile, obfdist, licfile is False, encoding)
 
     logging.info('Patching .spec file...')
     patched_spec = _patch_specfile(obfdist, src, specfile, hookpath,
