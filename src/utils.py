@@ -53,7 +53,6 @@ PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 
 HOME_PATH = os.path.abspath(os.path.expanduser(PYARMOR_HOME))
 CROSS_PLATFORM_PATH = os.path.join(HOME_PATH, pytransform.plat_path)
-PLUGINS_PATH = [os.path.join(x, 'plugins') for x in (HOME_PATH, PYARMOR_PATH)]
 
 DEFAULT_CAPSULE = os.path.join(HOME_PATH, capsule_filename)
 # From v6.2.0, change the location of default capsule to ~/.pyarmor/
@@ -645,7 +644,8 @@ def search_plugins(plugins):
             if not os.path.exists(filename):
                 if os.path.isabs(filename):
                     raise RuntimeError('No script found for plugin %s' % name)
-                for path in PLUGINS_PATH:
+                for path in [os.path.join(x, 'plugins')
+                             for x in (HOME_PATH, PYARMOR_PATH)]:
                     testname = build_path(filename, path)
                     if os.path.exists(testname):
                         filename = testname

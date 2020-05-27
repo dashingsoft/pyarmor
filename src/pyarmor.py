@@ -864,6 +864,7 @@ def _parser():
                         help='Suppress all normal output')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Print exception traceback and debugging message')
+    parser.add_argument('--home', help='Change pyarmor home path')
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
@@ -1262,6 +1263,19 @@ def excepthook(type, value, traceback):
     sys.exit(1)
 
 
+def _change_home_path(path):
+    logging.info('Set pyarmor home path: %s', path)
+    if not os.path.exists(path):
+        raise RuntimeError('Home path does not exists')
+
+    import utils
+    home = os.path.abspath(path)
+    utils.PYARMOR_HOME = utils.HOME_PATH = home
+    utils.CROSS_PLATFORM_PATH = os.path.join(home, 'platforms')
+    utils.DEFAULT_CAPSULE = os.path.join(home, capsule_filename)
+    utils.OLD_CAPSULE = os.path.join(home, '..', capsule_filename)
+
+
 def main(argv):
     parser = _parser()
     args = parser.parse_args(argv)
@@ -1275,6 +1289,9 @@ def main(argv):
         logging.getLogger().setLevel(logging.DEBUG)
     elif os.path.basename(sys.argv[0]) in ('pyarmor', 'pyarmor.py'):
         sys.excepthook = excepthook
+
+    if args.home:
+        _change_home_path(args.home)
 
     try:
         pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
