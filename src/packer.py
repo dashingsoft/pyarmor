@@ -242,7 +242,7 @@ def _make_hook_pytransform(hookfile, obfdist, nolicense=False, encoding=None):
         'if is_darwin:',
         '    datas.append((r"{0}_pytransform.*", "."))',
         'else:',
-        '    binaries = [(r"{0}_pytransform.*", ".")]',
+        '    binaries=[(r"{0}_pytransform.*", ".")]',
     ]
     if not nolicense:
         lines.append('datas.append((r"{0}license.lic", "."))')
