@@ -266,6 +266,14 @@ check_file_exists $dist/dist/foo-zh/foo-zh
 ( cd $dist; dist/foo-zh/foo-zh  >result.log 2>&1 )
 check_file_content $dist/result.log 'Hello test non-ascii path'
 
+csih_inform "Case 3-13: Test super mode"
+$PYARMOR pack --clean --name sufoo -O dist-super-mode -x " --advanced 2" \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+( cd dist-super-mode/; ./sufoo/sufoo  >result.log 2>&1 )
+check_file_content dist/result.log 'Found 92 solutions'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
