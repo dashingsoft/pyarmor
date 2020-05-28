@@ -120,7 +120,7 @@ check_file_content $PROPATH/obf/result.log 'This is first package'
 check_file_content $PROPATH/obf/result.log 'This is second package'
 
 csih_inform "8. Obfuscate scripts with advanced mode"
-$PYARMOR obfuscate --advanced --output dist-trial-advanced \
+$PYARMOR obfuscate --advanced 1 --output dist-trial-advanced \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 check_file_exists dist-trial-advanced/queens.py
@@ -138,7 +138,7 @@ while (( n < 36 )) ; do
 done
 echo "print('Hello world')" >> t32.py
 
-$PYARMOR obfuscate --advanced --output dist-trial-advanced-2 --exact t32.py >result.log 2>&1
+$PYARMOR obfuscate --advanced 1 --output dist-trial-advanced-2 --exact t32.py >result.log 2>&1
 check_file_content result.log 'In trial version the limitation is about'
 
 csih_inform "10. Run big array scripts"
@@ -323,7 +323,7 @@ check_file_content $PROPATH/obf/result.log 'This is first package'
 check_file_content $PROPATH/obf/result.log 'This is second package'
 
 csih_inform "8. Obfuscate scripts with advanced mode"
-$PYARMOR obfuscate --advanced --output dist-advanced examples/simple/queens.py >result.log 2>&1
+$PYARMOR obfuscate --advanced 1 --output dist-advanced examples/simple/queens.py >result.log 2>&1
 check_return_value
 check_file_exists dist-advanced/queens.py
 
@@ -332,7 +332,7 @@ check_return_value
 check_file_content dist-advanced/result.log 'Found 92 solutions'
 
 csih_inform "9. Obfuscate scripts with advanced mode but more than 30 functions"
-$PYARMOR obfuscate --advanced --output dist-advanced-2 --exact t32.py >result.log 2>&1
+$PYARMOR obfuscate --advanced 1 --output dist-advanced-2 --exact t32.py >result.log 2>&1
 check_return_value
 check_file_exists dist-advanced-2/t32.py
 
