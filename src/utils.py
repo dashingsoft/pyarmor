@@ -1203,7 +1203,7 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
 
         with open(target, 'wb') as f:
             f.write(data)
-        checklist.append(sum(data))
+        checklist.append(sum(bytearray(data)))
 
     logging.info('Generate runtime files OK')
     return checklist

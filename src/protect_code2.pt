@@ -22,6 +22,9 @@ def protect_pytransform():
         with open(filename, 'rb') as f:
             buf = bytearray(f.read())
         value = sum(buf)
+        sys = __import__('sys')
+        if hasattr(sys, 'frozen') and sys.platform == 'darwin':
+            value += 4100
         if value not in {checklist}:
             raise RuntimeError('unexpected %s' % filename)
 
