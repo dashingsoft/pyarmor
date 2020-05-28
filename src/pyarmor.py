@@ -918,9 +918,8 @@ def _parser():
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1), default=1)
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2), default=1)
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1), default=1)
-    cparser.add_argument('--advanced', nargs='?', const=1, type=int,
-                         default=0, choices=(0, 1, 2),
-                         help='Enable advanced mode')
+    cparser.add_argument('--advanced', type=int, default=0, choices=(0, 1, 2),
+                         help='Enable advanced mode or super mode')
     cparser.add_argument('--package-runtime', type=int, default=1,
                          choices=(0, 1), help='Package runtime files or not')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
@@ -1070,7 +1069,7 @@ def _parser():
                          'it could be used multiple times')
     cparser.add_argument('--advanced', '--advanced-mode', dest='advanced_mode',
                          type=int, choices=(0, 1, 2),
-                         help='Enable or disable advanced mode')
+                         help='Enable advanced mode or super mode')
     cparser.add_argument('--package-runtime', choices=(0, 1), type=int,
                          help='Package runtime files or not')
     cparser.add_argument('--enable-suffix', type=int, choices=(0, 1),
