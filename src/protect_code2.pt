@@ -24,7 +24,8 @@ def protect_pytransform():
         value = sum(buf)
         sys = __import__('sys')
         if hasattr(sys, 'frozen') and sys.platform == 'darwin':
-            value += 4100
+            ver = sys.version_info
+            value += -763 if ver.major == 2 else 4100 ver.minor == 7 else 2639
         if value not in {checklist}:
             raise RuntimeError('unexpected %s' % filename)
 
