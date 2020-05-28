@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+6.2.3
+-----
+* Add common option ``--home``, so PYARMOR_HOME can be set in the command line
+* Fix pack issue: pack command may not work with super mode
+
 6.2.2
 -----
 * Fix advanced mode issue: advanced mode 1 doesn't work in pyenv and some platforms
