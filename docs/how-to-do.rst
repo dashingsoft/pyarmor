@@ -418,16 +418,19 @@ First install ``pyinstaller``::
 
 Then obfuscate scripts to ``dist/obf``::
 
-    pyarmor obfuscate --output dist/obf --runtime-mode 0 hello.py
+    pyarmor obfuscate --output dist/obf --package-runtime 0 hello.py
 
-Next generate specfile, add runtime files required by obfuscated
-scripts::
+Next generate specfile, add runtime files required by obfuscated scripts::
 
-    pyinstaller --add-data dist/obf/license.lic:. \
-                --add-data dist/obf/pytransform.key:. \
-                --add-data dist/obf/_pytransform.*:. \
-                -p dist/obf --hidden-import pytransform \
-                hello.py
+    pyi-makespec --add-data dist/obf/license.lic:. \
+                 --add-data dist/obf/pytransform.key:. \
+                 --add-data dist/obf/_pytransform.*:. \
+                 -p dist/obf --hidden-import pytransform \
+                 hello.py
+
+If the scripts are obfuscated by super mode, generate specfile by this command::
+
+    pyi-makespec -p dist/obf --hidden-import pytransform hello.py
 
 .. _note:
 
