@@ -272,7 +272,7 @@ $PYARMOR pack --clean --name sufoo -O dist-super-mode -x " --advanced 2" \
 check_return_value
 
 ( cd dist-super-mode/; ./sufoo/sufoo  >result.log 2>&1 )
-check_file_content dist/result.log 'Found 92 solutions'
+check_file_content dist-super-mode/result.log 'Found 92 solutions'
 
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
