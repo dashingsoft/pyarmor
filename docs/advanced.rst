@@ -127,12 +127,12 @@ The suffix ``_vax_000001`` is based on the registration code of PyArmor.
 
 For project, set ``enable-suffix`` by command :ref:`config`::
 
-    pyarmor config --enable-suffix 0
+    pyarmor config --enable-suffix 1
     pyarmor build -B
 
 Or disable it by this way::
 
-    pyarmor config --enable-suffix 1
+    pyarmor config --enable-suffix 0
     pyarmor build -B
 
 .. _distributing obfuscated scripts to other platform:
