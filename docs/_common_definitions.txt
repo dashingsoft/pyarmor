@@ -1,7 +1,7 @@
-.. _PyArmor: http://pyarmor.dashingsoft.com/index-zh.html
+.. _PyArmor: https://pyarmor.dashingsoft.com/
 
-.. |Homepage| replace:: http://pyarmor.dashingsoft.com/index-zh.html
-.. |Manual| replace:: https://pyarmor.readthedocs.io/zh-cn/index.html
+.. |Homepage| replace:: https://pyarmor.dashingsoft.com/
+.. |Manual| replace:: https://pyarmor.readthedocs.io/
 .. |PyArmor| replace:: `PyArmor`
 .. |PyArmorVersion| replace:: PyArmor |version|
 
