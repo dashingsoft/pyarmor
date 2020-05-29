@@ -414,11 +414,16 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     elif licfile is False:
         logging.info('Using outer license file')
     elif not supermode:
-        x = [] if '='.join(xoptions).find('restrict=0') == -1 \
-            else ['--disable-restrict-mode']
-        logging.info('Generate fixed license file')
-        call_pyarmor(['licenses', '-O', os.path.join(obfdist, 'license.lic'),
-                      '--fixed', '1', 'pyarmor-packer'] + x)
+        x = ['licenses', '-O', os.path.join(obfdist, 'license.lic')]
+        x.extend([] if '='.join(xoptions).find('restrict=0') == -1
+                 else ['--disable-restrict-mode'])
+        if sys.platform == 'win32' and sys.maxsize < 2 ** 32:
+            logging.info('Generate default license file')
+            x.extend(['pyarmor-packer'])
+        else:
+            logging.info('Generate fixed license file')
+            x.extend(['--fixed', '1', 'pyarmor-packer'])
+        call_pyarmor(x)
 
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
