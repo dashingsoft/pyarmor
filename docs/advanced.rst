@@ -268,7 +268,7 @@ Then run pyarmor as the following way::
 
 It's convenient to create a shell script `/usr/local/bin/pyarmor3`, the content is::
 
-    /usr/bin/python3.6 /usr/local/lib/python2.7/dist-packages/pyarmor/pyarmor.py "$*"
+    /usr/bin/python3.6 /usr/local/lib/python2.7/dist-packages/pyarmor/pyarmor.py "$@"
 
 And ::
 
@@ -1141,7 +1141,7 @@ In Windows, create a bat script :file:`pyarmor2.bat`
 .. code:: bat
 
     SET PYARMOR_HOME=%HOME%\another_pyarmor
-    pyarmor %%*
+    pyarmor %*
 
 After that, run `pyarmor2` for the second project::
 
