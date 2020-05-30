@@ -45,6 +45,30 @@ See `pyarmor <command> -h` for more information on a specific command.
 
        pyarmor o => pyarmor obfuscate
 
+
+Common Options
+--------------
+
+-v, --version                Show version information
+-q, --silent                 Suppress all normal output
+-d, --debug                  Print exception traceback and debugging message
+--home PATH                  Select home path, only for multiple registerred pyarmor
+
+These options can be used after `pyarmor` . For example, print debug
+information to locate the error::
+
+    pyarmor -d obfuscate foo.py
+
+Do not print log in the console::
+
+    pyarmor --silent obfuscate foo.py
+
+Obfuscate scripts with another purchased license::
+
+    pyarmor --home ~/.pyarmor-2 register pyarmor-keyfile-2.zip
+    pyarmor --home ~/.pyarmor-2 obfuscate foo.py
+
+
 .. _obfuscate:
 
 obfuscate
