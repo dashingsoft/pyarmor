@@ -409,8 +409,8 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         logging.info('Copy license file %s to %s', licfile, obfdist)
         shutil.copy2(licfile, os.path.join(obfdist, 'license.lic'))
         if supermode:
-            logging.warning('This license file is useless in super mode, '
-                            'please specify license file within option -x')
+            raise RuntimeError('This license file is useless in super mode, '
+                               'please specify license file within option -x')
     elif licfile is False:
         logging.info('Using outer license file')
     elif not supermode:
