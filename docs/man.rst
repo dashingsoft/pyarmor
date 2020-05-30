@@ -54,8 +54,8 @@ Common Options
 -d, --debug                  Print exception traceback and debugging message
 --home PATH                  Select home path, generally for multiple registerred pyarmor
 
-These options can be used after `pyarmor` . For example, print debug
-information to locate the error::
+These options can be used after `pyarmor`, before sub-command. For example,
+print debug information to locate the error::
 
     pyarmor -d obfuscate foo.py
 
