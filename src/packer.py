@@ -384,14 +384,16 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         shutil.rmtree(obfdist)
 
     logging.info('Run PyArmor to obfuscate scripts...')
+    licargs = ['--with-license', licfile] if licfile else []
     if hasattr(args, 'project'):
         if xoptions:
             logging.warning('Ignore xoptions as packing project')
-        call_pyarmor(['build', '-O', obfdist, '--package-runtime', '0',
-                      args.project])
+        call_pyarmor(['build', '-O', obfdist, '--package-runtime', '0']
+                     + licargs + [args.project])
     else:
-        call_pyarmor(['obfuscate', '-r', '-O', obfdist, '--exclude', output,
-                      '--package-runtime', '0'] + xoptions + [script])
+        call_pyarmor(['obfuscate', '-O', obfdist, '--package-runtime', '0',
+                      '-r', '--exclude', output]
+                     + licargs + xoptions + [script])
 
     obftemp = os.path.join(obfdist, 'temp')
     if not os.path.exists(obftemp):
@@ -408,9 +410,6 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if licfile:
         logging.info('Copy license file %s to %s', licfile, obfdist)
         shutil.copy2(licfile, os.path.join(obfdist, 'license.lic'))
-        if supermode:
-            raise RuntimeError('This license file is useless in super mode, '
-                               'please specify license file within option -x')
     elif licfile is False:
         logging.info('Using outer license file')
     elif not supermode:
