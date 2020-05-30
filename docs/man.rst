@@ -52,7 +52,7 @@ Common Options
 -v, --version                Show version information
 -q, --silent                 Suppress all normal output
 -d, --debug                  Print exception traceback and debugging message
---home PATH                  Select home path, only for multiple registerred pyarmor
+--home PATH                  Select home path, generally for multiple registerred pyarmor
 
 These options can be used after `pyarmor` . For example, print debug
 information to locate the error::
