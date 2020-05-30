@@ -356,7 +356,10 @@ def _build(args):
 
 
 def licenses(name='reg-001', expired=None, bind_disk=None, bind_mac=None,
-             bind_ipv4=None, bind_data=None, key=None):
+             bind_ipv4=None, bind_data=None, key=None, home=None):
+    if home:
+        _change_home_path(home)
+
     pytransform_bootstrap()
 
     capsule = DEFAULT_CAPSULE
@@ -1263,7 +1266,6 @@ def excepthook(type, value, traceback):
 
 
 def _change_home_path(path):
-    logging.info('Set pyarmor home path: %s', path)
     if not os.path.exists(path):
         raise RuntimeError('Home path does not exists')
 
@@ -1290,6 +1292,7 @@ def main(argv):
         sys.excepthook = excepthook
 
     if args.home:
+        logging.info('Set pyarmor home path: %s', args.home)
         _change_home_path(args.home)
 
     try:
