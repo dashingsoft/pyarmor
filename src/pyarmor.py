@@ -251,7 +251,8 @@ def _build(args):
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
 
-        licfile = project.license_file
+        licfile = args.license_file if args.license_file is not None \
+            else project.license_file
         if not restrict and not licfile:
             licfile = 'no-restrict'
 
@@ -1112,6 +1113,8 @@ def _parser():
                          'use this option multiple times for more platforms')
     cparser.add_argument('--package-runtime', choices=(0, 1), type=int,
                          help='Package runtime files or not')
+    cparser.add_argument('--with-license', dest='license_file',
+                         help='Use this license file other than default')
     cparser.set_defaults(func=_build)
 
     #
