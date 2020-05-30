@@ -160,6 +160,20 @@ operand isn't the critical value may avoid this warning.
 
    Before v5.5.0, in this case the code object is left as it is.
 
+Code object could not be obufscated with advanced mode 2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Because this function includes some jump instructions that couldn't be
+handled. In this case, just refine this function, make sure the first statement
+will not generate jump instruction. For example, assignment, function call or
+any simple statement. However, the compound statements, for examples, `try`,
+`for`, `if`, `with`, `while` etc. will generate the jump instructions. If there
+is no anyway to refactor the function, insert the following statement at the
+beginning of this function::
+
+  [None]
+
+It will generate some instructions but doesn't change anything.
 
 Error: Try to run unauthorized function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
