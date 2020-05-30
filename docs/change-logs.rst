@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+6.2.4
+-----
+* Fix pack issue for Mac in super mode: `RuntimeError: unexpected pytransform.so`
+* Fix pack issue for windows 32-bit system: the default license doesn't work in
+  other machines, it complains of `License is not for this machine`
+
 6.2.3
 -----
 * Add common option ``--home``, so PYARMOR_HOME can be set in the command line
