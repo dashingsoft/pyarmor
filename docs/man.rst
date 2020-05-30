@@ -511,6 +511,7 @@ When something is wrong, turn on PyArmor debug flag to print traceback::
 * Pass extra options to run `PyInstaller`::
 
     pyarmor pack -e " -w --icon app.ico" foo.py
+    pyarmor pack -e " --icon images\\app.ico" foo.py
 
 * Pass extra options to obfuscate scripts::
 
@@ -545,6 +546,12 @@ When something is wrong, turn on PyArmor debug flag to print traceback::
      pyarmor pack .
 
    By this way the obfuscated scripts could be fully controlled.
+
+.. note::
+
+   In Windows, use double black splash in extra options. For example::
+
+     pyarmor pack -e " --icon images\\app.ico" foo.py
 
 .. important::
 
