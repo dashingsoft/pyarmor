@@ -875,8 +875,8 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     modname = _frozen_modname(filename, destname)
     co = compile(''.join(lines), modname, 'exec')
 
-    if (adv_mode & 0x7) > 1:
-        check_code_object_for_super_mode(co)
+    if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2:
+        co = _check_code_object_for_super_mode(co, lines, modname)
 
     flags = obf_code | obf_mod << 8 | wrap_mode << 16 | adv_mode << 24 \
         | (11 if rest_mode == 4 else 15 if rest_mode == 3 else
@@ -1227,23 +1227,26 @@ def make_protection_code(args, multiple=False, supermode=False):
         else _make_protection_code(*args, multiple=multiple)
 
 
-def check_code_object_for_super_mode(co):
-    from dis import hasjabs, get_instructions
+def _check_code_object_for_super_mode(co, lines, name):
+    from dis import hasjabs, hasjrel, get_instructions
+    HEADER_SIZE = 8
+    hasjins = hasjabs + hasjrel
 
     def is_special_code_object(co):
-        HEADER_SIZE = 8
         has_special_jabs = False
         has_header_label = False
         for ins in get_instructions(co):
-            has_special_jabs = ins.opcode in hasjabs \
-                and (ins.arg & ~0xF) in (0xF0, 0xFFF0, 0xFFFFF0)
+            if ins.opcode in hasjabs and \
+               (ins.arg & ~0xF) in (0xF0, 0xFFF0, 0xFFFFF0):
+                has_special_jabs = True
             if has_header_label:
                 if has_special_jabs:
                     return True
                 continue
-            if ins.offset < HEADER_SIZE and ins.is_jump_target:
-                has_header_label = True
-            elif ins.offset >= HEADER_SIZE and not has_header_label:
+            if ins.offset < HEADER_SIZE:
+                if ins.is_jump_target or ins.opcode in hasjins:
+                    has_header_label = True
+            elif not has_header_label:
                 break
 
     def check_code_object(co):
@@ -1254,13 +1257,15 @@ def check_code_object_for_super_mode(co):
 
     co_list = check_code_object(co)
     if co_list:
-        clist = ['%s (line %s)' % (x.co_name, x.co_firstlineno)
-                 for x in co_list]
-        logging.info('The script %s could not be obfuscated in advanced 2. '
-                     'It could be fixed by inserting one redundant line '
-                     '"[None]" at the beginning of these functions:\n\t%s',
-                     co.co_filename, '\n\t'.join(clist))
-        raise RuntimeError('This script could not be obfuscated in advanced 2')
+        pat = re.compile(r'^\s*')
+        for obj in co_list:
+            i = obj.co_firstlineno
+            s = lines[i]
+            m = pat.match(s)
+            lines[i] = '%s[None]\n%s' % (m.group(0), s)
+        co = compile(''.join(lines), name, 'exec')
+
+    return co
 
 
 if __name__ == '__main__':
