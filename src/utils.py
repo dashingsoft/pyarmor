@@ -1262,7 +1262,7 @@ def _check_code_object_for_super_mode(co, lines, name):
             # In some cases, co_lnotab[1] is not the first statement
             j = c.co_firstlineno
             i = j + c.co_lnotab[1] - 1
-            for k in range(i - 1, j, -1):
+            for k in range(i - 1, j - 1, -1):
                 s = lines[k].strip()
                 if s.find('"""') > -1 or s.find("'''") > -1:
                     break
