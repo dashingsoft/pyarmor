@@ -875,6 +875,9 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     modname = _frozen_modname(filename, destname)
     co = compile(''.join(lines), modname, 'exec')
 
+    if (adv_mode & 0x7) > 1:
+        check_code_object_for_super_mode(co)
+
     flags = obf_code | obf_mod << 8 | wrap_mode << 16 | adv_mode << 24 \
         | (11 if rest_mode == 4 else 15 if rest_mode == 3 else
            7 if rest_mode == 2 else rest_mode) << 28
@@ -1222,6 +1225,42 @@ def _make_protection_code2(relative, checklist, suffix=''):
 def make_protection_code(args, multiple=False, supermode=False):
     return _make_protection_code2(*args) if supermode \
         else _make_protection_code(*args, multiple=multiple)
+
+
+def check_code_object_for_super_mode(co):
+    from dis import hasjabs, get_instructions
+
+    def is_special_code_object(co):
+        HEADER_SIZE = 8
+        has_special_jabs = False
+        has_header_label = False
+        for ins in get_instructions(co):
+            has_special_jabs = ins.opcode in hasjabs \
+                and (ins.arg & ~0xF) in (0xF0, 0xFFF0, 0xFFFFF0)
+            if has_header_label:
+                if has_special_jabs:
+                    return True
+                continue
+            if ins.offset < HEADER_SIZE and ins.is_jump_target:
+                has_header_label = True
+            elif ins.offset >= HEADER_SIZE and not has_header_label:
+                break
+
+    def check_code_object(co):
+        co_list = [co] if is_special_code_object(co) else []
+        for obj in [x for x in co.co_consts if hasattr(x, 'co_code')]:
+            co_list.extend(check_code_object(obj))
+        return co_list
+
+    co_list = check_code_object(co)
+    if co_list:
+        clist = ['%s (line %s)' % (x.co_name, x.co_firstlineno)
+                 for x in co_list]
+        logging.info('The script %s cound not be obfuscated in advanced 2. '
+                     'It could be fixed by inserting one redundant line '
+                     '"[None]" at the beginning of these functions:\n\t%s',
+                     co.co_filename, '\n\t'.join(clist))
+        raise RuntimeError('This script cound not be obfuscated in advanced 2')
 
 
 if __name__ == '__main__':
