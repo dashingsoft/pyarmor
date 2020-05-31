@@ -538,6 +538,58 @@ $PYARMOR runtime -O $dist --super-mode >result.log 2>&1
 check_return_value
 check_file_exists $dist/pytransform_protection.py
 
+csih_inform "S-6. Test super mode with auto patch"
+dist=dist-super-mode-6
+
+cat <<EOF > sufoo2.py
+# Test auto patch
+
+def foo(n):
+  '''This is a test function'''
+  while True:
+    print('Super Mode: %s' % n)
+    break
+
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  if n > 3:
+    print('n is %s' % n)
+
+foo(2)
+EOF
+
+$PYARMOR obfuscate --exact --advanced 2 -O $dist sufoo2.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON sufoo2.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Super Mode: 2"
+check_file_content $dist/result.log "n is 28"
+
 echo ""
 echo "-------------------- Super Mode End --------------------------"
 echo ""
