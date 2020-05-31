@@ -1258,11 +1258,13 @@ def _check_code_object_for_super_mode(co, lines, name):
     co_list = check_code_object(co)
     if co_list:
         pat = re.compile(r'^\s*')
-        for obj in co_list:
-            i = obj.co_firstlineno
+        for c in co_list:
+            i = c.co_firstlineno + c.co_lnotab[1]
+            logging.info('\tPatch function "%s" at line %s', c.co_name, i)
+            i -= 1
             s = lines[i]
-            m = pat.match(s)
-            lines[i] = '%s[None]\n%s' % (m.group(0), s)
+            indent = pat.match(s).group(0)
+            lines[i] = '%s[None, None]\n%s' % (indent, s)
         co = compile(''.join(lines), name, 'exec')
 
     return co
