@@ -1260,14 +1260,13 @@ def _check_code_object_for_super_mode(co, lines, name):
         pat = re.compile(r'^\s*')
         for c in co_list:
             # In some cases, co_lnotab[1] is not the first statement
-            j = c.co_firstlineno
-            i = j + c.co_lnotab[1] - 1
-            for k in range(i - 1, j - 1, -1):
-                s = lines[k].strip()
+            i = c.co_firstlineno + c.co_lnotab[1] - 1
+            for j in range(i - 1, c.co_firstlineno - 1, -1):
+                s = lines[j].strip()
                 if s.find('"""') > -1 or s.find("'''") > -1:
                     break
-                if s and s[0] != '#':
-                    i = k
+                if s:
+                    i = j
             logging.info('\tPatch function "%s" at line %s', c.co_name, i + 1)
             s = lines[i]
             indent = pat.match(s).group(0)
