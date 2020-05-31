@@ -1256,11 +1256,11 @@ def check_code_object_for_super_mode(co):
     if co_list:
         clist = ['%s (line %s)' % (x.co_name, x.co_firstlineno)
                  for x in co_list]
-        logging.info('The script %s cound not be obfuscated in advanced 2. '
+        logging.info('The script %s could not be obfuscated in advanced 2. '
                      'It could be fixed by inserting one redundant line '
                      '"[None]" at the beginning of these functions:\n\t%s',
                      co.co_filename, '\n\t'.join(clist))
-        raise RuntimeError('This script cound not be obfuscated in advanced 2')
+        raise RuntimeError('This script could not be obfuscated in advanced 2')
 
 
 if __name__ == '__main__':
