@@ -171,7 +171,7 @@ any simple statement. However, the compound statements, for examples, `try`,
 is no anyway to refactor the function, insert the following statement at the
 beginning of this function::
 
-  [None]
+  [None, None]
 
 It will generate some instructions but doesn't change anything.
 
