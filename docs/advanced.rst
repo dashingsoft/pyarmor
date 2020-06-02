@@ -1050,15 +1050,15 @@ be bind to:
           prototype = CFUNCTYPE(c_void_p, c_void_p, c_char_p)
           dlsym = prototype(('dlsym', c))
 
-      refunc1 = dlsym(pythonapi._handle, 'PyEval_EvalCode')
-      refunc2 = dlsym(pythonapi._handle, 'PyEval_GetFrame')
+      refunc1 = dlsym(pythonapi._handle, b'PyEval_EvalCode')
+      refunc2 = dlsym(pythonapi._handle, b'PyEval_GetFrame')
 
       size = refunc2 - refunc1
       code = string_at(refunc1, size)
 
       checksum = 0
-      for c in code:
-          checksum += ord(c)
+      for c in bytearray(code):
+          checksum += c
       print('Get bind key: %s' % checksum)
 
 
