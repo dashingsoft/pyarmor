@@ -382,6 +382,10 @@ keys separated by comma::
 How to get bind key of Python interpreter, refer to :ref:`Binding obfuscated
 scripts to Python interpreter`
 
+Do not use this feature in 32-bit Windows, because the bind key is different in
+different machine, it may be changed even if python is restarted in the same
+machine.
+
 .. note::
 
    Here is a real example :ref:`Using Plugin to Extend License Type`

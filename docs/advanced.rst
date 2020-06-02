@@ -1035,19 +1035,18 @@ be bind to:
 
 .. code-block:: python
 
-  import sys
   from ctypes import CFUNCTYPE, cdll, pythonapi, string_at, c_void_p, c_char_p
+  from sys import platform
 
 
   def get_bind_key():
-      c = cdll.LoadLibrary(None)
 
-      if sys.platform.startswith('win'):
+      if platform.startswith('win'):
           from ctypes import windll
           dlsym = windll.kernel32.GetProcAddressA
       else:
           prototype = CFUNCTYPE(c_void_p, c_void_p, c_char_p)
-          dlsym = prototype(('dlsym', c))
+          dlsym = prototype(('dlsym', cdll.LoadLibrary(None)))
 
       refunc1 = dlsym(pythonapi._handle, b'PyEval_EvalCode')
       refunc2 = dlsym(pythonapi._handle, b'PyEval_GetFrame')
@@ -1073,6 +1072,12 @@ keys separated by `,`::
   pyarmor licenses --fixed key1,key2,key3 -O dist/license.lic
 
 The special key `1` means current Python interpreter.
+
+.. note::
+
+   Do not use this feature in 32-bit Windows, because the bind key is
+   different in different machine, it may be changed even if python is
+   restarted in the same machine.
 
 
 .. _customizing cross protection code:
