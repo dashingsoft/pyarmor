@@ -1036,7 +1036,6 @@ be bind to:
 .. code-block:: python
 
   import sys
-
   from ctypes import CFUNCTYPE, cdll, pythonapi, string_at, c_void_p, c_char_p
 
 
@@ -1056,10 +1055,7 @@ be bind to:
       size = refunc2 - refunc1
       code = string_at(refunc1, size)
 
-      checksum = 0
-      for c in bytearray(code):
-          checksum += c
-      print('Get bind key: %s' % checksum)
+      print('Get bind key: %s' % sum(bytearray(code)))
 
 
   if __name__ == '__main__':
