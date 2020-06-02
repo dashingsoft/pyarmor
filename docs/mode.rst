@@ -59,8 +59,6 @@ enable it, pass option ``--advanced`` to command :ref:`obfuscate`::
 
     pyarmor obfuscate --advanced 1 foo.py
 
-In next minor version, this mode may be enabled by default.
-
 **Upgrade Notes**:
 
 Before upgrading, please estimate Python interpreter in product environments to
