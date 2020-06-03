@@ -161,13 +161,12 @@ def get_license_info():
         'CODE': None,
     }
     rcode = get_registration_code().decode()
-    index = 0
-
     if rcode.startswith('*VERSION:'):
         index = rcode.find('\n')
         info['ISSUER'] = rcode[9:index].split('.')[0]
         rcode = rcode[index+1:]
 
+    index = 0
     if rcode.startswith('*TIME:'):
         from time import ctime
         index = rcode.find('\n')

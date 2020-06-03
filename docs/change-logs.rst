@@ -3,6 +3,10 @@
 Change Logs
 ===========
 
+6.2.6
+-----
+* Fix `get_license_info` issue: the value of `CODE` is blank
+
 6.2.5
 -----
 * Add option `--with-license` in the command `build`
