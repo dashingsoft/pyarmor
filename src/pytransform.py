@@ -151,6 +151,7 @@ def assert_armored(*names):
 
 def get_license_info():
     info = {
+        'ISSUER': None,
         'EXPIRED': None,
         'HARDDISK': None,
         'IFMAC': None,
@@ -161,6 +162,12 @@ def get_license_info():
     }
     rcode = get_registration_code().decode()
     index = 0
+
+    if rcode.startswith('*VERSION:'):
+        index = rcode.find('\n')
+        info['ISSUER'] = rcode[9:index].split('.')[0]
+        rcode = rcode[index+1:]
+
     if rcode.startswith('*TIME:'):
         from time import ctime
         index = rcode.find('\n')
