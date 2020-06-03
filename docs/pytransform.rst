@@ -16,8 +16,12 @@ Contents
 
 .. exception:: PytransformError
 
+   It's DEPRECATED.
+
    This is raised when any pytransform api failed. The argument to the
    exception is a string indicating the cause of the error.
+
+   It's not available in super mode.
 
 .. function:: get_expired_days()
 
@@ -59,8 +63,8 @@ Contents
 
 .. function:: get_license_code()
 
-   Return a string, which is specified as generating the licenses for obfucated
-   scripts.
+   Return a string, which is last argument as generating the licenses
+   for obfucated scripts.
 
    Raise :exc:`Exception` if license is invalid.
 
