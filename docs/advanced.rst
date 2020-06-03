@@ -1183,4 +1183,31 @@ After that, run `pyarmor2` for the second project::
     pyarmor2 register pyarmor-regkey-2.zip
     pyarmor2 obfuscate foo2.py
 
+
+How to get license information of one obfuscated package
+--------------------------------------------------------
+
+How to get the license information of one obfuscated package? Since v6.2.5, just
+run this script in the path of runtime package :mod:`pytransform`
+
+.. code-block:: python
+
+   from pytransform import pyarmor_init, get_license_info
+   pyarmor_init(is_runtime=1)
+   licinfo = get_license_info()
+   print('This obfuscated package is issued by %s' % licinfo['ISSUER'])
+   print('License information:')
+   print(licinfo)
+
+For the scripts obfuscated by super mode, there is no package `pytransform`, but
+an extension `pytransform`. It's simiar and more simple
+
+.. code-block:: python
+
+   from pytransform import get_license_info
+   licinfo = get_license_info()
+   print('This obfuscated package is issued by %s' % licinfo['ISSUER'])
+   print('License information:')
+   print(licinfo)
+
 .. include:: _common_definitions.txt
