@@ -245,6 +245,16 @@ $PYARMOR obfuscate --exact -O dist-big-script $ascript >result.log 2>&1
 check_file_content result.log 'Check license failed'
 check_file_content result.log 'Too big code object, the limitation is'
 
+csih_inform "18. Get issuer of the obfuscate scripts"
+(cd dist;
+ $PYTHON -c"
+from pytransform import pyarmor_init, get_license_info
+pyarmor_init(is_runtime=1)
+print('Issuer is %s' % get_license_info()['ISSUER'])" > result.log 2>&1)
+
+check_return_value
+check_file_content dist/result.log 'Issuer is trial'
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -449,6 +459,16 @@ $PYARMOR obfuscate --exact -O dist-big-script $ascript >result.log 2>&1
 check_return_value
 check_file_content result.log 'Check license failed' not
 check_file_content result.log 'Too big code object, the limitation is' not
+
+csih_inform "18. Get issuer of the obfuscate scripts"
+(cd dist;
+ $PYTHON -c"
+from pytransform import pyarmor_init, get_license_info
+pyarmor_init(is_runtime=1)
+print('Issuer is %s' % get_license_info()['ISSUER'])" > result.log 2>&1)
+
+check_return_value
+check_file_content dist/result.log 'Issuer is pyarmor-test-0001'
 
 # ======================================================================
 #
