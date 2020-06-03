@@ -163,7 +163,7 @@ def get_license_info():
     rcode = get_registration_code().decode()
     if rcode.startswith('*VERSION:'):
         index = rcode.find('\n')
-        info['ISSUER'] = rcode[9:index].split('.')[0]
+        info['ISSUER'] = rcode[9:index].split('.')[0].replace('-sn-1.txt', '')
         rcode = rcode[index+1:]
 
     index = 0
