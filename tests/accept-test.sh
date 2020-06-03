@@ -250,9 +250,12 @@ csih_inform "18. Get issuer of the obfuscate scripts"
  $PYTHON -c"
 from pytransform import pyarmor_init, get_license_info
 pyarmor_init(is_runtime=1)
-print('Issuer is %s' % get_license_info()['ISSUER'])" > result.log 2>&1)
+licinfo = get_license_info()
+print('License code is %s' % licinfo['CODE'])
+print('Issuer is %s' % licinfo['ISSUER'])" > result.log 2>&1)
 
 check_return_value
+check_file_content dist/result.log 'License code is Joker'
 check_file_content dist/result.log 'Issuer is trial'
 
 # ======================================================================
@@ -465,9 +468,12 @@ csih_inform "18. Get issuer of the obfuscate scripts"
  $PYTHON -c"
 from pytransform import pyarmor_init, get_license_info
 pyarmor_init(is_runtime=1)
-print('Issuer is %s' % get_license_info()['ISSUER'])" > result.log 2>&1)
+licinfo = get_license_info()
+print('License code is %s' % licinfo['CODE'])
+print('Issuer is %s' % licinfo['ISSUER'])" > result.log 2>&1)
 
 check_return_value
+check_file_content dist/result.log 'License code is Joker'
 check_file_content dist/result.log 'Issuer is pyarmor-test-0001'
 
 # ======================================================================
