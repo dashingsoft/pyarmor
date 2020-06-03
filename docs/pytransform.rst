@@ -44,7 +44,7 @@ Contents
    It returns a dict with keys:
 
    * ISSUER: The issuer id
-   * expired: Expired date
+   * EXPIRED: Expired date
    * IFMAC: mac address bind to this license
    * HARDDISK: serial number of harddisk bind to this license
    * IPV4: ipv4 address bind to this license
