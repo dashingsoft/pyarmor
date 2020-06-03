@@ -274,6 +274,15 @@ check_return_value
 ( cd dist-super-mode/; ./sufoo/sufoo  >result.log 2>&1 )
 check_file_content dist-super-mode/result.log 'Found 92 solutions'
 
+csih_inform "Case 3-14: Test super mode with license"
+$PYARMOR pack --clean --name sufoo -O dist-super-mode-2 -x " --advanced 2" \
+         --with-license license.tri examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+( cd dist-super-mode-2/; ./sufoo/sufoo  >result.log 2>&1 )
+check_file_content dist-super-mode-2/result.log 'Found 92 solutions' not
+check_file_content dist-super-mode-2/result.log 'Check license failed, Invalid input packet'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
