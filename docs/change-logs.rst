@@ -3,6 +3,16 @@
 Change Logs
 ===========
 
+6.2.5
+-----
+* Add option `--with-license` in the command `build`
+* Fix pack issue: the option `--with-license` doesn't work in super mode
+* If the code object couldn't be obfuscated in advanced 2 (super mode), fix it
+  automatically by inserting one redundant line `[None, None]` at the beginning
+  of this code object
+* Ignore case when checking mac address if the license is bind to network card
+* Add key `ISSUER` in the return value of `get_license_info`
+
 6.2.4
 -----
 * Fix pack issue for Mac in super mode: `RuntimeError: unexpected pytransform.so`
