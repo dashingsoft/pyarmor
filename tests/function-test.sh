@@ -787,6 +787,14 @@ $PYARMOR config --entry="" $PROPATH  >result.log 2>&1
 check_return_value
 check_file_content result.log 'Change project entry to ""'
 
+csih_inform "Case P-15: build project with --with-license"
+PROPATH=projects/test-build-with-license
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR build --with-license=outer $PROPATH  >result.log 2>&1
+check_return_value
+check_file_not_exists exists $PROPATH/dist/pytransform/license.lic
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
 echo ""
