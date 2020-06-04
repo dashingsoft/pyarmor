@@ -4,7 +4,11 @@ the data file could be protected by PyArmor.
 
 1. First create data module from date file by this script
 
-    python build_data_module.py data.txt
+    python build_data_module.py data.txt > data.py
+
+    Or
+
+    python -m pyarmor.helper.build_data_module data.txt > data.py
 
 2. Next obfuscate this data module with restrict mode 4
 
@@ -14,7 +18,7 @@ After that, use the data file in other obfuscated scripts. For example,
 
     import data
 
-    # Now plain data loaded in the memory
+    # Load plain data in the memory
     value = data.get_value()
 
     ...
@@ -22,9 +26,9 @@ After that, use the data file in other obfuscated scripts. For example,
     # Destroy the plain data
     del value
 
-This script encodes the string data by a simple way, it's recommend to
-write private method to encode the string data. DO NOT generate data
-module by this script directly.
+This script encodes the string data by a simple way (xor), it's
+recommend to write your own method to encode the string data. DO NOT
+generate data module by this script directly.
 
 '''
 import argparse
@@ -35,8 +39,11 @@ import sys
 from os import makedirs
 from os.path import basename, exists, join as join_path, splitext
 
-
+#
+# The template of data module
+#
 # Do not yield key directly, because generator will not be obfuscated
+#
 template = '''
 def index(n):
     rlist = range(n)
@@ -46,10 +53,9 @@ def index(n):
 
 
 def get_value():
-    data = bytearray(b"\\x{data}")
     key = {key}
     i = index(len(key))
-    return bytearray([(x ^ key[next(i)]) for x in data]).decode({encoding})
+    return bytearray([(x ^ key[next(i)]) for x in bytearray(b"\\x{data}")])
 
 '''
 
@@ -60,14 +66,14 @@ def key(xlist):
             yield x
 
 
-def build_module(filename, n=32, encoding=''):
+def build_module(filename, keylen=32):
     with open(filename, 'rb') as f:
         data = bytearray(f.read())
-    keylist = [random.randint(0, 255) for i in range(n)]
+    keylist = [random.randint(0, 255) for i in range(keylen)]
 
     k = key(keylist)
     s = r'\x'.join(['%02x' % (x ^ next(k)) for x in data])
-    return template.format(data=s, key=str(keylist), encoding=encoding)
+    return template.format(data=s, key=str(keylist))
 
 
 def main(argv):
@@ -78,7 +84,6 @@ def main(argv):
     )
     parser.add_argument('-n', '--key', default=32, type=int,
                         help='length of key list used to xor data')
-    parser.add_argument('-c', '--encoding', help='encoding of data file')
     parser.add_argument('-f', '--force', action='store_true',
                         help='overwrite the exists module file')
     parser.add_argument('-O', '--output', metavar='PATH',
@@ -88,7 +93,6 @@ def main(argv):
 
     args = parser.parse_args(argv)
 
-    encoding = repr(args.encoding) if args.encoding else ''
     if args.output:
         if not exists(args.output):
             logging.info('Make output path: %s', args.output)
@@ -108,7 +112,7 @@ def main(argv):
 
     random.seed()
     for filename in args.files:
-        code = build_module(filename, n=args.key, encoding=encoding)
+        code = build_module(filename, keylen=args.key)
         output(filename, code)
 
 
