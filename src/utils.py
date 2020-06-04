@@ -173,6 +173,7 @@ def _get_platform_list(urls, platid=None):
         os.makedirs(CROSS_PLATFORM_PATH)
 
     filename = os.path.join(PLATFORM_PATH, platform_config)
+    logging.info('Load platform list from %s', filename)
     with open(filename) as f:
         cfg = json_loads(f.read())
 
