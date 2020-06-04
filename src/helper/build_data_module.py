@@ -18,17 +18,17 @@ After that, use the data file in other obfuscated scripts. For example,
 
     import data
 
-    # Load plain data in the memory
-    value = data.get_value()
+    # Load plain data in the memory, value is the content of "data.txt"
+    value = data.get_value().decode()
 
     ...
 
     # Destroy the plain data
     del value
 
-This script encodes the string data by a simple way (xor), it's
-recommend to write your own method to encode the string data. DO NOT
-generate data module by this script directly.
+This script encodes the string data by a simple way (xor), DO NOT
+generate data module by this script directly. It's recommend to write
+your own script to generate data module base on it or not.
 
 '''
 import argparse
@@ -87,7 +87,7 @@ def main(argv):
     parser.add_argument('-f', '--force', action='store_true',
                         help='overwrite the exists module file')
     parser.add_argument('-O', '--output', metavar='PATH',
-                        help='path to save generated data module')
+                        help='write data module here other than stdout')
     parser.add_argument('files', metavar='FILE', nargs='+',
                         help='data files')
 
