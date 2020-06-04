@@ -229,6 +229,7 @@ These `PyArmor`_ features could import security further:
 5. Use the high security code obfuscation `--obf-code=2`
 6. :ref:`Using plugin to improve security` by injecting your private checkpoints
    in the obfuscated scripts
+7. If data files need to be protected, refer to :ref:`How to protect data files`
 
 About the security of obfuscated scripts, refer to :ref:`The Security of PyArmor`
 

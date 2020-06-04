@@ -1210,4 +1210,45 @@ an extension `pytransform`. It's simiar and more simple
    print('License information:')
    print(licinfo)
 
+Since v6.2.7, it also could call the helper script by this way::
+
+  cd /path/to/obfuscated_package
+  python -m pyarmor.helper.get_license_info
+
+
+.. _how to protect data files:
+
+How to protect data files
+-------------------------
+
+PyArmor does not touch data files, but it could wrap data file to python module,
+and then obfuscate this data module by restrict mode 4, so that it only could be
+imported from the obfuscated scripts. By this way, the data file could be
+protected by PyArmor.
+
+Since v6.2.7, there is a helper script which could create a python module from
+data file, for example::
+
+    python -m pyarmor.helper.build_data_module data.txt > data.py
+
+Next obfuscate this data module with restrict mode 4::
+
+    pyarmor obfuscate --exact --restrict 4 --no-runtime data.py
+
+After that, use the data file in other obfuscated scripts. For example::
+
+    import data
+
+    # Load plain data in the memory, value is the content of "data.txt"
+    value = data.get_value().decode()
+
+    ...
+
+    # Destroy the plain data
+    del value
+
+Before v6.2.7, download this helper script `build_data_module.py <https://github.com/dashingsoft/pyarmor/raw/master/src/helper/build_data_module.py>`_ and run it directly::
+
+    python build_data_module.py data.txt > data.py
+
 .. include:: _common_definitions.txt
