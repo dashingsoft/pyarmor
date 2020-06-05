@@ -18,12 +18,12 @@ After that, use the data file in other obfuscated scripts. For example,
 
     import data
 
-    # Load plain data in the memory, value is the content of "data.txt"
+    # Load real content of "data.txt" in the memory
     value = data.get_value().decode()
 
     ...
 
-    # Destroy the plain data
+    # Clear plain data from memory
     del value
 
 This script encodes the string data by a simple way (xor), DO NOT
