@@ -123,6 +123,27 @@ def get_expired_days():
     return dlfunc()
 
 
+@dllmethod
+def clean_obj(obj, kind):
+    prototype = PYFUNCTYPE(c_int, py_object, c_int)
+    dlfunc = prototype(('clean_obj', _pytransform))
+    return dlfunc(obj, kind)
+
+
+def clean_str(*args):
+    tdict = {
+        'str': 0,
+        'bytearray': 1,
+        'unicode': 2
+    }
+    for x in args:
+        tname = type(x).__name__
+        k = tdict.get(tname)
+        if k is None:
+            raise RuntimeError('Can not clean type: %s' % tname)
+        clean_obj(x, k)
+
+
 def get_hd_info(hdtype, size=256):
     if hdtype not in range(HT_DOMAIN + 1):
         raise RuntimeError('Invalid parameter hdtype: %s' % hdtype)
