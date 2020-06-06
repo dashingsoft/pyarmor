@@ -136,12 +136,11 @@ def clean_str(*args):
         'bytearray': 1,
         'unicode': 2
     }
-    for x in args:
-        tname = type(x).__name__
-        k = tdict.get(tname)
+    for obj in args:
+        k = tdict.get(type(obj).__name__)
         if k is None:
-            raise RuntimeError('Can not clean type: %s' % tname)
-        clean_obj(x, k)
+            raise RuntimeError('Can not clean object: %s' % obj)
+        clean_obj(obj, k)
 
 
 def get_hd_info(hdtype, size=256):
