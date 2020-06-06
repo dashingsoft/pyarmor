@@ -270,7 +270,8 @@ from pytransform import clean_str
 from sys import version_info as ver
 data = ('a' * 30) if ver[0] == 2 else (b'a' * 30).decode()
 clean_str(data)
-print(data)
+if (ver[0] * 10 + ver[1]) not in (30, 31):
+    print(data)
 EOF
 
 $PYARMOR obfuscate --exact -O $dist safedata.py >result.log 2>&1
@@ -512,7 +513,8 @@ from pytransform import clean_str
 from sys import version_info as ver
 data = ('a' * 30) if ver[0] == 2 else (b'a' * 30).decode()
 clean_str(data)
-print(data)
+if (ver[0] * 10 + ver[1]) not in (30, 31):
+    print(data)
 EOF
 
 $PYARMOR obfuscate --exact -O $dist safedata.py >result.log 2>&1
