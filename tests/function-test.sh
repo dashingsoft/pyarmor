@@ -590,6 +590,24 @@ check_return_value
 check_file_content $dist/result.log "Super Mode: 2"
 check_file_content $dist/result.log "n is 28"
 
+csih_inform "S-7. Test super mode with clean_str"
+dist=dist-super-mode-7
+cat <<EOF > suclean.py
+from sys import version_info as ver
+from pytransform import clean_str
+data = ('a' * 30) if ver.major == 2 else (b'a' * 30).decode()
+print('Clean data: %s' % clean_str(data))
+print(data)
+EOF
+
+$PYARMOR obfuscate --exact --advanced 2 -O $dist suclean.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON suclean.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Clean data: 30"
+check_file_content $dist/result.log "aaaaaaaaaa" not
+
 echo ""
 echo "-------------------- Super Mode End --------------------------"
 echo ""
