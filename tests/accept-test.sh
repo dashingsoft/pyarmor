@@ -258,6 +258,30 @@ check_return_value
 check_file_content dist/result.log 'License code is Joker'
 check_file_content dist/result.log 'Issuer is trial'
 
+csih_inform "19. Protect data file"
+dist=test-data-file
+$PYTHON -m helper.build_data_module protect_code2.pt > protect_data.py
+cat <<EOF > safedata.py
+import protect_data
+with protect_data.Safestr() as text:
+    print('Got data: %s' % text[:32])
+
+from pytransform import clean_str
+from sys import version_info as ver
+data = ('a' * 30) if ver.major == 2 else (b'a' * 30).decode()
+clean_str(data)
+print(data)
+EOF
+
+$PYARMOR obfuscate --exact -O $dist safedata.py >result.log 2>&1
+$PYARMOR obfuscate --exact -O $dist --no-runtime --no-bootstrap \
+         --restrict 4 protect_data.py >result.log 2>&1
+
+(cd $dist; $PYTHON safedata.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log 'Got data: def protect_pytransform'
+check_file_content $dist/result.log 'aaaaaaaaaa' not
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -475,6 +499,30 @@ print('Issuer is %s' % licinfo['ISSUER'])" > result.log 2>&1)
 check_return_value
 check_file_content dist/result.log 'License code is Joker'
 check_file_content dist/result.log 'Issuer is pyarmor-test-0001'
+
+csih_inform "19. Protect data file"
+dist=test-data-file
+$PYTHON -m helper.build_data_module protect_code2.pt > protect_data.py
+cat <<EOF > safedata.py
+import protect_data
+with protect_data.Safestr() as text:
+    print('Got data: %s' % text[:32])
+
+from pytransform import clean_str
+from sys import version_info as ver
+data = ('a' * 30) if ver.major == 2 else (b'a' * 30).decode()
+clean_str(data)
+print(data)
+EOF
+
+$PYARMOR obfuscate --exact -O $dist safedata.py >result.log 2>&1
+$PYARMOR obfuscate --exact -O $dist --no-runtime --no-bootstrap \
+         --restrict 4 protect_data.py >result.log 2>&1
+
+(cd $dist; $PYTHON safedata.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log 'Got data: def protect_pytransform'
+check_file_content $dist/result.log 'aaaaaaaaaa' not
 
 # ======================================================================
 #
