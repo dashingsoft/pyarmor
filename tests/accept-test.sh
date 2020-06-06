@@ -268,7 +268,7 @@ with protect_data.Safestr() as text:
 
 from pytransform import clean_str
 from sys import version_info as ver
-data = ('a' * 30) if ver.major == 2 else (b'a' * 30).decode()
+data = ('a' * 30) if ver[0] == 2 else (b'a' * 30).decode()
 clean_str(data)
 print(data)
 EOF
@@ -510,7 +510,7 @@ with protect_data.Safestr() as text:
 
 from pytransform import clean_str
 from sys import version_info as ver
-data = ('a' * 30) if ver.major == 2 else (b'a' * 30).decode()
+data = ('a' * 30) if ver[0] == 2 else (b'a' * 30).decode()
 clean_str(data)
 print(data)
 EOF
