@@ -1221,6 +1221,8 @@ Since v6.2.7, it also could call the helper script by this way::
 How to protect data files
 -------------------------
 
+This is still an experiment feature.
+
 PyArmor does not touch data files, but it could wrap data file to python module,
 and then obfuscate this data module by restrict mode 4, so that it only could be
 imported from the obfuscated scripts. By this way, the data file could be
