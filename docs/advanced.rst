@@ -1241,13 +1241,10 @@ After that, use the data file in other obfuscated scripts. For example::
 
     import data
 
-    # Load plain data in the memory, value is the content of "data.txt"
-    value = data.get_value().decode()
-
-    ...
-
-    # Destroy the plain data
-    del value
+    # Here load the content of data file to memory variable "text"
+    # And clear it from memory as exiting the context
+    with data.Safestr() as text:
+      ...
 
 Before v6.2.7, download this helper script `build_data_module.py <https://github.com/dashingsoft/pyarmor/raw/master/src/helper/build_data_module.py>`_ and run it directly::
 
