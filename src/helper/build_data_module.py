@@ -19,12 +19,8 @@ After that, use the data file in other obfuscated scripts. For example,
     import data
 
     # Load real content of "data.txt" in the memory
-    value = data.get_value().decode()
-
-    ...
-
-    # Clear plain data from memory
-    del value
+    with data.Safestr() as text:
+        ...
 
 This script encodes the string data by a simple way (xor), DO NOT
 generate data module by this script directly. It's recommend to write
@@ -44,7 +40,9 @@ from os.path import basename, exists, join as join_path, splitext
 #
 # Do not yield key directly, because generator will not be obfuscated
 #
-template = '''
+template = '''from pytransform import clean_str
+
+
 def index(n):
     rlist = range(n)
     while 1:
@@ -52,10 +50,20 @@ def index(n):
             yield x
 
 
-def get_value():
-    key = {key}
-    i = index(len(key))
-    return bytearray([(x ^ key[next(i)]) for x in bytearray(b"\\x{data}")])
+class Safestr(object):
+
+    def __enter__(self):
+        key = {key}
+        i = index(len(key))
+        data = bytearray()
+        for x in bytearray(b"\\x{data}"):
+            data.append(x ^ key[next(i)])
+        self._value = data.decode({encoding})
+        data.clear()
+        return self._value
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        clean_str(self._value)
 
 '''
 
@@ -66,14 +74,14 @@ def key(xlist):
             yield x
 
 
-def build_module(filename, keylen=32):
+def build_module(filename, keylen=32, encoding=''):
     with open(filename, 'rb') as f:
         data = bytearray(f.read())
     keylist = [random.randint(0, 255) for i in range(keylen)]
 
     k = key(keylist)
     s = r'\x'.join(['%02x' % (x ^ next(k)) for x in data])
-    return template.format(data=s, key=str(keylist))
+    return template.format(data=s, key=str(keylist), encoding=encoding)
 
 
 def main(argv):
@@ -84,6 +92,7 @@ def main(argv):
     )
     parser.add_argument('-n', '--key', default=32, type=int,
                         help='length of key list used to xor data')
+    parser.add_argument('-c', '--encoding', help='encoding of data file')
     parser.add_argument('-f', '--force', action='store_true',
                         help='overwrite the exists module file')
     parser.add_argument('-O', '--output', metavar='PATH',
@@ -92,6 +101,7 @@ def main(argv):
                         help='data files')
 
     args = parser.parse_args(argv)
+    encoding = repr(args.encoding) if args.encoding else ''
 
     if args.output:
         if not exists(args.output):
@@ -112,7 +122,7 @@ def main(argv):
 
     random.seed()
     for filename in args.files:
-        code = build_module(filename, keylen=args.key)
+        code = build_module(filename, keylen=args.key, encoding=encoding)
         output(filename, code)
 
 
