@@ -18,7 +18,8 @@ After that, use the data file in other obfuscated scripts. For example,
 
     import data
 
-    # Load real content of "data.txt" in the memory
+    # Here load the content of data file to memory variable "text"
+    # And clear it from memory as exiting the context
     with data.Safestr() as text:
         ...
 
@@ -55,15 +56,12 @@ class Safestr(object):
     def __enter__(self):
         key = {key}
         i = index(len(key))
-        data = bytearray()
-        for x in bytearray(b"\\x{data}"):
-            data.append(x ^ key[next(i)])
+        data = bytearray([x ^ key[next(i)] for x in bytearray(b"\\x{data}")])
         self._value = data.decode({encoding})
         clean_str(data)
         return self._value
 
     def __exit__(self, exc_type, exc_value, exc_tb):
-        assert(isinstance(self._value, (str, bytearray, unicode)))
         clean_str(self._value)
 
 '''
