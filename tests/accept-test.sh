@@ -270,7 +270,7 @@ from pytransform import clean_str
 from sys import version_info as ver
 data = ('a' * 30) if ver[0] == 2 else (b'a' * 30).decode()
 clean_str(data)
-if (ver[0] * 10 + ver[1]) not in (30, 31):
+if (ver[0] * 10 + ver[1]) not in (30, 31, 32):
     print(data)
 EOF
 
@@ -513,7 +513,7 @@ from pytransform import clean_str
 from sys import version_info as ver
 data = ('a' * 30) if ver[0] == 2 else (b'a' * 30).decode()
 clean_str(data)
-if (ver[0] * 10 + ver[1]) not in (30, 31):
+if (ver[0] * 10 + ver[1]) not in (30, 31, 32):
     print(data)
 EOF
 
