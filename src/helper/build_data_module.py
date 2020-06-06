@@ -59,10 +59,11 @@ class Safestr(object):
         for x in bytearray(b"\\x{data}"):
             data.append(x ^ key[next(i)])
         self._value = data.decode({encoding})
-        data.clear()
+        clean_str(data)
         return self._value
 
     def __exit__(self, exc_type, exc_value, exc_tb):
+        assert(isinstance(self._value, (str, bytearray, unicode)))
         clean_str(self._value)
 
 '''
