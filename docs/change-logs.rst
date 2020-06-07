@@ -7,7 +7,6 @@ Change Logs
 -----
 * Fix a crash issue in Darwin platform
 * Fix super mode issue in Darwin: the obfuscated scripts report "image not found" (#256)
-* Add new function `clean_str` in runtime module `pytransform`
 * Document experiment feature: `how to protect data file <https://pyarmor.readthedocs.io/en/latest/advanced.html#how-to-protect-data-files>`_
 
 6.2.6
