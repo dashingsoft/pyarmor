@@ -41,9 +41,7 @@ from os.path import basename, exists, join as join_path, splitext
 #
 # Do not yield key directly, because generator will not be obfuscated
 #
-template = '''from pytransform import clean_str
-
-
+template = '''
 def index(n):
     rlist = range(n)
     while 1:
@@ -58,11 +56,10 @@ class Safestr(object):
         i = index(len(key))
         data = bytearray([x ^ key[next(i)] for x in bytearray(b"\\x{data}")])
         self._value = data.decode({encoding})
-        clean_str(data)
         return self._value
 
     def __exit__(self, exc_type, exc_value, exc_tb):
-        clean_str(self._value)
+        del self._value
 
 '''
 
