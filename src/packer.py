@@ -448,7 +448,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
-    run_command([sys.executable] + packcmd + ['-y', patched_spec])
+    run_command([sys.executable] + packcmd + ['-y', '--clean', patched_spec])
 
     if not args.debug:
         if args.setup is None:
