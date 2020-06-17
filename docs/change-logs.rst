@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+6.2.8
+-----
+* Fix arch `ppc64le` could not work issue
+* In `pack` command, clean build cache automatically before packing the obfuscated scripts
+
 6.2.7
 -----
 * Fix a crash issue in Darwin platform
