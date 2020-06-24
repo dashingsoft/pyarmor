@@ -990,15 +990,19 @@ def check_cross_platform(platforms):
         return False
     for name in platforms:
         if name.endswith('.0') or \
-           name in ('linux.arm', 'android.aarch64', 'linux.ppc64',
-                    'darwin.arm64', 'freebsd.x86_64', 'alpine.x86_64',
-                    'alpine.arm', 'poky.x86', 'vs2015.x86_64', 'vs2015.x86'):
+           name in ('linux.arm', 'linux.armv6', 'linux.ppc64',
+                    'darwin.arm64', 'freebsd.x86_64', 'android.aarch64',
+                    'alpine.x86_64', 'alpine.arm',
+                    'poky.x86', 'vs2015.x86_64', 'vs2015.x86'):
             logging.info('===========================================')
             logging.info('Reboot PyArmor to obfuscate the scripts for '
                          'platform %s', name)
             logging.info('===========================================')
             os.putenv('PYARMOR_PLATFORM', '.'.join([_format_platid(), '0']))
-            p = Popen([sys.executable] + sys.argv)
+            if sys.platform == 'win32' and sys.argv[0].endswith('pyarmor'):
+                p = Popen(sys.argv)
+            else:
+                p = Popen([sys.executable] + sys.argv)
             p.wait()
             return p.returncode
     return False
