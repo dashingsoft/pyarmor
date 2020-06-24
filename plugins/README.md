@@ -149,7 +149,7 @@ expired on Oct 31, 2020:
     cp licenses/CODE-0003/license.lic ./dist
 
 
-## Example 4: Create License For Multiple Machine
+## Example 4: Create License For Multiple Machines
 
 First write the plugin [check_multiple_machine.py](check_multiple_machine.py).
 
@@ -165,5 +165,5 @@ Now, obfuscate the script with this plugin:
 The last step is to generate the license file for 3 machines, suppose the serial
 number of hard disk in these machines are `ta1`, `ta2`, `ta3`:
 
-    pyarmor licenses -x "ta1;ta2;ta3;" CODE-0004
+    pyarmor licenses -x "ta1;ta2;ta3" CODE-0004
     cp licenses/CODE-0004/license.lic ./dist

@@ -18,5 +18,5 @@ def check_multiple_machine():
             raise RuntimeError('Get hardware information failed')
         return buf.value.decode()
 
-    if _get_license_data().find(_get_hd_info()) == -1:
+    if _get_hd_info() not in _get_license_data().split(';'):
         raise RuntimeError('This license is not for this machine')
