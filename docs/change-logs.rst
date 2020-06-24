@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+6.2.9
+-----
+* Fix cross platform bug: in Windows it may raise exception
+  `can't open file '...\Scripts\pyarmor': [Errno 2] No such file or directory`
+* Fix super mode bug: in some cases super mode will raise exception `unknown opcode`
+
 6.2.8
 -----
 * Fix arch `ppc64le` could not work issue
