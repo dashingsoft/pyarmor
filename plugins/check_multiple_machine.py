@@ -1,7 +1,6 @@
 def check_multiple_machine():
-    from ctypes import c_char
+    from ctypes import c_char, py_object, PYFUNCTYPE
     from pytransform import _pytransform, HT_HARDDISK
-    from ctypes import py_object, PYFUNCTYPE
 
     def _get_license_data():
         prototype = PYFUNCTYPE(py_object)
