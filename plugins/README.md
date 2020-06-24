@@ -147,3 +147,23 @@ expired on Oct 31, 2020:
 
     pyarmor licenses -x 20201031 CODE-0003
     cp licenses/CODE-0003/license.lic ./dist
+
+
+## Example 4: Create License For Multiple Machine
+
+First write the plugin [check_multiple_machine.py](check_multiple_machine.py).
+
+Then edit the entry script [foo.py](foo.py), insert two comment lines:
+
+    # {PyArmor Plugins}
+    # PyArmor Plugin: check_multiple_machine()
+
+Now, obfuscate the script with this plugin:
+
+    pyarmor obfuscate --plugin check_multiple_machine foo.py
+
+The last step is to generate the license file for 3 machines, suppose the serial
+number of hard disk in these machines are `ta1`, `ta2`, `ta3`:
+
+    pyarmor licenses -x "ta1;ta2;ta3;" CODE-0004
+    cp licenses/CODE-0004/license.lic ./dist
