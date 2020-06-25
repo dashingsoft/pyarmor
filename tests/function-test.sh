@@ -543,6 +543,8 @@ dist=dist-super-mode-6
 
 cat <<EOF > sufoo2.py
 # Test auto patch
+import threading
+from time import sleep
 
 def foo(n):
   '''This is a test function'''
@@ -579,8 +581,8 @@ def foo(n):
   if n > 3:
     print('n is %s' % n)
 
-foo(2)
-foo(3)
+for i in range(3):
+  threading.Thread(target=foo, args=(i,)).start()
 EOF
 
 $PYARMOR obfuscate --exact --advanced 2 -O $dist sufoo2.py >result.log 2>&1
@@ -589,8 +591,9 @@ check_return_value
 (cd $dist; $PYTHON sufoo2.py >result.log 2>&1)
 check_return_value
 check_file_content $dist/result.log "Super Mode: 2"
+check_file_content $dist/result.log "n is 26"
+check_file_content $dist/result.log "n is 27"
 check_file_content $dist/result.log "n is 28"
-check_file_content $dist/result.log "n is 29"
 
 csih_inform "S-7. Test super mode with clean_str"
 dist=dist-super-mode-7
