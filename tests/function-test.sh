@@ -580,6 +580,7 @@ def foo(n):
     print('n is %s' % n)
 
 foo(2)
+foo(3)
 EOF
 
 $PYARMOR obfuscate --exact --advanced 2 -O $dist sufoo2.py >result.log 2>&1
@@ -589,6 +590,7 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log "Super Mode: 2"
 check_file_content $dist/result.log "n is 28"
+check_file_content $dist/result.log "n is 29"
 
 csih_inform "S-7. Test super mode with clean_str"
 dist=dist-super-mode-7
