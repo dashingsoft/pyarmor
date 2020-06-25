@@ -552,7 +552,7 @@ def foo(n):
     print('Super Mode: %s' % n)
     break
 
-  n += 1
+  k = 0
   n += 1
   n += 1
   n += 1
@@ -580,6 +580,10 @@ def foo(n):
   n += 1
   if n > 3:
     print('n is %s' % n)
+  sleep(0.5)
+  n += 1
+  n += 1
+  print('At last the value is %s' % n)
 
 for i in range(3):
   threading.Thread(target=foo, args=(i,)).start()
@@ -594,6 +598,7 @@ check_file_content $dist/result.log "Super Mode: 2"
 check_file_content $dist/result.log "n is 26"
 check_file_content $dist/result.log "n is 27"
 check_file_content $dist/result.log "n is 28"
+check_file_content $dist/result.log "At last the value is 30"
 
 csih_inform "S-7. Test super mode with clean_str"
 dist=dist-super-mode-7
