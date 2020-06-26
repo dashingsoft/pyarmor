@@ -89,8 +89,6 @@ check_file_content dist2/hello.py 'pyarmor_runtime()'
 check_file_exists dist2/queens.py
 check_file_content dist2/queens.py '__pyarmor__(__name__'
 check_file_exists dist2/pytransform/__init__.py
-check_file_exists dist2/pytransform/license.lic
-check_file_not_exists dist2/license.lic
 
 ( cd dist2; $PYTHON hello.py >result.log 2>&1 )
 check_return_value
@@ -349,7 +347,8 @@ check_file_exists $output/fixkey/license.lic
 check_file_exists $output/fixkey/license.lic.txt
 
 csih_inform "Case 7.2: Show license info"
-( cd projects/pybench; $ARMOR build >licenses-result.log 2>&1 )
+( cd projects/pybench;
+  $ARMOR build --with-license outer >licenses-result.log 2>&1 )
 
 cat <<EOF > projects/pybench/dist/info.py
 from pytransform import pyarmor_init, get_license_info
@@ -357,18 +356,12 @@ pyarmor_init(is_runtime=1)
 print(get_license_info())
 EOF
 
-( cd projects/pybench/dist;
-    $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'PyArmor-Project'"
-
 cp $output/code1/license.lic projects/pybench/dist/pytransform
-( cd projects/pybench/dist;
-    $PYTHON info.py >result.log 2>&1 )
+( cd projects/pybench/dist; $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'code1'"
 
 cp $output/customer-tom/license.lic projects/pybench/dist/pytransform
-( cd projects/pybench/dist;
-    $PYTHON info.py >result.log 2>&1 )
+( cd projects/pybench/dist; $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'customer-tom'"
 check_file_content projects/pybench/dist/result.log "'${harddisk_sn}'"
 check_file_content projects/pybench/dist/result.log "'${ifmac_address}'"
@@ -376,13 +369,12 @@ check_file_content projects/pybench/dist/result.log "'${ifip_address}'"
 
 cp $output/fixkey/license.lic projects/pybench/dist/pytransform
 cp projects/pybench/id_rsa projects/pybench/dist/pytransform
-( cd projects/pybench/dist;
-    $PYTHON info.py >result.log 2>&1 )
+( cd projects/pybench/dist; $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'FIXKEY'"
 
 csih_inform "Case 7.3: Generate license which disable all restricts"
 output=test-no-restrict-license
-$PYARMOR obfuscate -O $output --no-cross-protection \
+$PYARMOR obfuscate -O $output --no-cross-protection --with-license outer \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 
@@ -416,8 +408,9 @@ $PYARMOR hdinfo >result.log 2>&1
 check_return_value
 
 csih_inform "Case 8.2: get hardware info"
-
-cat <<EOF > test_get_hd_info.py
+casepath=test-hardware-info
+mkdir -p $casepath
+cat <<EOF > $casepath/test_get_hd_info.py
 import pytransform
 from pytransform import pyarmor_init, get_hd_info
 pytransform.plat_path = 'platforms'
@@ -425,8 +418,9 @@ pyarmor_init(path='.', is_runtime=1)
 print(get_hd_info(0))
 EOF
 
-$PYTHON test_get_hd_info.py >result.log 2>&1
-check_file_content result.log "${harddisk_sn}"
+$PYARMOR runtime --no-package -O $casepath >result.log 2>&1
+(cd $casepath; $PYTHON test_get_hd_info.py >result.log 2>&1)
+check_file_content $casepath/result.log "${harddisk_sn}"
 
 echo ""
 echo "-------------------- Test Command hdinfo END -------------------"

@@ -81,7 +81,10 @@ check_return_value
 check_file_exists licenses/Joker/license.lic
 
 csih_inform "5. Run obfuscated foo.py with expired license"
-cp licenses/Joker/license.lic dist/pytransform
+$PYARMOR obfuscate --with-license licenses/Joker/license.lic \
+         examples/helloworld/foo.py >result.log 2>&1
+check_return_value
+
 (cd dist; $PYTHON foo.py >result.log 2>&1)
 check_return_value
 check_file_content dist/result.log "This license for Joker will be expired in"
@@ -322,7 +325,10 @@ check_return_value
 check_file_exists licenses/Joker/license.lic
 
 csih_inform "5. Run obfuscated foo.py with expired license"
-cp licenses/Joker/license.lic dist/pytransform
+$PYARMOR obfuscate --with-license licenses/Joker/license.lic \
+         examples/helloworld/foo.py >result.log 2>&1
+check_return_value
+
 (cd dist; $PYTHON foo.py >result.log 2>&1)
 check_return_value
 check_file_content dist/result.log "This license for Joker will be expired in"
