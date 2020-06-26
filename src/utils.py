@@ -507,19 +507,22 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
 
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
-        if not os.path.exists(output):
-            os.makedirs(output)
+    if not os.path.exists(output):
+        os.makedirs(output)
     logging.info('Generating runtime files to %s', relpath(output))
 
     checklist = []
     keylist = _build_keylist(capsule, licfile)
 
-    def copy3(src, dst):
+    def copy3(src, dst, onlycopy=False):
         x = os.path.basename(src)
         if suffix:
             x = x.replace('.', ''.join([suffix, '.']))
         target = os.path.join(dst, x)
         shutil.copy2(src, target)
+
+        if onlycopy:
+            return
 
         logging.info('Patch library %s', target)
         data = _patch_extension(target, keylist, suffix)
@@ -567,7 +570,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         shutil.copy2(filename, os.path.join(output, '__init__.py'))
     else:
         logging.info('Copying %s', filename)
-        copy3(filename, output)
+        copy3(filename, output, onlycopy=True)
 
     logging.info('Generate runtime files OK')
     return checklist
