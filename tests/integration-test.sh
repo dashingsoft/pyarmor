@@ -1,5 +1,10 @@
 #! /bin/bash
 
+#
+# DEPRECATED from v6.3.0, runtime files are embedded into dynamic
+# library, it doesn't work with old version
+#
+
 UNAME=$(uname)
 if [[ ${UNAME:0:5} == Linux ]] ; then
     if [[ $(arch) == x86_64 ]] ; then
