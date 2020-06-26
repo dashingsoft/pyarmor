@@ -1,0 +1,40 @@
+def protect_pytransform():
+
+    def assert_builtin(func):
+        type = ''.__class__.__class__
+        builtin_function = type(''.join)
+        if type(func) is not builtin_function:
+            raise RuntimeError('%s() is not a builtin' % func.__name__)
+
+    def check_obfuscated_script():
+        from sys import _getframe
+        CO_SIZES = 30, 39
+        CO_NAMES = set(['pytransform{suffix}', 'pyarmor',
+                        '__name__', '__file__'])
+        co = _getframe(3).f_code
+        if not ((set(co.co_names) <= CO_NAMES)
+                and (len(co.co_code) in CO_SIZES)):
+            raise RuntimeError('unexpected obfuscated script')
+
+    def check_lib_pytransform():
+        {relative}import pytransform{suffix} as pytransform
+        filename = pytransform.__file__
+        with open(filename, 'rb') as f:
+            buf = bytearray(f.read())
+        value = sum(buf)
+        sys = __import__('sys')
+        if hasattr(sys, 'frozen') and sys.platform == 'darwin':
+            major, minor = sys.version_info[:2]
+            value += 2069 if major == 2 else 2086 if minor == 7 else 2087
+        if value not in {checklist}:
+            raise RuntimeError('unexpected %s' % filename)
+
+    assert_builtin(sum)
+    assert_builtin(open)
+    assert_builtin(len)
+
+    check_obfuscated_script()
+    check_lib_pytransform()
+
+
+protect_pytransform()

@@ -31,6 +31,11 @@
 #    1.2.0: Add platform
 #    1.2.1: Add advanced_mode
 #    1.2.2: Remove disable_restrice_mode, add restrict_mode
+#    1.2.3: Add package_runtime
+#    1.2.4: Add enable_suffix, remove obf_module_mode and obf_code_mode
+#
+#    2.0: Add license_file, bootstrap_code
+#         Remove attribute capsule
 #
 import os
 import time
@@ -40,14 +45,13 @@ from glob import glob
 from io import StringIO
 from json import dump as json_dump, load as json_load
 
-from config import config_filename, capsule_filename, default_output_path, \
-                   default_manifest_template, \
-                   default_obf_module_mode, default_obf_code_mode
+from config import config_filename, default_output_path, \
+                   default_manifest_template
 
 
 class Project(dict):
 
-    VERSION = 1, 2, 2
+    VERSION = 2, 0
 
     OBF_MODULE_MODE = 'none', 'des'
 
@@ -62,26 +66,38 @@ class Project(dict):
         ('manifest', default_manifest_template), \
         ('entry', None), \
         ('output', default_output_path), \
-        ('capsule', capsule_filename), \
         ('runtime_path', None), \
         ('restrict_mode', 1), \
-        ('obf_module_mode', default_obf_module_mode), \
-        ('obf_code_mode', default_obf_code_mode), \
         ('obf_code', 1), \
         ('obf_mod', 1), \
         ('wrap_mode', 1), \
         ('advanced_mode', 0), \
+        ('bootstrap_code', 1), \
         ('cross_protection', 1), \
         ('plugins', None), \
         ('platform', None), \
+        ('package_runtime', 1), \
+        ('enable_suffix', 0), \
+        ('license_file', None), \
         ('build_time', 0.)
 
     def __init__(self, *args, **kwargs):
+        self._path = ''
         for k, v in Project.DEFAULT_VALUE:
             kwargs.setdefault(k, v)
         super(Project, self).__init__(*args, **kwargs)
 
+    def _format_path(self, path):
+        return os.path.normpath(path if os.path.isabs(path)
+                                else os.path.join(self._path, path))
+
     def __getattr__(self, name):
+        if name in ('src', 'output'):
+            return self._format_path(self[name])
+        elif name == 'license_file':
+            v = self[name] if name in self else None
+            return v if v in ('no', 'outer') \
+                else self._format_path(v) if v else None
         if name in self:
             return self[name]
         raise AttributeError(name)
@@ -97,23 +113,19 @@ class Project(dict):
         return result
 
     def _check(self, path):
-        pro_path = path if (path == '' or os.path.exists(path)) \
-            else os.path.dirname(path)
-        assert os.path.exists(os.path.normpath(pro_path)), \
-            'Project path %s does not exists' % pro_path
+        assert os.path.exists(os.path.normpath(path)), \
+            'Project path %s does not exists' % path
+
         assert os.path.exists(self.src), \
             'The src of this project is not found: %s' % self.src
         assert os.path.isabs(self.src), \
             'The src of this project is not absolute path'
-        assert self.src != os.path.abspath(self.output), \
+        assert self.src != self.output, \
             'The output path can not be same as src in the project'
-        assert self.capsule.endswith('.zip'), \
-            'Invalid capsule, not a zip file'
 
-        capsule = self.capsule if os.path.isabs(self.capsule) \
-            else os.path.join(pro_path, self.capsule)
-        assert os.path.exists(os.path.normpath(capsule)), \
-            'No project capsule found: %s' % capsule
+        assert self.license_file is None \
+            or self.license_file.endswith('license.lic'), \
+            'The output path can not be same as src in the project'
 
     def _dump(self, filename):
         with open(filename, 'w') as f:
@@ -126,21 +138,20 @@ class Project(dict):
         self._check(os.path.dirname(filename))
 
     def _project_filename(self, path):
-        if path == '' or os.path.exists(path):
-            filename = os.path.join(path, config_filename)
-        else:
-            name = os.path.basename(path)
-            filename = os.path.join(os.path.dirname(path),
-                                    '%s.%s' % (config_filename, name))
-        return filename
+        return path if path and os.path.isfile(path) else \
+            os.path.join(path, config_filename)
 
     def open(self, path):
         filename = self._project_filename(path)
+        self._path = os.path.abspath(os.path.dirname(filename))
         self._load(filename)
 
     def save(self, path):
         filename = self._project_filename(path)
         self._dump(filename)
+
+    def check(self):
+        self._check(self._path)
 
     @classmethod
     def map_obfuscate_mode(cls, mode, comode):

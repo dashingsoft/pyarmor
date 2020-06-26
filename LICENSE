@@ -9,7 +9,7 @@
 
   2. The software is distributed as Free To Use But Restricted:
 
-     a. The maximum size of code object is about 35728 bytes in trial version
+     a. The maximum size of code object is about 32768 bytes in trial version
 
      b. The scripts obfuscated by trial version are not private. It
         means anyone could generate the license file which works for
@@ -18,37 +18,47 @@
      c. Without permission the trial version may not be used for the Python
         scripts of any commercial product.
 
-     d. In trial version if obfuscating the Python scripts in advanced
-        mode, the limitation is no more than about 32 functions (code
-        objects) in one module.
-     
+     d. In trial version the module could not be obfuscated by advanced mode if
+        there are more than about 30 functions (code objects) in this module.
+
   3. There are 2 basic types of licenses issued for the software. These are:
 
-     a. A natural person usage license for home users. The user purchases one
-        license to use the software on his own computer.
+     a. A personal license for home users. The user purchases one license to use
+        the software on his own computer.
 
-        Home users may use their natural person usage license to obfuscate all
-        the python scripts which are property of the license owner, to generate
-        private license files for the obfuscated scripts and distribute them and
-        all the required files to any other machine or device.
+        Home users may use their personal license to obfuscate all the python
+        scripts which are property of the license owner, to generate private
+        license files for the obfuscated scripts and distribute them and all the
+        required files to any other machine or device.
 
-     b. A juridical person usage license for business users. The user purchases
-        one license to use the software for one product serials of an
-        organization.
+        Home users could NOT obfuscate any python script which is NOT property
+        of the license owner.
 
-        Business users may use their juridical person usage license on all
-        computers and embedded devices to obfuscate all the python scripts of
-        this product serials, to generate private license files for these
-        obfuscated scripts and distribute them and all the required files to any
-        other machine and device.
+     b. A enterprise license for business users. The user purchases one license
+        to use the software for one product serials of an organization.
 
-        Without permission of &quot;licensor&quot; the license purchased for one
-        product serials should not be used for other product serials. Business
-        users should purchase new license for different product serials.
-        
+        One product serials include the current version and any other latter
+        versions of the same product.
+
+        Business users may use their enterprise license on all computers and
+        embedded devices to obfuscate all the python scripts of this product
+        serials, to generate private license files for these obfuscated scripts
+        and distribute them and all the required files to any other machine and
+        device.
+
+        Without permission of "licensor" the license purchased for one product
+        serials should not be used for other product serials. Business users
+        should purchase new license for different product serials.
+
      A user who purchased a license, is granted a non-exclusive right to use
      the software on as many computers as defined by the licensing terms above
      according to the number of licenses purchased, for any legal purpose.
+
+     In any case, the software is only used to obfuscate the Python scripts
+     owned by the authorized person or enterprise. For example, if PyCharm
+     purchases one license, it's no problem to obufscate any Python script
+     of PyCharm self, but it's not allowed to apply this license to the Python
+     scripts just written in the PyCharm by someone else.
 
   4. There are no additional license fees, apart from the cost of the license,
      associated with the creation and distribution of obfuscated python scripts.
@@ -60,15 +70,24 @@
 
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
-     A registration code will be sent to your immediately after payment is
-     completed successfully. After you receive this email, copy registration
-     code only (no newline), then make it effective by this command
+     A registration keyfile generally named "pyarmor-regfile-1.zip" will be sent
+     to your by email immediately after payment is completed successfully. There
+     are 3 files in the archive:
 
-         pyarmor register CODE
+         * REAME.txt
+         * license.lic (registration code)
+         * .pyarmor_capsule.zip (private capsule)
 
-     Run the following command to check your registration code
+     Run the following command to take this keyfile effects:
 
-         pyarmor --version
+         pyarmor register /path/to/pyarmor-regfile-1.zip
+
+     Check the registeration information:
+
+         pyarmor register
+
+     After the registration keyfile takes effect, you need obfuscate the scripts
+     again.
 
      The registration code is valid forever, it can be used permanently. But it
      may not be rented or leased.

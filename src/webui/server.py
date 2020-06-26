@@ -21,11 +21,15 @@ try:
 except ImportError:
     import socketserver
 
-from . import _project
+try:
+    from . import _project
+except ImportError:
+    import _project
 
 __version__ = '0.1'
 
 BASEPATH = os.path.abspath(os.path.dirname(__file__))
+
 
 class HelperHandler(BaseHTTPRequestHandler):
     '''Based on SimpleHTTPRequestHandler'''
@@ -148,8 +152,8 @@ class HelperHandler(BaseHTTPRequestHandler):
 
         """
         # abandon query parameters
-        path = path.split('?',1)[0]
-        path = path.split('#',1)[0]
+        path = path.split('?', 1)[0]
+        path = path.split('#', 1)[0]
         path = posixpath.normpath(unquote(path))
         words = path.split('/')
         words = filter(None, words)
@@ -157,7 +161,8 @@ class HelperHandler(BaseHTTPRequestHandler):
         for word in words:
             drive, word = os.path.splitdrive(word)
             head, word = os.path.split(word)
-            if word in (os.curdir, os.pardir): continue
+            if word in (os.curdir, os.pardir):
+                continue
             path = os.path.join(path, word)
         return path
 
@@ -201,11 +206,12 @@ class HelperHandler(BaseHTTPRequestHandler):
         else:
             return self.extensions_map['']
     extensions_map = {
-        '': 'application/octet-stream', # Default
+        '': 'application/octet-stream',
         '.css': 'text/css',
         '.html': 'text/html',
         '.js': 'application/x-javascript',
         }
+
 
 def main(page=''):
     logging.basicConfig(
@@ -225,6 +231,7 @@ def main(page=''):
     except Exception:
         pass
     server.serve_forever()
+
 
 if __name__ == '__main__':
     main()

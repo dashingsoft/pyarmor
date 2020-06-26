@@ -1,2 +1,2 @@
 def hello(msg):
-  print('Hello! %s' % msg)
+    print('Hello! %s' % msg)

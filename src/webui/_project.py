@@ -1,13 +1,9 @@
-from __future__ import print_function
-
 import logging
 import json
 import os
 import shutil
 import subprocess
 import sys
-
-from zipfile import ZipFile
 
 # PyArmor in the parent path
 PYARMOR_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -22,6 +18,7 @@ project_index_name = 'index.json'
 project_capsule_name = capsule_filename
 project_config_name = config_filename
 
+
 def call_armor(args):
     p = subprocess.Popen([sys.executable, 'pyarmor.py'] + list(args),
                          cwd=PYARMOR_PATH)
@@ -29,9 +26,13 @@ def call_armor(args):
     if p.returncode != 0:
         raise RuntimeError('Call pyarmor failed, see the details in console window')
 
+
 def _check_trial_license():
     filename = os.path.join(PYARMOR_PATH, 'license.lic')
+    if not os.path.exists(filename):
+        shutil.copy(os.path.join(PYARMOR_PATH, 'license.tri'), filename)
     return os.path.getsize(filename) == 256
+
 
 def _check_project_index():
     filename = os.path.join(project_base_path, project_index_name)
@@ -42,8 +43,10 @@ def _check_project_index():
             json.dump(dict(counter=0, projects={}), fp)
     return filename
 
+
 def _create_default_project(**kwargs):
     return Project(**kwargs)
+
 
 def newProject(args=None):
     '''
@@ -81,6 +84,7 @@ def newProject(args=None):
 
     return dict(project=project, message='Project has been created')
 
+
 def updateProject(args):
     '''
     >>> p = newProject()['project']
@@ -100,6 +104,7 @@ def updateProject(args):
 
     return 'Update project OK'
 
+
 def buildProject(args):
     '''
     >>> p = newProject()['project']
@@ -112,6 +117,7 @@ def buildProject(args):
     path = os.path.join(project_base_path, name)
     call_pyarmor(['build', path])
     return 'Build project OK.'
+
 
 def removeProject(args):
     '''
@@ -134,6 +140,7 @@ def removeProject(args):
 
     shutil.rmtree(os.path.join(project_base_path, name))
     return 'Remove project %s OK' % name
+
 
 def queryProject(args=None):
     '''
@@ -161,6 +168,7 @@ def queryProject(args=None):
         result.append(item)
     return result
 
+
 def queryVersion(args=None):
     '''
     >>> r = queryVersion()
@@ -171,6 +179,7 @@ def queryVersion(args=None):
     '''
     rcode = '' if _check_trial_license() else 'PyArmor'
     return dict(version=version, rcode=rcode)
+
 
 def newLicense(args):
     '''
@@ -195,6 +204,7 @@ def newLicense(args):
     output = os.path.join(path, 'licenses', title, 'license.lic')
     return dict(title=title, filename=output)
 
+
 def obfuscateScripts(args):
     params = ['obfuscate']
     for opt in ['output']:
@@ -207,6 +217,7 @@ def obfuscateScripts(args):
     output = args['output'] if args['output'] \
         else os.path.join(PYARMOR_PATH, 'dist')
     return dict(output=output)
+
 
 def generateLicenses(args):
     params = ['licenses', '--output', PYARMOR_PATH]
@@ -223,6 +234,7 @@ def generateLicenses(args):
     return dict(output=os.path.join(
         PYARMOR_PATH, 'licenses', rcode, 'license.lic'))
 
+
 def packObfuscatedScripts(args):
     params = ['pack', '--type', args['type'], args['entry']]
     if args['output']:
@@ -232,7 +244,8 @@ def packObfuscatedScripts(args):
 
     call_armor(params)
 
-    return dict(output=output)
+    return dict(output=args['output'])
+
 
 if __name__ == '__main__':
     import doctest

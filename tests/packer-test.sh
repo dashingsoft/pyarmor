@@ -7,6 +7,9 @@ source test-header.sh
 # ======================================================================
 
 PYTHON=C:/Python34/python
+if [[ "$PLATFORM" == "macosx_x86_64" ]] ; then
+    PYTHON=python3
+fi
 
 PYARMOR="${PYTHON} pyarmor.py"
 
@@ -18,6 +21,9 @@ csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
 
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
@@ -26,8 +32,8 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are in directory "src"
 cd src/
 
-chmod +x platforms/windows32/_pytransform$DLLEXT
-chmod +x platforms/windows64/_pytransform$DLLEXT
+csih_inform "Add execute permission to dynamic library"
+find ./platforms -name _pytransform.dll -exec chmod +x {} \;
 
 csih_inform "Prepare for packer testing"
 echo ""
@@ -41,6 +47,11 @@ echo ""
 
 csih_inform "Show help and import pytransform"
 $PYARMOR --help >result.log 2>&1 || csih_error "PyArmor bootstrap failed"
+
+# --------------------------------
+# Run this testcases only in Win32
+# --------------------------------
+if [[ "$PLATFORM" == "win32" ]] ; then
 
 # ======================================================================
 #
@@ -81,6 +92,11 @@ check_file_content $dist/result.log 'Found 92 solutions'
 
 echo -e "\n-------------------- cx_Freeze End ---------------------------\n"
 
+fi
+# --------------------------------
+# Run this testcases only in Win32
+# --------------------------------
+
 # ======================================================================
 #
 #  Command: pack with PyInstaller
@@ -94,25 +110,30 @@ $PYARMOR pack examples/simple/queens.py >result.log 2>&1
 check_return_value
 
 dist=examples/simple/dist
-( cd $dist/queens; ./queens.exe  >result.log 2>&1 )
+( cd $dist/queens; ./queens  >result.log 2>&1 )
 
 check_file_exists $dist/queens/license.lic
 check_file_content $dist/queens/result.log 'Found 92 solutions'
 
-csih_inform "Case 3-2: Test extra pack option with PyInstaller"
-$PYARMOR pack --clean --options " --name foo2 " -s "foo2.spec" \
+rm $dist/queens/license.lic
+( cd $dist/queens; ./queens  >result.log 2>&1 )
+check_file_content $dist/queens/result.log 'Found 92 solutions' not
+check_file_content $dist/queens/result.log 'No such file or directory'
+
+csih_inform "Case 3-2: Test option --name with PyInstaller"
+$PYARMOR pack --clean -O dist --name foo2 \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 
-( cd dist/foo2; ./foo2.exe  >result.log 2>&1 )
+( cd dist/foo2; ./foo2  >result.log 2>&1 )
 check_file_content dist/foo2/result.log 'Found 92 solutions'
 
 csih_inform "Case 3-3: Test one file with PyInstaller"
-$PYARMOR pack --clean --options " --name foo3 -F" -s "foo3.spec" \
+$PYARMOR pack --clean --name foo3 -O dist --options " --onefile" \
          examples/simple/queens.py >result.log 2>&1
 check_return_value
 
-( cd dist/; ./foo3.exe  >result.log 2>&1 )
+( cd dist/; ./foo3  >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions'
 
 csih_inform "Case 3-4: Test one file without license by PyInstaller"
@@ -123,18 +144,18 @@ with open(join(dirname(sys.executable), 'license.lic'), 'rb') as fs:
     with open(join(sys._MEIPASS, 'license.lic'), 'wb') as fd:
         fd.write(fs.read())
 EOF
-$PYARMOR pack --clean --without-license \
-         --options " --name foo4 -F --runtime-hook copy_license.py" \
-         -s "foo4.spec" examples/simple/queens.py >result.log 2>&1
+$PYARMOR pack --clean --without-license --name foo4 -O dist \
+         --options " -F --runtime-hook copy_license.py" \
+         examples/simple/queens.py >result.log 2>&1
 check_return_value
 
-( cd dist/; ./foo4.exe  >result.log 2>&1 )
+( cd dist/; ./foo4  >result.log 2>&1 )
 check_file_content dist/result.log 'Found 92 solutions' not
 
 $PYARMOR licenses test-packer >result.log 2>&1
 cp licenses/test-packer/license.lic dist/
 
-( cd dist/; mkdir other; cd other; ../foo4.exe > ../result.log )
+( cd dist/; mkdir other; cd other; ../foo4 > ../result.log )
 check_return_value
 check_file_content dist/result.log 'Found 92 solutions'
 
@@ -148,18 +169,119 @@ sed -i -e "s/'exec'/'eval'/g" main-patched.spec >/dev/null 2>&1
 $PYTHON -m PyInstaller --clean -y --distpath $output main-patched.spec >result.log 2>&1
 check_return_value
 
-(cd $output; ./main/main.exe >result.log 2>&1)
-check_file_content $output/result.log "RuntimeError: Check restrict mode failed"
+(cd $output; ./main/main >result.log 2>&1)
+check_file_content $output/result.log "RuntimeError: Check restrict mode of module failed"
 
-csih_inform "Case 3-5: Test the scripts is obfuscated with restrict mode 2"
+csih_inform "Case 3-6: Test the scripts is obfuscated with restrict mode 2"
 dist=test-pyinstaller-restrict-mode
 $PYARMOR pack --output $dist -x " --restrict 2" examples/testpkg/main.py >result.log 2>&1
 check_return_value
 
-( cd $dist/main; ./main.exe  >result.log 2>&1 )
+( cd $dist/main; ./main  >result.log 2>&1 )
 
 check_file_exists $dist/main/license.lic
 check_file_content $dist/main/result.log 'Hello! PyArmor Test Case'
+
+csih_inform "Case 3-7: Test runtime hook in the src path"
+dist=test-runtime-hook
+mkdir $dist
+echo "print('Test runtime hook OK')" > $dist/test_hook_main.py
+echo "print('This is myhook')" > $dist/myhook.py
+(cd $dist; $PYTHON ../pyarmor.py pack --output dist -x " --exclude myhook.py" \
+         -e " --runtime-hook myhook.py" test_hook_main.py >result.log 2>&1)
+check_return_value
+
+( cd $dist; dist/test_hook_main/test_hook_main  >result.log 2>&1 )
+check_return_value
+check_file_content $dist/result.log 'This is myhook'
+check_file_content $dist/result.log 'Test runtime hook OK'
+
+csih_inform "Case 3-8: Test option --with-license"
+dist=test-with-license
+mkdir $dist
+echo "Fake license file" > $dist/fake-license.lic
+echo "print('Hello test --with-license')" > $dist/main.py
+(cd $dist; $PYTHON ../pyarmor.py pack --output dist \
+                   --with-license fake-license.lic main.py >result.log 2>&1)
+check_return_value
+check_file_exists $dist/dist/main/license.lic
+
+( cd $dist; dist/main/main  >result.log 2>&1 )
+check_file_content $dist/result.log 'Hello test --with-license' not
+check_file_content $dist/result.log 'Invalid product license file'
+
+csih_inform "Case 3-9: Test pack with project"
+project=test-with-project
+$PYARMOR init --src examples/simple --entry queens.py $project >result.log 2>&1
+check_return_value
+
+$PYARMOR pack -O $project/dist $project >result.log 2>&1
+check_return_value
+check_file_exists $project/dist/queens/pytransform.key
+
+(cd $project/dist; ./queens/queens >result.log 2>&1)
+check_return_value
+check_file_content $project/dist/result.log 'Found 92 solutions'
+
+csih_inform "Case 3-10: Test pack with project .json file"
+project=test-with-project-file
+$PYARMOR init --src examples/simple --entry queens.py $project >result.log 2>&1
+check_return_value
+
+mv $project/.pyarmor_config $project/test.json
+$PYARMOR pack -O $project/dist $project/test.json >result.log 2>&1
+check_return_value
+check_file_exists $project/dist/queens/pytransform.key
+
+(cd $project/dist; ./queens/queens >result.log 2>&1)
+check_return_value
+check_file_content $project/dist/result.log 'Found 92 solutions'
+
+csih_inform "Case 3-11: Test pack with an exists .spec file"
+dist=test-with-specfile
+mkdir $dist
+echo "print('Hello test with specfile')" > $dist/foo.py
+(cd $dist; pyi-makespec foo.py >result.log 2>&1)
+check_return_value
+check_file_exists $dist/foo.spec
+
+(cd $dist; $PYTHON ../pyarmor.py pack --output dist \
+                   -s foo.spec foo.py >result.log 2>&1)
+check_return_value
+check_file_exists $dist/dist/foo/foo
+
+( cd $dist; dist/foo/foo  >result.log 2>&1 )
+check_file_content $dist/result.log 'Hello test with specfile'
+
+csih_inform "Case 3-12: Test pack with non-ascii source path"
+dist=test-with-non-ascii-path
+project=$dist/中文路径
+mkdir -p $project
+echo "print('Hello test non-ascii path')" > $project/foo-zh.py
+$PYTHON pyarmor.py pack --output $dist/dist \
+        $project/foo-zh.py >result.log 2>&1
+check_return_value
+check_file_exists $dist/dist/foo-zh/foo-zh
+
+( cd $dist; dist/foo-zh/foo-zh  >result.log 2>&1 )
+check_file_content $dist/result.log 'Hello test non-ascii path'
+
+csih_inform "Case 3-13: Test super mode"
+$PYARMOR pack --clean --name sufoo -O dist-super-mode -x " --advanced 2" \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+( cd dist-super-mode/; ./sufoo/sufoo  >result.log 2>&1 )
+check_file_content dist-super-mode/result.log 'Found 92 solutions'
+
+csih_inform "Case 3-14: Test super mode with license"
+$PYARMOR pack --clean --name sufoo -O dist-super-mode-2 -x " --advanced 2" \
+         --with-license license.tri examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+( cd dist-super-mode-2/; ./sufoo/sufoo  >result.log 2>&1 )
+check_file_content dist-super-mode-2/result.log 'Found 92 solutions' not
+check_file_content dist-super-mode-2/result.log 'Check license failed, Invalid input packet'
 
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 

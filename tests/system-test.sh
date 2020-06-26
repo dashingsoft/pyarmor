@@ -16,6 +16,10 @@ csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*"
+
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
 [[ ${pkgfile} == *.tar.bz2 ]] && tar xjf ${pkgfile}
@@ -24,12 +28,13 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are moved to src
 [[ -d src ]] && mv src/* ./
 
+# Fix issue: assert_builtin(open) fails in python 3.0
+patch_cross_protection_code_for_python3.0
+
 # From pyarmor 4.5.4, platform name is renamed
-if [[ -d platforms/windows32 ]] ; then
-    csih_inform "Add execute permission to dynamic library"
-    chmod +x platforms/windows32/_pytransform.dll
-    chmod +x platforms/windows64/_pytransform.dll
-fi
+# From pyarmor 5.7.5, platform name is changed
+csih_inform "Add execute permission to dynamic library"
+find ./platforms -name _pytransform.dll -exec chmod +x {} \;
 
 csih_inform "Prepare for system testing"
 echo ""
@@ -83,6 +88,9 @@ check_file_exists dist2/hello.py
 check_file_content dist2/hello.py 'pyarmor_runtime()'
 check_file_exists dist2/queens.py
 check_file_content dist2/queens.py '__pyarmor__(__name__'
+check_file_exists dist2/pytransform/__init__.py
+check_file_exists dist2/pytransform/license.lic
+check_file_not_exists dist2/license.lic
 
 ( cd dist2; $PYTHON hello.py >result.log 2>&1 )
 check_return_value
@@ -102,6 +110,19 @@ check_file_content dist2-2/queens.py '__pyarmor__(__name__'
 check_return_value
 check_file_content dist2-2/result.log 'Found 92 solutions'
 
+csih_inform "Case 1.2-3: obfuscate script with --package-runtime=0 and --restrict=0"
+$PYARMOR obfuscate --package-runtime=0 --restrict=0 --output dist2-3 \
+                   -r examples/py2exe/hello.py >result.log 2>&1
+
+check_return_value
+check_file_exists dist2-3/hello.py
+check_file_content dist2-3/hello.py 'pyarmor_runtime()'
+check_file_exists dist2-3/pytransform.py
+
+( cd dist2-3; $PYTHON hello.py >result.log 2>&1 )
+check_return_value
+check_file_content dist2-3/result.log 'Found 92 solutions'
+
 csih_inform "Case 1.3: run obfuscate script with new license"
 $PYARMOR obfuscate --output dist3 examples/simple/queens.py >result.log 2>&1
 check_return_value
@@ -110,11 +131,20 @@ check_file_exists dist3/queens.py
 $PYARMOR licenses --expired $(next_month) Jondy >result.log 2>&1
 check_return_value
 check_file_exists licenses/Jondy/license.lic
-cp licenses/Jondy/license.lic dist3/
+cp licenses/Jondy/license.lic dist3/pytransform/
 
 ( cd dist3; $PYTHON queens.py >result.log 2>&1 )
 check_return_value
 check_file_content dist3/result.log 'Found 92 solutions'
+
+csih_inform "Case 1.4: obfuscate one script exactly without runtime files"
+$PYARMOR obfuscate --output dist4 --exact --no-runtime \
+         examples/pybench/pybench.py >result.log 2>&1
+check_return_value
+check_file_exists dist4/pybench.py
+check_file_not_exists dist4/Lists.py
+check_file_not_exists dist4/pytransform.py
+check_file_not_exists dist4/pytransform/__init__.py
 
 echo ""
 echo "-------------------- Test Command obfuscate END ----------------"
@@ -322,8 +352,8 @@ csih_inform "Case 7.2: Show license info"
 ( cd projects/pybench; $ARMOR build >licenses-result.log 2>&1 )
 
 cat <<EOF > projects/pybench/dist/info.py
-from pytransform import pyarmor_runtime, get_license_info
-pyarmor_runtime()
+from pytransform import pyarmor_init, get_license_info
+pyarmor_init(is_runtime=1)
 print(get_license_info())
 EOF
 
@@ -331,12 +361,12 @@ EOF
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'PyArmor-Project'"
 
-cp $output/code1/license.lic projects/pybench/dist
+cp $output/code1/license.lic projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'code1'"
 
-cp $output/customer-tom/license.lic projects/pybench/dist
+cp $output/customer-tom/license.lic projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
 check_file_content projects/pybench/dist/result.log "'customer-tom'"
@@ -344,11 +374,28 @@ check_file_content projects/pybench/dist/result.log "'${harddisk_sn}'"
 check_file_content projects/pybench/dist/result.log "'${ifmac_address}'"
 check_file_content projects/pybench/dist/result.log "'${ifip_address}'"
 
-cp $output/fixkey/license.lic projects/pybench/dist
-cp projects/pybench/id_rsa projects/pybench/dist
+cp $output/fixkey/license.lic projects/pybench/dist/pytransform
+cp projects/pybench/id_rsa projects/pybench/dist/pytransform
 ( cd projects/pybench/dist;
     $PYTHON info.py >result.log 2>&1 )
-check_file_content projects/pybench/dist/result.log "'\*FIXKEY\*'"
+check_file_content projects/pybench/dist/result.log "'FIXKEY'"
+
+csih_inform "Case 7.3: Generate license which disable all restricts"
+output=test-no-restrict-license
+$PYARMOR obfuscate -O $output --no-cross-protection \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+$PYARMOR licenses --disable-restrict-mode NO-RESTRICT >result.log 2>&1
+check_return_value
+check_file_exists licenses/NO-RESTRICT/license.lic
+
+cp licenses/NO-RESTRICT/license.lic $output/pytransform/
+echo -e "\nprint('No restrict mode')" >> $output/queens.py
+(cd $output; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Found 92 solutions'
+check_file_content $output/result.log 'No restrict mode'
 
 echo ""
 echo "-------------------- Test Command licenses END -----------------"
@@ -371,8 +418,10 @@ check_return_value
 csih_inform "Case 8.2: get hardware info"
 
 cat <<EOF > test_get_hd_info.py
+import pytransform
 from pytransform import pyarmor_init, get_hd_info
-pyarmor_init()
+pytransform.plat_path = 'platforms'
+pyarmor_init(path='.', is_runtime=1)
 print(get_hd_info(0))
 EOF
 
@@ -395,7 +444,7 @@ echo ""
 
 csih_inform "Case 9.1: run benchmark test"
 for obf_mod in 0 1 ; do
-  for obf_code in 0 1 ; do
+  for obf_code in 0 1 2 ; do
     for obf_wrap_mode in 0 1 ; do
       csih_inform "obf_mod: $obf_mod, obf_code: $obf_code, wrap_mode: $obf_wrap_mode"
       logfile="log_${obf_mod}_${obf_code}_${obf_wrap_mode}.log"
@@ -491,9 +540,6 @@ cp examples/testpkg/main.py $PROPATH/dist
 check_file_content $PROPATH/dist/result.log 'Hello! PyArmor Test Case'
 
 csih_inform "Case T-1.5: obfuscate 2 independent packages"
-if [[ "$PLATFORM" == "win32" ]] ; then
-csih_inform "This testcase is ignored in platform win32"
-else
 output=dist-pkgs
 $PYARMOR obfuscate -O $output/pkg1 examples/testpkg/mypkg/__init__.py >result.log 2>&1
 $PYARMOR obfuscate -O $output/pkg2 examples/testpkg/mypkg/__init__.py >result.log 2>&1
@@ -511,7 +557,6 @@ EOF
 (cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log "Hello! pkg1"
 check_file_content $output/result.log "Hello! pkg2"
-fi
 
 echo ""
 echo "-------------------- Test Use Cases END ------------------------"
@@ -523,6 +568,10 @@ echo ""
 # Finished and cleanup.
 #
 # ======================================================================
+
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*"
 
 # Return test root
 cd ../..

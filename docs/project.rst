@@ -10,12 +10,15 @@ There are several advantages to manage obfuscated scripts by Project:
 
 * Increment build, only updated scripts are obfuscated since last build
 * Filter obfuscated scripts in the project, exclude some scripts
+* Obfuscate the scripts with different modes
 * More convenient to manage obfuscated scripts
+
+.. _managing obfuscated scripts with project:
 
 Managing Obfuscated Scripts With Project
 ----------------------------------------
 
-Use command ``init`` to create a project::
+Use command :ref:`init` to create a project::
 
     cd examples/pybench
     pyarmor init --entry=pybench.py
@@ -36,14 +39,20 @@ Show project information::
 
     pyarmor info
 
-Obfuscate all the scripts in this project::
+Obfuscate all the scripts in this project by command :ref:`build`::
 
     pyarmor build
 
-Exclude the :file:`dist`, :file:`test`, the `.py` files in these
+Change the project configuration by command :ref:`config`.
+
+For example, exclude the :file:`dist`, :file:`test`, the `.py` files in these
 folder will not be obfuscated::
 
     pyarmor config --manifest "include *.py, prune dist, prune test"
+
+By ``--manifest``, the project scripts could be selected exactly, more
+information refer to the description of the attribute `manifest` in the section
+`Project Configuration File`_
 
 Force rebuild::
 
@@ -54,7 +63,7 @@ Run obfuscated script::
     cd dist
     python pybench.py
 
-After some scripts changed, just run ``build`` again::
+After some scripts changed, just run :ref:`build` again::
 
     cd projects/pybench
     pyarmor build
@@ -64,14 +73,49 @@ After some scripts changed, just run ``build`` again::
 Obfuscating Scripts With Different Modes
 ----------------------------------------
 
-Configure mode to obfuscate scripts::
+First configure the different modes, refer to :ref:`The Modes of Obfuscated Scripts`::
 
     pyarmor config --obf-mod=1 --obf-code=0
 
-Obfuscating scripts in new mode::
+Then obfuscating scripts in new mode::
 
     pyarmor build -B
 
+.. _obfuscating some special scripts with child project:
+
+Obfuscating Some Special Scripts With Child Project
+---------------------------------------------------
+
+Suppose most of scripts in the project are obfuscated with restrict mode 3, but
+a few of them need to be obfuscated with restrict mode 2. The child project is
+right for this case.
+
+1. First create a project in the source path::
+
+    cd /path/to/src
+    pyarmor init --entry foo.py
+    pyarmor config --restrict 3
+
+2. Next clone the project configuration file to create a child project named
+   `.pyarmor_config-1`::
+
+    cp .pyarmor_config .pyarmor_config-1
+
+3. Then config the child project with special scripts, no entry script, and
+   restrict mode 2::
+
+    pyarmor config --entry "" \
+                   --manifest "include a.py other/path/sa*.py" \
+                   --restrict 2 \
+                   .pyarmor_config-1
+
+4. Finally build the project and child project::
+
+    pyarmor build -B
+    pyarmor build --no-runtime -B .pyarmor_config-1
+
+
+.. _project configuration file:
 
 Project Configuration File
 --------------------------
@@ -91,7 +135,7 @@ Each project has a configure file. It's a json file named
 
     Base path to match files by manifest template string.
 
-    Generally it's absolute path.
+    It could be absolute path, or relative path based on project folder.
 
 * manifest
 
@@ -102,8 +146,7 @@ Each project has a configure file. It's a json file named
 
     It means all files anywhere in the `src` tree matching.
 
-    Multi manifest template commands are spearated by comma, for
-    example::
+    Multi manifest template commands are spearated by comma, for example::
 
         global-include *.py, exclude __mainfest__.py, prune test
 
@@ -114,27 +157,12 @@ Each project has a configure file. It's a json file named
 
     Available values: 0, 1, None
 
-    When it's set to 1, the basename of `src` will be appended to
-    `output` as the final path to save obfuscated scripts, and
-    runtime files are still in the path `output`
+    When it's set to 1, the basename of `src` will be appended to `output` as
+    the final path to save obfuscated scripts, but runtime files are still in
+    the path `output`
 
-    When init a project and no `--type` specified, it will be set to
-    1 if there is `__init__.py` in the path `src`, otherwise it's
-    None.
-
-* disable_restrict_mode [DEPRECRATED]
-
-    Available values: 0, 1, None
-
-    When it's None or 0, obfuscated scripts can not be imported from
-    outer scripts.
-
-    When it's set to 1, it the obfuscated scripts are allowed to be
-    imported by outer scripts.
-
-    By default it's set to 0.
-
-    Refer to :ref:`Restrict Mode`
+    When init a project and no ``--type`` specified, it will be set to 1 if
+    there is `__init__.py` in the path `src`, otherwise it's None.
 
 * restrict_mode
 
@@ -170,88 +198,50 @@ Each project has a configure file. It's a json file named
 
 * capsule
 
+    .. warning:: Removed since v5.9.0
+
     Filename of project capsule. It's relative to project path if it's
     not absolute path.
 
-* obf_module_mode [DEPRECRATED]
-
-    How to obfuscate whole code object of module:
-
-        - none
-
-        No obfuscate
-
-        - des
-
-        Obfuscate whole code object by DES algorithm
-
-        The default value is `des`
-
-* obf_code_mode [DEPRECRATED]
-
-    How to obfuscate byte code of each code object:
-
-        - none
-
-        No obfuscate
-
-        - des
-
-        Obfuscate byte-code by DES algorithm
-
-        - fast
-
-        Obfuscate byte-code by a simple algorithm, it's faster than
-        DES
-
-        - wrap
-
-        The wrap code is different from `des` and `fast`. In this
-        mode, when code object start to execute, byte-code is
-        restored. As soon as code object completed execution,
-        byte-code will be obfuscated again.
-
-    The default value is `wrap`.
-
 * obf_code
 
-  How to obfuscate byte code of each code object:
+    How to obfuscate byte code of each code object, refer to :ref:`Obfuscating Code Mode`:
 
         - 0
 
         No obfuscate
 
-        - 1
+        - 1 (Default)
 
         Obfuscate each code object by default algorithm
 
-  Refer to :ref:`Obfuscating Code Mode`
+        - 2
+
+        Obfuscate each code object by more complex algorithm
 
 * wrap_mode
 
-  Available values: 0, 1, None
+    Available values: 0, 1, None
 
-  Whether to wrap code object with `try..final` block.
+    Whether to wrap code object with `try..final` block.
 
-  Refer to :ref:`Wrap Mode`
+    The default value is `1`, refer to :ref:`Wrap Mode`
 
 * obf_mod
 
-  How to obfuscate whole code object of module:
+    How to obfuscate whole code object of module, refer to :ref:`Obfuscating Module Mode`:
 
         - 0
 
         No obfuscate
 
-        - 1
+        - 1 (Default)
 
         Obfuscate byte-code by DES algorithm
 
-  Refer to :ref:`Obfuscating Module Mode`
-
 * cross_protection
 
-  How to proect dynamic library in obfuscated scripts:
+    How to proect dynamic library in obfuscated scripts:
 
         - 0
 
@@ -272,8 +262,8 @@ Each project has a configure file. It's a json file named
     None or any path.
 
     When run obfuscated scripts, where to find dynamic library
-    `_pytransform`. The default value is None, it means it's in the
-    same path of :file:`pytransform.py`.
+    `_pytransform`. The default value is None, it means it's within the
+    :ref:`runtime package` or in the same path of :file:`pytransform.py`.
 
     It's useful when obfuscated scripts are packed into a zip file,
     for example, use py2exe to package obfuscated scripts. Set
@@ -290,5 +280,76 @@ Each project has a configure file. It's a json file named
         plugins: ["check_ntp_time", "show_license_info"]
 
     About the usage of plugin, refer to :ref:`Using Plugin to Extend License Type`
+
+* package_runtime
+
+    How to save the runtime files:
+
+       - 0
+
+       Save them in the same path with the obufscated scripts
+
+       - 1 (Default)
+
+       Save them in the sub-path `pytransform` as a package
+
+* enable_suffix
+
+    .. note:: New in v5.8.7
+
+    How to generate runtime package (module) and bootstrap code, it's useful as
+    importing the scripts obfuscated by different developer:
+
+       - 0 (Default)
+
+       There is no suffix for the name of runtime package (module)
+
+       - 1
+
+       The name of runtime package (module) has a suffix, for example,
+       ``pytransform_vax_00001``
+
+* platform
+
+    .. note:: New in v5.9.0
+
+    A string includes one or many platforms. Multi platforms are separated by
+    comma.
+
+    Leave it to None or blank if not cross-platform obfuscating
+
+* license_file
+
+    .. note:: New in v5.9.0
+
+    Use this license file other than the default one.
+
+    Leave it to None or blank to use the default one.
+
+* bootstrap_code
+
+    .. note:: New in v5.9.0
+
+    How to generate :ref:`Bootstrap Code` for the obfuscated entry scripts:
+
+      - 0
+
+      Do not insert bootstrap code into entry script
+
+      - 1 (Default)
+
+      Insert the bootstrap code into entry script. If the script name is
+      ``__init__.py``, make a relative import with leading dots, otherwise make
+      absolute import.
+
+      - 2
+
+      The bootstrap code will always be made an absolute import without leading
+      dots in the entry script.
+
+      - 3
+
+      The bootstrap code will always be made a relative import with leading dots
+      in the entry script.
 
 .. include:: _common_definitions.txt

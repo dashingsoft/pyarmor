@@ -15,25 +15,24 @@ are the files list in the output path ``dist``::
 
     foo.py
 
-    _pytransform.so, or _pytransform.dll in Windows, or _pytransform.dylib in MacOS
-    pytransform.py
-    pytransform.key
-    license.lic
+    pytransform/
+        __init__.py
+        _pytransform.so, or _pytransform.dll in Windows, or _pytransform.dylib in MacOS
+        pytransform.key
+        license.lic
 
 ``dist/foo.py`` is obfuscated script, the content is::
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
-
     __pyarmor__(__name__, __file__, b'\x06\x0f...', 1)
 
-All the other extra files called ``Runtime Files``, which are required to run or
-import obfuscated scripts. So long as runtime files are in any Python path,
-obfuscated script ``dist/foo.py`` can be used as normal Python script.
+There is an extra folder ``pytransform`` called ``Runtime Package``,
+which are the only required to run or import obfuscated scripts. So
+long as this package is in any Python path, the obfuscated script
+``dist/foo.py`` can be used as normal Python script.
 
 **The original python scripts can be replaced with obfuscated scripts seamlessly.**
-
-For details to visit `protect-python-scripts-by-pyarmor.md <https://github.com/dashingsoft/pyarmor/blob/master/docs/protect-python-scripts-by-pyarmor.md>`_
 
 Support Platforms
 -----------------
@@ -51,27 +50,34 @@ Install::
 
 Obfuscate scripts::
 
-    pyarmor obfuscate examples/simple/queens.py
+    pyarmor obfuscate foo.py
 
 Run obfuscated scripts::
 
     cd dist
-    python queens.py
-
-Pack obfuscated scripts with PyInstaller, py2exe, cx_Freeze etc.::
-
-    pip install pyinstaller
-    pyarmor pack examples/py2exe/hello.py
+    python foo.py
 
 Generate an expired license and run obfuscated scripts with new license::
 
-    pyarmor licenses --expired 2018-12-31 Customer-Jondy
-    cp licenses/Customer-Jondy/license.lic dist/
+    pyarmor licenses --expired 2018-12-31 product-0001
+    cp licenses/product-0001/license.lic dist/pytransform/
 
     cd dist/
-    python queens.py
+    python foo.py
 
-Start webui, open web page in browser for basic usage of PyArmor::
+Pack obfuscated scripts with PyInstaller::
+
+    pip install pyinstaller
+    pyarmor pack foo.py
+
+    cd dist/foo
+    ./foo
+
+There is also a web-ui package `pyarmor-webui`::
+
+    pip install pyarmor-webui
+
+Start webui, open web page in browser::
 
     pyarmor-webui
 
@@ -81,6 +87,6 @@ More Resources
 - `Website <http://pyarmor.dashingsoft.com>`_
   `中文网站 <http://pyarmor.dashingsoft.com/index-zh.html>`_
 - `Documentation <https://pyarmor.readthedocs.io/en/latest/>`_
-- `WebUI Demo <http://pyarmor.dashingsoft.com/demo/index.html>`_
+- `pyarmor-webui <http://github.com/dashingsoft/pyarmor-webui>`_
 - `Source Code <https://github.com/dashingsoft/pyarmor>`_
 - `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_

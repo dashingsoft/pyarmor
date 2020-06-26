@@ -47,8 +47,10 @@ IF DEFINED LICENSE_EXPIRED_DATE (
 
   REM Overwrite default license with this expired license
   ECHO.
-  ECHO Copy expired license to %OUTPUT%
-  COPY licenses\%LICENSE_CODE%\license.lic %OUTPUT%
+  SET LICPATH=%OUTPUT%
+  IF NOT EXIST "%LICPATH%\license.lic" SET LICPATH=%LICPATH%\pytransform
+  ECHO Copy new license to %LICPATH%
+  COPY licenses\%LICENSE_CODE%\license.lic %LICPATH%  
   ECHO.
 )
 

@@ -37,21 +37,19 @@ Contents:
 
    installation
    usage
-   pytransform
-   security
-   performance
-   understand-obfuscated-scripts
-   mode
-   how-to-do
-   pack-obfuscated-scripts
-   project
-   differences
    advanced
-   man
    examples
+   project
+   man
+   understand-obfuscated-scripts
+   how-to-do
+   pytransform
+   platforms
+   mode
+   performance
+   security
    questions
    license
-   platforms
    change-logs
 
 Indices and tables

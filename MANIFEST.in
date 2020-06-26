@@ -1,3 +1,4 @@
 # recursive-include docs/examples *.py *.xml README* LICENSE
 # include docs/user-guide.html docs/rationale.html
-include LICENSE LICENSE-ZH
+# include LICENSE LICENSE-ZH
+exclude src/pyarmor-deprecated.py src/pyimcore.py

@@ -16,6 +16,15 @@ csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
 
+csih_inform "Clean pyarmor data"
+rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+PYARMOR_DATA=~/.pyarmor
+if [[ "${PLATFORM}" == "win_amd64" && "${PYTHON}" == *Python38*/python ]] ; then
+    [[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor*" \
+        && PYARMOR_DATA=$USERPROFILE\\.pyarmor
+fi
+csih_inform "PyArmor data at ${PYARMOR_DATA}"
+
 [[ -d data ]] || csih_error "No path 'data' found in current path"
 datapath=$(pwd)/data
 
@@ -26,12 +35,13 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 # From pyarmor 3.5.1, main scripts are moved to src
 [[ -d src ]] && mv src/* ./
 
+# Fix issue: assert_builtin(open) fails in python 3.0
+patch_cross_protection_code_for_python3.0
+
 # From pyarmor 4.5.4, platform name is renamed
-if [[ -d platforms/windows32 ]] ; then
-    csih_inform "Add execute permission to dynamic library"
-    chmod +x platforms/windows32/_pytransform.dll
-    chmod +x platforms/windows64/_pytransform.dll
-fi
+# From pyarmor 5.7.5, platform name is changed
+csih_inform "Add execute permission to dynamic library"
+find ./platforms -name _pytransform.dll -exec chmod +x {} \;
 
 csih_inform "Make path test/data"
 mkdir -p test/data
@@ -40,9 +50,29 @@ cp ${datapath}/*.py test/data
 cp ${datapath}/project.zip test/data
 cp ${datapath}/project.zip test/data/project-orig.zip
 
+if [[ "${PLATFORM}" != "win32" ]] ; then
+csih_inform "Make link to platforms for super mode"
+if [[ "OK" == $($PYTHON -c'from sys import version_info as ver, stdout
+stdout.write("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
+SUPERMODE=yes
+mkdir -p ${PYARMOR_DATA}/platforms
+(cd ${PYARMOR_DATA}/platforms;
+ for x in ${PYARMOR_CORE_PLATFORM}/*.py?? ; do
+     name=$(basename ${x})
+     name=${name//./\/}
+     mkdir -p ${name}
+     if [[ "${PLATFORM}" == "win_amd64" ]] ; then
+         cp ${x}/pytransform.* ${name}
+     else
+         ln -s ${x}/pytransform.* ${name}
+     fi
+ done)
+fi
+csih_inform "Super mode test is ${SUPERMODE}"
+fi
+
 csih_inform "Prepare for function testing"
 echo ""
-
 
 # ======================================================================
 #
@@ -78,14 +108,11 @@ csih_inform "C-1. Test option --capsule for init"
 $PYARMOR init --src=examples/simple --capsule=test/data/project.zip \
     projects/test-capsule >result.log 2>&1
 check_return_value
-check_file_content projects/test-capsule/.pyarmor_config "project.zip"
 
 csih_inform "C-2. Test option --capsule for config"
 cp test/data/project.zip projects/test-capsule/project2.zip
 $PYARMOR config --capsule=project2.zip projects/test-capsule >result.log 2>&1
-
 check_return_value
-check_file_content projects/test-capsule/.pyarmor_config "project2.zip"
 
 csih_inform "C-3. Test option --capsule for obfuscate"
 $PYARMOR init --src=examples/simple test-capsule >result.log 2>&1
@@ -106,7 +133,7 @@ cp test/data/project.zip .pyarmor_capsule.zip
 $PYARMOR licenses --expired=2018-05-12 Customer-Jordan >result.log 2>&1
 check_file_exists licenses/Customer-Jordan/license.lic
 
-$PYARMOR licenses --capsule=test/data/project.zip --output=projects \
+$PYARMOR licenses --capsule=test/data/project.zip --output=projects/licenses \
     --expired=2018-05-12 Customer-Jordan >result.log 2>&1
 check_file_exists projects/licenses/Customer-Jordan/license.lic
 
@@ -156,14 +183,15 @@ check_return_value
 check_file_content dist-recursive/result.log 'Found 92 solutions'
 
 csih_inform "C-7. Test no entry script for obfuscate"
-$PYARMOR obfuscate --src=examples/simple -O test-no-entry >result.log 2>&1
+$PYARMOR obfuscate -O test-no-entry examples/simple >result.log 2>&1
 check_return_value
 check_file_exists test-no-entry/queens.py
 
 csih_inform "C-8. Test 'gbk' codec for obfuscate"
 
 if [[ "$PYTHON" == C:/Python30/python || "$PYTHON" == *python3.0 ||
-      ( "$PLATFORM" == "macosx_x86_64" && "$PYTHON" == *python2.7 ) ]] ; then
+          ( "$PLATFORM" == "macosx_x86_64" && "$PYTHON" == *python ) ||
+          ( "$PLATFORM" == "macosx_x86_64" && "$PYTHON" == *python2.7 ) ]] ; then
 csih_inform "This testcase is ignored in Python 3.0, and Python2 in MacOS"
 else
 mkdir -p test-codec
@@ -177,26 +205,26 @@ check_return_value
 check_file_content dist-codec/result.log 'PyArmor'
 fi
 
-csih_inform "C-9. Test --upgrade for capsule"
-mkdir -p test-upgrade
-cp test/data/project-orig.zip test-upgrade/.pyarmor_capsule.zip
+csih_inform "C-9. Test --upgrade for capsule (ignored)"
+# mkdir -p test-upgrade
+# cp test/data/project-orig.zip test-upgrade/.pyarmor_capsule.zip
 
-$PYARMOR capsule --upgrade ./test-upgrade/ >result.log 2>&1
-check_return_value
-check_file_content result.log "Upgrade capsule OK"
+# $PYARMOR capsule --upgrade ./test-upgrade/ >result.log 2>&1
+# check_return_value
+# check_file_content result.log "Upgrade capsule OK"
 
-(cd test-upgrade; unzip .pyarmor_capsule.zip >result.log 2>&1)
-check_file_exists test-upgrade/pytransform.key
+# (cd test-upgrade; unzip .pyarmor_capsule.zip >result.log 2>&1)
+# check_file_exists test-upgrade/pytransform.key
 
 csih_inform "C-10. Test output == src for obfuscate"
 mkdir -p abc
-$PYARMOR obfuscate --src=abc -O abc >result.log 2>&1
+$PYARMOR obfuscate -O abc abc >result.log 2>&1
 check_file_content result.log "Output path can not be same as src"
 
 csih_inform "C-11. Test output is sub-directory of src for obfuscate"
 cp -a examples/simple test-subpath
 (cd test-subpath;
- $PYTHON ../pyarmor.py obfuscate --src=. -O output >result.log 2>&1)
+ $PYTHON ../pyarmor.py obfuscate -O output . >result.log 2>&1)
 check_return_value
 check_file_exists test-subpath/output/queens.py
 
@@ -217,13 +245,6 @@ $PYARMOR obfuscate -O test-exclude -r --exclude "mypkg,dist" \
 check_return_value
 check_file_exists test-exclude/main.py
 check_file_not_exists test-exclude/mypkg/foo.py
-
-csih_inform "C-13-a. Test multiple option --exclude for obfuscate"
-$PYARMOR obfuscate -O test-exclude2 -r --exclude mypkg --exclude dist \
-         examples/testpkg/main.py >result.log 2>&1
-check_return_value
-check_file_exists test-exclude2/main.py
-check_file_not_exists test-exclude2/mypkg/foo.py
 
 csih_inform "C-14. Test option --exact for obfuscate"
 $PYARMOR obfuscate -O test-exact --exact \
@@ -256,27 +277,26 @@ check_return_value
 check_file_exists test-no-cross-protection/main.py
 
 csih_inform "C-18. Test option --plugin for obfuscate"
+echo "# {PyArmor Plugins}" > test_plugin.py
 echo "print('Hello Plugin')" > plugin_hello.py
 $PYARMOR obfuscate -O dist-plugin --plugin "plugin_hello" \
-         examples/simple/queens.py >result.log 2>&1
+         --exact test_plugin.py >result.log 2>&1
 check_return_value
 
-(cd dist-plugin; $PYTHON queens.py >result.log 2>&1 )
+(cd dist-plugin; $PYTHON test_plugin.py >result.log 2>&1 )
 check_return_value
 check_file_content dist-plugin/result.log 'Hello Plugin'
-check_file_content dist-plugin/result.log 'Found 92 solutions'
 
-csih_inform "C-19. Test option --plugin with PYARMOR_PLUGIN for obfuscate"
+csih_inform "C-19. Test option --plugin with special value 'on'"
 mkdir test-plugins
-echo "print('Hello World')" > test-plugins/hello2.py
-PYARMOR_PLUGIN=test-plugins $PYARMOR obfuscate -O dist-plugin2 \
-              --plugin hello2 examples/simple/queens.py >result.log 2>&1
+echo "# PyArmor Plugin: print('Hello World')" > test-plugins/foo.py
+$PYARMOR obfuscate -O dist-plugin2 --plugin on \
+         --exact test-plugins/foo.py >result.log 2>&1
 check_return_value
 
-(cd dist-plugin2; $PYTHON queens.py >result.log 2>&1 )
+(cd dist-plugin2; $PYTHON foo.py >result.log 2>&1 )
 check_return_value
 check_file_content dist-plugin2/result.log 'Hello World'
-check_file_content dist-plugin2/result.log 'Found 92 solutions'
 
 csih_inform "C-20. Test absolute jump critical value in wrap mode"
 $PYARMOR obfuscate -O dist-pop-jmp --exact test/data/pop_jmp.py >result.log 2>&1
@@ -296,9 +316,313 @@ csih_inform "C-22. Test more than one path for obfuscate"
 $PYARMOR obfuscate examples/simple examples/testpkg  >result.log 2>&1
 check_file_content result.log "Only one path is allowed"
 
+csih_inform "C-23. Test option --bind-data for licenses"
+$PYARMOR licenses -x 20191011 test-bind-data >result.log 2>&1
+check_return_value
+check_file_exists licenses/test-bind-data/license.lic
+check_file_content licenses/test-bind-data/license.lic.txt 'test-bind-data;20191011'
+
+csih_inform "C-24. Test option --package-runtime=1 for obfuscate"
+$PYARMOR obfuscate --package-runtime 1 --output test-package-runtime \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists test-package-runtime/pytransform/__init__.py
+check_file_content test-package-runtime/pytransform/__init__.py 'def init_runtime'
+
+(cd test-package-runtime; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content test-package-runtime/result.log 'Found 92 solutions'
+
+(cd test-package-runtime; mkdir another; mv pytransform another;
+    PYTHONPATH=another $PYTHON queens.py >result2.log 2>&1 )
+check_return_value
+check_file_content test-package-runtime/result2.log 'Found 92 solutions'
+
+csih_inform "C-25. Test option --bootstrap=2 for obfuscate"
+$PYARMOR obfuscate --package-runtime 1 --bootstrap 2 --output test-bootstrap2 \
+         examples/testpkg/mypkg/__init__.py >result.log 2>&1
+check_return_value
+check_file_exists test-bootstrap2/pytransform/__init__.py
+check_file_content test-bootstrap2/pytransform/__init__.py 'def init_runtime'
+check_file_exists test-bootstrap2/__init__.py
+check_file_content test-bootstrap2/__init__.py 'from pytransform import pyarmor_runtime'
+
+csih_inform "C-25. Test command runtime with default option"
+$PYARMOR runtime > result.log 2>&1
+check_return_value
+check_file_exists dist/pytransform/__init__.py
+
+csih_inform "C-26. Test command obfuscation with --src"
+$PYARMOR obfuscate -r --src examples/testpkg -O test-src-path \
+         mypkg/foo.py > result.log 2>&1
+check_return_value
+check_file_exists test-src-path/main.py
+check_file_exists test-src-path/mypkg/foo.py
+check_file_exists test-src-path/mypkg/__init__.py
+
+csih_inform "C-27. Test no very long line in traceback"
+echo "raise Exception('Elinimate long line from traceback')" > e.py
+$PYARMOR obfuscate --exact -O test-exception e.py > result.log 2>&1
+check_return_value
+check_file_exists test-exception/e.py
+
+(cd test-exception; $PYTHON e.py >result.log 2>&1 )
+check_file_content test-exception/result.log 'Elinimate long line from traceback'
+check_file_content test-exception/result.log '__pyarmor__' not
+
+csih_inform "C-28. Test option --bootstrap=3 for obfuscate"
+$PYARMOR obfuscate --package-runtime 1 --bootstrap 3 --output test-bootstrap3 \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_exists test-bootstrap3/pytransform/__init__.py
+check_file_content test-bootstrap3/pytransform/__init__.py 'def init_runtime'
+check_file_exists test-bootstrap3/queens.py
+check_file_content test-bootstrap3/queens.py 'from .pytransform import pyarmor_runtime'
+
+csih_inform "C-29. Test option --exclude .py file for obfuscate"
+$PYARMOR obfuscate -O test-exclude3 -r --exclude "mypkg/foo.py" \
+         examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists test-exclude3/main.py
+check_file_not_exists test-exclude3/mypkg/foo.py
+
+csih_inform "C-30. Test many entry scripts in exact mode"
+echo "" > a.py
+echo "" > b.py
+echo "" > c.py
+output=test-many-scripts
+$PYARMOR obfuscate --exact -O $output a.py b.py > result.log 2>&1
+check_return_value
+check_file_exists $output/a.py
+check_file_exists $output/b.py
+check_file_not_exists $output/c.py
+check_file_content $output/a.py 'import pyarmor_runtime'
+check_file_content $output/b.py 'import pyarmor_runtime'
+
+csih_inform "C-31. Output license key to stdout"
+$PYARMOR licenses --output stdout reg0001 > result.log 2>&1
+check_return_value
+check_file_content result.log 'Generate 1 licenses OK.'
+
+csih_inform "C-32. Test multiple option --exclude for obfuscate"
+$PYARMOR obfuscate -O test-exclude2 -r --exclude mypkg --exclude dist \
+         examples/testpkg/main.py >result.log 2>&1
+check_return_value
+check_file_exists test-exclude2/main.py
+check_file_not_exists test-exclude2/mypkg/foo.py
+
+csih_inform "C-33. Generate license with epoch expired"
+$PYARMOR licenses --expired 1579316961.2 reg-epoch-1 > result.log 2>&1
+check_return_value
+check_file_content result.log 'Generate 1 licenses OK.'
+check_file_exists licenses/reg-epoch-1/license.lic
+
+csih_inform "C-34. Test obfuscate script in the non-ascii path"
+propath=examples/中文路径
+mkdir $propath
+cp examples/simple/queens.py $propath
+$PYARMOR obfuscate -O test-non-ascii-path $propath/queens.py > result.log 2>&1
+
+check_return_value
+check_file_exists test-non-ascii-path/queens.py
+
+(cd test-non-ascii-path; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content test-non-ascii-path/result.log 'Found 92 solutions'
+
+csih_inform "C-35. Test licenses with --fixed"
+if [[ "${PYTHON}" == *Python??-32/python ]] ; then
+csih_inform "Ignore this case for $PYTHON"
+else
+propath=test-fixed-key
+mkdir $propath
+cp examples/simple/queens.py $propath
+$PYARMOR obfuscate -O $propath/dist $propath/queens.py > result.log 2>&1
+
+$PYARMOR licenses --fixed 1 -O $propath/dist/pytransform/license.lic > result.log 2>&1
+check_return_value
+
+(cd $propath/dist; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content $propath/dist/result.log 'Found 92 solutions'
+
+$PYARMOR licenses --fixed 101 -O $propath/dist/pytransform/license.lic > result.log 2>&1
+check_return_value
+
+(cd $propath/dist; $PYTHON queens.py >result.log 2>&1 )
+check_file_content $propath/dist/result.log 'License is not for this machine'
+check_file_content $propath/dist/result.log 'Found 92 solutions' not
+fi
+
+csih_inform "C-36. Test got default capsule from old location"
+(cd "${PYARMOR_DATA}"; mv .pyarmor_capsule.zip ..)
+$PYARMOR obfuscate -O test-default-capsule examples/simple/queens.py >result.log 2>&1
+check_return_value
+(cd "${PYARMOR_DATA}" && check_file_exists .pyarmor_capsule.zip)
+
+csih_inform "C-37. Test customized cross protection script"
+echo "print('This is customized protection code')" > protection.py
+dist=test-c-36
+$PYARMOR obfuscate -O $dist --cross-protection protection.py \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log 'This is customized protection code'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
+
+# ======================================================================
+#
+#  Super mode
+#
+# ======================================================================
+
+if [[ "yes" == "${SUPERMODE}" ]] ; then
+
+echo ""
+echo "-------------------- Super Mode ----------------------------"
+echo ""
+
+cat <<EOF > sufoo.py
+def empty():
+  pass
+def hello(n):
+  empty()
+  print('Hello Super Mode: %s' % n)
+hello(2)
+EOF
+
+csih_inform "S-1. Test basic function of super mode"
+dist=dist-super-mode-1
+$PYARMOR obfuscate --exact --advanced 2 -O $dist sufoo.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON sufoo.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Hello Super Mode:"
+
+csih_inform "S-2. Test super mode with jump header"
+dist=dist-super-mode-2
+$PYARMOR obfuscate --exact --advanced 2 -O $dist test/data/no_wrap.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON no_wrap.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
+
+csih_inform "S-3. Test super mode with recursive function"
+dist=dist-super-mode-3
+$PYARMOR obfuscate --exact --advanced 2 -O $dist examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Found 92 solutions"
+
+csih_inform "S-4. Test super mode with obf-code 2"
+dist=dist-super-mode-4
+$PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist sufoo.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON sufoo.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Hello Super Mode:"
+
+csih_inform "S-5. Generate runtime files with super mode"
+dist=dist-super-mode-5
+$PYARMOR runtime -O $dist --super-mode >result.log 2>&1
+check_return_value
+check_file_exists $dist/pytransform_protection.py
+
+csih_inform "S-6. Test super mode with auto patch"
+dist=dist-super-mode-6
+
+cat <<EOF > sufoo2.py
+# Test auto patch
+import threading
+from time import sleep
+
+def foo(n):
+  '''This is a test function'''
+  while True:
+    print('Super Mode: %s' % n)
+    break
+
+  k = 0
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  n += 1
+  if n > 3:
+    print('n is %s' % n)
+  sleep(0.5)
+  n += 1
+  n += 1
+  print('At last the value is %s' % n)
+
+for i in range(3):
+  threading.Thread(target=foo, args=(i,)).start()
+EOF
+
+$PYARMOR obfuscate --exact --advanced 2 -O $dist sufoo2.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON sufoo2.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Super Mode: 2"
+check_file_content $dist/result.log "n is 26"
+check_file_content $dist/result.log "n is 27"
+check_file_content $dist/result.log "n is 28"
+check_file_content $dist/result.log "At last the value is 30"
+
+csih_inform "S-7. Test super mode with clean_str"
+dist=dist-super-mode-7
+cat <<EOF > suclean.py
+from sys import version_info as ver
+from pytransform import clean_str
+data = ('a' * 30) if ver.major == 2 else (b'a' * 30).decode()
+print('Clean data: %s' % clean_str(data))
+print(data)
+EOF
+
+$PYARMOR obfuscate --exact --advanced 2 -O $dist suclean.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON suclean.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Clean data: 30"
+check_file_content $dist/result.log "aaaaaaaaaa" not
+
+echo ""
+echo "-------------------- Super Mode End --------------------------"
+echo ""
+
+fi
 
 # ======================================================================
 #
@@ -316,7 +640,7 @@ $PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
 check_return_value
 
 (cd $PROPATH;
- $ARMOR config --output="." >result.log 2>&1;
+ $ARMOR config --output="." --package-runtime=0 >result.log 2>&1;
  $ARMOR build >result.log 2>&1)
 check_return_value
 check_file_exists $PROPATH/queens.py
@@ -360,116 +684,147 @@ check_file_exists $PROPATH/dist/mypkg/__init__.py
 check_file_content $PROPATH/dist/mypkg/__init__.py 'from pytransform import pyarmor_runtime'
 check_file_content $PROPATH/dist/mypkg/__init__.py 'pyarmor_runtime'
 
+csih_inform "Case P-5: build project with --package-runtime=1"
+PROPATH=projects/test-project-package-runtime
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --package-runtime=1 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/pytransform/__init__.py
+check_file_content $PROPATH/dist/pytransform/__init__.py 'def pyarmor_runtime'
+
+(cd $PROPATH/dist; $PYTHON queens.py >result.log 2>&1 )
+check_return_value
+check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
+
+csih_inform "Case P-6: build project with --bootstrap=2"
+PROPATH=projects/test-bootstrap2
+$PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --package-runtime=1 --bootstrap=2 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/mypkg/pytransform/__init__.py
+check_file_content $PROPATH/dist/mypkg/pytransform/__init__.py 'def pyarmor_runtime'
+check_file_exists $PROPATH/dist/mypkg/__init__.py
+check_file_content $PROPATH/dist/mypkg/__init__.py 'from pytransform import pyarmor_runtime'
+
+csih_inform "Case P-7: build project with --restrict-mode=0"
+PROPATH=projects/test-p7
+$PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
+$PYARMOR config --restrict=0 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/mypkg/pytransform/__init__.py
+check_file_exists $PROPATH/dist/mypkg/pytransform/license.lic
+check_file_exists $PROPATH/dist/mypkg/__init__.py
+check_file_not_exists $PROPATH/dist/mypkg/license.lic
+
+csih_inform "Case P-8: open project with other configure filename"
+PROPATH=projects/test-p8
+$PYARMOR init --src=examples/testpkg/mypkg/ --entry __init__.py $PROPATH  >result.log 2>&1
+$PYARMOR config --name="Alias-Project-8" $PROPATH  >result.log 2>&1
+check_return_value
+
+cp $PROPATH/.pyarmor_config $PROPATH/project.json
+(cd $PROPATH; $ARMOR info project.json > result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/result.log 'Alias-Project-8'
+
+csih_inform "Case P-9: build project with --bootstrap=3"
+PROPATH=projects/test-bootstrap3
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --package-runtime=1 --bootstrap 3 $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
+check_return_value
+
+check_file_exists $PROPATH/dist/pytransform/__init__.py
+check_file_content $PROPATH/dist/pytransform/__init__.py 'def pyarmor_runtime'
+check_file_exists $PROPATH/dist/queens.py
+check_file_content $PROPATH/dist/queens.py 'from .pytransform import pyarmor_runtime'
+
+csih_inform "Case P-10: Set and clear project plugins and platforms"
+PROPATH=projects/test-clear-plugin-platform
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --platform linux.x86_64 --plugin check_ntp_time \
+         $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "linux.x86_64"
+check_file_content result.log "check_ntp_time"
+
+$PYARMOR config --platform "" --plugin "" $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "linux.x86_64" not
+check_file_content result.log "check_ntp_time" not
+
+csih_inform "Case P-11: Init project with multiple entries"
+PROPATH=projects/test-init-multiple-entry
+$PYARMOR init --src=examples --entry simple/queens.py,examples/helloworld/foo.py \
+         $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "simple[/\\]queens.py,helloworld[/\\]foo.py"
+
+csih_inform "Case P-12: Config project in other path"
+PROPATH=projects/test-config-outer-path
+$PYARMOR init --src=examples $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR config --entry "simple/queens.py, examples/helloworld/foo.py" \
+         --output $PROPATH/mydist --with-license licpath/license.lic \
+         $PROPATH >result.log 2>&1
+check_return_value
+check_file_content result.log "Format output to mydist"
+
+$PYARMOR info $PROPATH  >result.log 2>&1
+check_file_content result.log "simple[/\\]queens.py,helloworld[/\\]foo.py"
+check_file_content result.log "mydist"
+check_file_content result.log "licpath[/\\]license.lic"
+
+csih_inform "Case P-13: Init project with empty entry"
+PROPATH=projects/test-empty-entry-script
+$PYARMOR init --src=. --entry="" $PROPATH  >result.log 2>&1
+check_return_value
+check_file_content $PROPATH/.pyarmor_config '"entry": ""'
+
+csih_inform "Case P-14: Config project with empty entry"
+PROPATH=projects/test-config-with-empty-script
+$PYARMOR init --src=examples $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR config --entry="" $PROPATH  >result.log 2>&1
+check_return_value
+check_file_content result.log 'Change project entry to ""'
+
+csih_inform "Case P-15: build project with --with-license"
+PROPATH=projects/test-build-with-license
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR build --with-license=outer $PROPATH  >result.log 2>&1
+check_return_value
+check_file_not_exists exists $PROPATH/dist/pytransform/license.lic
+
 echo ""
 echo "-------------------- Test Project End ------------------------"
-echo ""
-
-# ======================================================================
-#
-#  Project Child
-#
-# ======================================================================
-
-echo ""
-echo "-------------------- Test Project Child -----------------------"
-echo ""
-
-csih_inform "Case PC-1: create child project 1"
-PROPATH=projects/test-child-project
-$PYARMOR init --src=examples/simple $PROPATH >result.log 2>&1
-$PYARMOR init --child 1 $PROPATH >result.log 2>&1
-
-check_return_value
-check_file_exists $PROPATH/.pyarmor_config.1
-
-csih_inform "Case PC-2: config child project 1"
-(cd $PROPATH;
- $ARMOR config --plugin="hello" --plugin="hello2" \
-        --manifest "include queens.py" 1 >result.log 2>&1)
-
-check_return_value
-
-csih_inform "Case PC-3: show information of child project 1"
-(cd $PROPATH;  $ARMOR info 1 >result.log 2>&1)
-
-check_return_value
-check_file_content $PROPATH/result.log "manifest: include queens.py"
-check_file_content $PROPATH/result.log "hello2"
-
-csih_inform "Case PC-4: build child project 1"
-(cd $PROPATH; $ARMOR build --no-runtime 1 >result.log 2>&1)
-
-check_return_value
-check_file_exists $PROPATH/dist/queens.py
-check_file_not_exists $PROPATH/dist/pytransform.py
-
-csih_inform "Case PC-5: clear plugin for child project 1"
-(cd $PROPATH;
- $ARMOR config --plugin clear 1 >result.log 2>&1)
-check_return_value
-
-(cd $PROPATH;  $ARMOR info 1 >result.log 2>&1)
-check_return_value
-check_file_content $PROPATH/result.log "hello2" not
-
-echo ""
-echo "-------------------- Test Project Child End -------------------"
-echo ""
-
-# ======================================================================
-#
-#  Cross Publish
-#
-# ======================================================================
-
-echo ""
-echo "-------------------- Test Cross Publish --------------------"
-echo ""
-
-csih_inform "Case CP-1: cross publish by obfuscate"
-$PYARMOR obfuscate --platform linux64 -O test-cross-publish \
-         examples/simple/queens.py >result.log 2>&1
-check_return_value
-check_file_content result.log "Target dynamic library"
-check_file_content result.log "linux64[/\\]_pytransform.so"
-
-csih_inform "Case CP-2: cross publish by obfuscate with no-cross-protection"
-$PYARMOR obfuscate --platform linux64 -O test-cross-publish \
-         --no-cross-protection examples/simple/queens.py >result.log 2>&1
-check_return_value
-check_file_content result.log "Target dynamic library" not
-check_file_content result.log "linux64[/\\]_pytransform.so"
-
-csih_inform "Case CP-3: cross publish by project"
-PROPATH=projects/test-cross-publish
-$PYARMOR init --src examples/simple --entry queens.py $PROPATH >result.log 2>&1
-$PYARMOR build --platform linux64 $PROPATH >result.log 2>&1
-check_return_value
-check_file_content result.log "Target dynamic library"
-check_file_content result.log "linux64[/\\]_pytransform.so"
-
-csih_inform "Case CP-4: cross publish by project without cross-protection"
-$PYARMOR config --cross-protection 0 $PROPATH >result.log 2>&1
-check_return_value
-
-$PYARMOR build -B --platform linux64 $PROPATH >result.log 2>&1
-check_return_value
-check_file_content result.log "Target dynamic library" not
-check_file_content result.log "linux64[/\\]_pytransform.so"
-
-csih_inform "Case CP-5: cross publish by project with custom cross protection"
-$SED -i -e 's/"cross_protection": [01]/"cross_protection": "protect_code.pt"/g' \
-    $PROPATH/.pyarmor_config >result.log 2>&1
-check_return_value
-check_file_content $PROPATH/.pyarmor_config "protect_code.pt"
-
-$PYARMOR build -B --platform linux64 $PROPATH >result.log 2>&1
-check_return_value
-check_file_content result.log "Target dynamic library"
-check_file_content result.log "linux64[/\\]_pytransform.so"
-
-echo ""
-echo "-------------------- Test Cross Publish END ------------------------"
 echo ""
 
 # ======================================================================
@@ -515,6 +870,113 @@ echo ""
 
 # ======================================================================
 #
+#  Test settrace/setprofile
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test trace/profile --------------------"
+echo ""
+
+if [[ "$PYTHON" == C:/Python30/python || "$PYTHON" == *python3.0 ]] ; then
+csih_inform "These testcases are ignored in Python30"
+else
+csih_inform "Case TD-1: run obfuscated functions with sys.settrace"
+PROPATH=test-sys-trace-profile
+mkdir -p $PROPATH
+cat <<EOF > $PROPATH/foo.py
+def hello(n):
+    n += 1
+    return n
+print('This is foo.py')
+EOF
+$PYARMOR obfuscate --exact -O $PROPATH/dist $PROPATH/foo.py >result.log 2>&1
+check_return_value
+
+cat <<EOF > $PROPATH/dist/main.py
+import sys
+import foo
+
+def hello2(n):
+    n += 2
+    return n
+
+def callback(frame, event, arg):
+    print('%s:%s:%s' % (event, frame.f_code.co_name, frame.f_lineno))
+    return callback
+
+sys.settrace(callback)
+print('foo.hello got %d' % foo.hello(2))
+print('hello2 got %d' % hello2(2))
+sys.settrace(None)
+EOF
+
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is foo.py'
+check_file_content $PROPATH/dist/result.log 'call:hello:1'
+check_file_content $PROPATH/dist/result.log 'line:hello:2'
+check_file_content $PROPATH/dist/result.log 'foo.hello got 3'
+check_file_content $PROPATH/dist/result.log 'line:hello:3' not
+check_file_content $PROPATH/dist/result.log 'return:hello:3' not
+check_file_content $PROPATH/dist/result.log 'call:hello2:4'
+check_file_content $PROPATH/dist/result.log 'line:hello2:5'
+check_file_content $PROPATH/dist/result.log 'line:hello2:6'
+check_file_content $PROPATH/dist/result.log 'return:hello2:6'
+check_file_content $PROPATH/dist/result.log 'hello2 got 4'
+
+csih_inform "Case TD-2: run obfuscated functions with threading.settrace"
+PROPATH=test-thread-trace-profile
+mkdir -p $PROPATH
+cat <<EOF > $PROPATH/foo.py
+def hello(n):
+    n += 1
+    return n
+print('This is foo.py')
+EOF
+$PYARMOR obfuscate --exact -O $PROPATH/dist $PROPATH/foo.py >result.log 2>&1
+check_return_value
+
+cat <<EOF > $PROPATH/dist/tmain.py
+import sys
+import foo
+
+def hello2(n):
+    n += 2
+    return n
+
+def callback(frame, event, arg):
+    print('%s:%s:%s' % (event, frame.f_code.co_name, frame.f_lineno))
+    return callback
+
+def target():
+    print('foo.hello got %d' % foo.hello(2))
+    print('hello2 got %d' % hello2(2))
+import threading
+threading.settrace(callback)
+threading.Thread(target=target).start()
+EOF
+(cd $PROPATH/dist; $PYTHON tmain.py >result.log 2>&1)
+check_return_value
+check_file_content $PROPATH/dist/result.log 'This is foo.py'
+check_file_content $PROPATH/dist/result.log 'call:hello:1'
+check_file_content $PROPATH/dist/result.log 'line:hello:2'
+check_file_content $PROPATH/dist/result.log 'foo.hello got 3'
+check_file_content $PROPATH/dist/result.log 'line:hello:3' not
+check_file_content $PROPATH/dist/result.log 'return:hello:3' not
+check_file_content $PROPATH/dist/result.log 'call:hello2:4'
+check_file_content $PROPATH/dist/result.log 'line:hello2:5'
+check_file_content $PROPATH/dist/result.log 'line:hello2:6'
+check_file_content $PROPATH/dist/result.log 'return:hello2:6'
+check_file_content $PROPATH/dist/result.log 'hello2 got 4'
+fi
+
+echo ""
+echo "-------------------- Test trace/profile END ------------------"
+echo ""
+
+# ======================================================================
+#
 #  Test empty script
 #
 # ======================================================================
@@ -529,7 +991,7 @@ $PYARMOR init --src=test-empty --entry=foo.py projects/empty  > result.log 2>&1
 check_return_value
 
 for obf_mod in 0 1 ; do
-  for obf_code in 0 1 ; do
+  for obf_code in 0 1 2 ; do
     for obf_wrap_mode in 0 1 ; do
       csih_inform "T-m${obf_mod}-c${obf_code}-w${obf_wrap_mode}"
       (cd projects/empty &&
@@ -563,7 +1025,7 @@ echo ""
 
 if [[ "$PLATFORM" == win[3_]* && "$PYTHON" == C:/Python3[012]/python ]] ; then
 
-csih_inform "This testcase is ignored in this platform"
+csih_inform "These testcases are ignored in this platform"
 
 else
 
@@ -586,7 +1048,9 @@ check_file_content $PROPATH/dist/result.log 'function f'
 check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'
 
-csih_inform "Case M-1: run obfuscated scripts with multiprocessing 2"
+# Do not work even without obfuscation
+if false ; then
+csih_inform "Case M-2: run obfuscated scripts with multiprocessing 2"
 
 # sed -i -e "1,2 d" $PROPATH/dist/mp.py
 
@@ -598,12 +1062,13 @@ import mp
 mp.main()
 EOF
 
-(cd $PROPATH/dist; $PYTHON mp.py >result.log 2>&1 )
+(cd $PROPATH/dist; $PYTHON main.py >result.log 2>&1 )
 check_return_value
 check_file_content $PROPATH/dist/result.log 'module name: __main__'
 check_file_content $PROPATH/dist/result.log 'function f'
 check_file_content $PROPATH/dist/result.log 'hello bob'
 check_file_content $PROPATH/dist/result.log 'main line'
+fi
 
 fi
 
@@ -701,12 +1166,23 @@ $PYARMOR obfuscate -O $output -r --restrict 0 \
          examples/testpkg/main.py > result.log 2>&1
 check_return_value
 
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+(cd $output; $PYTHON main.py >result.log 2>&1)
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+echo -e "\nprint('This is obfuscated foo')" >> $output/mypkg/foo.py
+(cd $output; $PYTHON main.py >result.log 2>&1)
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+check_file_content $output/result.log 'No restrict mode'
+
+(cd $output; $PYTHON -c 'import main' >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+check_file_content $output/result.log 'No restrict mode'
+
+(cd $output; echo "import main" > a.py ; $PYTHON a.py >result.log 2>&1 )
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 check_file_content $output/result.log 'No restrict mode'
@@ -717,15 +1193,34 @@ $PYARMOR obfuscate -O $output -r --restrict 1 \
          examples/testpkg/main.py > result.log 2>&1
 check_return_value
 
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+(cd $output; $PYTHON main.py >result.log 2>&1)
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
+(cd $output; $PYTHON -c 'import main' >result.log 2>&1)
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+(cd $output; echo "import main" > a.py ; $PYTHON a.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello! PyArmor Test Case'
+
+cp $output/main.py $output/main.bak
+rm -rf $output/main.py? __pycache__
 echo -e "\nprint('No restrict mode')" >> $output/main.py
-(cd $output; $PYTHON main.py >result.log 2>&1 )
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1)
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
+
+cp $output/main.bak $output/main.py
+rm -rf $output/mypkg/foo.py? __pycache__ $output/mypkg/__pycache__
+echo -e "\nprint('This is obfuscated foo')" >> $output/mypkg/foo.py
+(cd $output; $PYTHON main.py >result.log 2>&1)
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
 csih_inform "Case RM-2: test restrict mode 2"
 output=test-restrict-2
@@ -737,14 +1232,21 @@ check_return_value
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
-(cd $output; $PYTHON -c"import main" >result.log 2>&1 )
-check_file_content $output/result.log 'Check restrict mode failed'
+(cd $output; $PYTHON -c 'import main' >result.log 2>&1)
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
+(cd $output; echo "import main" > a.py ; $PYTHON a.py >result.log 2>&1 )
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'Check restrict mode of module failed'
+
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
 echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
 
 csih_inform "Case RM-3: test restrict mode 3"
 output=test-restrict-3
@@ -757,34 +1259,334 @@ check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
 (cd $output; $PYTHON -c"import main" >result.log 2>&1 )
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check restrict mode of module failed'
 
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
 echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
-check_file_content $output/result.log 'Check restrict mode failed'
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
+
+csih_inform "Case RM-3.1: test restrict mode 3 with generator function"
+output=test-restrict-3.1
+cat <<EOF > r3.py
+def hello(n):
+    print('Hello Generator %s' % n)
+def enumerate(sequence, start=0):
+    hello(start)
+    n = start
+    for elem in sequence:
+        yield n, elem
+        n += 1
+seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+list(enumerate(seasons, start=1))
+EOF
+$PYARMOR obfuscate -O $output --exact --restrict 3 r3.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON r3.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello Generator 1'
+
+csih_inform "Case RM-3.2: test restrict mode 3 with lambda function"
+output=test-restrict-3.2
+cat <<EOF > r3-2.py
+def hello():
+    print('Hello Lambda')
+foo = lambda : hello()
+foo()
+EOF
+$PYARMOR obfuscate -O $output --exact --restrict 3 r3-2.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON r3-2.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Hello Lambda'
+
+csih_inform "Case RM-3.3: test restrict mode 3 with non-wrap function"
+output=test-restrict-3.3
+$PYARMOR obfuscate -O $output --exact --restrict 3 \
+         test/data/no_wrap.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON no_wrap.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Test no wrap obfuscate mode: OK'
 
 csih_inform "Case RM-4: test restrict mode 4"
 output=test-restrict-4
-$PYARMOR obfuscate -O $output -r --restrict 1 \
-         examples/testpkg/main.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/mypkg -r --restrict 1 \
+         examples/testpkg/mypkg/__init__.py > result.log 2>&1
 check_return_value
 
 $PYARMOR obfuscate -O $output/mypkg --exact --restrict 4 \
          --no-bootstrap examples/testpkg/mypkg/foo.py > result.log 2>&1
 check_return_value
 
+cp examples/testpkg/main.py $output
 (cd $output; $PYTHON main.py >result.log 2>&1 )
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+(cd $output; $PYTHON -c"import mypkg
+mypkg.hello('One')" >result.log 2>&1 )
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+(cd $output; $PYTHON -c"import mypkg
+mypkg.open_hello('Two')" >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'This is public hello: Two'
+
+(cd $output; $PYTHON -c"import mypkg
+mypkg.proxy_hello('Three')" >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'This is proxy hello: Three'
+check_file_content $output/result.log 'Hello! Three'
+
+csih_inform "Case RM-4.1: test restrict mode 4 with exception"
+output=test-restrict-4.1
+mkdir -p $output/mypkg
+cat <<EOF > $output/mypkg/__init__.py
+from .bar import Testing, print_msg
+EOF
+cat <<EOF > $output/mypkg/bar.py
+class Testing():
+    def __init__(self):
+        self.key = 'ABCD'
+def print_msg():
+    print('This is restrict mode 4 testing')
+EOF
+cat <<EOF > $output/test1.py
+from dist import Testing, print_msg
+try:
+    testing = Testing()
+except Exception:
+    testing = Testing()
+    print('Restrict mode 4 got %s' % testing.key)
+EOF
+cat <<EOF > $output/test2.py
+from dist import Testing, print_msg
+try:
+    print_msg()
+except Exception:
+    print_msg()
+EOF
+
+$PYARMOR obfuscate -O $output/dist --restrict 1 \
+         $output/mypkg/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 4 --bootstrap 0 --exact \
+         $output/mypkg/bar.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON test1.py > result.log 2>&1)
+check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+(cd $output; $PYTHON test2.py > result.log 2>&1)
+check_file_content $output/result.log 'This is restrict mode 4 testing' not
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
+output=test-restrict-bootstrap
+$PYARMOR obfuscate -O $output -r --restrict 0 --no-bootstrap \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+check_file_content $output/main.py 'pyarmor_runtime' not
+
+cat <<EOF > $output/a.py
+from pytransform import pyarmor_runtime
+pyarmor_runtime()
+import main
+EOF
+
+(cd $output; $PYTHON a.py >result.log 2>&1 )
 check_return_value
 check_file_content $output/result.log 'Hello! PyArmor Test Case'
 
-(cd $output; $PYTHON -c"import main
-main.hello('mypkg')" >result.log 2>&1 )
-check_file_content $output/result.log 'This function could not be called from the plain script'
+rm -rf $output
+$PYARMOR obfuscate -O $output -r --restrict 1 --no-bootstrap \
+         examples/testpkg/main.py > result.log 2>&1
+check_return_value
+check_file_content $output/main.py 'pyarmor_runtime' not
+
+cat <<EOF > $output/a.py
+from pytransform import pyarmor_runtime
+pyarmor_runtime()
+import main
+EOF
+
+(cd $output; $PYTHON a.py >result.log 2>&1 )
+check_file_content $output/result.log 'Hello! PyArmor Test Case' not
+check_file_content $output/result.log 'Check bootstrap restrict mode failed'
 
 echo ""
 echo "-------------------- Test restrict mode END ----------------"
+echo ""
+
+# ======================================================================
+#
+#  Test plugins
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test plugins --------------------"
+echo ""
+
+csih_inform "Case Plugin-1: test base features of plugins"
+casepath=test-plugins2
+mkdir $casepath
+cat <<EOF > $casepath/foo.py
+# {PyArmor Plugins}
+# PyArmor Plugin: msg = "This is print function"
+# PyArmor Plugin: print(msg)
+# pyarmor_on_p4()
+
+# @pyarmor_test_decorator
+def hello():
+    pass
+hello()
+
+def p5(msg):
+    print(msg)
+# pyarmor_p5('Plugin 5 should now work')
+p5('Call p5 should work')
+EOF
+cat <<EOF > $casepath/on_p4.py
+def on_p4():
+    print('This is on demand plugin')
+EOF
+cat <<EOF > $casepath/test_decorator.py
+def test_decorator(f):
+    def wrap():
+        print('This is decorator plugin')
+    return wrap
+EOF
+echo "print('The unconditional plugin1 works')" > $casepath/p1.py
+echo "print('The unconditional plugin2 works')" > $casepath/p2.py
+echo "print('The plugin3 should not work')" > $casepath/p3.py
+
+$PYARMOR obfuscate --plugin $casepath/p1 --plugin $casepath/p2 \
+         --plugin @$casepath/p3 --plugin @$casepath/on_p4 \
+         --plugin @$casepath/test_decorator \
+         -O $casepath/dist --exact $casepath/foo.py > result.log 2>&1
+check_return_value
+
+(cd $casepath/dist; $PYTHON foo.py > result.log 2>&1)
+check_return_value
+check_file_content $casepath/dist/result.log 'The unconditional plugin1 works'
+check_file_content $casepath/dist/result.log 'The unconditional plugin2 works'
+check_file_content $casepath/dist/result.log 'The plugin3 should not work' not
+check_file_content $casepath/dist/result.log 'This is print function'
+check_file_content $casepath/dist/result.log 'This is on demand plugin'
+check_file_content $casepath/dist/result.log 'This is decorator plugin'
+check_file_content $casepath/dist/result.log 'Call p5 should work'
+check_file_content $casepath/dist/result.log 'Plugin 5 should now work' not
+
+csih_inform "Case Plugin-2: test plugin in the default path"
+echo "# {PyArmor Plugins}" > $casepath/foo2.py
+echo "# {PyArmor Plugin} check_ntp_time()" >> $casepath/foo2.py
+
+PYTHONDEBUG=y $PYARMOR obfuscate --plugin check_ntp_time \
+              -O $casepath/dist2 --exact $casepath/foo2.py > result.log 2>&1
+check_return_value
+
+check_file_exists $casepath/foo2.py.pyarmor-patched
+check_file_content $casepath/foo2.py.pyarmor-patched 'class NTPClient'
+
+csih_inform "Case Plugin-3: test internal plugin: assert_armored"
+casepath=test_plugin_assert_armored
+mkdir -p $casepath
+cat <<EOF > $casepath/foo.py
+def connect(username, password):
+    print('password is %s' % password)
+EOF
+cat <<EOF > $casepath/main.py
+import foo
+
+# PyArmor Plugin: from pytransform import assert_armored
+# PyArmor Plugin: @assert_armored(foo.connect)
+def start_server():
+    foo.connect('root', 'admin')
+start_server()
+EOF
+
+$PYARMOR obfuscate --plugin on -O $casepath/dist \
+         $casepath/main.py  > result.log 2>&1
+check_return_value
+
+(cd $casepath/dist; $PYTHON main.py > result.log 2>&1)
+check_return_value
+check_file_content $casepath/dist/result.log "password is admin"
+
+rm -rf $casepath/dist/foo.* $casepath/dist/__pycache__
+cp $casepath/{foo.py,dist}
+(cd $casepath; $PYTHON dist/main.py > result.log 2>&1)
+check_file_content $casepath/result.log "password is admin" not
+check_file_content $casepath/result.log "Protection Fault: this function is not pyarmored"
+
+echo ""
+echo "-------------------- Test plugins END ----------------"
+echo ""
+
+# ======================================================================
+#
+#  Test bootstrap package
+#
+# ======================================================================
+
+echo ""
+echo "-------------------- Test bootstrap package --------------------"
+echo ""
+
+csih_inform "Case BP-01: generate runtime package and bootstrap script"
+output=test-bootstrap-1
+$PYARMOR runtime -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform/__init__.py
+check_file_exists  $output/pytransform_bootstrap.py
+check_file_content $output/pytransform_bootstrap.py 'from pytransform import pyarmor_runtime'
+
+echo "import pytransform_bootstrap" > $output/main.py
+echo "print('OK')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'OK'
+
+csih_inform "Case BP-02: generate runtime package and bootstrap package"
+output=test-bootstrap-2
+$PYARMOR runtime -O $output -i > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform_bootstrap/pytransform/__init__.py
+check_file_exists  $output/pytransform_bootstrap/__init__.py
+check_file_content $output/pytransform_bootstrap/__init__.py 'from .pytransform import pyarmor_runtime'
+
+echo "import pytransform_bootstrap" > $output/main.py
+echo "print('OK2')" >> $output/main.py
+(cd $output; $PYTHON main.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'OK2'
+
+csih_inform "Case BP-03: generate runtime files with --no-package"
+output=test-runtime-no-package
+$PYARMOR runtime --no-package -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform.py
+
+csih_inform "Case BP-04: generate runtime files with --enable-suffix"
+output=test-enable-suffix-no-package
+$PYARMOR runtime --no-package --enable-suffix -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform.py
+
+output=test-enable-suffix-package
+$PYARMOR runtime --enable-suffix -O $output > result.log 2>&1
+check_return_value
+check_file_exists  $output/pytransform/__init__.py
+
+echo ""
+echo "-------------------- Test bootstrap package END ----------------"
 echo ""
 
 # ======================================================================

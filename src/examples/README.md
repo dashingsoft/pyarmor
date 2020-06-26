@@ -1,4 +1,4 @@
-# Exmaples ([中文版](README-ZH.md))
+# Examples ([中文版](README-ZH.md))
 
 A good example maybe is the best teacher. There are several sample
 shell scripts distributed with source package of PyArmor. All of them

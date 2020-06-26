@@ -100,13 +100,14 @@ IF DEFINED LICENSE_CODE (
   
   REM Overwrite default license with this license
   ECHO.  
-  IF DEFINED PKGNAME (
-    ECHO Copy new license to %PROJECT%\dist
-    COPY licenses\%LICENSE_CODE%\license.lic %PROJECT%\dist
+  IF DEFINED PKGNAME (  
+    SET LICPATH=%PROJECT%\dist
   ) ELSE (
-    ECHO Copy new license to %PROJECT%\dist\%PKGNAME%
-    COPY licenses\%LICENSE_CODE%\license.lic %PROJECT%\dist\%PKGNAME%
+    SET LICPATH=%PROJECT%\dist\%PKGNAME%
   )
+  IF NOT EXIST "%LICPATH%\license.lic" SET LICPATH=%LICPATH%\pytransform
+  ECHO Copy new license to %LICPATH%
+  COPY licenses\%LICENSE_CODE%\license.lic %LICPATH%
   ECHO.
 
 )

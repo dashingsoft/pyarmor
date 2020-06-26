@@ -72,8 +72,10 @@ case ${PLATFORM} in
         ;;
     macosx_x86_64)
         PYTHON=python
-        declare -r harddisk_sn=VB85de09d4-23402b07
-        declare -r ifmac_address=08:00:27:b0:b3:94
+        # declare -r harddisk_sn=VB85de09d4-23402b07
+        # declare -r ifmac_address=08:00:27:b0:b3:94
+        declare -r harddisk_sn=FV994730S6LLF07AY
+        declare -r ifmac_address=f8:ff:c2:27:00:7f
         declare -r ifip_address=$(ipconfig getifaddr en0)
         declare -r domain_name=
         ;;
@@ -338,6 +340,11 @@ cd pyarmor-$version || csih_error "Invalid pyarmor package file"
 [[ -f license.lic ]] || cp license.tri license.lic
 tar xzf ${datafile} || csih_error "Extract data files FAILED"
 cp -a ../../data/package ./ || csih_error "Copy package files FAILED"
+cp ../../data/project.zip ./ && \
+    cp ../../data/foo.zip ./ && \
+    cp ../../data/foo-key.zip ./ || csih_error "Copy capsule files FAILED"
+# From pyarmor v5.7.2, pyarmor-deprecated.py has been removed from source package
+cp ../../../src/pyarmor-deprecated.py .|| csih_error "Copy pyarmor-deprecated.py FAILED"
 
 # From pyarmor 4.5.4, platform name is renamed
 if [[ -d platforms/windows32 ]] ; then
@@ -350,8 +357,19 @@ if [[ -d platforms/windows32 ]] ; then
         mv darwin64 macosx_x86_64;)
 fi
 
-PYARMOR="$PYTHON pyarmor.py"
-[[ -f pyarmor-deprecated.py ]] && PYARMOR="$PYTHON pyarmor-deprecated.py"
+# From pyarmor 5.7.5, platform name is changed
+if [[ -d platforms/windows ]] ; then
+    csih_inform "Restore the name of platforms"
+    (cd platforms;
+        mv windows/x86 win32;
+        mv windows/x86_64 win_amd64;
+        mv linux/x86 linux_i386;
+        mv linux/x86_64 linux_x86_64;
+        mv darwin/x86_64 macosx_x86_64;)
+fi
+
+PYARMOR="$PYTHON pyarmor-deprecated.py"
+[[ -f pyarmor-deprecated.py ]] || csih_error "No pyarmor-deprecated.py found"
 csih_inform "PYARMOR is $PYARMOR"
 
 csih_inform "Prepare for testing"
@@ -381,29 +399,34 @@ $PYARMOR --help >result.log 2>&1 \
     || [[ -f _pytransform.dylib ]] \
     || csih_error "Case 1.1 FAILED: no pytransform extension found"
 
-csih_inform "Case 1.2: generate anonymous capsule"
-$PYARMOR capsule >result.log 2>&1 \
-    || csih_bug "Case 1.2 FAILED: return non-zero code"
-[[ -f project.zip ]] \
-    || csih_bug "Case 1.2 FAILED: no project.zip found"
 
-csih_inform "Case 1.3: generate named capsule foo.zip"
-$PYARMOR capsule foo >result.log 2>&1 \
-    || csih_bug "Case 1.3 FAILED: return non-zero code"
-[[ -f foo.zip ]] \
-    || csih_bug "Case 1.3 FAILED: no foo.zip found"
+#
+# From PyArmor 5.6, the capsule could not be generated.
+#
+# csih_inform "Case 1.2: generate anonymous capsule"
+# $PYARMOR capsule >result.log 2>&1 \
+#     || csih_bug "Case 1.2 FAILED: return non-zero code"
+# [[ -f project.zip ]] \
+#     || csih_bug "Case 1.2 FAILED: no project.zip found"
 
-csih_inform "Case 1.4: generate capsule with output path"
-$PYARMOR capsule -O dist foo2 >result.log 2>&1 \
-    || csih_bug "Case 1.4 FAILED: return non-zero code"
-[[ -f dist/foo2.zip ]] \
-    || csih_bug "Case 1.4 FAILED: no dist/foo2.zip found"
+# csih_inform "Case 1.3: generate named capsule foo.zip"
+# $PYARMOR capsule foo >result.log 2>&1 \
+#     || csih_bug "Case 1.3 FAILED: return non-zero code"
+# [[ -f foo.zip ]] \
+#     || csih_bug "Case 1.3 FAILED: no foo.zip found"
 
-csih_inform "Case 1.5: generate capsule for next tests"
-$PYARMOR capsule foo-key >result.log 2>&1 \
-    || csih_bug "Case 1.5 FAILED: return non-zero code"
-[[ -f foo-key.zip ]] \
-    || csih_bug "Case 1.5 FAILED: no foo-key.zip found"
+# csih_inform "Case 1.4: generate capsule with output path"
+# $PYARMOR capsule -O dist foo2 >result.log 2>&1 \
+#     || csih_bug "Case 1.4 FAILED: return non-zero code"
+# [[ -f dist/foo2.zip ]] \
+#     || csih_bug "Case 1.4 FAILED: no dist/foo2.zip found"
+
+# csih_inform "Case 1.5: generate capsule for next tests"
+# $PYARMOR capsule foo-key >result.log 2>&1 \
+#     || csih_bug "Case 1.5 FAILED: return non-zero code"
+# [[ -f foo-key.zip ]] \
+#     || csih_bug "Case 1.5 FAILED: no foo-key.zip found"
+
 
 #
 # Command: encrypt
@@ -818,6 +841,8 @@ grep -q "License is expired" result.log \
     || csih_bug "Case 5.4 FAILED: expired license still work"
 
 csih_inform "Case 5.5: generate bind file license"
+# --bind-file has been changed from v6.1.0
+if false; then
 $PYARMOR license --with-capsule=project.zip --bind-file id_rsa \
     -O license3.txt my_id_rsa >result.log 2>&1 \
     || csih_bug "Case 5.5 FAILED: return non-zero code"
@@ -832,8 +857,11 @@ cp license3.txt build/license.lic
 )
 grep -q "Result is 10" result.log \
     || csih_bug "Case 5.5 FAILED: python script returns unexpected result"
+fi
 
 csih_inform "Case 5.6: generate bind file license with expired date"
+# --bind-file has been changed from v6.1.0
+if false; then
 $PYARMOR license --with-capsule=project.zip -e $(next_month) \
     --bind-file id_rsa -O license4.txt my_id_rsa >result.log 2>&1 \
     || csih_bug "Case 5.6 FAILED: return non-zero code"
@@ -848,6 +876,7 @@ cp license4.txt build/license.lic
 )
 grep -q "Result is 10" result.log \
     || csih_bug "Case 5.6 FAILED: python script returns unexpected result"
+fi
 
 csih_inform "Case 5.7: generate license bind to mac address"
 $PYARMOR license --with-capsule=project.zip \
@@ -984,42 +1013,43 @@ echo ""
 # ======================================================================
 # Test functions in trial license.  PART 4
 #
+# DEPRECATED from v5.6.0, no capsule could be generated
 # ======================================================================
 
-echo ""
-echo "-------------------- Start Trial License Test --------------------"
-echo ""
+# echo ""
+# echo "-------------------- Start Trial License Test --------------------"
+# echo ""
 
-csih_inform "Replace normal license with trial license"
-cp license.tri license.lic
+# csih_inform "Replace normal license with trial license"
+# cp license.tri license.lic
 
-csih_inform "Case T1.1: generate capsule in trial license"
-$PYARMOR capsule >result.log 2>&1 \
-    || csih_bug "Case T1.1 FAILED: return non-zero code"
-[[ -f project.zip ]] \
-    || csih_bug "Case T1.1 FAILED: no project.zip found"
+# csih_inform "Case T1.1: generate capsule in trial license"
+# $PYARMOR capsule >result.log 2>&1 \
+#     || csih_bug "Case T1.1 FAILED: return non-zero code"
+# [[ -f project.zip ]] \
+#     || csih_bug "Case T1.1 FAILED: no project.zip found"
 
-csih_inform "Case T1.2: encrypt script in trial license"
-$PYARMOR encrypt --mode=0 -C project.zip -O dist foo.py >result.log 2>&1 \
-    || csih_bug "Case T1.2 FAILED: return non-zero code"
-[[ -f dist/foo.py${extchar} ]] \
-    || csih_bug "Case T1.2 FAILED: no dist/foo.py${extchar} found"
+# csih_inform "Case T1.2: encrypt script in trial license"
+# $PYARMOR encrypt --mode=0 -C project.zip -O dist foo.py >result.log 2>&1 \
+#     || csih_bug "Case T1.2 FAILED: return non-zero code"
+# [[ -f dist/foo.py${extchar} ]] \
+#     || csih_bug "Case T1.2 FAILED: no dist/foo.py${extchar} found"
 
-csih_inform "Case T1.3: import encrypted module in trial license"
-(cd dist ;
-    cp ../startup.py ./ ;
-    $PYTHON startup.py >../result.log 2>&1 \
-        || csih_bug "Case T1.3 FAILED: return non-zero code"
-)
-grep -q "foo.hello(2) = 7" result.log \
-    || csih_bug "Case T1.3 FAILED: python script returns unexpected result"
+# csih_inform "Case T1.3: import encrypted module in trial license"
+# (cd dist ;
+#     cp ../startup.py ./ ;
+#     $PYTHON startup.py >../result.log 2>&1 \
+#         || csih_bug "Case T1.3 FAILED: return non-zero code"
+# )
+# grep -q "foo.hello(2) = 7" result.log \
+#     || csih_bug "Case T1.3 FAILED: python script returns unexpected result"
 
-csih_inform "Remove files/dirs: dist build others project.zip foo.zip"
-rm -rf dist build others project.zip foo.zip
+# csih_inform "Remove files/dirs: dist build others project.zip foo.zip"
+# rm -rf dist build others project.zip foo.zip
 
-echo ""
-echo "-------------------- End Trial License Test --------------------"
-echo ""
+# echo ""
+# echo "-------------------- End Trial License Test --------------------"
+# echo ""
 
 
 # ======================================================================

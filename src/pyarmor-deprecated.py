@@ -27,6 +27,8 @@
 #
 from distutils.filelist import FileList
 from distutils.text_file import TextFile
+from distutils.util import get_platform
+
 import fnmatch
 import getopt
 import glob
@@ -44,13 +46,66 @@ try:
 except Exception:
     from binascii import a2b_hex as unhexlify
 
-from config import (version, version_info, trial_info, help_footer,
-                    ext_char, plat_name, dll_ext, dll_name, wrap_runner)
+from config import (version, version_info)
+
+dll_name = '_pytransform'
+dll_ext = '.dylib' if sys.platform == 'darwin' \
+    else '.dll' if sys.platform in ('win32', 'cygwin') else '.so'
+
+# Extra suffix char for encrypted python scripts
+ext_char = 'e'
+
+wrap_runner = '''import pyimcore
+from pytransform import exec_file
+exec_file('%s')
+'''
+
+trial_info = '''
+You're using trail version. Free trial version never expires,
+the limitations are
+
+- The maximum size of code object is 35728 bytes in trial version
+- The scripts obfuscated by trial version are not private. It means
+  anyone could generate the license file which works for these
+  obfuscated scripts.
+
+A registration code is required to obfuscate big code object or
+generate private obfuscated scripts.
+
+If PyArmor is helpful for you, please purchase one by visiting
+
+  https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
+
+If you have received a registration code, run the following command to
+make it effective::
+
+  pyarmor register REGISTRATION_CODE
+
+Enjoy it!
+
+'''
+
+help_footer = '''
+For more information, refer to http://pyarmor.dashingsoft.com
+'''
+
+# The last three components of the filename before the extension are
+# called "compatibility tags." The compatibility tags express the
+# package's basic interpreter requirements and are detailed in PEP
+# 425(https://www.python.org/dev/peps/pep-0425).
+plat_name = get_platform().split('-')
+plat_name = '_'.join(plat_name if len(plat_name) < 3 else plat_name[0:3:2])
+plat_name = plat_name.replace('i586', 'i386') \
+                     .replace('i686', 'i386') \
+                     .replace('armv7l', 'armv7') \
+                     .replace('intel', 'x86_64')
 
 def _import_pytransform():
     try:
         m = __import__('pytransform')
-        m.pyarmor_init()
+        if hasattr(m, 'plat_path'):
+            m.plat_path = 'platforms'
+        m.pyarmor_init(is_runtime=1)
         return m
     except Exception:
         pass
@@ -63,7 +118,9 @@ def _import_pytransform():
         logging.info('Copy %s to %s', src, path)
         shutil.copy(src, path)
         m = __import__('pytransform')
-        m.pyarmor_init()
+        if hasattr(m, 'plat_path'):
+            m.plat_path = 'platforms'
+        m.pyarmor_init(is_runtime=1)
         logging.info('Load pytransform OK.')
         return m
     logging.error('No library %s found', src)
@@ -513,6 +570,10 @@ It's Following the Distutils’ own manifest template
     ZipFile(capsule).extractall(path=output)
     logging.info('Extract capsule to %s OK.', output)
 
+    # Fix bootstrap restrict issue from v5.7.0
+    make_license(capsule, os.path.join(output, 'license.lic'),
+                 '*FLAGS:A*CODE:PyArmor')
+
     if mode >= 3:
         logging.info('Encrypt mode: %s', mode)
         with open(os.path.join(output, 'pyimcore.py'), 'w') as f:
@@ -689,6 +750,10 @@ For example,
     else:
         logging.info('License file expired at %s', expired)
         fmt = '*TIME:%.0f\n' % time.mktime(time.strptime(expired, '%Y-%m-%d'))
+
+    # Fix bootstrap restrict issue from v5.7.0
+    if key.find('FLAGS') == -1:
+        fmt = '%s*FLAGS:A' % fmt
 
     if binddisk:
         logging.info('License file bind to harddisk "%s"', binddisk)

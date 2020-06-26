@@ -53,12 +53,19 @@ importing no obfuscated module, because the obfuscated scripts has
 been compiled as byte-code, the original scripts need extra time to
 compile.
 
-Checking the performance for other mode by this way::
+List all available options::
+
+    pyarmor benchmark -h
+
+Specify other options to check the performance in different mode. For
+example::
 
     pyarmor benchmark --wrap-mode 0
 
-Look at the scripts used by this command::
+Look at the scripts used to run benchmark test::
 
     pyarmor benchmark --debug
+
+All the used files are saved in the folder `.benchtest`
 
 .. include:: _common_definitions.txt

@@ -44,10 +44,13 @@ pkgfile=$(pwd)/${DIST}/pyarmor-${version}.${PKGEXT}
 
 declare -i _bug_counter=0
 
+PYARMOR_CORE_PLATFORM=~/workspace/pyarmor-core/platforms
+
 case ${PLATFORM} in
 
     win32)
         PYTHON=${PYTHON:-C:/Python26/python}
+        PYARMOR_CORE_PLATFORM=D:/projects/pyarmor-core/platforms
         declare -r harddisk_sn=013040BP2N80S13FJNT5
         declare -r ifmac_address=70:f1:a1:23:f0:94
         declare -r ifip_address=192.168.121.101
@@ -55,6 +58,7 @@ case ${PLATFORM} in
         ;;
     win_amd64)
         PYTHON=${PYTHON:-C:/Python26/python}
+        PYARMOR_CORE_PLATFORM=C:/workspace/pyarmor-core/platforms
         declare -r harddisk_sn=VBa2fd0ee8-4482c1ad
         declare -r ifmac_address=08:00:27:51:d9:fe
         declare -r ifip_address=192.168.121.112
@@ -76,9 +80,11 @@ case ${PLATFORM} in
         ;;
     macosx_x86_64)
         PYTHON=${PYTHON:-python}
-        declare -r harddisk_sn=VB85de09d4-23402b07
-        declare -r ifmac_address=08:00:27:b0:b3:94
-        declare -r ifip_address=10.0.2.15
+        # declare -r harddisk_sn=VB85de09d4-23402b07
+        # declare -r ifmac_address=08:00:27:b0:b3:94
+        declare -r harddisk_sn=FV994730S6LLF07AY
+        declare -r ifmac_address=f8:ff:c2:27:00:7f
+        declare -r ifip_address=$(ipconfig getifaddr en0)
         declare -r domain_name=
         ;;
     *)
@@ -378,4 +384,27 @@ check_python_version_for_auto_wrap_mode()
     $PYTHON --version 2>&1 \
         | grep -q "\(Python 3.0\|Python 3.1\|Python 3.2\)" \
         && csih_inform "The auto wrap mode doesn't work for $PYTHON"
+}
+
+# ======================================================================
+# Routine: patch_cross_protection_code_for_python3.0
+#
+#   Remove "assert_buildin(open)" from cross protection code if python
+#   version is 3.0, because it return OpenWrapper in Python3.0
+# ======================================================================
+patch_cross_protection_code_for_python3.0()
+{
+    $PYTHON --version 2>&1 | grep -q "Python 3.0" \
+        && $SED -i -e "/assert_builtin.open./d" protect_code.pt
+}
+
+
+# ======================================================================
+# Routine: clear_pyarmor_installed_data
+#
+# ======================================================================
+clear_pyarmor_installed_data()
+{
+    rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
+    [[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
 }

@@ -3,10 +3,32 @@
 When Things Go Wrong
 ====================
 
-Turn on debugging output to get more error information::
+When there is in trouble, try to solve it by these ways.
 
-    python -d pyarmor.py ...
-    PYTHONDEBUG=y pyarmor ...
+As running ``pyarmor``:
+
+* Check the console output, is there any wrong path, or any odd information
+* Run `pyarmor` with debug option ``-d`` to get more information. For example::
+
+      pyarmor -d obfuscate --recurisve foo.py
+
+* Set Python debug flag to get more information. For example::
+
+      PYTHONDEBUG=y pyarmor obfuscate --recurisve foo.py
+
+      # In Windows
+      set PYTHONDEBUG=y
+      pyarmor obfuscate --recurisve foo.py
+
+As running the obfuscated scripts:
+
+* Turn on Python debug option by ``-d`` to print more information. For example::
+
+      python -d obf_foo.py
+
+After python debug option is on, there will be a log file `pytransform.log`
+generated in the current path, which includes more debug information.
+
 
 Segment fault
 -------------
@@ -16,11 +38,23 @@ In the following cases, obfuscated scripts will crash
 * Running obfuscated script by the debug version Python
 * Obfuscating scripts by Python 2.6 but running the obfuscated scripts by Python 2.7
 
-Could not find `_pytransform`
------------------------------
+After PyArmor 5.5.0, some machines may be crashed because of advanced mode. A
+quick workaround is to disable advanced mode by editing the file
+:file:`pytransform.py` which locates in the installed path of ``pyarmor`` , in
+the function ``_load_library``, uncomment about line 202. The final code looks
+like this::
 
-Generally, the dynamic library `_pytransform` is in the same path of
-obfuscated scripts. It may be:
+    # Disable advanced mode if required
+    m.set_option(5, c_char_p(1))
+
+
+Bootstrap Problem
+-----------------
+
+Could not find `_pytransform`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Generally, the dynamic library `_pytransform` is in the :ref:`runtime package`,
+before v5.7.0, it's in the same path of obfuscated scripts. It may be:
 
 * `_pytransform.so` in Linux
 * `_pytransform.dll` in Windows
@@ -46,19 +80,142 @@ First check whether the file exists. If it exists:
 
 Still doesn't work, report an issue_
 
-The `license.lic` generated doesn't work
-----------------------------------------
 
+ERROR: Unsupport platform linux.xxx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In some machines `pyarmor` could not recognize the platform and raise
+error. If there is available dynamic library in the table :ref:`The
+Others Prebuilt Libraries For PyArmor`. Just download it and save it
+in the path ``~/.pyarmor/platforms/SYSTEM/ARCH``, this command
+``pyarmor -d download`` will also display this path at the beginning.
+
+If there is no any available one, contact jondy.zhao@gmail.com if
+you'd like to run `pyarmor` in this platform.
+
+
+/lib64/libc.so.6: version 'GLIBC_2.14' not found
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In some machines there is no `GLIBC_2.14`, it will raise this exception.
+
+One solution is patching `_pytransform.so` by the following way.
+
+First check version information::
+
+    readelf -V /path/to/_pytransform.so
+    ...
+
+    Version needs section '.gnu.version_r' contains 2 entries:
+     Addr: 0x00000000000056e8  Offset: 0x0056e8  Link: 4 (.dynstr)
+      000000: Version: 1  File: libdl.so.2  Cnt: 1
+      0x0010:   Name: GLIBC_2.2.5  Flags: none  Version: 7
+      0x0020: Version: 1  File: libc.so.6  Cnt: 6
+      0x0030:   Name: GLIBC_2.7  Flags: none  Version: 8
+      0x0040:   Name: GLIBC_2.14  Flags: none Version: 6
+      0x0050:   Name: GLIBC_2.4  Flags: none  Version: 5
+      0x0060:   Name: GLIBC_2.3.4  Flags: none  Version: 4
+      0x0070:   Name: GLIBC_2.2.5  Flags: none  Version: 3
+      0x0080:   Name: GLIBC_2.3  Flags: none  Version: 2
+
+Then replace the entry of `GLIBC_2.14` with `GLIBC_2.2.5`:
+
+* Copy 4 bytes at 0x56e8+0x10=0x56f8 to 0x56e8+0x40=0x5728
+* Copy 4 bytes at 0x56e8+0x18=0x5700 to 0x56e8+0x48=0x5730
+
+Here are sample commands::
+
+    xxd -s 0x56f8 -l 4 _pytransform.so | sed "s/56f8/5728/" | xxd -r - _pytransform.so
+    xxd -s 0x5700 -l 4 _pytransform.so | sed "s/5700/5730/" | xxd -r - _pytransform.so
+
+.. note::
+
+   From v5.7.9, this patch is not required. In cross-platform all you need to do
+   is specify the platform to `centos6.x86_64` to fix this issue. For example::
+
+     pyarmor obfuscate --platform centos6.x86_64 foo.py
+
+
+Obfuscating Scripts Problem
+---------------------------
+
+Warning: code object xxxx isn't wrapped
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+It means this function isn't been obfuscated, because it includes some
+special instructions.
+
+For example, there is 2-bytes instruction `JMP 255`, after the code
+object is obfuscated, the operand is increased to `267`, and the
+instructions will be changed to::
+
+    EXTEND 1
+    JMP 11
+
+In this case, it's complex to obfuscate the code object with wrap
+mode. So the code object is obfuscated with non wrap mode, but all the
+other code objects still are obfuscated with wrap mode.
+
+In current version add some unused code in this function so that the
+operand isn't the critical value may avoid this warning.
+
+.. note::
+
+   Before v5.5.0, in this case the code object is left as it is.
+
+Code object could not be obufscated with advanced mode 2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Because this function includes some jump instructions that couldn't be
+handled. In this case, just refine this function, make sure the first statement
+will not generate jump instruction. For example, assignment, function call or
+any simple statement. However, the compound statements, for examples, `try`,
+`for`, `if`, `with`, `while` etc. will generate the jump instructions. If there
+is no anyway to refactor the function, insert the following statement at the
+beginning of this function::
+
+  [None, None]
+
+It will generate some instructions but doesn't change anything.
+
+Error: Try to run unauthorized function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If there is any file `license.lic` or `pytransform.key` in the current
+path, pyarmor maybe reports this error. One solution is to remove all
+of that files, the other solution to upgrade PyArmor to v5.4.5 later.
+
+
+'XXX' codec can't decode byte 0xXX
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add the exact source encode at the begin of the script. For example::
+
+    # -*- coding: utf-8 -*-
+
+Refer to https://docs.python.org/2.7/tutorial/interpreter.html#source-code-encoding
+
+
+Why plugin doesn't work
+~~~~~~~~~~~~~~~~~~~~~~~
+
+If the plugin script doesn't work as expected, first check the plugin script
+could be injected into the entry script by set Python debug flag::
+
+  # In linux
+  export PYTHONDEBUG=y
+  # In Windows
+  set PYTHONDEBUG=y
+
+  pyarmor obfuscate --exact --plugin check_ntp_time foo.py
+
+It will generate patched file ``foo.py.pyarmor-patched``, make sure the content
+of plugin script has been inserted into the right place, and the verify function
+will be executed.
+
+
+Running Obfuscated Scripts Problem
+----------------------------------
+
+The `license.lic` generated doesn't work
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The key is that the capsule used to obfuscate scripts must be same as
 the capsule used to generate licenses.
-
-If obfuscate scripts by command `pyarmor obfuscate`, :ref:`Global
-Capsule` is used implicitly. If obfuscate scripts by command `pyarmor
-build`, the project capsule is used.
-
-When generating new licenses for obfuscated scripts, if run command
-`pyarmor licenses` in project path, the project capsule is used
-implicitly, otherwise :ref:`Global Capsule`.
 
 The :ref:`Global Capsule` will be changed if the trial license file of
 |PyArmor| is replaced with normal one, or it's deleted occasionally
@@ -70,9 +227,9 @@ will not work for the obfuscated scripts before. If the old capsule is
 gone, one solution is to obfuscate these scripts by the new capsule
 again.
 
-NameError: name '__pyarmor__' is not defined
---------------------------------------------
 
+NameError: name '__pyarmor__' is not defined
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 No :ref:`Bootstrap Code` are executed before importing obfuscated
 scripts.
 
@@ -81,23 +238,21 @@ or `multiprocessing`, to be sure that :ref:`Bootstrap Code` will be
 called before importing any obfuscated code in sub-process. Otherwise
 it will raise this exception.
 
-Marshal loads failed when running xxx.py
-----------------------------------------
 
+Marshal loads failed when running xxx.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1. Check whether the version of Python to run obfuscated scripts is
    same as the version of Python to obfuscate script
 
-2. Check whether the capsule is generated based on current license of
-   PyArmor. Try to move global capsule `~/.pyarmor_capsule.zip` to any
-   other path, then obfuscate scripts again.
+2. Run obfuscated script by `python -d` to show more error message.
 
 3. Be sure the capsule used to generated the license file is same as
    the capsule used to obfuscate the scripts. The filename of the
    capsule will be shown in the console when the command is running.
 
-_pytransform can not be loaded twice
-------------------------------------
 
+_pytransform can not be loaded twice
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When the function `pyarmor_runtime` is called twice, it will complaint
 `_pytransform can not be loaded twice`
 
@@ -122,9 +277,9 @@ edit `pytransform.py` and comment these lines in function
 
    This limitation has been removed from v5.3.5.
 
-Check restrict mode failed
---------------------------
 
+Check restrict mode failed
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 Use obfuscated scripts in wrong way, by default all the obfuscated
 scripts can't be changed any more.
 
@@ -134,9 +289,9 @@ directly.
 
 For more information, refer to :ref:`Restrict Mode`
 
-Protection Fault: unexpected xxx
---------------------------------
 
+Protection Fault: unexpected xxx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Use obfuscated scripts in wrong way, by default, all the runtime files
 can't be changed any more. Do not touch the following files
 
@@ -145,56 +300,107 @@ can't be changed any more. Do not touch the following files
 
 For more information, refer to :ref:`Special Handling of Entry Script`
 
-Warning: code object xxxx isn't wrapped
----------------------------------------
 
-It means this function isn't been obfuscated, because it includes some
-special instructions.
+Run obfuscated scripts reports: Invalid input packet
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If the scripts are obfuscated in different platform, check the notes in
+:ref:`Distributing Obfuscated Scripts To Other Platform`
 
-For example, there is 2-bytes instruction `JMP 255`, after the code
-object is obfuscated, the operand is increased to `267`, and the
-instructions will be changed to::
+Before v5.7.0, check if there is any of `license.lic` or `pytransform.key` in
+the current path. Make sure they're generated for the obfuscated scripts. If
+not, rename them or move them to other path.
 
-    EXTEND 1
-    JMP 11
+Because the obfuscated scripts will first search the current path, then search
+the path of runtime module `pytransform.py` to find the file `license.lic` and
+`pytransform.key`. If they're not generated for the obfuscated script, this
+error will be reported.
 
-In this case, it's complex to obfuscate the code object with wrap
-mode. So the code object is left as it's, but all the other code
-objects still are obfuscated.
 
-In later version, it will be obfuscated with non wrap mode.
+OpenCV fails because of `NEON - NOT AVAILABLE`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In some Raspberry Pi platform, run the obfuscated scripts to import
+OpenCV fails::
 
-In current version add some unused code in this function so that the
-operand isn't the critical value may avoid this warning.
+    ************************************************** ****************
+    * FATAL ERROR: *
+    * This OpenCV build doesn't support current CPU / HW configuration *
+    * *
+    * Use OPENCV_DUMP_CONFIG = 1 environment variable for details *
+    ************************************************** ****************
 
-Error: Try to run unauthorized function
----------------------------------------
+    Required baseline features:
+    NEON - NOT AVAILABLE
+    terminate called after throwing an instance of 'cv :: Exception'
+      what (): OpenCV (3.4.6) /home/pi/opencv-python/opencv/modules/core/src/system.cpp:538: error:
+    (-215: Assertion failed) Missing support for required CPU baseline features. Check OpenCV build
+    configuration and required CPU / HW setup. in function 'initialize'
 
-If there is any file `license.lic` or `pytransform.key` in the current
-path, pyarmor maybe reports this error. One solution is to remove all
-of that files, the other solution to upgrade PyArmor to v5.4.5 later.
+One solution is to specify optioin ``--platform`` to `linux.armv7.0`::
 
-Check license failed: Invalid input packet.
--------------------------------------------
+    pyarmor obfuscate --platform linux.armv7.0 foo.py
+    pyarmor build --platform linux.armv7.0
+    pyarmor runtime --platform linux.armv7.0
 
-If print this error as running the obfuscated scripts, check if there
-is any of `license.lic` or `pytransform.key` in the current path. To
-be sure they're generated for the obfuscated scripts. If not, rename
-them or move them to other path.
+The other solution is to set environment variable `PYARMOR_PLATFORM`
+to `linux.armv7.0`. For examples::
 
-Because the obfuscated scripts will first search the current path,
-then search the path of runtime module `pytransform.py` to find the
-file `license.lic` and `pytransform.key`. If they're not generated for
-the obfuscated script, this error will be reported.
+    PYARMOR_PLATFORM=linux.armv7.0 pyarmor obfuscate foo.py
+    PYARMOR_PLATFORM=linux.armv7.0 pyarmor build
 
-.. How easy is to recover obfuscated code?:
+    Or,
 
-    If someone tries to break the obfuscation, he first must be an
-    expert in the field of reverse engineer, and be an expert of
-    Python, who should understand the structure of code object of
-    python, how python interpreter each instruction. If someone of
-    them start to reverse, he/she must step by step thousands of
-    machine instruction, and research the algorithm by machine
-    codes. So it's not an easy thing to reverse pyarmor.
+    export PYARMOR_PLATFORM=linux.armv7.0
+    pyarmor obfuscate foo.py
+    pyarmor build
+
+
+Packing Obfuscated Scripts Problem
+----------------------------------
+
+No module name pytransform
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+If report this error as running command `pyarmor pack`:
+
+* Make sure the script specified in the command line is not obfuscated
+* Run `pack` with extra option ``--clean`` to remove cached `myscript.spec`::
+
+    pyarmor pack --clean foo.py
+
+
+PyArmor Registration Problem
+----------------------------
+
+Purchased pyarmor is not private
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Even obfuscated with purchased version, license from trial version works:
+
+* Make sure command `pyarmor register` shows correct registration information
+* Make sure :ref:`global capsule` file `~/.pyarmor_capsule.zip` is same as the one in the keyfile `pyarmor-regfile-1.zip`
+* Try to reboot system.
+
+
+Known Issues
+------------
+
+Obfuscate scripts in cross platform
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+From v5.6.0 to v5.7.0, there is a bug for cross platform. The scripts obfuscated
+in linux64/windows64/darwin64 don't work after copied to one of this target
+platform::
+
+    armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm, poky-i586
+
+
+Misc. Questions
+---------------
+
+How easy is to recover obfuscated code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If someone tries to break the obfuscation, he first must be an expert in the
+field of reverse engineer, and be an expert of Python, who should understand the
+structure of code object of python, how python interpreter each instruction. If
+someone of them start to reverse, he/she must step by step thousands of machine
+instruction, and research the algorithm by machine codes. So it's not an easy
+thing to reverse pyarmor.
 
 .. include:: _common_definitions.txt

@@ -1,16 +1,14 @@
-from pytransform import _pytransform
-from ctypes import py_object, PYFUNCTYPE
-
-
-def get_license_code():
+def get_license_data():
+    from pytransform import _pytransform
+    from ctypes import py_object, PYFUNCTYPE
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_registration_code', _pytransform))
     rcode = dlfunc().decode()
-    index = rcode.find('*CODE:')
-    return rcode[index+6:]
+    index = rcode.find(';', rcode.find('*CODE:'))
+    return rcode[index+1:]
 
 
-def check_docker_id():
+def check_docker():
     cid = None
     with open("/proc/self/cgroup") as f:
         for line in f:
@@ -18,5 +16,5 @@ def check_docker_id():
                 cid = line.strip().split('/')[-1]
                 break
 
-    if cid is None or cid != get_license_code():
+    if cid is None or cid != get_license_data():
         raise RuntimeError('license not for this machine')
