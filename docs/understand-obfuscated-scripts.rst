@@ -39,6 +39,9 @@ the required files to run obfuscated scripts::
         pytransform/
             __init__.py
             _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+
+Before v6.3, there are 2 extra files::
+
             pytransform.key
             license.lic
 
@@ -132,11 +135,14 @@ be moved anywhere. Only this package in any Python Path, the obfuscated scripts
 can be run as normal scripts. And all the scripts obfuscated by the same
 :ref:`Global Capsule` could share this package.
 
-There are 4 files in this package::
+There are 2 files in this package::
 
     pytransform/
         __init__.py                  A normal python module
         _pytransform.so/.dll/.lib    A dynamic library implements core functions
+
+Before v6.3.0, there are 2 extra files::
+
         pytransform.key              Data file
         license.lic                  The license file for obfuscated scripts
 
@@ -147,10 +153,13 @@ Before v5.7.0, the runtime package has another form `Runtime Files`
 Runtime Files
 ~~~~~~~~~~~~~
 
-They're not in one package, but as four separated files::
+They're not in one package, but as 2 separated files::
 
     pytransform.py               A normal python module
     _pytransform.so/.dll/.lib    A dynamic library implements core functions
+
+Before v6.3.0, there are 2 extra files::
+
     pytransform.key              Data file
     license.lic                  The license file for obfuscated scripts
 
@@ -171,7 +180,7 @@ The License File for Obfuscated Script
 --------------------------------------
 
 There is a special runtime file `license.lic`, it's required to run the
-obfuscated scripts.
+obfuscated scripts. Since v6.3.0, it may be embedded into the dynamic library.
 
 When executing ``pyarmor obfuscate``, a default one will be generated, which
 allows obfuscated scripts run in any machine and never expired.
@@ -210,9 +219,6 @@ Key Points to Use Obfuscated Scripts
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/runtime')
 
-  Both of runtime files `license.lic` and `pytransform.key` should be in this
-  path either.
-
 * When starts a fresh python interpreter process by `multiprocssing.Process`,
   `os.exec`, `subprocess.Popen` etc., make sure the `bootstrap code`_ are called
   in new process before running any obfuscated script.
@@ -247,6 +253,10 @@ There are something changed after Python scripts are obfuscated:
 
 * It will crash to visit the attribute ``co_const`` of code object
   directly if the script is obfuscated in advanced mode.
+
+* If the exception is raised, the line number in the traceback should be same as
+  in the original script except this script has been patched by plugin script or
+  cross protection code.
 
 * The attribute ``__file__`` of code object in the obfuscated scripts
   will be ``<frozen name>`` other than real filename. So in the
