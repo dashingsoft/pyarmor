@@ -437,18 +437,17 @@ else
 propath=test-fixed-key
 mkdir $propath
 cp examples/simple/queens.py $propath
-$PYARMOR obfuscate -O $propath/dist $propath/queens.py > result.log 2>&1
+$PYARMOR licenses --fixed 1 -O $propath/a/license.lic > result.log 2>&1
+$PYARMOR licenses --fixed 101 -O $propath/b/license.lic > result.log 2>&1
 
-$PYARMOR licenses --fixed 1 -O $propath/dist/pytransform/license.lic > result.log 2>&1
-check_return_value
-
+$PYARMOR obfuscate -O $propath/dist --with-license $propath/a/license.lic \
+         $propath/queens.py > result.log 2>&1
 (cd $propath/dist; $PYTHON queens.py >result.log 2>&1 )
 check_return_value
 check_file_content $propath/dist/result.log 'Found 92 solutions'
 
-$PYARMOR licenses --fixed 101 -O $propath/dist/pytransform/license.lic > result.log 2>&1
-check_return_value
-
+$PYARMOR obfuscate -O $propath/dist --with-license $propath/b/license.lic \
+         $propath/queens.py > result.log 2>&1
 (cd $propath/dist; $PYTHON queens.py >result.log 2>&1 )
 check_file_content $propath/dist/result.log 'License is not for this machine'
 check_file_content $propath/dist/result.log 'Found 92 solutions' not
@@ -726,9 +725,7 @@ check_return_value
 check_return_value
 
 check_file_exists $PROPATH/dist/mypkg/pytransform/__init__.py
-check_file_exists $PROPATH/dist/mypkg/pytransform/license.lic
 check_file_exists $PROPATH/dist/mypkg/__init__.py
-check_file_not_exists $PROPATH/dist/mypkg/license.lic
 
 csih_inform "Case P-8: open project with other configure filename"
 PROPATH=projects/test-p8
