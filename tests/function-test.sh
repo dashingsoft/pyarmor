@@ -595,10 +595,10 @@ check_return_value
 (cd $dist; $PYTHON sufoo2.py >result.log 2>&1)
 check_return_value
 check_file_content $dist/result.log "Super Mode: 2"
+check_file_content $dist/result.log "n is 25"
 check_file_content $dist/result.log "n is 26"
 check_file_content $dist/result.log "n is 27"
-check_file_content $dist/result.log "n is 28"
-check_file_content $dist/result.log "At last the value is 30"
+check_file_content $dist/result.log "At last the value is 28"
 
 csih_inform "S-7. Test super mode with clean_str"
 dist=dist-super-mode-7
