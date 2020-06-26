@@ -514,7 +514,7 @@ file. For example::
 So that we could generate different licenses for different users
 later easily. Here are basic steps:
 
-1. First create runtime-hook script `copy_licese.py`::
+1. First create runtime-hook script `copy_license.py`::
 
     import sys
     from os.path import join, dirname
@@ -530,7 +530,7 @@ later easily. Here are basic steps:
   Option ``--without-license`` tells :ref:`pack` not to bundle the `license.lic`
   of obfuscated scripts to the final executable file. By option
   ``--runtime-hook`` of `PyInstaller`_, the specified script
-  :file:`copy_licesen.py` will be executed before any obfuscated scripts are
+  :file:`copy_license.py` will be executed before any obfuscated scripts are
   imported. It will copy outer :file:`license.lic` to right path.
 
   Try to run :file:`dist/foo.exe`, it should report license error.
