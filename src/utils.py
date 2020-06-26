@@ -511,29 +511,23 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             os.makedirs(output)
     logging.info('Generating runtime files to %s', relpath(output))
 
-    myzip = ZipFile(capsule, 'r')
-    if 'pytransform.key' in myzip.namelist():
-        logging.info('Extract pytransform.key')
-        myzip.extract('pytransform.key', output)
-    else:
-        logging.info('Extract pyshield.key, pyshield.lic, product.key')
-        myzip.extract('pyshield.key', output)
-        myzip.extract('pyshield.lic', output)
-        myzip.extract('product.key', output)
-    myzip.close()
-
-    _build_license_file(capsule, licfile,
-                        output=os.path.join(output, 'license.lic'))
+    checklist = []
+    keylist = _build_keylist(capsule, licfile)
 
     def copy3(src, dst):
+        x = os.path.basename(src)
         if suffix:
-            x = os.path.basename(src).replace('.', ''.join([suffix, '.']))
-            shutil.copy2(src, os.path.join(dst, x))
-        else:
-            shutil.copy2(src, dst)
-        checklist.append(_get_checksum(src))
+            x = x.replace('.', ''.join([suffix, '.']))
+        target = os.path.join(dst, x)
+        shutil.copy2(src, target)
 
-    checklist = []
+        logging.info('Patch library %s', target)
+        data = _patch_extension(target, keylist, suffix)
+        with open(target, 'wb') as f:
+            f.write(data)
+
+        checklist.append(_get_checksum(target))
+
     if not platforms:
         libfile = pytransform._pytransform._name
         if not os.path.exists(libfile):
@@ -568,8 +562,11 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
     if package:
+        logging.info('Copying %s', filename)
+        logging.info('Rename it to %s/__init__.py', os.path.basename(output))
         shutil.copy2(filename, os.path.join(output, '__init__.py'))
     else:
+        logging.info('Copying %s', filename)
         copy3(filename, output)
 
     logging.info('Generate runtime files OK')
@@ -1153,21 +1150,7 @@ def _patch_extension(filename, keylist, suffix=''):
     return data
 
 
-def _make_super_runtime(capsule, output, licfile=None, platforms=None,
-                        restrict=True, suffix=''):
-    logging.info('Generating super runtime library to %s', relpath(output))
-    if not os.path.exists(output):
-        os.makedirs(output)
-
-    supermode = True
-    if not platforms:
-        platid = _format_platid()
-        filelist = _build_platforms([platid], restrict, supermode)[:1]
-    elif len(platforms) == 1:
-        filelist = _build_platforms(platforms, restrict, supermode)[:1]
-    else:
-        filelist = _build_platforms(platforms, restrict, supermode)
-
+def _build_keylist(capsule, licfile):
     myzip = ZipFile(capsule, 'r')
     if 'pytransform.key' not in myzip.namelist():
         raise RuntimeError('No pytransform.key found in capsule')
@@ -1186,8 +1169,26 @@ def _make_super_runtime(capsule, output, licfile=None, platforms=None,
 
     k1 = 16
     k2 = k1 + size1
-    keylist = keydata[k1:k2], keydata[k2:k2+size2], lickey
 
+    return keydata[k1:k2], keydata[k2:k2+size2], lickey
+
+
+def _make_super_runtime(capsule, output, licfile=None, platforms=None,
+                        restrict=True, suffix=''):
+    logging.info('Generating super runtime library to %s', relpath(output))
+    if not os.path.exists(output):
+        os.makedirs(output)
+
+    supermode = True
+    if not platforms:
+        platid = _format_platid()
+        filelist = _build_platforms([platid], restrict, supermode)[:1]
+    elif len(platforms) == 1:
+        filelist = _build_platforms(platforms, restrict, supermode)[:1]
+    else:
+        filelist = _build_platforms(platforms, restrict, supermode)
+
+    keylist = _build_keylist(capsule, licfile)
     namelist = []
     checklist = []
     for filename in filelist:
