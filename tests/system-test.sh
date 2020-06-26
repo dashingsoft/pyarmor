@@ -389,6 +389,107 @@ check_return_value
 check_file_content $output/result.log 'Found 92 solutions'
 check_file_content $output/result.log 'No restrict mode'
 
+cat <<EOF > test-license.py
+from pytransform import get_license_info
+print('Test old licenses')
+print(get_license_info())
+EOF
+$PYARMOR obfuscate --with-license outer --exact \
+         -O test-legency-licenses test-license.py >result.log 2>&1
+
+csih_inform "Case 7.4: Generate license bind to fixed machine"
+$PYARMOR licenses --bind-disk="${harddisk_sn}" r001 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r001/license.lic
+
+cp licenses/r001/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses"
+check_file_content test-legency-licenses/result.log "${harddisk_sn}"
+
+csih_inform "Case 7.5: Generate no expired license bind to fixed machine"
+$PYARMOR licenses -e $(next_month) --bind-disk="${harddisk_sn}" r002 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r002/license.lic
+
+cp licenses/r002/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses"
+check_file_content test-legency-licenses/result.log "r002"
+
+csih_inform "Case 7.6: Generate expired license"
+$PYARMOR licenses -e 2014-01-01 r003 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r003/license.lic
+
+cp licenses/r003/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses" not
+
+csih_inform "Case 7.7: generate license bind to mac address"
+$PYARMOR licenses --bind-mac="${ifmac_address}" r004 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r004/license.lic
+
+cp licenses/r004/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses"
+check_file_content test-legency-licenses/result.log "r004"
+check_file_content test-legency-licenses/result.log "${ifmac_address}"
+
+csih_inform "Case 7.8: Generate license bind to other mac address"
+$PYARMOR licenses --bind-mac="xx:yy:zz" r005 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r005/license.lic
+
+cp licenses/r005/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses" not
+check_file_content test-legency-licenses/result.log "r005" not
+
+csih_inform "Case 7.9: Generate license bind to ip address"
+$PYARMOR licenses --bind-ipv4="${ifip_address}" r006 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r006/license.lic
+
+cp licenses/r006/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses"
+check_file_content test-legency-licenses/result.log "r006"
+check_file_content test-legency-licenses/result.log "${ifip_address}"
+
+csih_inform "Case 7.10: Generate license bind to other ip address"
+$PYARMOR licenses --bind-ipv4="xxx.yyy.zzz" r007 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r007/license.lic
+
+cp licenses/r007/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses" not
+check_file_content test-legency-licenses/result.log "r007" not
+
+csih_inform "Case 7.11: Generate license bind to both mac and ip address"
+$PYARMOR licenses --bind-mac="${ifmac_address}" \
+         --bind-ipv4="${ifip_address}" r008 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r008/license.lic
+
+cp licenses/r008/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses"
+check_file_content test-legency-licenses/result.log "r008"
+check_file_content test-legency-licenses/result.log "${ifmac_address}"
+
+csih_inform "Case 7.12: Generate license bind to other domain name"
+$PYARMOR licenses --bind-domain="snsoffice.com" r009 >result.log 2>&1
+check_return_value
+check_file_exists licenses/r009/license.lic
+
+cp licenses/r009/license.lic test-legency-licenses/pytransform
+( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
+check_file_content test-legency-licenses/result.log "Test old licenses" not
+check_file_content test-legency-licenses/result.log "r009" not
+
 echo ""
 echo "-------------------- Test Command licenses END -----------------"
 echo ""
