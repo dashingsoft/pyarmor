@@ -231,21 +231,12 @@ def check_setup_script(_type, setup):
     raise RuntimeError('No setup script %s found' % setup)
 
 
-def _make_hook_pytransform(hookfile, obfdist, nolicense=False, encoding=None):
+def _make_hook_pytransform(hookfile, obfdist, encoding=None):
     # On Mac OS X pyinstaller will call mac_set_relative_dylib_deps to
     # modify .dylib file, it results in the cross protection of pyarmor fails.
     # In order to fix this problem, we need add .dylib as data file
     p = obfdist + os.sep
-    lines = [
-        'from PyInstaller.compat import is_darwin',
-        'datas=[(r"{0}pytransform.key", ".")]',
-        'if is_darwin:',
-        '    datas.append((r"{0}_pytransform.*", "."))',
-        'else:',
-        '    binaries=[(r"{0}_pytransform.*", ".")]',
-    ]
-    if not nolicense:
-        lines.append('datas.append((r"{0}license.lic", "."))')
+    lines = ['binaries=[(r"{0}_pytransform.*", ".")]']
 
     if encoding is None:
         with open(hookfile, 'w') as f:
@@ -403,26 +394,8 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     for x in glob(os.path.join(obfdist, 'pytransform.*')):
         if x.endswith('pytransform.py'):
             supermode = False
-        if not x.endswith('pytransform.key'):
-            logging.info('Copy %s to temp path', x)
-            shutil.copy(x, obftemp)
-
-    if licfile:
-        logging.info('Copy license file %s to %s', licfile, obfdist)
-        shutil.copy2(licfile, os.path.join(obfdist, 'license.lic'))
-    elif licfile is False:
-        logging.info('Using outer license file')
-    elif not supermode:
-        x = ['licenses', '-O', os.path.join(obfdist, 'license.lic')]
-        x.extend([] if '='.join(xoptions).find('restrict=0') == -1
-                 else ['--disable-restrict-mode'])
-        if sys.platform == 'win32' and sys.maxsize < 2 ** 32:
-            logging.info('Generate default license file')
-            x.extend(['pyarmor-packer'])
-        else:
-            logging.info('Generate fixed license file')
-            x.extend(['--fixed', '1', 'pyarmor-packer'])
-        call_pyarmor(x)
+        logging.info('Copy %s to temp path', x)
+        shutil.copy(x, obftemp)
 
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
@@ -440,7 +413,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     hookfile = os.path.join(obftemp, 'hook-pytransform.py')
     logging.info('Generate hook script: %s', hookfile)
     if not supermode:
-        _make_hook_pytransform(hookfile, obfdist, licfile is False, encoding)
+        _make_hook_pytransform(hookfile, obfdist, encoding)
 
     logging.info('Patching .spec file...')
     patched_spec = _patch_specfile(obfdist, src, specfile, hookpath,

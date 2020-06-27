@@ -111,14 +111,7 @@ check_return_value
 
 dist=examples/simple/dist
 ( cd $dist/queens; ./queens  >result.log 2>&1 )
-
-check_file_exists $dist/queens/license.lic
 check_file_content $dist/queens/result.log 'Found 92 solutions'
-
-rm $dist/queens/license.lic
-( cd $dist/queens; ./queens  >result.log 2>&1 )
-check_file_content $dist/queens/result.log 'Found 92 solutions' not
-check_file_content $dist/queens/result.log 'No such file or directory'
 
 csih_inform "Case 3-2: Test option --name with PyInstaller"
 $PYARMOR pack --clean -O dist --name foo2 \
@@ -178,8 +171,6 @@ $PYARMOR pack --output $dist -x " --restrict 2" examples/testpkg/main.py >result
 check_return_value
 
 ( cd $dist/main; ./main  >result.log 2>&1 )
-
-check_file_exists $dist/main/license.lic
 check_file_content $dist/main/result.log 'Hello! PyArmor Test Case'
 
 csih_inform "Case 3-7: Test runtime hook in the src path"
@@ -204,7 +195,6 @@ echo "print('Hello test --with-license')" > $dist/main.py
 (cd $dist; $PYTHON ../pyarmor.py pack --output dist \
                    --with-license fake-license.lic main.py >result.log 2>&1)
 check_return_value
-check_file_exists $dist/dist/main/license.lic
 
 ( cd $dist; dist/main/main  >result.log 2>&1 )
 check_file_content $dist/result.log 'Hello test --with-license' not
@@ -217,7 +207,6 @@ check_return_value
 
 $PYARMOR pack -O $project/dist $project >result.log 2>&1
 check_return_value
-check_file_exists $project/dist/queens/pytransform.key
 
 (cd $project/dist; ./queens/queens >result.log 2>&1)
 check_return_value
@@ -231,7 +220,6 @@ check_return_value
 mv $project/.pyarmor_config $project/test.json
 $PYARMOR pack -O $project/dist $project/test.json >result.log 2>&1
 check_return_value
-check_file_exists $project/dist/queens/pytransform.key
 
 (cd $project/dist; ./queens/queens >result.log 2>&1)
 check_return_value
