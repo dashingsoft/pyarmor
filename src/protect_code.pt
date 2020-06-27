@@ -41,13 +41,13 @@ def protect_pytransform():
         else:
             filename = pytransform.os.path.join({rpath}, {spath}, libname)
 
-        size = pytransform.os.path.getsize(filename) & 0xFFFFFFF0
-        n = size >> 2
         with open(filename, 'rb') as f:
-            buf = f.read(size)
-        fmt = 'I' * n
-        checksum = sum(pytransform.struct.unpack(fmt, buf)) & 0xFFFFFFFF
-        if checksum not in {checksum}:
+            buf = bytearray(f.read())
+        value = sum(buf)
+        if getattr(pytransform.sys, 'frozen', False) and sys.platform == 'darwin':
+            value += 1217
+
+        if value not in {checksum}:
             raise RuntimeError('unexpected %s' % filename)
 
     assert_builtin(sum)

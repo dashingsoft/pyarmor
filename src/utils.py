@@ -528,8 +528,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         data = _patch_extension(target, keylist, suffix)
         with open(target, 'wb') as f:
             f.write(data)
-
-        checklist.append(_get_checksum(target))
+        checklist.append(sum(bytearray(data)))
 
     if not platforms:
         libfile = pytransform._pytransform._name
