@@ -250,8 +250,9 @@ def download_pytransform(platid, output=None, url=None, index=None):
 
 def update_pytransform(pattern):
     platforms = dict([(p['id'], p) for p in get_platform_list()])
-    path = os.path.join(CROSS_PLATFORM_PATH, '*', '*', '*', '_pytransform.*')
-    flist = glob(path)
+    path = os.path.join(CROSS_PLATFORM_PATH, '*', '*', '*')
+    flist = glob(os.path.join(path, '_pytransform.*')) + \
+        glob(os.path.join(path, 'py*', 'pytransform.*'))
 
     plist = []
     n = len(CROSS_PLATFORM_PATH) + 1
