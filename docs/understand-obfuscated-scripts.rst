@@ -254,9 +254,9 @@ There are something changed after Python scripts are obfuscated:
 * It will crash to visit the attribute ``co_const`` of code object
   directly if the script is obfuscated in advanced mode.
 
-* If the exception is raised, the line number in the traceback should be same as
-  in the original script except this script has been patched by plugin script or
-  cross protection code.
+* If the exception is raised, the line number in the traceback may be
+  different from the original script, especially this script has been
+  patched by plugin script or cross protection code.
 
 * The attribute ``__file__`` of code object in the obfuscated scripts
   will be ``<frozen name>`` other than real filename. So in the
