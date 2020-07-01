@@ -1163,7 +1163,7 @@ def _build_keylist(capsule, licfile):
 
     lickey = _build_license_file(capsule, licfile)
 
-    if sys.version_info.major == 2:
+    if sys.version_info[0] == 2:
         size1 = ord(keydata[0]) + ord(keydata[1]) * 256
         size2 = ord(keydata[2]) + ord(keydata[3]) * 256
     else:
