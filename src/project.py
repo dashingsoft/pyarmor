@@ -53,9 +53,9 @@ class Project(dict):
 
     VERSION = 2, 0
 
-    OBF_MODULE_MODE = 'none', 'des'
+    OBF_MODULE_MODE = 'none', 'des', 'aes'
 
-    OBF_CODE_MODE = 'none', 'des', 'fast', 'wrap'
+    OBF_CODE_MODE = 'none', 'fast', 'aes', 'wrap'
 
     DEFAULT_VALUE = \
         ('version', '.'.join([str(x) for x in VERSION])), \

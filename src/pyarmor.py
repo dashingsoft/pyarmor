@@ -919,7 +919,7 @@ def _parser():
                          action='append',
                          help='Target platform to run obfuscated scripts, '
                          'use this option multiple times for more platforms')
-    cparser.add_argument('--obf-mod', type=int, choices=(0, 1), default=1)
+    cparser.add_argument('--obf-mod', type=int, choices=(0, 1, 2), default=1)
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2), default=1)
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1), default=1)
     cparser.add_argument('--advanced', type=int, default=0, choices=(0, 1, 2),
@@ -1055,7 +1055,7 @@ def _parser():
                          help=argparse.SUPPRESS)
     cparser.add_argument('--obf-code-mode', choices=Project.OBF_CODE_MODE,
                          help=argparse.SUPPRESS)
-    cparser.add_argument('--obf-mod', type=int, choices=(0, 1))
+    cparser.add_argument('--obf-mod', type=int, choices=(0, 1, 2))
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2))
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1))
     cparser.add_argument('--cross-protection', type=int, choices=(0, 1),
