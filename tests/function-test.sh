@@ -470,6 +470,25 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log 'This is customized protection code'
 
+csih_inform "C-38. Test obfuscate command with obf-mod is 2"
+dist=test-obf-mod-2
+$PYARMOR obfuscate -O $dist --obf-mod 2 examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log 'Found 92 solutions'
+
+csih_inform "C-39. Test special wrap and obf-code is 2"
+dist=test-special-wrap-obf-code-2
+$PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist \
+         test/data/no_wrap.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON no_wrap.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
@@ -616,6 +635,27 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log "Clean data: 30"
 check_file_content $dist/result.log "aaaaaaaaaa" not
+
+csih_inform "S-8. Test super mode with obf_mod = 2"
+dist=dist-super-mode-8
+
+$PYARMOR obfuscate --exact --advanced 2 -O $dist --obf-mod 2 \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Found 92 solutions"
+
+csih_inform "S-9. Test super mode with jump header and obf_code 2"
+dist=dist-super-mode-9
+$PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist \
+         test/data/no_wrap.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON no_wrap.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
 
 echo ""
 echo "-------------------- Super Mode End --------------------------"
@@ -819,6 +859,19 @@ $PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
 $PYARMOR build --with-license=outer $PROPATH  >result.log 2>&1
 check_return_value
 check_file_not_exists exists $PROPATH/dist/pytransform/license.lic
+
+csih_inform "Case P-16: build project with --obf-mod 2"
+PROPATH=projects/test-project-with-obf-mod-2
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR config --obf-mod=2 $PROPATH  >result.log 2>&1
+check_return_value
+
+$PYARMOR build $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH/dist; $PYTHON queens.py >result.log 2>&1)
+check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
 
 echo ""
 echo "-------------------- Test Project End ------------------------"
