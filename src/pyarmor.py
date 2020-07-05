@@ -1169,9 +1169,9 @@ def _parser():
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
                          default=1, type=int)
-    cparser.add_argument('-a', '--adv-mode', choices=(0, 1),
+    cparser.add_argument('-a', '--adv-mode', choices=(0, 1, 2),
                          default=0, type=int)
-    cparser.add_argument('--debug', action='store_true',
+    cparser.add_argument('-d', '--debug', action='store_true',
                          help='Do not clean the test scripts'
                               'generated in real time')
     cparser.set_defaults(func=_benchmark)

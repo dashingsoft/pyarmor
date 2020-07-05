@@ -96,7 +96,7 @@ def obffuscate_scripts(output, filename,
             project]
     call_pyarmor(args)
 
-    args = [sys.executable, PYARMOR, 'build', project]
+    args = [sys.executable, PYARMOR, 'build', '-B', project]
     call_pyarmor(args)
 
     for s in os.listdir(os.path.join(project, 'dist')):
@@ -273,11 +273,11 @@ def main():
             sys.argv.extend(['1', '1', '1', '0'])
         obf_mod, obf_code, wrap_mode, adv_mode = sys.argv[2:6]
 
-        if not os.path.exists(output):
-            logging.info('Create output path: %s', output)
-            os.makedirs(output)
-        else:
-            logging.info('Output path: %s', output)
+        if os.path.exists(output) and output.endswith('.benchtest'):
+            logging.info('Clean output path: %s', output)
+            shutil.rmtree(output)
+        logging.info('Create output path: %s', output)
+        os.makedirs(output)
 
         logging.info('Generate test script %s ...', filename)
         make_test_script(filename)
