@@ -150,8 +150,8 @@ $PYTHON -c"
 with open('$ascript', 'w') as f:
   for i in range(100):
     f.write('a{0} = {1}\n'.format(i, [1] * 1000))"
+
 $PYARMOR obfuscate --exact -O dist-big-array $ascript >result.log 2>&1
-check_file_content result.log 'Check license failed'
 check_file_content result.log 'Too big code object, the limitation is'
 
 csih_inform "11. Obfuscate big code object without wrap mode"
@@ -163,9 +163,8 @@ with open('big_array.py', 'w') as f:
   f.write('print(\"a99 = %s\" % a99)')"
 $PYARMOR init --src=. --entry=big_array.py -t app $PROPATH >result.log 2>&1
 $PYARMOR config --wrap-mode=0 --manifest="include big_array.py" $PROPATH >result.log 2>&1
-(cd $PROPATH; $ARMOR build >result.log 2>&1)
 
-check_file_content $PROPATH/result.log 'Check license failed'
+(cd $PROPATH; $ARMOR build >result.log 2>&1)
 check_file_content $PROPATH/result.log 'Too big code object, the limitation is'
 
 csih_inform "12. Obfuscate the scripts with option --enable-suffix"
@@ -244,8 +243,8 @@ with open('$ascript', 'w') as f:
   for i in range(200):
     f.write('def test_{0}(n):\n'.format(i))
     f.write('    return n + {0}\n'.format(i))"
+
 $PYARMOR obfuscate --exact -O dist-big-script $ascript >result.log 2>&1
-check_file_content result.log 'Check license failed'
 check_file_content result.log 'Too big code object, the limitation is'
 
 csih_inform "18. Get issuer of the obfuscate scripts"
