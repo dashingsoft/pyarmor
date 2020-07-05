@@ -236,6 +236,26 @@ def call_1000_obfuscated_10k_bytecode(foo):
     return foo.call_1k_function(1000)
 
 
+@metricmethod
+def call_10000_no_obfuscated_1k_bytecode(foo):
+    return foo.call_1k_function(10000)
+
+
+@metricmethod
+def call_10000_obfuscated_1k_bytecode(foo):
+    return foo.call_1k_function(10000)
+
+
+@metricmethod
+def call_10000_no_obfuscated_10k_bytecode(foo):
+    return foo.call_1k_function(10000)
+
+
+@metricmethod
+def call_10000_obfuscated_10k_bytecode(foo):
+    return foo.call_1k_function(10000)
+
+
 def main():
     if not os.path.exists('benchmark.py'):
         logging.warning('Please change current path to %s', PYARMOR_PATH)
@@ -337,6 +357,14 @@ def main():
     logging.info('')
     call_1000_no_obfuscated_10k_bytecode(foo)
     call_1000_obfuscated_10k_bytecode(obfoo)
+
+    logging.info('')
+    call_10000_no_obfuscated_1k_bytecode(foo)
+    call_10000_obfuscated_1k_bytecode(obfoo)
+
+    logging.info('')
+    call_10000_no_obfuscated_10k_bytecode(foo)
+    call_10000_obfuscated_10k_bytecode(obfoo)
 
     logging.info('')
     logging.info('--------------------------------------')
