@@ -689,12 +689,13 @@ def _benchmark(args):
     logging.info('Obfuscate module mode: %s', args.obf_mod)
     logging.info('Obfuscate code mode: %s', args.obf_code)
     logging.info('Obfuscate wrap mode: %s', args.wrap_mode)
+    logging.info('Obfuscate advanced mode: %s', args.adv_mode)
 
     logging.info('Benchmark bootstrap ...')
     path = os.path.normpath(os.path.dirname(__file__))
     p = subprocess.Popen(
-        [sys.executable, 'benchmark.py', 'bootstrap',
-         str(args.obf_mod), str(args.obf_code), str(args.wrap_mode)],
+        [sys.executable, 'benchmark.py', 'bootstrap', str(args.obf_mod),
+         str(args.obf_code), str(args.wrap_mode), str(args.adv_mode)],
         cwd=path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.wait()
     logging.info('Benchmark bootstrap OK.')
@@ -1162,12 +1163,14 @@ def _parser():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Run benchmark test in current machine'
     )
-    cparser.add_argument('-m', '--obf-mod', choices=(0, 1),
+    cparser.add_argument('-m', '--obf-mod', choices=(0, 1, 2),
                          default=1, type=int)
     cparser.add_argument('-c', '--obf-code', choices=(0, 1, 2),
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
                          default=1, type=int)
+    cparser.add_argument('-a', '--adv-mode', choices=(0, 1),
+                         default=0, type=int)
     cparser.add_argument('--debug', action='store_true',
                          help='Do not clean the test scripts'
                               'generated in real time')

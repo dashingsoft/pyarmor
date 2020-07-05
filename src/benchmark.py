@@ -8,7 +8,7 @@
 #                                                           #
 #      pyarmor                                              #
 #                                                           #
-#      Version: 1.7.0 - 3.4.0                               #
+#      Version: 1.7.0 -                                     #
 #                                                           #
 #############################################################
 #
@@ -34,8 +34,8 @@ from ctypes import c_int, c_void_p, py_object, pythonapi, PYFUNCTYPE
 
 import pytransform
 
-OBF_MODULE_MODE = 'none', 'des'
-OBF_CODE_MODE = 'none', 'des', 'fast', 'wrap'
+OBF_MODULE_MODE = 'none', 'des', 'aes'
+OBF_CODE_MODE = 'none', 'fast', 'aes', 'wrap'
 
 PYARMOR_PATH = os.path.dirname(__file__)
 PYARMOR = 'pyarmor.py'
@@ -45,6 +45,14 @@ def make_test_script(filename):
     lines = [
         'def empty():',
         '  return 0',
+        '',
+        'def call_1k_function(n):',
+        '  for i in range(n):',
+        '    one_thousand()',
+        '',
+        'def call_10k_function(n):',
+        '  for i in range(n):',
+        '    ten_thousand()',
         '',
         'def one_thousand():',
         '  if False:',
@@ -67,7 +75,8 @@ def call_pyarmor(args):
     p.wait()
 
 
-def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
+def obffuscate_scripts(output, filename,
+                       mod_mode, code_mode, wrap_mode, adv_mode):
     project = os.path.join(output, 'project')
     if os.path.exists(project):
         shutil.rmtree(project)
@@ -78,9 +87,10 @@ def obffuscate_scripts(output, filename, module_mode, code_mode, wrap_mode):
 
     args = [sys.executable, PYARMOR, 'config',
             '--manifest', 'include %s' % filename,
-            '--obf-mod', module_mode,
+            '--obf-mod', mod_mode,
             '--obf-code', code_mode,
             '--wrap-mode', wrap_mode,
+            '--advanced', adv_mode,
             '--restrict-mode', '0',
             '--package-runtime', '0',
             project]
@@ -101,7 +111,7 @@ def metricmethod(func):
         t1 = time.process_time()
         result = func(*args, **kwargs)
         t2 = time.process_time()
-        logging.info('%s: %s ms', func.__name__, (t2 - t1) * 1000)
+        logging.info('%-50s: %10.6f ms', func.__name__, (t2 - t1) * 1000)
         return result
     return wrap
 
@@ -145,12 +155,12 @@ def total_extra_init_time():
 
 
 @metricmethod
-def import_no_obfuscated_module(name):
+def import_first_no_obfuscated_module(name):
     return __import__(name)
 
 
 @metricmethod
-def import_obfuscated_module(name):
+def import_first_obfuscated_module(name):
     return __import__(name)
 
 
@@ -170,12 +180,12 @@ def run_empty_obfuscated_code_object(foo):
 
 
 @metricmethod
-def run_one_thousand_obfuscated_bytecode(foo):
+def run_obfuscated_1k_bytecode(foo):
     return foo.one_thousand()
 
 
 @metricmethod
-def run_ten_thousand_obfuscated_bytecode(foo):
+def run_obfuscated_10k_bytecode(foo):
     return foo.ten_thousand()
 
 
@@ -185,13 +195,45 @@ def run_empty_no_obfuscated_code_object(foo):
 
 
 @metricmethod
-def run_one_thousand_no_obfuscated_bytecode(foo):
+def run_no_obfuscated_1k_bytecode(foo):
     return foo.one_thousand()
 
 
 @metricmethod
-def run_ten_thousand_no_obfuscated_bytecode(foo):
+def run_no_obfuscated_10k_bytecode(foo):
     return foo.ten_thousand()
+
+
+@metricmethod
+def import_many_obfuscated_modules(name, n=100):
+    for i in range(n):
+        __import__(name % i)
+
+
+@metricmethod
+def import_many_no_obfuscated_modules(name, n=100):
+    for i in range(n):
+        __import__(name % i)
+
+
+@metricmethod
+def call_1000_no_obfuscated_1k_bytecode(foo):
+    return foo.call_1k_function(1000)
+
+
+@metricmethod
+def call_1000_obfuscated_1k_bytecode(foo):
+    return foo.call_1k_function(1000)
+
+
+@metricmethod
+def call_1000_no_obfuscated_10k_bytecode(foo):
+    return foo.call_1k_function(1000)
+
+
+@metricmethod
+def call_1000_obfuscated_10k_bytecode(foo):
+    return foo.call_1k_function(1000)
 
 
 def main():
@@ -207,9 +249,9 @@ def main():
     obfilename = os.path.join(output, obname + '.py')
 
     if len(sys.argv) > 1 and 'bootstrap'.startswith(sys.argv[1]):
-        if len(sys.argv) < 5:
-            sys.argv.extend(['1', '1', '1'])
-        obf_mod, obf_code, wrap_mode = sys.argv[2:5]
+        if len(sys.argv) < 6:
+            sys.argv.extend(['1', '1', '1', '0'])
+        obf_mod, obf_code, wrap_mode, adv_mode = sys.argv[2:6]
 
         if not os.path.exists(output):
             logging.info('Create output path: %s', output)
@@ -223,7 +265,7 @@ def main():
         logging.info('Obffuscate test script ...')
         shutil.copy(filename, obfilename)
         obffuscate_scripts(output, os.path.basename(obfilename),
-                           obf_mod, obf_code, wrap_mode)
+                           obf_mod, obf_code, wrap_mode, adv_mode)
         if not os.path.exists(obfilename):
             logging.info('Something is wrong to obsfucate the script')
             return
@@ -255,28 +297,46 @@ def main():
 
     logging.info('--------------------------------------')
 
-    logging.info('')
-    total_extra_init_time()
+    # It doens't work for super mode
+    # logging.info('')
+    # total_extra_init_time()
 
     logging.info('')
-    foo = import_no_obfuscated_module(name)
-    obfoo = import_obfuscated_module(obname)
+    foo = import_first_no_obfuscated_module(name)
+    obfoo = import_first_obfuscated_module(obname)
 
     logging.info('')
     foo = re_import_no_obfuscated_module(name)
     obfoo = re_import_obfuscated_module(obname)
 
     logging.info('')
+    n = 10
+    logging.info('--- Import %d modules ---', n)
+    for i in range(n):
+        shutil.copy(filename, filename.replace('.py', '_%s.py' % i))
+        shutil.copy(obfilename, obfilename.replace('.py', '_%s.py' % i))
+    import_many_no_obfuscated_modules('bfoo_%s', n)
+    import_many_obfuscated_modules('obfoo_%s', n)
+
+    logging.info('')
     run_empty_no_obfuscated_code_object(foo)
     run_empty_obfuscated_code_object(obfoo)
 
     logging.info('')
-    run_one_thousand_no_obfuscated_bytecode(foo)
-    run_one_thousand_obfuscated_bytecode(obfoo)
+    run_no_obfuscated_1k_bytecode(foo)
+    run_obfuscated_1k_bytecode(obfoo)
 
     logging.info('')
-    run_ten_thousand_no_obfuscated_bytecode(foo)
-    run_ten_thousand_obfuscated_bytecode(obfoo)
+    run_no_obfuscated_10k_bytecode(foo)
+    run_obfuscated_10k_bytecode(obfoo)
+
+    logging.info('')
+    call_1000_no_obfuscated_1k_bytecode(foo)
+    call_1000_obfuscated_1k_bytecode(obfoo)
+
+    logging.info('')
+    call_1000_no_obfuscated_10k_bytecode(foo)
+    call_1000_obfuscated_10k_bytecode(obfoo)
 
     logging.info('')
     logging.info('--------------------------------------')
