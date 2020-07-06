@@ -216,17 +216,17 @@ def _build(args):
         platforms = project.get('platform').split(',')
     else:
         platforms = []
-    if platforms:
-        platforms = compatible_platform_names(platforms)
-        logging.info('Taget platforms: %s', platforms)
-        if check_cross_platform(platforms) is not False:
-            return
 
     restrict = project.get('restrict_mode',
                            0 if project.get('disable_restrict_mode') else 1)
     adv_mode = (project.advanced_mode if project.advanced_mode else 0) \
         if hasattr(project, 'advanced_mode') else 0
-    supermode = adv_mode > 1
+    supermode = adv_mode in (2, 4)
+    vmode = adv_mode in (3, 4)
+
+    platforms = compatible_platform_names(platforms)
+    logging.info('Taget platforms: %s', platforms)
+    check_cross_platform(platforms, supermode, vmode)
 
     protection = project.cross_protection \
         if hasattr(project, 'cross_protection') else 1
@@ -259,6 +259,7 @@ def _build(args):
         checklist = make_runtime(capsule, routput, licfile=licfile,
                                  platforms=platforms, package=package,
                                  suffix=suffix, supermode=supermode)
+
         if protection == 1:
             protection = make_protection_code(
                 (relative, checklist, suffix),
@@ -309,6 +310,7 @@ def _build(args):
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
         logging.info('Restrict mode is %s', restrict)
         logging.info('Advanced mode is %s', adv_mode)
+        logging.info('VM Protect mode is %s', vmode)
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
@@ -518,11 +520,14 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project.'''
+    advanced = args.advanced if args.advanced else 0
+    supermode = advanced in (2, 4)
+    vmode = advanced in (3, 4)
+    restrict = args.restrict
+
     platforms = compatible_platform_names(args.platforms)
-    if platforms:
-        logging.info('Target platforms: %s', platforms)
-        if check_cross_platform(platforms) is not False:
-            return
+    logging.info('Taget platforms: %s', platforms)
+    check_cross_platform(platforms, supermode, vmode)
 
     for x in ('entry',):
         if getattr(args, x.replace('-', '_')) is not None:
@@ -609,10 +614,6 @@ def _obfuscate(args):
     cross_protection = 0 if args.no_cross_protection else \
         1 if args.cross_protection is None else args.cross_protection
 
-    advanced = args.advanced if args.advanced else 0
-    supermode = advanced > 1
-    restrict = args.restrict
-
     n = args.bootstrap_code
     relative = True if n == 3 else False if n == 2 else None
     bootstrap = (not args.no_bootstrap) and n
@@ -623,6 +624,7 @@ def _obfuscate(args):
     logging.info('Wrap mode is %s', args.wrap_mode)
     logging.info('Restrict mode is %d', restrict)
     logging.info('Advanced mode is %d', advanced)
+    logging.info('VM Protect mode is %s', vmode)
 
     if args.no_runtime:
         if cross_protection == 1:
@@ -636,6 +638,7 @@ def _obfuscate(args):
         checklist = make_runtime(capsule, output, platforms=platforms,
                                  licfile=licfile, package=package,
                                  suffix=suffix, supermode=supermode)
+
         if cross_protection == 1:
             cross_protection = make_protection_code(
                 (relative, checklist, suffix),
