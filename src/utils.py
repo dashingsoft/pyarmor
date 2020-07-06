@@ -398,7 +398,7 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
     return filepairs
 
 
-def _get_library_filename(platid, checksums):
+def _get_library_filename(platid, checksums=None):
     if os.path.isabs(platid):
         if not os.path.exists(platid):
             raise RuntimeError('No platform library %s found' % platid)
@@ -410,6 +410,13 @@ def _get_library_filename(platid, checksums):
     if n < 3:
         raise RuntimeError('Missing features in platform name %s' % platid)
 
+    if (xlist[n] == 7) and xlist[1] in ('x86', 'x86_64') and \
+       xlist[0] in ('windows', 'darwin', 'linux'):
+        path = os.path.join(PLATFORM_PATH, *xlist[:2])
+        names = [x for x in os.listdir(path) if x.startswith('_pytransform.')]
+        if names:
+            return os.path.join(path, names[0])
+
     path = os.path.join(CROSS_PLATFORM_PATH, *xlist)
     names = [x for x in os.listdir(path) if x.find('pytransform.') > -1]
     if len(names) > 1:
@@ -420,7 +427,7 @@ def _get_library_filename(platid, checksums):
         return _get_library_filename(platid, checksums)
 
     filename = os.path.join(path, names[0])
-    if platid in checksums:
+    if checksums is not None and platid in checksums:
         with open(filename, 'rb') as f:
             data = f.read()
         if hashlib.sha256(data).hexdigest() != checksums[platid]:
