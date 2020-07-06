@@ -172,6 +172,16 @@ def _get_remote_file(urls, path, timeout=30.0):
 def _get_platform_list(platid=None):
     filename = os.path.join(PLATFORM_PATH, platform_config)
     logging.debug('Load platform list from %s', filename)
+
+    if not os.path.exists(filename):
+        urls = [x.format(version=core_version) for x in platform_urls]
+        data = _get_remote_file(urls, 'index.json')
+        if data is None:
+            raise RuntimeError('No platform list file %s found' % filename)
+        logging.info('Write cached platform list file %s' % filename)
+        with open(filename, 'rb') as f:
+            f.write(data)
+
     with open(filename) as f:
         cfg = json_loads(f.read())
 
