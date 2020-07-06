@@ -56,6 +56,7 @@ if [[ "OK" == $($PYTHON -c'from sys import version_info as ver, stdout
 stdout.write("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38) else "")') ]] ; then
 SUPERMODE=yes
 mkdir -p ${PYARMOR_DATA}/platforms
+PLATFORM_INDEX=$(pwd)/platforms/index.json
 (cd ${PYARMOR_DATA}/platforms;
  for x in ${PYARMOR_CORE_PLATFORM}/*.py?? ; do
      name=$(basename ${x})
@@ -66,6 +67,7 @@ mkdir -p ${PYARMOR_DATA}/platforms
      else
          ln -s ${x}/pytransform.* ${name}
      fi
+     update_pytransform_hash256 ${PLATFORM_INDEX} ${x}/pytransform.* $(basename ${x})
  done)
 fi
 csih_inform "Super mode test is ${SUPERMODE}"

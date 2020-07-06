@@ -1,6 +1,9 @@
 #! /bin/bash
 
 SED=sed
+AWK=gawk
+SHA256SUM=sha256sum
+
 UNAME=$(uname)
 if [[ ${UNAME:0:5} == Linux ]] ; then
     if [[ $(arch) == x86_64 ]] ; then
@@ -19,6 +22,8 @@ else
         DLLEXT=.dylib
         ARMOR=./pyarmor
         SED=gsed
+        AWK=awk
+        SHA256SUM="shasum -a 256"
     else
         if [[ $(arch) == x86_64 ]] ; then
             PLATFORM=win_amd64
@@ -407,4 +412,17 @@ clear_pyarmor_installed_data()
 {
     rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
     [[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
+}
+
+# ======================================================================
+# Routine: update_pytransform_hash256
+#
+# ======================================================================
+update_pytransform_hash256()
+{
+    datafile=$1
+    libfile=$2
+    path=$3
+    data=$(${SHA256SUM} ${libfile} | $AWK '{ print $1 }')
+    $SED -i -e "/\"path\": \"$path\"/,+6 s/\"sha256\":.*$/\"sha256\": \"$data\",/" $datafile
 }
