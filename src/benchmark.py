@@ -228,12 +228,12 @@ def call_1000_obfuscated_1k_bytecode(foo):
 
 @metricmethod
 def call_1000_no_obfuscated_10k_bytecode(foo):
-    return foo.call_1k_function(1000)
+    return foo.call_10k_function(1000)
 
 
 @metricmethod
 def call_1000_obfuscated_10k_bytecode(foo):
-    return foo.call_1k_function(1000)
+    return foo.call_10k_function(1000)
 
 
 @metricmethod
@@ -248,12 +248,12 @@ def call_10000_obfuscated_1k_bytecode(foo):
 
 @metricmethod
 def call_10000_no_obfuscated_10k_bytecode(foo):
-    return foo.call_1k_function(10000)
+    return foo.call_10k_function(10000)
 
 
 @metricmethod
 def call_10000_obfuscated_10k_bytecode(foo):
-    return foo.call_1k_function(10000)
+    return foo.call_10k_function(10000)
 
 
 def main():
