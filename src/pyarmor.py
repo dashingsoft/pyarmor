@@ -688,6 +688,7 @@ def _check(args):
 @arcommand
 def _benchmark(args):
     '''Run benchmark test in current machine.'''
+    logging.info('Python version: %d.%d', *sys.version_info[:2])
     logging.info('Start benchmark test ...')
     logging.info('Obfuscate module mode: %s', args.obf_mod)
     logging.info('Obfuscate code mode: %s', args.obf_code)
