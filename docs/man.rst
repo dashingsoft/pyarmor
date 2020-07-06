@@ -53,6 +53,7 @@ Common Options
 -q, --silent                 Suppress all normal output
 -d, --debug                  Print exception traceback and debugging message
 --home PATH                  Select home path, generally for multiple registerred pyarmor
+--boot PLATID                Set boot platform, only for special usage
 
 These options can be used after `pyarmor`, before sub-command. For example,
 print debug information to locate the error::
