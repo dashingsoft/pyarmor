@@ -547,7 +547,7 @@ for obf_mod in 0 1 ; do
                          --wrap-mode ${obf_wrap_mode} >$logfile 2>&1
       check_return_value
       csih_inform "Write benchmark test results to $logfile"
-      check_file_content $logfile "run_ten_thousand_obfuscated_bytecode"
+      check_file_content $logfile "call_10000_obfuscated_10k_bytecode"
       rm -rf .benchtest
     done
   done

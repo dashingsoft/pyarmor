@@ -479,16 +479,6 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log 'Found 92 solutions'
 
-csih_inform "C-39. Test special wrap and obf-code is 2"
-dist=test-special-wrap-obf-code-2
-$PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist \
-         test/data/no_wrap.py >result.log 2>&1
-check_return_value
-
-(cd $dist; $PYTHON no_wrap.py >result.log 2>&1)
-check_return_value
-check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
-
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
@@ -649,6 +639,16 @@ check_file_content $dist/result.log "Found 92 solutions"
 
 csih_inform "S-9. Test super mode with jump header and obf_code 2"
 dist=dist-super-mode-9
+$PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist \
+         test/data/no_wrap.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON no_wrap.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
+
+csih_inform "C-10. Test special wrap and obf-code is 2"
+dist=test-special-wrap-obf-code-2
 $PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist \
          test/data/no_wrap.py >result.log 2>&1
 check_return_value
