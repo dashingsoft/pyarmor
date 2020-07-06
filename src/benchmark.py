@@ -55,13 +55,13 @@ def make_test_script(filename):
         '    ten_thousand()',
         '',
         'def one_thousand():',
-        '  if False:',
+        '  if True:',
         '    i = 0',
     ]
     lines.extend(['    i += 1'] * 100)
     lines.append('\n  return 1000\n')
     lines.extend(['def ten_thousand():',
-                  '  if False:',
+                  '  if True:',
                   '    i = 0'])
     lines.extend(['    i += 1'] * 1000)
     lines.append('\n  return 10000\n')
