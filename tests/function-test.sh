@@ -649,7 +649,7 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
 
-csih_inform "C-10. Test special wrap and obf-code is 2"
+csih_inform "S-10. Test special wrap and obf-code is 2"
 dist=test-special-wrap-obf-code-2
 $PYARMOR obfuscate --exact --advanced 2 --obf-code 2 -O $dist \
          test/data/no_wrap.py >result.log 2>&1
