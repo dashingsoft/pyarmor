@@ -226,7 +226,7 @@ def _build(args):
 
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
-    check_cross_platform(platforms, supermode, vmode)
+    platforms = check_cross_platform(platforms, supermode, vmode)
 
     protection = project.cross_protection \
         if hasattr(project, 'cross_protection') else 1
@@ -263,7 +263,7 @@ def _build(args):
         if protection == 1:
             protection = make_protection_code(
                 (relative, checklist, suffix),
-                multiple=platforms and len(platforms) > 1,
+                multiple=len(platforms) > 1,
                 supermode=supermode)
 
     if not args.only_runtime:
@@ -527,7 +527,7 @@ def _obfuscate(args):
 
     platforms = compatible_platform_names(args.platforms)
     logging.info('Taget platforms: %s', platforms)
-    check_cross_platform(platforms, supermode, vmode)
+    platforms = check_cross_platform(platforms, supermode, vmode)
 
     for x in ('entry',):
         if getattr(args, x.replace('-', '_')) is not None:
@@ -642,7 +642,7 @@ def _obfuscate(args):
         if cross_protection == 1:
             cross_protection = make_protection_code(
                 (relative, checklist, suffix),
-                multiple=platforms and len(platforms) > 1,
+                multiple=len(platforms) > 1,
                 supermode=supermode)
 
     logging.info('Start obfuscating the scripts...')
@@ -808,19 +808,20 @@ def _runtime(args):
     name = 'pytransform_bootstrap'
     output = os.path.join(args.output, name) if args.inside else args.output
     package = not args.no_package
-    platforms = compatible_platform_names(args.platforms)
     suffix = get_name_suffix() if args.enable_suffix else ''
     licfile = 'no' if args.no_license else args.license_file
-    supermode = args.super_mode or (args.advanced == 2)
+    supermode = args.super_mode or (args.advanced in (2, 4))
+    vmode = args.advanced in (3, 4)
+    platforms = compatible_platform_names(args.platforms)
+    platforms = check_cross_platform(platforms, supermode, vmode=vmode)
     checklist = make_runtime(capsule, output, licfile=licfile,
                              platforms=platforms, package=package,
-                             suffix=suffix, restrict=False,
-                             supermode=supermode)
+                             suffix=suffix, supermode=supermode)
 
     logging.info('Generating protection script ...')
     filename = os.path.join(output, 'pytransform_protection.py')
     data = make_protection_code((args.inside, checklist, suffix),
-                                multiple=platforms and len(platforms) > 1,
+                                multiple=len(platforms) > 1,
                                 supermode=args.super_mode)
     with open(filename, 'w') as f:
         f.write(data)
@@ -1172,7 +1173,7 @@ def _parser():
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
                          default=1, type=int)
-    cparser.add_argument('-a', '--adv-mode', choices=(0, 1, 2),
+    cparser.add_argument('-a', '--advanced', choices=(0, 1, 2),
                          default=0, type=int)
     cparser.add_argument('-d', '--debug', action='store_true',
                          help='Do not clean the test scripts'

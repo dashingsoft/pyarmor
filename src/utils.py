@@ -195,7 +195,8 @@ def get_platform_list(platid=None):
 
 def download_pytransform(platid, output=None, url=None, firstonly=False):
     platid = _format_platid(platid)
-    urls = platform_urls[:] if url is None else [url]
+    urls = [x.format(version=core_version)
+            for x in (platform_urls if url is None else [url])]
 
     logging.info('Search library for platform: %s', platid)
     plist = _get_platform_list(platid=platid)
@@ -410,7 +411,7 @@ def _get_library_filename(platid, checksums=None):
     if n < 3:
         raise RuntimeError('Missing features in platform name %s' % platid)
 
-    if (xlist[n] == 7) and xlist[1] in ('x86', 'x86_64') and \
+    if (xlist[2] == 7) and xlist[1] in ('x86', 'x86_64') and \
        xlist[0] in ('windows', 'darwin', 'linux'):
         path = os.path.join(PLATFORM_PATH, *xlist[:2])
         names = [x for x in os.listdir(path) if x.startswith('_pytransform.')]
@@ -480,11 +481,10 @@ def _build_license_file(capsule, licfile, output=None):
 
 
 def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
-                 suffix='', restrict=True, supermode=False):
+                 suffix='', supermode=False):
     if supermode:
-        return _make_super_runtime(capsule, output, licfile=licfile,
-                                   suffix=suffix, platforms=platforms,
-                                   restrict=restrict)
+        return _make_super_runtime(capsule, output, platforms, licfile=licfile,
+                                   suffix=suffix)
 
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
@@ -524,7 +524,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         copy3(libfile, output)
 
     elif len(platforms) == 1:
-        filename = _build_platforms(platforms, restrict)[0]
+        filename = _build_platforms(platforms)[0]
         logging.info('Copying %s', filename)
         copy3(filename, output)
     else:
@@ -534,7 +534,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         if not os.path.exists(libpath):
             os.mkdir(libpath)
 
-        filenames = _build_platforms(platforms, restrict)
+        filenames = _build_platforms(platforms)
         for platid, filename in list(zip(platforms, filenames)):
             logging.info('Copying %s', filename)
             path = os.path.join(libpath, *platid.split('.')[:2])
@@ -965,6 +965,20 @@ def relpath(path, start=os.curdir):
         return path
 
 
+def _reboot_pytransform(platname):
+    logging.info('===========================================')
+    logging.info('Reboot PyArmor to obfuscate the scripts for '
+                 'platform %s', platname)
+    logging.info('===========================================')
+    os.putenv('PYARMOR_PLATFORM', '.'.join([_format_platid(), '0']))
+    if sys.platform == 'win32' and sys.argv[0].endswith('pyarmor'):
+        p = Popen(sys.argv)
+    else:
+        p = Popen([sys.executable] + sys.argv)
+        p.wait()
+    return p.returncode
+
+
 def _get_preferred_platid(platname, features=None):
     nlist = platname.split('.')
     name = '.'.join(nlist[:2])
@@ -984,7 +998,7 @@ def _get_preferred_platid(platname, features=None):
 
     elif features is None:
         n = pytransform.version_info()[2]
-        feature = ['21', '25'] if (n & FEATURE_VM) \
+        features = ['21', '25'] if (n & FEATURE_VM) \
             else ['3', '7'] if (n & FEATURE_JIT) \
             else ['0']
 
@@ -994,24 +1008,10 @@ def _get_preferred_platid(platname, features=None):
 
     plist = [x['id'] for x in _get_platform_list() if x['name'] == name]
     for platid in plist:
-        nlist = platid.split('.')
-        if (feature is None or platid[2] in features) \
-           and (pyver is None or pyver == platid[3]):
+        ns = [str(x) for x in platid.split('.')]
+        if (features is None or str(ns[2]) in features) \
+           and (pyver is None or pyver in ns[3:]):
             return platid
-
-
-def _reboot_pytransform(platname):
-    logging.info('===========================================')
-    logging.info('Reboot PyArmor to obfuscate the scripts for '
-                 'platform %s', platname)
-    logging.info('===========================================')
-    os.putenv('PYARMOR_PLATFORM', '.'.join([_format_platid(), '0']))
-    if sys.platform == 'win32' and sys.argv[0].endswith('pyarmor'):
-        p = Popen(sys.argv)
-    else:
-        p = Popen([sys.executable] + sys.argv)
-        p.wait()
-    return p.returncode
 
 
 def check_cross_platform(platforms, supermode=False, vmode=False):
@@ -1041,6 +1041,9 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
     result = []
     for name in platforms:
         platid = _get_preferred_platid(name, features=features)
+        if platid is None:
+            raise RuntimeError('No available dynamic library for %s '
+                               'with features %s' % (name, features))
         result.append(platid)
 
     reboot = None
@@ -1240,19 +1243,17 @@ def _build_keylist(capsule, licfile):
     return keydata[k1:k2], keydata[k2:k2+size2], lickey
 
 
-def _make_super_runtime(capsule, output, licfile=None, platforms=None,
-                        restrict=True, suffix=''):
+def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
     logging.info('Generating super runtime library to %s', relpath(output))
     if not os.path.exists(output):
         os.makedirs(output)
 
-    supermode = True
     if not platforms:
         raise RuntimeError('No platform specified in Super mode')
     elif len(platforms) == 1:
-        filelist = _build_platforms(platforms, restrict, supermode)[:1]
+        filelist = _build_platforms(platforms)[:1]
     else:
-        filelist = _build_platforms(platforms, restrict, supermode)
+        filelist = _build_platforms(platforms)
 
     keylist = _build_keylist(capsule, licfile)
     namelist = []
