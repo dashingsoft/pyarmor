@@ -875,6 +875,7 @@ def _parser():
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Print exception traceback and debugging message')
     parser.add_argument('--home', help='Change pyarmor home path')
+    parser.add_argument('--boot', help='Change boot platform')
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
@@ -1306,8 +1307,12 @@ def main(argv):
         logging.info('Set pyarmor home path: %s', args.home)
         _change_home_path(args.home)
 
+    if args.boot:
+        logging.info('Change boot platform: %s', args.boot)
+        os.putenv('PYARMOR_PLATFORM', args.boot)
+
     try:
-        pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
+        pytransform_bootstrap(capsule=DEFAULT_CAPSULE, force=args.boot)
     except Exception as e:
         if not args.func.__name__[1:] in ('download', 'register'):
             raise

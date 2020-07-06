@@ -81,8 +81,8 @@ def _search_downloaded_files(path, platid, libname):
                 return os.path.join(platid, x)
 
 
-def pytransform_bootstrap(capsule=None):
-    if pytransform._pytransform is not None:
+def pytransform_bootstrap(capsule=None, force=False):
+    if pytransform._pytransform is not None and not force:
         logging.debug('No bootstrap, pytransform has been loaded')
         return
     logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
@@ -1079,8 +1079,7 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         logging.info('Reload PyArmor with %s to obfuscate the scripts for '
                      'platform %s', reboot, platid)
         logging.info('====================================================')
-        pytransform._pytransform = None
-        pytransform_bootstrap()
+        pytransform_bootstrap(force=True)
 
     return result
 
