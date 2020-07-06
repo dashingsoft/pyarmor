@@ -844,9 +844,10 @@ Check the performance of obfuscated scripts.
 
 **OPTIONS**:
 
--m, --obf-mode <0,1>     Whether to obfuscate the whole module
+-m, --obf-mode <0,1,2>   Whether to obfuscate the whole module
 -c, --obf-code <0,1,2>   Whether to obfuscate each function
 -w, --wrap-mode <0,1>    Whether to obfuscate each function with wrap mode
+-a, --advanced <0,1,2>   Set advanced mode or super mode
 --debug                  Do not remove test path
 
 **DESCRIPTION**
