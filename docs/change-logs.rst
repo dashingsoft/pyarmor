@@ -3,6 +3,25 @@
 Change Logs
 ===========
 
+6.3.0
+-----
+From this version, only 2 runtime files are required for non-super mode:
+
+* pytranform.py
+* _pytransform.so/dll/dylib
+
+Most of the algorithm are refined to improve the security.
+
+* Refine the algorithm to improve security and performance
+* Refine default cross protection code
+* Refine runtime files, remove `license.lic` and `pytransform.key`
+* Refine pack command
+* Refine the obfuscating process for cross platforms
+* Refine `benchmark` command, and new option `--advanced`
+  Refer to https://pyarmor.readthedocs.io/en/latest/performance.html
+* Add platform `musl.mips32` for MIPS32 with `musl`
+* Add common options `--boot` for special cross platform obfuscating
+
 6.2.9
 -----
 * Fix cross platform bug: in Windows it may raise exception
