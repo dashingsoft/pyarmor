@@ -415,24 +415,26 @@ def _get_library_filename(platid, checksums=None):
             raise RuntimeError('No platform library %s found' % platid)
         return platid
 
-    xlist = platid.split('.')
+    xlist = [str(x) for x in platid.split('.')]
     n = len(xlist)
 
     if n < 3:
         raise RuntimeError('Missing features in platform name %s' % platid)
 
-    if (xlist[2] == 7) and xlist[1] in ('x86', 'x86_64') and \
+    if (xlist[2] == '7') and xlist[1] in ('x86', 'x86_64') and \
        xlist[0] in ('windows', 'darwin', 'linux'):
         path = os.path.join(PLATFORM_PATH, *xlist[:2])
         names = [x for x in os.listdir(path) if x.startswith('_pytransform.')]
         if names:
             return os.path.join(path, names[0])
 
+    names = None
     path = os.path.join(CROSS_PLATFORM_PATH, *xlist)
-    names = [x for x in os.listdir(path) if x.find('pytransform.') > -1]
-    if len(names) > 1:
-        raise RuntimeError('Invalid platform data, there is more than '
-                           '1 file in the path %s', path)
+    if os.path.exists(path):
+        names = [x for x in os.listdir(path) if x.find('pytransform.') > -1]
+        if len(names) > 1:
+            raise RuntimeError('Invalid platform data, there is more than '
+                               '1 file in the path %s', path)
     if not names:
         download_pytransform(platid)
         return _get_library_filename(platid, checksums)
@@ -453,6 +455,10 @@ def _build_platforms(platforms):
     results = []
     checksums = dict([(p['id'], p['sha256']) for p in _get_platform_list()])
     n = len(platforms)
+
+    if not os.path.exists(CROSS_PLATFORM_PATH):
+        logging.info('Create cross platforms path: %s', CROSS_PLATFORM_PATH)
+        os.makedirs(CROSS_PLATFORM_PATH)
 
     for platid in platforms:
         if (n > 1) and os.path.isabs(platid):
@@ -1061,18 +1067,19 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         platid = result[0]
         nlist = platid.split('.')
         fn2 = int(nlist[2])
-        for n in (0, 7, 21):
+        for n in (21, 7, 0):
             if n & fn2:
                 break
-        if not (n & fn1):
+        if (n != fn1) and not (n & fn1):
             reboot = '.'.join([_format_platid(), str(n)])
             os.putenv('PYARMOR_PLATFORM', reboot)
 
+        logging.info('Target platforms: %s', result)
         for p in result[1:]:
             fn3 = int(p.split('.')[2])
-            if not (n & fn3):
+            if (n != fn3) and not (n & fn3):
                 raise RuntimeError('Multi platforms conflict, platform %s'
-                                   ' could not mixed with %s', p, platid)
+                                   ' could not mixed with %s' % (p, platid))
 
     if reboot:
         logging.info('====================================================')
