@@ -253,7 +253,7 @@ def format_platform(platid=None):
     if plat == 'linux':
         cname, cver = platform.libc_ver()
         if cname == 'musl':
-            plat = 'alpine'
+            plat = 'musl'
         elif cname == 'libc':
             plat = 'android'
         elif cname == 'glibc':

@@ -21,6 +21,7 @@ Most of the algorithm are refined to improve the security.
   Refer to https://pyarmor.readthedocs.io/en/latest/performance.html
 * Add platform `musl.mips32` for MIPS32 with `musl`
 * Add common options `--boot` for special cross platform obfuscating
+* Rename platform names `alpine.*` to `musl.*`
 
 6.2.9
 -----

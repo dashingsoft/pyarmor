@@ -999,9 +999,9 @@ def _get_preferred_platid(platname, features=None):
     nlist = platname.split('.')
     name = '.'.join(nlist[:2])
 
-    if name in ('linux.arm', 'linux.armv6', 'linux.ppc64', 'linux.mips32',
+    if name in ('linux.arm', 'linux.armv6', 'linux.ppc64',
                 'darwin.arm64', 'freebsd.x86_64', 'android.aarch64',
-                'alpine.x86_64', 'alpine.arm',
+                'musl.x86_64', 'musl.arm', 'musl.mips32',
                 'poky.x86', 'vs2015.x86_64', 'vs2015.x86'):
         if features and '0' not in features:
             raise RuntimeError('No feature %s for platform %s', features, name)
@@ -1013,10 +1013,7 @@ def _get_preferred_platid(platname, features=None):
         features = nlist[2:3]
 
     elif features is None:
-        n = pytransform.version_info()[2]
-        features = ['21', '25'] if (n & FEATURE_VM) \
-            else ['3', '7'] if (n & FEATURE_JIT) \
-            else ['0']
+        features = ['7', '3', '0']
 
     pyver = None
     if '8' in features or '11' in features or '25' in features:
@@ -1101,7 +1098,9 @@ def compatible_platform_names(platforms):
         'ppc64le': 'linux.ppc64',
         'ios.arm64': 'darwin.arm64',
         'freebsd': 'freebsd.x86_64',
-        'alpine': 'alpine.x86_64',
+        'alpine': 'musl.x86_64',
+        'alpine.arm': 'musl.arm',
+        'alpine.x86_64': 'musl.x86_64',
         'poky-i586': 'poky.x86',
     }
 
