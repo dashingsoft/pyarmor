@@ -18,8 +18,6 @@ are the files list in the output path ``dist``::
     pytransform/
         __init__.py
         _pytransform.so, or _pytransform.dll in Windows, or _pytransform.dylib in MacOS
-        pytransform.key
-        license.lic
 
 ``dist/foo.py`` is obfuscated script, the content is::
 
