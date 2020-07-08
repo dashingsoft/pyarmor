@@ -481,6 +481,31 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log 'Found 92 solutions'
 
+csih_inform "C-39. Test obfuscate command with inner license"
+dist=test-with-license-2
+$PYARMOR licenses -e 2020-05-02 r001 >result.log 2>&1
+$PYARMOR obfuscate -O $dist --with-license licenses/r001/license.lic \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_file_content $dist/result.log 'Found 92 solutions' not
+check_file_content $dist/result.log 'License is expired'
+
+csih_inform "C-39. Test obfuscate command with special license outer"
+dist=test-outer-license
+$PYARMOR obfuscate -O $dist --with-license outer examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_file_content $dist/result.log 'Found 92 solutions' not
+check_file_content $dist/result.log 'Read file license.lic failed'
+
+cp licenses/r001/license.lic $dist
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_file_content $dist/result.log 'Found 92 solutions' not
+check_file_content $dist/result.log 'License is expired'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
