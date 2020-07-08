@@ -1220,6 +1220,8 @@ def _patch_extension(filename, keylist, suffix=''):
                     logging.debug('Patch %d bytes from %x', size, offset)
                     data[offset:offset+size] = keylist[j]
                     offset += size
+
+            logging.info('Patch library file OK')
             break
     else:
         raise RuntimeError('Invalid extension, no data found')
