@@ -423,6 +423,8 @@ update_pytransform_hash256()
     datafile=$1
     libfile=$2
     path=$3
-    data=$(${SHA256SUM} ${libfile} | $AWK '{ print $1 }')
-    $SED -i -e "/\"path\": \"$path\"/,+6 s/\"sha256\":.*$/\"sha256\": \"$data\",/" $datafile
+    if [ -f "$libfile" ] ; then
+        data=$(${SHA256SUM} ${libfile} | $AWK '{ print $1 }')
+        $SED -i -e "/\"path\": \"$path\"/,+6 s/\"sha256\":.*$/\"sha256\": \"$data\",/" $datafile
+    fi
 }
