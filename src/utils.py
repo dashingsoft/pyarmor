@@ -1324,7 +1324,7 @@ def _check_code_object_for_super_mode(co, lines, name):
 
     def is_special_code_object(co):
         has_special_jabs = False
-        has_header_label = False
+        has_header_label = True if co.co_code[6:7] == b'\x90' else False
         for ins in get_instructions(co):
             if ins.opcode in hasjabs and \
                (ins.arg & ~0xF) in (0xF0, 0xFFF0, 0xFFFFF0):
