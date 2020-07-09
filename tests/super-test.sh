@@ -1,6 +1,5 @@
-source test-header.sh
-
 # Obfuscate all the test scripts and run them in super mode
+source test-header.sh
 set -e
 
 PYTHON=${PYTHON:-python3}
@@ -24,12 +23,13 @@ csih_inform "PyArmor data at: ${PYARMOR_DATA}"
 [[ ! -d "$SRC" ]] && csih_error "No pyarmor found"
 
 WORKPATH=__runtest3__
-csih_inform "Create super test workpath: ${WORKPATH}"
+csih_inform "Create super mode test workpath: ${WORKPATH}"
 rm -rf ${WORKPATH}
 mkdir -p ${WORKPATH}
-csih_inform "Change to workpath"
+csih_inform "Change to $WORKPATH"
 cd ${WORKPATH}
 
+# Name must be "test"
 OBFPATH=$(pwd)/test
 csih_inform "Copy tests to: $OBFPATH"
 cp -a $TESTLIB $OBFPATH
@@ -69,16 +69,6 @@ NOTESTS="test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile
          test_inspect test_gdb test_linuxaudiodev test_msilib test_ossaudiodev
          test_sunaudiodev test_winsound test_regrtest test_runpy test_dis
          test_code test_compile test_compileall"
-
-if [[ "$PYVER" == "27" ]] ; then
-    PY27_NOTESTS=""
-elif [[ "$PYVER" == "37" ]] ; then
-    PY37_NOTESTS=""
-elif [[ "$PYVER" == "38" ]] ; then
-    PY38_NOTESTS=""
-else
-    csih_error "Not support $PYVER"
-fi
 
 csih_inform "Removing no test scritps ..."
 for x in $NOTESTS ${PY27_NOTESTS} ${PY37_NOTESTS} ${PY38_NOTESTS} ; do
