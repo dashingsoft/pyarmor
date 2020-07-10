@@ -1470,7 +1470,7 @@ src=$output
 output=test-restrict-4.2
 $PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 \
          $src/mypkg/__init__.py > result.log 2>&1
-$PYARMOR obfuscate -O $output/dist --restrict 4 --bootstrap 0 --exact --advanced 2 \
+$PYARMOR obfuscate -O $output/dist --restrict 4 --bootstrap 3 --exact --advanced 2 \
          $src/mypkg/bar.py > result.log 2>&1
 check_return_value
 
