@@ -11,7 +11,7 @@ class RunSelfFunction(object):
         self.should_raise = should_raise
         self.thread = threading.Thread(target=self._run,
                                        args=(self,),
-                                       kwargs={'yet_another':self})
+                                       kwargs={'yet_another': self})
         self.thread.start()
 
     def _run(self, other_ref, yet_another):

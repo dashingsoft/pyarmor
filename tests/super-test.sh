@@ -63,7 +63,7 @@ $PYARMOR obfuscate -r --advanced 2 -O $OBFPATH --bootstrap 2 --no-runtime --no-c
          $TESTLIB > obf-result-${PYVER}.log 2>&1
 
 csih_inform "Generate runtime files in the workpath"
-$PYARMOR runtime --advanced 2 -O .
+$PYARMOR runtime --advanced 2 -O . >> obf-result-${PYVER}.log 2>&1
 
 csih_inform "Restore non test_*.py"
 for x in $(cd $TESTLIB; find . ! -name "test_*.py" | grep "\.py$") ; do
@@ -96,7 +96,7 @@ done
 #     test_recursive_traceback_cpython_internal (__main__.TracebackFormatTests)
 #
 # test_concurrent_futures
-#
+# test_threading
 #
 
 csih_inform "Run all the obfuscated test scripts"
