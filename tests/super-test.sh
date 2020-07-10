@@ -9,11 +9,11 @@ TESTLIB=$($PYTHON -c'import sys, test
 sys.stdout.write(test.__path__[0])')
 
 SRC=$(pwd)/pyarmor-${version}/src
-which cygpath && SRC=$(cygpath -m $SRC)
+[[ $(uname) == CYGWIN* ]] && SRC=$(cygpath -m $SRC)
 PYARMOR=${PYARMOR:-$PYTHON $SRC/pyarmor.py}
 
 PYARMOR_DATA=~/.pyarmor
-[[ -n "$USERPROFILE" ]] && PYARMOR_DATA=$USERPROFILE\\.pyarmor
+[[ "$PYVER" == "38" ]] && [[ -n "$USERPROFILE" ]] && PYARMOR_DATA=$USERPROFILE\\.pyarmor
 
 csih_inform "Python is: $PYTHON"
 csih_inform "Python Version $PYVER"
@@ -32,6 +32,8 @@ cd ${WORKPATH}
 
 # Name must be "test"
 OBFPATH=$(pwd)/test
+[[ $(uname) == CYGWIN* ]] && OBFPATH=$(cygpath -m $OBFPATH)
+
 csih_inform "Copy tests to: $OBFPATH"
 cp -a $TESTLIB $OBFPATH
 rm -rf $OBFPATH/*.pyc $OBFPATH/*.pyo
@@ -81,6 +83,21 @@ done
 
 # csih_inform "Run normal test scripts, save baseline to baseline-${PYVER}.log"
 # $PYTHON -E -m test > baseline-${PYVER}.log 2>&1
+
+#
+# These cases may crash
+#
+# test_exceptions
+#
+# test_sys                     (In Windows)
+#     test_recursionlimit_recovery (__main__.SysModuleTest)
+#
+# test_traceback
+#     test_recursive_traceback_cpython_internal (__main__.TracebackFormatTests)
+#
+# test_concurrent_futures
+#
+#
 
 csih_inform "Run all the obfuscated test scripts"
 $PYTHON -E -m test > result-${PYVER}.log 2>&1
