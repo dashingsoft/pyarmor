@@ -492,7 +492,7 @@ check_return_value
 check_file_content $dist/result.log 'Found 92 solutions' not
 check_file_content $dist/result.log 'License is expired'
 
-csih_inform "C-39. Test obfuscate command with special license outer"
+csih_inform "C-40. Test obfuscate command with special license outer"
 dist=test-outer-license
 $PYARMOR obfuscate -O $dist --with-license outer examples/simple/queens.py >result.log 2>&1
 check_return_value
