@@ -9,6 +9,7 @@ TESTLIB=$($PYTHON -c'import sys, test
 sys.stdout.write(test.__path__[0])')
 
 SRC=$(pwd)/pyarmor-${version}/src
+which cygpath && SRC=$(cygpath -m $SRC)
 PYARMOR=${PYARMOR:-$PYTHON $SRC/pyarmor.py}
 
 PYARMOR_DATA=~/.pyarmor
