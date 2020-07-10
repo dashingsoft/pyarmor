@@ -45,7 +45,9 @@ PLATFORM_INDEX=${SRC}/platforms/index.json
      name=${name//./\/}
      mkdir -p ${name}
      if [[ "${PLATFORM}" == "win_amd64" ]] ; then
-         cp ${x}/pytransform.* ${name}
+         for y in ${x}/pytransform.* ; do
+             [[ -f "${y}" ]] && cp ${y} ${name}
+         done
      else
          ln -s ${x}/pytransform.* ${name}
      fi
