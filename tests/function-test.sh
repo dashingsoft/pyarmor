@@ -1464,6 +1464,25 @@ check_file_content $output/result.log 'This function could not be called from th
 check_file_content $output/result.log 'This is restrict mode 4 testing' not
 check_file_content $output/result.log 'This function could not be called from the plain script'
 
+if [[ "yes" == "${SUPERMODE}" ]] ; then
+csih_inform "Case RM-4.2: test restrict mode 4 with exception in super mode"
+src=$output
+output=test-restrict-4.2
+$PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 \
+         $src/mypkg/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 4 --bootstrap 0 --exact --advanced 2 \
+         $src/mypkg/bar.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON test1.py > result.log 2>&1)
+check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
+check_file_content $output/result.log 'This function could not be called from the plain script'
+
+(cd $output; $PYTHON test2.py > result.log 2>&1)
+check_file_content $output/result.log 'This is restrict mode 4 testing' not
+check_file_content $output/result.log 'This function could not be called from the plain script'
+fi
+
 csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
 output=test-restrict-bootstrap
 $PYARMOR obfuscate -O $output -r --restrict 0 --no-bootstrap \
