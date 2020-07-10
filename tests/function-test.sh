@@ -1474,6 +1474,7 @@ $PYARMOR obfuscate -O $output/dist --restrict 4 --bootstrap 0 --exact --advanced
          $src/mypkg/bar.py > result.log 2>&1
 check_return_value
 
+cp $src/test*.py $output
 (cd $output; $PYTHON test1.py > result.log 2>&1)
 check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
 check_file_content $output/result.log 'This function could not be called from the plain script'
