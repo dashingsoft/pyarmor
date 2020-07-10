@@ -3,6 +3,13 @@
 Change Logs
 ===========
 
+6.3.1
+-----
+* Fix super mode crash issue for Coroutine functions
+* Fix super mode exception issue
+* Fix restrict mode 3/4 doesn't work in some cases
+* Fix super mode will complain of `insert one redundant line '[None, None]'` issue
+
 6.3.0
 -----
 From this version, only 2 runtime files are required for non-super mode:
