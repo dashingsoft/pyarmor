@@ -236,7 +236,7 @@ def _make_hook_pytransform(hookfile, obfdist, encoding=None):
     # modify .dylib file, it results in the cross protection of pyarmor fails.
     # In order to fix this problem, we need add .dylib as data file
     p = obfdist + os.sep
-    lines = ['binaries=[(r"{0}_pytransform.*", ".")]']
+    lines = ['binaries=[(r"{0}_pytransform*", ".")]']
 
     if encoding is None:
         with open(hookfile, 'w') as f:
@@ -246,8 +246,8 @@ def _make_hook_pytransform(hookfile, obfdist, encoding=None):
             f.write('\n'.join(lines).format(p))
 
 
-def _pyi_makespec(hookpath, src, entry, packcmd):
-    options = ['-p', hookpath, '--hidden-import', 'pytransform',
+def _pyi_makespec(hookpath, src, entry, packcmd, modname='pytransform'):
+    options = ['-p', hookpath, '--hidden-import', modname,
                '--additional-hooks-dir', hookpath, os.path.join(src, entry)]
     cmdlist = packcmd + options
     cmdlist[:4] = ['pyi-makespec']
@@ -265,7 +265,8 @@ def _guess_encoding(filename):
                 return m.group(1)
 
 
-def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None):
+def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
+                    modname='pytransform'):
     if encoding is None:
         with open(specfile, 'r') as f:
             lines = f.readlines()
@@ -317,7 +318,7 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None):
                 keys.append('pathex')
             elif lines[i].lstrip().startswith('hiddenimports='):
                 lines[i] = lines[i].replace('hiddenimports=',
-                                            'hiddenimports=["pytransform"]+', 1)
+                                            'hiddenimports=["%s"]+' % modname, 1)
                 keys.append('hiddenimports')
             elif lines[i].lstrip().startswith('hookspath='):
                 lines[i] = lines[i].replace('hookspath=',
@@ -391,15 +392,23 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         logging.info('Create temp path: %s', obftemp)
         os.makedirs(obftemp)
     supermode = True
-    for x in glob(os.path.join(obfdist, 'pytransform.*')):
-        if x.endswith('pytransform.py'):
-            supermode = False
-        logging.info('Copy %s to temp path', x)
-        shutil.copy(x, obftemp)
+    runmodname = None
+    for x in glob(os.path.join(obfdist, 'pytransform*')):
+        nlist = os.path.basename(x).split('.')
+        if str(nlist[-1]) in ('py', 'so', 'pyd'):
+            logging.info('Found runtime module %s', os.path.basename(x))
+            if runmodname is not None:
+                raise RuntimeError('Too many runtime module found')
+            runmodname = nlist[0]
+            supermode = nlist[1] != 'py'
+            logging.info('Copy %s to temp path', x)
+            shutil.copy(x, obftemp)
+    if runmodname is None:
+        raise RuntimeError('No runtime module found')
 
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
-        _pyi_makespec(obftemp, src, entry, packcmd)
+        _pyi_makespec(obftemp, src, entry, packcmd, runmodname)
         if not os.path.exists(specfile):
             raise RuntimeError('No specfile "%s" found', specfile)
         logging.info('Save .spec file to %s', specfile)
@@ -410,14 +419,14 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
 
     encoding = _guess_encoding(specfile)
 
-    hookfile = os.path.join(obftemp, 'hook-pytransform.py')
+    hookfile = os.path.join(obftemp, 'hook-%s.py' % runmodname)
     logging.info('Generate hook script: %s', hookfile)
     if not supermode:
         _make_hook_pytransform(hookfile, obfdist, encoding)
 
     logging.info('Patching .spec file...')
     patched_spec = _patch_specfile(obfdist, src, specfile, hookpath,
-                                   encoding)
+                                   encoding, runmodname)
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
