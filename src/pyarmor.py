@@ -526,7 +526,7 @@ def _obfuscate(args):
     restrict = args.restrict
 
     platforms = compatible_platform_names(args.platforms)
-    logging.info('Taget platforms: %s', platforms)
+    logging.info('Target platforms: %s', platforms if platforms else 'Native')
     platforms = check_cross_platform(platforms, supermode, vmode)
 
     for x in ('entry',):
