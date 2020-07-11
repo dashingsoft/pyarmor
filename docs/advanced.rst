@@ -623,12 +623,46 @@ solution for Python package to improve the security:
 * The `.py` files which are used by outer scripts are obfuscated by restrice mode 1
 * All the other `.py` files which are used only in the package are obfuscated by restrict mode 4
 
-For example::
+For example, `mypkg` includes 2 files:
+
+* __init__.py
+* foo.py
+
+Here it's the content of `mypkg/__init__.py`
+
+.. code-block:: python
+
+    from .foo import hello
+
+    def open_hello(msg):
+        print('This is public hello: %s' % msg)
+
+    def proxy_hello(msg):
+        print('This is proxy hello from foo: %s' % msg)
+        hello(msg)
+
+Now obfuscate this package by this way::
 
     cd /path/to/mypkg
-    pyarmor obfuscate --exact __init__.py exported_func.py
-    pyarmor obfuscate --restrict 4 --recursive \
-            --exclude __init__.py --exclude exported_func.py .
+    pyarmor obfuscate -O obf/mypkg --exact __init__.py
+    pyarmor obfuscate -O obf/mypkg --restrict 4 --recursive --exclude __init__.py .
+
+So it's OK to import `mypkg` and call any function in the `__init__.py`::
+
+    cd /path/to/mypkg/obf
+    python
+
+    >>> import mypkg
+    >>> mypkg.open_hello("it should work")
+    >>> mypkg.proxy_hello("also OK")
+
+But it doesn't work to call any function in the `mypkg.foo`. For example::
+
+    cd /path/to/mypkg/obf
+    python
+
+    >>> import mypkg
+    >>> mypkg.foo.hello("it should not work")
 
 More information about restrict mode, refer to :ref:`Restrict Mode`
 
