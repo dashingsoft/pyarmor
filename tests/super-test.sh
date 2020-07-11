@@ -99,5 +99,7 @@ done
 # test_threading
 #
 
+if ! [[ "$1" == "n" ]] ; then
 csih_inform "Run all the obfuscated test scripts"
 $PYTHON -E -m test > result-${PYVER}.log 2>&1
+fi
