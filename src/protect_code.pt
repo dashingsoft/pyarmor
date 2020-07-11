@@ -45,7 +45,10 @@ def protect_pytransform():
             buf = bytearray(f.read())
         value = sum(buf)
         if getattr(pytransform.sys, 'frozen', False) and sys.platform == 'darwin':
-            value += 1217
+            if '{suffix}':
+                value += 886 - sum(b'{suffix}') + 299
+            else:
+                value += 1217
 
         if value not in {checksum}:
             raise RuntimeError('unexpected %s' % filename)
