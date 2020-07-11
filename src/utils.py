@@ -515,6 +515,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         x = os.path.basename(src)
         if suffix:
             x = x.replace('.', ''.join([suffix, '.']))
+            logging.info('Rename it to %s', x)
         target = os.path.join(dst, x)
         shutil.copy2(src, target)
 
