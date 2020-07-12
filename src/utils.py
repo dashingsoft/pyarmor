@@ -1145,7 +1145,10 @@ def get_name_suffix():
         'regnow': 'var',
         'Pyarmor': 'vad',
     }
-    return '_'.join(['', d.get(m, 'unk'), n])
+    if len(n) > 6:
+        raise RuntimeError('Invalid registration code')
+    pad = '0' * (6 - len(n))
+    return '_'.join(['', d.get(m, 'unk'), pad + n])
 
 
 def get_bind_key(filename):
