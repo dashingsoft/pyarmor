@@ -444,6 +444,10 @@ def _get_library_filename(platid, checksums=None):
         with open(filename, 'rb') as f:
             data = f.read()
         if hashlib.sha256(data).hexdigest() != checksums[platid]:
+            if sys.flags.debug:
+                logging.warning('Found library %s for platform %s, but it does'
+                                ' not match this pyarmor', filename, platid)
+                return filename
             logging.info('The platform %s is out of date', platid)
             download_pytransform(platid)
             return _get_library_filename(platid, checksums)
