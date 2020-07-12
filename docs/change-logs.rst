@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+6.3.2
+-----
+* Fix super mode crash issue for Python37/38 in Windows
+* Fix command `pack` issue: the obfuscation option `--enable-suffix` doesn't work
+
 6.3.1
 -----
 * Fix super mode crash issue for Coroutine functions
