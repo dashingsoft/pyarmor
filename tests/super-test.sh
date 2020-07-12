@@ -84,21 +84,6 @@ done
 # csih_inform "Run normal test scripts, save baseline to baseline-${PYVER}.log"
 # $PYTHON -E -m test > baseline-${PYVER}.log 2>&1
 
-#
-# These cases may crash
-#
-# test_exceptions
-#
-# test_sys                     (In Windows)
-#     test_recursionlimit_recovery (__main__.SysModuleTest)
-#
-# test_traceback
-#     test_recursive_traceback_cpython_internal (__main__.TracebackFormatTests)
-#
-# test_concurrent_futures
-# test_threading
-#
-
 if ! [[ "$1" == "n" ]] ; then
 csih_inform "Run all the obfuscated test scripts"
 $PYTHON -E -m test > result-${PYVER}.log 2>&1
