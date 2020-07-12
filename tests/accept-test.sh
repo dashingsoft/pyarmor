@@ -295,7 +295,7 @@ echo ""
 echo "-------------------- Test Normal Version ------------------------"
 echo ""
 
-test_suffix="_unk_0001"
+test_suffix="_unk_000001"
 
 csih_inform "0. Register keyfile"
 $PYARMOR register data/pyarmor-test-0001.zip >result.log 2>&1
