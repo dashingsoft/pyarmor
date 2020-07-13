@@ -9,6 +9,7 @@ Change Logs
   `--bootstrap 3` in super mode
 * For Windows platform, add new modes `--advanced 3` and `--advanced 4` to
   enable vm protection. Refer to
+* Add new platform `musl.mips32` for MIPS32 with musl-libc
 
 6.3.2
 -----
