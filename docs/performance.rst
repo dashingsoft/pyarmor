@@ -92,4 +92,7 @@ Look at the scripts used to run benchmark test::
 
 All the used files are saved in the folder `.benchtest`
 
+The performance in different modes
+----------------------------------
+
 .. include:: _common_definitions.txt

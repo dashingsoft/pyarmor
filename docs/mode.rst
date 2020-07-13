@@ -74,6 +74,28 @@ It is recommended to upgrade in the next minor version.
    mdoe if there are more than about 30 functions in this module, (It
    still could be obfuscated by non-advanced mode).
 
+.. _vm mode:
+
+VM Mode
+--------
+
+VM mode is introduced since 6.3.3. VM mode is based on code virtualization, it
+uses a strong vm tool to protect the core algorithm of dynamic library. This
+mode is an enhancement of advanced mode and super mode.
+
+Enable vm mode with advanced mode by this way::
+
+    pyarmor obfuscate --advanced 3 foo.py
+
+Enable sumper mode with advanced mdoe by this way::
+
+    pyarmor obfuscate --advanced 4 foo.py
+
+Though vm mode improves the security remarkably, but the size of dynamic library
+is increased, and the performance is reduced. The original size is about
+600K~800K, but in vm mode the size is about 4M. About the performances, refer to
+:ref:`the performance in different modes`
+
 .. _obfuscating code mode:
 
 Obfuscating Code Mode
