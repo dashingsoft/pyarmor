@@ -32,6 +32,7 @@ Each feature has its own bit
 * 2: JIT
 * 4: ADV, advanced mode
 * 8: SUPER, super mode
+* 16: VM, vm protection mode
 
 For example, ``windows.x86_64.7`` means anti-debug(1), JIT(2) and advanced
 mode(4) supported, ``windows.x86_64.0`` means no any feature, so highest speed.
@@ -90,8 +91,9 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * linux.ppc64
 * darwin.arm64
 * freebsd.x86_64
-* alpine.x86_64
-* alpine.arm
+* musl.x86_64 (Renamed in 6.3.1, the old name is alpine.x86_64)
+* musl.arm (Renamed in 6.3.1, the old name is alpine.arm)
+* musl.mips32 (New in 6.3.1)
 * poky.x86
 
 Platform Tables
@@ -247,6 +249,18 @@ Platform Tables
      -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/uclibc.armv7.0/_pytransform.so>`_
      - Build by armv7-buildroot-uclibceabihf-gcc
+   * - windows.x86.21
+     - Windows
+     - i686
+     - Anti-Debug, ADV, VM
+     - `_pytransform.dll <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.21/_pytransform.dll>`_
+     - Cross compile by i686-w64-mingw32-gcc in cygwin
+   * - windows.x86_64.21
+     - Windows
+     - AMD64
+     - Anti-Debug, ADV, VM
+     - `_pytransform.dll <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.21/_pytransform.dll>`_
+     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
 
 .. list-table:: Table-3. The Prebuilt Extensions For Super Mode
    :name: The Prebuilt Extensions For Super Mode
@@ -403,3 +417,39 @@ Platform Tables
      - Anti-Debug, JIT, SUPER
      - `pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv7.11.py27/pytransform.so>`_
      - Built by gcc
+   * - windows.x86_64.25.py38
+     - Windows
+     - AMD64
+     - Anti-Debug, SUPER, VM
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.25.py38/pytransform.pyd>`_
+     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
+   * - windows.x86_64.25.py37
+     - Windows
+     - AMD64
+     - Anti-Debug, SUPER, VM
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.25.py37/pytransform.pyd>`_
+     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
+   * - windows.x86_64.25.py27
+     - Windows
+     - AMD64
+     - Anti-Debug, SUPER, VM
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86_64.25.py27/pytransform.pyd>`_
+     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
+   * - windows.x86.25.py38
+     - Windows
+     - i386
+     - Anti-Debug, SUPER, VM
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.25.py38/pytransform.pyd>`_
+     - Cross compile by i686-w64-mingw32-gcc in cygwin
+   * - windows.x86.25.py37
+     - Windows
+     - i386
+     - Anti-Debug, SUPER, VM
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.25.py37/pytransform.pyd>`_
+     - Cross compile by i686-w64-mingw32-gcc in cygwin
+   * - windows.x86.25.py27
+     - Windows
+     - i386
+     - Anti-Debug, SUPER, VM
+     - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.25.py27/pytransform.pyd>`_
+     - Cross compile by i686-w64-mingw32-gcc in cygwin
