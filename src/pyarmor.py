@@ -342,7 +342,7 @@ def _build(args):
                            rpath=project.runtime_path, suffix=suffix)
 
             if supermode:
-                make_super_bootstrap(a, b, relative=relative, suffix=suffix)
+                make_super_bootstrap(a, b, soutput, relative, suffix=suffix)
 
         logging.info('%d scripts has been obfuscated', len(files))
         project['build_time'] = time.time()
@@ -667,7 +667,7 @@ def _obfuscate(args):
                        obf_mod=args.obf_mod, wrap_mode=args.wrap_mode)
 
         if supermode:
-            make_super_bootstrap(a, b, relative=relative, suffix=suffix)
+            make_super_bootstrap(a, b, output, relative, suffix=suffix)
         elif is_entry and bootstrap:
             name = os.path.abspath(a)[len(path)+1:]
             make_entry(name, path, output, relative=relative, suffix=suffix)

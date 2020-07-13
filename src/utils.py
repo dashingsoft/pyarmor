@@ -1166,11 +1166,13 @@ def get_bind_key(filename):
     return sum(struct.unpack(fmt, buf[:size*4]))
 
 
-def make_super_bootstrap(source, filename, relative=None, suffix=''):
+def make_super_bootstrap(source, filename, output, relative=None, suffix=''):
     pkg = os.path.basename(filename) == '__init__.py'
-    bootstrap = 'from %spytransform%s import pyarmor\n' % (
-        '.' if (relative is True) or ((relative is None) and pkg) else '',
-        suffix)
+    level = ''
+    if (relative is True) or ((relative is None) and pkg):
+        n = len(filename[len(output)+1:].replace('\\', '/').split('/'))
+        level = '.' * n
+    bootstrap = 'from %spytransform%s import pyarmor\n' % (level, suffix)
 
     with open(filename, 'r') as f:
         lines = f.readlines()

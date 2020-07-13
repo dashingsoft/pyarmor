@@ -686,6 +686,24 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log "Test no wrap obfuscate mode: OK"
 
+csih_inform "S-11. Test sub-package with relative import"
+dist=test-super-mode-11
+mkdir -p $dist/src/pkg/a
+echo "" > $dist/src/pkg/__init__.py
+echo "" > $dist/src/pkg/a/__init__.py
+
+$PYARMOR obfuscate -r --advanced 2 -O $dist/pkg \
+         $dist/src/pkg/__init__.py >result.log 2>&1
+check_return_value
+check_file_content $dist/pkg/__init__.py "from .pytransform import pyarmor"
+check_file_content $dist/pkg/a/__init__.py "from ..pytransform import pyarmor"
+
+$PYARMOR obfuscate -r --advanced 2 -O $dist/dist \
+         $dist/src/pkg/__init__.py >result.log 2>&1
+check_return_value
+check_file_content $dist/dist/__init__.py "from .pytransform import pyarmor"
+check_file_content $dist/dist/a/__init__.py "from ..pytransform import pyarmor"
+
 echo ""
 echo "-------------------- Super Mode End --------------------------"
 echo ""
