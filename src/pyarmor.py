@@ -219,14 +219,14 @@ def _build(args):
 
     restrict = project.get('restrict_mode',
                            0 if project.get('disable_restrict_mode') else 1)
-    adv_mode = (project.advanced_mode if project.advanced_mode else 0) \
+    advanced = (project.advanced_mode if project.advanced_mode else 0) \
         if hasattr(project, 'advanced_mode') else 0
-    supermode = adv_mode in (2, 4)
-    vmode = adv_mode in (3, 4)
+    supermode = advanced in (2, 4)
+    vmenabled = advanced in (3, 4)
 
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
-    platforms = check_cross_platform(platforms, supermode, vmode)
+    platforms = check_cross_platform(platforms, supermode, vmenabled)
 
     protection = project.cross_protection \
         if hasattr(project, 'cross_protection') else 1
@@ -309,11 +309,12 @@ def _build(args):
         logging.info('Obfuscating each function is %s', v(obf_code))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
         logging.info('Restrict mode is %s', restrict)
-        logging.info('Advanced mode is %s', adv_mode)
-        logging.info('VM Protect mode is %s', vmode)
+        logging.info('Advanced value is %s', advanced)
+        logging.info('Super mode is %s', v(supermode))
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
+        adv_mode2 = (advanced - 2) if advanced > 2 else advanced
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -329,14 +330,14 @@ def _build(args):
                 plugins = None
 
             if entries and (os.path.abspath(a) in entries):
-                vmode = adv_mode | 8
+                adv_mode = adv_mode2 | 8
                 pcode = protection
             else:
-                vmode = adv_mode
+                adv_mode = adv_mode2
                 pcode = 0
 
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
-                           wrap_mode=wrap_mode, adv_mode=vmode,
+                           wrap_mode=wrap_mode, adv_mode=adv_mode,
                            rest_mode=restrict, protection=pcode,
                            platforms=platforms, plugins=plugins,
                            rpath=project.runtime_path, suffix=suffix)
@@ -522,12 +523,12 @@ def _obfuscate(args):
     '''Obfuscate scripts without project.'''
     advanced = args.advanced if args.advanced else 0
     supermode = advanced in (2, 4)
-    vmode = advanced in (3, 4)
+    vmenabled = advanced in (3, 4)
     restrict = args.restrict
 
     platforms = compatible_platform_names(args.platforms)
     logging.info('Target platforms: %s', platforms if platforms else 'Native')
-    platforms = check_cross_platform(platforms, supermode, vmode)
+    platforms = check_cross_platform(platforms, supermode, vmenabled)
 
     for x in ('entry',):
         if getattr(args, x.replace('-', '_')) is not None:
@@ -623,8 +624,8 @@ def _obfuscate(args):
     logging.info('Obfuscate code mode is %s', args.obf_code)
     logging.info('Wrap mode is %s', args.wrap_mode)
     logging.info('Restrict mode is %d', restrict)
-    logging.info('Advanced mode is %d', advanced)
-    logging.info('VM Protect mode is %s', vmode)
+    logging.info('Advanced value is %d', advanced)
+    logging.info('Super mode is %s', supermode)
 
     if args.no_runtime:
         if cross_protection == 1:
@@ -646,6 +647,7 @@ def _obfuscate(args):
                 supermode=supermode)
 
     logging.info('Start obfuscating the scripts...')
+    adv_mode2 = (advanced - 2) if advanced > 2 else advanced
     for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -660,8 +662,8 @@ def _obfuscate(args):
         if not os.path.exists(d):
             os.makedirs(d)
 
-        vmode = advanced | (8 if is_entry else 0)
-        encrypt_script(prokey, a, b, adv_mode=vmode, rest_mode=restrict,
+        adv_mode = adv_mode2 | (8 if is_entry else 0)
+        encrypt_script(prokey, a, b, adv_mode=adv_mode, rest_mode=restrict,
                        protection=protection, platforms=platforms,
                        plugins=plugins, suffix=suffix, obf_code=args.obf_code,
                        obf_mod=args.obf_mod, wrap_mode=args.wrap_mode)
@@ -693,7 +695,7 @@ def _benchmark(args):
     logging.info('Obfuscate module mode: %s', args.obf_mod)
     logging.info('Obfuscate code mode: %s', args.obf_code)
     logging.info('Obfuscate wrap mode: %s', args.wrap_mode)
-    logging.info('Obfuscate advanced mode: %s', args.adv_mode)
+    logging.info('Obfuscate advanced value: %s', args.adv_mode)
 
     logging.info('Benchmark bootstrap ...')
     path = os.path.normpath(os.path.dirname(__file__))
