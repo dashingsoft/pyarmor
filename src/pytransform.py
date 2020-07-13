@@ -32,6 +32,7 @@ arch_table = (
     ('armv6', ('armv6l',)),
     ('armv7', ('armv7l',)),
     ('ppc64', ('ppc64le',)),
+    ('mips32', ('mips',)),
     ('aarch32', ('aarch32',)),
     ('aarch64', ('aarch64', 'arm64'))
 )
