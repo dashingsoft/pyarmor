@@ -799,6 +799,9 @@ def _download(args):
             lines.append('%16s: %s' % ('machines', ', '.join(p['machines'])))
             lines.append('%16s: %s' % ('features', ', '.join(p['features'])))
             lines.append('%16s: %s' % ('remark', p['remark']))
+
+        if help_platform is not None:
+            lines.sort()
         logging.info('\n%s', '\n'.join(lines))
 
 
@@ -812,7 +815,7 @@ def _runtime(args):
     suffix = get_name_suffix() if args.enable_suffix else ''
     licfile = 'no' if args.no_license else args.license_file
     supermode = args.super_mode or (args.advanced in (2, 4))
-    vmode = args.advanced in (3, 4)
+    vmode = args.vm_mode or (args.advanced in (3, 4))
     platforms = compatible_platform_names(args.platforms)
     platforms = check_cross_platform(platforms, supermode, vmode=vmode)
     checklist = make_runtime(capsule, output, licfile=licfile,
@@ -929,8 +932,8 @@ def _parser():
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1, 2), default=1)
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2), default=1)
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1), default=1)
-    cparser.add_argument('--advanced', type=int, default=0, choices=(0, 1, 2),
-                         help='Enable advanced mode or super mode')
+    cparser.add_argument('--advanced', type=int, choices=(0, 1, 2, 3, 4),
+                         default=0, help='Enable advanced mode or super mode')
     cparser.add_argument('--package-runtime', type=int, default=1,
                          choices=(0, 1), help='Package runtime files or not')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
@@ -1079,7 +1082,7 @@ def _parser():
                          help='Insert extra code to entry script, '
                          'it could be used multiple times')
     cparser.add_argument('--advanced', '--advanced-mode', dest='advanced_mode',
-                         type=int, choices=(0, 1, 2),
+                         type=int, choices=(0, 1, 2, 3, 4),
                          help='Enable advanced mode or super mode')
     cparser.add_argument('--package-runtime', choices=(0, 1), type=int,
                          help='Package runtime files or not')
@@ -1175,7 +1178,7 @@ def _parser():
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
                          default=1, type=int)
-    cparser.add_argument('-a', '--advanced', choices=(0, 1, 2),
+    cparser.add_argument('-a', '--advanced', choices=(0, 1, 2, 3, 4),
                          default=0, dest='adv_mode', type=int)
     cparser.add_argument('-d', '--debug', action='store_true',
                          help='Do not clean the test scripts'
@@ -1263,7 +1266,9 @@ def _parser():
                          help='Make unique runtime files and bootstrap code')
     cparser.add_argument('--super-mode', action='store_true',
                          help='Enable super mode')
-    cparser.add_argument('--advanced', type=int, choices=(2,),
+    cparser.add_argument('--vm-mode', action='store_true',
+                         help='Enable vm protection mode')
+    cparser.add_argument('--advanced', type=int, choices=(2, 4),
                          help=argparse.SUPPRESS)
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
