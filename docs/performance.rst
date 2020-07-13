@@ -95,4 +95,17 @@ All the used files are saved in the folder `.benchtest`
 The performance in different modes
 ----------------------------------
 
+For `obf-mod`, `2` is more security and faster, so it's default value since
+introduced in v6.3.0
+
+For `obf-code`, `2` is more security than `1`, and slightly slower than `1`
+
+For `wrap-mode`, `0` means that each function is restored once, however `1`
+means as many as it called. So the latter is slower than the former, especially
+most of the functions are called many times.
+
+The :ref:`advanced mode` and :ref:`super mode` are almost same in
+performace. But :ref:`vm mode` will reduce the performance, because the core
+functions are virtualized.
+
 .. include:: _common_definitions.txt

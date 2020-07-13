@@ -127,8 +127,32 @@ In order to protect `_pytransform` in Python script, some extra code
 will be inserted into the entry script, refer to :ref:`Special
 Handling of Entry Script`
 
+The security of different feature number
+----------------------------------------
+
+There may be serveral dynamic libraries with different features in each
+platform. The platform name with feature number suffix combines an unique
+name. For example, `linux.x86_64.21` has feature `21`, and `windows.x86.0` has
+feature `0`. The security of each feature is different.
+
+The library with feature `21` and `25` has been protected by strong vm tool and
+many anti-debug technicals, it's safe.
+
+Feature `0` means no any protection, so it's better to protect it by any third
+tool.
+
+For all the other features, they're protected by a simple vm and some anti-debug
+technicals, it's not strong enough, it's also recommed to protect them by any third tool.
+
+Changing core algorithm from time to time
+-----------------------------------------
+
+PyArmor may change the core algorithm from time to time, so the obfuscated
+scripts are obfuscated by new version may be totaly different from the prior
+ones.
+
 .. unused:
-   
+
     If you want to hide the code more thoroughly, try to use any other
     tool such as ASProtect_, VMProtect_ to protect dynamic library
     `_pytransform` which is distributed with obfuscatd scripts.
