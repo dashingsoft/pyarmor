@@ -69,7 +69,7 @@ class Project(dict):
         ('runtime_path', None), \
         ('restrict_mode', 1), \
         ('obf_code', 1), \
-        ('obf_mod', 1), \
+        ('obf_mod', 2), \
         ('wrap_mode', 1), \
         ('advanced_mode', 0), \
         ('bootstrap_code', 1), \

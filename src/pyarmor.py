@@ -929,7 +929,7 @@ def _parser():
                          action='append',
                          help='Target platform to run obfuscated scripts, '
                          'use this option multiple times for more platforms')
-    cparser.add_argument('--obf-mod', type=int, choices=(0, 1, 2), default=1)
+    cparser.add_argument('--obf-mod', type=int, choices=(0, 1, 2), default=2)
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2), default=1)
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1), default=1)
     cparser.add_argument('--advanced', type=int, choices=(0, 1, 2, 3, 4),
@@ -1173,7 +1173,7 @@ def _parser():
         help='Run benchmark test in current machine'
     )
     cparser.add_argument('-m', '--obf-mod', choices=(0, 1, 2),
-                         default=1, type=int)
+                         default=2, type=int)
     cparser.add_argument('-c', '--obf-code', choices=(0, 1, 2),
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
