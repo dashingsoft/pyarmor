@@ -8,7 +8,8 @@ Change Logs
 * Fix sub-package could not import `pytransform` when it's obfuscated by
   `--bootstrap 3` in super mode
 * For Windows platform, add new modes `--advanced 3` and `--advanced 4` to
-  enable vm protection. Refer to
+  enable vm protection.
+  Refer to https://pyarmor.readthedocs.io/en/latest/mode.html#vm-mode
 * Add new platform `musl.mips32` for MIPS32 with musl-libc
 * The default value of option `obf-mod` is set to `2`
 
