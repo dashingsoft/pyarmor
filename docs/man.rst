@@ -14,7 +14,7 @@ The most commonly used pyarmor commands are::
 
     obfuscate    Obfuscate python scripts
     licenses     Generate new licenses for obfuscated scripts
-    pack         Pack obfuscated scripts to one bundle
+    pack         Obfuscate scripts then pack them to one bundle
     hdinfo       Show hardware information
 
 The commands for project::
@@ -93,12 +93,12 @@ Obfuscate python scripts.
 --no-cross-protection         Do not insert protection code to entry script
 --plugin NAME                 Insert extra code to entry script, it could be used multiple times
 --platform NAME               Distribute obfuscated scripts to other platform
---advanced <0,1,2>            Enable advanced mode `1` or super mode `2`
+--advanced <0,1,2,3,4>        Enable advanced mode `1`, super mode `2`, vm mode `3` and `4`
 --restrict <0,1,2,3,4>        Set restrict mode
 -n, --no-runtime              DO NOT generate runtime files
 --package-runtime <0,1>       Save the runtime files as package or not
 --enable-suffix               Generate the runtime package with unique name
---obf-mod <0,1>               Disable or enable to obfuscate module
+--obf-mod <0,1,2>             Disable or enable to obfuscate module
 --obf-code <0,1,2>            Disable or enable to obfuscate function
 --wrap-mode <0,1>             Disable or enable wrap mode
 --with-license FILENAME       Use this licese, special value `outer` means no license
@@ -157,8 +157,19 @@ the available platform names.
 
 Option ``--restrict`` is used to set restrict mode, :ref:`Restrict Mode`
 
-Option ``--advanced 2`` will enable :ref:`super mode`. In this mode, no runtime
-files and bootstrap code, only one extension module ``pytransform`` is required.
+Option ``--advanced`` is used to enable some advanced features to improve the
+security. The available value for this option
+
+* 0: Disable any advanced feature
+* 1: Enable :ref:`avanced mode`
+* 2: Enable :ref:`super mode`
+* 3: Enable :ref:`advanced mode` and :ref:`vm mode`
+* 4: Enable :ref:`super mode` and :ref:`vm mode`
+
+If :ref:`super mode` mode is enabled, the runtime files and bootstrap code are
+totaly different, there is only one extension module ``pytransform.pyd`` or
+``pytransform.so``.
+
 
 **RUNTIME FILES**
 
@@ -168,16 +179,12 @@ as package::
     pytransform/
         __init__.py
         _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-        pytransform.key
-        license.lic
 
 But if ``--package-runtime`` is `0`, they will be saved in the same path with
 obfuscated scripts as four separated files::
 
     pytransform.py
     _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
-    pytransform.key
-    license.lic
 
 If the option ``--enable-suffix`` is set, the runtime package or module name
 will be ``pytransform_xxx``, here ``xxx`` is unique suffix based on the
@@ -209,6 +216,7 @@ If the option ``--enable-suffix`` is set, the bootstrap code may like this::
 
 If ``--no-bootstrap`` is set, or ``--bootstrap`` is `0`, then no bootstrap code
 will be inserted into the entry scripts.
+
 
 **EXAMPLES**
 
@@ -665,10 +673,10 @@ Update project settings.
 --entry SCRIPT                  Entry script of this project
 --is-package <0,1>              Set project as package or not
 --restrict <0,1,2,3,4>          Set restrict mode
---obf-mod <0,1>                 Disable or enable to obfuscate module
+--obf-mod <0,1,2>               Disable or enable to obfuscate module
 --obf-code <0,1,2>              Disable or enable to obfuscate function
 --wrap-mode <0,1>               Disable or enable wrap mode
---advanced <0,1,2>              Enable advanced mode `1` or super mode `2`
+--advanced <0,1,2,3,4>          Enable advanced mode `1`, super mode `2`, vm mode `3` or `4`
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script,
                                 it also could be a filename to specify customized protection script
 --runtime-path RPATH            Set the path of runtime files in target machine
@@ -844,11 +852,11 @@ Check the performance of obfuscated scripts.
 
 **OPTIONS**:
 
--m, --obf-mode <0,1,2>   Whether to obfuscate the whole module
--c, --obf-code <0,1,2>   Whether to obfuscate each function
--w, --wrap-mode <0,1>    Whether to obfuscate each function with wrap mode
--a, --advanced <0,1,2>   Set advanced mode or super mode
---debug                  Do not remove test path
+-m, --obf-mod <0,1,2>        Whether to obfuscate the whole module
+-c, --obf-code <0,1,2>       Whether to obfuscate each function
+-w, --wrap-mode <0,1>        Whether to obfuscate each function with wrap mode
+-a, --advanced <0,1,2,3,4>   Set advanced mode, super mode and vm mode
+--debug                      Do not remove test path
 
 **DESCRIPTION**
 
@@ -965,6 +973,7 @@ Geneate :ref:`runtime package` separately.
 --platform NAME               Generate runtime package for specified platform
 --enable-suffix               Generate the runtime package with unique name
 --super-mode                  Generate runtime extension module for super mode
+--vm-mode                     Generate runtime library with vm mode
 
 **DESCRIPTION**
 
