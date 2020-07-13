@@ -148,4 +148,9 @@ Q & A
 
    | Same license is OK.
 
+10. What means a product serials under PyArmor EULA?
+
+   | A product serial means a sale unit and its upgraded versions. For
+   | example, AutoCAD 2003, 2010 could be taken as a product serials.
+
 .. include:: _common_definitions.txt
