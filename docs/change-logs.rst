@@ -3,6 +3,13 @@
 Change Logs
 ===========
 
+6.3.3
+-----
+* Fix sub-package could not import `pytransform` when it's obfuscated by
+  `--bootstrap 3` in super mode
+* For Windows platform, add new modes `--advanced 3` and `--advanced 4` to
+  enable vm protection. Refer to
+
 6.3.2
 -----
 * Fix super mode crash issue for Python37/38 in Windows
