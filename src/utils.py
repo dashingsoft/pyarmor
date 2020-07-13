@@ -1069,10 +1069,13 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         platid = result[0]
         nlist = platid.split('.')
         fn2 = int(nlist[2])
-        for n in (21, 7, 0):
-            if n & fn2:
-                break
-        if (n != fn1) and not (n & fn1):
+        if fn2 in (21, 25):
+            n = 21
+        elif fn2 in (0, 8):
+            n = 0
+        else:
+            n = 7
+        if (n != fn1) and not (n & fn1 & 0x12):
             reboot = '.'.join([_format_platid(), str(n)])
             os.putenv('PYARMOR_PLATFORM', reboot)
 
