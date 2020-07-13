@@ -41,12 +41,10 @@ Pack obfuscated scripts into one bundle
     pip install pyinstaller
     pyarmor pack foo.py
 
-Generate an expired license and run obfuscated scripts with new license
+Obfuscate scripts with an expired license
 
-    pyarmor licenses --expired 2018-12-31 PRODUCT-SN-0001
-    cp licenses/PRODUCT-SN-0001/license.lic dist/pytransform/
-
-    python dist/foo.py
+    pyarmor licenses --expired 2018-12-31 r001
+    pyarmor obfuscate --with-license licenses/r001/license.lic foo.py
 
 There is also a web-ui package [pyarmor-webui](https://github.com/dashingsoft/pyarmor-webui)
 
