@@ -17,7 +17,7 @@ are the files list in the output path ``dist``::
 
     pytransform/
         __init__.py
-        _pytransform.so, or _pytransform.dll in Windows, or _pytransform.dylib in MacOS
+        _pytransform.so or _pytransform.dll or _pytransform.dylib
 
 ``dist/foo.py`` is obfuscated script, the content is::
 
@@ -55,21 +55,15 @@ Run obfuscated scripts::
     cd dist
     python foo.py
 
-Generate an expired license and run obfuscated scripts with new license::
+Obfuscate scripts with an expired license::
 
-    pyarmor licenses --expired 2018-12-31 product-0001
-    cp licenses/product-0001/license.lic dist/pytransform/
+    pyarmor licenses --expired 2018-12-31 r001
+    pyarmor obfuscate --with-license licenses/r001/license.lic foo.py
 
-    cd dist/
-    python foo.py
-
-Pack obfuscated scripts with PyInstaller::
+Pack obfuscated scripts to one bundle::
 
     pip install pyinstaller
     pyarmor pack foo.py
-
-    cd dist/foo
-    ./foo
 
 There is also a web-ui package `pyarmor-webui`::
 
