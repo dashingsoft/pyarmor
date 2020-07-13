@@ -178,13 +178,13 @@ as package::
 
     pytransform/
         __init__.py
-        _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+        _pytransform.so/.dll/.dylib
 
 But if ``--package-runtime`` is `0`, they will be saved in the same path with
 obfuscated scripts as four separated files::
 
     pytransform.py
-    _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+    _pytransform.so/.dll/.dylib
 
 If the option ``--enable-suffix`` is set, the runtime package or module name
 will be ``pytransform_xxx``, here ``xxx`` is unique suffix based on the

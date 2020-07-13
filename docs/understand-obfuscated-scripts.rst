@@ -38,7 +38,7 @@ the required files to run obfuscated scripts::
 
         pytransform/
             __init__.py
-            _pytransform.so, or _pytransform.dll in Windows, _pytransform.dylib in MacOS
+            _pytransform.so/.dll/.dylib
 
 Before v6.3, there are 2 extra files::
 

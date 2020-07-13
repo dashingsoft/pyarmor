@@ -39,6 +39,18 @@ special value ``outer``, for example::
 
   pyarmor obfuscate --with-license outer --advanced 2 foo.py
 
+More information, refer to next section.
+
+How to use outer license file
+-----------------------------
+
+Since v6.3.0, the runtime file `license.lic` has been embeded to dynamic
+library. If you prefer to use outer ``license.lic``, so it can be replaced with
+the others easily, just set option ``--with-license`` to special value
+``outer``, for example::
+
+  pyarmor obfuscate --with-license outer foo.py
+
 When the obfuscated scripts start, it will search ``license.lic`` in order:
 
 #. Check environment variable ``PYARMOR_LICENSE``, if set, use this filename
