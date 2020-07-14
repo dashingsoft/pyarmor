@@ -1086,7 +1086,7 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         logging.info('====================================================')
         logging.info('Reload PyArmor with platform: %s', reboot)
         logging.info('====================================================')
-        pytransform_bootstrap(false=True)
+        pytransform_bootstrap(force=True)
         # _reboot_pytransform(reboot)
         # return False
 
