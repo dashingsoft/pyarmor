@@ -227,6 +227,8 @@ def _build(args):
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
     platforms = check_cross_platform(platforms, supermode, vmenabled)
+    if platforms is False:
+        return
 
     protection = project.cross_protection \
         if hasattr(project, 'cross_protection') else 1
@@ -529,6 +531,8 @@ def _obfuscate(args):
     platforms = compatible_platform_names(args.platforms)
     logging.info('Target platforms: %s', platforms if platforms else 'Native')
     platforms = check_cross_platform(platforms, supermode, vmenabled)
+    if platforms is False:
+        return
 
     for x in ('entry',):
         if getattr(args, x.replace('-', '_')) is not None:
@@ -820,6 +824,9 @@ def _runtime(args):
     vmode = args.vm_mode or (args.advanced in (3, 4))
     platforms = compatible_platform_names(args.platforms)
     platforms = check_cross_platform(platforms, supermode, vmode=vmode)
+    if platforms is False:
+        return
+
     checklist = make_runtime(capsule, output, licfile=licfile,
                              platforms=platforms, package=package,
                              suffix=suffix, supermode=supermode)
@@ -1315,11 +1322,11 @@ def main(argv):
         _change_home_path(args.home)
 
     if args.boot:
-        logging.info('Change boot platform: %s', args.boot)
+        logging.info('Set boot platform: %s', args.boot)
         os.putenv('PYARMOR_PLATFORM', args.boot)
 
     try:
-        pytransform_bootstrap(capsule=DEFAULT_CAPSULE, force=args.boot)
+        pytransform_bootstrap(capsule=DEFAULT_CAPSULE)
     except Exception as e:
         if not args.func.__name__[1:] in ('download', 'register'):
             raise

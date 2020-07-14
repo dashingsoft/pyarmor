@@ -81,8 +81,8 @@ def _search_downloaded_files(path, platid, libname):
                 return os.path.join(platid, x)
 
 
-def pytransform_bootstrap(capsule=None, force=False):
-    if pytransform._pytransform is not None and not force:
+def pytransform_bootstrap(capsule=None):
+    if pytransform._pytransform is not None:
         logging.debug('No bootstrap, pytransform has been loaded')
         return
     logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
@@ -115,7 +115,7 @@ def pytransform_bootstrap(capsule=None, force=False):
 
     if os.getenv('PYARMOR_PLATFORM'):
         p = os.getenv('PYARMOR_PLATFORM')
-        logging.info('PYARMOR_PLATFORM is set to %s', p)
+        logging.info('PYARMOR_PLATFORM is %s', p)
         platid = os.path.join(*os.path.normpath(p).split('.'))
         logging.debug('Build platform is %s', _format_platid(platid))
 
@@ -986,17 +986,13 @@ def relpath(path, start=os.curdir):
         return path
 
 
-def _reboot_pytransform(platname):
-    logging.info('===========================================')
-    logging.info('Reboot PyArmor to obfuscate the scripts for '
-                 'platform %s', platname)
-    logging.info('===========================================')
-    os.putenv('PYARMOR_PLATFORM', '.'.join([_format_platid(), '0']))
+def _reboot_pytransform(platid):
+    os.putenv('PYARMOR_PLATFORM', platid)
     if sys.platform == 'win32' and sys.argv[0].endswith('pyarmor'):
         p = Popen(sys.argv)
     else:
         p = Popen([sys.executable] + sys.argv)
-        p.wait()
+    p.wait()
     return p.returncode
 
 
@@ -1079,7 +1075,7 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
             reboot = '.'.join([_format_platid(), str(n)])
             os.putenv('PYARMOR_PLATFORM', reboot)
 
-        logging.info('Target platforms: %s', result)
+        logging.info('Update target platforms to: %s', result)
         for p in result[1:]:
             fn3 = int(p.split('.')[2])
             if (n != fn3) and not (n & fn3):
@@ -1088,10 +1084,10 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
 
     if reboot:
         logging.info('====================================================')
-        logging.info('Reload PyArmor with %s to obfuscate the scripts for '
-                     'platform %s', reboot, platid)
+        logging.info('Reboot PyArmor with platform: %s', reboot)
         logging.info('====================================================')
-        pytransform_bootstrap(force=True)
+        _reboot_pytransform(reboot)
+        return False
 
     return result
 
