@@ -997,6 +997,9 @@ def _reboot_pytransform(platid):
 
 
 def _get_preferred_platid(platname, features=None):
+    if os.path.isabs(platname):
+        return platname
+
     nlist = platname.split('.')
     name = '.'.join(nlist[:2])
 
@@ -1061,7 +1064,7 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         result.append(platid)
 
     reboot = None
-    if result:
+    if result and not os.path.isabs(result[0]):
         platid = result[0]
         nlist = platid.split('.')
         fn2 = int(nlist[2])
