@@ -81,8 +81,8 @@ def _search_downloaded_files(path, platid, libname):
                 return os.path.join(platid, x)
 
 
-def pytransform_bootstrap(capsule=None):
-    if pytransform._pytransform is not None:
+def pytransform_bootstrap(capsule=None, force=False):
+    if pytransform._pytransform is not None and not force:
         logging.debug('No bootstrap, pytransform has been loaded')
         return
     logging.debug('PyArmor installation path: %s', PYARMOR_PATH)
@@ -1073,7 +1073,7 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
             n = 7
         if (n != fn1) and not (n & fn1 & 0x12):
             reboot = '.'.join([_format_platid(), str(n)])
-            os.putenv('PYARMOR_PLATFORM', reboot)
+            os.environ['PYARMOR_PLATFORM'] = reboot
 
         logging.info('Update target platforms to: %s', result)
         for p in result[1:]:
@@ -1084,10 +1084,11 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
 
     if reboot:
         logging.info('====================================================')
-        logging.info('Reboot PyArmor with platform: %s', reboot)
+        logging.info('Reload PyArmor with platform: %s', reboot)
         logging.info('====================================================')
-        _reboot_pytransform(reboot)
-        return False
+        pytransform_bootstrap(false=True)
+        # _reboot_pytransform(reboot)
+        # return False
 
     return result
 
