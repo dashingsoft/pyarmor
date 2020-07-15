@@ -94,6 +94,8 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * musl.x86_64 (Renamed in 6.3.1, the old name is alpine.x86_64)
 * musl.arm (Renamed in 6.3.1, the old name is alpine.arm)
 * musl.mips32 (New in 6.3.1)
+* linux.mips64 (New in 6.3.3)
+* linux.mips64el (New in 6.3.3)
 * poky.x86
 
 Platform Tables

@@ -1003,9 +1003,9 @@ def _get_preferred_platid(platname, features=None):
     nlist = platname.split('.')
     name = '.'.join(nlist[:2])
 
-    if name in ('linux.arm', 'linux.armv6', 'linux.ppc64',
+    if name in ('linux.arm', 'linux.armv6', 'linux.ppc64', 'linux.mips64',
+                'linux.mips64el', 'musl.x86_64', 'musl.arm', 'musl.mips32',
                 'darwin.arm64', 'freebsd.x86_64', 'android.aarch64',
-                'musl.x86_64', 'musl.arm', 'musl.mips32',
                 'poky.x86', 'vs2015.x86_64', 'vs2015.x86'):
         if features and '0' not in features:
             raise RuntimeError('No feature %s for platform %s', features, name)
