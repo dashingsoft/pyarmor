@@ -10,8 +10,10 @@ Change Logs
 * For Windows platform, add new modes `--advanced 3` and `--advanced 4` to
   enable vm protection.
   Refer to https://pyarmor.readthedocs.io/en/latest/mode.html#vm-mode
-* Add new platform `musl.mips32` for MIPS32 with musl-libc
 * The default value of option `obf-mod` is set to `2`
+* Add new platform `musl.mips32` for MIPS32 with musl-libc
+* Add new platform `linux.mips64` and `linux.mips64el`
+* Fix super mode crash issue for `linux.armv7`, `linux.aarch32` and `linux.aarch64`
 
 6.3.2
 -----
