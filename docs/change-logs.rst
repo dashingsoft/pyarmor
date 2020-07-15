@@ -13,7 +13,7 @@ Change Logs
 * The default value of option `obf-mod` is set to `2`
 * Add new platform `musl.mips32` for MIPS32 with musl-libc
 * Add new platform `linux.mips64` and `linux.mips64el`
-* Fix super mode crash issue for `linux.armv7`, `linux.aarch32` and `linux.aarch64`
+* Fix super mode crash issue for `linux.armv7` and `linux.aarch32`
 
 6.3.2
 -----
