@@ -1312,8 +1312,9 @@ def main(argv):
 
     if args.silent:
         logging.getLogger().setLevel(100)
-    if args.debug:
+    if args.debug or sys.flags.debug:
         logging.getLogger().setLevel(logging.DEBUG)
+        sys._debug_pyarmor = True
     elif os.path.basename(sys.argv[0]) in ('pyarmor', 'pyarmor.py'):
         sys.excepthook = excepthook
 

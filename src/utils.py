@@ -444,7 +444,7 @@ def _get_library_filename(platid, checksums=None):
         with open(filename, 'rb') as f:
             data = f.read()
         if hashlib.sha256(data).hexdigest() != checksums[platid]:
-            if sys.flags.debug:
+            if hasattr(sys, '_debug_pyarmor'):
                 logging.warning('Found library %s for platform %s, but it does'
                                 ' not match this pyarmor', filename, platid)
                 return filename
@@ -868,7 +868,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                 break
             n += 1
 
-    if sys.flags.debug and (protection or plugins):
+    if hasattr(sys, '_debug_pyarmor') and (protection or plugins):
         patched_script = filename + '.pyarmor-patched'
         logging.info('Write patched script for debugging: %s', patched_script)
         with open(patched_script, 'w') as f:
@@ -937,7 +937,7 @@ def query_keyinfo(key):
         res = urlopen(key_url % key, timeout=3.0)
         customer = json_loads(res.read().decode())
     except Exception as e:
-        if sys.flags.debug:
+        if hasattr(sys, '_debug_pyarmor'):
             logging.warning(e)
         return 'Because of internet exception, could not query ' \
                'registration information.'

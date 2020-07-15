@@ -432,7 +432,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     logging.info('Run PyInstaller with patched .spec file...')
     run_command([sys.executable] + packcmd + ['-y', '--clean', patched_spec])
 
-    if not args.debug:
+    if not args.keep:
         if args.setup is None:
             logging.info('Remove .spec file %s', specfile)
             os.remove(specfile)
@@ -562,7 +562,7 @@ def add_arguments(parser):
                         help='Use this license file other than default one')
     parser.add_argument('--clean', action="store_true",
                         help='Remove cached .spec file before packing')
-    parser.add_argument('--debug', action="store_true",
+    parser.add_argument('--keep', '--debug', dest='keep', action="store_true",
                         help='Do not remove build files after packing')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
                         help='Entry script or project path')
