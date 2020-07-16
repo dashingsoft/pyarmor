@@ -337,10 +337,8 @@ def main():
         with open(obfilename) as f:
             lines = f.readlines()
         with open(obfilename.replace('.py', '_%s.py' % i), 'w') as f:
-            if lines[0].find('pyarmor_runtime'):
-                f.write(''.join(lines))
-            else:
-                f.write(lines[2])
+            f.write(lines[2] if lines[0].find('pyarmor_runtime') > 0 \
+                    else ''.join(lines))
     import_many_no_obfuscated_modules('bfoo_%s', n)
     import_many_obfuscated_modules('obfoo_%s', n)
 
