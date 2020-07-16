@@ -334,7 +334,13 @@ def main():
     logging.info('--- Import %d modules ---', n)
     for i in range(n):
         shutil.copy(filename, filename.replace('.py', '_%s.py' % i))
-        shutil.copy(obfilename, obfilename.replace('.py', '_%s.py' % i))
+        with open(obfilename) as f:
+            lines = f.readlines()
+        with open(obfilename.replace('.py', '_%s.py' % i), 'w') as f:
+            if lines[0].find('pyarmor_runtime'):
+                f.write(''.join(lines))
+            else:
+                f.write(lines[2])
     import_many_no_obfuscated_modules('bfoo_%s', n)
     import_many_obfuscated_modules('obfoo_%s', n)
 
