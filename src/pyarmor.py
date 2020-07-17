@@ -1301,6 +1301,7 @@ def _change_home_path(path):
     utils.CROSS_PLATFORM_PATH = os.path.join(home, 'platforms')
     utils.DEFAULT_CAPSULE = os.path.join(home, capsule_filename)
     utils.OLD_CAPSULE = os.path.join(home, '..', capsule_filename)
+    os.environ['PYARMOR_HOME'] = home
 
 
 def main(argv):

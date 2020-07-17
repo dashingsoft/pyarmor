@@ -312,6 +312,8 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
     # if plat == 'linux':
     #     m.set_option(-1, find_library('c').encode())
 
+    if (not is_runtime) and (not os.getenv('PYARMOR_HOME')):
+        path = os.getenv('PYARMOR_HOME')
     if not os.path.abspath('.') == os.path.abspath(path):
         m.set_option(1, path.encode() if sys.version_info[0] == 3 else path)
 
