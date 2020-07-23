@@ -51,4 +51,6 @@ for pyver in ${TEST_VERSIONS} ; do
     (cd $DIST; $PYTHON $(basename $TESTSCRIPT) >result.log 2>&1)
 done
 
-find . -name result.log | grep -Rl "Found 92 solutions"
+for x in $(find . -name result.log) ; do
+    grep -q "Found 92 solutions" $x || echo "Failed: $x"
+done
