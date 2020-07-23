@@ -3,6 +3,11 @@
 Change Logs
 ===========
 
+6.3.4
+-----
+* Fix option `--home` issue: the file `license.lic` in this path doesn't work
+* Improve the security of core dynamic libraries
+
 6.3.3
 -----
 * Fix sub-package could not import `pytransform` when it's obfuscated by
