@@ -1301,7 +1301,14 @@ def _change_home_path(path):
     utils.CROSS_PLATFORM_PATH = os.path.join(home, 'platforms')
     utils.DEFAULT_CAPSULE = os.path.join(home, capsule_filename)
     utils.OLD_CAPSULE = os.path.join(home, '..', capsule_filename)
+    if not os.getenv('PYARMOR_HOME', home) == home:
+        raise RuntimeError('The option --home conflicts with PYARMOR_HOME')
     os.environ['PYARMOR_HOME'] = home
+
+    licfile = os.path.join(home, 'license.lic')
+    if os.path.exists(licfile):
+        logging.info('Copy %s to %s', licfile, utils.PYARMOR_PATH)
+        shutil.copy2(licfile, utils.PYARMOR_PATH)
 
 
 def main(argv):
