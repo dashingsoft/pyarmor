@@ -27,8 +27,10 @@ for pyver in ${TEST_VERSIONS} ; do
     DIST=dist3-${pyver}
     PYARMOR_HOME=$TESTHOME $PYARMOR obfuscate --advanced 3 -O $DIST $TESTSCRIPT
     (cd $DIST; $PYTHON $(basename $TESTSCRIPT) >result.log 2>&1)
+    grep -q "Found 92 soultions" $DIST/result.log || echo "Py${pyver} failed in advanced 3"
 
     DIST=dist4-${pyver}
     PYARMOR_HOME=$TESTHOME $PYARMOR obfuscate --advanced 4 -O $DIST $TESTSCRIPT
     (cd $DIST; $PYTHON $(basename $TESTSCRIPT) >result.log 2>&1)
+    grep -q "Found 92 soultions" $DIST/result.log || echo "Py${pyver} failed in advanced 4"
 done
