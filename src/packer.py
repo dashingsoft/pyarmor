@@ -380,7 +380,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if hasattr(args, 'project'):
         if xoptions:
             logging.warning('Ignore xoptions as packing project')
-        call_pyarmor(['build', '-O', obfdist, '--package-runtime', '0']
+        call_pyarmor(['build', '-B', '-O', obfdist, '--package-runtime', '0']
                      + licargs + [args.project])
     else:
         call_pyarmor(['obfuscate', '-O', obfdist, '--package-runtime', '0',
