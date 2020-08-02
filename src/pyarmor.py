@@ -53,7 +53,7 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names, \
                   get_name_suffix, get_bind_key, make_super_bootstrap, \
-                  make_protection_code, DEFAULT_CAPSULE
+                  make_protection_code, DEFAULT_CAPSULE, PYARMOR_PATH
 
 import packer
 
@@ -365,6 +365,8 @@ def licenses(name='reg-001', expired=None, bind_disk=None, bind_mac=None,
              bind_ipv4=None, bind_data=None, key=None, home=None):
     if home:
         _change_home_path(home)
+    else:
+        _clean_home_path()
 
     pytransform_bootstrap()
 
@@ -1307,8 +1309,15 @@ def _change_home_path(path):
 
     licfile = os.path.join(home, 'license.lic')
     if os.path.exists(licfile):
-        logging.info('Copy %s to %s', licfile, utils.PYARMOR_PATH)
-        shutil.copy2(licfile, utils.PYARMOR_PATH)
+        logging.info('Copy %s to %s', licfile, PYARMOR_PATH)
+        shutil.copy(licfile, PYARMOR_PATH)
+
+
+def _clean_home_path():
+    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
+    if os.path.exists(licfile):
+        logging.info('Clean unused license file: %s', licfile)
+        os.remove(licfile)
 
 
 def main(argv):
@@ -1323,23 +1332,21 @@ def main(argv):
     if args.debug or sys.flags.debug:
         logging.getLogger().setLevel(logging.DEBUG)
         sys._debug_pyarmor = True
-    elif os.path.basename(sys.argv[0]) in ('pyarmor', 'pyarmor.py'):
+    elif os.path.basename(sys.argv[0]).split('.')[0] == 'pyarmor':
         sys.excepthook = excepthook
 
     if args.home:
         logging.info('Set pyarmor home path: %s', args.home)
         _change_home_path(args.home)
+    else:
+        _clean_home_path()
 
     if args.boot:
         logging.info('Set boot platform: %s', args.boot)
         os.environ['PYARMOR_PLATFORM'] = args.boot
 
-    try:
+    if not args.func.__name__[1:] in ('download', 'register'):
         pytransform_bootstrap(capsule=DEFAULT_CAPSULE, force=args.boot)
-    except Exception as e:
-        if not args.func.__name__[1:] in ('download', 'register'):
-            raise
-        logging.warning(str(e))
 
     logging.info(_version_info(verbose=0))
     args.func(args)
