@@ -206,7 +206,7 @@ def _packer(t, src, entry, build, script, output, options, xoptions, clean):
     call_pyarmor(args)
 
     logging.info('Run PyArmor to build the project')
-    call_pyarmor(['build', project])
+    call_pyarmor(['build', '-B', project])
 
     run_setup_script(src, entry, build, script, packcmd,
                      os.path.abspath(obfdist))
