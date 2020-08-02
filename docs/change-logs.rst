@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+6.3.5
+-----
+* Fix pack project issue: not all the scripts in the project are re-obfuscated
+  when packing the project again.
+* Clean `license.lic` in the pyarmor package if option `--home` isn't used
+
 6.3.4
 -----
 * Fix option `--home` issue: the file `license.lic` in this path doesn't work
@@ -16,7 +22,6 @@ Change Logs
   enable vm protection.
   Refer to https://pyarmor.readthedocs.io/en/latest/mode.html#vm-mode
 * The default value of option `obf-mod` is set to `2`
-* Add new platform `musl.mips32` for MIPS32 with musl-libc
 * Add new platform `linux.mips64` and `linux.mips64el`
 * Fix super mode crash issue for `linux.armv7` and `linux.aarch32`
 
@@ -48,7 +53,7 @@ Most of the algorithm are refined to improve the security.
 * Refine the obfuscating process for cross platforms
 * Refine `benchmark` command, and new option `--advanced`
   Refer to https://pyarmor.readthedocs.io/en/latest/performance.html
-* Add platform `musl.mips32` for MIPS32 with `musl`
+* Add platform `musl.mips32` for MIPS32 with musl-libc
 * Add common options `--boot` for special cross platform obfuscating
 * Rename platform names `alpine.*` to `musl.*`
 
