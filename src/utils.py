@@ -223,13 +223,13 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
     if output is None:
         output = CROSS_PLATFORM_PATH
 
-    if not os.access(output, os.W_OK):
-        logging.error('Cound not download library file to %s', output)
-        raise RuntimeError('No write permission for target path')
-
     if not os.path.exists(output):
         logging.info('Create cross platforms path: %s', output)
         os.makedirs(output)
+
+    if not os.access(output, os.W_OK):
+        logging.error('Cound not download library file to %s', output)
+        raise RuntimeError('No write permission for target path')
 
     for p in plist:
         libname = p['filename']
