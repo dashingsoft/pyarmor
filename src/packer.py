@@ -250,9 +250,9 @@ def _pyi_makespec(hookpath, src, entry, packcmd, modname='pytransform'):
     options = ['-p', hookpath, '--hidden-import', modname,
                '--additional-hooks-dir', hookpath, os.path.join(src, entry)]
     cmdlist = packcmd + options
-    cmdlist[:4] = ['pyi-makespec']
+    # cmdlist[:4] = ['pyi-makespec']
+    cmdlist[:4] = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
     run_command(cmdlist)
-    # run_command([sys.executable] + packcmd + ['-y'] + options)
 
 
 def _guess_encoding(filename):
