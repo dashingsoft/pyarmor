@@ -428,7 +428,11 @@ Next generate specfile, add runtime files required by obfuscated scripts::
                  -p dist/obf --hidden-import pytransform \
                  hello.py
 
-If the scripts are obfuscated by super mode, generate specfile by this command::
+If the scripts are obfuscated by super mode::
+
+    pyarmor obfuscate --output dist/obf --advanced 2 --package-runtime 0 hello.py
+
+Generate `.spec` file by this command::
 
     pyi-makespec -p dist/obf --hidden-import pytransform hello.py
 
@@ -469,12 +473,6 @@ Run patched specfile to build final distribution::
 
 Check obfuscated scripts work::
 
-   # It works
-   dist/hello/hello.exe
-
-   rm dist/hello/license.lic
-
-   # It should not work
    dist/hello/hello.exe
 
 .. include:: _common_definitions.txt
