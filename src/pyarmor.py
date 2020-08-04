@@ -40,7 +40,7 @@ import time
 # Besides no command aliases supported by Python 2.7
 import polyfills.argparse as argparse
 
-from config import version, version_info, \
+from config import version, version_info, purchase_info, \
                    config_filename, capsule_filename, license_filename
 
 
@@ -743,6 +743,8 @@ def _register(args):
             print('Please send request by this email if you would like to '
                   'change the registration information. Any issue feel free '
                   'to contact jondy.zhao@gmail.com')
+        else:
+            print(purchase_info)
         return
 
     logging.info('Start to register keyfile: %s', args.filename)
