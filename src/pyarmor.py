@@ -364,9 +364,9 @@ def _build(args):
 def licenses(name='reg-001', expired=None, bind_disk=None, bind_mac=None,
              bind_ipv4=None, bind_data=None, key=None, home=None):
     if home:
-        _change_home_path(home)
+        _set_volatile_home(home)
     else:
-        _clean_home_path()
+        _clean_volatile_home()
 
     pytransform_bootstrap()
 
@@ -1295,7 +1295,7 @@ def excepthook(type, value, traceback):
     sys.exit(1)
 
 
-def _change_home_path(path):
+def _set_volatile_home(path):
     if not os.path.exists(path):
         raise RuntimeError('Home path does not exists')
 
@@ -1315,10 +1315,10 @@ def _change_home_path(path):
         shutil.copy(licfile, PYARMOR_PATH)
 
 
-def _clean_home_path():
+def _clean_volatile_home():
     licfile = os.path.join(PYARMOR_PATH, 'license.lic')
     if os.path.exists(licfile):
-        logging.info('Clean unused license file: %s', licfile)
+        logging.info('Clean volatile license file: %s', licfile)
         os.remove(licfile)
 
 
@@ -1339,9 +1339,9 @@ def main(argv):
 
     if args.home:
         logging.info('Set pyarmor home path: %s', args.home)
-        _change_home_path(args.home)
+        _set_volatile_home(args.home)
     else:
-        _clean_home_path()
+        _clean_volatile_home()
 
     if args.boot:
         logging.info('Set boot platform: %s', args.boot)
