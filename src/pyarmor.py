@@ -40,7 +40,7 @@ import time
 # Besides no command aliases supported by Python 2.7
 import polyfills.argparse as argparse
 
-from config import version, version_info, purchase_info, \
+from config import version, version_info, \
                    config_filename, capsule_filename, license_filename
 
 
@@ -1215,7 +1215,7 @@ def _parser():
     #
     cparser = subparsers.add_parser(
         'register',
-        epilog=_register.__doc__ + purchase_info,
+        epilog=_register.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         help='Make registration keyfile work')
     cparser.add_argument('-n', '--legency', action='store_true',
