@@ -1296,4 +1296,21 @@ Before v6.2.7, download this helper script `build_data_module.py <https://github
 
     python build_data_module.py data.txt > data.py
 
+
+.. _how to remove docstrings:
+
+How to remove docstrings
+------------------------
+
+By setting PYTHONOPTIMIZE=2 in the command line the docstrings could be removed
+from the obfuscated scripts. For examples::
+
+    # In linux
+    PYTHONOPTIMIZE=2 pyarmor obfuscate foo.py
+
+    # In Windows
+    set PYTHONOPTIMIZE=2
+    pyarmor obfuscate foo.py
+
+
 .. include:: _common_definitions.txt
