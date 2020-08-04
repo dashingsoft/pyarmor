@@ -1311,7 +1311,8 @@ def _set_volatile_home(path):
 
     licfile = os.path.join(home, 'license.lic')
     if os.path.exists(licfile):
-        logging.info('Copy %s to %s', licfile, PYARMOR_PATH)
+        logging.info('Copy home license %s', licfile)
+        logging.info('As volatile license to %s', PYARMOR_PATH)
         shutil.copy(licfile, PYARMOR_PATH)
 
 
