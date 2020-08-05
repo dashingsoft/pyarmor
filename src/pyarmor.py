@@ -1348,8 +1348,11 @@ def main(argv):
         logging.info('Set boot platform: %s', args.boot)
         os.environ['PYARMOR_PLATFORM'] = args.boot
 
-    if not args.func.__name__[1:] in ('download', 'register'):
+    try:
         pytransform_bootstrap(capsule=DEFAULT_CAPSULE, force=args.boot)
+    except Exception:
+        if not args.func.__name__[1:] in ('download', 'register'):
+            raise
 
     logging.info(_version_info(verbose=0))
     args.func(args)
