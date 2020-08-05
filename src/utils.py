@@ -1384,10 +1384,11 @@ def _check_code_object_for_super_mode(co, lines, name):
             n_docs = len(docs.splitlines()) if isinstance(docs, str) else 0
             while i < k:
                 if lines[i].strip():
-                    if not n_docs:
-                        break
-                    i += n_docs
-                    n_docs = 0
+                    if n_docs:
+                        i += n_docs
+                        n_docs = 0
+                        continue
+                    break
                 i += 1
             logging.info('\tPatch function "%s" at line %s', c.co_name, i + 1)
             s = lines[i]
