@@ -8,7 +8,7 @@ Change Logs
 * Fix pack issue: if `pyi-makespec` could not be found, it will complain of
   `OSError: [WinError 2] The system cannot find the file specified.`
 * Fix `PYTHONOPTIMIZE=2` doesn't work issue
-* Fix super mode auto patch failed if there is more than one line in function header
+* Fix super mode issue: auto patch failed if there are multiple lines in function header
 * Fix command `register` issue: it could not show registration information even
   if register successfully. It's introduced in v6.3.5.
 
