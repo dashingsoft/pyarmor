@@ -3,6 +3,15 @@
 Change Logs
 ===========
 
+6.3.6
+-----
+* Fix pack issue: if `pyi-makespec` could not be found, it will complain of
+  `OSError: [WinError 2] The system cannot find the file specified.`
+* Fix `PYTHONOPTIMIZE=2` doesn't work issue
+* Fix super mode auto patch failed if there is more than one line in function header
+* Fix command `register` issue: it could not show registration information even
+  if register successfully. It's introduced in v6.3.5.
+
 6.3.5
 -----
 * Fix pack project issue: not all the scripts in the project are re-obfuscated
