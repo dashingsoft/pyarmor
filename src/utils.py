@@ -1370,13 +1370,25 @@ def _check_code_object_for_super_mode(co, lines, name):
         pat = re.compile(r'^\s*')
         for c in co_list:
             # In some cases, co_lnotab[1] is not the first statement
-            i = c.co_firstlineno + c.co_lnotab[1] - 1
-            for j in range(i - 1, c.co_firstlineno - 1, -1):
-                s = lines[j].strip()
-                if s.find('"""') > -1 or s.find("'''") > -1:
+            i = c.co_firstlineno - 1
+            k = i + c.co_lnotab[1]
+            while i < k:
+                if lines[i].strip().endswith('):'):
                     break
-                if s:
-                    i = j
+                i += 1
+            else:
+                logging.error('Function does not end with "):"')
+                raise RuntimeError('Patch function "%s" failed' % c.co_name)
+            i += 1
+            docs = c.co_consts[0]
+            n_docs = len(docs.splitlines()) if isinstance(docs, str) else 0
+            while i < k:
+                if lines[i].strip():
+                    if not n_docs:
+                        break
+                    i += n_docs
+                    n_docs = 0
+                i += 1
             logging.info('\tPatch function "%s" at line %s', c.co_name, i + 1)
             s = lines[i]
             indent = pat.match(s).group(0)
