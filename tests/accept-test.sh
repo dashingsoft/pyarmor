@@ -302,9 +302,13 @@ $PYARMOR register data/pyarmor-test-0001.zip >result.log 2>&1
 check_return_value
 check_file_exists $workhome/license.lic
 
+$PYARMOR register >result.log 2>&1
+check_file_content result.log "PyArmor Trial" not
+
 csih_inform "1. Show version information"
 $PYARMOR --version >result.log 2>&1
 check_file_content result.log "pyarmor-test-0001"
+check_file_content result.log "PyArmor Trial" not
 
 csih_inform "2. Obfuscate foo.py"
 $PYARMOR obfuscate examples/helloworld/foo.py >result.log 2>&1
