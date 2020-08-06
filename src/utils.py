@@ -598,8 +598,12 @@ def copy_runtime(path, output, licfile=None):
         src = os.path.join(path, x)
         if os.path.isdir(src):
             if x.startswith('pytransform'):
+                dst = os.path.join(output, x)
+                if os.path.exists(dst):
+                    logging.info('Remove old path %s', dst)
+                    shutil.rmtree(dst)
                 logging.info('Copying directory %s', x)
-                shutil.copytree(src, output)
+                shutil.copytree(src, dst)
                 licpath = os.path.join(output, x)
         elif ext in ('.py', '.so', '.dylib', '.dll', '.pyd', '.lic'):
             logging.info('Copying file %s', x)
