@@ -46,7 +46,7 @@ from config import version, version_info, purchase_info, \
 
 from project import Project
 from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
-                  make_license_key, make_entry, show_hd_info, \
+                  make_license_key, make_entry, show_hd_info, copy_runtime, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, search_plugins, \
                   get_product_key, register_keyfile, query_keyinfo, \
@@ -238,18 +238,25 @@ def _build(args):
         False if (bootstrap_code == 2 or
                   (args.no_runtime and bootstrap_code == 1)) else None
 
+    routput = output if (args.output is not None and args.only_runtime) \
+        else os.path.join(output, os.path.basename(project.src)) \
+        if project.get('is_package') else output
+
     if args.no_runtime:
         if protection == 1:
             logging.warning('No cross protection because no runtime generated')
             protection = 0
+    elif args.runtime:
+        p = args.runtime
+        if protection == 1:
+            protection = os.path.join(p, 'pytransform_protection.py')
+            if not os.path.exists(protection):
+                raise RuntimeError('No "pytransform_protection.py" found '
+                                   'in runtime path %s' % p)
+        licfile = args.license_file if args.license_file is not None \
+            else project.license_file
+        copy_runtime(p, routput, licfile=licfile)
     else:
-        routput = output if args.output is not None and args.only_runtime \
-            else os.path.join(output, os.path.basename(project.src)) \
-            if project.get('is_package') else output
-        if not os.path.exists(routput):
-            logging.info('Make path: %s', routput)
-            os.makedirs(routput)
-
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
 
@@ -637,6 +644,14 @@ def _obfuscate(args):
         if cross_protection == 1:
             logging.warning('No cross protection because no runtime generated')
             cross_protection = 0
+    elif args.runtime:
+        p = args.runtime
+        if cross_protection == 1:
+            cross_protection = os.path.join(p, 'pytransform_protection.py')
+            if not os.path.exists(cross_protection):
+                raise RuntimeError('No "pytransform_protection.py" found '
+                                   'in runtime path %s' % p)
+        copy_runtime(p, output, licfile=args.license_file)
     else:
         package = args.package_runtime
         licfile = args.license_file
@@ -951,6 +966,8 @@ def _parser():
                          choices=(0, 1), help='Package runtime files or not')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate runtime files')
+    cparser.add_argument('--runtime', '--with-runtime', dest='runtime',
+                         metavar='PATH', help='Use prebuilt runtime files')
     cparser.add_argument('--enable-suffix', action='store_true',
                          help='Make unique runtime files and bootstrap code')
     cparser.add_argument('--with-license', dest='license_file',
@@ -1128,6 +1145,8 @@ def _parser():
                          help='Generate runtime files only')
     cparser.add_argument('-n', '--no-runtime', action='store_true',
                          help='DO NOT generate runtime files')
+    cparser.add_argument('--runtime', '--with-runtime', dest='runtime',
+                         metavar='PATH', help='Use prebuilt runtime files')
     cparser.add_argument('-O', '--output',
                          help='Output path, override project configuration')
     cparser.add_argument('--platform', dest='platforms', metavar='NAME',

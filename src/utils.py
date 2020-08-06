@@ -584,6 +584,35 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
     return checklist
 
 
+def copy_runtime(path, output, licfile=None):
+    logging.info('Copying runtime files from %s', path)
+    logging.info('To %s', output)
+    if not os.path.exists(output):
+        os.makedirs(output)
+
+    licpath = output
+    for x in os.listdir(path):
+        root, ext = os.path.splitext(x)
+        if root in ('pytransform_protection', 'pytransform_bootstrap'):
+            continue
+        src = os.path.join(path, x)
+        if os.path.isdir(src):
+            if x.startswith('pytransform'):
+                logging.info('Copying directory %s', x)
+                shutil.copytree(src, output)
+                licpath = os.path.join(output, x)
+        elif ext in ('.py', '.so', '.dylib', '.dll', '.pyd', '.lic'):
+            logging.info('Copying file %s', x)
+            shutil.copy2(src, output)
+
+    if licfile:
+        if not os.path.exists(licfile):
+            raise RuntimeError('No found license file "%s"' % licfile)
+        logging.info('Copying outer license %s', licfile)
+        logging.info('To %s/license.lic', licpath)
+        shutil.copy2(licfile, os.path.join(licpath, 'license.lic'))
+
+
 def make_project_license(capsule, code, output):
     myzip = ZipFile(capsule, 'r')
     myzip.extract('private.key', tempfile.gettempdir())
