@@ -241,6 +241,8 @@ def _build(args):
     routput = output if (args.output is not None and args.only_runtime) \
         else os.path.join(output, os.path.basename(project.src)) \
         if project.get('is_package') else output
+    licfile = args.license_file if args.license_file is not None \
+        else project.license_file
 
     if args.no_runtime:
         if protection == 1:
@@ -253,15 +255,11 @@ def _build(args):
             if not os.path.exists(protection):
                 raise RuntimeError('No "pytransform_protection.py" found '
                                    'in runtime path %s' % p)
-        licfile = args.license_file if args.license_file is not None \
-            else project.license_file
         copy_runtime(p, routput, licfile=licfile)
     else:
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
 
-        licfile = args.license_file if args.license_file is not None \
-            else project.license_file
         if not restrict and not licfile:
             licfile = 'no-restrict'
 
