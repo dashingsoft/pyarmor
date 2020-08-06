@@ -508,6 +508,30 @@ cp licenses/r001/license.lic $dist
 check_file_content $dist/result.log 'Found 92 solutions' not
 check_file_content $dist/result.log 'License is expired'
 
+csih_inform "C-41. Test obfuscate command with --runtime"
+dist=test-runtime-1
+$PYARMOR runtime -O $dist/runtime >result.log 2>&1
+$PYARMOR obfuscate -O $dist/dist --runtime $dist/runtime examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON dist/queens.py >result.log 2>&1)
+check_file_content $dist/result.log 'Found 92 solutions'
+
+csih_inform "C-42. Test obfuscate command with --runtime and outer license"
+dist=test-runtime-2
+$PYARMOR runtime -O $dist/runtime --with-license outer >result.log 2>&1
+$PYARMOR obfuscate -O $dist/dist --runtime $dist/runtime examples/simple/queens.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON dist/queens.py >result.log 2>&1)
+check_file_content $dist/result.log 'Found 92 solutions' not
+
+$PYARMOR licenses -O $dist/dist/pytransform/license.lic >result.log 2>&1
+check_file_exists $dist/dist/pytransform/license.lic
+
+(cd $dist; $PYTHON dist/queens.py >result.log 2>&1)
+check_file_content $dist/result.log 'Found 92 solutions'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
@@ -915,6 +939,17 @@ $PYARMOR config --obf-mod=2 $PROPATH  >result.log 2>&1
 check_return_value
 
 $PYARMOR build $PROPATH  >result.log 2>&1
+check_return_value
+
+(cd $PROPATH/dist; $PYTHON queens.py >result.log 2>&1)
+check_file_content $PROPATH/dist/result.log 'Found 92 solutions'
+
+csih_inform "Case P-17: build project with --runtime"
+PROPATH=projects/test-project-runtime-1
+$PYARMOR init --src=examples/simple --entry queens.py $PROPATH  >result.log 2>&1
+
+$PYARMOR runtime -O $PROPATH/runtime >result.log 2>&1
+$PYARMOR build --runtime $PROPATH/runtime $PROPATH  >result.log 2>&1
 check_return_value
 
 (cd $PROPATH/dist; $PYTHON queens.py >result.log 2>&1)
