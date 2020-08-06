@@ -12,11 +12,8 @@ PYARMOR=pyarmor
 # TODO: Entry script
 ENTRY_SCRIPT=/home/jondy/workspace/project/src/main.py
 
-# Default is setup.py, or ENTRY_NAME.spec
-SETUP_SCRIPT=
-
-# Default is same as the output path of setup script
-OUTPUT=
+# Set the output path of final bundle
+OUTPUT=dist
 
 # Options pass to run PyInstaller, for example
 # EX_OPTIONS=--onefile --hidden-import comtypes
@@ -29,7 +26,6 @@ XOPTIONS=
 [[ "${XOPTIONS}" ]] && XOPTIONS="-x ' ${XOPTIONS}'"
 
 OPTIONS=
-[[ -n "${SETUP_SCRIPT}" ]] && OPTIONS="$OPTIONS --setup ${SETUP_SCRIPT}"
 [[ -n "$OUTPUT" ]] && OPTIONS="$OPTIONS --output $OUTPUT"
 
 $PYARMOR pack ${EX_OPTIONS} $XOPTIONS $OPTIONS "${ENTRY_SCRIPT}"

@@ -23,24 +23,23 @@ then run it to obfuscate your python scripts quickly.
     Project. There are several advantages to manage obfuscated scripts
     by Project
 
-        Increment build, only updated scripts are obfuscated since last build
-        Filter scripts, for example, exclude all the test scripts
-        More convenient command to manage obfuscated scripts
+    - Increment build, only updated scripts are obfuscated since last build
+    - Filter scripts, for example, exclude all the test scripts
+    - More convenient command to manage obfuscated scripts
 
 * [pack-obfuscated-scripts.bat](pack-obfuscated-scripts.bat) / [pack-obfuscated-scripts.sh](pack-obfuscated-scripts.sh)
 
     The basic usage show how to pack obfuscated scripts with `PyInstaller`.
 
-Not only those scripts, but also some really examples are distributed
-with PyArmor. Just open a command window, follow the instructions in
-this document, learn how to use PyArmor by these examples.
+Not only those scripts, but also some really examples are distributed with
+PyArmor. Just open a command window, follow the instructions in this document,
+learn how to use PyArmor by these examples.
 
-In the rest sections, assume that Python is installed, it can be
-called `python`. And PyArmor has been installed in the
-`/path/to/pyarmor`.
+In the rest sections, assume that Python is installed, it can be called
+`python`. And PyArmor has been installed in the `/path/to/pyarmor`.
 
-Shell commands will shown for Unix-based systems. Windows has
-analogous commands for each.
+Shell commands will shown for Unix-based systems. Windows has analogous commands
+for each.
 
 ## Example 1: Obfuscate scripts
 
@@ -49,6 +48,7 @@ Learn from this example
 * How to obufscate python scripts in the path `examples/simple`
 * How to run obfuscated scripts
 * How to distribute obfuscated scripts
+* How to set expired data of obfuscated scripts
 
 ```
     cd /path/to/pyarmor
@@ -64,6 +64,19 @@ Learn from this example
 
     # Zip all the files in the path `dist`, distribute this archive
     zip queens-obf.zip .
+
+    # If you'd like to expired the obfuscated scripts
+    cd /path/to/pyarmor
+
+    # Generate an expired license on 2020-10-01, save it in "licenses/r001"
+    pyarmor licenses --expired 2020-10-01 r001
+
+    # Obfuscate with --with-license
+    pyarmor obfuscate --recursive --with-license licenses/r001/license.lic examples/simple/queens.py
+
+    # Zip all the files in the path `dist`, distribute new archive
+    cd dist
+    zip queens-obf.zip .
 ```
 
 
@@ -72,7 +85,7 @@ Learn from this example
 Learn from this example
 
 * How to obfuscate a python package `mypkg` in the path `examples/testpkg`
-* How to expire this obfuscated package on some day
+* How to expire this obfuscated package on some day by outer license file
 * How to import obfuscated package `mypkg` by outer script `main.py`
 * How to distribute obfuscated package to end user
 
@@ -81,13 +94,14 @@ Learn from this example
     cd /path/to/pyarmor
 
     # Obfuscate all the python scripts in the package, obfuscated package saved in the path `dist/mypkg`
-    pyarmor obfuscate --output=dist/mypkg examples/testpkg/mypkg/__init__.py
+    # Enable outer license by option "--with-license outer"
+    pyarmor obfuscate --output=dist/mypkg --with-license=outer examples/testpkg/mypkg/__init__.py
 
-    # Generate an expired license on 2019-01-01
-    pyarmor licenses --expired 2019-01-01 mypkg2018
+    # Generate an expired license on 2020-10-01
+    pyarmor licenses --expired 2020-10-01 r002
 
     # Overwrite the default license
-    cp licenses/mypkg2018/license.lic dist/mypkg
+    cp licenses/r002/license.lic dist/mypkg
 
     # Import functions from obfuscated package
     cd dist
@@ -119,6 +133,9 @@ will be distributed to three customers with different licenses:
 
     # Create a project in the path `projects/simple`
     pyarmor init --src=examples/simple --entry=queens.py projects/simple
+
+    # Config the project with outer license
+    pyarmor config --with-license=outer
 
     # Change to project path
     cd projects/simple
@@ -177,42 +194,8 @@ The prefer way is `PyInstaller`, first install `PyInstaller`
 Then run command `pack` to pack obfuscated scripts
 
     cd /path/to/pyarmor
-    pyarmor pack examples/py2exe/hello.py
+    pyarmor pack -O dist examples/simple/queens.py
 
 Run the final executeable file
 
-    dist/hello/hello
-
-Check they're obfuscated
-
-    rm dist/hello/license.lic
-    dist/hello/hello
-
-For the other tools, before run command `pack`, an extra setup script
-must be written. For py2exe, here is an example script
-`examples/py2exe/setup.py`. It will pack the entry script `hello.py`
-and `queens.py`. To be sure it works
-
-    cd /path/to/pyarmor
-
-    # Install py2exe at first
-    pip install py2exe
-
-    cd examples/py2exe
-    python setup.py py2exe
-
-Then run command `pack` to pack obfuscated scripts
-
-     pyarmor pack --type py2exe hello.py
-
-Run the final executeable file
-
-    cd ./dist/
-    ./hello
-
-Check they're obfuscated
-
-    rm license.lic
-    ./hello
-
-For cx_Freeze and py2app, it's almost same as py2exe.
+    dist/queens/queens

@@ -10,16 +10,13 @@ REM
 SetLocal
 
 REM TODO:
-Set PYARMOR=C:\Python34\Scripts\pyarmor.exe
+Set PYARMOR=C:\Python37\Scripts\pyarmor.exe
 
 REM TODO: Entry script
-Set ENTRY_SCRIPT=C:\Python34\Lib\site-packages\pyarmor\examples\py2exe\hello.py
+Set ENTRY_SCRIPT=C:\Python37\Lib\site-packages\pyarmor\examples\py2exe\hello.py
 
-REM Default is setup.py, or ENTRY_NAME.spec
-Set SETUP_SCRIPT=
-
-REM Default is same as the output path of setup script
-OUTPUT=
+REM Set the output path of final bundle
+OUTPUT=dist
 
 REM Options pass to run PyInstaller, for example
 REM EX_OPTIONS=--onefile --hidden-import comtypes
@@ -32,7 +29,6 @@ XOPTIONS=
 If NOT "%XOPTIONS%" == "" XOPTIONS=-x " %XOPTIONS%"
 
 Set OPTIONS=
-If NOT "%SETUP_SCRIPT%" == "" %OPTIONS%=%OPTIONS% --setup %SETUP_SCRIPT%
 If NOT "%OUTPUT%" == "" %OPTIONS%=%OPTIONS% --output %OUTPUT%
 
 %PYARMOR% %EX_OPTIONS% %XOPTIONS% %OPTIONS% %ENTRY_SCRIPT%

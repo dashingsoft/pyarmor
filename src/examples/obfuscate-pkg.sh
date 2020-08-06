@@ -24,7 +24,7 @@ OUTPUT=/home/jondy/workspace/project/dist
 TEST_OBFUSCATED_PACKAGE=1
 
 # TODO: Let obfuscated package expired on some day, uncomment next line
-# LICENSE_EXPIRED_DATE=2019-01-01
+# LICENSE_EXPIRED_DATE=2020-10-01
 
 # Check package
 if ! [[ -d "$PKGPATH" ]] ; then
@@ -34,25 +34,19 @@ if ! [[ -d "${ENTRY_SCRIPT}" ]] ; then
     echo "No ${ENTRY_SCRIPT} found, check variable PKGPATH and PKGNAME" && exit 1
 fi
 
-# Obfuscate scripts
-$PYARMOR obfuscate --recursive --output "${OUTPUT}/$PKGNAME" "${ENTRY_SCRIPT}"  || exit 1
-
 # Generate an expired license if any
 if [[ -n "${LICENSE_EXPIRED_DATE}" ]] ; then
     echo
-    LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
+    LICENSE_CODE="r002"
     $PYARMOR licenses --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
     echo
 
-    # Overwrite default license with this expired license
-    if [[ -f "$OUTPUT/$PKGNAME/license.lic" ]] ; then
-        echo Copy expired license to $OUTPUT/$PKGNAME
-        cp licenses/${LICENSE_CODE}/license.lic $OUTPUT/$PKGNAME
-    else
-        echo Copy expired license to $OUTPUT/$PKGNAME/pytransform
-        cp licenses/${LICENSE_CODE}/license.lic $OUTPUT/$PKGNAME/pytransform
-    fi
+    # Specify license file by option --with-license
+    WITH_LICENSE="--with-license licenses/${LICENSE_CODE}/license.lic"
 fi
+
+# Obfuscate all .py files in the package
+$PYARMOR obfuscate --recursive --output "${OUTPUT}/$PKGNAME" ${WITH_LICENSE} "${ENTRY_SCRIPT}"  || exit 1
 
 # Run obfuscated scripts if
 if [[ "${TEST_OBFUSCATED_PACKAGE}" == "1" ]] ; then

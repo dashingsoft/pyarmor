@@ -17,30 +17,24 @@ ENTRY_SCRIPT=main.py
 OUTPUT=dist
 
 # TODO: Let obfuscated scripts expired on some day, uncomment next line
-# LICENSE_EXPIRED_DATE=2019-01-01
+# LICENSE_EXPIRED_DATE=2020-10-01
 
 # TODO: If try to run obfuscated scripts, uncomment next line
 # TEST_OBFUSCATED_SCRIPTS=1
 
-# Obfuscate scripts
-$PYARMOR obfuscate --recursive --output $OUTPUT ${ENTRY_SCRIPT} || exit 1
-
 # Generate an expired license if any
 if [[ -n "${LICENSE_EXPIRED_DATE}" ]] ; then
     echo
-    LICENSE_CODE="expired-${LICENSE_EXPIRED_DATE}"
+    LICENSE_CODE=r001
     $PYARMOR licenses --expired ${LICENSE_EXPIRED_DATE} ${LICENSE_CODE} || exit 1
     echo
 
-    # Overwrite default license with this expired license
-    if [[ -f "$OUTPUT/license.lic" ]] ; then
-        echo Copy expired license to $OUTPUT
-        cp licenses/${LICENSE_CODE}/license.lic $OUTPUT
-    else
-        echo Copy expired license to $OUTPUT/pytransform
-        cp licenses/${LICENSE_CODE}/license.lic $OUTPUT/pytransform
-    fi
+    # Specify license file by option --with-license
+    WITH_LICENSE="--with-license licenses/${LICENSE_CODE}/license.lic"
 fi
+
+# Obfuscate scripts
+$PYARMOR obfuscate --recursive --output $OUTPUT ${WITH_LICENSE} ${ENTRY_SCRIPT} || exit 1
 
 # Run obfuscated scripts
 if [[ "${TEST_OBFUSCATED_SCRIPTS}" == "1" ]] ; then

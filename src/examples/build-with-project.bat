@@ -12,23 +12,23 @@ REM
 SETLOCAL
 
 REM TODO:
-SET PYTHON=C:\Python34\python.exe
+SET PYTHON=C:\Python37\python.exe
 
 REM TODO:
-SET PYARMOR=C:\Python34\Scripts\pyarmor.exe
+SET PYARMOR=C:\Python37\Scripts\pyarmor.exe
 
 REM TODO: In which all python scripts will be obfuscated
-SET SOURCE=C:\Python34\Lib\site-packages\pyarmor\examples\simple
+SET SOURCE=C:\Python37\Lib\site-packages\pyarmor\examples\simple
 REM TODO: Entry script filename, must be relative to %SOURCE%
 SET ENTRY_SCRIPT=queens.py
 
 REM For package, uncomment the following lines
-rem SET SOURCE=C:\Python34\Lib\site-packages\pyarmor\examples\testpkg\mypkg
+rem SET SOURCE=C:\Python37\Lib\site-packages\pyarmor\examples\testpkg\mypkg
 rem SET PKGNAME=mypkg
 rem SET ENTRY_SCRIPT=__init__.py
 
 REM TODO: output path for saving project config file, and obfuscated scripts
-SET PROJECT=C:\Python34\Lib\site-packages\pyarmor\projects\project1
+SET PROJECT=C:\Python37\Lib\site-packages\pyarmor\projects\project1
 
 REM TODO: Filter the source files, exclude all the scripts in test
 rem SET PROJECT_FILTER=global-include *.py, prune test, prune build
@@ -59,7 +59,7 @@ REM Check Source
 IF NOT EXIST "%SOURCE%" (
   ECHO.
   ECHO No %SOURCE% found, check value of variable SOURCE
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -67,7 +67,7 @@ REM Check entry script
 IF NOT EXIST "%SOURCE%\%ENTRY_SCRIPT%" (
   ECHO.
   ECHO No %ENTRY_SCRIPT% found, check value of variable ENTRY_SCRIPT
-  ECHO. 
+  ECHO.
   GOTO END
 )
 
@@ -79,6 +79,12 @@ ECHO.
 
 REM Change to project path
 CD /D %PROJECT%
+
+REM Use outer license
+ECHO.
+CALL %PYARMOR% config --with-license outer
+IF NOT ERRORLEVEL 0 GOTO END
+ECHO.
 
 REM Filter source files by config project filter
 IF DEFINED PROJECT_FILTER (
@@ -97,10 +103,10 @@ IF DEFINED LICENSE_CODE (
 
   CALL %PYARMOR% licenses %LICENSE_EXPIRED_DATE% %LICENSE_HARDDISK_SERIAL_NUMBER% %LICENSE_MAC_ADDR% %LICENSE_IPV4_ADDR% %LICENSE_CODE%
   IF ERRORLEVEL 1 GOTO END
-  
+
   REM Overwrite default license with this license
-  ECHO.  
-  IF DEFINED PKGNAME (  
+  ECHO.
+  IF DEFINED PKGNAME (
     SET LICPATH=%PROJECT%\dist
   ) ELSE (
     SET LICPATH=%PROJECT%\dist\%PKGNAME%
@@ -112,13 +118,13 @@ IF DEFINED LICENSE_CODE (
 
 )
 
-REM Test obfuscated project if 
+REM Test obfuscated project if
 IF "%TEST_OBFUSCATED_PROJECT%" == "1"  IF DEFINED ENTRY_SCRIPT (
-  SETLOCAL 
-  
+  SETLOCAL
+
   IF DEFINED PKGNAME (
     REM Test package
-    ECHO Prepare to import obfuscated package, run 
+    ECHO Prepare to import obfuscated package, run
     ECHO   python -c "import %PKGNAME%"
     ECHO.
     PAUSE
@@ -127,16 +133,16 @@ IF "%TEST_OBFUSCATED_PROJECT%" == "1"  IF DEFINED ENTRY_SCRIPT (
     %PYTHON% -c "import %PKGNAME%"
     ECHO.
     ECHO Import obfuscated package %PKGNAME% finished.
-    ECHO.    
-  ) ELSE (  
+    ECHO.
+  ) ELSE (
     REM Test app
     ECHO Prepare to run obfuscated script %PROJECT%\dist\%ENTRY_SCRIPT%
     PAUSE
-    
+
     CD /D %PROJECT%\dist
     %PYTHON% %ENTRY_SCRIPT%
   )
-  
+
   ENDLOCAL
 )
 
@@ -144,4 +150,3 @@ IF "%TEST_OBFUSCATED_PROJECT%" == "1"  IF DEFINED ENTRY_SCRIPT (
 
 ENDLOCAL
 PAUSE
-

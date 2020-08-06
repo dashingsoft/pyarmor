@@ -40,6 +40,7 @@ PyArmor 的安装路径是 `/path/to/pyarmor`
 * 如何加密所有在路径 `examples/simple` 的 Python 脚本
 * 如何运行加密后的脚本
 * 如何发布加密后的脚本
+* 如何使用许可证来设置加密脚本的使用期限
 
 ```
     cd /path/to/pyarmor
@@ -55,6 +56,19 @@ PyArmor 的安装路径是 `/path/to/pyarmor`
 
     # 运行加密需要的所有文件都在 `dist` 下面，压缩之后就可以发给客户
     zip queens-obf.zip .
+
+    # 如果需要设置加密脚本的使用期限，那么
+    cd /path/to/pyarmor
+
+    # 使用命令 licenses 生成一个有效期到 2020-10-01 的授权文件，存放在 licenses/r001 下面
+    pyarmor licenses --expired 2020-10-01 r001
+
+    # 使用 --with-license 指定上面生成的许可文件
+    pyarmor obfuscate --recursive --with-license licenses/r001/license.lic examples/simple/queens.py
+
+    # 压缩加密脚本给客户
+    cd dist
+    zip queens-obf.zip .
 ```
 
 ## 实例 2:  加密包（Package）
@@ -62,7 +76,7 @@ PyArmor 的安装路径是 `/path/to/pyarmor`
 从这个例子中，可以学习到
 
 * 如何加密一个 Python 包 `mypkg`，它所在的路径是 `examples/testpkg`
-* 如何设置加密包的运行期限
+* 如何使用外部许可证设置加密包的运行期限
 * 如何使用外部脚本 `main.py` 来导入和使用加密后 `mypkg` 包中的函数
 * 如何发布加密后的包给用户
 
@@ -70,13 +84,14 @@ PyArmor 的安装路径是 `/path/to/pyarmor`
     cd /path/to/pyarmor
 
     # 使用 obfuscate 去加密包，加密后的脚本存放在 `dist/mypkg`
-    pyarmor obfuscate --output=dist/mypkg examples/testpkg/mypkg/__init__.py
+    # 使用选项 --with-license outer 指定使用外部的许可证
+    pyarmor obfuscate --output=dist/mypkg --with-license outer examples/testpkg/mypkg/__init__.py
 
-    # 使用命令 licenses 生成一个有效期到 2019-01-01 的授权文件
-    pyarmor licenses --expired 2019-01-01 mypkg2018
+    # 使用命令 licenses 生成一个有效期到 2020-10-01 的授权文件
+    pyarmor licenses --expired 2020-10-01 r002
 
     # 使用新的授权文件覆盖默认的授权文件
-    cp licenses/mypkg2018/license.lic dist/mypkg
+    cp licenses/r002/license.lic dist/mypkg
 
     # 使用第三方脚本 `main.py` 导入加密库
     cd dist
@@ -108,6 +123,9 @@ PyArmor 的安装路径是 `/path/to/pyarmor`
 
     # 使用命令 init 创建一个工程
     pyarmor init --src=examples/simple --entry=queens.py projects/simple
+
+    # 配置工程使用外部许可证
+    pyarmor config --with-license=outer
 
     # 切换到新创建的工程
     cd projects/simple
@@ -163,39 +181,8 @@ PyArmor 需要使用第三方的打包工具，推荐工具是 `PyInstaller`, �
 接着就可以运行命令 `pack` 打包加密脚本
 
     cd /path/to/pyarmor
-    pyarmor pack examples/py2exe/hello.py
+    pyarmor pack -O dist examples/simple/queens.py
 
 运行一下打包好的可执行文件
 
-    dist/hello/hello
-
-确认脚本已经加密
-
-    rm dist/hello/license.lic
-    dist/hello/hello
-
-使用其他工具需要先写一个安装脚本`setup.py`, 这儿有一个 `py2exe` 的实
-例 [examples/py2exe/setup.py](examples/py2exe/setup.py)。这个脚本用来打
-包主脚本`hello.py` 和另外一个模块 `queens.py`。
-
-首先安装 `py2exe`，并确定没有加密之前能够正常打包
-
-    pip install py2exe
-
-    cd /path/to/pyarmor
-
-    cd example/py2exe
-    python setup.py py2exe
-
-    # 输出文件在这里
-    ls dist/
-
-之后运行命令 `pack` 来打包加密脚本
-
-    pyarmor pack --type py2exe hello.py
-
-检查一下输出路径 `dist`，发现多个几个文件，这些是运行加密脚本需要的辅助
-文件，另外 `library.zip` 也被修改了，里面的 `queens.pyc` 被替换成为了加
-密后的脚本
-
-对于其他打包工具 `cx_Freeze`, `py2app`, 基本使用方法和 `py2exe` 很类似。
+    dist/queens/queens

@@ -51,6 +51,9 @@ fi
 # Create a project
 $PYARMOR init --src=$SOURCE --entry=${ENTRY_SCRIPT} $PROJECT || exit 1
 
+# Use outer license
+$PYARMOR config --with-license outer || exit 1
+
 # Change to project path
 cd $PROJECT
 
