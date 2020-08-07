@@ -591,16 +591,17 @@ def copy_runtime(path, output, licfile=None, dryrun=False):
         os.makedirs(output)
 
     def copy3(src, dst):
-        if not dryrun:
-            if os.path.isdir(src):
-                if os.path.exists(dst):
-                    logging.info('Remove old path %s', dst)
-                    shutil.rmtree(dst)
-                logging.info('Copying directory %s', os.path.basename(src))
-                shutil.copytree(src, dst)
-            else:
-                logging.info('Copying file %s', x)
-                shutil.copy2(src, dst)
+        if dryrun:
+            return
+        if os.path.isdir(src):
+            if os.path.exists(dst):
+                logging.info('Remove old path %s', dst)
+                shutil.rmtree(dst)
+            logging.info('Copying directory %s', os.path.basename(src))
+            shutil.copytree(src, dst)
+        else:
+            logging.info('Copying file %s', x)
+            shutil.copy2(src, dst)
 
     name = None
     for x in os.listdir(path):
