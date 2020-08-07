@@ -248,13 +248,16 @@ def _build(args):
             logging.warning('No cross protection because no runtime generated')
             protection = 0
     elif args.runtime:
-        p = args.runtime
+        if args.runtime[:1] == '@':
+            rpkg, dryrun = args.runtime[1:], True
+        else:
+            rpkg, dryrun = args.runtime, False
         if protection == 1:
-            protection = os.path.join(p, 'pytransform_protection.py')
+            protection = os.path.join(rpkg, 'pytransform_protection.py')
             if not os.path.exists(protection):
                 raise RuntimeError('No "pytransform_protection.py" found '
-                                   'in runtime path %s' % p)
-        suffix = copy_runtime(p, routput, licfile=licfile, dryrun=False)
+                                   'in runtime path %s' % rpkg)
+        suffix = copy_runtime(rpkg, routput, licfile=licfile, dryrun=dryrun)
     else:
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
@@ -642,13 +645,16 @@ def _obfuscate(args):
             logging.warning('No cross protection because no runtime generated')
             cross_protection = 0
     elif args.runtime:
-        p = args.runtime
+        if args.runtime[:1] == '@':
+            rpkg, dryrun = args.runtime[1:], True
+        else:
+            rpkg, dryrun = args.runtime, False
         if cross_protection == 1:
-            cross_protection = os.path.join(p, 'pytransform_protection.py')
+            cross_protection = os.path.join(rpkg, 'pytransform_protection.py')
             if not os.path.exists(cross_protection):
                 raise RuntimeError('No "pytransform_protection.py" found '
-                                   'in runtime path %s' % p)
-        suffix = copy_runtime(p, output, licfile=licfile, dryrun=False)
+                                   'in runtime path %s' % rpkg)
+        suffix = copy_runtime(rpkg, output, licfile=licfile, dryrun=dryrun)
     else:
         package = args.package_runtime
         if (not restrict) and (not licfile):
@@ -867,6 +873,9 @@ def _runtime(args):
 def _check_runtime_platforms(path, platforms):
     if path is None:
         return platforms
+
+    if path[:1] == '@':
+        path = path[1:]
 
     if not os.path.exists(path):
         raise RuntimeError('No runtime package at "%s"' % path)
