@@ -590,7 +590,7 @@ def copy_runtime(path, output, licfile=None):
     if not os.path.exists(output):
         os.makedirs(output)
 
-    licpath = output
+    name = None
     for x in os.listdir(path):
         root, ext = os.path.splitext(x)
         if root in ('pytransform_protection', 'pytransform_bootstrap'):
@@ -604,17 +604,36 @@ def copy_runtime(path, output, licfile=None):
                     shutil.rmtree(dst)
                 logging.info('Copying directory %s', x)
                 shutil.copytree(src, dst)
-                licpath = os.path.join(output, x)
-        elif ext in ('.py', '.so', '.dylib', '.dll', '.pyd', '.lic'):
+                if name is not None:
+                    raise RuntimeError('Multiple runtime modules found')
+                name = x
+        elif x.stratswith('_pytransform'):
             logging.info('Copying file %s', x)
             shutil.copy2(src, output)
+        elif x.startswith('pytransform') and ext == '.py':
+            logging.info('Copying file %s', x)
+            shutil.copy2(src, output)
+            if name is not None:
+                raise RuntimeError('Multiple runtime modules found')
+            name = x
+
+    if name is None:
+        raise RuntimeError('No module "pytransform" found in runtime package')
 
     if licfile:
         if not os.path.exists(licfile):
             raise RuntimeError('No found license file "%s"' % licfile)
         logging.info('Copying outer license %s', licfile)
-        logging.info('To %s/license.lic', licpath)
-        shutil.copy2(licfile, os.path.join(licpath, 'license.lic'))
+        dst = os.path.join(output, '' if name.endswith('.py') else name)
+        logging.info('To %s/license.lic', dst)
+        shutil.copy2(licfile, os.path.join(dst, 'license.lic'))
+
+    n = len('pytransform')
+    suffix = name[n:-3] if name.endswith('.py') else name[n:]
+    logging.info('Got suffix from runtime package: %s', suffix)
+    if suffix and suffix != get_name_suffix():
+        raise RuntimeError('Invalid suffix in runtime package')
+    return suffix
 
 
 def make_project_license(capsule, code, output):

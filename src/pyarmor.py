@@ -254,7 +254,7 @@ def _build(args):
             if not os.path.exists(protection):
                 raise RuntimeError('No "pytransform_protection.py" found '
                                    'in runtime path %s' % p)
-        copy_runtime(p, routput, licfile=licfile)
+        suffix = copy_runtime(p, routput, licfile=licfile)
     else:
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
@@ -647,7 +647,7 @@ def _obfuscate(args):
             if not os.path.exists(cross_protection):
                 raise RuntimeError('No "pytransform_protection.py" found '
                                    'in runtime path %s' % p)
-        copy_runtime(p, output, licfile=args.license_file)
+        suffix = copy_runtime(p, output, licfile=args.license_file)
     else:
         package = args.package_runtime
         licfile = args.license_file
