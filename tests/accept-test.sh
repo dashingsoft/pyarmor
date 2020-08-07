@@ -285,6 +285,14 @@ check_return_value
 check_file_content $dist/result.log 'Got data: def protect_pytransform'
 check_file_content $dist/result.log 'aaaaaaaaaa' not
 
+csih_inform "20. Obfuscate scripts with --runtime"
+dist=test-with-runtime
+$PYARMOR obfuscate --runtime test-runtime-suffix -O $dist \
+         examples/simple/queens.py >result.log 2>&1
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log 'Found 92 solutions'
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -534,6 +542,15 @@ $PYARMOR obfuscate --exact -O $dist --no-runtime --no-bootstrap \
 check_return_value
 check_file_content $dist/result.log 'Got data: def protect_pytransform'
 check_file_content $dist/result.log 'aaaaaaaaaa' not
+
+csih_inform "20. Obfuscate scripts with --runtime"
+dist=test-with-runtime
+$PYARMOR obfuscate --runtime test-runtime-suffix -O $dist \
+         examples/simple/queens.py >result.log 2>&1
+(cd $dist; $PYTHON queens.py >result.log 2>&1)
+check_return_value
+check_file_exists $dist/pytransform${test_suffix}/__init__.py
+check_file_content $dist/result.log 'Found 92 solutions'
 
 # ======================================================================
 #
