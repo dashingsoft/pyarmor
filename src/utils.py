@@ -584,11 +584,23 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
     return checklist
 
 
-def copy_runtime(path, output, licfile=None):
+def copy_runtime(path, output, licfile=None, dryrun=False):
     logging.info('Copying runtime files from %s', path)
     logging.info('To %s', output)
     if not os.path.exists(output):
         os.makedirs(output)
+
+    def copy3(src, dst):
+        if not dryrun:
+            if os.path.isdir(src):
+                if os.path.exists(dst):
+                    logging.info('Remove old path %s', dst)
+                    shutil.rmtree(dst)
+                logging.info('Copying directory %s', os.path.basename(src))
+                shutil.copytree(src, dst)
+            else:
+                logging.info('Copying file %s', x)
+                shutil.copy2(src, dst)
 
     name = None
     for x in os.listdir(path):
@@ -598,21 +610,14 @@ def copy_runtime(path, output, licfile=None):
         src = os.path.join(path, x)
         if os.path.isdir(src):
             if x.startswith('pytransform'):
-                dst = os.path.join(output, x)
-                if os.path.exists(dst):
-                    logging.info('Remove old path %s', dst)
-                    shutil.rmtree(dst)
-                logging.info('Copying directory %s', x)
-                shutil.copytree(src, dst)
+                copy3(src, os.path.join(output, x))
                 if name is not None:
                     raise RuntimeError('Multiple runtime modules found')
                 name = x
         elif x.stratswith('_pytransform'):
-            logging.info('Copying file %s', x)
-            shutil.copy2(src, output)
+            copy3(src, output)
         elif x.startswith('pytransform') and ext == '.py':
-            logging.info('Copying file %s', x)
-            shutil.copy2(src, output)
+            copy3(src, output)
             if name is not None:
                 raise RuntimeError('Multiple runtime modules found')
             name = x
@@ -620,7 +625,7 @@ def copy_runtime(path, output, licfile=None):
     if name is None:
         raise RuntimeError('No module "pytransform" found in runtime package')
 
-    if licfile:
+    if licfile and not dryrun:
         if not os.path.exists(licfile):
             raise RuntimeError('No found license file "%s"' % licfile)
         logging.info('Copying outer license %s', licfile)

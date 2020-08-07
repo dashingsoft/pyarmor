@@ -254,7 +254,7 @@ def _build(args):
             if not os.path.exists(protection):
                 raise RuntimeError('No "pytransform_protection.py" found '
                                    'in runtime path %s' % p)
-        suffix = copy_runtime(p, routput, licfile=licfile)
+        suffix = copy_runtime(p, routput, licfile=licfile, dryrun=False)
     else:
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
@@ -636,6 +636,7 @@ def _obfuscate(args):
     logging.info('Advanced value is %d', advanced)
     logging.info('Super mode is %s', supermode)
 
+    licfile = args.license_file
     if args.no_runtime:
         if cross_protection == 1:
             logging.warning('No cross protection because no runtime generated')
@@ -647,10 +648,9 @@ def _obfuscate(args):
             if not os.path.exists(cross_protection):
                 raise RuntimeError('No "pytransform_protection.py" found '
                                    'in runtime path %s' % p)
-        suffix = copy_runtime(p, output, licfile=args.license_file)
+        suffix = copy_runtime(p, output, licfile=licfile, dryrun=False)
     else:
         package = args.package_runtime
-        licfile = args.license_file
         if (not restrict) and (not licfile):
             licfile = 'no-restrict'
         checklist = make_runtime(capsule, output, platforms=platforms,
