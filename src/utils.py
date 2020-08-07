@@ -600,31 +600,29 @@ def copy_runtime(path, output, licfile=None, dryrun=False):
             logging.info('Copying directory %s', os.path.basename(src))
             shutil.copytree(src, dst)
         else:
-            logging.info('Copying file %s', x)
+            logging.info('Copying file %s', os.path.basename(src))
             shutil.copy2(src, dst)
 
     name = None
+    tlist = []
     for x in os.listdir(path):
         root, ext = os.path.splitext(x)
         if root in ('pytransform_protection', 'pytransform_bootstrap'):
             continue
         src = os.path.join(path, x)
-        if os.path.isdir(src):
-            if x.startswith('pytransform'):
-                copy3(src, os.path.join(output, x))
-                if name is not None:
-                    raise RuntimeError('Multiple runtime modules found')
-                name = x
-        elif x.stratswith('_pytransform'):
-            copy3(src, output)
-        elif x.startswith('pytransform') and ext == '.py':
-            copy3(src, output)
-            if name is not None:
-                raise RuntimeError('Multiple runtime modules found')
+        dst = os.path.join(output, x)
+        if x.startswith('pytransform'):
+            copy3(src, dst)
             name = x
+            tlist.append(ext)
+        elif x.stratswith('_pytransform') or x == 'platforms':
+            copy3(src, dst)
 
     if name is None:
         raise RuntimeError('No module "pytransform" found in runtime package')
+
+    if (('' in tlist or '.py' in tlist) and len(tlist) > 1):
+        raise RuntimeError('Multiple runtime modules found')
 
     if licfile and not dryrun:
         if not os.path.exists(licfile):
@@ -634,8 +632,7 @@ def copy_runtime(path, output, licfile=None, dryrun=False):
         logging.info('To %s/license.lic', dst)
         shutil.copy2(licfile, os.path.join(dst, 'license.lic'))
 
-    n = len('pytransform')
-    suffix = name[n:-3] if name.endswith('.py') else name[n:]
+    suffix = name.split('.', 1)[0][len('pytransform'):]
     logging.info('Got suffix from runtime package: %s', suffix)
     if suffix and suffix != get_name_suffix():
         raise RuntimeError('Invalid suffix in runtime package')
