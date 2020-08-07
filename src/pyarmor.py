@@ -882,7 +882,7 @@ def _check_runtime_platforms(path, platforms):
 
     if platforms:
         logging.warning('The option platform is ignored by --runtime')
-    platforms = [x.strip() for x in line.split(':')[1].split(',')]
+    platforms = line[line.find(':')+1:].strip()
 
     logging.info('Got platforms from --runtime: %s', platforms)
     return platforms
