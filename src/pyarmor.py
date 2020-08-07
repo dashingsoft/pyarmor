@@ -224,11 +224,10 @@ def _build(args):
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
 
+    platforms = _check_runtime_platforms(args.runtime, platforms)
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
     platforms = check_cross_platform(platforms, supermode, vmenabled)
-    if platforms is False:
-        return
 
     protection = project.cross_protection \
         if hasattr(project, 'cross_protection') else 1
@@ -535,11 +534,10 @@ def _obfuscate(args):
     vmenabled = advanced in (3, 4)
     restrict = args.restrict
 
-    platforms = compatible_platform_names(args.platforms)
+    platforms = _check_runtime_platforms(args.runtime, args.platforms)
+    platforms = compatible_platform_names(platforms)
     logging.info('Target platforms: %s', platforms if platforms else 'Native')
     platforms = check_cross_platform(platforms, supermode, vmenabled)
-    if platforms is False:
-        return
 
     for x in ('entry',):
         if getattr(args, x.replace('-', '_')) is not None:
@@ -836,13 +834,11 @@ def _runtime(args):
     output = os.path.join(args.output, name) if args.inside else args.output
     package = not args.no_package
     suffix = get_name_suffix() if args.enable_suffix else ''
-    licfile = 'no' if args.no_license else args.license_file
+    licfile = 'outer' if args.no_license else args.license_file
     supermode = args.super_mode or (args.advanced in (2, 4))
     vmode = args.vm_mode or (args.advanced in (3, 4))
     platforms = compatible_platform_names(args.platforms)
     platforms = check_cross_platform(platforms, supermode, vmode=vmode)
-    if platforms is False:
-        return
 
     checklist = make_runtime(capsule, output, licfile=licfile,
                              platforms=platforms, package=package,
@@ -854,6 +850,7 @@ def _runtime(args):
                                 multiple=len(platforms) > 1,
                                 supermode=args.super_mode)
     with open(filename, 'w') as f:
+        f.write('# platforms: %s\n' % ','.join(platforms))
         f.write(data)
 
     if not args.super_mode:
@@ -862,6 +859,35 @@ def _runtime(args):
         logging.info('Generating bootstrap script ...')
         make_bootstrap_script(filename, capsule=capsule, suffix=suffix)
         logging.info('Generating bootstrap script %s OK', filename)
+
+
+def _check_runtime_platforms(path, platforms):
+    if path is None:
+        return platforms
+
+    if not os.path.exists(path):
+        logging.error('This path does not exists')
+        raise RuntimeError('No runtime package at %s' % path)
+
+    filename = os.path.join(path, 'pytransform_protection.py')
+    if not os.path.exists(filename):
+        logging.error('No pytransform_protection.py found in runtime package, '
+                      'please run command `runtime` again')
+        raise RuntimeError('Invalid runtime package at %s' % path)
+
+    with open(filename) as f:
+        line = f.readline()
+    if not line.startswith('# platforms:'):
+        logging.error('No platforms found in runtime package, '
+                      'please run command `runtime` again')
+        raise RuntimeError('Invalid runtime package at %s' % path)
+
+    if platforms:
+        logging.warning('The option platform is ignored by --runtime')
+    platforms = [x.strip() for x in line.split(':')[1].split(',')]
+
+    logging.info('Got platforms from --runtime: %s', platforms)
+    return platforms
 
 
 def _version_action():
