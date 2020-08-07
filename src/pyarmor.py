@@ -849,8 +849,11 @@ def _runtime(args):
     data = make_protection_code((args.inside, checklist, suffix),
                                 multiple=len(platforms) > 1,
                                 supermode=args.super_mode)
+    header = ('# platforms: %s' % ','.join(platforms),
+              '# license: %s' % ('default' if licfile is None else licfile),
+              '')
     with open(filename, 'w') as f:
-        f.write('# platforms: %s\n' % ','.join(platforms))
+        f.write('\n'.join(header))
         f.write(data)
 
     if not args.super_mode:
