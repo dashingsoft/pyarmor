@@ -866,21 +866,19 @@ def _check_runtime_platforms(path, platforms):
         return platforms
 
     if not os.path.exists(path):
-        logging.error('This path does not exists')
-        raise RuntimeError('No runtime package at %s' % path)
+        raise RuntimeError('No runtime package at "%s"' % path)
 
     filename = os.path.join(path, 'pytransform_protection.py')
     if not os.path.exists(filename):
-        logging.error('No pytransform_protection.py found in runtime package, '
-                      'please run command `runtime` again')
-        raise RuntimeError('Invalid runtime package at %s' % path)
+        raise RuntimeError('No pytransform_protection.py found '
+                           'in runtime package "%s", please run '
+                           'command `runtime` again' % path)
 
     with open(filename) as f:
         line = f.readline()
     if not line.startswith('# platforms:'):
-        logging.error('No platforms found in runtime package, '
-                      'please run command `runtime` again')
-        raise RuntimeError('Invalid runtime package at %s' % path)
+        raise RuntimeError('No platforms found in runtime package "%s", '
+                           'please run command `runtime` again' % path)
 
     if platforms:
         logging.warning('The option platform is ignored by --runtime')
