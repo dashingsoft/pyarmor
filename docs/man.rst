@@ -993,26 +993,6 @@ The :ref:`runtime package` could be shared if the scripts are obufscated by same
 :ref:`Global Capsule`. So generate it once, then need not generate the runtime
 files when obfuscating the scripts later.
 
-Since v6.3.7, the runtime package will remember the option `--advanced`,
-`--platform`, `--enable-suffix`, and save them to cross protection script
-`pytransform_protection.py`. The advantage is when obfuscating the scripts with
-option ``--runtime``, it could get these settings automatically and use the same
-cross protection script. For example::
-
-    pyarmor runtime --platform linux.armv7 --enable-suffix --advanced 1 -O myruntime-1
-    pyarmor obfuscate --runtime myruntime-1 foo.py
-
-The second command is same as::
-
-    pyarmor obfuscate --platform linux.armv7 --enable-suffix --advanced 1 foo.py
-
-If there are multiple entry scripts, use this command::
-
-    pyarmor obfuscate --runtime @myruntime-1 --exact foo-2.py foo-3.py
-
-With a leading ``@`` in the runtime path, it will not copy any runtime file, but
-read the settings of runtime package.
-
 It also generates a bootstrap script ``pytransform_bootstrap.py`` in the output
 path. This script is obfuscated from an empty script, and there is
 :ref:`bootstrap code` in it. It's mainly used to run :ref:`bootstrap code` in
@@ -1030,6 +1010,28 @@ example, :ref:`super mode` etc.
 
 About option ``--platform`` and ``--enable-suffix``, refer to command
 `obfuscate`_
+
+Since v6.2.0, it also generates protection script ``pytransform_protection.py``,
+which is used to patch entry scripts. Refer to :ref:`Customizing cross protection code`
+
+Since v6.3.7, the runtime package will remember the option `--advanced`,
+`--platform`, `--enable-suffix`, and save them to cross protection script
+`pytransform_protection.py` as leading comment. The advantage is when
+obfuscating the scripts with option ``--runtime``, it could get these settings
+automatically and use the same cross protection script. For example::
+
+    pyarmor runtime --platform linux.armv7 --enable-suffix --advanced 1 -O myruntime-1
+    pyarmor obfuscate --runtime myruntime-1 foo.py
+
+The second command is same as::
+
+    pyarmor obfuscate --platform linux.armv7 --enable-suffix --advanced 1 foo.py
+
+With a leading ``@`` in the runtime path, it will not copy any runtime file, but
+read the settings of runtime package. It's useful if there are multiple entry
+scripts need to be obufscated. For example::
+
+    pyarmor obfuscate --runtime @myruntime-1 --exact foo-2.py foo-3.py
 
 **EXAMPLES**
 
