@@ -224,7 +224,7 @@ def _build(args):
 
     rsettings = _check_runtime_settings(args.runtime)
     if rsettings:
-        platforms, advanced = rsettings[:2]
+        platforms, advanced, suffix = rsettings[:3]
 
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
@@ -261,7 +261,7 @@ def _build(args):
         if protection == 1:
             protection = os.path.join(rpkg, 'pytransform_protection.py')
         licfile = _check_runtime_license(rsettings, licfile)
-        suffix = copy_runtime(rpkg, routput, licfile=licfile, dryrun=dryrun)
+        copy_runtime(rpkg, routput, licfile=licfile, dryrun=dryrun)
     else:
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
@@ -535,10 +535,11 @@ def _obfuscate(args):
     '''Obfuscate scripts without project.'''
     rsettings = _check_runtime_settings(args.runtime)
     if rsettings:
-        platforms, advanced = rsettings[:2]
+        platforms, advanced, suffix = rsettings[:3]
     else:
         platforms = args.platforms
         advanced = args.advanced if args.advanced else 0
+        suffix = get_name_suffix() if args.enable_suffix else ''
 
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
@@ -585,8 +586,6 @@ def _obfuscate(args):
     output = args.output
     if os.path.abspath(output) == path:
         raise RuntimeError('Output path can not be same as src')
-
-    suffix = get_name_suffix() if args.enable_suffix else ''
 
     if args.recursive:
         logging.info('Search scripts mode: Recursive')
@@ -661,7 +660,7 @@ def _obfuscate(args):
         if cross_protection == 1:
             cross_protection = os.path.join(rpkg, 'pytransform_protection.py')
         licfile = _check_runtime_license(rsettings, licfile)
-        suffix = copy_runtime(rpkg, output, licfile=licfile, dryrun=dryrun)
+        copy_runtime(rpkg, output, licfile=licfile, dryrun=dryrun)
     else:
         package = args.package_runtime
         checklist = make_runtime(capsule, output, platforms=platforms,
@@ -864,6 +863,7 @@ def _runtime(args):
         (4 if vmode else 2) if supermode else 3 if vmode else 0
     header = ('# platforms: %s' % ','.join(platforms),
               '# advanced: %s' % advanced,
+              '# suffix: %s' % suffix,
               '# license: %s' % ('default' if licfile is None else licfile),
               '')
     with open(filename, 'w') as f:
@@ -895,28 +895,32 @@ def _check_runtime_settings(path):
                            'command `runtime` again' % path)
 
     with open(filename) as f:
-        lines = f.readline(), f.readline(), f.readline()
+        lines = f.readline(), f.readline(), f.readline(), f.readline()
     paras = [line[1:].strip().split(':', 1) for line in lines]
 
-    if not [x[0] for x in paras] == ['platforms', 'advanced', 'license']:
+    if not [x[0] for x in paras] == ['platforms', 'advanced',
+                                     'suffix', 'license']:
         raise RuntimeError('No settings found in runtime package "%s", '
                            'please run command `runtime` again' % path)
 
     platforms = paras[0][1].strip()
     advanced = int(paras[1][1].strip())
-    licfile = 'outer' if paras[2][1].strip() == 'outer' else 'embedded'
+    suffix = paras[2][1].strip()
+    licfile = 'outer' if paras[3][1].strip() == 'outer' else 'embedded'
 
     logging.info('Got settings from --runtime: %s', path)
     logging.info('    Platforms: %s', platforms)
     logging.info('    Advanced: %s', advanced)
+    logging.info('    Suffix: %s', suffix)
     logging.info('    License: %s', licfile)
 
-    return platforms, advanced, licfile
+    return platforms, advanced, suffix, licfile
 
 
 def _check_runtime_license(rsettings, licfile):
-    if rsettings[-1] == 'embedded' and licfile:
-        logging.warning('The license file is ignored by option --runtime')
+    if rsettings[-1] == 'embedded' and licfile is not None:
+        logging.warning('The runtime package uses embedded license file, '
+                        'the license file "%s" is ignored', licfile)
         licfile = False
     elif rsettings[-1] == 'outer' and (
             licfile is None or licfile in ('no-restrict', 'outer', 'no')):

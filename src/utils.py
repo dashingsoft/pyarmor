@@ -628,15 +628,9 @@ def copy_runtime(path, output, licfile=None, dryrun=False):
         if not os.path.exists(licfile):
             raise RuntimeError('No found license file "%s"' % licfile)
         logging.info('Copying outer license %s', licfile)
-        dst = os.path.join(output, '' if name.endswith('.py') else name)
+        dst = os.path.join(output, '' if name.find('.') > 0 else name)
         logging.info('To %s/license.lic', dst)
         shutil.copy2(licfile, os.path.join(dst, 'license.lic'))
-
-    suffix = name.split('.', 1)[0][len('pytransform'):]
-    logging.info('Got suffix from runtime package: %s', suffix)
-    if suffix and suffix != get_name_suffix():
-        raise RuntimeError('Invalid suffix in runtime package')
-    return suffix
 
 
 def make_project_license(capsule, code, output):
