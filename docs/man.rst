@@ -317,7 +317,7 @@ will be inserted into the entry scripts.
 * Use prebuilt runtime package to obfuscate scripts::
 
     pyarmor runtime --advanced 2 --with-license outer -O myruntime-1
-    pyarmor obfuscate --with-license licenses/r001/license.lic --runtime myruntime-1 foo.py
+    pyarmor obfuscate --runtime myruntime-1 --with-license licenses/r001/license.lic foo.py
     pyarmor obfuscate --runtime @myruntime-1 --exact foo-2.py foo-3.py
 
 .. _licenses:
