@@ -217,15 +217,15 @@ def _build(args):
     else:
         platforms = []
 
+    restrict = project.get('restrict_mode',
+                           0 if project.get('disable_restrict_mode') else 1)
+    advanced = (project.advanced_mode if project.advanced_mode else 0) \
+        if hasattr(project, 'advanced_mode') else 0
+
     rsettings = _check_runtime_settings(args.runtime)
     if rsettings:
         platforms, advanced = rsettings[:2]
-    else:
-        advanced = (project.advanced_mode if project.advanced_mode else 0) \
-            if hasattr(project, 'advanced_mode') else 0
 
-    restrict = project.get('restrict_mode',
-                           0 if project.get('disable_restrict_mode') else 1)
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
 
