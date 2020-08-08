@@ -96,6 +96,7 @@ Obfuscate python scripts.
 --advanced <0,1,2,3,4>        Enable advanced mode `1`, super mode `2`, vm mode `3` and `4`
 --restrict <0,1,2,3,4>        Set restrict mode
 -n, --no-runtime              DO NOT generate runtime files
+--runtime [@]PATH             Use prebuilt runtime package
 --package-runtime <0,1>       Save the runtime files as package or not
 --enable-suffix               Generate the runtime package with unique name
 --obf-mod <0,1,2>             Disable or enable to obfuscate module
@@ -170,6 +171,7 @@ If :ref:`super mode` mode is enabled, the runtime files and bootstrap code are
 totaly different, there is only one extension module ``pytransform.pyd`` or
 ``pytransform.so``.
 
+For usage of option ``--runtime``, refer to command `runtime`_
 
 **RUNTIME FILES**
 
@@ -311,6 +313,12 @@ will be inserted into the entry scripts.
 
     pyarmor obfuscate --cross-protection build/pytransform_protection.py \
                       --with-license outer --advanced 2 foo.py
+
+* Use prebuilt runtime package to obfuscate scripts::
+
+    pyarmor runtime --advanced 2 --with-license outer -O myruntime-1
+    pyarmor obfuscate --with-license licenses/r001/license.lic --runtime myruntime-1 foo.py
+    pyarmor obfuscate --runtime @myruntime-1 --exact foo-2.py foo-3.py
 
 .. _licenses:
 
@@ -753,6 +761,7 @@ Build project, obfuscate all scripts in the project.
 -O, --output OUTPUT           Output path, override project configuration
 --platform NAME               Distribute obfuscated scripts to other platform
 --package-runtime <0,1>       Save the runtime files as package or not
+--runtime [@]PATH             Use prebuilt runtime package
 
 **DESCRIPTION**
 
@@ -768,6 +777,8 @@ The option ``--no-runtime`` may impact on the :ref:`bootstrap code`, the
 bootstrap code will make absolute import without leading dots in entry script.
 
 About option ``--platform`` and ``--package-runtime``, refer to command `obfuscate`_
+
+About option ``--runtime``, refer to command `runtime`_
 
 **EXAMPLES**
 
@@ -972,8 +983,7 @@ Geneate :ref:`runtime package` separately.
                               no license
 --platform NAME               Generate runtime package for specified platform
 --enable-suffix               Generate the runtime package with unique name
---super-mode                  Generate runtime extension module for super mode
---vm-mode                     Generate runtime library with vm mode
+--advanced <0,1,2,3,4>        Generate advanced runtime package
 
 **DESCRIPTION**
 
@@ -982,6 +992,26 @@ This command is used to generate the runtime package separately.
 The :ref:`runtime package` could be shared if the scripts are obufscated by same
 :ref:`Global Capsule`. So generate it once, then need not generate the runtime
 files when obfuscating the scripts later.
+
+Since v6.3.7, the runtime package will remember the option `--advanced`,
+`--platform`, `--enable-suffix`, and save them to cross protection script
+`pytransform_protection.py`. The advantage is when obfuscating the scripts with
+option ``--runtime``, it could get these settings automatically and use the same
+cross protection script. For example::
+
+    pyarmor runtime --platform linux.armv7 --enable-suffix --advanced 1 -O myruntime-1
+    pyarmor obfuscate --runtime myruntime-1 foo.py
+
+The second command is same as::
+
+    pyarmor obfuscate --platform linux.armv7 --enable-suffix --advanced 1 foo.py
+
+If there are multiple entry scripts, use this command::
+
+    pyarmor obfuscate --runtime @myruntime-1 --exact foo-2.py foo-3.py
+
+With a leading ``@`` in the runtime path, it will not copy any runtime file, but
+read the settings of runtime package.
 
 It also generates a bootstrap script ``pytransform_bootstrap.py`` in the output
 path. This script is obfuscated from an empty script, and there is
@@ -995,8 +1025,8 @@ modules could be imported in one plain script::
 If option ``--inside`` is specified, it will generate bootstrap package
 ``pytransform_bootstrap`` other than one single script.
 
-The option ``--super-mode`` is used to generate runtime extension module for
-:ref:`super mode`, it's totally different from other modes.
+The option ``--advanced`` is used to generate advanced runtime package, for
+example, :ref:`super mode` etc.
 
 About option ``--platform`` and ``--enable-suffix``, refer to command
 `obfuscate`_
@@ -1022,11 +1052,10 @@ About option ``--platform`` and ``--enable-suffix``, refer to command
 
 * Generate runtime module for super mode::
 
-    pyarmor runtime --super-mode
     pyarmor runtime --advanced 2
 
-* Generate runtime module for super mode but with outer ``license.lic``::
+* Generate runtime module for super mode but with outer license::
 
-    pyarmor runtime --super-mode --with-license outer
+    pyarmor runtime --advanced 2 --with-license outer
 
 .. include:: _common_definitions.txt
