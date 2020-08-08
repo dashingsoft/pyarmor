@@ -217,14 +217,18 @@ def _build(args):
     else:
         platforms = []
 
+    rsettings = _check_runtime_settings(args.runtime)
+    if rsettings:
+        platforms, advanced = rsettings[:2]
+    else:
+        advanced = (project.advanced_mode if project.advanced_mode else 0) \
+            if hasattr(project, 'advanced_mode') else 0
+
     restrict = project.get('restrict_mode',
                            0 if project.get('disable_restrict_mode') else 1)
-    advanced = (project.advanced_mode if project.advanced_mode else 0) \
-        if hasattr(project, 'advanced_mode') else 0
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
 
-    platforms = _check_runtime_platforms(args.runtime, platforms)
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
     platforms = check_cross_platform(platforms, supermode, vmenabled)
@@ -242,6 +246,8 @@ def _build(args):
         if project.get('is_package') else output
     licfile = args.license_file if args.license_file is not None \
         else project.license_file
+    if not restrict and not licfile:
+        licfile = 'no-restrict'
 
     if args.no_runtime:
         if protection == 1:
@@ -254,16 +260,11 @@ def _build(args):
             rpkg, dryrun = args.runtime, False
         if protection == 1:
             protection = os.path.join(rpkg, 'pytransform_protection.py')
-            if not os.path.exists(protection):
-                raise RuntimeError('No "pytransform_protection.py" found '
-                                   'in runtime path %s' % rpkg)
+        licfile = _check_runtime_license(rsettings, licfile)
         suffix = copy_runtime(rpkg, routput, licfile=licfile, dryrun=dryrun)
     else:
         package = project.get('package_runtime', 0) \
             if args.package_runtime is None else args.package_runtime
-
-        if not restrict and not licfile:
-            licfile = 'no-restrict'
 
         checklist = make_runtime(capsule, routput, licfile=licfile,
                                  platforms=platforms, package=package,
@@ -532,12 +533,17 @@ def _capsule(args):
 @arcommand
 def _obfuscate(args):
     '''Obfuscate scripts without project.'''
-    advanced = args.advanced if args.advanced else 0
+    rsettings = _check_runtime_settings(args.runtime)
+    if rsettings:
+        platforms, advanced = rsettings[:2]
+    else:
+        platforms = args.platforms
+        advanced = args.advanced if args.advanced else 0
+
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
     restrict = args.restrict
 
-    platforms = _check_runtime_platforms(args.runtime, args.platforms)
     platforms = compatible_platform_names(platforms)
     logging.info('Target platforms: %s', platforms if platforms else 'Native')
     platforms = check_cross_platform(platforms, supermode, vmenabled)
@@ -640,6 +646,9 @@ def _obfuscate(args):
     logging.info('Super mode is %s', supermode)
 
     licfile = args.license_file
+    if (not restrict) and (not licfile):
+        licfile = 'no-restrict'
+
     if args.no_runtime:
         if cross_protection == 1:
             logging.warning('No cross protection because no runtime generated')
@@ -651,14 +660,10 @@ def _obfuscate(args):
             rpkg, dryrun = args.runtime, False
         if cross_protection == 1:
             cross_protection = os.path.join(rpkg, 'pytransform_protection.py')
-            if not os.path.exists(cross_protection):
-                raise RuntimeError('No "pytransform_protection.py" found '
-                                   'in runtime path %s' % rpkg)
+        licfile = _check_runtime_license(rsettings, licfile)
         suffix = copy_runtime(rpkg, output, licfile=licfile, dryrun=dryrun)
     else:
         package = args.package_runtime
-        if (not restrict) and (not licfile):
-            licfile = 'no-restrict'
         checklist = make_runtime(capsule, output, platforms=platforms,
                                  licfile=licfile, package=package,
                                  suffix=suffix, supermode=supermode)
@@ -855,7 +860,10 @@ def _runtime(args):
     data = make_protection_code((args.inside, checklist, suffix),
                                 multiple=len(platforms) > 1,
                                 supermode=args.super_mode)
+    advanced = args.advanced if args.advanced is not None else \
+        (4 if vmode else 2) if supermode else 3 if vmode else 0
     header = ('# platforms: %s' % ','.join(platforms),
+              '# advanced: %s' % advanced,
               '# license: %s' % ('default' if licfile is None else licfile),
               '')
     with open(filename, 'w') as f:
@@ -870,9 +878,9 @@ def _runtime(args):
         logging.info('Generating bootstrap script %s OK', filename)
 
 
-def _check_runtime_platforms(path, platforms):
+def _check_runtime_settings(path):
     if path is None:
-        return platforms
+        return
 
     if path[:1] == '@':
         path = path[1:]
@@ -887,17 +895,35 @@ def _check_runtime_platforms(path, platforms):
                            'command `runtime` again' % path)
 
     with open(filename) as f:
-        line = f.readline()
-    if not line.startswith('# platforms:'):
-        raise RuntimeError('No platforms found in runtime package "%s", '
+        lines = f.readline(), f.readline(), f.readline()
+    paras = [line[1:].strip().split(':', 1) for line in lines]
+
+    if not [x[0] for x in paras] == ['platforms', 'advanced', 'license']:
+        raise RuntimeError('No settings found in runtime package "%s", '
                            'please run command `runtime` again' % path)
 
-    if platforms:
-        logging.warning('The option platform is ignored by --runtime')
-    platforms = line[line.find(':')+1:].strip()
+    platforms = paras[0][1].strip()
+    advanced = int(paras[1][1].strip())
+    licfile = 'outer' if paras[2][1].strip() == 'outer' else 'embedded'
 
-    logging.info('Got platforms from --runtime: %s', platforms)
-    return platforms
+    logging.info('Got settings from --runtime: %s', path)
+    logging.info('    Platforms: %s', platforms)
+    logging.info('    Advanced: %s', advanced)
+    logging.info('    License: %s', licfile)
+
+    return platforms, advanced, licfile
+
+
+def _check_runtime_license(rsettings, licfile):
+    if rsettings[-1] == 'embedded' and licfile:
+        logging.warning('The license file is ignored by option --runtime')
+        licfile = False
+    elif rsettings[-1] == 'outer' and (
+            licfile is None or licfile in ('no-restrict', 'outer', 'no')):
+        logging.warning('The runtime package uses outer license '
+                        'but no license file is specified')
+        licfile = False
+    return licfile
 
 
 def _version_action():
@@ -1331,11 +1357,11 @@ def _parser():
     cparser.add_argument('--enable-suffix', action='store_true',
                          help='Make unique runtime files and bootstrap code')
     cparser.add_argument('--super-mode', action='store_true',
-                         help='Enable super mode')
-    cparser.add_argument('--vm-mode', action='store_true',
-                         help='Enable vm protection mode')
-    cparser.add_argument('--advanced', type=int, choices=(2, 4),
                          help=argparse.SUPPRESS)
+    cparser.add_argument('--vm-mode', action='store_true',
+                         help=argparse.SUPPRESS)
+    cparser.add_argument('--advanced', type=int, choices=range(5),
+                         help='Enable advanced mode or super mode')
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
