@@ -96,7 +96,7 @@ Obfuscate python scripts.
 --advanced <0,1,2,3,4>        Enable advanced mode `1`, super mode `2`, vm mode `3` and `4`
 --restrict <0,1,2,3,4>        Set restrict mode
 -n, --no-runtime              DO NOT generate runtime files
---runtime [@]PATH             Use prebuilt runtime package
+--runtime PATH                Use prebuilt runtime package
 --package-runtime <0,1>       Save the runtime files as package or not
 --enable-suffix               Generate the runtime package with unique name
 --obf-mod <0,1,2>             Disable or enable to obfuscate module
