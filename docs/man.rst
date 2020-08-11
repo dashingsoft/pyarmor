@@ -761,7 +761,7 @@ Build project, obfuscate all scripts in the project.
 -O, --output OUTPUT           Output path, override project configuration
 --platform NAME               Distribute obfuscated scripts to other platform
 --package-runtime <0,1>       Save the runtime files as package or not
---runtime [@]PATH             Use prebuilt runtime package
+--runtime PATH                Use prebuilt runtime package
 
 **DESCRIPTION**
 
