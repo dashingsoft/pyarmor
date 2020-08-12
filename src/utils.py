@@ -841,7 +841,7 @@ def _guess_encoding(filename):
                 return m.group(1)
             if n > -1 and len(line) > (n+1) and line[n+1] == 35:
                 k = n + 1
-                n = line[k:].find(b'\n')
+                n = line[k:].find(b'\n') + k
                 m = re.search(r'coding[=:]\s*([-\w.]+)', line[k:n].decode())
                 return m and m.group(1)
 
