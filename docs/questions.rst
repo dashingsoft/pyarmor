@@ -12,14 +12,6 @@ As running ``pyarmor``:
 
       pyarmor -d obfuscate --recurisve foo.py
 
-* Set Python debug flag to get more information. For example::
-
-      PYTHONDEBUG=y pyarmor obfuscate --recurisve foo.py
-
-      # In Windows
-      set PYTHONDEBUG=y
-      pyarmor obfuscate --recurisve foo.py
-
 As running the obfuscated scripts:
 
 * Turn on Python debug option by ``-d`` to print more information. For example::
@@ -356,6 +348,27 @@ to `linux.armv7.0`. For examples::
 
 Packing Obfuscated Scripts Problem
 ----------------------------------
+
+The final bundle does not work
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First make sure the scripts could pack by PyInstaller directly and the final
+bundle works.
+
+Then make sure the obfuscated scripts could work without packing.
+
+If both of them OK, remove the output path `dist` and PyInstaller cached path
+`build`, then pack the script with ``--debug``::
+
+    pyarmor pack --debug foo.py
+
+The build files will be kept, the patched `foo-patched.spec` could be used by
+pyinstaller to pack the obfuscated scripts directly, for example::
+
+    pyinstaller -y --clean foo-patched.spec
+
+Check this patched `.spec` and change options in this `.spec` file, make sure
+the final bundle could work.
 
 No module name pytransform
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
