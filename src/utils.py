@@ -1209,7 +1209,7 @@ def get_name_suffix():
         'Pyarmor': 'vad',
     }
     if len(n) > 6:
-        raise RuntimeError('Invalid registration code')
+        n = n[-6:]
     pad = '0' * (6 - len(n))
     return '_'.join(['', d.get(m, 'unk'), pad + n])
 
