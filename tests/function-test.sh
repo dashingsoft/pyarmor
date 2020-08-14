@@ -1559,11 +1559,37 @@ check_return_value
 cp $src/test*.py $output
 (cd $output; $PYTHON test1.py > result.log 2>&1)
 check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
-check_file_content $output/result.log " name '__armor_enter__' is not defined"
+check_file_content $output/result.log " name '__armor_wrap__' is not defined"
 
 (cd $output; $PYTHON test2.py > result.log 2>&1)
 check_file_content $output/result.log 'This is restrict mode 4 testing' not
-check_file_content $output/result.log " name '__armor_enter__' is not defined"
+check_file_content $output/result.log " name '__armor_wrap__' is not defined"
+
+csih_inform "Case RM-4.2a: test restirct module attribute in super mode"
+output=test-restrict-4.2a
+$PYARMOR obfuscate -O $output/dist -r --restrict 4 --advanced 2 \
+         --bootstrap 3 test/data/sound/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 1 --exact --advanced 2 \
+         --bootstrap 3 test/data/sound/__init__.py > result.log 2>&1
+check_return_value
+
+cat <<EOF > $output/foo.py
+import dist
+from dist import effects, vocoder, formats
+
+print('vocoder password outside is: %s' % vocoder.password)
+print('effects.__all__ outside is: %s' % ','.join(effects.__all__))
+print('all formsts outside are: %s' % ','.join(formats.namelist))
+
+EOF
+
+(cd $output; $PYTHON foo.py > result.log 2>&1)
+check_file_content $output/result.log 'vocoder password outside is: coder-123' not
+check_file_content $output/result.log 'effects.__all__ outside: echo,surround' not
+check_file_content $output/result.log 'all formsts outside are: wav,mp3' not
+check_file_content $output/result.log 'vocoder password inside is: coder-123'
+check_file_content $output/result.log 'effects.__all__ inside is: echo,surround'
+check_file_content $output/result.log 'all formsts inside are: wav,mp3'
 fi
 
 csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
