@@ -1,4 +1,4 @@
-set -x
+# set -x
 set -e
 
 PLATFORMS=$(pwd)/../../pyarmor-core/platforms
