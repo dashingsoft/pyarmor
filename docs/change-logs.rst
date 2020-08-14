@@ -3,6 +3,17 @@
 Change Logs
 ===========
 
+6.3.7
+-----
+* A big improvement for restrict mode: the plain script couldn't visit any
+  module attribute if this module is obfuscated by restrict mode 2, 3 or 4
+* Add option `--runtime` for command `obfuscate`, `build`
+* In command `runtime`, deprecate option `--super-mode` and `--vm-mode`, use
+  `--advanced` instead.
+* Fix encoding issue: couldn't get the right encoding if source encoding is in
+  the second line
+* Refine example scripts
+
 6.3.6
 -----
 * Fix pack issue: if `pyi-makespec` could not be found, it will complain of
