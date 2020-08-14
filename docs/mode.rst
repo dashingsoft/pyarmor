@@ -284,6 +284,11 @@ It's mainly used to obfuscate the Python package. The common way is that the
 `__init__.py` is obfuscated by restrict mode 1, all the other modules in this
 package are obfuscated by restrict mode 4.
 
+.. important::
+
+   Since v6.3.7, there is a big improvement. The plain script couldn't visit
+   module attributes by anyway if this module is obfucated by mode 2, 3 or 4.
+
 .. note::
 
    Mode 2 and 3 could not be used to obfuscate the Python package.
