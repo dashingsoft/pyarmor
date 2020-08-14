@@ -1,0 +1,1 @@
+namelist = 'wav', 'mp3'
