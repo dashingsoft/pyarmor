@@ -117,6 +117,9 @@ scripts:
 * Recursive: find all the `.py` files in the path of entry script recursively
 * Exact: only these scripts list in the command line
 
+The default mode is `Normal`, option ``--recursive`` and ``--exact`` enable the
+corresponding mode.
+
 Note that only the `.py` files are touched by this command, all the other files
 aren't copied to output path. If there are many data files in the package, first
 copy the whole package to the output path, then obfuscate the `.py` files, thus
@@ -134,9 +137,6 @@ Next obfuscate all found scripts, save them in the default output path `dist`.
 After that make the :ref:`runtime package` in the `dist` path.
 
 Finally insert the :ref:`bootstrap code` into entry script.
-
-If ``--exact`` is set, all the scripts in the command line are taken as entry
-scripts. Otherwise only the first script is entry script.
 
 Option ``--src`` used to specify source path if entry script is not in the top
 most path. For example::
@@ -167,16 +167,16 @@ security. The available value for this option
 * 3: Enable :ref:`advanced mode` and :ref:`vm mode`
 * 4: Enable :ref:`super mode` and :ref:`vm mode`
 
-If :ref:`super mode` mode is enabled, the runtime files and bootstrap code are
-totaly different, there is only one extension module ``pytransform.pyd`` or
-``pytransform.so``.
-
 For usage of option ``--runtime``, refer to command `runtime`_
 
 **RUNTIME FILES**
 
-By default the runtime files will be saved in the separated folder ``pytransform``
-as package::
+If :ref:`super mode` is enabled, there is only one extension module::
+
+  pytransform.pyd/.so
+
+For all the others, the runtime files will be saved in the separated folder
+``pytransform`` as package::
 
     pytransform/
         __init__.py
@@ -195,8 +195,13 @@ registration code of PyArmor.
 
 **BOOTSTRAP CODE**
 
-By default, the following :ref:`bootstrap code` will be inserted into the entry
-script::
+If :ref:`super mode` is enabled, no so called :ref:`bootstrap code`, all the
+obfuscated scripts will import the runtime module at the first line::
+
+    from pytransform import pyarmor
+
+For all the others, the following :ref:`bootstrap code` will be inserted into
+the entry script::
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
@@ -225,6 +230,10 @@ will be inserted into the entry scripts.
 * Obfuscate all the `.py` only in the current path::
 
      pyarmor obfuscate foo.py
+
+* Obfuscate all the `.py` only in the current path and multiple entry scripts::
+
+     pyarmor obfuscate foo.py foo-svr.py foo-client.py
 
 * Obfuscate all the `.py` in the current path recursively::
 
