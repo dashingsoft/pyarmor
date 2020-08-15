@@ -239,7 +239,8 @@ def _build(args):
     bootstrap_code = project.get('bootstrap_code', 1)
     relative = True if bootstrap_code == 3 else \
         False if (bootstrap_code == 2 or
-                  (args.no_runtime and bootstrap_code == 1)) else None
+                  (args.no_runtime and bootstrap_code == 1)) else \
+        False if supermode else None
 
     routput = output if (args.output is not None and args.only_runtime) \
         else os.path.join(output, os.path.basename(project.src)) \
@@ -635,7 +636,8 @@ def _obfuscate(args):
         1 if args.cross_protection is None else args.cross_protection
 
     n = args.bootstrap_code
-    relative = True if n == 3 else False if n == 2 else None
+    relative = True if n == 3 else False if n == 2 else \
+        False if supermode else None
     bootstrap = (not args.no_bootstrap) and n
     elist = [os.path.abspath(x) for x in entries]
 
