@@ -21,6 +21,11 @@ As running the obfuscated scripts:
 After python debug option is on, there will be a log file `pytransform.log`
 generated in the current path, which includes more debug information.
 
+.. note::
+
+   There are a lot of reporeted `issues`_, search here first try to find same
+   issue.
+
 
 Segment fault
 -------------

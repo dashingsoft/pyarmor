@@ -5,7 +5,7 @@
 .. |PyArmor| replace:: `PyArmor`
 .. |PyArmorVersion| replace:: PyArmor |version|
 
-.. _issue: https://github.com/dashingsoft/pyarmor/issues/
+.. _issues: https://github.com/dashingsoft/pyarmor/issues/
 .. _pypi: https://pypi.python.org/pypi/pyarmor/
 
 .. _PyInstaller: https://www.pyinstaller.org/
