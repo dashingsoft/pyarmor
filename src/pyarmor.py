@@ -325,7 +325,7 @@ def _build(args):
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
-        adv_mode2 = (advanced - 2) if advanced > 2 else advanced
+        adv_mode = (advanced - 2) if advanced > 2 else advanced
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -341,17 +341,16 @@ def _build(args):
                 plugins = None
 
             if entries and (os.path.abspath(a) in entries):
-                adv_mode = adv_mode2 | 8
-                pcode = protection
+                is_entry, pcode = 1, protection
             else:
-                adv_mode = adv_mode2
-                pcode = 0
+                is_entry, pcode = 0, 0
 
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
                            wrap_mode=wrap_mode, adv_mode=adv_mode,
-                           rest_mode=restrict, protection=pcode,
-                           platforms=platforms, plugins=plugins,
-                           rpath=project.runtime_path, suffix=suffix)
+                           rest_mode=restrict, entry=is_entry,
+                           protection=pcode, platforms=platforms,
+                           plugins=plugins, rpath=project.runtime_path,
+                           suffix=suffix)
 
             if supermode:
                 make_super_bootstrap(a, b, soutput, relative, suffix=suffix)
@@ -678,7 +677,7 @@ def _obfuscate(args):
                 supermode=supermode)
 
     logging.info('Start obfuscating the scripts...')
-    adv_mode2 = (advanced - 2) if advanced > 2 else advanced
+    adv_mode = (advanced - 2) if advanced > 2 else advanced
     for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -693,11 +692,11 @@ def _obfuscate(args):
         if not os.path.exists(d):
             os.makedirs(d)
 
-        adv_mode = adv_mode2 | (8 if is_entry else 0)
-        encrypt_script(prokey, a, b, adv_mode=adv_mode, rest_mode=restrict,
+        encrypt_script(prokey, a, b, wrap_mode=args.wrap_mode,
+                       obf_code=args.obf_code, obf_mod=args.obf_mod,
+                       adv_mode=adv_mode, rest_mode=restrict, entry=is_entry,
                        protection=protection, platforms=platforms,
-                       plugins=plugins, suffix=suffix, obf_code=args.obf_code,
-                       obf_mod=args.obf_mod, wrap_mode=args.wrap_mode)
+                       plugins=plugins, suffix=suffix)
 
         if supermode:
             make_super_bootstrap(a, b, output, relative, suffix=suffix)

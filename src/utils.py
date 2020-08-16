@@ -872,7 +872,7 @@ def _readlines(filename):
 
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
-                   obf_mod=1, adv_mode=0, rest_mode=1, protection=0,
+                   obf_mod=1, adv_mode=0, rest_mode=1, entry=0, protection=0,
                    platforms=None, plugins=None, rpath=None, suffix=''):
     lines = _readlines(filename)
     if plugins:
@@ -936,9 +936,10 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2:
         co = _check_code_object_for_super_mode(co, lines, modname)
 
-    flags = obf_code | obf_mod << 8 | wrap_mode << 16 | adv_mode << 24 \
-        | (11 if rest_mode == 4 else 15 if rest_mode == 3 else
-           7 if rest_mode == 2 else rest_mode) << 28
+    flags = obf_code | obf_mod << 8 | wrap_mode << 16 | (
+        adv_mode | (8 if entry else 0) |
+        (0xB0 if rest_mode == 4 else 0xF0 if rest_mode == 3 else
+         0x70 if rest_mode == 2 else 0x10 if rest_mode else 0)) << 24
     s = pytransform.encrypt_code_object(pubkey, co, flags, suffix=suffix)
 
     with open(destname, 'w') as f:
