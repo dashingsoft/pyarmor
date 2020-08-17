@@ -219,9 +219,9 @@ Restrict Mode
 -------------
 
 Each obfuscated script has its own restrict mode used to limit the usage of this
-script. When importing an obfuscated module or start to run any function in the
-obfuscated module, it will first check the restrict mode of this script. If the
-restrict mode is violated, protection exception will be raised.
+script. When importing an obfuscated module and using any function or attribute,
+the restrict mode will be checked at frist, raises protection exception if the
+restrict mode is violated.
 
 There are 4 restrict mode, mode 2 and 3 are mainly for standalone scripts, and
 mode 4 is for obfuscated packages.
@@ -238,7 +238,7 @@ This script will raise restrict exception when it's imported.
 
 * Mode 2
 
-In this mode, the obfuscated scripts can't be imported from plain script. But it
+In this mode, the obfuscated scripts can't be imported from plain script. It
 could be run by Python interpreter directly, or imported by other obfuscated
 scripts.
 
@@ -254,49 +254,100 @@ It will raise protection exception.
 
 * Mode 3
 
-It's an enhancement of Mode 2. When call any function in the obfuscated module
-with mode 3, it will check the caller. If the caller is not obfuscated,
-protection exception is raised.
-
-For example, `foo3.py`, `mod3.py` are obfuscated in mode 3. The former is main
-script, it will call some functions in the latter. If try to call any function
-in the `mod3` from plain script `test.py`, for example::
-
-    import mod3
-    mod3.hello()
-
-Now run command `python test.py`, the first statement `import` will check the
-caller `test.py`, if `test.py` is not obfuscated, it will raise exception.
-
-Note that in case `mod3` has been imported before by anyway, the restrict mode
-will be ignored.
-
-In the second line, when `mod3.hello` starts, it will check the caller `test.py`
-again. If `test.py` is not obfuscated, it will raise exception.
+It's an enhancement of Mode 2. When visiting any module attribute or calling any
+function in the module with restrict mode 3, it will check the caller. If the
+caller is not obfuscated, protection exception is raised.
 
 * Mode 4
 
-It's almost same as mode 3, when any function in the module is called, it will
-check the caller, make sure the caller is obfuscated. But it doesn't check the
-caller when it's imported.
+It's almost same as mode 3, module attributes and function calling are
+protected. The difference is that it could be imported from plain script.
 
 It's mainly used to obfuscate the Python package. The common way is that the
 `__init__.py` is obfuscated by restrict mode 1, all the other modules in this
 package are obfuscated by restrict mode 4.
 
+For example, there is package `mypkg`::
+
+    mypkg/
+        __init__.py
+        private_a.py
+        private_b.py
+
+In the ``__init__.py``, define public functions and attributes which are used by
+plain scripts:
+
+.. code:: python
+
+    from . import private_a as ma
+    from . import private_b as mb
+
+    public_data = 'welcome'
+
+    def proxy_hello():
+        print('Call private hello')
+        ma.hello()
+
+    def public_hello():
+        print('This is public hello')
+
+In the ``private_a.py``, define private functions and attributes:
+
+.. code:: python
+
+    import sys
+
+    password = 'xxxxxx'
+
+    def hello():
+        print('password is: %s' % password)
+
+Then obfuscate ``__init__.py`` by mode 1 and others by mode 4 in the `dist`::
+
+    dist/
+        __init__.py
+        private_a.py
+        private_b.py
+
+Now do some tests from Python interpreter:
+
+.. code:: python
+
+    import dist as mypkg
+
+    # It works
+    mypkg.public_hello()
+    mypkg.proxy_hello()
+    print(mypkg.public_data)
+    print(mypkg.ma)
+
+    # It doesn't work
+    mypkg.ma.hello()
+    print(mypkg.ma.password)
+
 .. important::
 
-   Since v6.3.7, there is a big improvement. The plain script couldn't visit
-   module attributes by anyway if this module is obfucated by mode 3 or 4.
+   The protection of module attributes for mode 3 and 4 is introduced in
+   v6.3.7. Before that, only function calling is protected.
+
+   Do not import any function or class from private module in the public
+   ``__init__.py``, because only module attributes are protected::
+
+       # Right, import module only
+       from . import private_a as ma
+
+       # Wrong, function `hello` is opened for plain script
+       from .private_a import hello
 
 .. note::
 
-   Mode 2 and 3 could not be used to obfuscate the Python package.
+   Mode 2 and 3 could not be used to obfuscate the Python package, because the
+   main script must be obfuscated either, otherwise it can't not be imported.
 
 .. note::
 
-   Restrict mode is applied to one single script, different scripts
-   could be obfuscated by different restrict mode.
+   Restrict mode is applied to one single script, different scripts could be
+   obfuscated by different restrict mode.
 
 From PyArmor 5.2, Restrict Mode 1 is default.
 
