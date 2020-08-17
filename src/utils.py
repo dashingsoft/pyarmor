@@ -148,9 +148,9 @@ def pytransform_bootstrap(capsule=None, force=False):
 
     ver = pytransform.version_info()
     logging.debug('The version of core library is %s', ver)
-    if ver[0] < 14:
+    if ver[0] < 32:
         raise RuntimeError('PyArmor does not work with this core library '
-                           '(r%d), which reversion < 14' % ver[0])
+                           '(r%d), which reversion < 32' % ver[0])
 
     if capsule is not None and not os.path.exists(capsule):
         logging.info('Generating public capsule ...')
