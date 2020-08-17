@@ -1395,8 +1395,6 @@ check_file_content $output/result.log 'Hello! PyArmor Test Case'
 check_file_content $output/result.log 'Check restrict mode of module failed'
 
 echo -e "\nprint('No restrict mode')" >> $output/main.py
-echo -e "\nprint('No restrict mode')" >> $output/main.py
-echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'No restrict mode' not
