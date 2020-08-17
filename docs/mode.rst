@@ -87,7 +87,7 @@ Enable vm mode with advanced mode by this way::
 
     pyarmor obfuscate --advanced 3 foo.py
 
-Enable sumper mode with advanced mdoe by this way::
+Enable vm mode with super mdoe by this way::
 
     pyarmor obfuscate --advanced 4 foo.py
 
