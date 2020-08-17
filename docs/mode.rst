@@ -238,9 +238,11 @@ This script will raise restrict exception when it's imported.
 
 * Mode 2
 
-In this mode, the obfuscated scripts can't be imported from plain script. It
-could be run by Python interpreter directly, or imported by other obfuscated
-scripts.
+In this mode, the obfuscated scripts can't be imported from plain script, and
+the main script must be obfuscated as :ref:`entry script`. It could be run by
+Python interpreter directly, or imported by other obfuscated scripts. When it's
+imported, it will check the caller and the main script, and make sure both of
+them are obfuscated.
 
 For example, `foo2.py` is obfuscated by mode 2. It can be run like this::
 
@@ -254,14 +256,14 @@ It will raise protection exception.
 
 * Mode 3
 
-It's an enhancement of Mode 2. When visiting any module attribute or calling any
-function in the module with restrict mode 3, it will check the caller. If the
-caller is not obfuscated, protection exception is raised.
+It's an enhancement of mode 2, it also protects module attributes. When visiting
+any module attribute or calling any module function, the caller will be checked
+and raise protection exception if the caller is not obfuscated.
 
 * Mode 4
 
-It's almost same as mode 3, module attributes and function calling are
-protected. The difference is that it could be imported from plain script.
+It's almost same as mode 3, the only difference is that it doesn't check the
+main script is obfuscated or not when it's imported.
 
 It's mainly used to obfuscate the Python package. The common way is that the
 `__init__.py` is obfuscated by restrict mode 1, all the other modules in this
