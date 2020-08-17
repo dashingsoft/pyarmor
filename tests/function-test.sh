@@ -717,13 +717,13 @@ mkdir -p $dist/src/pkg/a
 echo "" > $dist/src/pkg/__init__.py
 echo "" > $dist/src/pkg/a/__init__.py
 
-$PYARMOR obfuscate -r --advanced 2 -O $dist/pkg \
+$PYARMOR obfuscate -r --advanced 2 -O $dist/pkg --bootstrap 3 \
          $dist/src/pkg/__init__.py >result.log 2>&1
 check_return_value
 check_file_content $dist/pkg/__init__.py "from .pytransform import pyarmor"
 check_file_content $dist/pkg/a/__init__.py "from ..pytransform import pyarmor"
 
-$PYARMOR obfuscate -r --advanced 2 -O $dist/dist \
+$PYARMOR obfuscate -r --advanced 2 -O $dist/dist --bootstrap 3 \
          $dist/src/pkg/__init__.py >result.log 2>&1
 check_return_value
 check_file_content $dist/dist/__init__.py "from .pytransform import pyarmor"
@@ -1464,7 +1464,7 @@ check_file_content $output/result.log "ImportError: cannot import name"
 
 (cd $output; $PYTHON -c"import mypkg
 mypkg.hello('One')" >result.log 2>&1 )
-check_file_content $output/result.log " name '__armor_enter__' is not defined"
+check_file_content $output/result.log "This function could not be called from the plain script"
 
 (cd $output; $PYTHON -c"import mypkg
 mypkg.open_hello('Two')" >result.log 2>&1 )
@@ -1514,11 +1514,11 @@ check_return_value
 
 (cd $output; $PYTHON test1.py > result.log 2>&1)
 check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
-check_file_content $output/result.log " name '__armor_enter__' is not defined"
+check_file_content $output/result.log "This function could not be called from the plain script"
 
 (cd $output; $PYTHON test2.py > result.log 2>&1)
 check_file_content $output/result.log 'This is restrict mode 4 testing' not
-check_file_content $output/result.log " name '__armor_enter__' is not defined"
+check_file_content $output/result.log "This function could not be called from the plain script"
 
 csih_inform "Case RM-4.1a: test restrict mode 4 with restirct module attribute"
 output=test-restrict-4.1a
@@ -1550,7 +1550,7 @@ if [[ "yes" == "${SUPERMODE}" ]] ; then
 csih_inform "Case RM-4.2: test restrict mode 4 with exception in super mode"
 src=test-restrict-4.1
 output=test-restrict-4.2
-$PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 \
+$PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 --bootstrap 3 \
          $src/mypkg/__init__.py > result.log 2>&1
 $PYARMOR obfuscate -O $output/dist --restrict 4 --bootstrap 3 --exact --advanced 2 \
          $src/mypkg/bar.py > result.log 2>&1
@@ -1559,11 +1559,11 @@ check_return_value
 cp $src/test*.py $output
 (cd $output; $PYTHON test1.py > result.log 2>&1)
 check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
-check_file_content $output/result.log " name '__armor_wrap__' is not defined"
+check_file_content $output/result.log "This function could not be called from the plain script"
 
 (cd $output; $PYTHON test2.py > result.log 2>&1)
 check_file_content $output/result.log 'This is restrict mode 4 testing' not
-check_file_content $output/result.log " name '__armor_wrap__' is not defined"
+check_file_content $output/result.log "This function could not be called from the plain script"
 
 csih_inform "Case RM-4.2a: test restirct module attribute in super mode"
 output=test-restrict-4.2a
@@ -1590,6 +1590,44 @@ check_file_content $output/result.log 'all formsts outside are: wav,mp3' not
 check_file_content $output/result.log 'vocoder password inside is: coder-123'
 check_file_content $output/result.log 'effects.__all__ inside is: echo,surround'
 check_file_content $output/result.log 'all formsts inside are: wav,mp3'
+fi
+
+csih_inform "Case RM-5: test restrict mode 5 with exception"
+src=test-restrict-4.1
+output=test-restrict-5
+$PYARMOR obfuscate -O $output/dist --restrict 1 \
+         $src/mypkg/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 5 --exact --bootstrap 0 \
+         $src/mypkg/bar.py > result.log 2>&1
+check_return_value
+
+cp $src/test*.py $output
+(cd $output; $PYTHON test1.py > result.log 2>&1)
+check_file_content $output/result.log 'Restrict mode 5 got ABCD' not
+check_file_content $output/result.log " name '__armor_enter__' is not defined"
+
+(cd $output; $PYTHON test2.py > result.log 2>&1)
+check_file_content $output/result.log 'This is restrict mode 4 testing' not
+check_file_content $output/result.log " name '__armor_enter__' is not defined"
+
+if [[ "yes" == "${SUPERMODE}" ]] ; then
+csih_inform "Case RM-5.1: test restrict mode 5 with exception in super mode"
+src=test-restrict-4.1
+output=test-restrict-5.1
+$PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 --bootstrap 3 \
+         $src/mypkg/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 5 --bootstrap 3 --exact --advanced 2 \
+         $src/mypkg/bar.py > result.log 2>&1
+check_return_value
+
+cp $src/test*.py $output
+(cd $output; $PYTHON test1.py > result.log 2>&1)
+check_file_content $output/result.log 'Restrict mode 4 got ABCD' not
+check_file_content $output/result.log " name '__armor_wrap__' is not defined"
+
+(cd $output; $PYTHON test2.py > result.log 2>&1)
+check_file_content $output/result.log 'This is restrict mode 4 testing' not
+check_file_content $output/result.log " name '__armor_wrap__' is not defined"
 fi
 
 csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
