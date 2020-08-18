@@ -1116,8 +1116,9 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
     for name in platforms:
         platid = _get_preferred_platid(name, features=features)
         if platid is None:
+            msg = 'default' if features is None else features
             raise RuntimeError('No available dynamic library for %s '
-                               'with features %s' % (name, features))
+                               'with features %s' % (name, msg))
         result.append(platid)
 
     reboot = None
