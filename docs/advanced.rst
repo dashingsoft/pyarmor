@@ -1331,9 +1331,7 @@ For example, here is sample script ``foo.py``
 .. code:: python
 
     import multiprocessing as mp
-
-    # "proxy_hello" is equal to public "hello"
-    from pub_foo import proxy_hello
+    import pub_foo
 
     def hello(q):
         print('module name: %s' % __name__)
@@ -1343,7 +1341,7 @@ For example, here is sample script ``foo.py``
         ctx = mp.get_context('spawn')
         q = ctx.Queue()
         # call "proxy_hello" instead private "hello"
-        p = ctx.Process(target=proxy_hello, args=(q,))
+        p = ctx.Process(target=pub_foo.proxy_hello, args=(q,))
         p.start()
         print(q.get())
         p.join()
@@ -1352,9 +1350,10 @@ And a public module ``pub_foo.py``
 
 .. code:: python
 
+    import foo
+
     def proxy_hello(q):
-        from foo import hello
-        return hello(q)
+        return foo.hello(q)
 
 Now obfuscate ``foo.py`` with mode 3 and ``pub_foo.py`` with mode 1::
 

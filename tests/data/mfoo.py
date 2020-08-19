@@ -1,6 +1,6 @@
 import multiprocessing as mp
 
-from pub_foo import proxy_hello
+import pub_foo
 
 
 def hello(q):
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     except Exception:
         ctx = mp
     q = ctx.Queue()
-    p = ctx.Process(target=proxy_hello, args=(q,))
+    p = ctx.Process(target=pub_foo.proxy_hello, args=(q,))
     p.start()
     print(q.get())
     p.join()

@@ -1,8 +1,10 @@
+import mfoo
+import tfoo
+
+
 def proxy_hello(q):
-    from mfoo import hello
-    return hello(q)
+    return mfoo.hello(q)
 
 
 def proxy_say_hello(msg):
-    from tfoo import say_hello
-    return say_hello(msg)
+    return tfoo.say_hello(msg)

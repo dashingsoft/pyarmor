@@ -1,6 +1,6 @@
 import threading
 
-from pub_foo import proxy_say_hello
+import pub_foo
 
 
 def say_hello(msg):
@@ -8,9 +8,9 @@ def say_hello(msg):
 
 
 def test():
-    threading.Thread(target=proxy_say_hello, args=('function',)).start()
+    threading.Thread(target=pub_foo.proxy_say_hello, args=('function',)).start()
 
 
 if __name__ == '__main__':
-    threading.Thread(target=proxy_say_hello, args=('module',)).start()
+    threading.Thread(target=pub_foo.proxy_say_hello, args=('module',)).start()
     test()
