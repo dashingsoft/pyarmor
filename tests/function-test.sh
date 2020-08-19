@@ -1450,6 +1450,44 @@ check_return_value
 check_return_value
 check_file_content $output/result.log 'Test no wrap obfuscate mode: OK'
 
+csih_inform "Case RM-3.4: test restrict mode 3 with threading and multiprocessing"
+output=test-restrict-3.4
+$PYARMOR obfuscate -O $output --exact --restrict 3 \
+         test/data/tfoo.py test/data/mfoo.py > result.log 2>&1
+$PYARMOR obfuscate -O $output --exact --restrict 1 \
+         --no-runtime test/data/pub_foo.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON tfoo.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Say hello from function'
+check_file_content $output/result.log 'Say hello from module'
+
+(cd $output; $PYTHON mfoo.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'module name: mfoo'
+check_file_content $output/result.log 'hello'
+
+if [[ "yes" == "${SUPERMODE}" ]] ; then
+csih_inform "Case RM-3.4a: same as 3.4 and enable super mode"
+output=test-restrict-3.4a
+$PYARMOR obfuscate -O $output --exact --restrict 3 --advanced 2 \
+         test/data/tfoo.py test/data/mfoo.py > result.log 2>&1
+$PYARMOR obfuscate -O $output --exact --restrict 1 --advanced 2 \
+         --no-runtime test/data/pub_foo.py > result.log 2>&1
+check_return_value
+
+(cd $output; $PYTHON tfoo.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'Say hello from function'
+check_file_content $output/result.log 'Say hello from module'
+
+(cd $output; $PYTHON mfoo.py >result.log 2>&1 )
+check_return_value
+check_file_content $output/result.log 'module name: mfoo'
+check_file_content $output/result.log 'hello'
+fi
+
 csih_inform "Case RM-4: test restrict mode 4"
 output=test-restrict-4
 $PYARMOR obfuscate -O $output/mypkg -r --restrict 1 \
