@@ -341,17 +341,6 @@ Now do some tests from Python interpreter:
        # Wrong, function `hello` is opened for plain script
        from .private_a import hello
 
-   In obfuscated module with mode 3 or 4, import everything in module
-   level, not import anything in function or class, it may not work::
-
-       # Right
-       import shutil
-       from time import sleep
-
-       def foo(n):
-           # Wrong
-           from os.path import join
-
 .. note::
 
    Mode 2 and 3 could not be used to obfuscate the Python package, because the
