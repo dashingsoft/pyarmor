@@ -1373,6 +1373,7 @@ check_file_content $output/result.log 'Check restrict mode of module failed'
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
 check_file_content $output/result.log 'Check restrict mode of module failed'
 
+# Do not remove these 3 print statements
 echo -e "\nprint('No restrict mode')" >> $output/main.py
 echo -e "\nprint('No restrict mode')" >> $output/main.py
 echo -e "\nprint('No restrict mode')" >> $output/main.py
@@ -1394,6 +1395,9 @@ check_file_content $output/result.log 'Hello! PyArmor Test Case'
 (cd $output; $PYTHON -c"import main" >result.log 2>&1 )
 check_file_content $output/result.log 'Check restrict mode of module failed'
 
+# Do not remove these 3 print statements
+echo -e "\nprint('No restrict mode')" >> $output/main.py
+echo -e "\nprint('No restrict mode')" >> $output/main.py
 echo -e "\nprint('No restrict mode')" >> $output/main.py
 (cd $output; $PYTHON main.py >result.log 2>&1 )
 check_file_content $output/result.log 'Hello! PyArmor Test Case' not
