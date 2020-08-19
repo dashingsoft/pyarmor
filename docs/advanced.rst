@@ -1326,9 +1326,11 @@ restrict modules.
 One solution is to define a public module with restrict mode 1, let threading or
 multiprocessing call functions in this public module.
 
-For example, here is sample script ``foo.py``
+For example, here is a script ``foo.py`` with public module ``pub_foo.py``
 
 .. code:: python
+
+    # The content of foo.py
 
     import multiprocessing as mp
     import pub_foo
@@ -1346,9 +1348,8 @@ For example, here is sample script ``foo.py``
         print(q.get())
         p.join()
 
-And a public module ``pub_foo.py``
 
-.. code:: python
+    # The content of public module ``pub_foo.py``
 
     import foo
 
