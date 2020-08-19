@@ -1318,19 +1318,17 @@ from the obfuscated scripts. For examples::
 Using restrict mode with threading and multiprocessing
 ------------------------------------------------------
 
-It may complain of protection exception if using threading or multiprocessing
-with restrict mode 3 and 4 directly, because both of threading and
-multiprocessing aren't obfuscated, but they try to call the function in the
+It may complain of protection exception if using :mod:`multiprocessing` or
+:mod:`threading` with restrict mode 3 and 4 directly. Because both of these
+system modules aren't obfuscated, but they try to call the function in the
 restrict modules.
 
-One solution is to define a public module with restrict mode 1, let threading or
-multiprocessing call functions in this public module.
+One solution is to define a public module with restrict mode 1, let plain
+scripts call functions in this public module.
 
-For example, here is a script ``foo.py`` with public module ``pub_foo.py``
+For example, here is a script ``foo.py`` using public module ``pub_foo.py``
 
 .. code:: python
-
-    # The content of foo.py
 
     import multiprocessing as mp
     import pub_foo
@@ -1349,7 +1347,9 @@ For example, here is a script ``foo.py`` with public module ``pub_foo.py``
         p.join()
 
 
-    # The content of public module ``pub_foo.py``
+The content of public module ``pub_foo.py``
+
+.. code:: python
 
     import foo
 
@@ -1359,9 +1359,8 @@ For example, here is a script ``foo.py`` with public module ``pub_foo.py``
 Now obfuscate ``foo.py`` with mode 3 and ``pub_foo.py`` with mode 1::
 
     pyarmor obfuscate --restrict 3 foo.py
-    pyarmor obfuscate --restrict 1 --exact --no-runtime pub_foo.py
 
-    # Test it
-    python dist/foo.py
+    # both of options --exact and --no-runtime are required
+    pyarmor obfuscate --restrict 1 --exact --no-runtime pub_foo.py
 
 .. include:: _common_definitions.txt
