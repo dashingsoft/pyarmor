@@ -41,6 +41,8 @@ special value ``outer``, for example::
 
 More information, refer to next section.
 
+.. _how to use outer license file:
+
 How to use outer license file
 -----------------------------
 
