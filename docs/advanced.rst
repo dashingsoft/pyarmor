@@ -1313,4 +1313,55 @@ from the obfuscated scripts. For examples::
     pyarmor obfuscate foo.py
 
 
+.. _using restrict mode with threading and multiprocessing:
+
+Using restrict mode with threading and multiprocessing
+------------------------------------------------------
+
+It may complain of protection exception if using threading or multiprocessing
+with restrict mode 3 and 4 directly, because both of threading and
+multiprocessing aren't obfuscated, but they try to call the function in the
+restrict modules.
+
+One solution is to define a public module with restrict mode 1, let threading or
+multiprocessing call functions in this public module.
+
+For example, here is sample script ``foo.py``
+
+.. code:: python
+
+    import multiprocessing as mp
+
+    # "proxy_hello" is equal to public "hello"
+    from pub_foo import proxy_hello
+
+    def hello(q):
+        print('module name: %s' % __name__)
+        q.put('hello')
+
+    if __name__ == '__main__':
+        ctx = mp.get_context('spawn')
+        q = ctx.Queue()
+        # call "proxy_hello" instead private "hello"
+        p = ctx.Process(target=proxy_hello, args=(q,))
+        p.start()
+        print(q.get())
+        p.join()
+
+And a public module ``pub_foo.py``
+
+.. code:: python
+
+    def proxy_hello(q):
+        from foo import hello
+        return hello(q)
+
+Now obfuscate ``foo.py`` with mode 3 and ``pub_foo.py`` with mode 1::
+
+    pyarmor obfuscate --restrict 3 foo.py
+    pyarmor obfuscate --restrict 1 --exact --no-runtime pub_foo.py
+
+    # Test it
+    python dist/foo.py
+
 .. include:: _common_definitions.txt
