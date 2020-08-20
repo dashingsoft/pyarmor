@@ -1146,7 +1146,7 @@ changed by someone else as running the obfuscated scripts.
 
 First generate protection script ``build/pytransform_protection.py``::
 
-  pyarmor runtime --super-mode --output build
+  pyarmor runtime --advanced 2 --output build
 
 Then edit it with your private code, after that, obfuscate the scripts and set
 option ``--cross-protection`` to this customized script, for example::
@@ -1154,16 +1154,10 @@ option ``--cross-protection`` to this customized script, for example::
   pyarmor obfuscate --cross-protection build/pytransform_protection.py \
                 --advanced 2 foo.py
 
-Note that :ref:`super mode` is total different from other modes, don't specify
-option ``--super-mode`` when generating runtime files for other modes, for
-example::
-
-  pyarmor runtime --output build
-
 .. note::
 
-   Obfuscating with ``--advanced 1`` is not super mode, only ``--advanced 2`` is
-   super mode.
+   The option ``--advanced`` in command :ref:`obfuscate` must be same as in
+   command :ref:`runtime`, because the runtime files may be different totaly.
 
 
 .. _storing runtime file license.lic to any location:
@@ -1364,5 +1358,9 @@ Now obfuscate ``foo.py`` with mode 3 and ``pub_foo.py`` with mode 1::
 
     # both of options --exact and --no-runtime are required
     pyarmor obfuscate --restrict 1 --exact --no-runtime pub_foo.py
+
+The other solution is to obfuscate system module :mod:`threading` or
+some modules in package :mod:`multiprocessing` with mode 1. Make sure
+the caller is obfuscated.
 
 .. include:: _common_definitions.txt
