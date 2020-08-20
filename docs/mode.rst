@@ -223,8 +223,8 @@ script. When importing an obfuscated module and using any function or attribute,
 the restrict mode will be checked at frist, raises protection exception if the
 restrict mode is violated.
 
-There are 4 restrict mode, mode 2 and 3 are mainly for standalone scripts, and
-mode 4 is for obfuscated packages.
+There are 5 restrict mode, mode 2 and 3 are only for standalone scripts, mode 4
+is mainly for obfuscated packages, mode 5 for both.
 
 * Mode 1
 
@@ -326,6 +326,14 @@ Now do some tests from Python interpreter:
     # It doesn't work
     mypkg.ma.hello()
     print(mypkg.ma.password)
+
+* Mode 5 (New in v6.4.0)
+
+Mode 5 is an enhancement of mode 4, it also protects the globals in the
+frame. When running any function in the mode 5, the outer plain script could get
+nothing from the globals of this function. It's highest security, works for both
+of standalone scripts and packages. But it will check each global variable in
+runtime, this may reduce the performance.
 
 .. important::
 
