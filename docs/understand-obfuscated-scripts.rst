@@ -274,13 +274,8 @@ There are something changed after Python scripts are obfuscated:
       # The output will be '<frozen foo>'
       print(hello.__file__)
 
-* In super mode, builtin functions `exec()`, `eval()` don't work if no locals,
+* In super mode, builtin functions `dirs()`, `vars()` don't work if no argument,
   call it by this way::
-
-       exec(s) => exec(s, globals(), locals())
-       eval(s) => eval(s, globals(), locals())
-
-  `dirs()`, `vars()` don't work if no argument, call it by this way::
 
        dirs() => sorted(locals().keys())
        vars() => locals()
