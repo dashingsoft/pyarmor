@@ -210,8 +210,7 @@ These `PyArmor`_ features could import security further:
 1. :ref:`Using super mode` to obufscate scripts if possible, otherwise enable
    :ref:`Advanced Mode` if the platform is supported. In Windows and the
    performance meets the requirement, enable :ref:`VM Mode`
-2. Try to :ref:`binding obfuscated scripts to Python interpreter`. Generally
-   it's not required for :ref:`Super Mode`.
+2. Try to :ref:`binding obfuscated scripts to Python interpreter`.
 3. Make sure the entry script is patched by `cross protection code
    <https://pyarmor.readthedocs.io/en/latest/how-to-do.html#special-handling-of-entry-script>`_,
    and try to :ref:`Customizing cross protection code`
