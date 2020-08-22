@@ -729,6 +729,24 @@ check_return_value
 check_file_content $dist/dist/__init__.py "from .pytransform import pyarmor"
 check_file_content $dist/dist/a/__init__.py "from ..pytransform import pyarmor"
 
+csih_inform "S-12. Test builtin functions locals() and eval()"
+dist=test-super-mode-12
+cat <<EOF > sulocals.py
+def test_locals():
+  x = 2
+  x = eval('x + 2')
+  d = locals()
+  print('Local x is %s' % d['x'])
+test_locals()
+EOF
+
+$PYARMOR obfuscate --exact --advanced 2 -O $dist sulocals.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON sulocals.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Local x is 4"
+
 echo ""
 echo "-------------------- Super Mode End --------------------------"
 echo ""
