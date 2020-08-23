@@ -1468,6 +1468,19 @@ check_return_value
 check_return_value
 check_file_content $output/result.log 'Test no wrap obfuscate mode: OK'
 
+# On Windows for Python2.7~3.3, in multiprocessing/forking.py, function prepare()
+#
+#    main_module.__name__ = '__main__'
+#
+# This is problem to set attribute __name__ of restricted main module
+#
+# On Linux for Python2.7, it will crash even without restrict mode
+#
+#    Fatal Error: deletion of interned string failed
+#
+if [[ "OK" == $($PYTHON -c'from sys import version_info as ver, stdout, platform
+stdout.write("OK" if (platform == "win32" and (ver[0] * 10 + ver[1]) > 33)
+                     or (platform != "win32" and ver[0] == 3) else "")') ]] ; then
 csih_inform "Case RM-3.4: test restrict mode 3 with threading and multiprocessing"
 output=test-restrict-3.4
 $PYARMOR obfuscate -O $output --exact --restrict 3 \
@@ -1504,6 +1517,7 @@ check_file_content $output/result.log 'Say hello from module'
 check_return_value
 check_file_content $output/result.log 'module name: mfoo'
 check_file_content $output/result.log 'hello'
+fi
 fi
 
 csih_inform "Case RM-4: test restrict mode 4"
