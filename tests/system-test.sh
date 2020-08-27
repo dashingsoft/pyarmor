@@ -492,7 +492,7 @@ check_file_content test-legency-licenses/result.log "r009" not
 
 if [[ ${UNAME:0:5} == Linux ]] ; then
 csih_inform "Case 7.13: generate license bind to mac address with ifname"
-$PYARMOR licenses --bind-mac="eth0/${ifmac_address}" r010 >result.log 2>&1
+$PYARMOR licenses --bind-mac="${ifname}/${ifmac_address}" r010 >result.log 2>&1
 $PYARMOR licenses --bind-mac="eth1/${ifmac_address}" r011 >result.log 2>&1
 check_return_value
 check_file_exists licenses/r010/license.lic
@@ -502,7 +502,7 @@ cp licenses/r010/license.lic test-legency-licenses/pytransform
 ( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
 check_file_content test-legency-licenses/result.log "Test old licenses"
 check_file_content test-legency-licenses/result.log "r010"
-check_file_content test-legency-licenses/result.log "eth0/${ifmac_address}"
+check_file_content test-legency-licenses/result.log "${ifname}/${ifmac_address}"
 
 cp licenses/r011/license.lic test-legency-licenses/pytransform
 ( cd test-legency-licenses; $PYTHON test-license.py >result.log 2>&1 )
