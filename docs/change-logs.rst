@@ -10,8 +10,8 @@ Change Logs
 * Fix restrict mode crash issue for Python3.5~3.8 in 32-bit Windows
 * Fix super mode issue: attempted relative import beyond top-level package
 * Improve security of restrict mode
-* For restrict mode 2,  do not protect module attributes for performance
-* Add restrict mode 5 to protect function globals
+* For restrict mode 2, do not protect module attributes for performance
+* Add restrict mode 5 to protect globals in functions
 * Refine the documentation of restrict mode:
   https://pyarmor.readthedocs.io/en/latest/mode.html#restrict-mode
 * Fix platform `centos6.x86_64` not found issue (#312)
