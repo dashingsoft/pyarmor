@@ -21,7 +21,7 @@ query_interface_mac_address(int sock, char *buf, unsigned int size)
       break;
     }
     
-    if (!(ioctl(sock, SIOCGIFFLAGS, req) < 0) && !(req->ifr_flags & IFF_LOOPBACK)) {
+    if (!(ioctl(sock, SIOCGIFFLAGS, req) < 0) && !(req->ifr_flags & (IFF_LOOPBACK | IFF_NOARP))) {
         
       if(ioctl(sock, SIOCGIFHWADDR, req) < 0) {
         perror("SIOCGIFHWADDR");
