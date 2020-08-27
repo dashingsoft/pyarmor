@@ -3,6 +3,21 @@
 Change Logs
 ===========
 
+6.4.0
+-----
+
+* Command `obfuscate` accepts multiple arguments as entry scripts
+* Fix restrict mode crash issue for Python3.5~3.8 in 32-bit Windows
+* Fix super mode issue: attempted relative import beyond top-level package
+* Improve security of restrict mode
+* For restrict mode 2,  do not protect module attributes for performance
+* Add restrict mode 5 to protect function globals
+* Refine the documentation of restrict mode:
+  https://pyarmor.readthedocs.io/en/latest/mode.html#restrict-mode
+* Fix platform `centos6.x86_64` not found issue (#312)
+* On Linux for command `licenses` the option `--bind-mac` supports new
+  format: `IfName/MacAddress`, for example, `eth0/00:28:54:af:28`
+
 6.3.7
 -----
 * A big improvement for restrict mode: the plain script couldn't visit any
