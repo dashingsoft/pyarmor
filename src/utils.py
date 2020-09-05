@@ -1256,11 +1256,17 @@ def _patch_extension(filename, keylist, suffix=''):
     patkey = b'\x60\x70\x00\x0f'
     patlen = len(patkey)
     sizelist = [len(x) for x in keylist]
+    big_endian = False
 
     def write_integer(data, offset, value):
+        if big_endian:
+            offset += 3
+            step = -1
+        else:
+            step = 1
         for i in range(4):
             data[offset] = value & 0xFF
-            offset += 1
+            offset += step
             value >>= 8
 
     with open(filename, 'rb') as f:
@@ -1278,24 +1284,40 @@ def _patch_extension(filename, keylist, suffix=''):
             if sum(sizelist) > max_size:
                 raise RuntimeError('Too much license data')
 
-            write_integer(data, i + 12, sizelist[0])
-            write_integer(data, i + 16, sizelist[0])
-            write_integer(data, i + 20, sizelist[1])
-            write_integer(data, i + 24, sizelist[0] + sizelist[1])
-            write_integer(data, i + 28, sizelist[2])
-
-            offset = i + 32
-            for j in range(3):
-                size = sizelist[j]
-                if size:
-                    logging.debug('Patch %d bytes from %x', size, offset)
-                    data[offset:offset+size] = keylist[j]
-                    offset += size
-
-            logging.info('Patch library file OK')
             break
     else:
-        raise RuntimeError('Invalid extension, no data found')
+        # Maybe big endian
+        patkey = b'\x0f\x00\x70\x60'
+        for i in range(n):
+            if data[i:i+patlen] == patkey:
+                fmt = 'I' * 8
+                header = struct.unpack('>' + fmt, bytes(data[i:i+32]))
+                if sum(header[2:]) not in (912, 1452):
+                    continue
+                logging.debug('Found pattern at %x', i)
+                max_size = header[1]
+                if sum(sizelist) > max_size:
+                    raise RuntimeError('Too much license data')
+                big_endian = True
+                break
+        else:
+            raise RuntimeError('Invalid extension, no data found')
+
+    write_integer(data, i + 12, sizelist[0])
+    write_integer(data, i + 16, sizelist[0])
+    write_integer(data, i + 20, sizelist[1])
+    write_integer(data, i + 24, sizelist[0] + sizelist[1])
+    write_integer(data, i + 28, sizelist[2])
+
+    offset = i + 32
+    for j in range(3):
+        size = sizelist[j]
+        if size:
+            logging.debug('Patch %d bytes from %x', size, offset)
+            data[offset:offset+size] = keylist[j]
+            offset += size
+
+    logging.info('Patch library file OK')
 
     if suffix:
         marker = bytes(b'_vax_000000')
