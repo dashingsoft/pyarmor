@@ -583,6 +583,13 @@ When something is wrong, turn on PyArmor debug flag to print traceback::
 
      pyarmor pack -e " --icon images\\app.ico" foo.py
 
+.. note::
+
+   For option ``-e`` and ``-x``, pass an extra leading whitespace to avoid
+   command line error::
+
+     pyarmor pack -e " --onefile" -x " --advanced 2" foo.py
+
 .. important::
 
    The command `pack` will obfuscate the scripts automatically, do not
