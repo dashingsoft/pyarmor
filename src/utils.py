@@ -1446,7 +1446,8 @@ def _check_code_object_for_super_mode(co, lines, name):
             i = c.co_firstlineno - 1
             k = i + c.co_lnotab[1]
             while i < k:
-                if lines[i].strip().endswith('):'):
+                s = lines[i].strip()
+                if s.endswith('):') or (s.endswith(':') and s.find('->') > -1):
                     break
                 i += 1
             else:
