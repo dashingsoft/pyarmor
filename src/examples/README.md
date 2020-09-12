@@ -196,6 +196,6 @@ Then run command `pack` to pack obfuscated scripts
     cd /path/to/pyarmor
     pyarmor pack -O dist examples/simple/queens.py
 
-Run the final executeable file
+Run the final executable file
 
     dist/queens/queens
