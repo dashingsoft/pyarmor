@@ -262,7 +262,7 @@ Then run command `pack` to pack obfuscated scripts
 
     pyarmor pack examples/py2exe/hello.py
 
-Run the final executeable file
+Run the final executable file
 
     dist/hello/hello
 
@@ -283,7 +283,7 @@ Then run command `pack` to pack obfuscated scripts
 
      pyarmor pack --type py2exe py2exe/hello.py
 
-Run the final executeable file
+Run the final executable file
 
     cd py2exe/dist
     ./hello
