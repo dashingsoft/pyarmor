@@ -3,9 +3,17 @@
 Change Logs
 ===========
 
+6.4.1
+-----
+* Fix bug: for big endian platform, it raises `RuntimeError: Invalid extension,
+  no data found` when obfuscating scripts (#323)
+* Fix bug: when obfuscating some special scripts in super mode, it raises
+  `RuntimeError: Patch function "xxx" failed` (#326)
+* Fix serial number of hard disk issue in Windows: the last character is missed
+  in some special cases
+
 6.4.0
 -----
-
 * Command `obfuscate` accepts multiple arguments as entry scripts
 * Fix restrict mode crash issue for Python3.5~3.8 in 32-bit Windows
 * Fix super mode issue: attempted relative import beyond top-level package
