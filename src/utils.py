@@ -68,7 +68,7 @@ FEATURE_VM = 16
 def _format_platid(platid=None):
     if platid is None:
         platid = pytransform.format_platform()
-    if os.path.isabs(platid):
+    if os.path.isabs(platid) or os.path.isfile(platid):
         return os.path.normpath(platid)
     return platid.replace('\\', '/').replace('/', '.')
 
@@ -116,13 +116,14 @@ def pytransform_bootstrap(capsule=None, force=False):
     if os.getenv('PYARMOR_PLATFORM'):
         p = os.getenv('PYARMOR_PLATFORM')
         logging.info('PYARMOR_PLATFORM is %s', p)
-        platid = os.path.join(*os.path.normpath(p).split('.'))
+        platid = os.path.normpath(p) if os.path.isabs(p) or os.path.isfile(p) \
+            else os.path.join(*os.path.normpath(p).split('.'))
         logging.debug('Build platform is %s', _format_platid(platid))
 
     if os.path.isabs(platid):
-        if not os.path.exists(os.path.join(platid, dll_name)):
+        if not os.path.exists(os.path.join(platid, libname)):
             raise RuntimeError('No dynamic library found at %s', platid)
-    else:
+    elif not os.path.isfile(platid):
         libpath = PLATFORM_PATH
         logging.debug('Search dynamic library in the path: %s', libpath)
         if not os.path.exists(os.path.join(libpath, platid, libname)):
@@ -418,7 +419,7 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
 
 
 def _get_library_filename(platid, checksums=None):
-    if os.path.isabs(platid):
+    if os.path.isabs(platid) or os.path.isfile(platid):
         if not os.path.exists(platid):
             raise RuntimeError('No platform library %s found' % platid)
         return platid
@@ -473,7 +474,7 @@ def _build_platforms(platforms):
         os.makedirs(CROSS_PLATFORM_PATH)
 
     for platid in platforms:
-        if (n > 1) and os.path.isabs(platid):
+        if (n > 1) and (os.path.isabs(platid) or os.path.isfile(platid)):
             raise RuntimeError('Invalid platform `%s`, for multiple platforms '
                                'it must be `platform.machine`' % platid)
         if (n > 1) and platid.startswith('vs2015.'):
@@ -1055,7 +1056,7 @@ def _reboot_pytransform(platid):
 
 
 def _get_preferred_platid(platname, features=None):
-    if os.path.isabs(platname):
+    if os.path.isabs(platname) or os.path.isfile(platname):
         return platname
 
     nlist = platname.split('.')
@@ -1123,7 +1124,7 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         result.append(platid)
 
     reboot = None
-    if result and not os.path.isabs(result[0]):
+    if result and not (os.path.isabs(result[0]) or os.path.isfile(result[0])):
         platid = result[0]
         nlist = platid.split('.')
         fn2 = int(nlist[2])

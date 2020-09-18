@@ -293,7 +293,9 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
     else:
         raise PytransformError('Platform %s not supported' % plat)
 
-    if platid is not None or not os.path.exists(filename) or not is_runtime:
+    if platid is not None and os.path.isfile(platid):
+        filename = platid
+    elif platid is not None or not os.path.exists(filename) or not is_runtime:
         libpath = platid if platid is not None and os.path.isabs(platid) else \
             os.path.join(path, plat_path, format_platform(platid))
         filename = os.path.join(libpath, os.path.basename(filename))
