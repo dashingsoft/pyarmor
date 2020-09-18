@@ -376,7 +376,8 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         shutil.rmtree(obfdist)
 
     logging.info('Run PyArmor to obfuscate scripts...')
-    licargs = ['--with-license', licfile] if licfile else []
+    licargs = ['--with-license', licfile] if licfile else \
+        ['--with-license', 'outer'] if licfile is False else []
     if hasattr(args, 'project'):
         if xoptions:
             logging.warning('Ignore xoptions as packing project')
