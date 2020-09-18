@@ -900,7 +900,7 @@ keyword `home` to each registerred product. For example
     from pyarmor.pyarmor import licenses as generate_license_key
     lickey = generate_license_key(name='product-001',
                                   expired='2020-06-15',
-                                  home='~/.pyarmor-2')
+                                  home='~/.pyarmor-1')
     print('Generate key for product 1: %s' % lickey)
 
     lickey = generate_license_key(name='product-002',
