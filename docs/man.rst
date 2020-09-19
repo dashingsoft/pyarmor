@@ -380,6 +380,15 @@ Before this, run command `hdinfo`_ to get hardware information::
 
     pyarmor hdinfo
 
+It's possible to bind all of mac addresses or some of them in same machine, for
+example::
+
+    pyarmor licenses --bind-mac "<2a:33:50:46:8f,f0:28:69:c0:24:3a>" r001
+
+In Linux, it's possible to bind mac address with ifname, for example::
+
+    pyarmor licenses --bind-mac "eth1/fa:33:50:46:8f:3d" r002
+
 By option `-x` any data could be saved into the license file, it's mainly used
 to extend license tyoe. For example::
 
