@@ -162,7 +162,7 @@ Each project has a configure file. It's a json file named
     the path `output`
 
     When init a project and no ``--type`` specified, it will be set to 1 if
-    there is `__init__.py` in the path `src`, otherwise it's None.
+    entry script is `__init__.py`, otherwise it's None.
 
 * restrict_mode
 

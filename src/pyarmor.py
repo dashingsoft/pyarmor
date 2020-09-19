@@ -101,9 +101,8 @@ def _init(args):
         logging.info('Format entry: %s', args.entry)
 
     name = os.path.basename(os.path.abspath(path))
-    if (args.type == 'pkg') or \
-       (args.type == 'auto' and os.path.exists(os.path.join(src,
-                                                            '__init__.py'))):
+    if (args.type == 'pkg') or (args.type == 'auto' and args.entry
+                                and args.entry.endswith('__init__.py')):
         logging.info('Project is configured as package')
         if args.entry is None:
             logging.info('Entry script is set to "__init__.py" implicitly')
