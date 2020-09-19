@@ -370,24 +370,43 @@ script::
 
     cp licenses/mycode/license.lic dist/pytransform/
 
+Since v6.3.0, the `license.lic` has been embedded into binary libraries by
+default, so the copy mode doesn't work. Instead of using option
+``--with-license`` when obfuscating the scripts, for example::
+
+  pyarmor obfuscate --with-licenses licenses/mycode/license.lic foo.py
+
+If you prefer the tradional way, refer to :ref:`How to use outer license file`
+
 Another example, bind obfuscated scripts in mac address and expired on
 2019-10-10::
 
-    pyarmor licenses --expired 2019-10-10 --bind-mac 2a:33:50:46:8f tom
+    pyarmor licenses --expired 2019-10-10 --bind-mac f8:ff:c2:27:00:7f r001
     cp licenses/tom/license.lic dist/pytransform/
 
 Before this, run command `hdinfo`_ to get hardware information::
 
     pyarmor hdinfo
 
+    Hardware informations got by PyArmor:
+    Serial number of first harddisk: "FV994730S6LLF07AY"
+    Default Mac address: "f8:ff:c2:27:00:7f"
+    Ip address: "192.168.121.100"
+
+If there are many network cards in the machine, pyarmor only checks the default
+mac address which is printed by command `hdinfo`. If binding to other network
+card, wrap the mac address with angle brackets. For example::
+
+    pyarmor licenses --bind-mac "<2a:33:50:46:8f>" r002
+
 It's possible to bind all of mac addresses or some of them in same machine, for
 example::
 
-    pyarmor licenses --bind-mac "<2a:33:50:46:8f,f0:28:69:c0:24:3a>" r001
+    pyarmor licenses --bind-mac "<2a:33:50:46:8f,f0:28:69:c0:24:3a>" r003
 
 In Linux, it's possible to bind mac address with ifname, for example::
 
-    pyarmor licenses --bind-mac "eth1/fa:33:50:46:8f:3d" r002
+    pyarmor licenses --bind-mac "eth1/fa:33:50:46:8f:3d" r004
 
 By option `-x` any data could be saved into the license file, it's mainly used
 to extend license tyoe. For example::
