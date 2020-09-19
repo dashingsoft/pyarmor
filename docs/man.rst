@@ -378,11 +378,10 @@ default, so the copy mode doesn't work. Instead of using option
 
 If you prefer the tradional way, refer to :ref:`How to use outer license file`
 
-Another example, bind obfuscated scripts in mac address and expired on
+Another example, bind obfuscated scripts to mac address and expired on
 2019-10-10::
 
     pyarmor licenses --expired 2019-10-10 --bind-mac f8:ff:c2:27:00:7f r001
-    cp licenses/tom/license.lic dist/pytransform/
 
 Before this, run command `hdinfo`_ to get hardware information::
 
@@ -411,7 +410,7 @@ In Linux, it's possible to bind mac address with ifname, for example::
 By option `-x` any data could be saved into the license file, it's mainly used
 to extend license tyoe. For example::
 
-    pyarmor licenses -x "2019-02-15" tom
+    pyarmor licenses -x "2019-02-15" r005
 
 In the obfuscated scripts, the data passed by `-x` could be got by this way::
 
