@@ -374,7 +374,7 @@ Since v6.3.0, the `license.lic` has been embedded into binary libraries by
 default, so the copy mode doesn't work. Instead of using option
 ``--with-license`` when obfuscating the scripts, for example::
 
-  pyarmor obfuscate --with-licenses licenses/mycode/license.lic foo.py
+  pyarmor obfuscate --with-license licenses/mycode/license.lic foo.py
 
 If you prefer the tradional way, refer to :ref:`How to use outer license file`
 
