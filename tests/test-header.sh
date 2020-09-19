@@ -64,7 +64,7 @@ case ${PLATFORM} in
     win_amd64)
         PYTHON=${PYTHON:-C:/Python26/python}
         PYARMOR_CORE_PLATFORM=C:/workspace/pyarmor-core/platforms
-        declare -r harddisk_sn=VBa2fd0ee8-4482c1ad
+        declare -r harddisk_sn=BV2adfe08e4-84c2a1d
         declare -r ifmac_address=08:00:27:51:d9:fe
         declare -r ifip_address=192.168.121.112
         declare -r domain_name=
