@@ -180,7 +180,7 @@ check_file_exists projects/py2exe/.pyarmor_config
 
 csih_inform "Case 2.3: init package"
 $PYARMOR init --src examples/testpkg/mypkg --entry "../main.py" \
-              projects/testpkg >result.log 2>&1
+              --type=pkg projects/testpkg >result.log 2>&1
 
 check_return_value
 
@@ -213,7 +213,7 @@ check_return_value
 
 csih_inform "Case 3.2: config pybench"
 ( cd projects/pybench; $ARMOR config --disable-restrict-mode=1 \
-    >result.log 2>&1 )
+                              >result.log 2>&1 )
 check_return_value
 
 echo ""
