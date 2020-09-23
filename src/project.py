@@ -124,8 +124,9 @@ class Project(dict):
             'The output path can not be same as src in the project'
 
         assert self.license_file is None \
+            or self.license_file == 'outer' \
             or self.license_file.endswith('license.lic'), \
-            'The output path can not be same as src in the project'
+            'Invalid license file'
 
     def _dump(self, filename):
         with open(filename, 'w') as f:
