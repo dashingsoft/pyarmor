@@ -5,10 +5,10 @@ Change Logs
 
 6.4.2
 -----
-* Support binding multiple Mac addresses by format `<Mac1,Mac2,Mac3...>` in
-  Windows and Linux
-* For platform `linux.x86_64` and `linux.x86`, the core libraries are linked to
-  Python2.7 with usc4, the old ones are linked to ucs2
+* Support binding multiple mac addresses in one machine by format
+  `<Mac1,Mac2,Mac3...>` in Windows and Linux
+* For platform `linux.x86_64` and `linux.x86`, the core libraries of super mode
+  for Python2.7 are linked to usc4, the old ones are linked to ucs2
 * Fix pack command issue: outer license may not work in some cases
 * The platform `linux.armv6` supports super mode
 
