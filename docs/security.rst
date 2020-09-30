@@ -108,7 +108,7 @@ updated file maybe likes this::
 Finally build `_pytransform.so` with this changed c file.
 
 When running obfuscated script, `_pytransform.so` loaded. Once a
-proected function is called, it will
+protected function is called, it will
 
 1. Generate code from `function 1`
 2. Run `function 1`:
@@ -130,7 +130,7 @@ Handling of Entry Script`
 The security of different feature number
 ----------------------------------------
 
-There may be serveral dynamic libraries with different features in each
+There may be several dynamic libraries with different features in each
 platform. The platform name with feature number suffix combines an unique
 name. For example, `linux.x86_64.21` has feature `21`, and `windows.x86.0` has
 feature `0`. The security of each feature is different.
@@ -142,7 +142,7 @@ Feature `0` means no any protection, so it's better to protect it by any third
 tool.
 
 For all the other features, they're protected by a simple vm and some anti-debug
-technicals, it's not strong enough, it's also recommed to protect them by any third tool.
+technicals, it's not strong enough, it's also recommend to protect them by any third tool.
 
 Changing core algorithm from time to time
 -----------------------------------------
@@ -155,6 +155,6 @@ ones.
 
     If you want to hide the code more thoroughly, try to use any other
     tool such as ASProtect_, VMProtect_ to protect dynamic library
-    `_pytransform` which is distributed with obfuscatd scripts.
+    `_pytransform` which is distributed with obfuscated scripts.
 
 .. include:: _common_definitions.txt
