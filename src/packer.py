@@ -201,7 +201,7 @@ def _packer(t, src, entry, build, script, output, options, xoptions, clean):
     filters = ('global-include *.py', 'prune build, prune dist',
                'prune %s' % project,
                'exclude %s pytransform.py' % entry)
-    args = ('config', '--runtime-path', '', '--package-runtime', '0',
+    args = ('config', '--runtime-path', '.', '--package-runtime', '0',
             '--restrict-mode', '0', '--manifest', ','.join(filters), project)
     call_pyarmor(args)
 
@@ -361,12 +361,14 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     specfile = args.setup
     if specfile is None:
         specfile = os.path.join(args.name + '.spec')
-        if hasattr(args, 'project'):
-            specpath = args.project
-            if specpath.endswith('.json'):
-                specpath = os.path.dirname(specpath)
-            packcmd.extend(['--specpath', specpath])
-            specfile = os.path.join(specpath, specfile)
+        # In Windows, it doesn't work if specpath is not in same drive
+        # as entry script
+        # if hasattr(args, 'project'):
+        #     specpath = args.project
+        #     if specpath.endswith('.json'):
+        #         specpath = os.path.dirname(specpath)
+        #     packcmd.extend(['--specpath', specpath])
+        #     specfile = os.path.join(specpath, specfile)
     elif not os.path.exists(specfile):
         raise RuntimeError('No specfile %s found' % specfile)
 
