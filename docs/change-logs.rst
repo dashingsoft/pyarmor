@@ -3,6 +3,12 @@
 Change Logs
 ===========
 
+6.4.3
+-----
+* Fix issue(#337): project can't be configured with outer license
+* Fix issue(#342): in Windows command `pack` doesn't work if the
+  project isn't in the same drive of entry script
+
 6.4.2
 -----
 * Support binding multiple mac addresses in one machine by format
