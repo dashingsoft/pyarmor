@@ -489,8 +489,16 @@ def _build_platforms(platforms):
 
 def _build_license_file(capsule, licfile, output=None):
     if licfile is None:
-        logging.info('Generate default license file')
-        lickey = make_license_key(capsule, 'PyArmor-Project')
+        myzip = ZipFile(capsule, 'r')
+        try:
+            if 'default.lic' in myzip.namelist():
+                logging.info('Read default license from capsule')
+                lickey = myzip.read('default.lic')
+            else:
+                logging.info('Generate default license file')
+                lickey = make_license_key(capsule, 'PyArmor-Project')
+        finally:
+            myzip.close()
     elif licfile == 'no-restrict':
         logging.info('Generate no restrict mode license file')
         licode = '*FLAGS:%c*CODE:PyArmor-Project' % chr(1)
