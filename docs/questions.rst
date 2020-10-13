@@ -10,7 +10,7 @@ As running ``pyarmor``:
 * Check the console output, is there any wrong path, or any odd information
 * Run `pyarmor` with debug option ``-d`` to get more information. For example::
 
-      pyarmor -d obfuscate --recurisve foo.py
+      pyarmor -d obfuscate --recursive foo.py
 
 As running the obfuscated scripts:
 
