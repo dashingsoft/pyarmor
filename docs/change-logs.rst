@@ -3,6 +3,13 @@
 Change Logs
 ===========
 
+6.4.4
+-----
+* Fix issue (#355): the obfuscated script raises `DeprecationWarning` when
+  getting user data from license file in super mode with Python3.8
+* Fix issue (#357): Python3.9 doesn't work, the obfuscated scripts raise `unknow
+  opcode 53/88` and segmentation fault
+
 6.4.3
 -----
 * Fix issue(#337): project can't be configured with outer license
