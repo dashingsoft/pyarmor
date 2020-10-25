@@ -30,6 +30,7 @@ Python versions are supported:
 * Python 2.7
 * Python 3.7
 * Python 3.8
+* Python 3.9
 
 It may support Python 3.5, 3.6 later, but Python 3.0~3.4 is out of plan.
 
@@ -73,6 +74,11 @@ It is recommended to upgrade in the next minor version.
    In trial version the module could not be obfuscated by advanced
    mdoe if there are more than about 30 functions in this module, (It
    still could be obfuscated by non-advanced mode).
+
+.. important::
+
+   For Python3.9 advanced mode isn't supported. It's recommended using super
+   mode for any Python version if it works with super mode.
 
 .. _vm mode:
 

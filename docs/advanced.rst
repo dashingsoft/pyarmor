@@ -12,7 +12,7 @@ The :ref:`Super mode` is introduced since v6.2.0, there is only one extension
 module required to run the obfuscated scripts, and the :ref:`bootstrap code`
 which may confused some users before is gone now, all the obfuscated scripts are
 same. It improves the security remarkably, and makes the usage simple. The only
-problem is that only the latest Python versions 2.7, 3.7 and 3.8 are supported.
+problem is that only the latest Python versions 2.7, 3.7, 3.9 and 3.9 are supported.
 
 Enable super mode by option ``--advanced 2``, for example::
 
