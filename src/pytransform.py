@@ -276,7 +276,7 @@ def format_platform(platid=None):
 
 
 # Load _pytransform library
-def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
+def _load_library(path=None, is_runtime=0, platid=None, suffix='', advanced=0):
     path = os.path.dirname(__file__) if path is None \
         else os.path.normpath(path)
 
@@ -324,9 +324,8 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
         m.set_option(3, c_char_p(1))
     m.set_option(4, c_char_p(not is_runtime))
 
-    # Disable advanced mode if Python 3.9 or required
-    if sys.version_info[:2] == (3, 9):
-        m.set_option(5, c_char_p(1))
+    # Disable advanced mode by default
+    m.set_option(5, c_char_p(not advanced))
 
     # Set suffix for private package
     if suffix:
@@ -335,9 +334,9 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
     return m
 
 
-def pyarmor_init(path=None, is_runtime=0, platid=None, suffix=''):
+def pyarmor_init(path=None, is_runtime=0, platid=None, suffix='', advanced=0):
     global _pytransform
-    _pytransform = _load_library(path, is_runtime, platid, suffix)
+    _pytransform = _load_library(path, is_runtime, platid, suffix, advanced)
     return init_pytransform()
 
 

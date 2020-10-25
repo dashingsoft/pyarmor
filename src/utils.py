@@ -331,7 +331,8 @@ def check_capsule(capsule):
     return True
 
 
-def _make_entry(filename, rpath=None, relative=None, shell=None, suffix=''):
+def _make_entry(filename, rpath=None, relative=None, shell=None, suffix='',
+                advanced=0):
     pkg = os.path.basename(filename) == '__init__.py'
     entry_code = entry_lines[0] % (
         '.' if (relative is True) or ((relative is None) and pkg) else '',
@@ -360,6 +361,8 @@ def _make_entry(filename, rpath=None, relative=None, shell=None, suffix=''):
             paras.append(repr(rpath))
         if suffix:
             paras.append('suffix=%s' % repr(suffix))
+        if advanced:
+            paras.append('advanced=1')
         f.write(entry_lines[1] % ', '.join(paras))
         f.write(''.join(lines[n:]))
 
@@ -376,7 +379,8 @@ def _get_script_shell(script):
             pass
 
 
-def make_entry(entris, path, output, rpath=None, relative=None, suffix=''):
+def make_entry(entris, path, output, rpath=None, relative=None, suffix='',
+               advanced=0):
     for entry in entris.split(','):
         entry = entry.strip()
         filename = build_path(entry, output)
@@ -392,7 +396,7 @@ def make_entry(entris, path, output, rpath=None, relative=None, suffix=''):
         logging.info('Insert bootstrap code to entry script %s',
                      relpath(filename))
         _make_entry(filename, rpath, relative=relative, shell=shell,
-                    suffix=suffix)
+                    suffix=suffix, advanced=advanced)
 
 
 def obfuscate_scripts(filepairs, mode, capsule, output):

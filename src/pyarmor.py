@@ -367,7 +367,7 @@ def _build(args):
                 if project.get('is_package') else output
             make_entry(project.entry, project.src, soutput,
                        rpath=project.runtime_path, relative=relative,
-                       suffix=suffix)
+                       suffix=suffix, advanced=advanced)
 
     logging.info('Build project OK.')
 
@@ -709,7 +709,8 @@ def _obfuscate(args):
             make_super_bootstrap(a, b, output, relative, suffix=suffix)
         elif is_entry and bootstrap:
             name = os.path.abspath(a)[len(path)+1:]
-            make_entry(name, path, output, relative=relative, suffix=suffix)
+            make_entry(name, path, output, relative=relative, suffix=suffix,
+                       advanced=advanced)
 
     logging.info('Obfuscate %d scripts OK.', len(files))
 
