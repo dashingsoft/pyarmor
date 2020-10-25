@@ -228,6 +228,10 @@ def _build(args):
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
 
+    if advanced in (1, 3) and sys.version_info[:2] == (3, 9):
+        raise RuntimeError('Python 3.9 does not support advanced mode, '
+                           'use "--advanced %d" instead' % (advanced + 1))
+
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
     platforms = check_cross_platform(platforms, supermode, vmenabled)
@@ -539,6 +543,10 @@ def _obfuscate(args):
         platforms = args.platforms
         advanced = args.advanced if args.advanced else 0
         suffix = get_name_suffix() if args.enable_suffix else ''
+
+    if advanced in (1, 3) and sys.version_info[:2] == (3, 9):
+        raise RuntimeError('Python 3.9 does not support advanced mode, '
+                           'use "--advanced %d" instead' % (advanced + 1))
 
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)

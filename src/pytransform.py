@@ -324,8 +324,9 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix=''):
         m.set_option(3, c_char_p(1))
     m.set_option(4, c_char_p(not is_runtime))
 
-    # Disable advanced mode if required
-    # m.set_option(5, c_char_p(1))
+    # Disable advanced mode if Python 3.9 or required
+    if sys.version_info[:2] == (3, 9):
+        m.set_option(5, c_char_p(1))
 
     # Set suffix for private package
     if suffix:
