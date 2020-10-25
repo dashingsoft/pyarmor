@@ -77,8 +77,8 @@ It is recommended to upgrade in the next minor version.
 
 .. important::
 
-   For Python3.9 advanced mode isn't supported. It's recommended using super
-   mode for any Python version if it works with super mode.
+   For Python3.9 advanced mode isn't supported. It's recommended to use super
+   mode for any Python version which works with super mode.
 
 .. _vm mode:
 
