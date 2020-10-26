@@ -340,8 +340,8 @@ def pyarmor_init(path=None, is_runtime=0, platid=None, suffix='', advanced=0):
     return init_pytransform()
 
 
-def pyarmor_runtime(path=None, suffix=''):
-    pyarmor_init(path, is_runtime=1, suffix=suffix)
+def pyarmor_runtime(path=None, suffix='', advanced=0):
+    pyarmor_init(path, is_runtime=1, suffix=suffix, advanced=advanced)
     init_runtime()
 
 # ----------------------------------------------------------
