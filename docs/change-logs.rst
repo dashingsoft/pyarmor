@@ -6,9 +6,8 @@ Change Logs
 6.4.5
 -----
 * Support super mode for Python3.9
-* From Python3.9, advanced mode both `--advanced 1` and `--advanced 3`
-  aren't supported, use super mode `--advanced 2` and `--advanced 4`
-  instead.
+* Show deprecation warning for `--advanced 1` and `--advanced 3` if super mode
+  is available, use `--advanced 2` and `--advanced 4` instead.
 
 6.4.4
 -----
