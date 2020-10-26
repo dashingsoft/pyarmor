@@ -76,6 +76,17 @@ def _format_entry(entry, src):
         return ','.join(result)
 
 
+def _check_advanced_value(advanced):
+    pyver = '.'.join([str(x) for x in sys.version_info[:2]])
+    if pyver in ('2.7', '3.7', '3.8', '3.9'):
+        if advanced in (1, 3):
+            logging.warning('"--advanced %d" is deprecated for Python %s, '
+                            'use "--advanced %d" instead'
+                            % (advanced, pyver, advanced + 1))
+    elif advanced in (2, 4):
+        raise RuntimeError('Python %s does not support super mode' % pyver)
+
+
 @arcommand
 def _init(args):
     '''Create a project to manage the obfuscated scripts.'''
@@ -228,9 +239,7 @@ def _build(args):
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
 
-    if advanced in (1, 3) and sys.version_info[:2] == (3, 9):
-        raise RuntimeError('Python 3.9 does not support advanced mode, '
-                           'use "--advanced %d" instead' % (advanced + 1))
+    _check_advanced_value(advanced)
 
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
@@ -544,9 +553,7 @@ def _obfuscate(args):
         advanced = args.advanced if args.advanced else 0
         suffix = get_name_suffix() if args.enable_suffix else ''
 
-    if advanced in (1, 3) and sys.version_info[:2] == (3, 9):
-        raise RuntimeError('Python 3.9 does not support advanced mode, '
-                           'use "--advanced %d" instead' % (advanced + 1))
+    _check_advanced_value(advanced)
 
     supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
