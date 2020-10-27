@@ -53,7 +53,8 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names, \
                   get_name_suffix, get_bind_key, make_super_bootstrap, \
-                  make_protection_code, DEFAULT_CAPSULE, PYARMOR_PATH
+                  make_protection_code, DEFAULT_CAPSULE, PYARMOR_PATH, \
+                  activate_regcode
 
 import packer
 
@@ -786,10 +787,23 @@ def _register(args):
             print(purchase_info)
         return
 
-    logging.info('Start to register keyfile: %s', args.filename)
-    register_keyfile(args.filename, legency=args.legency)
+    filename = args.filename
+    ucode = None if filename.endswith('.zip') else filename
+    if ucode:
+        filename = 'pyarmor-regfile.zip'
+        activate_regcode(ucode, filename=filename)
+
+    logging.info('Start to register keyfile: %s', filename)
+    register_keyfile(filename, legency=args.legency)
     logging.info('This keyfile has been registered successfully.')
     logging.info('Run "pyarmor register" to check registration information.')
+
+    if ucode and args.save:
+        logging.info('Registration key file has been saved to "%s"',
+                     os.path.abspath(filename))
+    else:
+        logging.debug('Remove temporary file %s', filename)
+        os.remove(filename)
 
 
 @arcommand
@@ -1323,8 +1337,10 @@ def _parser():
         help='Make registration keyfile work')
     cparser.add_argument('-n', '--legency', action='store_true',
                          help='Store `license.lic` in the traditional way')
+    cparser.add_argument('-s', '--save', action='store_true',
+                         help='Save registration keyfile')
     cparser.add_argument('filename', nargs='?', metavar='KEYFILE',
-                         help='Filename of registration keyfile')
+                         help='Registration code or keyfile')
     cparser.set_defaults(func=_register)
 
     #

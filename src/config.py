@@ -43,3 +43,4 @@ platform_urls = [
 platform_config = 'index.json'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
+reg_url = 'https://api.dashingsoft.com/product/key/%s/activate'

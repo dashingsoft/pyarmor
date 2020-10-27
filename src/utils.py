@@ -45,7 +45,8 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-    platform_urls, platform_config, key_url, core_version, capsule_filename
+    platform_urls, platform_config, key_url, reg_url, \
+    core_version, capsule_filename
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.join('~', '.pyarmor'))
@@ -1021,6 +1022,23 @@ def query_keyinfo(key):
         info = 'Warning: this code may NOT be issued by PyArmor officially.' \
             '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'
     return info
+
+
+def activate_regcode(ucode, filename=None):
+    res = urlopen(reg_url % ucode, timeout=60.0)
+    if res is None:
+        raise RuntimeError('Activate registration code failed, '
+                           'got nothing from server')
+
+    if res.status != 200:
+        data = res.read().decode()
+        raise RuntimeError('Activate registration code failed: %s' % data)
+
+    data = res.read()
+    if filename:
+        with open(filename, 'wb') as f:
+            f.write(data)
+    return data
 
 
 def register_keyfile(filename, legency=False):
