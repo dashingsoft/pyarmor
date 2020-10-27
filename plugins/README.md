@@ -5,9 +5,9 @@ to obfuscated scripts to improve the security.
 
 Here are some examples:
 
-* [Check all the mac address](example-1-check-all-the-mac-address)
-* [Check docker container id](example-2-check-docker-container-id)
-* [Check internet time](example-3-check-internet-time)
+* [Check all the mac address](#example-1-check-all-the-mac-address)
+* [Check docker container id](#example-2-check-docker-container-id)
+* [Check internet time](#example-3-check-internet-time)
 
 **The sample code is only a guide, it's strongly recommanded to write your
 private code in plugin script**
