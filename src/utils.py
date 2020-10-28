@@ -1030,7 +1030,7 @@ def activate_regcode(ucode, filename=None):
         raise RuntimeError('Activate registration code failed, '
                            'got nothing from server')
 
-    if res.status != 200:
+    if res.code != 200:
         data = res.read().decode()
         raise RuntimeError('Activate registration code failed: %s' % data)
 
