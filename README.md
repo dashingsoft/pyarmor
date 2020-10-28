@@ -62,7 +62,7 @@ More usage, refer to
 * [Man Page](https://pyarmor.readthedocs.io/en/latest/man.html)
 * [Sample Shell Scripts](src/examples/README.md)
 
-## License
+## License & Purchase
 
 PyArmor is published as shareware, free trial version never expires, but there are
 some limitations:
@@ -74,29 +74,6 @@ some limitations:
 * ...
 
 For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
-
-### Purchase
-
-Click [Purchase](https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1),
-
-A registration keyfile generally named "pyarmor-regfile-1.zip" will be sent to
-your by email immediately after payment is completed successfully. There are 3
-files in the archive:
-
-* REAME.txt
-* license.lic (registration code)
-* .pyarmor_capsule.zip (private capsule)
-
-Run the following command to take this keyfile effects:
-
-    pyarmor register /path/to/pyarmor-regfile-1.zip
-
-Check the registeration information:
-
-    pyarmor register
-
-**The registration code is valid forever, it can be used permanently. But it may
-not work with new versions, although up to now it works with all of versions.**
 
 ## [Change Logs](docs/change-logs.rst)
 

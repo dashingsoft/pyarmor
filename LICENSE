@@ -70,15 +70,26 @@
 
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
-     A registration keyfile generally named "pyarmor-regfile-1.zip" will be sent
-     to your by email immediately after payment is completed successfully. There
-     are 3 files in the archive:
+     A registration code will be sent to your by email immediately after payment
+     is completed successfully.
+
+     From pyarmor v6.5.0, run the following command to register PyArmor
+
+         pyarmor register CODE
+
+     Before pyarmor v6.5.0, open the following url in any web browser to
+     activate this code:
+
+        https://api.dashingsoft.com/product/key/activate/CODE/
+
+     A registration keyfile generally named "pyarmor-regfile-1.zip" will be
+     downloaded, there are 3 files in this archive:
 
          * REAME.txt
-         * license.lic (registration code)
+         * license.lic
          * .pyarmor_capsule.zip (private capsule)
 
-     Run the following command to take this keyfile effects:
+     Run the following command to register PyArmor
 
          pyarmor register /path/to/pyarmor-regfile-1.zip
 
@@ -86,8 +97,7 @@
 
          pyarmor register
 
-     After the registration keyfile takes effect, you need obfuscate the scripts
-     again.
+     After registration successfully, you need obfuscate the scripts again.
 
      The registration code is valid forever, it can be used permanently. But it
      may not be rented or leased.

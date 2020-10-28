@@ -1,4 +1,4 @@
-﻿     最终用户许可协议
+﻿     PyArmor 最终用户许可协议
 
      以下关于 PyArmor（下称“本软件”）的协议在 赵俊德（下称“许可人”）和任何安装、
      访问或以其它方式使用本软件的自然人（下称“用户”）之间订立。
@@ -52,15 +52,21 @@
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
          https://pyarmor.dashingsoft.com/cart/order.html
 
-     支付成功之后注册文件会自动通过电子邮件发送过去。注册文件是一个压缩文件，里
-     面包含 3 个文件:
+     支付成功之后注册码会自动通过电子邮件发送过去，运行下面的命令完成注册
+
+         pyarmor register CODE
+
+     如果使用的是 pyarmor v6.5.0 之前的版本，需要在浏览器打开下面的链接进行激活
+
+        https://api.dashingsoft.com/product/key/activate/CODE/
+
+     激活成功之后会下载一个注册文件“pyarmor-regfile-1.zip”，里面包含 3 个文件:
 
         * README.txt
-        * license.lic (注册码)
+        * license.lic
         * .pyarmor_capsule.zip (私有密钥箱)
 
-     当收到包含注册文件的邮件之后，保存附件中的注册文件到本地，然后使用下面的命
-     令生效注册文件
+     然后使用下面的命令生效完成注册
 
          pyarmor register pyarmor-regfile-1.zip
 
@@ -68,9 +74,9 @@
 
          pyarmor register
 
-     注册码生效之后，使用试用版本加密的脚本需要全部重新加密。
+     注册成功之后，使用试用版本加密的脚本需要全部重新加密。
 
-     软件许可码永久有效，可以一直使用，但是不能转接或者租用。
+     软件注册码永久有效，可以一直使用，但是不能转接或者租用。
 
   6. 本软件可免费分发（除下列例外），分发前提为分发包未以任何形式被修改：
 
