@@ -787,23 +787,31 @@ def _register(args):
             print(purchase_info)
         return
 
-    filename = args.filename
-    ucode = None if filename.endswith('.zip') else filename
-    if ucode:
-        filename = 'pyarmor-regfile.zip'
-        activate_regcode(ucode, filename=filename)
-
-    logging.info('Start to register keyfile: %s', filename)
-    register_keyfile(filename, legency=args.legency)
-    logging.info('This keyfile has been registered successfully.')
-    logging.info('Run "pyarmor register" to check registration information.')
-
-    if ucode and args.save:
-        logging.info('Registration key file has been saved to "%s"',
-                     os.path.abspath(filename))
+    if args.filename.endswith('.zip'):
+        logging.info('Start to register keyfile: %s', args.filename)
+        register_keyfile(args.filename, legency=args.legency)
+        logging.info('This keyfile has been registered successfully.')
     else:
-        logging.debug('Remove temporary file %s', filename)
+        ucode = args.filename
+        filename = 'pyarmor-regfile.zip'
+
+        logging.info('Start to activate this code')
+        activate_regcode(ucode, filename=filename)
+        logging.info('Got keyfile of this code, this code is activated')
+
+        if args.save:
+            logging.info('The keyfile of this code has been saved to "%s"',
+                         os.path.abspath(filename))
+            return
+
+        logging.info('Start to register PyArmor with keyfile')
+        register_keyfile(filename, legency=args.legency)
+        logging.info('This keyfile has been registered successfully.')
+
+        logging.debug('Remove temporary keyfile %s', filename)
         os.remove(filename)
+
+    logging.info('Run "pyarmor register" to check registration information.')
 
 
 @arcommand
@@ -1338,7 +1346,7 @@ def _parser():
     cparser.add_argument('-n', '--legency', action='store_true',
                          help='Store `license.lic` in the traditional way')
     cparser.add_argument('-s', '--save', action='store_true',
-                         help='Save registration keyfile')
+                         help=argparse.SUPPRESS)
     cparser.add_argument('filename', nargs='?', metavar='KEYFILE',
                          help='Registration code or keyfile')
     cparser.set_defaults(func=_register)
