@@ -52,29 +52,28 @@
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
          https://pyarmor.dashingsoft.com/cart/order.html
 
-     支付成功之后注册码会自动通过电子邮件发送过去，运行下面的命令完成注册
+     支付成功之后注册码会自动通过电子邮件发送过去，有两种方式可以进行注册
 
-         pyarmor register CODE
+     5.a 直接运行下面的命令完成激活和注册，适用于 PyArmor v6.5.0 之后的版本
 
-     如果使用的是 pyarmor v6.5.0 之前的版本，需要在浏览器打开下面的链接进行激活
+             pyarmor register CODE
 
-        https://api.dashingsoft.com/product/key/activate/CODE/
+         注册机器必须能够连接到互联网，远程服务器会对注册码进行验证。
 
-     激活成功之后会下载一个注册文件“pyarmor-regfile-1.zip”，里面包含 3 个文件:
+     5.b 如果使用的是 PyArmor v6.5.0 之前的版本，首先在浏览器打开下面的链接激活
 
-        * README.txt
-        * license.lic
-        * .pyarmor_capsule.zip (私有密钥箱)
+             https://api.dashingsoft.com/product/key/activate/CODE/
 
-     然后使用下面的命令生效完成注册
+         激活成功之后会下载一个注册文件 “pyarmor-regfile-1.zip”，然后使用下面的
+         命令完成注册
 
-         pyarmor register pyarmor-regfile-1.zip
+             pyarmor register pyarmor-regfile-1.zip
 
-     运行下面的命令查看注册信息
+     注册成功之后，可以运行下面的命令查看注册信息
 
          pyarmor register
 
-     注册成功之后，使用试用版本加密的脚本需要全部重新加密。
+     然后在加密所有的脚本。
 
      软件注册码永久有效，可以一直使用，但是不能转接或者租用。
 
