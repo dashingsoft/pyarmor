@@ -75,27 +75,26 @@
 
      There are 2 ways to register PyArmor
 
-     5.a From pyarmor v6.5.0, run the following command to register PyArmor
+     5.a Run this command to register this code directly, only for PyArmor
+         6.5.0+, and the machine is connected to internet.
 
              pyarmor register CODE
 
-         The machine must be connected to internet in order to register PyArmor.
-
-     5.b Before pyarmor v6.5.0, first open the following url in any web browser to
-         activate this code:
+     5.b Open this url in any web browser to activate this code at first
 
              https://api.dashingsoft.com/product/key/activate/CODE/
 
-         A registration keyfile generally named "pyarmor-regfile-1.zip" will be
-         downloaded, then run the following command to register PyArmor
+         Waiting for a while, a keyfile named "pyarmor-regfile.zip" will be
+         downloaded, then run this command to register PyArmor
 
-             pyarmor register /path/to/pyarmor-regfile-1.zip
+             pyarmor register /path/to/pyarmor-regfile.zip
 
-     After registration successfully, check the registeration information:
+     Check the registeration information:
 
          pyarmor register
 
-     Then obfuscate all the scripts again.
+     After registration successfully, remove all the obfuscated scripts by trial
+     version, then obfuscate them again.
 
      The registration code is valid forever, it can be used permanently. But it
      may not be rented or leased.
