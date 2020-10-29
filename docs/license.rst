@@ -71,17 +71,17 @@ is completed successfully.
 
 There are 2 ways to register PyArmor
 
-* Run this command to register this code directly, only for PyArmor 6.5.0+, and
-  the machine is connected to internet.
+* Register this code directly, only for PyArmor 6.5.0+, and the machine is
+  connected to internet.
 
       pyarmor register CODE
 
-* Open this url in any web browser to activate this code at first
+* First Open the following url in any web browser to activate this code
 
       https://api.dashingsoft.com/product/key/activate/CODE/
 
   Waiting for a while, a keyfile named "pyarmor-regfile.zip" will be downloaded,
-  then run this command to register PyArmor
+  then register PyArmor by this keyfile
 
       pyarmor register /path/to/pyarmor-regfile.zip
 
