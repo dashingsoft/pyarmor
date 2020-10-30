@@ -3,12 +3,16 @@
 Change Logs
 ===========
 
+6.5.1
+-----
+* Fix issue: it raises exception to register a code by Python 2.7
+
 6.5.0
 -----
 * Support super mode for Python3.9
 * Show deprecation warning for `--advanced 1` and `--advanced 3` if super mode
   is available, use `--advanced 2` and `--advanced 4` instead
-* The command `register` supports new form of registration code
+* Both registration code and file are supported by the command `register`
 
 6.4.4
 -----
