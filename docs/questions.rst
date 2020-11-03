@@ -130,6 +130,14 @@ Here are sample commands::
 
      pyarmor obfuscate --platform centos6.x86_64 foo.py
 
+'pyarmor' is not recognized issue
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If `pyarmor` is installed by pip, please search "pyarmor" in the computer, then
+run full path pyarmor, or add path of pyarmor to environment variable PATH.
+
+If not by pip, the equivalent of the pyarmor command is running Python script
+"pyarmor.py" found in the distribution folder.
+
 
 Obfuscating Scripts Problem
 ---------------------------
