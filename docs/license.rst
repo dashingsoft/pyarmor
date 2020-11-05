@@ -72,12 +72,12 @@ is completed successfully.
 There are 2 ways to register PyArmor:
 
 * Register this code directly, only for PyArmor 6.5.0+, and the machine is
-  connected to internet, please replace "XXX" with real registration code which
+  connected to internet. Please replace "XXX" with real registration code which
   is a long string
 
       pyarmor register XXX
 
-* First Open the following url in any web browser to activate this code, please
+* First Open the following url in any web browser to activate this code. Please
   replace "XXX" with real registration code, and don't miss trailing slash
 
       https://api.dashingsoft.com/product/key/activate/XXX/
