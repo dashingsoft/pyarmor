@@ -935,7 +935,7 @@ Nuitka. When obfuscating the scripts, the option ``--restrict 0`` and
 ``--no-cross-protection`` should be set, otherwise the final C program could not
 work. For example, first obfustate the scripts::
 
-    pyarmor obfuscate --restrict 0 --no-cross-protection foo.py
+    pyarmor obfuscate --restrict 0 --no-cross-protection --package-runtime 0 foo.py
 
 Then translate the obfuscated one as normal python scripts by Nuitka::
 
@@ -951,7 +951,7 @@ one. For example::
     # Generating "mymodule.pyi"
     python -m nuitka --module mymodule.py
 
-    pyarmor obfuscate --restrict 0 --no-bootstrap mymodule.py
+    pyarmor obfuscate --restrict 0 --no-bootstrap --package-runtime 0 mymodule.py
     cp mymodule.pyi dist/
 
     cd dist/
