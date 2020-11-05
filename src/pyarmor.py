@@ -791,6 +791,9 @@ def _register(args):
         logging.info('Start to register keyfile: %s', args.filename)
         register_keyfile(args.filename, legency=args.legency)
         logging.info('This keyfile has been registered successfully.')
+    elif args.filename in ('CODE', 'XXX'):
+        raise RuntimeError('Please replace "%s" with real registration code '
+                           'which is a long string' % args.filename)
     else:
         ucode = args.filename
         filename = 'pyarmor-regfile.zip'

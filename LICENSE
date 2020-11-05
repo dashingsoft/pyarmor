@@ -73,16 +73,19 @@
      A registration code will be sent to your by email immediately after payment
      is completed successfully.
 
-     There are 2 ways to register PyArmor
+     There are 2 ways to register PyArmor:
 
      5.a Register this code directly, only for PyArmor 6.5.0+, and the machine
-         is connected to internet.
+         is connected to internet. Please replace "XXX" with real registration
+         code which is a long string
 
-             pyarmor register CODE
+             pyarmor register XXX
 
-     5.b First open the following url in any webbrowser to activate this code
+     5.b First open the following url in any webbrowser to activate this
+         code. Please replace "XXX" with real registration code, and don't miss
+         trailing slash
 
-             https://api.dashingsoft.com/product/key/activate/CODE/
+             https://api.dashingsoft.com/product/key/activate/XXX/
 
          Waiting for a while, a keyfile named "pyarmor-regfile.zip" will be
          downloaded, then register PyArmor by this keyfile
