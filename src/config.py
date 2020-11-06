@@ -1,6 +1,6 @@
 from sys import platform
 
-version = '6.5.1'
+version = '6.5.2'
 
 # The corresponding version of pytransform.so
 core_version = 'r36.10'
@@ -43,3 +43,4 @@ platform_config = 'index.json'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
 reg_url = 'https://api.dashingsoft.com/product/key/activate/%s/'
+buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1'
