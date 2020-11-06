@@ -40,7 +40,7 @@ import time
 # Besides no command aliases supported by Python 2.7
 import polyfills.argparse as argparse
 
-from config import version, version_info, purchase_info, \
+from config import version, version_info, purchase_info, buy_url, \
                    config_filename, capsule_filename, license_filename
 
 
@@ -775,6 +775,11 @@ def _hdinfo(args):
 @arcommand
 def _register(args):
     '''Make registration keyfile work, or show registration information.'''
+    if args.buy:
+        from webbrowser import open_new_tab
+        open_new_tab(buy_url)
+        return
+
     if args.filename is None:
         msg = _version_info(verbose=1)
         print(msg)
@@ -1348,6 +1353,8 @@ def _parser():
         help='Make registration keyfile work')
     cparser.add_argument('-n', '--legency', action='store_true',
                          help='Store `license.lic` in the traditional way')
+    cparser.add_argument('-b', '--buy', action='store_true',
+                         help='Open web browser to purchase code')
     cparser.add_argument('-s', '--save', action='store_true',
                          help=argparse.SUPPRESS)
     cparser.add_argument('filename', nargs='?', metavar='KEYFILE',
