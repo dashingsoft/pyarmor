@@ -803,6 +803,12 @@ def _register(args):
         ucode = args.filename
         filename = 'pyarmor-regfile.zip'
 
+        ucode = ucode.replace('\r', '').replace('\n', '')
+        if len(ucode) != 192:
+            raise RuntimeError('Invalid code, registration code is an one '
+                               'line string which length is 192, the length '
+                               'of this code is %d.' % len(ucode))
+
         logging.info('Start to activate this code')
         activate_regcode(ucode, filename=filename)
         logging.info('Got keyfile of this code, this code is activated')
