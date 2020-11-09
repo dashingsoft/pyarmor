@@ -796,31 +796,47 @@ def _register(args):
         logging.info('Start to register keyfile: %s', args.filename)
         register_keyfile(args.filename, legency=args.legency)
         logging.info('This keyfile has been registered successfully.')
-    elif args.filename in ('CODE', 'XXX'):
+        return
+
+    if args.filename in ('CODE', 'XXX'):
         raise RuntimeError('Please replace "%s" with purchased registration '
                            'code which is a long string' % args.filename)
+
+    if args.filename.endswith('.txt'):
+        logging.info('Read registration code file: %s', args.filename)
+        with open(args.filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if len(line) == 192 and line.find(' ') == -1:
+                    ucode = line
+                    break
+            else:
+                raise RuntimeError('No valid registration code found '
+                                   'in the file "%s"' % args.filename)
+        logging.debug('Got registration code: %s', ucode)
     else:
         ucode = args.filename.strip().replace('\r', '').replace('\n', '')
-        if len(ucode) != 192:
-            raise RuntimeError('Invalid code, registration code is an one '
-                               'line string with 192 chars, the length of '
-                               'this code is %d.' % len(ucode))
 
-        logging.info('Start to activate this code')
-        filename = activate_regcode(ucode)
-        logging.info('Got keyfile of this code, this code is activated')
+    if len(ucode) != 192:
+        raise RuntimeError('Invalid code, registration code is an one '
+                           'line string with 192 chars, the length of '
+                           'this code is %d.' % len(ucode))
 
-        if args.save:
-            logging.info('The keyfile of this code has been saved to "%s"',
-                         os.path.abspath(filename))
-            return
+    logging.info('Start to activate this code')
+    filename = activate_regcode(ucode)
+    logging.info('Got keyfile of this code, this code is activated')
 
-        logging.info('Start to register PyArmor with keyfile')
-        register_keyfile(filename, legency=args.legency)
-        logging.info('This keyfile has been registered successfully.')
+    if args.save:
+        logging.info('The keyfile of this code has been saved to "%s"',
+                     os.path.abspath(filename))
+        return
 
-        logging.debug('Remove temporary keyfile %s', filename)
-        os.remove(filename)
+    logging.info('Start to register PyArmor with keyfile')
+    register_keyfile(filename, legency=args.legency)
+    logging.info('This keyfile has been registered successfully.')
+
+    logging.debug('Remove temporary keyfile %s', filename)
+    os.remove(filename)
 
     logging.info('Run "pyarmor register" to check registration information.')
 
