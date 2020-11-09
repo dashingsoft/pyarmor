@@ -3,6 +3,13 @@
 Change Logs
 ===========
 
+6.5.2
+-----
+* The command `register` also could register any text file only if it includes
+  registration code in one single line
+* Add new option `--buy` for command `register`, which used to open shopping
+  cart of PyArmor: `pyarmor register --buy`
+
 6.5.1
 -----
 * Fix issue: it raises exception to register a code by Python 2.7
