@@ -806,8 +806,8 @@ def _register(args):
         ucode = ucode.replace('\r', '').replace('\n', '')
         if len(ucode) != 192:
             raise RuntimeError('Invalid code, registration code is an one '
-                               'line string which length is 192, the length '
-                               'of this code is %d.' % len(ucode))
+                               'line string with 192 chars, the length of '
+                               'this code is %d.' % len(ucode))
 
         logging.info('Start to activate this code')
         activate_regcode(ucode, filename=filename)
