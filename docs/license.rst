@@ -66,26 +66,12 @@ To buy a license, please visit the following url
 
 https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 
-A registration code will be sent to your by email immediately after payment
-is completed successfully.
+A registration file generally named "pyarmor-regcode-1.txt" will be sent by
+email immediately after payment is completed successfully.
 
-There are 2 ways to register PyArmor:
+Save it to disk, then run the following command to register PyArmor
 
-* Register this code directly, only for PyArmor 6.5.0+, and the machine is
-  connected to internet. Please replace "XXX" with real registration code which
-  is a long string
-
-      pyarmor register XXX
-
-* First Open the following url in any web browser to activate this code. Please
-  replace "XXX" with real registration code, and don't miss trailing slash
-
-      https://api.dashingsoft.com/product/key/activate/XXX/
-
-  Waiting for a while, a keyfile named "pyarmor-regfile.zip" will be downloaded,
-  then register PyArmor by this keyfile
-
-      pyarmor register /path/to/pyarmor-regfile.zip
+    pyarmor register /path/to/pyarmor-regcode-1.txt
 
 Check the registeration information:
 
@@ -96,10 +82,9 @@ version, then obfuscate them again.
 
 .. note::
 
-    If the version of PyArmor < 5.6, unzip this registration file, then
-
-        * Copy "license.lic" to the installed path of PyArmor
-        * Copy ".pyarmor_capsule.zip" to user HOME path
+    If the version of PyArmor < 6.5.2, please open the registration file
+    "pyarmor-regcode-1.txt" by any text editor, following the guide in it to
+    register PyArmor
 
 .. important::
 
