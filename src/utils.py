@@ -1024,7 +1024,7 @@ def query_keyinfo(key):
     return info
 
 
-def activate_regcode(ucode, filename=None):
+def activate_regcode(ucode):
     res = urlopen(reg_url % ucode, timeout=60.0)
     if res is None:
         raise RuntimeError('Activate registration code failed, '
@@ -1035,10 +1035,12 @@ def activate_regcode(ucode, filename=None):
         raise RuntimeError('Activate registration code failed: %s' % data)
 
     data = res.read()
-    if filename:
-        with open(filename, 'wb') as f:
-            f.write(data)
-    return data
+    dis = res.headers.get('Content-Disposition')
+    filename = dis.split('"')[1] if dis else 'pyarmor-regfile-1.zip'
+    with open(filename, 'wb') as f:
+        f.write(data)
+
+    return filename
 
 
 def register_keyfile(filename, legency=False):

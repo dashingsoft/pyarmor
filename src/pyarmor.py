@@ -800,17 +800,14 @@ def _register(args):
         raise RuntimeError('Please replace "%s" with purchased registration '
                            'code which is a long string' % args.filename)
     else:
-        ucode = args.filename
-        filename = 'pyarmor-regfile.zip'
-
-        ucode = ucode.replace('\r', '').replace('\n', '')
+        ucode = args.filename.strip().replace('\r', '').replace('\n', '')
         if len(ucode) != 192:
             raise RuntimeError('Invalid code, registration code is an one '
                                'line string with 192 chars, the length of '
                                'this code is %d.' % len(ucode))
 
         logging.info('Start to activate this code')
-        activate_regcode(ucode, filename=filename)
+        filename = activate_regcode(ucode)
         logging.info('Got keyfile of this code, this code is activated')
 
         if args.save:
