@@ -1006,7 +1006,18 @@ def save_config(cfg, filename=None):
 
 def query_keyinfo(key):
     try:
-        res = urlopen(key_url % key, timeout=3.0)
+        from urllib.parse import urlencode
+    except ImportError:
+        from urllib import urlencode
+    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
+    if not os.path.exists(licfile):
+        licfile = os.path.join(HOME_PATH, 'license.lic')
+    logging.debug('Got license data from %s', licfile)
+    with open(licfile) as f:
+        data = urlencode({'rcode': f.read()}).encode('utf-8')
+
+    try:
+        res = urlopen(key_url % key, data, timeout=3.0)
         customer = json_loads(res.read().decode())
     except Exception as e:
         if hasattr(sys, '_debug_pyarmor'):
