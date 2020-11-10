@@ -73,7 +73,7 @@ Save it to disk, then run the following command to register PyArmor
 
     pyarmor register /path/to/pyarmor-regcode-1.txt
 
-Check the registeration information:
+Check the registration information:
 
     pyarmor register
 
