@@ -62,7 +62,11 @@ There are 2 basic types of licenses issued for the software. These are:
 Purchase
 --------
 
-To buy a license, please visit the following url
+To buy a license, please run command
+
+    pyarmor register --buy
+
+Or open the following url in any web browser
 
 https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 

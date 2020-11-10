@@ -1028,7 +1028,11 @@ def query_keyinfo(key):
     name = customer['name']
     email = customer['email']
     if name and email:
-        info = 'This code is authorized to %s <%s>' % (name, email)
+        info = 'This code is authorized to "%s <%s>"\n\n' \
+            'Note: the registration name and email are got from ' \
+            'remote server and shown here only, they will not be used ' \
+            'anywhere else. But the code "%s" will be distributed ' \
+            'with obfusated scripts.' % (name, email, key)
     else:
         info = 'Warning: this code may NOT be issued by PyArmor officially.' \
             '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'

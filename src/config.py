@@ -14,7 +14,11 @@ For more information, refer to https://pyarmor.readthedocs.io
 
 purchase_info = '''
 
-If there is no registration code yet, please purchase one by visiting
+If there is no registration code yet, please purchase one by command
+
+    pyarmor register --buy
+
+Or open the following url in any webbrowser directly
 
 https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 

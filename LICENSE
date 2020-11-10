@@ -66,7 +66,11 @@
      obfuscated python scripts and to distribute those files free of any
      additional royalties.
 
-  5. To buy a license, please visit the following url
+  5. To buy a license, please run command
+
+         pyarmor register --buy
+
+     Or open the following url in any web browser
 
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
 

@@ -785,9 +785,9 @@ def _register(args):
         print(msg)
         if msg.find('Registration Code') > 0:
             print('')
-            print('Please send request by this email if you would like to '
-                  'change the registration information. Any issue feel free '
-                  'to contact jondy.zhao@gmail.com')
+            print('Please send request from registration email if you would '
+                  'like to change the registration information. Any issue '
+                  'feel free to contact jondy.zhao@gmail.com')
         else:
             print(purchase_info)
         return
@@ -1015,6 +1015,7 @@ def _version_info(verbose=2):
     info = [ver]
     if rcode:
         info.append('Registration Code: %s' % rcode)
+        info.append('')
         info.append(query_keyinfo(rcode))
     if verbose > 1:
         info.extend(['', version_info])
