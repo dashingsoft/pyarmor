@@ -145,12 +145,16 @@ def clean_str(*args):
         clean_obj(obj, k)
 
 
-def get_hd_info(hdtype, size=256):
+def get_hd_info(hdtype, name=None):
     if hdtype not in range(HT_DOMAIN + 1):
         raise RuntimeError('Invalid parameter hdtype: %s' % hdtype)
+    size = 256
     t_buf = c_char * size
     buf = t_buf()
-    if (_pytransform.get_hd_info(hdtype, buf, size) == -1):
+    cname = c_char_p(0 if name is None
+                     else name.encode('utf-8') if hasattr('name', 'encode')
+                     else name)
+    if (_pytransform.get_hd_info(hdtype, buf, size, cname) == -1):
         raise PytransformError('Get hardware information failed')
     return buf.value.decode()
 

@@ -77,7 +77,7 @@ Contents
 
    Raise :exc:`Exception` if license is invalid.
 
-.. function:: get_hd_info(hdtype, size=256)
+.. function:: get_hd_info(hdtype, name=None)
 
    Get hardware information by *hdtype*, *hdtype* could one of
 
@@ -90,6 +90,26 @@ Contents
    *HT_DOMAIN* return domain name of target machine
 
    Raise :exc:`Exception` if something is wrong.
+
+   In Linux, `name` is used to get named network card or named harddisk. For
+   example::
+
+     get_hd_info(HT_IFMAC, name="eth2")
+     get_hd_info(HT_HARDDISK, name="/dev/vda2")
+
+   In Windows, `name` is used to get all network cards and harddisks. For
+   example::
+
+     get_hd_info(HT_IFMAC, name="*")
+     get_hd_info(HT_HARDDISK, name="*")
+
+     get_hd_info(HT_HARDDISK, name="/0")    # First disk
+     get_hd_info(HT_HARDDISK, name="/1")    # Second disk
+
+   .. note:: Changed in v6.5.3
+
+       Add new keyword parameter `name`
+       Remove keyword parameter `size`
 
 .. attribute:: HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_DOMAIN
 
