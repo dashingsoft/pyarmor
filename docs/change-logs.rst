@@ -3,6 +3,16 @@
 Change Logs
 ===========
 
+6.5.3 (pre release)
+-------------------
+* Refine output message when checking registration information by command
+  `pyarmor register`
+* Runtime function :ref:`get_hd_info` adds keyword parameters ``name``
+* Add optional parameter ``name`` in command :ref:`hdinfo`
+* The command :ref:`licenses` could bind obfuscated scripts to named hard disk
+* When running non-super mode obfuscated scripts, print pretty error message if
+  checking license or loading core dynamic library fails
+
 6.5.2
 -----
 * The command `register` also could register any text file only if it includes
