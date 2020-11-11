@@ -393,8 +393,12 @@ Before this, run command `hdinfo`_ to get hardware information::
     Ip address: "192.168.121.100"
 
 If there are many network cards in the machine, pyarmor only checks the default
-mac address which is printed by command `hdinfo`. If binding to other network
-card, wrap the mac address with angle brackets. For example::
+mac address which is printed by command `hdinfo`. For example::
+
+    pyarmor licenses --bind-mac "f8:ff:c2:27:00:7f" r002
+
+If binding to other network card, wrap the mac address with angle brackets. For
+example::
 
     pyarmor licenses --bind-mac "<2a:33:50:46:8f>" r002
 
@@ -406,6 +410,20 @@ example::
 In Linux, it's possible to bind mac address with ifname, for example::
 
     pyarmor licenses --bind-mac "eth1/fa:33:50:46:8f:3d" r004
+
+If there are many hard disks in the machine, pyarmor only checks the default
+hard disk which is printed by command `hdinfo`. For example::
+
+    pyarmor licenses --bind-disk "FV994730S6LLF07AY" r005
+
+For binding other hard disk card, specify a name for it. For example::
+
+    # In Windows, bind to the first, the second disk
+    pyarmor licenses --bind-disk "/0:FV994730S6LLF07AY" r006
+    pyarmor licenses --bind-disk "/1:KDX3298FS6P5AX380" r007
+
+    # In Linux, bind to "/dev/vda2"
+    pyarmor licenses --bind-disk "/dev/vda2:KDX3298FS6P5AX380" r008
 
 By option `-x` any data could be saved into the license file, it's mainly used
 to extend license tyoe. For example::
@@ -641,6 +659,18 @@ to generate license file for obfuscated scripts.
 **SYNOPSIS**::
 
     pyarmor hdinfo
+
+Without argument, this command displays all available hardware information.
+
+In Windows, it also supports to query named hard disk, for example, get serial
+number from the first and third hard disk::
+
+    pyarmor hdinfo /0 /2
+
+In Linux, query named hard disk or network card, for example::
+
+    pyarmor hdinfo /dev/vda2
+    pyarmor hdinfo eth2
 
 If `pyarmor` isn't installed, downlad this tool `hdinfo`
 
@@ -945,13 +975,19 @@ Make registration keyfile effect, or show registration information.
 
 **DESCRIPTION**
 
-This command is used to register the purchased keyfile to take it effects::
+This command is used to register the purchased key file or code file
+to take it effects::
 
     pyarmor register /path/to/pyarmor-regfile-1.zip
+    pyarmor register /path/to/pyarmor-keycode-1.txt
 
 Show registration information::
 
     pyarmor register
+
+Purchase one registration code::
+
+    pyarmor register --buy
 
 .. _download:
 
