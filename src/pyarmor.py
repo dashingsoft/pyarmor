@@ -769,7 +769,7 @@ def _benchmark(args):
 @arcommand
 def _hdinfo(args):
     print('')
-    show_hd_info()
+    show_hd_info(name=args.devname)
 
 
 @arcommand
@@ -1323,8 +1323,10 @@ def _parser():
         'hdinfo',
         epilog=_hdinfo.__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help='Show hardware information'
+        help='Show all available hardware information'
     )
+    cparser.add_argument('devname', nargs='?', metavar='NAME',
+                         help='Get information of this device')
     cparser.set_defaults(func=_hdinfo)
 
     #

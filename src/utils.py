@@ -673,8 +673,13 @@ def make_license_key(capsule, code, output=None, key=None):
             f.write(lickey)
 
 
-def show_hd_info():
-    pytransform.show_hd_info()
+def show_hd_info(name=None):
+    if name is None:
+        pytransform.show_hd_info()
+    else:
+        t, sep = (0, ':') if name.startswith('/') else (1, '/')
+        info = pytransform.get_hd_info(t, name)
+        print('Query hardware information: "%s%s%s"' % (name, sep, info))
 
 
 def build_path(path, start):
