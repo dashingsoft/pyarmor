@@ -108,8 +108,8 @@ Contents
 
    .. note:: Changed in v6.5.3
 
-       Add new keyword parameter `name`
-       Remove keyword parameter `size`
+       * Add new keyword parameter `name`
+       * Remove keyword parameter `size`
 
 .. attribute:: HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_DOMAIN
 
