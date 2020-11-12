@@ -7,11 +7,12 @@ Change Logs
 -------------------
 * Refine output message when checking registration information by command
   `pyarmor register`
-* Runtime function :ref:`get_hd_info` adds keyword parameters ``name``
-* Add optional parameter ``name`` in command :ref:`hdinfo`
-* The command :ref:`licenses` could bind obfuscated scripts to named hard disk
-* When running non-super mode obfuscated scripts, print pretty error message if
-  checking license or loading core dynamic library fails
+* Runtime function :ref:`get_hd_info` accepts keyword parameters ``name`` to get
+  hardware information of named device
+* Command :ref:`hdinfo` accepts optional parameter ``name``
+* Command :ref:`licenses` could bind obfuscated scripts to named hard disk
+* Print pretty error message if checking license or loading core dynamic library
+  fails when running non-super mode obfuscated scripts
 
 6.5.2
 -----
