@@ -305,7 +305,7 @@ def _build(args):
         if not os.path.exists(soutput):
             os.makedirs(soutput)
 
-        logging.info('Read public key from capsule')
+        logging.info('Read product key from capsule')
         prokey = get_product_key(capsule)
 
         logging.info('%s increment build',
@@ -643,7 +643,7 @@ def _obfuscate(args):
     if not os.path.exists(output):
         os.makedirs(output)
 
-    logging.info('Read public key from capsule')
+    logging.info('Read product key from capsule')
     prokey = get_product_key(capsule)
 
     cross_protection = 0 if args.no_cross_protection else \
