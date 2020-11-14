@@ -13,6 +13,8 @@ Change Logs
 * Command :ref:`licenses` could bind obfuscated scripts to named hard disk
 * Print pretty error message if checking license or loading core dynamic library
   fails when running non-super mode obfuscated scripts
+* Fix issue (#387): it raises exception `Function does not end with "):"` when
+  obfuscating the scripts
 
 6.5.2
 -----
