@@ -401,9 +401,42 @@ Purchased pyarmor is not private
 Even obfuscated with purchased version, license from trial version works:
 
 * Make sure command `pyarmor register` shows correct registration information
-* Make sure :ref:`global capsule` file `~/.pyarmor_capsule.zip` is same as the one in the keyfile `pyarmor-regfile-1.zip`
+* Make sure :ref:`global capsule` file `~/.pyarmor/.pyarmor_capsule.zip` is same as the one in the keyfile `pyarmor-regfile-1.zip`
+* Make a :ref:`Clean uninstallation`
 * Try to reboot system.
 
+Could not query registration information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I tried to register in pyarmor with using the command and log::
+
+    ~ % pyarmor register pyarmor-regfile-1.zip
+    INFO     PyArmor Version 6.5.2
+    INFO     Start to register keyfile: pyarmor-regfile-1.zip
+    INFO     Save registration data to: /Users/Jondy/.pyarmor
+    INFO     Extracting license.lic
+    INFO     Extracting .pyarmor_capsule.zip
+    INFO     This keyfile has been registered successfully.
+
+Watching whether I am registered, I got this output::
+
+    ~ % pyarmor register
+    INFO     PyArmor Version 6.5.2
+    PyArmor Version 6.5.2
+    Registration Code: pyarmor-vax-000383
+    Because of internet exception, could not query registration information.
+
+Ping domain `api.dashingsoft.com`, make sure ip address is resolved like this::
+
+    ~ % ping api.dashingsoft.com
+
+    PING api.dashingsoft.com (119.23.58.77): 56 data bytes
+    Request timeout for icmp_seq 0
+    Request timeout for icmp_seq 1
+
+If not, add one line in the ``/etc/hosts``::
+
+    119.23.58.77 pyarmor.dashingsoft.com
 
 Known Issues
 ------------
