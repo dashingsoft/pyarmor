@@ -64,4 +64,8 @@ Run the following commands to make a clean uninstallation::
     rm -rf {pyarmor-folder}            (before v5.8.0)
     rm -rf ~/.pyarmor_capsule.zip      (before v6.2.0)
 
+.. note::
+
+   The path ``~`` may be different when logging by different user.
+
 .. include:: _common_definitions.txt
