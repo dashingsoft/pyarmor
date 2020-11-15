@@ -166,7 +166,7 @@ def _get_remote_file(urls, path, timeout=30.0):
         url = '/'.join([prefix, path])
         logging.info('Getting remote file: %s', url)
         try:
-            return urlopen(url, timeout=timeout)
+            return _urlopen(url, timeout=timeout)
         except Exception as e:
             urls.pop(0)
             logging.info('Could not get file from %s: %s', prefix, e)
@@ -1014,7 +1014,6 @@ def query_keyinfo(key):
         from urllib.parse import urlencode
     except ImportError:
         from urllib import urlencode
-    from ssl import _create_unverified_context
 
     licfile = os.path.join(PYARMOR_PATH, 'license.lic')
     if not os.path.exists(licfile):
@@ -1024,8 +1023,7 @@ def query_keyinfo(key):
         data = urlencode({'rcode': f.read()}).encode('utf-8')
 
     try:
-        context = _create_unverified_context()
-        res = urlopen(key_url % key, data, context=context, timeout=3.0)
+        res = _urlopen(key_url % key, data, timeout=3.0)
         customer = json_loads(res.read().decode())
     except Exception as e:
         if hasattr(sys, '_debug_pyarmor'):
@@ -1048,7 +1046,7 @@ def query_keyinfo(key):
 
 
 def activate_regcode(ucode):
-    res = urlopen(reg_url % ucode, timeout=60.0)
+    res = _urlopen(reg_url % ucode, timeout=60.0)
     if res is None:
         raise RuntimeError('Activate registration code failed, '
                            'got nothing from server')
@@ -1533,5 +1531,13 @@ def _check_code_object_for_super_mode(co, lines, name):
     return co
 
 
-if __name__ == '__main__':
-    make_entry(sys.argv[1])
+def _urlopen(*args, **kwargs):
+    try:
+        return urlopen(*args, **kwargs)
+    except Exception:
+        if args[0].starswith('https:') and 'context' not in kwargs:
+            from ssl import _create_unverified_context
+            kwargs['context'] = _create_unverified_context()
+            return urlopen(*args, **kwargs)
+        else:
+            raise
