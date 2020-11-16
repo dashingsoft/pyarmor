@@ -3,8 +3,8 @@
 Change Logs
 ===========
 
-6.5.3 (pre release)
--------------------
+6.5.3
+-----
 * Refine output message when checking registration information by command
   `pyarmor register`
 * Runtime function :ref:`get_hd_info` accepts keyword parameters ``name`` to get
