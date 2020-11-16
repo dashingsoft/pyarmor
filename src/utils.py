@@ -1502,9 +1502,9 @@ def _check_code_object_for_super_mode(co, lines, name):
             k = i + c.co_lnotab[1]
             while i < k:
                 s = lines[i].strip()
-                k = s.find('#')
-                if k > 0 and s[k:].find('"') == -1 and s[k:].find("'") == -1:
-                    s = s[:k].strip()
+                j = s.find('#')
+                if j > 0 and s[j:].find('"') == -1 and s[j:].find("'") == -1:
+                    s = s[:j].strip()
                 if s.endswith('):') or (s.endswith(':') and s.find('->') > -1):
                     break
                 i += 1
