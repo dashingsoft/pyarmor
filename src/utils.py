@@ -1020,29 +1020,29 @@ def query_keyinfo(key):
         licfile = os.path.join(HOME_PATH, 'license.lic')
     logging.debug('Got license data from %s', licfile)
     with open(licfile) as f:
-        data = urlencode({'rcode': f.read()}).encode('utf-8')
+        licdata = urlencode({'rcode': f.read()}).encode('utf-8')
 
     try:
-        res = _urlopen(key_url % key, data, timeout=3.0)
-        customer = json_loads(res.read().decode())
+        logging.debug('Query url: %s', key_url % key)
+        res = _urlopen(key_url % key, licdata, timeout=3.0)
+        data = json_loads(res.read().decode())
     except Exception as e:
-        if hasattr(sys, '_debug_pyarmor'):
-            logging.warning(e)
-        return 'Because of internet exception, could not query ' \
-               'registration information.'
+        return '\nError: %s' % str(e)
 
-    name = customer['name']
-    email = customer['email']
+    name = data['name']
+    email = data['email']
     if name and email:
-        info = 'This code is authorized to "%s <%s>"\n\n' \
+        return 'This code is authorized to "%s <%s>"\n\n' \
             'Note: the registration name and email are got from ' \
             'remote server and shown here only, they will not be used ' \
             'anywhere else. But the code "%s" will be distributed ' \
             'with obfusated scripts.' % (name, email, key)
-    else:
-        info = 'Warning: this code may NOT be issued by PyArmor officially.' \
-            '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'
-    return info
+
+    if 'error' in data:
+        return '\nError: %s' % data['error']
+
+    return '\nError: this code may NOT be issued by PyArmor officially.' \
+        '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'
 
 
 def activate_regcode(ucode):
@@ -1535,7 +1535,7 @@ def _urlopen(*args, **kwargs):
     try:
         return urlopen(*args, **kwargs)
     except Exception:
-        if args[0].starswith('https:') and 'context' not in kwargs:
+        if args[0].startswith('https:') and 'context' not in kwargs:
             from ssl import _create_unverified_context
             kwargs['context'] = _create_unverified_context()
             return urlopen(*args, **kwargs)

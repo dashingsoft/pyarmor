@@ -1015,7 +1015,6 @@ def _version_info(verbose=2):
     info = [ver]
     if rcode:
         info.append('Registration Code: %s' % rcode)
-        info.append('')
         info.append(query_keyinfo(rcode))
     if verbose > 1:
         info.extend(['', version_info])
