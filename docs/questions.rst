@@ -392,6 +392,18 @@ If report this error as running command `pyarmor pack`:
 
     pyarmor pack --clean foo.py
 
+NameError: name ‘__pyarmor__’ is not defined
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Check the traceback to find which script raises this exception, it's helpful to
+find the problem.
+
+Try to only copy your own scripts to an empty path, then pack it in this path.
+
+If system module `os`, `ctypes`, or pyarmor module `pytransform.py` are
+obfuscated, it may raise this exception.
+
+If it works in trial version, but fails after pyarmor is registered, try to make
+a :ref:`clean uninstallation`
 
 PyArmor Registration Problem
 ----------------------------
@@ -401,8 +413,9 @@ Purchased pyarmor is not private
 Even obfuscated with purchased version, license from trial version works:
 
 * Make sure command `pyarmor register` shows correct registration information
-* Make sure :ref:`global capsule` file `~/.pyarmor/.pyarmor_capsule.zip` is same as the one in the keyfile `pyarmor-regfile-1.zip`
-* Make a :ref:`Clean uninstallation`
+* Make a :ref:`clean uninstallation`, and register again
+* Make sure the current user is same as the one to register pyarmor
+* Make sure environment variable `PYARMOR_HOME` is not set
 * Try to reboot system.
 
 Could not query registration information
@@ -461,5 +474,17 @@ structure of code object of python, how python interpreter each instruction. If
 someone of them start to reverse, he/she must step by step thousands of machine
 instruction, and research the algorithm by machine codes. So it's not an easy
 thing to reverse pyarmor.
+
+
+How to get receipt or invoice
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+MyCommerce handles all the sales of pyarmor
+
+Please get help from this page for order/recipt/invoice issue
+
+https://www.mycommerce.com/shopper-support/
+
+Or contact "ClientSupport@MyCommerce.com" directly
 
 .. include:: _common_definitions.txt
