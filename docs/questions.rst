@@ -395,15 +395,14 @@ If report this error as running command `pyarmor pack`:
 NameError: name ‘__pyarmor__’ is not defined
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Check the traceback to find which script raises this exception, it's helpful to
-find the problem.
+find the problem:
 
-Try to only copy your own scripts to an empty path, then pack it in this path.
-
-If system module `os`, `ctypes`, or pyarmor module `pytransform.py` are
-obfuscated, it may raise this exception.
-
-If it works in trial version, but fails after pyarmor is registered, try to make
-a :ref:`clean uninstallation`
+* If `pytransform.py` or `pytransform/__init__.py` raises this exception. Make
+  sure it is not obfuscated, it must be plain script.
+* Also check system module `os`, `ctypes`, make sure they're not obfuscated.
+* Try to only copy your own scripts to an empty path, then pack it in this path.
+* If it works in trial version, but fails after pyarmor is registered, try to
+  make a :ref:`clean uninstallation`
 
 PyArmor Registration Problem
 ----------------------------
