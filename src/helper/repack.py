@@ -160,8 +160,6 @@ def repack_pyz(pyz, obfpath, cipher=None, clean=False):
     code_dict = {}
     obflist = []
 
-    logger.info('Patching PYZ file: "%s"', pyz)
-
     n = len(obfpath) + 1
     for dirpath, dirnames, filenames in os.walk(obfpath):
         for pyfile in [x for x in filenames if x.endswith('.py')]:
@@ -176,7 +174,9 @@ def repack_pyz(pyz, obfpath, cipher=None, clean=False):
             obflist.append(name)
     logger.debug('Got obfuscated items: %s', obflist)
 
+    logger.info('Patching PYZ file "%s"', pyz)
     arch = ZlibArchive(pyz)
+
     logic_toc = []
     for name in arch.toc:
         logger.debug('Extract %s', name)
@@ -188,7 +188,7 @@ def repack_pyz(pyz, obfpath, cipher=None, clean=False):
             code_dict[name] = obj
         pathname = '__init__.py' if typ == PYZ_TYPE_PKG else name
         logic_toc.append((name, pathname, 'PYMODULE'))
-    logger.debug('unhandled items are %s', obflist)
+    logger.debug('unhandled obfuscated items are %s', obflist)
 
     ZlibArchiveWriter(pyz, logic_toc, code_dict=code_dict, cipher=cipher)
     logger.info('Patch PYZ done')
@@ -198,17 +198,17 @@ def repack_exe(path, obfname, logic_toc, obfentry):
     logger.info('Repacking EXE "%s"', obfname)
 
     offset, pylib_name = get_carchive_info(obfname)
-    logger.info('Get archive info: %d %s', offset, pylib_name)
+    logger.info('Get archive info (%d, "%s")', offset, pylib_name)
 
     pkgname = os.path.join(path, 'PKG-pyarmor-patched')
-    logging.info('Patching PKG file: %s', pkgname)
+    logging.info('Patch PKG file "%s"', pkgname)
     CArchiveWriter2(pkgname, logic_toc, pylib_name=pylib_name)
 
     if is_linux:
         logger.info('Update section pydata in EXE')
         Popen(['objcopy', '--update-section', 'pydata=%s' % pkgname, obfname])
     else:
-        logger.info('Update PKG in EXE')
+        logger.info('Update patched PKG in EXE')
         with open(obfname, 'ab') as outf:
             # Keep bootloader
             outf.seek(offset, os.SEEK_SET)
@@ -219,9 +219,11 @@ def repack_exe(path, obfname, logic_toc, obfentry):
 
     if is_darwin:
         # Fix Mach-O header for codesigning on OS X.
-        logger.info("Fixing EXE for code signing %s", obfname)
+        logger.info('Fixing EXE for code signing "%s"', obfname)
         import PyInstaller.utils.osx as osxutils
         osxutils.fix_exe_for_code_signing(obfname)
+
+        logger.info('Repack EXE "%s" successfully', obfname)
 
 
 def repacker(executable, obfpath, entry=None):
