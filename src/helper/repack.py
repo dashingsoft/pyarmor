@@ -2,9 +2,8 @@
 
 This script is used to repack PyInstaller bundle with obfuscated scripts
 
-First obfuscate the scripts by PyArmor, then pack the script by PyInstaller,
-finally run this script to extract the bundle, replace the orginal scripts with
-obfuscated ones, and repack it again.
+First obfuscate the scripts by PyArmor, next pack the script by PyInstaller,
+then run this script to repack the bundle with obfuscated scripts again.
 
 * Obfuscate the scripts to "obfdist"
 
@@ -16,7 +15,7 @@ obfuscated ones, and repack it again.
 
     # Make sure the obfuscated scripts work
 
-* Pack your scripts with PyInstaller
+* Pack the script with PyInstaller
 
     # One folder mode
     pyinstaller foo.py
@@ -129,17 +128,31 @@ def get_carchive_info(filepath):
 
 def append_runtime_files(logic_toc, obfpath):
     logger.info('Appending runtime files to archive')
+
+    n = 0
+
+    def add_toc(typcd, name, pathnm):
+        logger.info('Add "%s"', pathnm)
+        if os.path.isdir(pathnm):
+            raise RuntimeError('It is not allowed to write path "%s" to '
+                               'bundle. When obfuscating the scripts, '
+                               'make sure "--package-runtime 0" is used',
+                               pathnm)
+        if n > 1:
+            raise RuntimeError('In the path "%s", there are two many '
+                               'files start with "pytransform" or '
+                               '"_pytransform", there shuold be only one',
+                               obfpath)
+        logic_toc.append((1, 0, 0, 1, typcd, name, pathnm))
+
     for name in os.listdir(obfpath):
         pathnm = os.path.join(obfpath, name)
-        if name.startswith('pytransform'):
-            logger.info('Add "%s"', pathnm)
-            logic_toc.append((1, 0, 0, 1, 'b', name, pathnm))
-        elif name.startswith('_pytransform'):
-            logger.info('Add "%s"', pathnm)
-            logic_toc.append((1, 0, 0, 1, 'b', name, pathnm))
+        if name.startswith('pytransform') or name.startswith('_pytransform'):
+            n += 1
+            add_toc('b', name, pathnm)
         elif name == 'license.lic':
-            logger.info('Add "%s"', pathnm)
-            logic_toc.append((1, 0, 0, 1, 'x', name, pathnm))
+            add_toc('x', name, pathnm)
+
     logger.info('Append runtime files OK')
 
 
