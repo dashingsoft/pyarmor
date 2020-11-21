@@ -223,7 +223,7 @@ def repack_exe(path, obfname, logic_toc, obfentry):
         import PyInstaller.utils.osx as osxutils
         osxutils.fix_exe_for_code_signing(obfname)
 
-        logger.info('Repack EXE "%s" successfully', obfname)
+    logger.info('Generate patched bundle "%s" successfully', obfname)
 
 
 def repacker(executable, obfpath, entry=None):
