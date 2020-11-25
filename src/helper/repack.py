@@ -2,10 +2,25 @@
 
 This script is used to repack PyInstaller bundle with obfuscated scripts
 
-First obfuscate the scripts by PyArmor, next pack the script by PyInstaller,
-then run this script to repack the bundle with obfuscated scripts again.
+First pack the script by PyInstaller, next obfuscate the scripts by PyArmor,
+finally run this script to repack the bundle with obfuscated scripts again.
 
-* Obfuscate the scripts to "obfdist"
+* Pack the script with PyInstaller, make sure the final bundle works
+
+    # One folder mode
+    pyinstaller foo.py
+
+    # Check it works
+    dist/foo/foo
+
+    # One file mode
+    pyinstaller --onefile foo.py
+
+    # Check it works
+    dist/foo
+
+* Obfuscate the scripts to "obfdist", make sure the obfuscated scripts
+  work
 
     # Option --package-runtime should be set to 0
     pyarmor obfuscate -O obfdist --package-runtime 0 foo.py
@@ -13,27 +28,24 @@ then run this script to repack the bundle with obfuscated scripts again.
     # For super mode
     pyarmor obfuscate -O obfdist --advanced 2 foo.py
 
-    # Make sure the obfuscated scripts work
+    # Check it works
+    python dist/foo.py
 
-* Pack the script with PyInstaller
+* Repack the final executable, use the same Python interpreter as PyInstaller using
 
     # One folder mode
-    pyinstaller foo.py
+    python repack.py -p obfdist dist/foo/foo
+
+    # Overwrite the old one
+    cp foo-obf dist/foo/foo
 
     # One file mode
-    pyinstaller --onefile foo.py
+    python repack.py -p obfdist dist/foo
 
-    # Make sure the final bundle works
+    # Overwrite the old one
+    cp foo-obf dist/foo
 
-* Repack the final executable
-
-        # One folder mode
-        python repack.py -p obfdist dist/foo/foo
-
-        # One file mode
-        python repack.py -p obfdist dist/foo
-
-The patched bundle is saved as "foo-obf".
+Here "foo-obf" is the patched bundle.
 
 '''
 import argparse

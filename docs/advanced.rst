@@ -1363,4 +1363,67 @@ The other solution is to obfuscate system module :mod:`threading` or
 some modules in package :mod:`multiprocessing` with mode 1. Make sure
 the caller is obfuscated.
 
+.. _repack pyinstaller bundle with obfuscated scripts:
+
+Repack PyInstaller bundle with obfuscated scripts
+-------------------------------------------------
+
+Since v6.5.5, PyArmor provides a helper script ``repack.py`` which is used to
+repack PyInstaller bundle with obfuscated scripts.
+
+First pack the script by PyInstaller, next obfuscate the scripts by PyArmor,
+finally run this script to repack the bundle with obfuscated scripts.
+
+* Pack the script with PyInstaller, make sure the final bundle works::
+
+    # One folder mode
+    pyinstaller foo.py
+
+    # Check it works
+    dist/foo/foo
+
+    # One file mode
+    pyinstaller --onefile foo.py
+
+    # Check it works
+    dist/foo
+
+* Obfuscate the scripts to "obfdist", make sure the obfuscated scripts work::
+
+    # Option --package-runtime should be set to 0
+    pyarmor obfuscate -O obfdist --package-runtime 0 foo.py
+
+    # For super mode
+    pyarmor obfuscate -O obfdist --advanced 2 foo.py
+
+    # Check it works
+    python dist/foo.py
+
+* Repack the final executable, use the same Python interpreter as PyInstaller
+  using::
+
+    # One folder mode
+    python repack.py -p obfdist dist/foo/foo
+
+    # Overwrite the old one
+    cp foo-obf dist/foo/foo
+
+    # One file mode
+    python repack.py -p obfdist dist/foo
+
+    # Overwrite the old one
+    cp foo-obf dist/foo
+
+Here ``foo-obf`` is the patched bundle.
+
+.. note::
+
+    Before v6.5.5, please download ``repack.py`` from
+
+    https://github.com/dashingsoft/pyarmor/raw/master/src/helper/repack.py
+
+    Since v6.5.5, run it by this way::
+
+        python -m pyarmor.helper.repack -p obfdist dist/foo
+
 .. include:: _common_definitions.txt
