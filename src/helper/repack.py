@@ -3,7 +3,7 @@
 This script is used to repack PyInstaller bundle with obfuscated scripts
 
 First pack the script by PyInstaller, next obfuscate the scripts by PyArmor,
-finally run this script to repack the bundle with obfuscated scripts again.
+finally run this script to repack the bundle with obfuscated scripts.
 
 * Pack the script with PyInstaller, make sure the final bundle works
 
