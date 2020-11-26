@@ -630,7 +630,7 @@ def copy_runtime(path, output, licfile=None, dryrun=False):
             copy3(src, dst)
             name = x
             tlist.append(ext)
-        elif x.stratswith('_pytransform') or x == 'platforms':
+        elif x.startswith('_pytransform') or x == 'platforms':
             copy3(src, dst)
 
     if name is None:
