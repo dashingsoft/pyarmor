@@ -1154,7 +1154,7 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         if sys.platform not in ('win32',):
             raise RuntimeError('VM Protect mode only works for Windows')
         for platid in platforms:
-            if not platid.starswith('windows'):
+            if not platid.startswith('windows'):
                 raise RuntimeError('VM Protect mode only works for Windows')
             nlist = platid.split('.')
             if len(nlist) > 2:
