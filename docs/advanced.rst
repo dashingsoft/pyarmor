@@ -1421,7 +1421,7 @@ finally run this script to repack the bundle with obfuscated scripts.
     # Check it works
     dist/foo/foo
 
-    # One file mode
+    # If prefer to one file mode, run this command
     pyinstaller --onefile foo.py
 
     # Check it works
@@ -1432,7 +1432,7 @@ finally run this script to repack the bundle with obfuscated scripts.
     # Option --package-runtime should be set to 0
     pyarmor obfuscate -O obfdist --package-runtime 0 foo.py
 
-    # For super mode
+    # If prefer to super mode, run this command
     pyarmor obfuscate -O obfdist --advanced 2 foo.py
 
     # Check it works
@@ -1441,13 +1441,13 @@ finally run this script to repack the bundle with obfuscated scripts.
 * Repack the final executable, use the same Python interpreter as PyInstaller
   using::
 
-    # One folder mode
+    # If one folder mode
     python repack.py -p obfdist dist/foo/foo
 
     # Overwrite the old one
     cp foo-obf dist/foo/foo
 
-    # One file mode
+    # If one file mode
     python repack.py -p obfdist dist/foo
 
     # Overwrite the old one
