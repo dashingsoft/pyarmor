@@ -81,6 +81,10 @@ Then make the :ref:`runtime package`, save it in the path `dist`::
 
     pyarmor build --output dist --only-runtime pkg1
 
+Or run command :ref:`runtime` to generate :ref:`runtime package` directly::
+
+    pyarmor runtime --output dist
+
 Next obfuscate 3 packages, save them in the `dist`::
 
     pyarmor build --output dist --no-runtime pkg1
