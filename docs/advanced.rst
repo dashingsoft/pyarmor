@@ -153,6 +153,41 @@ Or disable it by this way::
     pyarmor config --enable-suffix 0
     pyarmor build -B
 
+.. _distributing obfuscated packages:
+
+Distributing Obfuscated Packages
+--------------------------------
+
+If there are many packages to distribute, it's recommend to generate a
+:ref:`Runtime Package` with enable suffix separately and share it for all of
+these packages.
+
+For example, first generate :ref:`Runtime Package` by command :ref:`runtime`::
+
+    pyarmor runtime --enable-suffix -O dist/shared
+
+The output package may looks like ``dist/shared/pytransform_vax_000001``
+
+For each package, obfuscated it with this shared pytransform::
+
+    pyarmor obfuscate --enable-suffix --recursive --bootstrap 2 \
+                      -O dist/pkg1 --runtime @dist/shared src/pkg1/__init__.py
+
+If option ``--runtime`` is not available, it's new in v6.3.7, replace it with
+``--no-runtime``::
+
+    pyarmor obfuscate --enable-suffix --recursive --bootstrap 2 \
+                      -O dist/pkg1 --no-runtime src/pkg1/__init__.py
+
+Then distribute package `pytransform_vax_000001` as a normal package.
+
+Finally, distribute obfuscated package `dist/pkg1`, add a dependency in setup
+script. For example::
+
+    install_requires=['pytransform_vax_000001']
+
+Do the same thing as `pkg1` for other packages `pkg2`, `pkg3` etc.
+
 .. _distributing obfuscated scripts to other platform:
 
 Distributing Obfuscated Scripts To Other Platform
