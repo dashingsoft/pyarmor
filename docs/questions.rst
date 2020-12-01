@@ -3,7 +3,8 @@
 When Things Go Wrong
 ====================
 
-When there is in trouble, try to solve it by these ways.
+When there is in trouble, check the output log message, it may be helpful to
+find the problem. And try these ways
 
 As running ``pyarmor``:
 
@@ -262,15 +263,17 @@ it will raise this exception.
 
 Marshal loads failed when running xxx.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1. Check whether the version of Python to run obfuscated scripts is
-   same as the version of Python to obfuscate script
+1. Check whether the version of Python to run obfuscated scripts is same as the
+   version of Python to obfuscate script
 
 2. Run obfuscated script by `python -d` to show more error message.
 
-3. Be sure the capsule used to generated the license file is same as
-   the capsule used to obfuscate the scripts. The filename of the
-   capsule will be shown in the console when the command is running.
+3. Be sure the capsule used to generated the license file is same as the capsule
+   used to obfuscate the scripts. The filename of the capsule will be shown in
+   the console when the command is running.
 
+4. For cross platform obfuscation, make sure the dynamic library feature is set
+   correctly, refer to :ref:`Obfuscating scripts with different features`
 
 _pytransform can not be loaded twice
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
