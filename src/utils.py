@@ -245,17 +245,17 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
         libname = p['filename']
         path = '/'.join([p['path'], libname])
 
+        dest = os.path.join(output, *p['id'].split('.'))
+        logging.info('Target path for %s: %s', p['id'], dest)
+        if not os.path.exists(dest):
+            os.makedirs(dest)
+
         logging.info('Downloading library file for %s ...', p['id'])
         timeout = 300.0 if 'VM' in p['features'] else 120.0
         res = _get_remote_file(urls, path, timeout=timeout)
 
         if res is None:
             raise RuntimeError('Download library file failed')
-
-        dest = os.path.join(output, *p['id'].split('.'))
-        if not os.path.exists(dest):
-            logging.info('Create target path: %s', dest)
-            os.makedirs(dest)
 
         data = res.read()
         if hashlib.sha256(data).hexdigest() != p['sha256']:
