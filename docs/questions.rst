@@ -138,6 +138,22 @@ run full path pyarmor, or add path of pyarmor to environment variable PATH.
 If not by pip, the equivalent of the pyarmor command is running Python script
 "pyarmor.py" found in the distribution folder.
 
+__snprintf_chk: symbol not found
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+When run pyarmor in some dockers, it may raise this exception. Because these
+dockers are built with musl-libc, but the default ``_pytransform.so`` is built
+with glibc, ``__snprintf_chk`` is missed in the musl-libc.
+
+In this case, try to download the corresponding dynamic library
+
+For x86/64
+http://pyarmor.dashingsoft.com/downloads/latest/alpine/_pytransform.so
+
+For ARM
+http://pyarmor.dashingsoft.com/downloads/latest/alpine.arm/_pytransform.so
+
+And overwrite the old one which filename could be found in the traceback.
+
 
 Obfuscating Scripts Problem
 ---------------------------
