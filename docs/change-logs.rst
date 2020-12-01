@@ -3,6 +3,15 @@
 Change Logs
 ===========
 
+6.5.5
+-----
+* Add helper script `repack.py`, refer to
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#repack-pyinstaller-bundle-with-obfuscated-scripts
+* Add more log message when downloading dynamic library failed
+* Fix bug: it raises `'str' object has no attribute 'starswith'` when
+  obfuscating scripts with some platforms
+* Fix `pyarmor_runtime` reentrant issue
+
 6.5.3
 -----
 * Refine output message when checking registration information by command
