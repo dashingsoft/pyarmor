@@ -215,13 +215,13 @@ Platform Tables
      -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/freebsd/_pytransform.so>`_
      - Not support harddisk serial number
-   * - alpine.x86_64
+   * - musl.x86_64
      - Alpine Linux
      - x86_64
      -
      - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/alpine/_pytransform.so>`_
      - Built with musl-1.1.21 for Docker
-   * - alpine.arm
+   * - musl.arm
      - Alpine Linux
      - arm
      -
