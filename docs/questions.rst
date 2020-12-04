@@ -377,6 +377,54 @@ to `linux.armv7.0`. For examples::
     pyarmor obfuscate foo.py
     pyarmor build
 
+How to customize error message
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I have started to play around with pyarmor. When using a license file that
+expires you get the message “License is expired”. Is there a way to change this
+message?
+
+At this time, you need patch the source script `pytransform.py` in the pyarmor
+package. There is a function `pyarmor_runtime`
+
+.. code:: python
+
+    def pyarmor_runtime(path=None, suffix='', advanced=0):
+        ...
+        try:
+            pyarmor_init(path, is_runtime=1, suffix=suffix, advanced=advanced)
+            init_runtime()
+        except Exception as e:
+            if sys.flags.debug or hasattr(sys, '_catch_pyarmor'):
+                raise
+            sys.stderr.write("%s\n" % str(e))
+            sys.exit(1)
+
+Change the hanler of the exception as you desired.
+
+If the scripts are obfuscated by super mode, this solution doesn't work. You may
+create boot script to catch exception raised by the obfuscated scripts. For
+example
+
+.. code:: python
+
+   try:
+       import obfuscated_script
+   except Exception as e:
+       print('something is wrong')
+
+The disadvantage is that exceptions even raised by normal scripts are catched
+either.
+
+undefined symbol: PyUnicodeUCS4_AsUTF8String
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If Python interpreter is built with UCS2, it may raises this issue when running
+super mode obufscated scripts. In this case, try to obfuscate script with
+platform ``centos6.x86_64``, it's built with UCS2. For example::
+
+    pyarmor obfuscate --advanced 2 --platform centos6.x86_64 foo.py
+
 
 Packing Obfuscated Scripts Problem
 ----------------------------------
