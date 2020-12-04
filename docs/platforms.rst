@@ -539,3 +539,73 @@ Platform Tables
      - Anti-Debug, SUPER, VM
      - `pytransform.pyd <http://pyarmor.dashingsoft.com/downloads/latest/windows.x86.25.py27/pytransform.pyd>`_
      - Cross compile by i686-w64-mingw32-gcc in cygwin
+
+.. _downloading dynamic library by manual:
+
+Downloading Dynamic Library By Manual
+-------------------------------------
+
+If the machine is not connected to internet, download the corresponding dynamic
+library in other machine, then copy it in the right location.
+
+First make sure there is platform index file ``platforms/index.json``. If not,
+run any `pyarmor` command in target machine, it raises exception. For example::
+
+    pyarmor.py o --advanced 2 foo.py
+
+    INFO     PyArmor Version 6.4.2
+    INFO     Target platforms: Native
+    INFO     Getting remote file: https://github.com/dashingsoft/pyarmor-core/raw/r34.8/platforms/index.json
+    INFO     Could not get file from https://github.com/dashingsoft/pyarmor-core/raw/r34.8/platforms: <urlopen error timed out>
+    INFO     Getting remote file: https://pyarmor.dashingsoft.com/downloads/r34.8/index.json
+    INFO     Could not get file from https://pyarmor.dashingsoft.com/downloads/r34.8: <urlopen error timed out>
+    ERROR    No platform list file /data/user/.pyarmor/platforms/index.json found
+
+There are 2 available urls in the log message, download one of them from other
+machine, for example::
+
+https://pyarmor.dashingsoft.com/downloads/r34.8/index.json
+
+And copy it to the prompt path in target machine::
+
+    /data/user/.pyarmor/platforms/index.json
+
+Next run `pyarmor` command in target machine again, this time it will prompt the
+download file and target path. For example::
+
+    pyarmor o --advanced 2 foo.py
+
+    ...
+    INFO Use capsule: /root/.pyarmor/.pyarmor_capsule.zip
+    INFO Output path is: /root/supervisor/dist
+    INFO Taget platforms: []
+    INFO Update target platforms to: [u'linux.x86_64.11.py27']
+    INFO Generating super runtime library to dist
+    INFO Search library for platform: linux.x86_64.11.py27
+    INFO Found available libraries: [u'linux.x86_64.11.py27']
+    INFO Target path for linux.x86_64.11.py27: /home/jondy/.pyarmor/platforms/linux/x86_64/11/py27
+    INFO Downloading library file for linux.x86_64.11.py27 ...
+    INFO Getting remote file: https://github.com/dashingsoft/pyarmor-core/raw/r34.8/platforms/linux.x86_64.11.py27/pytransform.so
+    INFO Could not get file from https://github.com/dashingsoft/pyarmor-core/raw/r34.8/platforms: <urlopen error [Errno 111] Connection refused>
+    INFO Getting remote file: https://pyarmor.dashingsoft.com/downloads/r34.8/linux.x86_64.11.py27/pytransform.so
+    INFO Could not get file from https://pyarmor.dashingsoft.com/downloads/r34.8: <urlopen error [Errno 111] Connection refused>
+    ERROR Download library file failed
+
+Download it as before, for example
+
+https://github.com/dashingsoft/pyarmor-core/raw/r34.8/platforms/linux.x86_64.11.py27/pytransform.so
+
+And copy it to the path in the line ``INFO Target path``. Here it is::
+
+    /home/jondy/.pyarmor/platforms/linux/x86_64/11/py27
+
+Before PyArmor 6.5.5, no target path line. Save it to ``~/.pyarmor/platforms/``
+plus platform path. For example, the target path of platform
+``linux.x86_64.11.py27`` is ``~/.pyarmor/platforms/linux/x86_64/11/py27``.
+
+All the available dynamic libraries are stored in the repos `pyarmor-core`
+
+https://github.com/dashingsoft/pyarmor-core
+
+Each pyarmor version has the corresponding tag, for example, PyArmor 6.4.2 ->
+tag "r34.8". Switch this tag and download fiels from ``platforms``.
