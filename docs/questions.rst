@@ -403,18 +403,38 @@ package. There is a function `pyarmor_runtime`
 Change the hanler of the exception as you desired.
 
 If the scripts are obfuscated by super mode, this solution doesn't work. You may
-create boot script to catch exception raised by the obfuscated scripts. For
+create a script to catch exceptions raised by obfuscated script `foo.py`. For
 example
 
 .. code:: python
 
    try:
-       import obfuscated_script
+       import foo
    except Exception as e:
        print('something is wrong')
 
-The disadvantage is that exceptions even raised by normal scripts are catched
-either.
+By this way not only the exceptions of pyarmor but also of normal scripts are
+catched. In order to handle the exceptions of pyarmor only, first create runtime
+package by :ref:`runtime`, and obfuscate the scripts with it::
+
+    pyarmor runtime --advanced 2 -O dist
+    pyarmor obfuscate --advanced 2 --runtime @dist foo.py
+
+Then create a boot script ``dist/foo_boot.py`` like this
+
+.. code:: python
+
+   try:
+       import pytransform_bootstrap
+   except Exception as e:
+       print('something is wrong')
+   else:
+       import foo
+
+The script ``dist/pytransform_bootstrap.py`` is created by :ref:`runtime`, it's
+obfuscated from an empty script, so only pyarmor bootstrap exceptions are raised
+by it.
+
 
 undefined symbol: PyUnicodeUCS4_AsUTF8String
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
