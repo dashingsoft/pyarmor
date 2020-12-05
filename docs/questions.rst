@@ -3,8 +3,11 @@
 When Things Go Wrong
 ====================
 
-When there is in trouble, check the output log message, it may be helpful to
-find the problem. And try these ways
+If you don't know how to use pyarmor in a special case, first have a glance at
+the toc of :ref:`Advanced Topics`.
+
+When there is in trouble, check the output log message carefully, it may be
+helpful to find the problem. And try to do something to find the problem
 
 As running ``pyarmor``:
 
@@ -252,13 +255,15 @@ again.
 
 NameError: name '__pyarmor__' is not defined
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-No :ref:`Bootstrap Code` are executed before importing obfuscated
-scripts.
+No :ref:`Bootstrap Code` are executed before importing obfuscated scripts.
 
-When creating new process by `Popen` or `Process` in mod `subprocess`
-or `multiprocessing`, to be sure that :ref:`Bootstrap Code` will be
-called before importing any obfuscated code in sub-process. Otherwise
-it will raise this exception.
+* When creating new process by `Popen` or `Process` in mod `subprocess` or
+  `multiprocessing`, to be sure that :ref:`Bootstrap Code` will be called before
+  importing any obfuscated code in sub-process. Otherwise it will raise this
+  exception.
+* If `pytransform.py` or `pytransform/__init__.py` raises this exception. Make
+  sure it is not obfuscated, it must be plain script.
+* Also check system module `os`, `ctypes`, make sure they're not obfuscated.
 
 
 Marshal loads failed when running xxx.py
