@@ -1112,6 +1112,10 @@ scripts need to be obufscated. For example::
 
     pyarmor obfuscate --runtime @myruntime-1 --exact foo-2.py foo-3.py
 
+For project, set option ``--runtime`` for command :ref:`build`. For example::
+
+    pyarmor build --runtime @myruntime-1
+
 **EXAMPLES**
 
 * Generate :ref:`runtime package` ``pytransform`` in the default path `dist`::
