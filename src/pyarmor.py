@@ -40,7 +40,7 @@ import time
 # Besides no command aliases supported by Python 2.7
 import polyfills.argparse as argparse
 
-from config import version, version_info, purchase_info, buy_url, \
+from config import version, version_info, purchase_info, buy_url, help_url, \
                    config_filename, capsule_filename, license_filename
 
 
@@ -945,6 +945,23 @@ def _runtime(args):
         logging.info('Generating bootstrap script %s OK', filename)
 
 
+@arcommand
+def _help(args):
+    '''Display online documentation, goto man page or questions page.'''
+    if args.lang == 'auto':
+        lang = os.getenv('LANG', '')[:2].lower()
+        if lang not in ('en', 'zh'):
+            lang = 'en'
+    else:
+        lang = args.lang
+
+    page = 'questions.html' if args.command == 'questions' \
+        else ('man.html#%s' % args.command)
+
+    from webbrowser import open_new_tab
+    open_new_tab(help_url.format(lang=lang, page=page))
+
+
 def _check_runtime_settings(path):
     if path is None:
         return
@@ -1442,6 +1459,24 @@ def _parser():
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
     cparser.set_defaults(func=_runtime)
+
+    #
+    # Command: man
+    #
+    cparser = subparsers.add_parser(
+        'help',
+        epilog=_help.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        help='Display online documentation')
+    cparser.add_argument('-L', '--lang', default='auto',
+                         choices=('auto', 'en', 'zh'),
+                         help='Default is "%(default)s"')
+    cparser.add_argument('command', nargs='?',
+                         choices=('obfuscate', 'licenses', 'init', 'config',
+                                  'build', 'info', 'hdinfo', 'runtime',
+                                  'register', 'questions'),
+                         help='Goto man page or questions page')
+    cparser.set_defaults(func=_help)
 
     return parser
 

@@ -48,3 +48,4 @@ platform_config = 'index.json'
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
 reg_url = 'https://api.dashingsoft.com/product/key/activate/%s/'
 buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1'
+help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
