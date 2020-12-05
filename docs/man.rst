@@ -760,7 +760,7 @@ Update project settings.
 --advanced <0,1,2,3,4>          Enable advanced mode `1`, super mode `2`, vm mode `3` or `4`
 --cross-protection <0,1>        Disable or enable to insert cross protection code into entry script,
                                 it also could be a filename to specify customized protection script
---runtime-path RPATH            Set the path of runtime files in target machine
+--rpath RPATH                   Set the path of runtime files in target machine
 --plugin NAME                   Insert extra code to entry script, it could be used multiple times
 --package-runtime <0,1>         Save the runtime files as package or not
 --bootstrap <0,1,2,3>           How to insert bootstrap code to entry script

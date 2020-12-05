@@ -1235,7 +1235,7 @@ def _parser():
     cparser.add_argument('--bootstrap', '--bootstrap-code', type=int,
                          dest='bootstrap_code', choices=(0, 1, 2, 3),
                          help='How to insert bootstrap code to entry script')
-    cparser.add_argument('--runtime-path', metavar="RPATH",
+    cparser.add_argument('--rpath', '--runtime-path', metavar="RPATH",
                          help='The path to search dynamic library in runtime, '
                          'if it is not within the runtime package')
     cparser.add_argument('--plugin', dest='plugins', metavar='NAME',
