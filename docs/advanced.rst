@@ -606,7 +606,9 @@ If there is a customized .spec file works, for example::
 
     pyinstaller myscript.spec
 
-It could be used to pack obfuscated scripts directly::
+Refer to `repack pyinstaller bundle with obfuscated scripts`_
+
+Or obfuacate and pack scripts with option ``-s`` directly::
 
     pyarmor pack -s myscript.spec myscript.py
 
