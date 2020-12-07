@@ -162,6 +162,11 @@ Most of the algorithm are refined to improve the security.
 * Add common options `--boot` for special cross platform obfuscating
 * Rename platform names `alpine.*` to `musl.*`
 
+**Upgrade notes**
+
+The scripts are obfuscated by old version could not work with this version, they
+must be obfuscated again.
+
 6.2.9
 -----
 * Fix cross platform bug: in Windows it may raise exception
@@ -559,7 +564,7 @@ There are 2 major changes in this version:
             pytransform.key
             ...
 
-Upgrade notes:
+**Upgrade notes**:
 
 * If you have generated new runtime file "license.lic", it should be copied to
   `dist/pytransform` other than `dist/`
@@ -574,7 +579,7 @@ Upgrade notes:
 2. The bootstrap code must be in the obfuscated scripts, and it must be entry
    script as obfuscating.
 
-Upgrade notes:
+**Upgrade notes**:
 
 * If you have inserted bootstrap code into the obfuscated script `dist/foo.py`
   which is obfuscated but not as entry script manually. Do it by this command
