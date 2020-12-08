@@ -327,6 +327,11 @@ can't be changed any more. Do not touch the following files
 * pytransform.py
 * _pytransform.so/.dll/.dylib
 
+If the entry script is obfuscated by new version, but the runtime files are
+still old, it may raise this exception. Using option ``--no-cross-protection``
+to disable this protection, or using option ``--runtime`` to specify the same
+runtime files when obfuscating the scrpits, could fix this issue.
+
 For more information, refer to :ref:`Special Handling of Entry Script`
 
 
