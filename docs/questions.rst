@@ -480,6 +480,9 @@ pyinstaller to pack the obfuscated scripts directly, for example::
 Check this patched `.spec` and change options in this `.spec` file, make sure
 the final bundle could work.
 
+Also refer to :ref:`repack pyinstaller bundle with obfuscated scripts`, make
+sure it works by this way.
+
 No module name pytransform
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 If report this error as running command `pyarmor pack`:
