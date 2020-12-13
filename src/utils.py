@@ -1217,7 +1217,8 @@ def compatible_platform_names(platforms):
     old_forms = {
         'armv5': 'linux.arm',
         'ppc64le': 'linux.ppc64',
-        'ios.arm64': 'darwin.arm64',
+        'ios.arm64': 'darwin.aarch64',
+        'darwin.arm64': 'darwin.aarch64',
         'freebsd': 'freebsd.x86_64',
         'alpine': 'musl.x86_64',
         'alpine.arm': 'musl.arm',
