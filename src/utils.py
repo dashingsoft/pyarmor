@@ -1188,6 +1188,9 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
         else:
             n = 7
         if (n != fn1) and not (n & fn1 & 0x12):
+            if n == 7 and _format_platid().split('.')[1] in (
+                    'armv6', 'armv7', 'aarch32', 'aarch64'):
+                n = 3
             reboot = '.'.join([_format_platid(), str(n)])
             os.environ['PYARMOR_PLATFORM'] = reboot
 
