@@ -176,8 +176,8 @@ Platform Tables
    * - linxu.armv6
      - Linux
      - armv6
-     -
-     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv6.0/_pytransform.so>`_
+     - Anti-Debug, JIT
+     - `_pytransform.so <http://pyarmor.dashingsoft.com/downloads/latest/linux.armv6.3/_pytransform.so>`_
      - 32-bit Armv6 (-marm -march=armv6 -mfloat-abi=hard)
    * - linux.armv7
      - Linux
