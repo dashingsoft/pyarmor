@@ -1360,7 +1360,29 @@ It may complain of protection exception if using :mod:`multiprocessing` or
 system modules aren't obfuscated, but they try to call the function in the
 restrict modules.
 
-One solution is to define a public module with restrict mode 1, let plain
+One solution is to extend system `Thread` to overwrite its method `run`. For
+example,
+
+.. code:: python
+
+    from threading import Thread
+
+    class PrivateThread(Thread):
+
+        def run(self):
+            try:
+                if self._target:
+                    self._target(*self._args, **self._kwargs)
+            finally:
+                del self._target, self._args, self._kwargs
+
+    def foo():
+        print('Hello')
+
+    t = PrivateThread(target=foo)
+    t.start()
+
+Another solution is to define a public module with restrict mode 1, let plain
 scripts call functions in this public module.
 
 For example, here is a script ``foo.py`` using public module ``pub_foo.py``
@@ -1400,9 +1422,9 @@ Now obfuscate ``foo.py`` with mode 3 and ``pub_foo.py`` with mode 1::
     # both of options --exact and --no-runtime are required
     pyarmor obfuscate --restrict 1 --exact --no-runtime pub_foo.py
 
-The other solution is to obfuscate system module :mod:`threading` or
-some modules in package :mod:`multiprocessing` with mode 1. Make sure
-the caller is obfuscated.
+The third solution is to obfuscate system module :mod:`threading` or some
+modules in package :mod:`multiprocessing` with mode 1. Make sure the caller is
+obfuscated.
 
 .. _repack pyinstaller bundle with obfuscated scripts:
 
