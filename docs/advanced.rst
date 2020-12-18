@@ -1360,8 +1360,8 @@ It may complain of protection exception if using :mod:`multiprocessing` or
 system modules aren't obfuscated, but they try to call the function in the
 restrict modules.
 
-One solution is to extend system `Thread` to overwrite its method `run`. For
-example,
+One solution is to extend system `Thread` to overwrite its method `run` with
+lambda function. For example,
 
 .. code:: python
 
@@ -1369,12 +1369,14 @@ example,
 
     class PrivateThread(Thread):
 
-        def run(self):
+        def lambda_run(self):
             try:
                 if self._target:
                     self._target(*self._args, **self._kwargs)
             finally:
                 del self._target, self._args, self._kwargs
+
+        run = lambda self : self.lambda_run()
 
     def foo():
         print('Hello')
