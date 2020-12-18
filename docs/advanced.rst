@@ -1380,7 +1380,7 @@ example,
         print('Hello')
 
     t = PrivateThread(target=foo)
-    t.start()
+    t.run()
 
 Another solution is to define a public module with restrict mode 1, let plain
 scripts call functions in this public module.
