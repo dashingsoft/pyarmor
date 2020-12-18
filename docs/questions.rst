@@ -456,6 +456,13 @@ platform ``centos6.x86_64``, it's built with UCS2. For example::
     pyarmor obfuscate --advanced 2 --platform centos6.x86_64 foo.py
 
 
+NameError: name '__armor_wrap__' is not defined
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If :ref:`Restrict Mode` is set to 4 or 5, it may report this issue. In this case
+try to set restrict mode to 2.
+
+
 Packing Obfuscated Scripts Problem
 ----------------------------------
 
