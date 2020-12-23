@@ -348,6 +348,10 @@ def _build(args):
             if not os.path.exists(d):
                 os.makedirs(d)
 
+            if not a.endswith('.py'):
+                shutil.copy2(a, b)
+                continue
+
             if hasattr(project, 'plugins'):
                 plugins = search_plugins(project.plugins)
             else:
