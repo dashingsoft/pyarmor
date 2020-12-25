@@ -221,13 +221,15 @@ def repack_exe(path, obfname, logic_toc, obfentry):
         Popen(['objcopy', '--update-section', 'pydata=%s' % pkgname, obfname])
     else:
         logger.info('Update patched PKG in EXE')
-        with open(obfname, 'ab') as outf:
+        with open(obfname, 'r+b') as outf:
             # Keep bootloader
             outf.seek(offset, os.SEEK_SET)
 
             # write the patched archive
             with open(pkgname, 'rb') as infh:
                 shutil.copyfileobj(infh, outf, length=64*1024)
+
+            outf.truncate()
 
     if is_darwin:
         # Fix Mach-O header for codesigning on OS X.
