@@ -108,4 +108,21 @@ The :ref:`advanced mode` and :ref:`super mode` are almost same in
 performace. But :ref:`vm mode` will reduce the performance, because the core
 functions are virtualized.
 
+Run cProfile with obfuscated scritps
+------------------------------------
+
+The obfuscated scripts could work with `cProfile` or `profile`, for example::
+
+  pyarmor obfuscate foo.py
+
+  python -m cProfile dist/foo.py
+
+A few obfuscated scripts may raise exception under `cProfile` or `profile`,
+please patch the source scripts `cProfile.py` or `profile.py` to make it work.
+
+.. note::
+
+   Old versions of pyarmor may not work with `cProfile` or `profile`, in this
+   case, try to upgrade pyarmor and obfuscate the scripts again.
+
 .. include:: _common_definitions.txt
