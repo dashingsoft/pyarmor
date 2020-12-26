@@ -231,7 +231,7 @@ def repack_exe(path, obfname, logic_toc, obfentry):
             # Keep bootloader
             outf.seek(offset, os.SEEK_SET)
 
-            # write the patched archive
+            # Write the patched archive
             with open(pkgname, 'rb') as infh:
                 shutil.copyfileobj(infh, outf, length=64*1024)
 
@@ -309,11 +309,11 @@ def main():
                         default=False,
                         action='store_true',
                         dest='debug',
-                        help='Print debug log (default: %(default)s)')
+                        help='print debug log (default: %(default)s)')
     parser.add_argument('-p', '--path',
                         default='obfdist',
                         dest='obfpath',
-                        help='Obfuscated scripts path (default: %(default)s)')
+                        help='obfuscated scripts path (default: %(default)s)')
     parser.add_argument('executable', metavar='executable',
                         help="PyInstaller archive")
 
