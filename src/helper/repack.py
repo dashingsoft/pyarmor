@@ -69,11 +69,6 @@ from PyInstaller.compat import is_darwin, is_linux
 logger = logging.getLogger('repack')
 
 
-def makedirs(path, exist_ok=False):
-    if not (exist_ok and os.path.exists(path)):
-        os.makedirs(path)
-
-
 class ZlibArchive(ZlibArchiveReader):
 
     def checkmagic(self):
@@ -124,6 +119,11 @@ class CArchiveWriter2(CArchiveWriter):
 
         dlen = self.lib.tell() - where
         self.toc.add(where, dlen, ulen, flag, typcd, nm)
+
+
+def makedirs(path, exist_ok=False):
+    if not (exist_ok and os.path.exists(path)):
+        os.makedirs(path)
 
 
 def get_carchive_info(filepath):
