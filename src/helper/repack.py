@@ -69,6 +69,11 @@ from PyInstaller.compat import is_darwin, is_linux
 logger = logging.getLogger('repack')
 
 
+def makedirs(path, exist_ok=False):
+    if not (exist_ok and os.path.exists(path)):
+        os.makedirs(path)
+
+
 class ZlibArchive(ZlibArchiveReader):
 
     def checkmagic(self):
@@ -259,14 +264,13 @@ def repacker(executable, obfpath, entry=None):
 
     path = os.path.join(name + '_extracted')
     logger.info('Extracted bundle files to "%s"', path)
-    if not os.path.exists(path):
-        os.makedirs(path)
+    makedirs(path, exist_ok=True)
 
     for item in arch.toc:
         logger.debug('toc: %s', item)
         dpos, dlen, ulen, flag, typcd, nm = item
         pathnm = os.path.join(path, nm)
-        os.makedirs(os.path.dirname(pathnm), exist_ok=True)
+        makedirs(os.path.dirname(pathnm), exist_ok=True)
         with arch.lib:
             arch.lib.seek(arch.pkg_start + dpos)
             with open(pathnm, 'wb') as f:
