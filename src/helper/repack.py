@@ -102,7 +102,7 @@ class CArchiveWriter2(CArchiveWriter):
         fh.close()
 
         if patched:
-            logger.info('Patch item "%s" with "%s"', nm, pathnm)
+            logger.info('Replace item "%s" with "%s"', nm, pathnm)
             if typcd in ('s', 'M'):
                 code = compile(filedata, '<%s>' % nm, 'exec')
                 filedata = marshal.dumps(code)
@@ -219,14 +219,15 @@ def repack_exe(path, obfname, logic_toc, obfentry):
     logger.info('Get archive info (%d, "%s")', offset, pylib_name)
 
     pkgname = os.path.join(path, 'PKG-pyarmor-patched')
-    logging.info('Patch PKG file "%s"', pkgname)
+    logging.info('Patching PKG file "%s"', pkgname)
     CArchiveWriter2(pkgname, logic_toc, pylib_name=pylib_name)
+    logging.info('Patch PKG done')
 
     if is_linux:
-        logger.info('Update section pydata in EXE')
+        logger.info('Replace section "pydata" with "%s" in EXE', pkgname)
         Popen(['objcopy', '--update-section', 'pydata=%s' % pkgname, obfname])
     else:
-        logger.info('Update patched PKG in EXE')
+        logger.info('Replace PKG with "%s" in EXE', pkgname)
         with open(obfname, 'r+b') as outf:
             # Keep bootloader
             outf.seek(offset, os.SEEK_SET)
@@ -254,7 +255,7 @@ def repacker(executable, obfpath, entry=None):
 
     name, ext = os.path.splitext(os.path.basename(executable))
     entry = name if entry is None else entry
-    logger.info('Entry script name: %s', entry)
+    logger.info('Entry script name: %s.py', entry)
 
     arch = CArchiveReader(executable)
     logic_toc = []
