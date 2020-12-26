@@ -266,6 +266,7 @@ def repacker(executable, obfpath, entry=None):
         logger.debug('toc: %s', item)
         dpos, dlen, ulen, flag, typcd, nm = item
         pathnm = os.path.join(path, nm)
+        os.makedirs(os.path.dirname(pathnm), exist_ok=True)
         with arch.lib:
             arch.lib.seek(arch.pkg_start + dpos)
             with open(pathnm, 'wb') as f:
