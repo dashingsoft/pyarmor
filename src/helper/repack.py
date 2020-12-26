@@ -181,7 +181,7 @@ def repack_pyz(pyz, obfpath, cipher=None, clean=False):
     for dirpath, dirnames, filenames in os.walk(obfpath):
         for pyfile in [x for x in filenames if x.endswith('.py')]:
             pyfile = os.path.join(dirpath, pyfile)
-            logger.debug('Compile obfuscated script: %s', pyfile)
+            logger.info('Compile %s', pyfile)
             name = pyfile[n:].replace('\\', '.').replace('/', '.')[:-3]
             if name.endswith('__init__.py'):
                 name = name[:-len('__init__.py')].strip('.')
@@ -255,7 +255,7 @@ def repacker(executable, obfpath, entry=None):
 
     name, ext = os.path.splitext(os.path.basename(executable))
     entry = name if entry is None else entry
-    logger.info('Entry script name: %s.py', entry)
+    logger.info('Entry script name is "%s.py"', entry)
 
     arch = CArchiveReader(executable)
     logic_toc = []
