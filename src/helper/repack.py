@@ -181,15 +181,16 @@ def repack_pyz(pyz, obfpath, cipher=None, clean=False):
     for dirpath, dirnames, filenames in os.walk(obfpath):
         for pyfile in [x for x in filenames if x.endswith('.py')]:
             pyfile = os.path.join(dirpath, pyfile)
-            logger.info('Compile %s', pyfile)
+            logger.debug('Compile obfuscated script: %s', pyfile)
             name = pyfile[n:].replace('\\', '.').replace('/', '.')[:-3]
             if name.endswith('__init__.py'):
                 name = name[:-len('__init__.py')].strip('.')
             with open(pyfile, 'r') as f:
                 source = f.read()
+            logger.debug('Got obfuscated item: %s', name)
             code_dict[name] = compile(source, '<%s>' % name, 'exec')
             obflist.append(name)
-    logger.debug('Got obfuscated items: %s', obflist)
+    logger.info('Got %d obfuscated items', len(obflist))
 
     logger.info('Patching PYZ file "%s"', pyz)
     arch = ZlibArchive(pyz)
