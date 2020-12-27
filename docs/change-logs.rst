@@ -32,6 +32,25 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+6.5.6
+-----
+* Rename option ``--runtime-path`` to ``-rpath`` in command `config`
+* Fix issue (#403): the obfuscated scripts raise unexpected exception in Python
+  2.7 (non-super mode)
+* Add new platform `centos6.x86_64.11.py27` for Python 2.7 built with UCS2 and
+  platform glibc < 2.14
+* Add new command `help` to open online documentation in the web browser
+* Fix issue (#408): undefined symbol `PyUnicodeUCS2_AsUTF8String` in arm
+  platforms for Python 2.7
+* Rename platform name `darwin.arm64` to `darwin.aarch64`
+* Add new platform `darwin.aarch64.3`, `darwin.aarch64.11.py38` and
+  `darwin.aarch64.11.py39` to support Apple Silicon
+* In project copy non `.py` files to output directly if they're specified in the
+  project manifest
+* Fix issue (#414): repack doesn't patch the final bundle in some platforms
+* Fix issue (#415): when repacking an executable where the embedded PKG archive
+  contains subdirectories, the repack script fails
+
 6.5.5
 -----
 * Add helper script `repack.py`, refer to
