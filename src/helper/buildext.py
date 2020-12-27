@@ -1,5 +1,4 @@
-'''buildext.py
-
+'''
 This script is used to build obfuscated scripts to extensions
 
 1. Obfuscate the script with --no-cross-protection and --restrict 0
@@ -138,14 +137,14 @@ run_pyarmor(PyObject *m, PyObject *f)
 
 static struct PyModuleDef module = {
     PyModuleDef_HEAD_INIT,
-    "EXTENSION_NAME",
+    "XYZXYZ",
     NULL,
     -1,
     NULL
 };
 
 PyMODINIT_FUNC
-PyInit_EXTENSION_NAME(void)
+PyInit_XYZXYZ(void)
 {
   PyObject *f = import_pyarmor();
   if (!f)
@@ -168,13 +167,13 @@ PyInit_EXTENSION_NAME(void)
 #else
 
 PyMODINIT_FUNC
-initEXTENSION_NAME(void)
+initXYZXYZ(void)
 {
   PyObject *f = import_pyarmor();
   if (!f)
     return;
 
-  PyObject *m = Py_InitModule("EXTENSION_NAME", NULL);
+  PyObject *m = Py_InitModule("XYZXYZ", NULL);
   if (!m)
     return;
 
@@ -236,7 +235,7 @@ def make_cfile(filename, output=None):
     logger.info('Write "%s"', output)
     with open(output, 'w') as f:
         f.write('\n'.join(macros))
-        f.write(c_template.replace('EXTENSION_NAME', name))
+        f.write(c_template.replace('XYZXYZ', name))
 
     return name, output
 

@@ -1,5 +1,4 @@
-'''repack.py
-
+'''
 This script is used to repack PyInstaller bundle with obfuscated scripts
 
 First pack the script by PyInstaller, next obfuscate the scripts by PyArmor,
