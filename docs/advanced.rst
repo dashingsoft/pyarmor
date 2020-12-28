@@ -1491,4 +1491,40 @@ Here ``foo-obf`` is the patched bundle.
 
         python -m pyarmor.helper.repack -p obfdist dist/foo
 
+
+.. _build obfuscated scripts to extensions:
+
+Build obfuscated scripts to extensions
+--------------------------------------
+
+There is a helper script ``buildext.py`` in the package of pyarmor used to build
+obfuscated scripts to extensions
+
+1. Obfuscate the script with ``--no-cross-protection`` and ``--restrict 0``, for
+   example::
+
+    pyarmor obfuscate --no-cross-protection --restrict 0 foo.py
+
+2. Build obfuscated script to extension, for example::
+
+    python buildext.py dist/foo.py
+
+Or convert the obfuscated script ``dist/foo.py`` to .c file first, then
+build it by any c compiler, for example::
+
+    python buildext.py -c dist/foo.py
+    gcc $(python-config --cflags) $(python-config --ldflags) \
+        -shared -o dist/foo$(python-config --extension-suffix) \
+        dist/foo.c
+
+.. note::
+
+    Before v6.6.0, please download ``buildext.py`` from
+
+    https://github.com/dashingsoft/pyarmor/raw/master/src/helper/buildext.py
+
+    Since v6.6.0, run it by this way::
+
+        python -m pyarmor.helper.buildext ...
+
 .. include:: _common_definitions.txt
