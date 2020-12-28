@@ -196,6 +196,7 @@ def make_cfile(filename, output=None):
 
     name = os.path.basename(filename).rsplit('.', 1)[0]
     pytransform_name = 'pytransform'
+    pyarmor_name = ''
 
     with open(filename) as f:
         for line in f:
@@ -203,14 +204,14 @@ def make_cfile(filename, output=None):
                 pytransform_name = line.strip().split()[1]
             elif line.find('__file__') > 0:
                 pyarmor_name, parastr = line.strip().split('(', 1)
-                if pyarmor_name.find('pyarmor') == -1:
-                    continue
                 paras = parastr.strip()[:-1].split(',')
                 cipher_mode = paras[-1]
                 cipher_code = list(bytearray(eval(paras[-2])))
                 break
-        else:
-            raise RuntimeError('%s is not obfuscated script' % filename)
+
+    if pyarmor_name.find('pyarmor') == -1:
+        logger.warning('%s is not obfuscated script' % filename)
+        return
 
     super_mode = pyarmor_name.startswith('pyarmor')
 
@@ -284,6 +285,7 @@ def main():
         cfiles.append(make_cfile(script))
 
     if args.build:
+        cfiles = filter(None, cfiles)
         setup(name='builder',
               script_args=['build_ext'],
               ext_modules=[Extension(k, sources=[v]) for k, v in cfiles])
