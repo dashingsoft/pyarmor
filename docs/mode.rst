@@ -132,6 +132,12 @@ algorithm, and so slower than the former.
 
 Wrap Mode
 ---------
+
+.. note::
+
+    For super mode, wrap mode is always enabled, it can't be disabled
+    in super mode.
+
 * wrap_mode == 0
 
 When wrap mode is off, the code object of each function will be
