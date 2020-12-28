@@ -1485,8 +1485,11 @@ def _parser():
     return parser
 
 
-def excepthook(type, value, traceback):
-    logging.error('%s', value)
+def excepthook(type, exc, traceback):
+    if hasattr(exc, 'args'):
+        logging.error(exc.args[0], *exc.args[1:])
+    else:
+        logging.error('%s', exc)
     sys.exit(1)
 
 

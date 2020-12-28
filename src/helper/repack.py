@@ -295,11 +295,11 @@ def repacker(executable, obfpath, entry=None):
     repack_exe(path, obfname, logic_toc, obfentry)
 
 
-def excepthook(type, value, traceback):
-    if hasattr(value, 'args'):
-        logger.error(*value.args)
+def excepthook(type, exc, traceback):
+    if hasattr(exc, 'args'):
+        logging.error(exc.args[0], *exc.args[1:])
     else:
-        logger.error('%s', value)
+        logging.error('%s', exc)
     sys.exit(1)
 
 

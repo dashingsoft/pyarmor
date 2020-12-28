@@ -241,8 +241,11 @@ def make_cfile(filename, output=None):
     return name, output
 
 
-def excepthook(type, value, traceback):
-    logger.error(str(value))
+def excepthook(type, exc, traceback):
+    if hasattr(exc, 'args'):
+        logging.error(exc.args[0], *exc.args[1:])
+    else:
+        logging.error('%s', exc)
     sys.exit(1)
 
 
