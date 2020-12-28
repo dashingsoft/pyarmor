@@ -9,14 +9,12 @@ This script is used to build obfuscated scripts to extensions
 
     python buildext.py dist/foo.py
 
-Or convert the obfuscated script "dist/foo.py" to .c file first
+Or convert the obfuscated script "dist/foo.py" to .c file first, then
+build it by any c compiler, for example
 
     python buildext.py -c dist/foo.py
-
-Then build it by any c compiler, for example
-
-    gcc $(python-config --cflags) $(python-config --ldflags) \
-        -shared -o dist/foo$(python-config --extension-suffix) \
+    gcc $(python-config --cflags) $(python-config --ldflags) \\
+        -shared -o dist/foo$(python-config --extension-suffix) \\
         dist/foo.c
 '''
 import argparse
@@ -205,6 +203,8 @@ def make_cfile(filename, output=None):
                 pytransform_name = line.strip().split()[1]
             elif line.find('__file__') > 0:
                 pyarmor_name, parastr = line.strip().split('(', 1)
+                if pyarmor_name.find('pyarmor') == -1:
+                    continue
                 paras = parastr.strip()[:-1].split(',')
                 cipher_mode = paras[-1]
                 cipher_code = list(bytearray(eval(paras[-2])))
@@ -246,7 +246,10 @@ def excepthook(type, value, traceback):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description='build obfuscated scripts to extensions',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__)
     parser.add_argument('-d', '--debug',
                         default=False,
                         action='store_true',
@@ -257,7 +260,10 @@ def main():
                         action='store_false',
                         dest='build',
                         help='generate .c file only (default: False)')
-    parser.add_argument('scripts', nargs='+', help="obfuscated scripts")
+    parser.add_argument('scripts',
+                        metavar='PATH',
+                        nargs='+',
+                        help="obfuscated script or path")
 
     args = parser.parse_args(sys.argv[1:])
     if args.debug:
