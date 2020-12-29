@@ -802,6 +802,10 @@ For the details of each option, refer to :ref:`Project Configuration File`
 
     pyarmor config --manifest "global-include *.py, prune build, prune dist"
 
+* Copy all the `.json` files in the src path to output path::
+
+    pyarmor config --manifest "include *.py, include *.json"
+
 * Obfuscate script with wrap mode off::
 
     pyarmor config --wrap-mode 0

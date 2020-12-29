@@ -50,6 +50,12 @@ folder will not be obfuscated::
 
     pyarmor config --manifest "include *.py, prune dist, prune test"
 
+The data files also could be listed in manifest, and they will be copied to
+output path when building the project. For example::
+
+    pyarmor config --manifest "include *.py, include config.json"
+    pyarmor build
+
 By ``--manifest``, the project scripts could be selected exactly, more
 information refer to the description of the attribute `manifest` in the section
 `Project Configuration File`_
@@ -144,11 +150,14 @@ Each project has a configure file. It's a json file named
 
         global-include *.py
 
-    It means all files anywhere in the `src` tree matching.
+    It means all `.py` files anywhere in the `src` tree matching.
 
     Multi manifest template commands are spearated by comma, for example::
 
         global-include *.py, exclude __mainfest__.py, prune test
+
+    The data files also could be selected by manifest, they'll be copied to
+    output path when building the project.
 
     Refer to
     https://docs.python.org/2/distutils/sourcedist.html#commands
