@@ -1,29 +1,28 @@
 source test-header.sh
+set -e
 
 # ======================================================================
 #
 # Initial setup.
 #
 # ======================================================================
-
-TESTLIB=${TESTLIB:-C:/Python26/Lib/test}
 PYARMOR="${PYTHON} pyarmor.py"
 TESTROOT=$(pwd)
+TESTDIR="--testdir ../../lib/test"
+TESTLIB=$($PYTHON -c'import sys, test
+sys.stdout.write(test.__path__[0])')
 
 ALLENTRIES="test_concurrent_futures.py test_multiprocessing_forkserver.py test_weakref.py"
 RUNTIMEFILES="pytransform.py _pytransform.* pyshield.* product.key license.lic"
 
 csih_inform "Python is $PYTHON"
+csih_inform "Test package at $TESTLIB"
 csih_inform "Tested Package: $pkgfile"
 csih_inform "PyArmor is $PYARMOR"
 
 csih_inform "Make workpath ${workpath}"
 rm -rf ${workpath}
 mkdir -p ${workpath} || csih_error "Make workpath FAILED"
-
-csih_inform "Clean pyarmor data"
-rm -rf  ~/.pyarmor ~/.pyarmor_capsule.*
-[[ -n "$USERPROFILE" ]] && rm -rf "$USERPROFILE\\.pyarmor" "$USERPROFILE\\.pyarmor_capsule.*"
 
 cd ${workpath}
 [[ ${pkgfile} == *.zip ]] && unzip ${pkgfile} > /dev/null 2>&1
@@ -52,9 +51,11 @@ for s in $ALLENTRIES ; do
 done
 echo "$TESTENTRIES"
 
+if [[ -z "$TESTDIR" ]] ; then
 csih_inform "Move $TESTLIB to ${TESTLIB}.bak"
 [[ -d $TESTLIB.bak ]] && csih_error "$TESTLIB.bak has been exists!"
 mv $TESTLIB $TESTLIB.bak
+fi
 
 # Only for windows and python26, need to convert to unix format
 if [[ "$PLATFORM" == win* && "$PYTHON" == *Python26* ]] ; then
@@ -79,37 +80,19 @@ csih_inform "Show help and import pytransform"
 $PYARMOR --help >>result.log 2>&1 || csih_error "Bootstrap FAILED"
 
 csih_inform "Create project at projects/pytest"
-$PYARMOR init --src=lib/test --entry="$TESTENTRIES" projects/pytest >>result.log 2>&1
+$PYARMOR init --src=lib/test --entry="$TESTENTRIES" -t pkg projects/pytest >>result.log 2>&1
 
 csih_inform "Change current path to projects/pytest"
 cd projects/pytest
 
 csih_inform "Config project to obfuscate all test scripts"
-$ARMOR config --manifest="global-include test_*.py, exclude doctest_*.py" >result.log 2>&1
+$ARMOR config --manifest="global-include test_*.py, include regrtest.py exclude doctest_*.py" >result.log 2>&1
 
 csih_inform "Obfuscate scripts"
 $ARMOR build >>result.log 2>&1
 
-csih_inform "Copy runtime files to ../../lib/test"
-cp dist/test/* ../../lib/test
-
-csih_inform "Copy runtime files to $TESTLIB/.."
-cp dist/* $TESTLIB/..
-
-csih_inform "Copy entry script to ../../lib/test"
-cp dist/test/regrtest.py ../../lib/test
-
-csih_inform "Modify entry script, add extra path"
-BOOSTRAPCODE="import sys\ntry:\n    from pytransform import pyarmor_runtime\nexcept ImportError:\n    sys.path.append(r'$TESTLIB')\n    from pytransform import pyarmor_runtime"
-sed -i -e "s?from pytransform import pyarmor_runtime?$BOOSTRAPCODE?g" ../../lib/test/regrtest.py
-
 csih_inform "Copy obfuscated scripts to ../../lib/test"
-for s in $(find dist/test -name test_*.py) ; do
-    cp $s ${s/dist\/test\//..\/..\/lib\/test\/}
-done
-
-csih_inform "Move ../../lib/test to $TESTLIB"
-mv ../../lib/test $TESTLIB
+cp -a dist/test/* ../../lib/test/
 
 # Failed Tests:
 #
@@ -117,25 +100,34 @@ mv ../../lib/test $TESTLIB
 #     Hangup: test_argparse.TestFileTypeR* (win32)
 #
 NOTESTS="test_argparse test_profilehooks test_sys_setprofile test_sys_settrace test_cprofile"
-csih_inform "Run obfuscated test scripts without $NOTESTS"
-# (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1
-(cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS)
 
-csih_inform "Move obfuscated test scripts to ../../lib/test"
-mv $TESTLIB ../../lib/test
+if [[ -z "$TESTDIR" ]] ; then
 
-csih_inform "Restore original test scripts"
-mv $TESTLIB.bak $TESTLIB
+    csih_inform "Move ../../lib/test to $TESTLIB"
+    mv ../../lib/test $TESTLIB
+
+    csih_inform "Run obfuscated test scripts without $NOTESTS"
+    # (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS) >>result.log 2>&1
+    (cd $TESTLIB; $PYTHON regrtest.py -x $NOTESTS)
+
+    csih_inform "Move obfuscated test scripts to ../../lib/test"
+    mv $TESTLIB ../../lib/test
+
+    csih_inform "Restore original test scripts"
+    mv $TESTLIB.bak $TESTLIB
+
+else
+
+    csih_inform "Run obfuscated test scripts without $NOTESTS"
+    ($PYTHON ../../lib/test/regrtest.py $TESTDIR -x $NOTESTS)
+
+fi
 
 # ======================================================================
 #
 # Finished and cleanup.
 #
 # ======================================================================
-
-csih_inform "Remove runtime files from $TESTLIB/.."
-(cd ${TESTLIB}/..; rm -f ${RUNTIMEFILES})
-
 csih_inform "Change current path to test root: ${TESTROOT}"
 cd ${TESTROOT}
 
