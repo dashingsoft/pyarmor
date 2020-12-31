@@ -131,9 +131,9 @@ check_file_exists $OUTPUT/pytransform/_pytransform.dll
 
 csih_inform "Case CR-2: cross runtime with one platform alpine.x86_64"
 rm -rf $OUTPUT
-$PYARMOR runtime --platform alpine.x86_64 >result.log 2>&1
+$PYARMOR runtime --platform musl.x86_64 >result.log 2>&1
 check_return_value
-check_file_content result.log "musl/x86_64/0/_pytransform.so"
+check_file_content result.log "musl/x86_64/7/_pytransform.so"
 check_file_exists $OUTPUT/pytransform/_pytransform.so
 
 csih_inform "Case CR-3: cross runtime with one platform linux.armv7"
