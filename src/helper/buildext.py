@@ -410,10 +410,8 @@ def main():
         else:
             logger.warning('Ignore %s', pat)
 
-    sources = []
     random.seed()
-    for script in filelist:
-        sources.append(make_c_source(script, extra=args.executable))
+    sources = [make_c_source(x, extra=args.executable) for x in filelist]
 
     if args.build:
         sources = list(filter(None, sources))
