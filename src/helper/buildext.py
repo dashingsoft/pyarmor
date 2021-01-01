@@ -25,11 +25,14 @@ import random
 import sys
 
 from distutils.core import setup, Extension
+from distutils.ccompiler import new_compiler
+from distutils.sysconfig import customize_compiler
+from sysconfig import get_config_var, get_path
 
 
 logger = logging.getLogger('buildext')
 
-c_template = '''
+c_extension_template = '''
 #define PYARMOR_RUNTIME "pyarmor_runtime"
 
 #define PY_SSIZE_T_CLEAN
@@ -188,6 +191,61 @@ initXYZXYZ(void)
 
 '''
 
+c_extra_template = r'''
+#if (PY_MAJOR_VERSION >= 3)
+
+# if PY_MINOR_VERSION < 5
+#  error "No support for Python3.0-3.4"
+# endif
+
+# define PYSYS_SETARGV(argc, argv)                      \
+  wchar_t *wargv[255] = { 0 };                          \
+  do {                                                  \
+    int i;                                              \
+    for (i = 0; i < argc; i ++)                         \
+      wargv[i] = Py_DecodeLocale(argv[i], NULL);        \
+  } while (0);                                          \
+  PySys_SetArgv(argc, wargv);
+
+# define PYSYS_FREEARGV()   do {                \
+    wchar_t **p = wargv;                        \
+    while (*p ++)                               \
+      PyMem_RawFree(*p);                        \
+  } while (0)
+
+#else
+
+# define PYSYS_SETARGV(argc, argv) PySys_SetArgv(argc, argv)
+# define PYSYS_FREEARGV()
+
+#endif
+
+int
+main(int argc, char *argv[])
+{
+  int ret = -1;
+  PyObject *f, *m, *r;
+
+  Py_Initialize();
+  PYSYS_SETARGV(argc, argv);
+
+  m = PyImport_AddModule("__main__");
+  if (m) {
+    f = import_pyarmor();
+    if (f) {
+      r = run_pyarmor(m, f);
+      ret = r ? 0 : 1;
+      Py_XDECREF(r);
+    }
+  }
+
+  Py_Finalize();
+  PYSYS_FREEARGV();
+
+  return ret;
+}
+'''
+
 
 def make_macro_for_customized_bytecodes(bytecodes):
     n = len(bytecodes)
@@ -209,7 +267,7 @@ def makedirs(path, exist_ok=False):
         os.makedirs(path)
 
 
-def make_cfile(filename, output=None):
+def make_c_source(filename, output=None, extra=None):
     logger.info('Analysis "%s"', filename)
 
     name = os.path.basename(filename).rsplit('.', 1)[0]
@@ -255,9 +313,41 @@ def make_cfile(filename, output=None):
     logger.info('Write "%s"', output)
     with open(output, 'w') as f:
         f.write('\n'.join(macros))
-        f.write(c_template.replace('XYZXYZ', name))
+        f.write(c_extension_template.replace('XYZXYZ', name))
+        if extra:
+            f.write(c_extra_template)
 
     return name, output
+
+
+def make_extensions(sources):
+    setup(name='builder',
+          script_args=['build_ext'],
+          ext_modules=[Extension(k, sources=[v]) for k, v in sources])
+
+
+def make_executables(sources):
+    cc = new_compiler()
+    customize_compiler(cc)
+
+    include_dirs = [get_path(x) for x in ('include', 'platinclude')]
+    cc.set_include_dirs(include_dirs)
+
+    if not get_config_var('Py_ENABLE_SHARED'):
+        cc.add_library_dir(get_config_var('LIBPL'))
+    cc.add_library('python' + get_config_var('VERSION') + sys.abiflags)
+
+    cflags = get_config_var('CFLAGS').split()
+    ldflags = get_config_var('LIBS').split()
+    ldflags += get_config_var('SYSLIBS').split()
+
+    objects = cc.object_filenames(sources)
+    cc.compile(sources, extra_preargs=cflags)
+    for src, obj in zip(sources, objects):
+        cc.link_executable([obj],
+                           cc.executable_filename(src),
+                           extra_postargs=ldflags)
+    [os.remove(x) for x in objects]
 
 
 def excepthook(type, exc, traceback):
@@ -283,10 +373,15 @@ def main():
                         action='store_false',
                         dest='build',
                         help='generate .c file only (default: False)')
+    parser.add_argument('-e',
+                        default=False,
+                        action='store_true',
+                        dest='executable',
+                        help='build executable (default: %(default)s)')
     parser.add_argument('scripts',
                         metavar='PATH',
                         nargs='+',
-                        help="obfuscated script or path")
+                        help="obfuscated scripts or all the scripts in path")
 
     args = parser.parse_args(sys.argv[1:])
     if args.debug:
@@ -303,16 +398,21 @@ def main():
         else:
             logger.warning('Ignore %s', pat)
 
-    cfiles = []
+    sources = []
     random.seed()
     for script in filelist:
-        cfiles.append(make_cfile(script))
+        sources.append(make_c_source(script, extra=args.executable))
 
     if args.build:
-        cfiles = filter(None, cfiles)
-        setup(name='builder',
-              script_args=['build_ext'],
-              ext_modules=[Extension(k, sources=[v]) for k, v in cfiles])
+        sources = filter(None, sources)
+        if args.executable:
+            make_executables(sources)
+        else:
+            make_extensions(sources)
+
+        if not args.debug:
+            logger.info('Remove all generated .c files')
+            [os.remove(x) for x in sources]
 
 
 if __name__ == '__main__':
