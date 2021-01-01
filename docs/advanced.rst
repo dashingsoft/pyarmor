@@ -1509,13 +1509,18 @@ obfuscated scripts to extensions
 
     python buildext.py dist/foo.py
 
-Or convert the obfuscated script ``dist/foo.py`` to .c file first, then
-build it by any c compiler, for example::
+Or first convert the obfuscated script ``dist/foo.py`` to `.c` file by ``-c``,
+customize this `.c` file, then build it by any c compiler, for example::
 
     python buildext.py -c dist/foo.py
     gcc $(python-config --cflags) $(python-config --ldflags) \
         -shared -o dist/foo$(python-config --extension-suffix) \
         dist/foo.c
+
+It also could generate an exetuable for script by option ``-e``, for example::
+
+    python buildext.py -e dist/foo.py
+    dist/foo.exe
 
 .. note::
 
