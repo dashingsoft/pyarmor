@@ -424,6 +424,7 @@ def main():
             filelist.extend(glob.glob(os.path.join(pat, '*.py')))
         else:
             logger.warning('Ignore %s', pat)
+    filelist.sort()
 
     random.seed()
     sources = [make_c_source(x, extra=args.executable) for x in filelist]
