@@ -326,14 +326,14 @@ def make_c_source(filename, output=None, extra=None):
     return output
 
 
-def make_extensions(sources):
+def build_extensions(sources):
     modules = [(os.path.basename(src)[:-2], src) for src in sources]
     setup(name='builder',
           script_args=['build_ext'],
           ext_modules=[Extension(k, sources=[v]) for k, v in modules])
 
 
-def make_executables(sources):
+def make_extensions(sources, executable=False):
     cc = new_compiler()
     customize_compiler(cc)
 
@@ -353,10 +353,20 @@ def make_executables(sources):
 
     objects = cc.object_filenames(sources)
     cc.compile(sources, extra_preargs=cflags)
+
+    if executable:
+        def cc_link(src, obj):
+            output = cc.executable_filename(src[:-2])
+            logger.info('Generate executable "%s"', output)
+            cc.link_executable([obj], output, extra_postargs=ldflags)
+    else:
+        def cc_link(src, obj):
+            output = cc.shared_object_filename(src[:-2])
+            logger.info('Generate extension "%s"', output)
+            cc.link_shared_object([obj], output, extra_postargs=ldflags)
+
     for src, obj in zip(sources, objects):
-        output = cc.executable_filename(src[:-2])
-        logger.info('Generate executable "%s"', output)
-        cc.link_executable([obj], output, extra_postargs=ldflags)
+        cc_link(src, obj)
 
     logger.debug('Clean all .o files')
     [os.remove(x) for x in objects]
@@ -390,6 +400,11 @@ def main():
                         action='store_true',
                         dest='executable',
                         help='generate executable (default: %(default)s)')
+    parser.add_argument('-i',
+                        default=False,
+                        action='store_true',
+                        dest='inplace',
+                        help='remove script after build (default: %(default)s)')
     parser.add_argument('scripts',
                         metavar='PATH',
                         nargs='+',
@@ -412,13 +427,16 @@ def main():
 
     random.seed()
     sources = [make_c_source(x, extra=args.executable) for x in filelist]
+    sources = [x for x in sources if x]
 
     if args.build:
-        sources = list(filter(None, sources))
-        if args.executable:
-            make_executables(sources)
-        else:
-            make_extensions(sources)
+        make_extensions(sources, executable=args.executable)
+        if not args.debug:
+            [os.remove(x) for x in sources]
+
+    if args.inplace and sources:
+        logger.info('Remove obfuscated scripts')
+        [os.remove(x[:-2] + '.py') for x in sources]
 
 
 if __name__ == '__main__':
