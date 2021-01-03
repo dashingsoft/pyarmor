@@ -263,7 +263,8 @@ No :ref:`Bootstrap Code` are executed before importing obfuscated scripts.
   exception.
 * If `pytransform.py` or `pytransform/__init__.py` raises this exception. Make
   sure it is not obfuscated, it must be plain script.
-* Also check system module `os`, `ctypes`, make sure they're not obfuscated.
+* Also check system module `os`, `ctypes`, make sure they're not obfuscated, try
+  to use option ``--exclude`` to exclude the whole Python system library path.
 
 
 Marshal loads failed when running xxx.py
@@ -506,7 +507,8 @@ find the problem:
 
 * If `pytransform.py` or `pytransform/__init__.py` raises this exception. Make
   sure it is not obfuscated, it must be plain script.
-* Also check system module `os`, `ctypes`, make sure they're not obfuscated.
+* Also check system module `os`, `ctypes`, make sure they're not obfuscated. In
+  this case, try to exclude the Python system library path, refer to :ref:`pack`
 * Try to only copy your own scripts to an empty path, then pack it in this path.
 * If it works in trial version, but fails after pyarmor is registered, try to
   make a :ref:`clean uninstallation`
