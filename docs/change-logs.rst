@@ -38,6 +38,7 @@ Incompatible issues
   modules, refer to
   https://pyarmor.readthedocs.io/en/latest/advanced.html#build-obfuscated-scripts-to-extensions
 * Add super mode libraries for platform `musl.x86_64`
+* Fix python3.8/3.9 crash issues
 
 6.5.6
 -----
