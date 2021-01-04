@@ -1509,18 +1509,38 @@ obfuscated scripts to extensions
 
     python buildext.py dist/foo.py
 
-Or first convert the obfuscated script ``dist/foo.py`` to `.c` file by ``-c``,
-customize this `.c` file, then build it by any c compiler, for example::
+If option ``-i`` is specified, the obfuscated scripts will be deleted after
+building, so the output path ``dist`` is clean. For example::
 
-    python buildext.py -c dist/foo.py
-    gcc $(python-config --cflags) $(python-config --ldflags) \
-        -shared -o dist/foo$(python-config --extension-suffix) \
-        dist/foo.c
+    python buildext.py -i dist/
 
-It also could generate an exetuable for script by option ``-e``, for example::
+By default only the obfuscated scripts in the ``dist`` are handled, if there are
+sub-directories, list all of them like this::
+
+    python buildext.py dist/ dist/a/ dist/b/
+
+Or list all the scripts in the command line, for example::
+
+    # In Linix
+    python buildext.py $(find dist/ -name "*.py")
+
+    # In Windows
+    FOR /R dist\ %I IN (*.py) DO python buildext.py %I
+
+The extension will ignore the block ``if __name__ == "__main__"``, in order to
+run this block as main script, build it with option ``-e`` to generate an
+executable, for example::
 
     python buildext.py -e dist/foo.py
     dist/foo.exe
+
+This executable must be run in the current Python environment, it equals::
+
+    python dist/foo.py
+
+Show more usage and options by ``-h``::
+
+    python buildext.py -h
 
 .. note::
 
