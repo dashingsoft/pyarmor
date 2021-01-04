@@ -32,6 +32,13 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+6.6.0
+-----
+* Add helper script `buildext.py` to build obfuscated scripts to extension
+  modules, refer to
+  https://pyarmor.readthedocs.io/en/latest/advanced.html#build-obfuscated-scripts-to-extensions
+* Add super mode libraries for platform `musl.x86_64`
+
 6.5.6
 -----
 * Rename option ``--runtime-path`` to ``-rpath`` in command `config`
