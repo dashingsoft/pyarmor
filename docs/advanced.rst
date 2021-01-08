@@ -1552,4 +1552,50 @@ Show more usage and options by ``-h``::
 
         python -m pyarmor.helper.buildext ...
 
+.. _distributing obfuscated package with pip:
+
+Distributing Obfuscated Package With pip
+----------------------------------------
+
+Here it's a simple package
+
+.. code:: raw
+    .
+    └── mylib
+        ├── mylib
+        │   ├── __init__.py
+        │   └── main.py
+        └── setup.py
+
+First generate unique :ref:`runtime package` with ``--enable-suffix 1``::
+
+  cd mylib
+  pyarmor runtime -O dist/share --enable-suffix 1
+
+Then obfuscate the package with this runtime::
+
+  pyarmor obfuscate --with-runtime @dist/share mylib/__init__.py
+
+Next edit ``setup.py``, add all the required runtime files as data files. For
+example, suppose the unique package name is ``pytransform_vax_xxxxxx``
+
+.. code:: python
+
+   setup(name='mylib',
+         ...
+         packages=['mylib'],
+         package_dir={'mylib': 'dist'},
+         data_files=[('pytransform_vax_xxxxxx', 'dist/share/pytransform_vax_xxxxxx/*')]
+         ...
+         )
+
+Finally build the source package::
+
+  python setup.py sdist
+
+.. note::
+
+   For super mode, the runtime file is different, please modify ``setup.py`` as
+   required.
+
 .. include:: _common_definitions.txt
