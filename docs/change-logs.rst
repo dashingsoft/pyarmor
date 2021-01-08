@@ -32,6 +32,11 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+6.6.1
+-----
+* Fix issue (#429): the new license doesn't work if replace the old license with
+  it in enable-period-mode
+
 6.6.0
 -----
 * Add helper script `buildext.py` to build obfuscated scripts to extension
