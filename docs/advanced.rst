@@ -1595,7 +1595,10 @@ Finally build the source package::
 
 .. note::
 
-   For super mode, the runtime file is different, please modify ``setup.py`` as
-   required.
+   Do not obfuscate ``setup.py``
+
+   For super mode, the runtime files are different, please modify ``setup.py``
+   as required.
+
 
 .. include:: _common_definitions.txt
