@@ -78,12 +78,6 @@ Or there is a suffix in extension name, for example::
     from pytransform_vax_000001 import pyarmor
     pyarmor(__name__, __file__, b'\x0a\x02...', 1)
 
-.. note::
-
-   The `bootstrap code`_ is gone in the super mode which may make some users
-   confused. And both `runtime package`_ and `runtime files`_ now refer to the
-   extension module ``pytransform``.
-
 .. _entry script:
 
 Entry Script
@@ -121,6 +115,11 @@ Since v5.8.7, the runtime package may has a suffix. For example::
     from pytransform_vax_000001 import pyarmor_runtime
     pyarmor_runtime(suffix='_vax_000001')
 
+For :ref:`super mode`, not only the entry script, but also the other obfuscated
+scripts include one line `Bootstrap Code`::
+
+    from pytransform import pyarmor
+
 .. _runtime package:
 
 Runtime Package
@@ -147,6 +146,15 @@ Before v6.3.0, there are 2 extra files::
         license.lic                  The license file for obfuscated scripts
 
 Before v5.7.0, the runtime package has another form `Runtime Files`
+
+For :ref:`super mode`, both `runtime package`_ and `runtime files`_ now refer to
+the extension module ``pytransform``. In different platforms or different Python
+version, it has different name, for example::
+
+      pytransform.pyd
+      pytransform.so
+      pytransform.cpython-38-darwin.so
+      pytransform.cpython-38-x86_64-linux-gnu.so
 
 .. _runtime files:
 
@@ -205,6 +213,8 @@ Key Points to Use Obfuscated Scripts
 
 * The `runtime package`_ must be in any Python Path, so that the `bootstrap
   code`_ can run correctly.
+
+The following notes are only apply to non-super mode
 
 * The `bootstrap code`_ will load dynamic library `_pytransform.so/.dll/.dylib`
   by `ctypes`. This file is dependent-platform, all the prebuilt dynamic

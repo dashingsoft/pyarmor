@@ -195,13 +195,13 @@ registration code of PyArmor.
 
 **BOOTSTRAP CODE**
 
-If :ref:`super mode` is enabled, no so called :ref:`bootstrap code`, all the
-obfuscated scripts will import the runtime module at the first line::
+If :ref:`super mode` is enabled, all the obfuscated scripts will import the
+runtime module at the first line, this is super mode :ref:`bootstrap code`::
 
     from pytransform import pyarmor
 
-For all the others, the following :ref:`bootstrap code` will be inserted into
-the entry script::
+For non-super mode, the following :ref:`bootstrap code` will be inserted into
+the entry script only::
 
     from pytransform import pyarmor_runtime
     pyarmor_runtime()
