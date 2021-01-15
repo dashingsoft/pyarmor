@@ -49,9 +49,10 @@ def import_names():
         if bitness == 32:
             mach = 'x86'
 
-    platname = '_'.join(plat, mach)
-    extension = __import__('.'.join(['', platname, 'pytransform']))
-    return extension.pyarmor
+    platname = '_'.join([plat, mach])
+    name = '.'.join([__name__, platname, 'pytransform'])
+    m = __import__(name, globals(), locals(), ['*'])
+    return m.pyarmor, m.__file__
 
 
-pyarmor = import_names()
+pyarmor, __file__ = import_names()
