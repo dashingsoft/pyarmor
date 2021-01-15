@@ -1426,6 +1426,13 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
 
     keylist = _build_keylist(capsule, licfile)
     namelist = []
+    for filename in filelist:
+        name = os.path.basename(filename)
+        if name in namelist:
+            return _package_super_runtime(output, platforms, filelist, keylist,
+                                          suffix)
+        namelist.append(name)
+
     checklist = []
     for filename in filelist:
         logging.info('Copying %s', filename)
@@ -1435,10 +1442,6 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
             k = name.rfind('pytransform') + len('pytransform')
             name = name[:k] + suffix + name[k:]
             logging.info('Rename extension to %s', name)
-        if name in namelist:
-            raise RuntimeError('Multiple platforms confilt with '
-                               'same extension name "%s"' % name)
-        namelist.append(name)
 
         target = os.path.join(output, name)
         shutil.copy2(filename, target)
@@ -1451,6 +1454,39 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
         checklist.append(sum(bytearray(data)))
 
     logging.info('Generate runtime files OK')
+    return checklist
+
+
+def _package_super_runtime(output, platforms, filelist, keylist, suffix):
+    output = os.path.join(output, 'pytransform' + suffix)
+    logging.info('Make package path %s', os.path.basename(output))
+    if not os.path.exists(output):
+        os.makedirs(output)
+
+    src = os.path.join(PYARMOR_PATH, 'helper', 'superuntime.py')
+    dst = os.path.join(output, '__init__.py')
+    logging.info('Copying %s', src)
+    logging.info('To %s', dst)
+    shutil.copy2(src, dst)
+
+    checklist = []
+    for platname, filename in zip(platforms, filelist):
+        logging.info('Copying %s', filename)
+        if os.path.isfile(platname):
+            raise RuntimeError('Unknown standard platform "%s"' % platname)
+        path = '_'.join(platname.split('.')[:2])
+        name = os.path.basename(filename)
+        target = os.path.join(output, path, name)
+        shutil.copy2(filename, target)
+
+        logging.info('Patch extension %s', target)
+        data = _patch_extension(target, keylist, suffix)
+
+        with open(target, 'wb') as f:
+            f.write(data)
+        checklist.append(sum(bytearray(data)))
+
+    logging.info('Generate super runtime package OK')
     return checklist
 
 
