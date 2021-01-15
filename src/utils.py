@@ -247,8 +247,7 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
 
         dest = os.path.join(output, *p['id'].split('.'))
         logging.info('Target path for %s: %s', p['id'], dest)
-        if not os.path.exists(dest):
-            os.makedirs(dest)
+        makedirs(dest, exist_ok=True)
 
         logging.info('Downloading library file for %s ...', p['id'])
         timeout = 300.0 if 'VM' in p['features'] else 120.0
@@ -401,8 +400,7 @@ def make_entry(entris, path, output, rpath=None, relative=None, suffix='',
 
 
 def obfuscate_scripts(filepairs, mode, capsule, output):
-    if not os.path.exists(output):
-        os.makedirs(output)
+    makedirs(output, exist_ok=True)
 
     prokey = os.path.join(output, 'product.key')
     if not os.path.exists(prokey):
@@ -413,8 +411,7 @@ def obfuscate_scripts(filepairs, mode, capsule, output):
         dirs.append(os.path.dirname(x[1]))
 
     for d in set(dirs):
-        if not os.path.exists(d):
-            os.makedirs(d)
+        makedirs(d, exist_ok=True)
 
     if filepairs:
         pytransform.encrypt_project_files(prokey, tuple(filepairs), mode)
@@ -530,8 +527,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
 
     if package:
         output = os.path.join(output, 'pytransform' + suffix)
-    if not os.path.exists(output):
-        os.makedirs(output)
+    makedirs(output, exist_ok=True)
     logging.info('Generating runtime files to %s', relpath(output))
 
     checklist = []
@@ -582,8 +578,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             logging.info('Copying %s', filename)
             path = os.path.join(libpath, *platid.split('.')[:2])
             logging.info('To %s', path)
-            if not os.path.exists(path):
-                os.makedirs(path)
+            makedirs(path, exist_ok=True)
             copy3(filename, path)
 
     filename = os.path.join(PYARMOR_PATH, 'pytransform.py')
@@ -602,8 +597,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
 def copy_runtime(path, output, licfile=None, dryrun=False):
     logging.info('Copying runtime files from %s', path)
     logging.info('To %s', output)
-    if not os.path.exists(output):
-        os.makedirs(output)
+    makedirs(output, exist_ok=True)
 
     def copy3(src, dst):
         if dryrun:
@@ -1414,8 +1408,7 @@ def _build_keylist(capsule, licfile):
 
 def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
     logging.info('Generating super runtime library to %s', relpath(output))
-    if not os.path.exists(output):
-        os.makedirs(output)
+    makedirs(output, exist_ok=True)
 
     if not platforms:
         raise RuntimeError('No platform specified in Super mode')
@@ -1460,8 +1453,7 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
 def _package_super_runtime(output, platforms, filelist, keylist, suffix):
     output = os.path.join(output, 'pytransform' + suffix)
     logging.info('Make package path %s', os.path.basename(output))
-    if not os.path.exists(output):
-        os.makedirs(output)
+    makedirs(output, exist_ok=True)
 
     src = os.path.join(PYARMOR_PATH, 'helper', 'superuntime.py')
     dst = os.path.join(output, '__init__.py')
@@ -1477,6 +1469,7 @@ def _package_super_runtime(output, platforms, filelist, keylist, suffix):
         path = '_'.join(platname.split('.')[:2])
         name = os.path.basename(filename)
         target = os.path.join(output, path, name)
+        makedirs(os.path.dirname(target), exist_ok=True)
         shutil.copy2(filename, target)
 
         logging.info('Patch extension %s', target)
@@ -1581,3 +1574,8 @@ def _urlopen(*args, **kwargs):
             return urlopen(*args, **kwargs)
         else:
             raise
+
+
+def makedirs(path, exist_ok=False):
+    if not (exist_ok and os.path.exists(path)):
+        os.makedirs(path)
