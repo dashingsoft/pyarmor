@@ -36,6 +36,7 @@ Incompatible issues
 -------------------
 * Fix issue (#429): the new license doesn't work if replace the old license with
   it in enable-period-mode
+* Fix extension filenames conflict for multiple platforms in super mode
 
 6.6.0
 -----
