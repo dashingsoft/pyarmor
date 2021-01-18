@@ -1448,13 +1448,13 @@ finally run this script to repack the bundle with obfuscated scripts.
     pyinstaller foo.py
 
     # Check it works
-    dist/foo/foo
+    dist/foo/foo.exe
 
     # If prefer to one file mode, run this command
     pyinstaller --onefile foo.py
 
     # Check it works
-    dist/foo
+    dist/foo.exe
 
 * Obfuscate the scripts to "obfdist", make sure the obfuscated scripts work. For
   real scripts, other options may be required, please check :ref:`obfuscate` to
@@ -1473,18 +1473,18 @@ finally run this script to repack the bundle with obfuscated scripts.
   using::
 
     # If one folder mode
-    python repack.py -p obfdist dist/foo/foo
+    python repack.py -p obfdist dist/foo/foo.exe
 
     # Overwrite the old one
-    cp foo-obf dist/foo/foo
+    cp foo-obf.exe dist/foo/foo.exe
 
     # If one file mode
-    python repack.py -p obfdist dist/foo
+    python repack.py -p obfdist dist/foo.exe
 
     # Overwrite the old one
-    cp foo-obf dist/foo
+    cp foo-obf.exe dist/foo.exe
 
-Here ``foo-obf`` is the patched bundle.
+Here ``foo-obf.exe`` is the patched bundle.
 
 .. note::
 
