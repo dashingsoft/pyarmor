@@ -1439,7 +1439,10 @@ repack PyInstaller bundle with obfuscated scripts.
 First pack the script by PyInstaller, next obfuscate the scripts by PyArmor,
 finally run this script to repack the bundle with obfuscated scripts.
 
-* Pack the script with PyInstaller, make sure the final bundle works::
+* Pack the script with PyInstaller, make sure the final bundle works. For real
+  scripts, other options may be required, please check the documentation of
+  `PyInstaller`_. If the final bundle could not work in this step, please report
+  issues to `PyInstaller <https://github.com/pyinstaller/pyinstaller/issues>`_::
 
     # One folder mode
     pyinstaller foo.py
@@ -1453,7 +1456,9 @@ finally run this script to repack the bundle with obfuscated scripts.
     # Check it works
     dist/foo
 
-* Obfuscate the scripts to "obfdist", make sure the obfuscated scripts work::
+* Obfuscate the scripts to "obfdist", make sure the obfuscated scripts work. For
+  real scripts, other options may be required, please check :ref:`obfuscate` to
+  find more usages, and the scripts also could be obfuscated by :ref:`build`::
 
     # Option --package-runtime should be set to 0
     pyarmor obfuscate -O obfdist --package-runtime 0 foo.py
