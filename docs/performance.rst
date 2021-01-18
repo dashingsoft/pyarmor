@@ -125,4 +125,94 @@ please patch the source scripts `cProfile.py` or `profile.py` to make it work.
    Old versions of pyarmor may not work with `cProfile` or `profile`, in this
    case, try to upgrade pyarmor and obfuscate the scripts again.
 
+
+Performance of Big Script
+-------------------------
+
+Here it's an example to test big script in MacOS 10.14 with 8G Ram, Python 3.7
+
+The size of test script ``big.py`` is about 81M, it defines many same functions
+with different name
+
+.. code:: python
+
+    def fib0(n):   # return Fibonacci series up to n
+        result = []
+        a, b = 0, 1
+        while a < n:
+            result.append(a)
+            a, b = b, a+b
+        return result
+
+
+    def fib1(n):   # return Fibonacci series up to n
+        result = []
+        a, b = 0, 1
+        while a < n:
+            result.append(a)
+            a, b = b, a+b
+        return result
+
+
+    def fib2(n):   # return Fibonacci series up to n
+        result = []
+        a, b = 0, 1
+        while a < n:
+            result.append(a)
+            a, b = b, a+b
+        return result
+
+    ...
+
+The main script ``main.py``
+
+.. code:: python
+
+    import sys
+    import time
+
+    def metricmethod(func):
+        if not hasattr(time, 'process_time'):
+            time.process_time = time.clock
+
+        def wrap(*args, **kwargs):
+            t1 = time.process_time()
+            result = func(*args, **kwargs)
+            t2 = time.process_time()
+            print('%-50s: %10.6f ms' % (func.__name__, (t2 - t1) * 1000))
+            return result
+        return wrap
+
+    @metricmethod
+    def import_big_module(name):
+        return __import__(name)
+
+    @metricmethod
+    def call_module_function(m):
+        m.fib2(20)
+
+    name = sys.argv[1] if len(sys.argv) > 1 else 'big'
+    call_module_function(import_big_module(name))
+
+Now run ``python3 main.py`` in different cases
+
+No ``__pycache__``, no obfuscation::
+
+   import_big_module      : 52905.399000 ms
+   call_module_function   :   0.020000 ms
+
+If there is ``__pycache__``, it's very quick::
+
+   import_big_module      : 2065.303000 ms
+   call_module_function   :   0.011000 ms
+
+Next obfuscate the big script::
+
+   pyarmor obfuscate big.py
+
+And the test result::
+
+   import_big_module      : 8690.256000 ms
+   call_module_function   :   0.015000 ms
+
 .. include:: _common_definitions.txt
