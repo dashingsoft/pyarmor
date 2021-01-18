@@ -1002,7 +1002,7 @@ def _check_runtime_settings(path):
     logging.info('    Suffix: %s', suffix)
     logging.info('    License: %s', licfile)
 
-    return platforms, advanced, suffix, licfile
+    return [platforms], advanced, suffix, licfile
 
 
 def _check_runtime_license(rsettings, licfile):
