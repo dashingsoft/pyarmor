@@ -1440,9 +1440,10 @@ First pack the script by PyInstaller, next obfuscate the scripts by PyArmor,
 finally run this script to repack the bundle with obfuscated scripts.
 
 * Pack the script with PyInstaller, make sure the final bundle works. For real
-  scripts, other options may be required, please check the documentation of
-  `PyInstaller`_. If the final bundle could not work in this step, please report
-  issues to `PyInstaller <https://github.com/pyinstaller/pyinstaller/issues>`_::
+  scripts, other options may be required, please check `PyInstaller
+  documentation <https://pyinstaller.readthedocs.io>`_. If the final bundle
+  could not work in this step, please report issues to `PyInstaller
+  <https://github.com/pyinstaller/pyinstaller/issues>`_::
 
     # One folder mode
     pyinstaller foo.py
