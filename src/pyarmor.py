@@ -940,13 +940,14 @@ def _runtime(args):
     with open(filename, 'w') as f:
         f.write('\n'.join(header))
         f.write(data)
+    logging.info('Generate protection script "%s" OK', filename)
 
     if not args.super_mode:
         filename = os.path.join(output, '__init__.py') if args.inside else \
             os.path.join(args.output, name + '.py')
         logging.info('Generating bootstrap script ...')
         make_bootstrap_script(filename, capsule=capsule, suffix=suffix)
-        logging.info('Generating bootstrap script %s OK', filename)
+        logging.info('Generate bootstrap script "%s" OK', filename)
 
 
 @arcommand
@@ -996,7 +997,7 @@ def _check_runtime_settings(path):
     suffix = paras[2][1].strip()
     licfile = 'outer' if paras[3][1].strip() == 'outer' else 'embedded'
 
-    logging.info('Got settings from --runtime: %s', path)
+    logging.info('Got settings from prebuilt runtime path "%s"', path)
     logging.info('    Platforms: %s', platforms)
     logging.info('    Advanced: %s', advanced)
     logging.info('    Suffix: %s', suffix)

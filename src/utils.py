@@ -1407,7 +1407,7 @@ def _build_keylist(capsule, licfile):
 
 
 def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
-    logging.info('Generating super runtime library to %s', relpath(output))
+    logging.info('Generating super runtime library to "%s"', relpath(output))
     makedirs(output, exist_ok=True)
 
     if not platforms:
