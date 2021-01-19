@@ -96,6 +96,12 @@ version, then obfuscate them again.
     may not work with new versions, although up to now it works with all of
     versions.
 
+Upgrade Notes
+-------------
+
+The license purchased before **2017-10-10** don't support to upgrade the latest
+version. A new license is required to use the latest version.
+
 Q & A
 -----
 
