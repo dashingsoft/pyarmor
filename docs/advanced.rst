@@ -1384,6 +1384,22 @@ lambda function. For example,
     t = PrivateThread(target=foo)
     t.start()
 
+If you have extended system `Thread` and defined method `run` by yourself, just
+rename `run` to `lambda_run`, and add lambda method `run`. For example
+
+.. code:: python
+
+    from threading import Thread
+
+    class MyThread(Thread):
+
+        # def run(self):
+        def lambda_run(self):
+            ...
+
+        # Define a lambda method `run`
+        run = lambda self : self.lambda_run()
+
 Another solution is to define a public module with restrict mode 1, let plain
 scripts call functions in this public module.
 
