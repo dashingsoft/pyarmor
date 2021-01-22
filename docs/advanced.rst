@@ -1503,6 +1503,17 @@ finally run this script to repack the bundle with obfuscated scripts.
 
 Here ``foo-obf.exe`` is the patched bundle.
 
+The obfuscated scripts in the ``obfdist`` must be in the same path as it in the
+PyInstaller bundle. That is to say, the main script ``foo.py`` must be in the
+``obfdist``. The option ``-d`` is used to print the archive information, copy
+the obfuscated scripts to the right place according to the structure of the
+archive. For example, print the archive information::
+
+    python repack.py -d -p obfdist dist/foo.exe
+
+If the structure of obfuscated scripts are changed, run the main script by
+Python directly, make sure it still works.
+
 .. note::
 
     Before v6.5.5, please download ``repack.py`` from
