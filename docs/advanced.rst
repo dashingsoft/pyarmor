@@ -1590,6 +1590,7 @@ Distributing Obfuscated Package With pip
 ----------------------------------------
 
 Here it's a simple package::
+
     .
     └── mylib
         ├── mylib
