@@ -1589,9 +1589,7 @@ Show more usage and options by ``-h``::
 Distributing Obfuscated Package With pip
 ----------------------------------------
 
-Here it's a simple package
-
-.. code:: raw
+Here it's a simple package::
     .
     └── mylib
         ├── mylib
