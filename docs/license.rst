@@ -102,6 +102,33 @@ Upgrade Notes
 The license purchased before **2017-10-10** don't support to upgrade the latest
 version. A new license is required to use the latest version.
 
+Technical Support
+-----------------
+
+There are 3 kinds of issues:
+
+1. PyArmor defect.
+2. The limitation of obfuscated scripts, or called known issues.
+3. Wrong usage.
+
+For example, use ``inspect`` to visit co_code of code object, use ``pdb`` to
+trace obfuscated scripts. All of these don't work, they're known issues. Here
+list all the known issues: :ref:`The Differences of Obfuscated Scripts`.
+
+When reporting an issue, I'll tell which kind it is. For the first catalog, it's
+my due to fix it. For the rests, it's your due to read the documentation and fix
+it. I'll give you hints and maybe examples, but I could not help you to pyarmor
+your scripts.
+
+Suppose you purchase Microsoft Excel, and you want to make a complex chart. You
+must learn the advanced features of Excel, then make this chart by yourself. You
+can not ask Microsoft to make the complex chart for you.
+
+The restrict mode is advanced feature of PyArmor, my due is to implement it as
+described in the document, you need learn this advanced feature and refine you
+code to adapt it. It's not my due to read your scripts and adapt your scripts
+to restrict mode.
+
 Q & A
 -----
 
