@@ -342,7 +342,8 @@ def make_extensions(sources, executable=False):
 
     if not get_config_var('Py_ENABLE_SHARED'):
         cc.add_library_dir(get_config_var('LIBPL'))
-    cc.add_library('python' + get_config_var('VERSION') + sys.abiflags)
+    abiflags = sys.abiflags if hasattr(sys, 'abiflags') else ''
+    cc.add_library('python' + get_config_var('VERSION') + abiflags)
 
     cflags = get_config_var('CFLAGS').split()
     ldflags = get_config_var('LIBS').split()
