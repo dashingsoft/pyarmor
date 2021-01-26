@@ -131,13 +131,10 @@ this advanced feature and refine you code to adapt it. It's not my due to read
 your scripts and adapt your scripts to restrict mode.
 
 If you plan to obfuscte the third package, I also can't obfuscate this package
-for you and make sure it's compatitable with pyarmor.
-
-I have list all the differences of obfuscated scripts in the document, if any
-package violates these rulers, it will not work with pyarmor. For example, use
-inspect to visit co_code of code objects is invalid for obfuscated scripts.
-
-http://pyarmor.readthedocs.io/en/latest/understand-obfuscated-scripts.html#the-differences-of-obfuscated-scripts
+for you and make sure it's compatitable with pyarmor. Here is a list about all
+of :ref:`The Differences of Obfuscated Scripts`. If any package violates these
+rulers, it will not work with pyarmor. For example, use inspect to visit co_code
+of code objects is invalid for obfuscated scripts.
 
 There are countless big packages in Python world, many packages I never use and
 even don't know at all. It's also not easy for me to research a complex package
