@@ -124,10 +124,29 @@ Suppose you purchase Microsoft Excel, and you want to make a complex chart. You
 must learn the advanced features of Excel, then make this chart by yourself. You
 can not ask Microsoft to make the complex chart for you.
 
-The restrict mode is advanced feature of PyArmor, my due is to implement it as
-described in the document, you need learn this advanced feature and refine you
-code to adapt it. It's not my due to read your scripts and adapt your scripts
-to restrict mode.
+Similarly pyarmor provodes a lot of features and well document, but you need
+learn them by yourself. For example, the restrict mode is advanced feature of
+PyArmor, my due is to implement it as described in the document, you need learn
+this advanced feature and refine you code to adapt it. It's not my due to read
+your scripts and adapt your scripts to restrict mode.
+
+If you plan to obfuscte the third package, I also can't obfuscate this package
+for you and make sure it's compatitable with pyarmor.
+
+I have list all the differences of obfuscated scripts in the document, if any
+package violates these rulers, it will not work with pyarmor. For example, use
+inspect to visit co_code of code objects is invalid for obfuscated scripts.
+
+http://pyarmor.readthedocs.io/en/latest/understand-obfuscated-scripts.html#the-differences-of-obfuscated-scripts
+
+There are countless big packages in Python world, many packages I never use and
+even don't know at all. It's also not easy for me to research a complex package
+to find which line conflicts with pyarmor, and it's difficult for me to run all
+of these complex packages in my local machine.
+
+Generally in this case users provide the simple snapshot code around exception,
+or some running information, I analysis them to find where it may confilct with
+pyarmor and try to find the solution.
 
 Q & A
 -----
