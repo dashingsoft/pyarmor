@@ -3,27 +3,97 @@
 When Things Go Wrong
 ====================
 
+Some necessary knowledges and technicals are required to used pyarmor. Check
+this list, make sure you know them, and your question is not related to them.
+
+.. _Necessary Knowledges:
+
+Necessary Knowledges
+--------------------
+
+Shell
+++++++
+
+pyarmor is a command line tool, it must be run in the shell or terminal. If you
+know nothing about shell command, use `pyarmor-webui`_ instead.
+
+When command `pyarmor` complains of argument error, unknown option etc. Please
+use option ``-h`` to list all the available options, and fix command line syntax
+error by these hints. For example::
+
+    pyarmor obfuscate -h
+
+Python
+++++++
+
+How to run Python
+https://docs.python.org/3.8/tutorial/interpreter.html#using-the-python-interpreter
+
+Source Code Encoding
+++++++++++++++++++++
+
+If the obfuscated scripts print unexpected output, you need learn this
+
+https://docs.python.org/3.8/tutorial/interpreter.html#source-code-encoding
+
+Then set the right source code encoding in the scripts, first run the plain
+script to make sure everything is fine, then obfuscate the scripts again.
+
+
+Python Import System
+++++++++++++++++++++
+
+The obfuscated scripts need an extra :ref:`Runtime Package` to run, it's a
+common Python package, which could be imported as normal model. If it cann't be
+imported correctly, for example, not distributed or stored in the wrong place,
+the obfuscated scripts may raise exceptions like this::
+
+   ModuleNotFoundError: No module named 'app.pytransform'
+
+This is not PyArmor's error, but Python can not find it. In this case, you need
+know Python how to import module/package, absolte import and relate import, you
+must know what's the meaning of ``sys.path``. Please refer to the following
+official document or by search engineer to understand it
+
+https://docs.python.org/3.8/reference/import.html#the-import-system
+
+PyInstaller
++++++++++++
+
+If you'd like to pack the obfuscated scripts to one executable, and your project
+structure is complex, you must know `PyInstaller`_ and could pack your project
+by `PyInstaller`_ directly.
+
+https://pyinstaller.readthedocs.io/en/stable/usage.html
+
+
+Common Solutions
+----------------
+
 If you don't know how to use pyarmor in a special case, first have a glance at
 the toc of :ref:`Advanced Topics`.
 
+If you distribute the obfuscated scripts in different platform or docker, make
+sure the options related to cross platform are set. Because the obfuscated
+scripts include binary library, it's platform dependent, and Python version in
+target must be same as the version to obfuscate the scripts.
+
+If you are using command :ref:`pack`, make sure PyInstaller could pack the plain
+scripts directly and the final bundle works.
+
 When there is in trouble, check the output log message carefully, it may be
-helpful to find the problem. And try to do something to find the problem
+helpful to find the problem.
 
-As running ``pyarmor``:
-
-* Check the console output, is there any wrong path, or any odd information
-* Run `pyarmor` with debug option ``-d`` to get more information. For example::
+As obfuscating the script by ``pyarmor``, check is there any wrong path, or any
+odd information in the console, use option ``-d`` to get more information. For
+example::
 
       pyarmor -d obfuscate --recursive foo.py
 
-As running the obfuscated scripts:
-
-* Turn on Python debug option by ``-d`` to print more information. For example::
+As running the obfuscated scripts, turn on Python debug option by ``-d`` to
+print more information. For example::
 
       python -d obf_foo.py
-
-After python debug option is on, there will be a log file `pytransform.log`
-generated in the current path, which includes more debug information.
 
 .. note::
 

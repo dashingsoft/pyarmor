@@ -114,26 +114,28 @@ For example, use ``inspect`` to visit co_code of code object, use ``pdb`` to
 trace obfuscated scripts. All of these don't work, they're known issues. Here
 list all the known issues: :ref:`The Differences of Obfuscated Scripts`.
 
+It also requires some basic knowledge to use pyarmor, for example, shell command
+etc. please refer to :ref:`Necessary Knowledges`
+
 When reporting an issue, I'll tell which kind it is. For the first catalog, it's
 my due to fix it. For the rests, it's your due to read the documentation and fix
-it. I'll give you hints and maybe examples, but I could not help you to pyarmor
-your scripts.
+it. I'll give you hints and maybe examples, but I will not obfuscate the scripts
+for you, or hand by hand tell you how to pyarmor your scripts.
 
-Suppose you purchase Microsoft Excel, and you want to make a complex chart. You
-must learn the advanced features of Excel, then make this chart by yourself. You
-can not ask Microsoft to make the complex chart for you.
+Suppose you purchase Microsoft Excel, and want to make a complex chart. You must
+learn the advanced features of Excel, then make this chart by yourself. You can
+not ask Microsoft to make the complex chart for you.
 
-Similarly pyarmor provodes a lot of features and well document, but you need
+Similarly pyarmor provides a lot of features and well document, but you need
 learn them by yourself. For example, the restrict mode is advanced feature of
 PyArmor, my due is to implement it as described in the document, you need learn
 this advanced feature and refine you code to adapt it. It's not my due to read
 your scripts and adapt your scripts to restrict mode.
 
-If you plan to obfuscte the third package, I also can't obfuscate this package
-for you and make sure it's compatitable with pyarmor. Here is a list about all
-of :ref:`The Differences of Obfuscated Scripts`. If any package violates these
-rulers, it will not work with pyarmor. For example, use inspect to visit co_code
-of code objects is invalid for obfuscated scripts.
+If you plan to obfuscate the third package, I also can't obfuscate this package
+for you and make sure it's compatible with pyarmor. Here is a list about all of
+:ref:`The Differences of Obfuscated Scripts`. If any package violates these
+rulers, it will not work with pyarmor.
 
 There are countless big packages in Python world, many packages I never use and
 even don't know at all. It's also not easy for me to research a complex package
