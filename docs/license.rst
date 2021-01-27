@@ -92,9 +92,8 @@ version, then obfuscate them again.
 
 .. important::
 
-    The registration code is valid forever, it can be used permanently. But it
-    may not work with new versions, although up to now it works with all of
-    versions.
+    The registration code is valid forever, it can be used permanently, but it
+    may not work with new versions.
 
 Upgrade Notes
 -------------
