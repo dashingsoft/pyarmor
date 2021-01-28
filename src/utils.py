@@ -1594,7 +1594,8 @@ def _fix_up_gnu_hash(data, suffix):
 
     symhash = 5381
     for c in ''.join([prefix, 'pytransform', suffix]):
-        symhash += symhash << 5 + ord(c)
+        symhash = symhash * 33 + ord(c)
+    symhash &= 0xffffffff
 
     nx = symhash % 3
     i = 0
@@ -1613,6 +1614,11 @@ def _fix_up_gnu_hash(data, suffix):
         if (arr[i-12] == 3 and arr[i-10] == 1 and arr[i-9] == 6) \
            or (arr[i-11] == 3 and arr[i-9] == 1 and arr[i-8] == 5):
             logging.debug('Fix suffix symbol hash at %s', i)
-            write_integer(data, i*4, symhash)
-            write_integer(data, (i-7+nx)*4, arr[i-7+ix])
+            write_integer(data, (i if ix else i-2)*4, symhash)
+            write_integer(data, (i-6+nx)*4, arr[i-6+ix])
+
+            write_integer(data, (i-7)*4, 0xffffffff)
+            if arr[i-9] == 6:
+                write_integer(data, (i-8)*4, 0xffffffff)
+
         i += 1
