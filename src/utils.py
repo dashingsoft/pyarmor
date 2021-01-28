@@ -1380,6 +1380,9 @@ def _patch_extension(filename, keylist, suffix=''):
                 logging.debug('Found marker at %x', i)
                 data[i:i+k] = bytes(suffix.encode())
 
+        if filename.endswith('.so'):
+            _fix_up_gnu_hash(data, suffix)
+
     return data
 
 
@@ -1579,3 +1582,37 @@ def _urlopen(*args, **kwargs):
 def makedirs(path, exist_ok=False):
     if not (exist_ok and os.path.exists(path)):
         os.makedirs(path)
+
+
+def _fix_up_gnu_hash(data, suffix):
+    n = 0x200
+    fmt = 'I' * n
+    arr = struct.unpack(fmt, bytes(data[:n*4]))
+
+    ix, key, prefix = (0, 0xb4239787, 'PyInit_') if sys.version[0] == 3 \
+        else (2, 0xe746a6ab, 'init')
+
+    symhash = 5381
+    for c in ''.join([prefix, 'pytransform', suffix]):
+        symhash += symhash << 5 + ord(c)
+
+    nx = symhash % 3
+    i = 0
+
+    def write_integer(buf, offset, value):
+        for i in range(offset, offset + 4):
+            buf[i] = value & 0xFF
+            value >>= 8
+
+    while True:
+        try:
+            i = arr.index(key, i)
+        except Exception:
+            return
+
+        if (arr[i-12] == 3 and arr[i-10] == 1 and arr[i-9] == 6) \
+           or (arr[i-11] == 3 and arr[i-9] == 1 and arr[i-8] == 5):
+            logging.debug('Fix suffix symbol hash at %s', i)
+            write_integer(data, i*4, symhash)
+            write_integer(data, (i-7+nx)*4, arr[i-7+ix])
+        i += 1
