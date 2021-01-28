@@ -38,6 +38,8 @@ Incompatible issues
   it in enable-period-mode
 * Fix extension filenames conflict for multiple platforms in super mode
 * Fix issue (#442): the target platforms in the runtime settings is read as a list
+* Fix issue (#452): when enable suffix for super mode in Linux, the obfuscated
+  scripts raise ImportError: dynamic module does not define module export function
 
 6.6.0
 -----
