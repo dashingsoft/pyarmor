@@ -170,6 +170,7 @@ In the following cases, obfuscated scripts may crash
   some third packages may analysis the byte code to do something.
 * Importing the scripts obfuscated by restrict mode 3 and more in non-obfuscated
   script may crash. It also may crash if it's obfuscated by ``obf-code=0``
+* Mixing the scripts obfuscated by different option ``--advanced``
 * In MacOS, the core library of pyarmor is linked to standard system Python, for
   others, use ``install_name_tool`` to change ``rpath`` to adapt this machine.
 
