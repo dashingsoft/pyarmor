@@ -97,6 +97,10 @@ must be same as the version to obfuscate the scripts.
 If you are using command :ref:`pack`, make sure PyInstaller could pack the plain
 scripts directly and the final bundle works.
 
+If you are using the scripts obfuscated by :ref:`Restrict mode` 3 or more, try
+to use the default restrict mode. If low restrict mode works, check the scripts
+make sure they don't violate the restrict mode.
+
 The default option of pyarmor works for common cases, but for complex cases, you
 need understand the different options for each command. First list all available
 options of ``obfuscate`` by option ``-h``::
@@ -164,6 +168,8 @@ In the following cases, obfuscated scripts may crash
 
 * Read ``co_code`` or other attributes of the obfuscated code object by any way,
   some third packages may analysis the byte code to do something.
+* Importing the scripts obfuscated by restrict mode 3 and more in non-obfuscated
+  script may crash. It also may crash if it's obfuscated by ``obf-code=0``
 * In MacOS, the core library of pyarmor is linked to standard system Python, for
   others, use ``install_name_tool`` to change ``rpath`` to adapt this machine.
 

@@ -375,6 +375,11 @@ runtime, this may reduce the performance.
    Restrict mode is applied to one single script, different scripts could be
    obfuscated by different restrict mode.
 
+.. note::
+
+   If the scripts are obfuscated by ``--obf-code=0``, it will be taken as plain
+   script.
+
 From PyArmor 5.2, Restrict Mode 1 is default.
 
 Obfuscating the scripts by other restrict mode::
