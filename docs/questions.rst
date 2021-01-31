@@ -44,16 +44,22 @@ Python Import System
 ++++++++++++++++++++
 
 The obfuscated scripts need an extra :ref:`Runtime Package` to run, it's a
-common Python package, which could be imported as normal model. If it cann't be
-imported correctly, for example, not distributed or stored in the wrong place,
-the obfuscated scripts may raise exceptions like this::
+common Python package, which could be imported as normal Python module or
+package. If it cann't be imported correctly, for example, not distributed with
+the obfuscated scripts or stored in the wrong place, the obfuscated scripts may
+raise exceptions like this::
 
    ModuleNotFoundError: No module named 'app.pytransform'
 
-This is not PyArmor's error, but Python can not find it. In this case, you need
-know Python how to import module/package, absolte import and relate import, you
-must know what's the meaning of ``sys.path``. Please refer to the following
-official document or by search engineer to understand it
+This is not PyArmor's error, just Python can not find it. In this case, you need
+know Python how to import module/package, what's absolte import and relate
+import, you must know what's the meaning of ``sys.path``.
+
+Then check the content of obfuscated scripts, it is a nomral Python using
+``import`` statement to import :ref:`Runtime Package`. Please following the
+ruler of Python Import System to move the :ref:`Runtime Package` to right place.
+
+Refer to the following official document or by search engineer to understand it
 
 https://docs.python.org/3.8/reference/import.html#the-import-system
 
@@ -70,23 +76,62 @@ https://pyinstaller.readthedocs.io/en/stable/usage.html
 Common Solutions
 ----------------
 
-If you don't know how to use pyarmor in a special case, first have a glance at
-the toc of :ref:`Advanced Topics`.
+I have receive a lot of issues, most of them aren't pyarmor's defect, but use
+pyarmor in wrong way. So when you're in trouble with pyarmor, spending a few
+hours to understand pyarmor may solve the problem quickly. Self-help is better
+than help from others, it also could save time for both of us.
+
+First make sure you have read the basic guide :ref:`Using PyArmor`.
+
+Look through :ref:`Understanding Obfuscated Scripts`, especially the section
+:ref:`The Differences of Obfuscated Scripts`
+
+If you don't know how to use pyarmor in a special case, have a glance at the toc
+of :ref:`Advanced Topics`.
 
 If you distribute the obfuscated scripts in different platform or docker, make
-sure the options related to cross platform are set. Because the obfuscated
-scripts include binary library, it's platform dependent, and Python version in
-target must be same as the version to obfuscate the scripts.
+sure the releated cross platform options are set. Because the obfuscated scripts
+include binary library, it's platform dependent, and Python version in target
+must be same as the version to obfuscate the scripts.
 
 If you are using command :ref:`pack`, make sure PyInstaller could pack the plain
 scripts directly and the final bundle works.
 
-When there is in trouble, check the output log message carefully, it may be
-helpful to find the problem.
+The default option of pyarmor works for common cases, but for complex cases, you
+need understand the different options for each command. First list all available
+options of ``obfuscate`` by option ``-h``::
 
-As obfuscating the script by ``pyarmor``, check is there any wrong path, or any
-odd information in the console, use option ``-d`` to get more information. For
-example::
+    pyarmor obfuscate -h
+
+You may find the desired option by its short description. If you're not sure, go
+to :ref:`Man Page` to read the details of each option.
+
+Maybe the simplest way to understand an option is, do a test in one minute. For
+example, the option ``--bootstrap`` is used to control how to generate the
+bootstrap code for obfuscated scripts, do tests in a fresh path like this::
+
+  cd /path/to/test
+  mkdir case-1
+  cd case-1
+  echo "print('Hello')" > foo.py
+  pyarmor obfuscate --bootstrap 2 foo.py
+  ls dist/
+  cat dist/foo.py
+
+  cd /path/to/test
+  mkdir case-2
+  cd case-2
+  echo "print('Hello')" > foo.py
+  pyarmor obfuscate --bootstrap 3 foo.py
+  ls dist/
+  cat dist/foo.py
+
+You can combine different options to do similar tests, it could help you
+understand pyarmor quickly.
+
+As obfuscating the script by ``pyarmor``, check output log message carefully, it
+may be helpful to find the problem. And try to get more information by common
+option ``-d``. For example::
 
       pyarmor -d obfuscate --recursive foo.py
 
@@ -104,13 +149,26 @@ print more information. For example::
 Segment fault
 -------------
 
-In the following cases, obfuscated scripts will crash
+In the following cases, obfuscated scripts may crash
 
-* Running obfuscated script by the debug version Python
-* Obfuscating scripts by Python 2.6 but running the obfuscated scripts by Python 2.7
+* Running obfuscated script by debug version Python
+* Obfuscating scripts by Python X.Y but running the obfuscated scripts by
+  different Python version M.N
+* Running the scripts in different platform but obfuscate them without option
+  ``--platform``
 
-After PyArmor 5.5.0, some machines may be crashed because of advanced mode. A
-quick workaround is to disable advanced mode by editing the file
+  - Docker, it's Alpine Linux, in PyArmor, the platform name is `musl.x86_64`,
+    not `linux.x86_64`
+  - In Windows, 32-bit Windows is different from 64-bit Windows
+  - In 64-bit Windows, 32-bit Python is different from 64-bit Python
+
+* Read ``co_code`` or other attributes of the obfuscated code object by any way,
+  some third packages may analysis the byte code to do something.
+* In MacOS, the core library of pyarmor is linked to standard system Python, for
+  others, use ``install_name_tool`` to change ``rpath`` to adapt this machine.
+
+For PyArmor 5.5.0 ~ 6.6.0, some machines may be crashed because of advanced
+mode. A quick workaround is to disable advanced mode by editing the file
 :file:`pytransform.py` which locates in the installed path of ``pyarmor`` , in
 the function ``_load_library``, uncomment about line 202. The final code looks
 like this::
