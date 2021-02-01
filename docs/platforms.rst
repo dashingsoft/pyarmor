@@ -155,12 +155,12 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * linux.mips64el
 * poky.x86
 
-.. note::
+.. note:: New platforms in differnt versions
 
-   * New in v5.9.3: android.armv7
-   * New in v5.9.4: uclibc.armv7
-   * New in v6.3.1: musl.x86_64, musl.arm, musl.mips32, linux.mips64, linux.mips64el
-   * New in v6.6.1: android.x86, android.x86_64
+   * v5.9.3: android.armv7
+   * v5.9.4: uclibc.armv7
+   * v6.3.1: musl.x86_64, musl.arm, musl.mips32, linux.mips64, linux.mips64el
+   * v6.6.1: android.x86, android.x86_64
 
 .. _downloading dynamic library by manual:
 
