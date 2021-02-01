@@ -32,14 +32,17 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.6.1 (pre-release)
--------------------
+6.6.1
+-----
 * Fix issue (#429): the new license doesn't work if replace the old license with
   it in enable-period-mode
 * Fix extension filenames conflict for multiple platforms in super mode
 * Fix issue (#442): the target platforms in the runtime settings is read as a list
 * Fix issue (#452): when enable suffix for super mode in Linux, the obfuscated
   scripts raise ImportError: dynamic module does not define module export function
+* Fix issue (#460): the obfuscated scripts crash if they're obfucated by
+  `--advanced 2` and `--obf-code 0`
+* Add new platforms: android.x86, android.x86_64
 
 6.6.0
 -----
