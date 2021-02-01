@@ -3,28 +3,101 @@
 Support Platfroms
 =================
 
-The core of PyArmor is written by C, the prebuilt dynamic libraries include the
-common platforms and some embeded platforms.
+The core of PyArmor is written by C, the prebuilt dynamic libraries
+include the common platforms and some embeded platforms.
 
-Some of them are distributed with PyArmor source package, in these
-platforms, `pyarmor` could run without downloading anything. Refer to
-`Prebuilt Libraries Distributed with PyArmor`_.
+Some of them are distributed with PyArmor source package. In these platforms,
+`pyarmor` could run without downloading anything::
 
-For the other platforms, `pyarmor` first searches path
-``~/.pyarmor/platforms/SYSTEM/ARCH``, ``SYSTEM.ARCH`` is one of
-`Standard Platform Names`_. If there is none, PyArmor will download it
-from remote server automatically. Refer to `The Others Prebuilt
-Libraries For PyArmor`_.
+    windows.x86
+    windows.x86_64
+    linux.x86
+    linux.x86_64
+    darwin.x86_64/x86
 
-Since v6.2.0, :ref:`super mode` is introduced, it uses the extension module
-``pytransform`` directly. All the prebuilt extension files list in the table
-`The Prebuilt Extensions For Super Mode`_
+For the other platforms, when first run `pyarmor`, it will download the
+corresponding dynamic library from the remote server automatically, and save it
+to ``~/.pyarmor/platforms/SYSTEM/ARCH/N/``, ``SYSTEM.ARCH`` is one of `Standard
+Platform Names`_. ``N`` is `features`_ number, which explained below. Here list
+all the other supported platforms::
+
+    darwin.arm64
+    linux.arm
+    linux.armv6
+    linux.armv7
+    linux.aarch32
+    linux.aarch64
+    linux.ppc64
+    android.aarch64
+    android.armv7
+    android.x86
+    android.x86_64
+    uclibc.armv7
+    centos6.x86_64
+    freebsd.x86_64
+    musl.x86_64
+    musl.arm
+    musl.mips32
+    poky.x86
+
+For Linux platforms, the first identifier stands for libc used in this
+platform. ``linux`` stands for ``glibc``, ``centos6`` for ``glibc`` < 2.14,
+``android`` for static libc, ``musl`` and ``uclibc`` as it is. Note that Docker
+based on Alpine Linux, its identifier is ``musl``, not ``linux``.
+
+:ref:`Super mode` uses the extension module ``pytransform`` directly, and it
+will be saved in the path ``~/.pyarmor/platforms/SYSTEM/ARCH/N/pyXY``. For
+example, ``linux/x86_64/11/py38``.
+
+.. list-table:: Table-3. The Prebuilt Extensions For Super Mode
+   :name: The Prebuilt Extensions For Super Mode
+   :header-rows: 1
+
+   * - Name
+     - Arch
+     - Feature
+     - Python Versions
+     - Remark
+   * - darwin
+     - x86_64
+     - 11
+     - 27, 37, 38, 39
+     -
+   * - darwin
+     - aarch64
+     - 11
+     - 38, 39
+     - ios/darwin arm64
+   * - linux
+     - x86, x86_64, aarch64, aarch32, armv7
+     - 11
+     - 27, 37, 38, 39
+     -
+   * - centos6
+     - x86_64
+     - 11
+     - 27
+     - Linux with glibc < 2.14 and UCS2
+   * - windows
+     - x86, x86_64
+     - 11, 25
+     - 27, 37, 38, 39
+     -
 
 For all the latest platforms, refer to `pyarmor-core/platforms/index.json <https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json>`_
 
+In some platforms, `pyarmor` doesn't know its standard name, just download the
+right one and save it in the path ``~/.pyarmor/platforms/SYSTEM/ARCH/N/``.  Run
+the command ``pyarmor -d download`` in this platform, and check the output log,
+it can help you find where to save the download file.
+
+.. _features:
+
+Features
+--------
+
 There may be serveral dynamic libraries with different features in each
-platform. The platform name with feature number suffix combines an unique
-name.
+platform. The platform name with feature number combines an unique name.
 
 Each feature has its own bit
 
@@ -35,35 +108,17 @@ Each feature has its own bit
 * 16: VM, vm protection mode
 
 For example, ``windows.x86_64.7`` means anti-debug(1), JIT(2) and advanced
-mode(4) supported, ``windows.x86_64.0`` means no any feature, so highest speed.
+mode(4) supported, its feature number is 7 = 1 + 2 + 4. ``windows.x86_64.0``
+means no any feature, so highest speed.
+
+For :ref:`Super mode`, there is an extra part to mark Python version. For
+example, ``windows.x86.11.py37``, feature number 11 = 1 + 2 + 8
 
 Note that zero feature dynamic library isn't compatible with any featured
 library. For security reason, the zero feature library uses different alogrithm
 to obfuscate the scripts. So the platform ``windows.x86_64.7`` can not share the
 same obfuscated scripts with platform ``linux.armv7.0``.
 
-In some platforms, `pyarmor` doesn't know it but there is available dynamic
-library in the table `The Others Prebuilt Libraries For PyArmor`_. Just download
-it and save it in the path ``~/.pyarmor/platforms/SYSTEM/ARCH``, this command
-``pyarmor -d download`` will also display this path at the beginning. It's
-appreicated to send this platform information to jondy.zhao@gmail.com so that it
-could be recognized by `pyarmor` automatically.
-
-This script will display the required information by `pyarmor`:
-
-.. code-block:: python
-
-   from platform import *
-   print('system name: %s' % system())
-   print('machine: %s' % machine())
-   print('processor: %s' % processor())
-   print('aliased terse platform: %s' % platform(aliased=1, terse=1))
-
-   if system().lower().startswith('linux'):
-       print('libc: %s' % libc_ver())
-       print('distribution: %s' % linux_distribution())
-
-Contact jondy.zhao@gmail.com if you'd like to run PyArmor in other platform.
 
 .. _standard platform names:
 
@@ -100,382 +155,6 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * linux.mips64el (New in 6.3.3)
 * poky.x86
 
-Platform Tables
----------------
-
-.. list-table:: Table-1. Prebuilt Libraries Distributed with PyArmor
-   :widths: 10 10 10 20 10 40
-   :name: Prebuilt Libraries Distributed with PyArmor
-   :header-rows: 1
-
-   * - Name
-     - Platform
-     - Arch
-     - Features
-     - Description
-   * - windows.x86
-     - Windows
-     - i686
-     - Anti-Debug, JIT, ADV
-     - Cross compile by i686-pc-mingw32-gcc in cygwin
-   * - windows.x86_64
-     - Windows
-     - AMD64
-     - Anti-Debug, JIT, ADV
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - linux.x86
-     - Linux
-     - i686
-     - Anti-Debug, JIT, ADV
-     - Built by GCC
-   * - linux.x86_64
-     - Linux
-     - x86_64
-     - Anti-Debug, JIT, ADV
-     - Built by GCC
-   * - darwin.x86_64
-     - MacOSX
-     - x86_64, intel
-     - Anti-Debug, JIT, ADV
-     - Built by CLang with MacOSX10.11
-
-
-.. list-table:: Table-2. The Others Prebuilt Libraries For PyArmor
-   :name: The Others Prebuilt Libraries For PyArmor
-   :widths: 10 10 10 20 10 40
-   :header-rows: 1
-
-   * - Name
-     - Platform
-     - Arch
-     - Features
-     - Description
-   * - vs2015.x86
-     - Windows
-     - x86
-     -
-     - Built by VS2015
-   * - vs2015.x86_64
-     - Windows
-     - x64
-     -
-     - Built by VS2015
-   * - linxu.arm
-     - Linux
-     - armv5
-     -
-     - 32-bit Armv5 (arm926ej-s)
-   * - linxu.armv6
-     - Linux
-     - armv6
-     - Anti-Debug, JIT
-     - 32-bit Armv6 (-marm -march=armv6 -mfloat-abi=hard)
-   * - linux.armv7
-     - Linux
-     - armv7
-     - Anti-Debug, JIT
-     - 32-bit Armv7 Cortex-A, hard-float, little-endian
-   * - linux.aarch32
-     - Linux
-     - aarch32
-     - Anti-Debug, JIT
-     - 32-bit Armv8 Cortex-A, hard-float, little-endian
-   * - linux.aarch64
-     - Linux
-     - aarch64
-     - Anti-Debug, JIT
-     - 64-bit Armv8 Cortex-A, little-endian
-   * - linux.ppc64
-     - Linux
-     - ppc64le
-     -
-     - For POWER8
-   * - darwin.arm64
-     - iOS
-     - arm64
-     -
-     - Built by CLang with iPhoneOS9.3.sdk
-   * - freebsd.x86_64
-     - FreeBSD
-     - x86_64
-     -
-     - Not support harddisk serial number
-   * - musl.x86_64
-     - Alpine Linux
-     - x86_64
-     -
-     - Built with musl-1.1.21 for Docker
-   * - musl.arm
-     - Alpine Linux
-     - arm
-     -
-     - Built with musl-1.1.21, 32-bit Armv5T, hard-float, little-endian
-   * - poky.x86
-     - Inel Quark
-     - i586
-     -
-     - Cross compile by i586-poky-linux
-   * - android.aarch64
-     - Android
-     - aarch64
-     -
-     - Build by android-ndk-r20/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang
-   * - android.armv7
-     - Android
-     - armv7l
-     -
-     - Build by android-ndk-r20/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-android21-clang
-   * - uclibc.armv7
-     - Linux
-     - armv7l
-     -
-     - Build by armv7-buildroot-uclibceabihf-gcc
-   * - windows.x86.21
-     - Windows
-     - i686
-     - Anti-Debug, ADV, VM
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - windows.x86_64.21
-     - Windows
-     - AMD64
-     - Anti-Debug, ADV, VM
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-
-.. list-table:: Table-3. The Prebuilt Extensions For Super Mode
-   :name: The Prebuilt Extensions For Super Mode
-   :widths: 10 10 10 20 10 40
-   :header-rows: 1
-
-   * - Name
-     - Platform
-     - Arch
-     - Features
-     - Description
-   * - darwin.x86_64.11.py39
-     - MacOSX
-     - x86_64, intel
-     - Anti-Debug, JIT, SUPER
-     - Built by CLang with MacOSX10.11
-   * - darwin.x86_64.11.py38
-     - MacOSX
-     - x86_64, intel
-     - Anti-Debug, JIT, SUPER
-     - Built by CLang with MacOSX10.11
-   * - darwin.x86_64.11.py37
-     - MacOSX
-     - x86_64, intel
-     - Anti-Debug, JIT, SUPER
-     - Built by CLang with MacOSX10.11
-   * - darwin.x86_64.11.py27
-     - MacOSX
-     - x86_64, intel
-     - Anti-Debug, JIT, SUPER
-     - Built by CLang with MacOSX10.11
-   * - linux.x86_64.11.py39
-     - Linux
-     - x86_64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.x86_64.11.py38
-     - Linux
-     - x86_64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.x86_64.11.py37
-     - Linux
-     - x86_64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.x86_64.11.py27
-     - Linux
-     - x86_64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc, UCS4
-   * - centos6.x86_64.11.py27
-     - Linux
-     - x86_64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc, UCS2
-   * - windows.x86_64.11.py39
-     - Windows
-     - AMD64
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86_64.11.py38
-     - Windows
-     - AMD64
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86_64.11.py37
-     - Windows
-     - AMD64
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86_64.11.py27
-     - Windows
-     - AMD64
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86.11.py39
-     - Windows
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - windows.x86.11.py38
-     - Windows
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - windows.x86.11.py37
-     - Windows
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - windows.x86.11.py27
-     - Windows
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - linux.x86.11.py39
-     - Linux
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.x86.11.py38
-     - Linux
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.x86.11.py37
-     - Linux
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.x86.11.py27
-     - Linux
-     - i386
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch64.11.py39
-     - Linux
-     - aarch64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch64.11.py38
-     - Linux
-     - aarch64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch64.11.py37
-     - Linux
-     - aarch64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch64.11.py27
-     - Linux
-     - aarch64
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch32.11.py39
-     - Linux
-     - aarch32
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch32.11.py38
-     - Linux
-     - aarch32
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch32.11.py37
-     - Linux
-     - aarch32
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.aarch32.11.py27
-     - Linux
-     - aarch32
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv7.11.py39
-     - Linux
-     - armv7l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv7.11.py38
-     - Linux
-     - armv7l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv7.11.py37
-     - Linux
-     - armv7l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv7.11.py27
-     - Linux
-     - armv7l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv6.11.py39
-     - Linux
-     - armv6l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv6.11.py38
-     - Linux
-     - armv6l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv6.11.py37
-     - Linux
-     - armv6l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - linux.armv6.11.py27
-     - Linux
-     - armv6l
-     - Anti-Debug, JIT, SUPER
-     - Built by gcc
-   * - windows.x86_64.25.py39
-     - Windows
-     - AMD64
-     - Anti-Debug, SUPER, VM
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86_64.25.py38
-     - Windows
-     - AMD64
-     - Anti-Debug, SUPER, VM
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86_64.25.py37
-     - Windows
-     - AMD64
-     - Anti-Debug, SUPER, VM
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86_64.25.py27
-     - Windows
-     - AMD64
-     - Anti-Debug, SUPER, VM
-     - Cross compile by x86_64-w64-mingw32-gcc in cygwin
-   * - windows.x86.25.py39
-     - Windows
-     - i386
-     - Anti-Debug, SUPER, VM
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - windows.x86.25.py38
-     - Windows
-     - i386
-     - Anti-Debug, SUPER, VM
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - windows.x86.25.py37
-     - Windows
-     - i386
-     - Anti-Debug, SUPER, VM
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
-   * - windows.x86.25.py27
-     - Windows
-     - i386
-     - Anti-Debug, SUPER, VM
-     - Cross compile by i686-w64-mingw32-gcc in cygwin
 
 .. _downloading dynamic library by manual:
 
