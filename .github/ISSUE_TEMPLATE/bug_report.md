@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Report a bug of pyarmor
-title: ''
+title: "[Bug]"
 labels: bug
 assignees: jondy
 
@@ -15,13 +15,16 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. Obfuscate the scripts by which Python version and in which platform
+2. Which command options used
+3. How to distribute the obfuscated scripts to target machine if it's different from build machine
+4. Run the obfuscated scripts in which platform by which Python version
+5. When see error, provide the full traceback and console output by text not snapshot, quote them like this
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+```
+pyarmor obfuscate foo.py
+... 
+```
 
 **Additional context**
 Add any other context about the problem here.
