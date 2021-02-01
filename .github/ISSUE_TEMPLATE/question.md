@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Something you want to know but no documentation, or it's not clear
+about: Something you're not sure but no documentation, or it's not clear
 title: "[Question]"
 labels: question
 assignees: jondy
