@@ -13,7 +13,7 @@ Some of them are distributed with PyArmor source package. In these platforms,
     windows.x86_64
     linux.x86
     linux.x86_64
-    darwin.x86_64/x86
+    darwin.x86_64
 
 For the other platforms, when first run `pyarmor`, it will download the
 corresponding dynamic library from the remote server automatically, and save it
@@ -141,20 +141,26 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * linux.aarch32
 * linux.aarch64
 * android.aarch64
-* android.armv7 (New in 5.9.3)
-* android.x86 (New in 6.6.1)
-* android.x86_64 (New in 6.6.1)
-* uclibc.armv7 (New in 5.9.4)
+* android.armv7
+* android.x86
+* android.x86_64
+* uclibc.armv7
 * linux.ppc64
 * darwin.arm64
 * freebsd.x86_64
-* musl.x86_64 (Renamed in 6.3.1, the old name is alpine.x86_64)
-* musl.arm (Renamed in 6.3.1, the old name is alpine.arm)
-* musl.mips32 (New in 6.3.1)
-* linux.mips64 (New in 6.3.3)
-* linux.mips64el (New in 6.3.3)
+* musl.x86_64
+* musl.arm
+* musl.mips32
+* linux.mips64
+* linux.mips64el
 * poky.x86
 
+.. note::
+
+   * New in v5.9.3: android.armv7
+   * New in v5.9.4: uclibc.armv7
+   * New in v6.3.1: musl.x86_64, musl.arm, musl.mips32, linux.mips64, linux.mips64el
+   * New in v6.6.1: android.x86, android.x86_64
 
 .. _downloading dynamic library by manual:
 
