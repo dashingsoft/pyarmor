@@ -1,13 +1,13 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Report a bug of pyarmor
 title: ''
 labels: bug
 assignees: jondy
 
 ---
 
-Before report a bug, please read this common questions and solutions first
+Before report a bug, please read these common questions and solutions first
 https://pyarmor.readthedocs.io/en/latest/questions.html
 
 **Describe the bug**
