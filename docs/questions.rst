@@ -52,8 +52,8 @@ raise exceptions like this::
    ModuleNotFoundError: No module named 'app.pytransform'
 
 This is not PyArmor's error, just Python can not find it. In this case, you need
-know Python how to import module/package, what's absolute import and relate
-import, you must know what it is ``sys.path``
+know Python how to import module/package, what's absolute import and relative
+import, you must know what's ``sys.path``
 
 https://docs.python.org/3.8/library/sys.html#sys.path
 
@@ -96,7 +96,7 @@ If you don't know how to use pyarmor in a special case, have a glance at the toc
 of :ref:`Advanced Topics`.
 
 If you distribute the obfuscated scripts in different platform or docker, make
-sure the releated cross platform options are set. Because the obfuscated scripts
+sure the related cross platform options are set. Because the obfuscated scripts
 include binary library, it's platform dependent, and Python version in target
 must be same as the version to obfuscate the scripts.
 
@@ -147,9 +147,9 @@ helpful to find the problem. And try to get more information by common option
       pyarmor -d obfuscate --recursive foo.py
 
 As running the obfuscated scripts, turn on Python debug option by ``-d`` to
-print more information. If there is line no and script name in the traceback,
-check the source script around this line. Make sure it doesn't use some features
-changed by obfuscated scripts. For example::
+print more information. If there is line number and script name in the
+traceback, check the source script around this line. Make sure it doesn't use
+any feature changed by obfuscated scripts. For example::
 
       python -d obf_foo.py
 
