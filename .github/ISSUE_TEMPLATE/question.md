@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Something you're not sure but no documentation, or it's not clear
+about: Something you're not sure but found nothing in documentation, or it's not clear
 title: "[Question]"
 labels: question
 assignees: jondy
@@ -26,6 +26,7 @@ cd test-non-super-mode
 echo "print('Hello')" > foo.py
 pyarmor obfuscate foo.py
 
+# check the output file list and the content of obfuscated scripts in non-super mode
 ls dist/
 cat dist/foo.py
 
@@ -34,6 +35,7 @@ cd test-super-mode
 echo "print('Hello')" > foo.py
 pyarmor obfuscate --advanced 2 foo.py
 
+# check the output file list and the content of obfuscated scripts in super mode
 ls dist/
 cat dist/foo.py
 ```
