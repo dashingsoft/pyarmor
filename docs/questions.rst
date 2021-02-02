@@ -18,7 +18,7 @@ pyarmor is a command line tool, it must be run in the shell or terminal. If you
 know nothing about shell command, use `pyarmor-webui`_ instead.
 
 When command `pyarmor` complains of argument error, unknown option etc. Please
-use option ``-h`` to list all the available options, and fix command line syntax
+use option ``-h`` to list all the available options, and fix command syntax
 error by these hints. For example::
 
     pyarmor obfuscate -h
@@ -45,7 +45,7 @@ Python Import System
 
 The obfuscated scripts need an extra :ref:`Runtime Package` to run, it's a
 common Python package, which could be imported as normal Python module or
-package. If it cann't be imported correctly, for example, not distributed with
+package. If it can't be imported correctly, for example, not distributed with
 the obfuscated scripts or stored in the wrong place, the obfuscated scripts may
 raise exceptions like this::
 
@@ -55,13 +55,16 @@ This is not PyArmor's error, just Python can not find it. In this case, you need
 know Python how to import module/package, what's absolte import and relate
 import, you must know what's the meaning of ``sys.path``.
 
-Then check the content of obfuscated scripts, it is a nomral Python using
-``import`` statement to import :ref:`Runtime Package`. Please following the
-ruler of Python Import System to move the :ref:`Runtime Package` to right place.
+The obfuscated script is a very simple Python script, the first line is an
+import statement, the second line is a function call. For any import or no
+module found error, just think it as a common python script, check whether the
+script locates in the right place according to Python Import System. If not,
+move the obfuscated scripts or :ref:`Runtime Package` to right path.
 
 Refer to the following official document or by search engineer to understand it
 
-https://docs.python.org/3.8/reference/import.html#the-import-system
+https://docs.python.org/3.8/reference/simple_stmts.html#the-import-statement
+
 
 PyInstaller
 +++++++++++
