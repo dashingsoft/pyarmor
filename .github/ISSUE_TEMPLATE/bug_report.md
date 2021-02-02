@@ -7,6 +7,8 @@ assignees: jondy
 
 ---
 
+It's more readable in the issue Preview mode for the hints
+
 **Hints**
 Every pyarmor command prints detail logs in the console, check not only the last error message, but also each log to understand what pyarmor is doing. And `pyarmor -d subcommand ...` even prints more debug logs, it's very useful to find the problem.
 

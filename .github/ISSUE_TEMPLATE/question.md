@@ -7,8 +7,9 @@ assignees: jondy
 
 ---
 
-**Hint 1**
+It's more readable in the issue Preview mode for all the hints
 
+**Hint 1**
 [Basic usage](https://pyarmor.readthedocs.io/en/latest/usage.html)
 [Advanced usage](https://pyarmor.readthedocs.io/en/latest/advanced.html)
 [Command usage](https://pyarmor.readthedocs.io/en/latest/man.html)
@@ -18,7 +19,6 @@ assignees: jondy
 [License](https://pyarmor.readthedocs.io/en/latest/license.html)
 
 **Hint 2**
-
 If something you're not sure, but it could be verified by doing a test in five minutes, just do it to save time for both of us. For example, understand the difference of super mode and non-super mode scripts by a simple test
 ```
 mkdir test-non-super-mode
