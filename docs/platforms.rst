@@ -91,6 +91,12 @@ right one and save it in the path ``~/.pyarmor/platforms/SYSTEM/ARCH/N/``.  Run
 the command ``pyarmor -d download`` in this platform, and check the output log,
 it can help you find where to save the download file.
 
+If you're not sure this dynamic library is right for this platform, check it by
+``ldd`` to print the dependent system libraries. For example::
+
+    ldd /path/to/_pytransform.so
+
+
 .. _features:
 
 Features

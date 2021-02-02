@@ -133,14 +133,17 @@ bootstrap code for obfuscated scripts, do tests in a fresh path like this::
 You can combine different options to do similar tests, it could help you
 understand pyarmor quickly.
 
-As obfuscating the script by ``pyarmor``, check output log message carefully, it
-may be helpful to find the problem. And try to get more information by common
-option ``-d``. For example::
+As obfuscating the script by ``pyarmor``, check not only the last error message,
+but also each log carefully to understand what pyarmor is doing, it's very
+helpful to find the problem. And try to get more information by common option
+``-d``. For example::
 
       pyarmor -d obfuscate --recursive foo.py
 
 As running the obfuscated scripts, turn on Python debug option by ``-d`` to
-print more information. For example::
+print more information. If there is line no and script name in the traceback,
+check the source script around this line. Make sure it doesn't use some features
+changed by obfuscated scripts. For example::
 
       python -d obf_foo.py
 
@@ -349,6 +352,10 @@ Add the exact source encode at the begin of the script. For example::
     # -*- coding: utf-8 -*-
 
 Refer to https://docs.python.org/2.7/tutorial/interpreter.html#source-code-encoding
+
+If the source encode has been added into main script, it still raises this
+issue. Please check the output log to find the exact script name, it may not the
+main script.
 
 
 Why plugin doesn't work

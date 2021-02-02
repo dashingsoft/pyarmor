@@ -380,6 +380,18 @@ runtime, this may reduce the performance.
    If the scripts are obfuscated by ``--obf-code=0``, it will be taken as plain
    script.
 
+   Let's say there're three scripts in a package
+
+   1. ``__init__.py`` : [ restrict_mode : 1, obf-code 2]
+   2. ``foo.py`` : [restrict_mode : 4, obf-code 2]
+   3. ``bar.py`` : [restrict_mode : 1, obf-code 0]
+
+   Here ``bar.py`` would appear as plain script at runtime due to obf-code=0.
+
+   So ``foo.py`` cannot be imported inside ``bar.py`` since it would appear like
+   a plain script and hence cannot import ``foo.py``. But ``foo.py`` can be
+   imported inside ``__init__.py`` since it has obf-code=2 and hence would work.
+
 From PyArmor 5.2, Restrict Mode 1 is default.
 
 Obfuscating the scripts by other restrict mode::
