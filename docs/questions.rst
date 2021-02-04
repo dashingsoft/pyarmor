@@ -232,14 +232,7 @@ Still doesn't work, report an issue_
 
 ERROR: Unsupport platform linux.xxx
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In some machines `pyarmor` could not recognize the platform and raise
-error. If there is available dynamic library in the table :ref:`The
-Others Prebuilt Libraries For PyArmor`. Just download it and save it
-in the path ``~/.pyarmor/platforms/SYSTEM/ARCH``, this command
-``pyarmor -d download`` will also display this path at the beginning.
-
-If there is no any available one, contact jondy.zhao@gmail.com if
-you'd like to run `pyarmor` in this platform.
+Please refer to :ref:`Support Platfroms`
 
 
 /lib64/libc.so.6: version 'GLIBC_2.14' not found

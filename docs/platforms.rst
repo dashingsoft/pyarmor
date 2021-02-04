@@ -96,6 +96,9 @@ If you're not sure this dynamic library is right for this platform, check it by
 
     ldd /path/to/_pytransform.so
 
+If there is no anyone available and you'd like to run `pyarmor` in this
+platform, click here `submit a feature request for new platform
+<https://github.com/dashingsoft/pyarmor/issues>`_
 
 .. _features:
 

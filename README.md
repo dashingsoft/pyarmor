@@ -79,5 +79,5 @@ For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest
 
 ## [Report issuses](https://github.com/dashingsoft/pyarmor/issues)
 
-Any question feel free email to <jondy.zhao@gmail.com>, or click here
-to [report an issue](https://github.com/dashingsoft/pyarmor/issues)
+Click here to [report an issue](https://github.com/dashingsoft/pyarmor/issues),
+for security issue email to <jondy.zhao@gmail.com>.
