@@ -10,7 +10,7 @@ assignees: jondy
 It's more readable in the issue Preview mode for the hints
 
 **Hints**
-Every pyarmor command prints detail logs in the console, check not only the last error message, but also each log to understand what pyarmor is doing. And `pyarmor -d subcommand ...` even prints more debug logs, it's very useful to find the problem.
+Every pyarmor command prints detail logs in the console, not only check the last error message, but also check each log to understand what pyarmor is doing. And `pyarmor -d subcommand ...` even prints more debug logs, it's very useful to find the problem.
 
 When running the obfuscated scripts, if there is traceback, check the source script according to script name and line number in the traceback, make sure it doesn't use some features changed by pyarmor 
 
