@@ -1584,6 +1584,25 @@ Show more usage and options by ``-h``::
 
         python -m pyarmor.helper.buildext ...
 
+.. note::
+
+   For Windows, if something is wrong with building extension, just write a
+   simple ``setup.py`` to build `demo.c` to `demo.pyd`::
+
+        from distutils.core import setup, Extension
+
+        module1 = Extension('demo',
+                            sources = ['demo.c'])
+
+        setup (name = 'pyarmor.helper.buildext',
+               version = '1.0',
+               description = 'This is a helper package to build extension',
+               ext_modules = [module1])
+
+    Then run it::
+
+        python setup.py build_ext
+
 .. _distributing obfuscated package with pip:
 
 Distributing Obfuscated Package With pip

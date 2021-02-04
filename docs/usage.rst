@@ -69,6 +69,9 @@ Just copy all the files in the output path `dist` to end users. Note that except
 the obfuscated scripts, the :ref:`Runtime Package` need to be distributed to end
 users too.
 
+PyArmor only deals with `.py` files, if there are data files or binary extension
+in the package, copy them to ``dist`` manually.
+
 The :ref:`Runtime Package` may not with the obfuscated scripts, it could be
 moved to any Python path, only if `import pytransform` works.
 
@@ -77,6 +80,7 @@ About the security of obfuscated scripts, refer to :ref:`The Security of PyArmor
 .. note::
 
    PyArmor need NOT be installed in the runtime machine
+
 
 Generating License For Obfuscated Scripts
 -----------------------------------------

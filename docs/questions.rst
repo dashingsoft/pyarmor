@@ -52,16 +52,20 @@ raise exceptions like this::
    ModuleNotFoundError: No module named 'app.pytransform'
 
 This is not PyArmor's error, just Python can not find it. In this case, you need
-know Python how to import module/package, what's absolute import and relative
+know Python how to import module, package, what's absolute import and relative
 import, you must know what's ``sys.path``
 
 https://docs.python.org/3.8/library/sys.html#sys.path
 
 The obfuscated script is a very simple Python script, the first line is an
 import statement, the second line is a function call. For any import or no
-module found error, just think it as a common python script, check whether the
-script locates in the right place according to Python Import System. If not,
-move the obfuscated scripts or :ref:`Runtime Package` to right path.
+module found error, for example::
+
+    ImportError: No module named model.NukepediaDB
+
+Just think it as a common python script, check whether the module, package or
+extension file locates in the right place according to Python Import System. If
+not, move the module, package or extension file to right path.
 
 Refer to the following official document or by search engineer to understand
 Python Import System
