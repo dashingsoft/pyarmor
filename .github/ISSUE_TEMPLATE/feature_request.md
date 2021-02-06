@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: 'Request support for new platform or suggest an idea for this project '
+about: 'Request for new platform or suggest an idea for this project '
 title: "[Enhancement]"
 labels: enhancement
 assignees: jondy
