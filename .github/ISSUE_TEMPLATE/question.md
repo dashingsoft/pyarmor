@@ -1,7 +1,7 @@
 ---
 name: Question
 about: Something you're not sure but nothing found in documentation, or it's not clear
-title: "[Question]"
+title: ''
 labels: question
 assignees: jondy
 
