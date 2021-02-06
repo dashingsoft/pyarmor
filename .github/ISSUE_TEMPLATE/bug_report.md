@@ -23,7 +23,7 @@ And remove all the above hints.
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Steps to reproduce the behavior:
+Which pyarmor version is used, trial or purchased, and steps to reproduce the behavior:
 1. Obfuscate the scripts by which Python version and in which platform
 2. What command options used
 3. How to distribute the obfuscated scripts to target machine if it's different from build machine
