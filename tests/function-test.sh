@@ -1841,6 +1841,37 @@ cp $casepath/{foo.py,dist}
 check_file_content $casepath/result.log "password is admin" not
 check_file_content $casepath/result.log "Protection Fault: this function is not pyarmored"
 
+csih_inform "Case Plugin-4: test internal plugin: assert_armored in super mode"
+casepath=test_plugin_assert_armored_2
+mkdir -p $casepath
+cat <<EOF > $casepath/foo.py
+def connect(username, password):
+    print('password is %s' % password)
+EOF
+cat <<EOF > $casepath/main.py
+import foo
+
+# PyArmor Plugin: from pytransform import assert_armored
+# PyArmor Plugin: @assert_armored(foo.connect)
+def start_server():
+    foo.connect('root', 'admin')
+start_server()
+EOF
+
+$PYARMOR obfuscate --advanced 2 --plugin on -O $casepath/dist \
+         $casepath/main.py  > result.log 2>&1
+check_return_value
+
+(cd $casepath/dist; $PYTHON main.py > result.log 2>&1)
+check_return_value
+check_file_content $casepath/dist/result.log "password is admin"
+
+rm -rf $casepath/dist/foo.* $casepath/dist/__pycache__
+cp $casepath/{foo.py,dist}
+(cd $casepath; $PYTHON dist/main.py > result.log 2>&1)
+check_file_content $casepath/result.log "password is admin" not
+check_file_content $casepath/result.log "code object 'connect' is not pyarmored"
+
 echo ""
 echo "-------------------- Test plugins END ----------------"
 echo ""
