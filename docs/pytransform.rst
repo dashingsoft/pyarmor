@@ -117,10 +117,24 @@ Contents
 
 .. function:: assert_armored(*args)
 
-   A decorator function used to check each function list in the args
-   is obfuscated.
+   A **decorator** function used to check each function list in the args is
+   obfuscated. For example::
+
+    @assert_armored(foo.connect, foo.connect2)
+    def start_server():
+        foo.connect('root', 'root password')
 
    Raise :exc:`Exception` if any function is not obfuscated.
+
+.. function:: check_armored(*args)
+
+   Return 1 if all the functions in the args are obfuscated.
+
+   Return 0 if any of them is not obfuscated.
+
+   Return -1 for unknown error.
+
+   .. note:: New in v6.6.2
 
 
 Examples
