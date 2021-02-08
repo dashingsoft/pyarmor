@@ -128,11 +128,9 @@ Contents
 
 .. function:: check_armored(*args)
 
-   Return 1 if all the functions in the args are obfuscated.
+   Return True if all the functions in the args are obfuscated.
 
-   Return 0 if any of them is not obfuscated.
-
-   Return -1 for unknown error.
+   Return False if any of them is not obfuscated.
 
    .. note:: New in v6.6.2
 

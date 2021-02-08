@@ -180,9 +180,10 @@ def check_armored(*names):
     dlfunc = prototype(('assert_armored', _pytransform))
     try:
         dlfunc(names)
-        return 1
+        ret = True
     except RuntimeError:
-        return 0
+        ret = False
+    return ret
 
 
 def get_license_info():
