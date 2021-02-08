@@ -56,6 +56,8 @@ The following files are created by `pyarmor` after it has been installed::
     {pyarmor-folder}/license.lic       (before v5.8.0)
     ~/.pyarmor_capsule.zip             (before v6.2.0)
 
+    /path/to/project/.pyarmor_config   (if using project)
+
 Run the following commands to make a clean uninstallation::
 
     pip uninstall pyarmor
@@ -63,6 +65,8 @@ Run the following commands to make a clean uninstallation::
     rm -rf ~/.pyarmor
     rm -rf {pyarmor-folder}            (before v5.8.0)
     rm -rf ~/.pyarmor_capsule.zip      (before v6.2.0)
+
+    rm /path/to/project/.pyarmor_config
 
 .. note::
 
