@@ -255,12 +255,8 @@ There are something changed after Python scripts are obfuscated:
   ``threading.settrace`` and ``threading.setprofile`` will be ignored by
   obfuscated scripts.
 
-* Some function in the module ``inspect`` may not work, and any other
-  module or package may not work if it visits the source or byte code
-  of the obfuscated scripts.
-
-* It will crash to visit the attribute ``co_const`` of code object
-  directly if the script is obfuscated in advanced mode.
+* Any module for example ``inspect`` may not work if it try to visit the byte
+  code, or some attributes of code objects in the obfuscated scripts.
 
 * If the exception is raised, the line number in the traceback may be
   different from the original script, especially this script has been
