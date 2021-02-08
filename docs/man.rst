@@ -288,8 +288,12 @@ will be inserted into the entry scripts.
 
      pyarmor obfuscate --plugin @assert_armored foo.py
 
-* Obfuscate the scripts in Macos and run obfuscated scripts in
-  Ubuntu::
+* If the script `foo.py` includes internal plugin, obfuscate it with special
+  plugin name ``on``::
+
+     pyarmor obfuscate --plugin on foo.py
+
+* Obfuscate the scripts in Macos and run obfuscated scripts in Ubuntu::
 
     pyarmor obfuscate --platform linux.x86_64 foo.py
 
@@ -637,8 +641,10 @@ When something is wrong, turn on PyArmor debug flag to print traceback::
 
 .. important::
 
-   The command `pack` will obfuscate the scripts automatically, do not
-   try to pack the obfuscated the scripts.
+   The command `pack` will obfuscate all the ``.py`` files in the entry script's
+   path recursively, do not pack the obfuscated scripts. But it won't obfuscate
+   the dependencies of your scripts. By default, only the scripts in the path of
+   entry script are obfuscated recursively.
 
 .. comment:
 
@@ -813,7 +819,7 @@ For the details of each option, refer to :ref:`Project Configuration File`
 * Set plugin for entry script. The content of `check_ntp_time.py` will
   be insert into entry script as building project::
 
-    pyarmor config --plugin check_ntp_time.py
+    pyarmor config --plugin check_ntp_time
 
 * Remove all plugins::
 

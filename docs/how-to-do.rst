@@ -116,7 +116,9 @@ Each plugin is a normal Python script, PyArmor searches it by this way:
 * Raise exception if not found
 
 When there is plugin specified as obfuscating the script, each comment line will
-be scanned to find any plugin marker. There are 3 types of plugin marker:
+be scanned to find any plugin marker.
+
+There are 3 types of plugin marker:
 
 * Plugin Definition Marker
 * Plugin Inline Marker
@@ -213,6 +215,14 @@ The `Plugin Inline Marker` doesn't work. For example::
 Even this marker will be replaced with ``check_ntp_time()``, but the plugin
 script will not be injected into the obfuscated script. When it runs, it will
 complain of no function `check_ntp_name` found.
+
+.. note::
+
+   If there is no option ``--plugin`` in the command line, pyarmor DOES NOT
+   search any plugin marker in the comment. If there is no external plugin
+   script, use special name ``on`` like this::
+
+     pyarmor obfuscate --plugin on foo.py
 
 .. _special handling of entry script:
 
