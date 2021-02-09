@@ -733,7 +733,8 @@ obfuscated scripts, if they're not commented as plugin, it will break the plain
 scripts.
 
 No one knows your check logic, and you can change it in anytime. So it's more
-security.
+security. For example, check there is debugger process, check the sum of byte
+code of caller, which could be got by `sys._getframe` etc.
 
 Using Inline Plugin To Check Dynamic Library
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -769,11 +770,13 @@ first
 Checking Imported Function Is Obfuscated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Sometimes it need to make sure the imported functions from other module are
-obfuscated. For example, there are 2 scripts `main.py` and `foo.py`
+In the :module:`pytransfrom` there is one decorator :ref:`assert_armored` and
+one function :ref:`check_armored` used to make sure the imported functions from
+other module are obfuscated.
+
+For example, there are 2 scripts `main.py` and `foo.py`
 
 .. code:: python
-
 
     #
     # This is main.py
@@ -807,9 +810,7 @@ the obfuscated `main.py`
 The password is stolen, in order to avoid this, use decorator function
 to make sure the function `connect` is obfuscated by plugin.
 
-From v6.0.2, the :ref:`runtime package` :mod:`pytransform` provides internal
-decorator `assert_armored`, it can be used to check all the list functions are
-pyarmored in the script. Now let's edit `main.py`, insert inline plugin code
+Now let's edit `main.py`, insert inline plugin code
 
 .. code:: python
 
@@ -841,55 +842,21 @@ Before call ``start_server``, the decorator function ``assert_armored`` will
 check both ``connect`` functions are pyarmored, otherwise it will raise
 exception.
 
-In order to improve security further, we implement the decorator function in the
-script, instead of importing it. First create script ``assert_armored.py`` in the
-current path
-
-.. code:: python
-
-    from pytransform import _pytransform, PYFUNCTYPE, py_object
-
-    def assert_armored(*names):
-        prototype = PYFUNCTYPE(py_object, py_object)
-        dlfunc = prototype(('assert_armored', _pytransform))
-
-        def wrapper(func):
-            def _execute(*args, **kwargs):
-
-                # Call check point provide by PyArmor
-                dlfunc(names)
-
-                # Add your private check code
-                for s in names:
-                    if s.__name__ == 'connect':
-                        if s.__code__.co_code[10:12] != b'\x90\xA2':
-                            raise RuntimeError('Access violate')
-
-                return func(*args, **kwargs)
-            return _execute
-        return wrapper
-
-Next edit `main.py` , insert plugin markers
+You can also check it by :ref:`check_armored`
 
 .. code:: python
 
     import foo
 
-    # {PyArmor Plugins}
+    from pytransform import check_armored
 
-    # PyArmor Plugin: @assert_armored(foo.connect, foo.connect2)
     def start_server():
+
+        if not check_armored(foo.connect, foo.connect2):
+            print('Found hacker')
+            return
+
         foo.connect('root', 'root password')
-
-Then obfuscate it with this command::
-
-    pyarmor obfuscate --plugin assert_armored main.py
-
-.. note::
-
-   Since v6.2.0, if obfuscating scripts by :ref:`super mode`, it's enough to
-   import `assert_armored` from :mod:`pytransform`, do not create outer script,
-   it doesn't work.
 
 
 .. _call pyarmor from python script:

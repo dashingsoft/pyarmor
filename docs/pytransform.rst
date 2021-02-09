@@ -118,19 +118,28 @@ Contents
 .. function:: assert_armored(*args)
 
    A **decorator** function used to check each function list in the args is
-   obfuscated. For example::
-
-    @assert_armored(foo.connect, foo.connect2)
-    def start_server():
-        foo.connect('root', 'root password')
+   obfuscated.
 
    Raise :exc:`Exception` if any function is not obfuscated.
+
+   For example::
+
+     from pytransform import assert_armored
+     @assert_armored(foo.connect, foo.connect2)
+     def start_server():
+         foo.connect('root', 'root password')
 
 .. function:: check_armored(*args)
 
    Return True if all the functions in the args are obfuscated.
 
    Return False if any of them is not obfuscated.
+
+   For example::
+
+     from pytransform import check_armored
+     if not check_armored(foo.connect, foo.connect2):
+         print('My script is hacked')
 
    .. note:: New in v6.6.2
 
@@ -156,7 +165,8 @@ Show left days of license
    except Exception as e:
        print(e)
 
-More usage refer to :ref:`Using Plugin to Extend License Type`
+More usage refer to :ref:`Using Plugin to Extend License Type` and
+:ref:`Using plugin to improve security`
 
 .. note::
 

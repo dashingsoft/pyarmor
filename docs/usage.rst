@@ -214,14 +214,19 @@ These `PyArmor`_ features could import security further:
 1. :ref:`Using super mode` to obufscate scripts if possible, otherwise enable
    :ref:`Advanced Mode` if the platform is supported. In Windows and the
    performance meets the requirement, enable :ref:`VM Mode`
-2. Try to :ref:`binding obfuscated scripts to Python interpreter`.
+2. Try to :ref:`binding obfuscated scripts to Python interpreter` if they're
+   distributed as one executable bundle.
 3. Make sure the entry script is patched by `cross protection code
    <https://pyarmor.readthedocs.io/en/latest/how-to-do.html#special-handling-of-entry-script>`_,
    and try to :ref:`Customizing cross protection code`
-4. Use the corresponding :ref:`Restrict Mode`
+4. Use the corresponding :ref:`Restrict Mode` to make sure no one can import the
+   obfuscated module.
 5. Use the high security code obfuscation `--obf-code=2`
 6. :ref:`Using plugin to improve security` by injecting your private checkpoints
-   in the obfuscated scripts
+   in the obfuscated scripts, there is one decorator :ref:`assert_armored` and
+   one function :ref:`check_armored` in the :module:`pytransfrom` used to
+   prevent monkey trick hacking. You can also add any other check points to make
+   sure the obfuscated scripts are not hacked.
 7. If data files need to be protected, refer to :ref:`How to protect data files`
 
 About the security of obfuscated scripts, refer to :ref:`The Security of PyArmor`
