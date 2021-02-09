@@ -747,6 +747,35 @@ check_return_value
 check_return_value
 check_file_content $dist/result.log "Local x is 4"
 
+csih_inform "S-13. Test check_armored in super mode"
+dist=test-super-mode-13
+cat <<EOF > sfoo13.py
+def hello():
+    print('Hello')
+
+class Queen(object):
+
+    def hello(self):
+        print('Hello')
+EOF
+cat <<EOF > smain13.py
+from pytransform import check_armored
+import sfoo13 as foo
+print('Check armored return: %s' % check_armored(foo.hello, foo.Queen.hello))
+EOF
+
+$PYARMOR obfuscate --exact --advanced 2 -O $dist smain13.py sfoo13.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON smain13.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Check armored return: True"
+
+cp sfoo13.py $dist
+(cd $dist; rm -rf sfoo13.pyc __pycache__; $PYTHON smain13.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Check armored return: False"
+
 echo ""
 echo "-------------------- Super Mode End --------------------------"
 echo ""
@@ -1870,7 +1899,7 @@ rm -rf $casepath/dist/foo.* $casepath/dist/__pycache__
 cp $casepath/{foo.py,dist}
 (cd $casepath; $PYTHON dist/main.py > result.log 2>&1)
 check_file_content $casepath/result.log "password is admin" not
-check_file_content $casepath/result.log "code object 'connect' is not pyarmored"
+check_file_content $casepath/result.log "Protection fault"
 
 echo ""
 echo "-------------------- Test plugins END ----------------"
