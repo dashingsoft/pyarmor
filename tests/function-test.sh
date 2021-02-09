@@ -1870,6 +1870,7 @@ cp $casepath/{foo.py,dist}
 check_file_content $casepath/result.log "password is admin" not
 check_file_content $casepath/result.log "Protection Fault: this function is not pyarmored"
 
+if [[ "yes" == "${SUPERMODE}" ]] ; then
 csih_inform "Case Plugin-4: test internal plugin: assert_armored in super mode"
 casepath=test_plugin_assert_armored_2
 mkdir -p $casepath
@@ -1900,6 +1901,7 @@ cp $casepath/{foo.py,dist}
 (cd $casepath; $PYTHON dist/main.py > result.log 2>&1)
 check_file_content $casepath/result.log "password is admin" not
 check_file_content $casepath/result.log "Protection fault"
+fi
 
 echo ""
 echo "-------------------- Test plugins END ----------------"
