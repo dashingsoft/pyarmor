@@ -176,14 +176,12 @@ def assert_armored(*names):
 
 
 def check_armored(*names):
-    prototype = PYFUNCTYPE(py_object, py_object)
-    dlfunc = prototype(('assert_armored', _pytransform))
     try:
-        dlfunc(names)
-        ret = True
+        prototype = PYFUNCTYPE(py_object, py_object)
+        prototype(('assert_armored', _pytransform))(names)
+        return True
     except RuntimeError:
-        ret = False
-    return ret
+        return False
 
 
 def get_license_info():
