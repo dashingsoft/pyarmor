@@ -1590,8 +1590,10 @@ def _fix_up_gnu_hash(data, suffix):
     fmt = 'I' * n
     arr = struct.unpack(fmt, bytes(data[:n*4]))
 
-    ix, key, prefix = (0, 0xb4239787, 'PyInit_') if sys.version_info[0] == 3 \
-        else (2, 0xe746a6ab, 'init')
+    # ix, kx, key, prefix = (0, 0, 0xb4239787, 'PyInit_')
+    # if sys.version_info[0] == 3 else (2, 0, 0xe746a6ab, 'init')
+    ix, kx, key, prefix = (0, 2, 0xb4270e0b, 'PyInit_') \
+        if sys.version_info[0] == 3 else (2, 0, 0xe746a6ab, 'init')
 
     symhash = 5381
     for c in ''.join([prefix, 'pytransform', suffix]):
@@ -1602,8 +1604,8 @@ def _fix_up_gnu_hash(data, suffix):
     i = 0
 
     def write_integer(buf, offset, value):
-        for i in range(offset, offset + 4):
-            buf[i] = value & 0xFF
+        for j in range(offset, offset + 4):
+            buf[j] = value & 0xFF
             value >>= 8
 
     while True:
@@ -1612,14 +1614,15 @@ def _fix_up_gnu_hash(data, suffix):
         except Exception:
             return
 
-        if (arr[i-12] == 3 and arr[i-10] == 1 and arr[i-9] == 6) \
-           or (arr[i-11] == 3 and arr[i-9] == 1 and arr[i-8] == 5):
-            logging.debug('Fix suffix symbol hash at %s', i)
-            write_integer(data, (i if ix else (i-3))*4, symhash)
-            write_integer(data, (i-6+nx)*4, arr[i-6+ix])
+        k = i + kx
+        if (arr[k-12] == 3 and arr[k-10] == 1 and arr[k-9] == 6) \
+           or (arr[k-11] == 3 and arr[k-9] == 1 and arr[k-8] == 5):
+            logging.debug('Fix suffix symbol hash at %s', k)
+            write_integer(data, (k if ix else (k-3))*4, symhash)
+            write_integer(data, (k-6+nx)*4, arr[k-6+ix])
 
-            write_integer(data, (i-7)*4, 0xffffffff)
-            if arr[i-9] == 6:
-                write_integer(data, (i-8)*4, 0xffffffff)
+            write_integer(data, (k-7)*4, 0xffffffff)
+            if arr[k-9] == 6:
+                write_integer(data, (k-8)*4, 0xffffffff)
 
         i += 1
