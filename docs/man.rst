@@ -641,10 +641,12 @@ When something is wrong, turn on PyArmor debug flag to print traceback::
 
 .. important::
 
-   The command `pack` will obfuscate all the ``.py`` files in the entry script's
-   path recursively, do not pack the obfuscated scripts. But it won't obfuscate
-   the dependencies of your scripts. By default, only the scripts in the path of
-   entry script are obfuscated recursively.
+   The command `pack` will obfuscate the entry script automatically, DO NOT
+   obfuscate the entry script before pack.
+
+   By default the command `pack` obfuscates all the ``.py`` files only in the
+   entry script's path recursively. It won't obfuscate all the dependencies out
+   of this path.
 
 .. comment:
 
