@@ -27,9 +27,9 @@ def protect_pytransform():
             major, minor = sys.version_info[:2]
             if '{suffix}':
                 value += 886 - sum(b'{suffix}') + (
-                      1151 if major == 2 else 1168 if minor == 7 else 1169)
+                      1151 if major == 2 else (1161 + minor))
             else:
-                value += 2069 if major == 2 else 2086 if minor == 7 else 2087
+                value += 2069 if major == 2 else (2079 + minor)
         if value not in {checklist}:
             raise RuntimeError('unexpected %s' % filename)
 
