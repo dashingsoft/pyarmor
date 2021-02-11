@@ -32,6 +32,13 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+6.6.2 (dev, not released)
+-------------------------
+* Improve the security of restrict mode and `assert_armored` for super mode
+* Add new api `check_armored` in the runtime module `pytransform`
+* Build super mode core libraries with rpath dependent in MacOS
+* Fix Python3.9 pack issue for MacOS: check_lib_pytransform failed
+
 6.6.1
 -----
 * Fix issue (#429): the new license doesn't work if replace the old license with
