@@ -12,7 +12,7 @@ Necessary Knowledges
 --------------------
 
 Shell
-++++++
+~~~~~
 
 pyarmor is a command line tool, it must be run in the shell or terminal. If you
 know nothing about shell command, use `pyarmor-webui`_ instead.
@@ -24,13 +24,13 @@ error by these hints. For example::
     pyarmor obfuscate -h
 
 Python
-++++++
+~~~~~~
 
 How to run Python
 https://docs.python.org/3.8/tutorial/interpreter.html#using-the-python-interpreter
 
 Source Code Encoding
-++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~
 
 If the obfuscated scripts print unexpected output, you need learn this
 
@@ -41,7 +41,7 @@ script to make sure everything is fine, then obfuscate the scripts again.
 
 
 Python Import System
-++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~
 
 The obfuscated scripts need an extra :ref:`Runtime Package` to run, it's a
 common Python package, which could be imported as normal Python module or
@@ -74,7 +74,7 @@ https://docs.python.org/3.8/reference/simple_stmts.html#the-import-statement
 
 
 PyInstaller
-+++++++++++
+~~~~~~~~~~~
 
 If you'd like to pack the obfuscated scripts to one executable, and your project
 structure is complex, you must know `PyInstaller`_ and could pack your project
