@@ -129,6 +129,11 @@ Contents
      def start_server():
          foo.connect('root', 'root password')
 
+   .. note::
+
+      It only used to check function or method, any other type, Class for
+      example, doesn't support.
+
 .. function:: check_armored(*args)
 
    Return True if all the functions in the args are obfuscated.
@@ -143,6 +148,8 @@ Contents
 
    .. note:: New in v6.6.2
 
+       It only used to check function or method, any other type, Class for
+       example, doesn't support.
 
 Examples
 --------
