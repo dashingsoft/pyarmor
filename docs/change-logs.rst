@@ -38,6 +38,7 @@ Incompatible issues
 * Add new api `check_armored` in the runtime module `pytransform`
 * Build super mode core libraries with rpath dependent in MacOS
 * Fix Python3.9 pack issue for MacOS: check_lib_pytransform failed
+* Fix Apple Silicon platform issue: the binary libraries doesn't work
 
 6.6.1
 -----
