@@ -21,7 +21,8 @@ to ``~/.pyarmor/platforms/SYSTEM/ARCH/N/``, ``SYSTEM.ARCH`` is one of `Standard
 Platform Names`_. ``N`` is `features`_ number, which explained below. Here list
 all the other supported platforms::
 
-    darwin.arm64
+    darwin.aarch64
+    ios.aarch64
     linux.arm
     linux.armv6
     linux.armv7
@@ -67,7 +68,12 @@ example, ``linux/x86_64/11/py38``.
      - aarch64
      - 11
      - 38, 39
-     - ios/darwin arm64
+     - Apple Silicon
+   * - ios
+     - aarch64
+     - 11
+     - 38, 39
+     -
    * - linux
      - x86, x86_64, aarch64, aarch32, armv7
      - 11
