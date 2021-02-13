@@ -1111,7 +1111,7 @@ def _get_preferred_platid(platname, features=None):
 
     if name in ('linux.arm', 'linux.ppc64', 'linux.mips64',
                 'linux.mips64el', 'musl.arm', 'musl.mips32',
-                'darwin.arm64', 'freebsd.x86_64', 'android.aarch64',
+                'freebsd.x86_64', 'android.aarch64',
                 'android.x86', 'android.x86_64',
                 'poky.x86', 'vs2015.x86_64', 'vs2015.x86'):
         if features and '0' not in features:
@@ -1215,7 +1215,7 @@ def compatible_platform_names(platforms):
     old_forms = {
         'armv5': 'linux.arm',
         'ppc64le': 'linux.ppc64',
-        'ios.arm64': 'darwin.aarch64',
+        'ios.arm64': 'ios.aarch64',
         'darwin.arm64': 'darwin.aarch64',
         'freebsd': 'freebsd.x86_64',
         'alpine': 'musl.x86_64',

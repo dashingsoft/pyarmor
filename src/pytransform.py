@@ -19,7 +19,8 @@ plat_path = 'platforms'
 
 plat_table = (
     ('windows', ('windows', 'cygwin-*')),
-    ('darwin', ('darwin', 'ios')),
+    ('darwin', ('darwin',)),
+    ('ios', ('ios',)),
     ('linux', ('linux*',)),
     ('freebsd', ('freebsd*', 'openbsd*')),
     ('poky', ('poky',)),
