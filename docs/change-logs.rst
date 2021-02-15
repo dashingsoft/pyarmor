@@ -46,10 +46,9 @@ The pre-release version could be installed by this command::
 
   pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.6.2.zip
 
-Note that the pre-release version may be changed from time to time to fix new
-bugs, please update it if it doesn't work. And once the new version is released
-in PyPI, please remove the pre-release version, install the latest pyarmor from
-PyPi.
+It may be changed from time to time to fix new bugs, please update it once it
+doesn't work. If the new version has been released in PyPi, please remove the
+pre-release version, install the latest pyarmor from PyPi.
 
 6.6.1
 -----
