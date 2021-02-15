@@ -354,7 +354,7 @@ Generate new licenses for obfuscated scripts.
 -x, --bind-data DATA        Pass extra data to license, used to extend license type
 --disable-restrict-mode     Disable all the restrict modes
 --enable-period-mode        Check license per hour when the obfuscated script is running
---fixed key,...             Bind license to Python interpreter
+--fixed KEY                 Bind license to Python interpreter
 
 **DESCRIPTION**
 
