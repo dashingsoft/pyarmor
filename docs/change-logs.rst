@@ -39,6 +39,17 @@ Incompatible issues
 * Build super mode core libraries with rpath dependent in MacOS
 * Fix Python3.9 pack issue for MacOS: check_lib_pytransform failed
 * Fix Apple Silicon platform issue: the binary libraries doesn't work
+* Fix issue (#471): in super mode `get_license_info` can't get the updated
+  license information.
+
+The pre-release version could be installed by this command::
+
+  pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.6.2.zip
+
+Note that the pre-release version may be changed from time to time to fix new
+bugs, please update it if it doesn't work. And once the new version is released
+in PyPI, please remove the pre-release version, install the latest pyarmor from
+PyPi.
 
 6.6.1
 -----
