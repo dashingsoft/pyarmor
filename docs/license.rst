@@ -104,23 +104,30 @@ version. A new license is required to use the latest version.
 Technical Support
 -----------------
 
+If there is any question, first check these `questions and solutions
+<https://pyarmor.readthedocs.io/en/latest/questions.html>`_, it may help you
+solve the problem quickly.
+
+If there is no solution, for technical issue, click here to `report an issue
+<https://github.com/dashingsoft/pyarmor/issues>`_ according to the issue
+template, for business and security issue send email to jondy.zhao@gmail.com
+
 There are 3 kinds of issues:
 
-1. PyArmor defect.
-2. The limitation of obfuscated scripts, or called known issues.
+1. The limitation of obfuscated scripts, or called known issues.
+2. PyArmor defect.
 3. Wrong usage.
 
-For example, use ``inspect`` to visit co_code of code object, use ``pdb`` to
-trace obfuscated scripts. All of these don't work, they're known issues. Here
-list all the known issues: :ref:`The Differences of Obfuscated Scripts`.
+For the first catalog, it can't be fixed. For example, use ``inspect`` to visit
+co_code of code object, use ``pdb`` to trace obfuscated scripts. All of these
+don't work, they're known issues. Here list all the known issues :ref:`The
+Differences of Obfuscated Scripts`.
 
-It also requires some basic knowledge to use pyarmor, for example, shell command
-etc. please refer to :ref:`Necessary Knowledges`
+For the second catalog, it's my due to fix it.
 
-When reporting an issue, I'll tell which kind it is. For the first catalog, it's
-my due to fix it. For the rests, it's your due to read the documentation and fix
-it. I'll give you hints and maybe examples, but I will not obfuscate the scripts
-for you, or hand by hand tell you how to pyarmor your scripts.
+For the rests, it's your due to read the documentation and fix it. I'll give you
+hints and maybe examples, but I will not hand by hand tell you which comand and
+options should be used to obfuscate your scripts.
 
 Suppose you purchase Microsoft Excel, and want to make a complex chart. You must
 learn the advanced features of Excel, then make this chart by yourself. You can
@@ -132,10 +139,10 @@ PyArmor, my due is to implement it as described in the document, you need learn
 this advanced feature and refine you code to adapt it. It's not my due to read
 your scripts and adapt your scripts to restrict mode.
 
-If you plan to obfuscate the third package, I also can't obfuscate this package
-for you and make sure it's compatible with pyarmor. Here is a list about all of
-:ref:`The Differences of Obfuscated Scripts`. If any package violates these
-rulers, it will not work with pyarmor.
+If you plan to obfuscate or use any third-party package, I also can't obfuscate
+this package for you and make sure it's compatible with pyarmor. Here is a list
+about all of :ref:`The Differences of Obfuscated Scripts`. If the package uses
+these features changed by obfuscated scripts, it will not work with pyarmor.
 
 There are countless big packages in Python world, many packages I never use and
 even don't know at all. It's also not easy for me to research a complex package

@@ -73,6 +73,14 @@ Start webui, open web page in browser::
 
     pyarmor-webui
 
+If there is any question, first check these `questions and solutions
+<https://pyarmor.readthedocs.io/en/latest/questions.html>`_, it may help you
+solve the problem quickly.
+
+If there is no solution, for technical issue, click here to `report an issue
+<https://github.com/dashingsoft/pyarmor/issues>`_ according to the issue
+template, for business and security issue send email to jondy.zhao@gmail.com
+
 More Resources
 --------------
 

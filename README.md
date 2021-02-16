@@ -16,11 +16,11 @@ Also refer to [The Security of PyArmor](https://pyarmor.readthedocs.io/en/latest
 
 ## Support Platforms
 
-- Python 2.5, 2.6, 2.7 and Python3
+- Python 2.7 and Python3
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_x86_64
-- Embedded Platform: Raspberry Pi, Banana Pi, Orange Pi, TS-4600 / TS-7600
+- Embedded Platform: Raspberry Pi, Banana Pi, Orange Pi, TS-4600 / TS-7600 and more
 
-Refer to [Standard Platform Names](https://pyarmor.readthedocs.io/en/latest/platforms.html#standard-platform-names)
+Refer to [support platforms](https://pyarmor.readthedocs.io/en/latest/platforms.html)
 
 ## Quick Start
 
@@ -77,7 +77,17 @@ For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest
 
 ## [Change Logs](docs/change-logs.rst)
 
+It describes the fixed issues, new features, incompatible issues in different
+versions.
+
+It's recommended to read this carefully before upgrading pyarmor.
+
 ## [Report issuses](https://github.com/dashingsoft/pyarmor/issues)
 
-Click here to [report an issue](https://github.com/dashingsoft/pyarmor/issues),
-for security issue email to <jondy.zhao@gmail.com>.
+If there is any question, first check these [questions and
+solutions](https://pyarmor.readthedocs.io/en/latest/questions.html), it may help
+you solve the problem quickly.
+
+If there is no solution, for technical issue, click here to [report an
+issue](https://github.com/dashingsoft/pyarmor/issues) according to the issue
+template, for business and security issue send email to <jondy.zhao@gmail.com>.
