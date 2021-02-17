@@ -32,8 +32,6 @@ Python versions are supported:
 * Python 3.8
 * Python 3.9
 
-It may support Python 3.5, 3.6 later, but Python 3.0~3.4 is out of plan.
-
 In order to enable it, set option ``--advanced 2`` to :ref:`obfuscate`::
 
     pyarmor obfuscate --advanced 2 foo.py
@@ -42,7 +40,7 @@ More usage refer to :ref:`using super mode`
 
 .. note::
 
-   It doesn't work to mix super mode obfuscated scripts and non super mode ones.
+   It doesn't work to mix super mode obfuscated scripts and non-super mode ones.
 
 .. _advanced mode:
 
