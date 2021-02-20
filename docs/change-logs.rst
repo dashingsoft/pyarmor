@@ -42,13 +42,13 @@ Incompatible issues
 * Fix issue (#471): in super mode `get_license_info` can't get the updated
   license information.
 
-The pre-release version could be installed by this command::
+The dev version could be installed by this command::
 
   pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.6.2.zip
 
 It may be changed from time to time to fix new bugs, please update it once it
 doesn't work. If the new version has been released in PyPi, please remove the
-pre-release version, install the latest pyarmor from PyPi.
+dev version, install the latest pyarmor from PyPi.
 
 6.6.1
 -----
