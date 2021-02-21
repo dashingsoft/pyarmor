@@ -22,7 +22,6 @@ pyarmor_data_files = [
     'product.key', 'license.tri', 'README.rst',
     'protect_code.pt', 'protect_code2.pt', 'public_capsule.zip',
     'plugins/README.md', 'plugins/check_ntp_time.py',
-    'plugins/check_docker.py', 'plugins/assert_armored.py',
     'examples/README.md', 'examples/README-ZH.md',
     'examples/*.sh', 'examples/*.bat',
     'examples/simple/*.py', 'examples/testmod/*.py',

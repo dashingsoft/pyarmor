@@ -459,8 +459,14 @@ def ref_id_to_text(ref_id, stratum=2):
 
 
 def _get_license_data():
+    try:
+        from pytransform import _pytransform
+    except Exception:
+        # For super mode
+        from pytransform import get_license_data
+        return get_license_data().decode()
+
     from ctypes import py_object, PYFUNCTYPE
-    from pytransform import _pytransform
     prototype = PYFUNCTYPE(py_object)
     dlfunc = prototype(('get_registration_code', _pytransform))
     rcode = dlfunc().decode()
