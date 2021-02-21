@@ -70,8 +70,8 @@ Contents
 
 .. function:: get_user_data()
 
-   Return a string, which is specified by ``-x`` as generating the licenses for
-   obfucated scripts.
+   Return a string in non-super mode or bytes object in super mode, which is
+   specified by ``-x`` as generating the licenses for obfucated scripts.
 
    Return None if no specify ``-x``.
 
