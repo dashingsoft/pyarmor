@@ -6,8 +6,8 @@ def check_multiple_machine():
             from pytransform import _pytransform
         except Exception:
             # For super mode
-            from pytransform import get_license_data
-            return get_license_data().decode()
+            from pytransform import get_user_data
+            return get_user_data().decode()
 
         prototype = PYFUNCTYPE(py_object)
         dlfunc = prototype(('get_registration_code', _pytransform))
