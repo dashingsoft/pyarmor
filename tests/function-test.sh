@@ -750,21 +750,43 @@ check_file_content $dist/result.log "Local x is 4"
 csih_inform "S-13. Test check_armored in super mode"
 dist=test-super-mode-13
 cat <<EOF > sfoo13.py
-def hello():
-    print('Hello')
+from pytransform import assert_armored
 
 class Queen(object):
 
     def hello(self):
         print('Hello')
+
+def hello():
+    print('Hello')
+
+@assert_armored(Queen.hello)
+def hello2():
+    print('Hello 2')
+
 EOF
 cat <<EOF > smain13.py
 from pytransform import check_armored
 import sfoo13 as foo
-print('Check armored return: %s' % check_armored(foo.hello, foo.Queen.hello))
+print('Check armored return: %s' % check_armored(foo.hello, foo.hello2))
 EOF
 
 $PYARMOR obfuscate --exact --advanced 2 -O $dist smain13.py sfoo13.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON smain13.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Check armored return: True"
+
+cp sfoo13.py $dist
+(cd $dist; rm -rf sfoo13.pyc __pycache__; $PYTHON smain13.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Check armored return: False"
+
+csih_inform "S-14. Test check_armored in super mode with restrict mode 4"
+dist=test-super-mode-14
+$PYARMOR obfuscate --exact --advanced 2 --restrict 4 \
+         -O $dist smain13.py sfoo13.py >result.log 2>&1
 check_return_value
 
 (cd $dist; $PYTHON smain13.py >result.log 2>&1)
