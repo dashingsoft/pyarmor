@@ -35,7 +35,8 @@ Incompatible issues
 6.6.2 (dev, not released)
 -------------------------
 * Improve the security of restrict mode and `assert_armored` for super mode
-* Add new api `check_armored` in the runtime module `pytransform`
+* Add new api `check_armored` in the runtime module `pytransform` for super
+  mode, it could be used to check module/function/method
 * Build super mode core libraries with rpath dependent in MacOS
 * Fix Python3.9 pack issue for MacOS: check_lib_pytransform failed
 * Fix Apple Silicon platform issue: the binary libraries doesn't work

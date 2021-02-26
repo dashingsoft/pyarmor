@@ -768,7 +768,7 @@ EOF
 cat <<EOF > smain13.py
 from pytransform import check_armored
 import sfoo13 as foo
-print('Check armored return: %s' % check_armored(foo.hello, foo.hello2))
+print('Check armored return: %s' % check_armored(foo.hello, foo.hello2, foo))
 EOF
 
 $PYARMOR obfuscate --exact --advanced 2 -O $dist smain13.py sfoo13.py >result.log 2>&1

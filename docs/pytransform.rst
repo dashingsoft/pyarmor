@@ -117,39 +117,42 @@ Contents
 
 .. function:: assert_armored(*args)
 
-   A **decorator** function used to check each function list in the args is
-   obfuscated.
+   A **decorator** function used to check each module/function/method list in
+   the args is obfuscated.
 
-   Raise :exc:`Exception` if any function is not obfuscated.
+   It could check module, function or method, any other type, `Class` for
+   example, doesn't support. If the function is decoratored by builtin
+   decorator, for example ``@staticmethod``, it will be taken as no obfuscation.
+
+   Raise :exc:`RuntimeError` if anyone is not obfuscated.
 
    For example::
 
      from pytransform import assert_armored
-     @assert_armored(foo.connect, foo.connect2)
+     @assert_armored(foo, foo.connect, foo.connect2)
      def start_server():
          foo.connect('root', 'root password')
 
-   .. note::
-
-      It only used to check function or method, any other type, Class for
-      example, doesn't support.
+   .. note:: Since v6.6.2, checking module is supported, but only for super mode
 
 .. function:: check_armored(*args)
 
-   Return True if all the functions in the args are obfuscated.
+   Return True if all the functions/methods/modules in the args are obfuscated.
 
    Return False if any of them is not obfuscated.
+
+   It could check module, function or method, any other type, `Class` for
+   example, doesn't support. If the function is decoratored by any builtin
+   decorator, for example, ``@staticmethod``, it will taken as not obfuscated
+   and return `False`.
 
    For example::
 
      from pytransform import check_armored
-     if not check_armored(foo.connect, foo.connect2):
+     if not check_armored(foo, foo.connect, foo.connect2):
          print('My script is hacked')
 
-   .. note:: New in v6.6.2
-
-       It only used to check function or method, any other type, Class for
-       example, doesn't support.
+   .. note:: New in v6.6.2 only for super mode
 
 Examples
 --------
