@@ -32,24 +32,27 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.6.2 (dev, not released)
--------------------------
+dev version
+-----------
+The dev version could be installed by this command::
+
+  pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.6.3.zip
+
+It may be changed from time to time to fix new bugs, please update it once it
+doesn't work. If the new version has been released in PyPi, please remove the
+dev version, install the latest pyarmor from PyPi.
+
+6.6.2
+-----
 * Improve the security of restrict mode and `assert_armored` for super mode
-* Add new api `check_armored` in the runtime module `pytransform` for super
-  mode, it could be used to check module/function/method
+* Add new api `pytransform.check_armored` for super mode, it could be used to
+  check module/function/method
+  https://pyarmor.readthedocs.io/en/latest/pytransform.html#check_armored
 * Build super mode core libraries with rpath dependent in MacOS
 * Fix Python3.9 pack issue for MacOS: check_lib_pytransform failed
 * Fix Apple Silicon platform issue: the binary libraries doesn't work
 * Fix issue (#471): in super mode `get_license_info` can't get the updated
   license information.
-
-The dev version could be installed by this command::
-
-  pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.6.2.zip
-
-It may be changed from time to time to fix new bugs, please update it once it
-doesn't work. If the new version has been released in PyPi, please remove the
-dev version, install the latest pyarmor from PyPi.
 
 6.6.1
 -----
