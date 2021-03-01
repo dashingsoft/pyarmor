@@ -63,8 +63,8 @@ Contents
 
 .. function:: get_license_code()
 
-   Return a string, which is last argument as generating the licenses
-   for obfucated scripts.
+   Return a string in non-super mode or bytes object in super mode, which is
+   last argument as generating the licenses for obfucated scripts.
 
    Raise :exc:`Exception` if license is invalid.
 
@@ -128,6 +128,8 @@ Contents
 
    For example::
 
+     import foo
+
      from pytransform import assert_armored
      @assert_armored(foo, foo.connect, foo.connect2)
      def start_server():
@@ -147,6 +149,8 @@ Contents
    and return `False`.
 
    For example::
+
+     import foo
 
      from pytransform import check_armored
      if not check_armored(foo, foo.connect, foo.connect2):
