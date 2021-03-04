@@ -766,6 +766,12 @@ def hello2():
 
 EOF
 cat <<EOF > smain13.py
+def fake_check_armored(*args):
+    print('it is fake_check_armored')
+    return True
+import pytransform
+pytransform.check_armored = fake_check_armored
+
 from pytransform import check_armored
 import sfoo13 as foo
 print('Check armored return: %s' % check_armored(foo.hello, foo.hello2, foo))
@@ -777,11 +783,13 @@ check_return_value
 (cd $dist; $PYTHON smain13.py >result.log 2>&1)
 check_return_value
 check_file_content $dist/result.log "Check armored return: True"
+check_file_content $dist/result.log "it is fake_check_armored" not
 
 cp sfoo13.py $dist
 (cd $dist; rm -rf sfoo13.pyc __pycache__; $PYTHON smain13.py >result.log 2>&1)
 check_return_value
 check_file_content $dist/result.log "Check armored return: False"
+check_file_content $dist/result.log "it is fake_check_armored" not
 
 csih_inform "S-14. Test check_armored in super mode with restrict mode 4"
 dist=test-super-mode-14
@@ -792,11 +800,13 @@ check_return_value
 (cd $dist; $PYTHON smain13.py >result.log 2>&1)
 check_return_value
 check_file_content $dist/result.log "Check armored return: True"
+check_file_content $dist/result.log "it is fake_check_armored" not
 
 cp sfoo13.py $dist
 (cd $dist; rm -rf sfoo13.pyc __pycache__; $PYTHON smain13.py >result.log 2>&1)
 check_return_value
 check_file_content $dist/result.log "Check armored return: False"
+check_file_content $dist/result.log "it is fake_check_armored" not
 
 echo ""
 echo "-------------------- Super Mode End --------------------------"
