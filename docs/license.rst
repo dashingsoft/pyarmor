@@ -150,7 +150,7 @@ to find which line conflicts with pyarmor, and it's difficult for me to run all
 of these complex packages in my local machine.
 
 Generally in this case users provide the simple snapshot code around exception,
-or some running information, I analysis them to find where it may confilct with
+or some running information, I analysis them to find where it may conflict with
 pyarmor and try to find the solution.
 
 Q & A
