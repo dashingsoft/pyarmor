@@ -34,6 +34,8 @@ Incompatible issues
 
 dev version
 -----------
+* Improve the security of `check_armored` for super mode
+
 The dev version could be installed by this command::
 
   pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.6.3.zip
