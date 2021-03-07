@@ -293,7 +293,9 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
 
         data = res.read()
         if hashlib.sha256(data).hexdigest() != p['sha256']:
-            raise RuntimeError('Verify dynamic library failed')
+            raise RuntimeError('Verify dynamic library failed, try to '
+                               'reinstall the latest pyarmor and run '
+                               '"pyarmor download -u" to fix it')
 
         target = os.path.join(dest, libname)
         logging.info('Writing target file: %s', target)
@@ -306,6 +308,11 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
 
 
 def update_pytransform(pattern):
+    platfile = os.path.join(CROSS_PLATFORM_PATH, platform_config)
+    if os.path.exists(platfile):
+        logging.info('Removed cached platform index file %s', platfile)
+        os.remove(platfile)
+
     platforms = dict([(p['id'], p) for p in _get_platform_list()])
     path = os.path.join(CROSS_PLATFORM_PATH, '*', '*', '*')
     flist = glob(os.path.join(path, '_pytransform.*')) + \
