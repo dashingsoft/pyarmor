@@ -47,7 +47,7 @@ except ImportError:
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
     platform_url, platform_config, key_url, reg_url, \
-    core_version, capsule_filename
+    core_version, capsule_filename, platform_old_urls
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.join('~', '.pyarmor'))
@@ -161,6 +161,16 @@ def pytransform_bootstrap(capsule=None, force=False):
         make_capsule(capsule)
 
 
+def _get_old_remote_file(path, timeout=3.0):
+    for prefix in platform_old_urls:
+        url = '/'.join([prefix, path])
+        logging.info('Getting remote file: %s', url)
+        try:
+            return _urlopen(url, timeout=timeout)
+        except Exception as e:
+            logging.info('Could not get file from %s: %s', prefix, e)
+
+
 def _get_user_secret(data):
     secret = []
     data = bytearray(data)
@@ -172,8 +182,10 @@ def _get_user_secret(data):
 def _get_remote_file(path, timeout=3.0, prefix=None):
     rcode = get_registration_code()
     if not rcode:
-        raise RuntimeError('The trial version could not download '
-                           'extra platform library')
+        logging.warning('The trial version could not download '
+                        'the latest platform library')
+        return _get_old_remote_file(path)
+
     rcode = rcode.replace('-sn-1.txt', '')
 
     licfile = os.path.join(PYARMOR_PATH, 'license.lic')
@@ -195,21 +207,18 @@ def _get_remote_file(path, timeout=3.0, prefix=None):
 
 
 def _get_platform_list(platid=None):
-    filename = os.path.join(PLATFORM_PATH, platform_config)
+    filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
     logging.debug('Load platform list from %s', filename)
 
-    if not os.path.exists(filename):
-        filename = os.path.join(CROSS_PLATFORM_PATH, platform_config)
-        logging.debug('Load platform list from %s', filename)
-
-    if not os.path.exists(filename):
-        res = _get_remote_file('index.json')
+    cached = os.path.exists(filename)
+    if not cached:
+        res = _get_remote_file(platform_config)
         if res is None:
             raise RuntimeError('No platform list file %s found' % filename)
         if not os.path.exists(CROSS_PLATFORM_PATH):
             logging.info('Create platform path: %s' % CROSS_PLATFORM_PATH)
             os.makedirs(CROSS_PLATFORM_PATH)
-        logging.info('Write cached platform list file %s' % filename)
+        logging.info('Write cached platform list file %s', filename)
         with open(filename, 'wb') as f:
             f.write(res.read())
 
@@ -218,9 +227,17 @@ def _get_platform_list(platid=None):
 
     ver = cfg.get('version')
     if not ver.split('.')[0] == core_version.split('.')[0]:
+        if not get_registration_code():
+            logging.warning('The trial version could not download the latest'
+                            ' core libraries, r41.15 is OK for trial version')
+        elif cached:
+            logging.info('Remove cached platform list file %s', filename)
+            os.remove(filename)
+            return _get_platform_list(platid)
+
         logging.warning('The core library excepted version is %s, '
                         'but got %s from platform list file %s',
-                        core_version, cfg.get('version'), filename)
+                        core_version, ver, filename)
 
     return cfg.get('platforms', []) if platid is None \
         else [x for x in cfg.get('platforms', [])
@@ -269,8 +286,7 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
         makedirs(dest, exist_ok=True)
 
         logging.info('Downloading library file for %s ...', p['id'])
-        timeout = 300.0 if 'VM' in p['features'] else 120.0
-        res = _get_remote_file(path, timeout=timeout, prefix=url)
+        res = _get_remote_file(path, prefix=url)
 
         if res is None:
             raise RuntimeError('Download library file failed')
