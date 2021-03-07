@@ -9,10 +9,8 @@ version never expires, the limitations are
 - The trial version could not obfuscate the big scripts.
 - The scripts obfuscated by trial version are not private. It means
   anyone could generate the license file for these obfuscated scripts.
-- The trial version could not download the core library of any extra
-  platform, so the obfuscated scripts only run in the these common
-  platforms: windows.x86, windows.x86_64, linux.x86, linux.x86_64,
-  darwin.x86_64.
+- The trial version could not download the latest dynamic library of
+  extra platforms, the old versions still are available.
 - Without permission the trial version may not be used to obfuscate
   the Python scripts of any commercial product.
 

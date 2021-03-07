@@ -69,7 +69,7 @@ some limitations:
 
 * The trial version could not obfuscate the big scripts
 * The trial version uses same public capsule other than private capsule
-* The trial version could not download the core libraries of extra platforms
+* The trial version could not download the latest dynamic library of extra platforms
 
 For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
 
