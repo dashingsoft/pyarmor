@@ -161,6 +161,14 @@ def pytransform_bootstrap(capsule=None, force=False):
         make_capsule(capsule)
 
 
+def _get_user_secret(data):
+    secret = []
+    data = bytearray(data)
+    for i in range(0, len(data), 10):
+        secret.append(sum(data[i:i+10]) & 0xFF)
+    return b64encode(bytearray(secret)).decode()
+
+
 def _get_remote_file(path, timeout=3.0, prefix=None):
     rcode = get_registration_code()
     if not rcode:
@@ -172,21 +180,17 @@ def _get_remote_file(path, timeout=3.0, prefix=None):
     if not os.path.exists(licfile):
         licfile = os.path.join(HOME_PATH, 'license.lic')
     logging.debug('Got license data from %s', licfile)
-    with open(licfile, 'r') as f:
+    with open(licfile, 'rb') as f:
         licdata = f.read()
-    secret = []
-    for i in range(0, len(licdata), 10):
-        c = sum(licdata[i:i+10]) & 0x7F
-        secret.append(chr(32 if c < 32 or c == 0x7F else c))
-    secret = ''.join(secret)
+    secret = _get_user_secret(licdata)
 
     url = platform_url if prefix is None else prefix
     url = '/'.join([url.format(version=core_version), path])
     logging.info('Getting remote file: %s', url)
 
     req = Request(url)
-    auth = b64encode(('%s:%s' % (rcode, secret)).encode('utf-8'))
-    req.add_header('Authorization', 'Basic ' + auth.decode('utf-8'))
+    auth = b64encode(('%s:%s' % (rcode, secret)).encode())
+    req.add_header('Authorization', 'Basic ' + auth.decode())
     return urlopen(req, None, timeout)
 
 
