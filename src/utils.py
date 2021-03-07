@@ -31,6 +31,7 @@ import shutil
 import struct
 import sys
 import tempfile
+from base64 import b64encode
 from codecs import BOM_UTF8
 from glob import glob
 from json import dumps as json_dumps, loads as json_loads
@@ -39,13 +40,13 @@ from time import gmtime, strftime
 from zipfile import ZipFile
 
 try:
-    from urllib.request import urlopen
+    from urllib.request import urlopen, Request
 except ImportError:
-    from urllib2 import urlopen
+    from urllib2 import urlopen, Request
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-    platform_urls, platform_config, key_url, reg_url, \
+    platform_url, platform_config, key_url, reg_url, \
     core_version, capsule_filename
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
@@ -160,16 +161,33 @@ def pytransform_bootstrap(capsule=None, force=False):
         make_capsule(capsule)
 
 
-def _get_remote_file(urls, path, timeout=30.0):
-    while urls:
-        prefix = urls[0]
-        url = '/'.join([prefix, path])
-        logging.info('Getting remote file: %s', url)
-        try:
-            return _urlopen(url, timeout=timeout)
-        except Exception as e:
-            urls.pop(0)
-            logging.info('Could not get file from %s: %s', prefix, e)
+def _get_remote_file(path, timeout=3.0, prefix=None):
+    rcode = get_registration_code()
+    if not rcode:
+        raise RuntimeError('The trial version could not download '
+                           'extra platform library')
+    rcode = rcode.replace('-sn-1.txt', '')
+
+    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
+    if not os.path.exists(licfile):
+        licfile = os.path.join(HOME_PATH, 'license.lic')
+    logging.debug('Got license data from %s', licfile)
+    with open(licfile, 'r') as f:
+        licdata = f.read()
+    secret = []
+    for i in range(0, len(licdata), 10):
+        c = sum(licdata[i:i+10]) & 0x7F
+        secret.append(chr(32 if c < 32 or c == 0x7F else c))
+    secret = ''.join(secret)
+
+    url = platform_url if prefix is None else prefix
+    url = '/'.join([url.format(version=core_version), path])
+    logging.info('Getting remote file: %s', url)
+
+    req = Request(url)
+    auth = b64encode(('%s:%s' % (rcode, secret)).encode('utf-8'))
+    req.add_header('Authorization', 'Basic ' + auth.decode('utf-8'))
+    return urlopen(req, None, timeout)
 
 
 def _get_platform_list(platid=None):
@@ -181,8 +199,7 @@ def _get_platform_list(platid=None):
         logging.debug('Load platform list from %s', filename)
 
     if not os.path.exists(filename):
-        urls = [x.format(version=core_version) for x in platform_urls]
-        res = _get_remote_file(urls, 'index.json', timeout=5.0)
+        res = _get_remote_file('index.json')
         if res is None:
             raise RuntimeError('No platform list file %s found' % filename)
         if not os.path.exists(CROSS_PLATFORM_PATH):
@@ -215,8 +232,6 @@ def get_platform_list(platid=None):
 
 def download_pytransform(platid, output=None, url=None, firstonly=False):
     platid = _format_platid(platid)
-    urls = [x.format(version=core_version)
-            for x in (platform_urls if url is None else [url])]
 
     logging.info('Search library for platform: %s', platid)
     plist = _get_platform_list(platid=platid)
@@ -251,7 +266,7 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
 
         logging.info('Downloading library file for %s ...', p['id'])
         timeout = 300.0 if 'VM' in p['features'] else 120.0
-        res = _get_remote_file(urls, path, timeout=timeout)
+        res = _get_remote_file(path, timeout=timeout, prefix=url)
 
         if res is None:
             raise RuntimeError('Download library file failed')

@@ -39,11 +39,8 @@ license_filename = 'license.lic'
 default_output_path = 'dist'
 default_manifest_template = 'global-include *.py'
 
-platform_urls = [
-    'https://github.com/dashingsoft/pyarmor-core/raw/{version}/platforms',
-    'https://pyarmor.dashingsoft.com/downloads/{version}'
-]
 platform_config = 'index.json'
+platform_url = 'https://pyarmor.dashingsoft.com/files/{version}'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
 reg_url = 'https://api.dashingsoft.com/product/key/activate/%s/'
