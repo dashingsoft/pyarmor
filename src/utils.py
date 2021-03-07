@@ -331,7 +331,7 @@ def update_pytransform(pattern):
             with open(filename, 'rb') as f:
                 data = f.read()
             if hashlib.sha256(data).hexdigest() == p['sha256']:
-                logging.info('The platform %s has been latest', platid)
+                logging.info('The platform %s has been the latest', platid)
             else:
                 plist.append(p['id'])
 
