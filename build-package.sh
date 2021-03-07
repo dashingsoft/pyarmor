@@ -30,7 +30,6 @@ make_platform_files()
     src=../pyarmor-core/platforms
     dst=src/platforms
     mkdir -p ${dst} ${dst}/windows ${dst}/linux ${dst}/darwin
-    cp ${src}/index.json ${dst}/
     cp -a ${src}/win32 ${dst}/windows/x86;
     cp -a ${src}/win_amd64 ${dst}/windows/x86_64;
     cp -a ${src}/linux_i386 ${dst}/linux/x86;

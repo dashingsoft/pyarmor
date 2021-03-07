@@ -32,7 +32,6 @@ pyarmor_data_files = [
 ]
 
 platform_data_files = [
-    'platforms/index.json',
     'platforms/windows/x86/_pytransform.dll',
     'platforms/windows/x86_64/_pytransform.dll',
     'platforms/linux/x86/_pytransform.so',
