@@ -32,9 +32,13 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-dev version
------------
+6.6.3 (dev version)
+-------------------
 * Improve the security of `check_armored` for super mode
+* Fix memory leak issue for core dynamic libraries
+* Remove platform data file `index.json` from source package
+* The trial version could not download the latest platform libraries,
+  it always uses core version `r41.15`
 
 The dev version could be installed by this command::
 
