@@ -39,6 +39,7 @@ Incompatible issues
 * Remove platform data file `index.json` from source package
 * The trial version could not download the latest platform libraries,
   it always uses core version `r41.15`
+* Fix `linux.armv6` issue (#483): `Illegal instruction`
 
 The dev version could be installed by this command::
 
