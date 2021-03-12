@@ -1082,7 +1082,7 @@ def query_keyinfo(key):
 
 
 def activate_regcode(ucode):
-    res = _urlopen(reg_url % ucode, timeout=60.0)
+    res = _urlopen(reg_url % ucode, timeout=6.0)
     if res is None:
         raise RuntimeError('Activate registration code failed, '
                            'got nothing from server')
