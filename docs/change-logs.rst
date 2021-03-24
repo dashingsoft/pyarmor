@@ -39,6 +39,8 @@ Incompatible issues
 * Remove platform data file `index.json` from source package
 * The trial version could not download the latest platform libraries,
   it always uses core version `r41.15`
+* Fix super mode for Python39-32 in Windows issue(#489): Dll load failed (The
+  specified procedure could not be found)
 
 The dev version could be installed by this command::
 
