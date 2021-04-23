@@ -250,7 +250,7 @@ Each project has a configure file. It's a json file named
 
 * cross_protection
 
-    How to proect dynamic library in obfuscated scripts:
+    How to protect dynamic library in obfuscated scripts:
 
         - 0
 
@@ -258,7 +258,7 @@ Each project has a configure file. It's a json file named
 
         - 1
 
-        Insert proection code with default template, refer to
+        Insert protection code with default template, refer to
         :ref:`Special Handling of Entry Script`
 
         - Filename

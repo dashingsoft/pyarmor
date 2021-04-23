@@ -1,6 +1,6 @@
 .. _support platforms:
 
-Support Platfroms
+Support Platforms
 =================
 
 The core of PyArmor is written by C, the prebuilt dynamic libraries
