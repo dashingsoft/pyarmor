@@ -234,7 +234,7 @@ Restrict Mode
 
 Each obfuscated script has its own restrict mode used to limit the usage of this
 script. When importing an obfuscated module and using any function or attribute,
-the restrict mode will be checked at frist, raises protection exception if the
+the restrict mode will be checked at first, raises protection exception if the
 restrict mode is violated.
 
 There are 5 restrict mode, mode 2 and 3 are only for standalone scripts, mode 4
