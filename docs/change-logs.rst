@@ -32,19 +32,27 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.6.3 (dev version)
+6.7.0 (dev version)
 -------------------
-* Improve the security of `check_armored` for super mode
-* Fix memory leak issue for core dynamic libraries
+
+There is a big change in this version is that the trial version could not
+download the latest extra core libraries. Except the core libraries distributed
+with soure package, for trial version all the other core libraries will always
+use the ones same as v6.6.2 (tag: r41.15).
+
 * Remove platform data file `index.json` from source package
 * The trial version could not download the latest platform libraries,
   it always uses core version `r41.15`
+
+Only fixed in purchased version
+* Improve the security of `check_armored` for super mode
+* Fix memory leak issue for core dynamic libraries
 * Fix super mode for Python39-32 in Windows issue(#489): Dll load failed (The
   specified procedure could not be found)
 
 The dev version could be installed by this command::
 
-  pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.6.3.zip
+  pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.0.zip
 
 It may be changed from time to time to fix new bugs, please update it once it
 doesn't work. If the new version has been released in PyPi, please remove the
