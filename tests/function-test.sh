@@ -57,7 +57,11 @@ if [[ "OK" == $($PYTHON -c'from sys import version_info as ver, stdout
 stdout.write("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38, 39) else "")') ]] ; then
 SUPERMODE=yes
 mkdir -p ${PYARMOR_DATA}/platforms
-PLATFORM_INDEX=$(pwd)/platforms/index.json
+PLATFORM_INDEX=${PYARMOR_DATA}/platforms/index.json
+if ! [[ -f ${PLATFORM_INDEX} ]] ; then
+    csih_inform "Copy platform index.json from pyarmor-core"
+    cp ../../../../pyarmor-core/platforms/index.json ${PLATFORM_INDEX}
+fi
 (cd ${PYARMOR_DATA}/platforms;
  for x in ${PYARMOR_CORE_PLATFORM}/*.py?? ; do
      name=$(basename ${x})
