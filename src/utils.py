@@ -203,7 +203,7 @@ def _get_remote_file(path, timeout=3.0, prefix=None):
     req = Request(url)
     auth = b64encode(('%s:%s' % (rcode, secret)).encode())
     req.add_header('Authorization', 'Basic ' + auth.decode())
-    return urlopen(req, None, timeout)
+    return _urlopen(req, None, timeout)
 
 
 def _get_platform_list(platid=None):
@@ -1614,7 +1614,7 @@ def _urlopen(*args, **kwargs):
     try:
         return urlopen(*args, **kwargs)
     except Exception:
-        if args[0].startswith('https:') and 'context' not in kwargs:
+        if 'context' not in kwargs:
             from ssl import _create_unverified_context
             kwargs['context'] = _create_unverified_context()
             return urlopen(*args, **kwargs)
