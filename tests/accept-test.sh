@@ -293,6 +293,13 @@ $PYARMOR obfuscate --runtime test-runtime-suffix -O $dist \
 check_return_value
 check_file_content $dist/result.log 'Found 92 solutions'
 
+csih_inform "21. Trial version can not download the latest library"
+dist=test-trial-download
+$PYARMOR obfuscate --advanced 2 -O $dist \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_content result.log 'The trial version could not download the latest'
+
 # ======================================================================
 #
 # Start test with normal version.
@@ -551,6 +558,13 @@ $PYARMOR obfuscate --runtime test-runtime-suffix -O $dist \
 check_return_value
 check_file_exists $dist/pytransform${test_suffix}/__init__.py
 check_file_content $dist/result.log 'Found 92 solutions'
+
+csih_inform "21. Normal version can download the latest library"
+dist=test-download
+$PYARMOR obfuscate --advanced 2 -O $dist \
+         examples/simple/queens.py >result.log 2>&1
+check_return_value
+check_file_content result.log 'The trial version could not download the latest' not
 
 # ======================================================================
 #
