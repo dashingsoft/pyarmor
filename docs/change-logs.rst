@@ -32,8 +32,8 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.7.0 (dev version)
--------------------
+6.7.0
+-----
 
 There is a big change in this version is that the trial version could not
 download the latest extra core libraries. Except the core libraries distributed
@@ -50,13 +50,14 @@ Only fixed in purchased version
 * Improve the security of `check_armored` for super mode
 * Fix memory leak issue for core dynamic libraries
 
-The dev version could be installed by this command::
+..
+  The dev version could be installed by this command::
 
-  pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.0.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.0.zip
 
-It may be changed from time to time to fix new bugs, please update it once it
-doesn't work. If the new version has been released in PyPi, please remove the
-dev version, install the latest pyarmor from PyPi.
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the latest pyarmor from PyPi.
 
 6.6.2
 -----
