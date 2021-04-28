@@ -1614,12 +1614,9 @@ def _urlopen(*args, **kwargs):
     try:
         return urlopen(*args, **kwargs)
     except Exception:
-        if 'context' not in kwargs:
-            from ssl import _create_unverified_context
-            kwargs['context'] = _create_unverified_context()
-            return urlopen(*args, **kwargs)
-        else:
-            raise
+        from ssl import _create_unverified_context
+        kwargs['context'] = _create_unverified_context()
+        return urlopen(*args, **kwargs)
 
 
 def makedirs(path, exist_ok=False):
