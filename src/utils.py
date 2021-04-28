@@ -229,7 +229,7 @@ def _get_platform_list(platid=None):
     if not ver.split('.')[0] == core_version.split('.')[0]:
         if not get_registration_code():
             logging.warning('The trial version could not download the latest'
-                            ' core libraries, r41.15 is OK for trial version')
+                            ' core libraries, tag r41.15a is always used')
         elif cached:
             logging.info('Remove cached platform list file %s', filename)
             os.remove(filename)

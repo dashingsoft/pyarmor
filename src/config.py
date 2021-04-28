@@ -40,8 +40,8 @@ default_output_path = 'dist'
 default_manifest_template = 'global-include *.py'
 
 platform_old_urls = (
-    'https://github.com/dashingsoft/pyarmor-core/raw/r41.15/platforms',
-    'https://pyarmor.dashingsoft.com/downloads/r41.15',
+    'https://github.com/dashingsoft/pyarmor-core/raw/r41.15a/platforms',
+    'https://pyarmor.dashingsoft.com/downloads/r41.15a',
 )
 platform_config = 'index.json'
 platform_url = 'https://pyarmor.dashingsoft.com/files/{version}'
