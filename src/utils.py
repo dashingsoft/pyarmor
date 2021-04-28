@@ -474,12 +474,13 @@ def _get_library_filename(platid, checksums=None):
     if n < 3:
         raise RuntimeError('Missing features in platform name %s' % platid)
 
-    if (xlist[2] == '7') and xlist[1] in ('x86', 'x86_64') and \
-       xlist[0] in ('windows', 'darwin', 'linux'):
-        path = os.path.join(PLATFORM_PATH, *xlist[:2])
-        names = [x for x in os.listdir(path) if x.startswith('_pytransform.')]
-        if names:
-            return os.path.join(path, names[0])
+    # Always download core libraries
+    # if (xlist[2] == '7') and xlist[1] in ('x86', 'x86_64') and \
+    #    xlist[0] in ('windows', 'darwin', 'linux'):
+    #     path = os.path.join(PLATFORM_PATH, *xlist[:2])
+    #     names = [x for x in os.listdir(path) if x.startswith('_pytransform.')]
+    #     if names:
+    #         return os.path.join(path, names[0])
 
     names = None
     path = os.path.join(CROSS_PLATFORM_PATH, *xlist)
