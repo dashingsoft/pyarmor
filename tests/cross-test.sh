@@ -85,14 +85,14 @@ csih_inform "Case CP-2: cross publish by obfuscate with no-cross-protection"
 $PYARMOR obfuscate --platform linux.x86_64 -O test-cross-publish \
          --no-cross-protection examples/simple/queens.py >result.log 2>&1
 check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
+check_file_content result.log "linux.x86_64.7._pytransform.so"
 
 csih_inform "Case CP-3: cross publish by project"
 PROPATH=projects/test-cross-publish
 $PYARMOR init --src examples/simple --entry queens.py $PROPATH >result.log 2>&1
 $PYARMOR build --platform linux.x86_64 $PROPATH >result.log 2>&1
 check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
+check_file_content result.log "linux.x86_64.7._pytransform.so"
 
 csih_inform "Case CP-4: cross publish by project without cross-protection"
 $PYARMOR config --cross-protection 0 $PROPATH >result.log 2>&1
@@ -100,7 +100,7 @@ check_return_value
 
 $PYARMOR build -B --platform linux.x86_64 $PROPATH >result.log 2>&1
 check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
+check_file_content result.log "linux.x86_64.7._pytransform.so"
 
 csih_inform "Case CP-5: cross publish by project with custom cross protection"
 echo "print('This is customized protection code')" > test_protect.pt
@@ -111,7 +111,7 @@ check_file_content $PROPATH/.pyarmor_config "test_protect.pt"
 
 $PYARMOR build -B --platform linux.x86_64 $PROPATH >result.log 2>&1
 check_return_value
-check_file_content result.log "linux.x86_64._pytransform.so"
+check_file_content result.log "linux.x86_64.7._pytransform.so"
 
 echo ""
 echo "-------------------- Test Cross Publish END ------------------------"
@@ -136,7 +136,7 @@ csih_inform "Case CR-1: cross runtime with one platform windows.x86"
 rm -rf $OUTPUT
 $PYARMOR runtime --platform windows.x86 >result.log 2>&1
 check_return_value
-check_file_content result.log "windows/x86/_pytransform.dll"
+check_file_content result.log "windows/x86/7/_pytransform.dll"
 check_file_exists $OUTPUT/pytransform/_pytransform.dll
 
 csih_inform "Case CR-2: cross runtime with one platform alpine.x86_64"
