@@ -43,12 +43,12 @@ use the ones same as v6.6.2 (tag: r41.15).
 * Remove platform data file `index.json` from source package
 * The trial version could not download the latest platform libraries,
   it always uses core version `r41.15`
+* Fix super mode for Python39-32 in Windows issue(#489): Dll load failed (The
+  specified procedure could not be found)
 
 Only fixed in purchased version
 * Improve the security of `check_armored` for super mode
 * Fix memory leak issue for core dynamic libraries
-* Fix super mode for Python39-32 in Windows issue(#489): Dll load failed (The
-  specified procedure could not be found)
 
 The dev version could be installed by this command::
 
