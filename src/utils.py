@@ -51,6 +51,7 @@ from config import dll_ext, dll_name, entry_lines, protect_code_template, \
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.join('~', '.pyarmor'))
+PYARMOR_TIMEOUT = float(os.getenv('PYARMOR_TIMEOUT', '6.0'))
 PLATFORM_PATH = os.path.join(PYARMOR_PATH, pytransform.plat_path)
 
 HOME_PATH = os.path.abspath(os.path.expanduser(PYARMOR_HOME))
@@ -161,7 +162,7 @@ def pytransform_bootstrap(capsule=None, force=False):
         make_capsule(capsule)
 
 
-def _get_old_remote_file(path, timeout=3.0):
+def _get_old_remote_file(path, timeout=6.0):
     for prefix in platform_old_urls:
         url = '/'.join([prefix, path])
         logging.info('Getting remote file: %s', url)
@@ -179,12 +180,12 @@ def _get_user_secret(data):
     return b64encode(bytearray(secret)).decode()
 
 
-def _get_remote_file(path, timeout=3.0, prefix=None):
+def _get_remote_file(path, timeout=6.0, prefix=None):
     rcode = get_registration_code()
     if not rcode:
         logging.warning('The trial version could not download '
                         'the latest platform library')
-        return _get_old_remote_file(path)
+        return _get_old_remote_file(path, timeout=PYARMOR_TIMEOUT)
 
     rcode = rcode.replace('-sn-1.txt', '')
 
@@ -212,7 +213,7 @@ def _get_platform_list(platid=None):
 
     cached = os.path.exists(filename)
     if not cached:
-        res = _get_remote_file(platform_config)
+        res = _get_remote_file(platform_config, timeout=PYARMOR_TIMEOUT)
         if res is None:
             raise RuntimeError('No platform list file %s found' % filename)
         if not os.path.exists(CROSS_PLATFORM_PATH):
@@ -286,7 +287,7 @@ def download_pytransform(platid, output=None, url=None, firstonly=False):
         makedirs(dest, exist_ok=True)
 
         logging.info('Downloading library file for %s ...', p['id'])
-        res = _get_remote_file(path, prefix=url)
+        res = _get_remote_file(path, timeout=PYARMOR_TIMEOUT, prefix=url)
 
         if res is None:
             raise RuntimeError('Download library file failed')
@@ -1061,7 +1062,7 @@ def query_keyinfo(key):
 
     try:
         logging.debug('Query url: %s', key_url % key)
-        res = _urlopen(key_url % key, licdata, timeout=3.0)
+        res = _urlopen(key_url % key, licdata, timeout=6.0)
         data = json_loads(res.read().decode())
     except Exception as e:
         return '\nError: %s' % str(e)
