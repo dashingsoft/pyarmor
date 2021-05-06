@@ -155,7 +155,7 @@ def append_runtime_files(logic_toc, obfpath):
                                'make sure "--package-runtime 0" is used',
                                pathnm)
         if n > 1:
-            raise RuntimeError('In the path "%s", there are two many '
+            raise RuntimeError('In the path "%s", there are too many '
                                'files start with "pytransform" or '
                                '"_pytransform", there shuold be only one',
                                obfpath)
@@ -163,7 +163,9 @@ def append_runtime_files(logic_toc, obfpath):
 
     for name in os.listdir(obfpath):
         pathnm = os.path.join(obfpath, name)
-        if name.startswith('pytransform') or name.startswith('_pytransform'):
+        if name == 'pytransform.py':
+            add_toc('x', name, pathnm)
+        elif name.startswith('pytransform') or name.startswith('_pytransform'):
             n += 1
             add_toc('b', name, pathnm)
         elif name == 'license.lic':
