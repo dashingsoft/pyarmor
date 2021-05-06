@@ -32,6 +32,20 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+6.7.1 (dev)
+-----------
+* Support environment variable `PYARMOR_TIMEOUT` to set the timeout of any
+  network connection.
+* Fix issue (#503): `repack` complains of too many `pytransform`
+
+  The dev version could be installed by this command::
+
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.1.zip
+
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the latest pyarmor from PyPi.
+
 6.7.0
 -----
 
@@ -49,15 +63,6 @@ use the ones same as v6.6.2 (tag: r41.15).
 Only fixed in purchased version
 * Improve the security of `check_armored` for super mode
 * Fix memory leak issue for core dynamic libraries
-
-..
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.0.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the latest pyarmor from PyPi.
 
 6.6.2
 -----
