@@ -163,9 +163,8 @@ def append_runtime_files(logic_toc, obfpath):
 
     for name in os.listdir(obfpath):
         pathnm = os.path.join(obfpath, name)
-        if name == 'pytransform.py':
-            add_toc('x', name, pathnm)
-        elif name.startswith('pytransform') or name.startswith('_pytransform'):
+        if (name.startswith('pytransform') and name[-3:] != '.py') \
+           or name.startswith('_pytransform'):
             n += 1
             add_toc('b', name, pathnm)
         elif name == 'license.lic':
