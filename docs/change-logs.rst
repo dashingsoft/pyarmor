@@ -37,6 +37,8 @@ Incompatible issues
 * Support environment variable `PYARMOR_TIMEOUT` to set the timeout of any
   network connection.
 * Fix issue (#503): `repack` complains of too many `pytransform`
+* Support platform `isilon onefs`, alias of `freebsd`
+* Print the version of Python in the console when running pyarmor sub-command
 
   The dev version could be installed by this command::
 
