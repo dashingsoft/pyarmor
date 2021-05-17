@@ -298,11 +298,11 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix='', advanced=0):
     name = '_pytransform' + suffix
     if plat == 'linux':
         filename = os.path.abspath(os.path.join(path, name + '.so'))
-    elif plat == 'darwin':
+    elif plat in ('darwin', 'ios'):
         filename = os.path.join(path, name + '.dylib')
     elif plat == 'windows':
         filename = os.path.join(path, name + '.dll')
-    elif plat == 'freebsd':
+    elif plat in ('freebsd', 'poky'):
         filename = os.path.join(path, name + '.so')
     else:
         raise PytransformError('Platform %s not supported' % plat)
