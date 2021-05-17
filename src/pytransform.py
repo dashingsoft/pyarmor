@@ -22,7 +22,7 @@ plat_table = (
     ('darwin', ('darwin',)),
     ('ios', ('ios',)),
     ('linux', ('linux*',)),
-    ('freebsd', ('freebsd*', 'openbsd*')),
+    ('freebsd', ('freebsd*', 'openbsd*', 'isilon onefs')),
     ('poky', ('poky',)),
 )
 
