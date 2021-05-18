@@ -22,7 +22,9 @@ A license code is required to unlock all the above limitations.
 There are 2 basic types of licenses issued for the software:
 
 * A personal license for home users. The user purchases one license to
-  use the software on his own computer.
+  use the software on his own computer. When placing an order of this
+  kind of license, please fill real name as registration name, this
+  software is only authorized to this registration name.
 
   Home users may use their personal license to obfuscate all the
   python scripts which are property of the license owner, to generate
@@ -34,7 +36,9 @@ There are 2 basic types of licenses issued for the software:
 
 * A enterprise license for business users. The user purchases one
   license to use the software for one product serials of an
-  organization.
+  organization. When placing an order of this kind of license, please
+  fill orginization name plus product name, this software is only
+  authorized to this registration name.
 
   One product serials include the current version and any other latter
   versions of the same product.
