@@ -32,14 +32,7 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.7.1 (dev)
------------
-* Support environment variable `PYARMOR_TIMEOUT` to set the timeout of any
-  network connection.
-* Fix issue (#503): `repack` complains of too many `pytransform`
-* Support platform `isilon onefs`, alias of `freebsd`
-* Print the version of Python in the console when running pyarmor sub-command
-
+..
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.1.zip
@@ -47,6 +40,14 @@ Incompatible issues
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the latest pyarmor from PyPi.
+
+6.7.1
+-----
+* Support environment variable `PYARMOR_TIMEOUT` to set the timeout of any
+  network connection.
+* Fix issue (#503): `repack` complains of too many `pytransform`
+* Support platform `isilon onefs`, alias of `freebsd`
+* Print the version of Python in the console when running pyarmor sub-command
 
 6.7.0
 -----
