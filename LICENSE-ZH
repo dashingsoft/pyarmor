@@ -48,15 +48,21 @@
   4. 除了购买软件许可的费用之外，没有其他任何费用。获得软件许可的用户可以使用本软
      件在许可的范围之内加密任何Python脚本并自由发布，不需要在向许可人支付任何费用。
 
-  5. 购买软件许可，可以通过下面的链接的电子商务网站
+  5. 购买软件许可，可以通过下面任意一个链接的电子商务网站
 
          https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
          https://pyarmor.dashingsoft.com/cart/order.html
 
-     支付成功之后一个名为 "pyarmor-regcode-1.txt" 的注册文件会自动通过电子邮件发
-     送过去，把注册文件保存到磁盘，然后使用下面的命令进行注册
+     对于类型为个人用户的许可，注册名称需要填写正确的姓名。
 
-         pyarmor register pyarmor-regcode-1.txt
+     对于类型为企业用户的许可，除了注册名称需要填写正确的企业名称之外，还需要填
+     写被授权的产品名称，如果仅在企业内部使用，不会用于任何被销售的产品，可以填
+     写“内部使用”。
+
+     支付成功之后一个名为 "pyarmor-regcode-xxxx.txt" 的注册文件会自动通过电子邮
+     件发送过去，把注册文件保存到磁盘，然后使用下面的命令进行注册
+
+         pyarmor register pyarmor-regcode-xxxx.txt
 
      运行下面的命令查看注册信息
 
