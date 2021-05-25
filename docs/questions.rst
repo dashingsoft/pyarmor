@@ -496,6 +496,11 @@ Run obfuscated scripts reports: Invalid input packet
 If the scripts are obfuscated in different platform, check the notes in
 :ref:`Distributing Obfuscated Scripts To Other Platform`
 
+Mixing trial version and purchased version to obfuscate scripts and generate
+`license.lic` also may raise this exception. Make sure all the files generated
+by trial version, for example, obfusbcated script, license file and runtime
+files, are removed.
+
 Before v5.7.0, check if there is any of `license.lic` or `pytransform.key` in
 the current path. Make sure they're generated for the obfuscated scripts. If
 not, rename them or move them to other path.
