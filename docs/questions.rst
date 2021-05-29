@@ -493,13 +493,19 @@ For more information, refer to :ref:`Special Handling of Entry Script`
 
 Run obfuscated scripts reports: Invalid input packet
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If the scripts are obfuscated in different platform, check the notes in
-:ref:`Distributing Obfuscated Scripts To Other Platform`
-
 Mixing trial version and purchased version to obfuscate scripts and generate
 `license.lic` also may raise this exception. Make sure all the files generated
 by trial version, for example, obfusbcated script, license file and runtime
 files, are removed.
+
+Make sure the runtime module or package `pytransform` imported by the obfuscated
+scripts is the one distributed with the obfuscated scripts. For example, running
+the obfuscated scripts `python dist/foo.py` in the source path of pyarmor
+package may rasie this exception, because `pytransform.py` of pyarmor will be
+imported by the `dist/foo.py` unexpectedly.
+
+If the scripts are obfuscated in different platform, check the notes in
+:ref:`Distributing Obfuscated Scripts To Other Platform`
 
 Before v5.7.0, check if there is any of `license.lic` or `pytransform.key` in
 the current path. Make sure they're generated for the obfuscated scripts. If
