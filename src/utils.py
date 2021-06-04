@@ -1454,6 +1454,11 @@ def _build_keylist(capsule, licfile):
     return keydata[k1:k2], keydata[k2:k2+size2], lickey
 
 
+def _format_extension_name(filename):
+    plist = os.path.basename(filename).split('.')
+    return '%s.%s' % (plist[0], plist[-1])
+
+
 def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
     logging.info('Generating super runtime library to "%s"', relpath(output))
     makedirs(output, exist_ok=True)
@@ -1468,7 +1473,7 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
     keylist = _build_keylist(capsule, licfile)
     namelist = []
     for filename in filelist:
-        name = os.path.basename(filename)
+        name = _format_extension_name(filename)
         if name in namelist:
             return _package_super_runtime(output, platforms, filelist, keylist,
                                           suffix)
@@ -1478,7 +1483,7 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
     for filename in filelist:
         logging.info('Copying %s', filename)
 
-        name = os.path.basename(filename)
+        name = _format_extension_name(filename)
         if suffix:
             k = name.rfind('pytransform') + len('pytransform')
             name = name[:k] + suffix + name[k:]
@@ -1515,7 +1520,7 @@ def _package_super_runtime(output, platforms, filelist, keylist, suffix):
         if os.path.isfile(platname):
             raise RuntimeError('Unknown standard platform "%s"' % platname)
         path = '_'.join(platname.split('.')[:2])
-        name = os.path.basename(filename)
+        name = _format_extension_name(filename)
         target = os.path.join(output, path, name)
         makedirs(os.path.dirname(target), exist_ok=True)
         shutil.copy2(filename, target)

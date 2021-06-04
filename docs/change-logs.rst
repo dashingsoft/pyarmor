@@ -48,6 +48,7 @@ Incompatible issues
 * Fix issue (#503): `repack` complains of too many `pytransform`
 * Support platform `isilon onefs`, alias of `freebsd`
 * Print the version of Python in the console when running pyarmor sub-command
+* Fix issue (#518): remove platform part from extension name for super mode
 
 6.7.0
 -----
