@@ -63,6 +63,7 @@ download the latest extra core libraries. Except the core libraries distributed
 with soure package, for trial version all the other core libraries will always
 use the ones same as v6.6.2 (tag: r41.15).
 
+* Change core version to **r42.16**
 * Remove platform data file `index.json` from source package
 * The trial version could not download the latest platform libraries,
   it always uses core version `r41.15`
