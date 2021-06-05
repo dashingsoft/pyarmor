@@ -182,8 +182,15 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 Downloading Dynamic Library By Manual
 -------------------------------------
 
-If the machine is not connected to internet, download the corresponding dynamic
-library in other machine, then copy it in the right location.
+If the machine is not connected to internet, use command :ref:`download` to the
+corresponding dynamic libraries in other machine, then copy them in the right
+location. By default all the download files are stored in the
+`~/.pyarmor/platforms`, copy the whole folder to target machine.
+
+.. important::
+
+   The following way only work before v6.7.0. Since v6.7.0, the trial version
+   could not download the latest version.
 
 First make sure there is platform index file ``platforms/index.json``. If not,
 run any `pyarmor` command in target machine, it raises exception. For example::
