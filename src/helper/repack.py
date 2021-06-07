@@ -315,6 +315,8 @@ def main():
                         default='obfdist',
                         dest='obfpath',
                         help='obfuscated scripts path (default: %(default)s)')
+    parser.add_argument('-e', '--entry',
+                        help="Entry script if it's different from bundle name")
     parser.add_argument('executable', metavar='executable',
                         help="PyInstaller archive")
 
@@ -323,7 +325,7 @@ def main():
         logger.setLevel(logging.DEBUG)
     else:
         sys.excepthook = excepthook
-    repacker(args.executable, args.obfpath)
+    repacker(args.executable, args.obfpath, entry=args.entry)
 
 
 if __name__ == '__main__':
