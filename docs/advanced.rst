@@ -533,7 +533,8 @@ data by option ``-x``, this data could be got by function `_get_license_data` in
 the plugin script::
 
     pyarmor licenses -x 20190501 rcode-001
-    cp licenses/rcode-001/license.lic dist/
+    pyarmor obfuscate --with-license licenses/rcode-001/license.lic \
+                      --plugin check_ntp_time foo.py
 
 More examples, refer to https://github.com/dashingsoft/pyarmor/tree/master/plugins
 

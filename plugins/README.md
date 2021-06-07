@@ -77,7 +77,8 @@ The last step is to generate the license file for the obfuscated script.
 2. Generate the license file and copy it to dist path
 
         pyarmor licenses -x 70:f1:a1:23:f0:94.08:00:27:51:d9:fe CODE-0001
-        cp licenses/CODE-0001/license.lic ./dist
+        pyarmor obfuscate --plugin /path/to/check_multi_mac \
+                          --with-license licenses/CODE-0001/license.lic foo.py
 
 Distributing the obfuscated scripts to target machine:
 
@@ -104,8 +105,8 @@ If the plugin file isn’t in the current path, use absolute path instead:
 The last step is to generate the license file for the obfuscated script:
 
     pyarmor licenses -x f56b1824e453126ab5426708dbbed41d0232f6f2ab21de1c40da934b68a5d8a2 CODE-0002
-    cp licenses/CODE-0002/license.lic ./dist
-
+    pyarmor obfuscate --with-license licenses/CODE-0002/license.lic \
+                      --plugin check_docker foo.py
 
 ## Example 3: Check Internet Time
 
@@ -125,8 +126,8 @@ The last step is to generate the license file for the obfuscated script, which
 expired on Oct 31, 2020:
 
     pyarmor licenses -x 20201031 CODE-0003
-    cp licenses/CODE-0003/license.lic ./dist
-
+    pyarmor obfuscate --with-license licenses/CODE-0003/license.lic \
+                      --plugin check_ntp_time foo.py
 
 ## Example 4: Create License For Multiple Machines
 
@@ -145,7 +146,8 @@ The last step is to generate the license file for 3 machines, suppose the serial
 number of hard disk in these machines are `ta1`, `ta2`, `ta3`:
 
     pyarmor licenses -x "ta1;ta2;ta3" CODE-0004
-    cp licenses/CODE-0004/license.lic ./dist
+    pyarmor obfuscate --with-license licenses/CODE-0004/license.lic \
+                      --plugin check_multiple_machine foo.py
 
 ## Example 5: Check GPU
 
