@@ -32,10 +32,13 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-..
+6.7.3 (dev)
+----------
+* Add option `-e` to set the entry script for `helper.repack`
+
   The dev version could be installed by this command::
 
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.2.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.3.zip
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
