@@ -32,13 +32,7 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.7.2 (dev)
------------
-* Change core version to **r43.17**
-* Fix issue (#518): remove platform part from extension name for super mode
-* Fix issue: the platform "android.aarch64" always raises exception `Check
-  license failed, invalid input packet`
-
+..
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.2.zip
@@ -46,6 +40,13 @@ Incompatible issues
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the latest pyarmor from PyPi.
+
+6.7.2
+-----
+* Fix issue (#518): remove platform part from extension name for super mode
+* Change core version to **r43.17**
+* Fix issue: the platform "android.aarch64" always raises exception `Check
+  license failed, Invalid input packet`
 
 6.7.1
 -----
