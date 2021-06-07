@@ -43,7 +43,8 @@ Incompatible issues
 
 6.7.2
 -----
-* Fix issue (#518): remove platform part from extension name for super mode
+* Fix issue (#518): remove platform part from extension name for super
+  mode, the final name is always `pytransform.so` or `pytransform.pyd`
 * Change core version to **r43.17**
 * Fix issue: the platform "android.aarch64" always raises exception `Check
   license failed, Invalid input packet`
