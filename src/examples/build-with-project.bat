@@ -1,6 +1,6 @@
 @ECHO OFF
 REM
-REM Sample script used to obfuscate python source files with prroject
+REM Sample script used to obfuscate python source files with project
 REM
 REM There are several advantages to manage obfuscated scripts by project:
 REM

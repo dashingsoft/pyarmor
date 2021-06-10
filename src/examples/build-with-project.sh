@@ -1,5 +1,5 @@
 #
-# Sample script used to obfuscate python source files with prroject
+# Sample script used to obfuscate python source files with project
 #
 # There are several advantages to manage obfuscated scripts by project:
 #
