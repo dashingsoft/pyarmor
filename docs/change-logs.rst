@@ -35,6 +35,7 @@ Incompatible issues
 6.7.3 (dev)
 ----------
 * Add option `-e` to set the entry script for `helper.repack`
+* The entension of entry script could be `.pyw`
 
   The dev version could be installed by this command::
 
