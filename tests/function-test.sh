@@ -537,6 +537,14 @@ check_file_exists $dist/dist/pytransform/license.lic
 (cd $dist; $PYTHON dist/queens.py >result.log 2>&1)
 check_file_content $dist/result.log 'Found 92 solutions'
 
+csih_inform "C-43. Test entry script is .pyw"
+dist=test-c-43
+echo "print('Hello')" > foo.pyw
+$PYARMOR obfuscate -O $dist --exact foo.pyw
+check_return_value
+check_file_exists $dist/foo.pyw
+check_file_content $dist/foo.pyw 'from pytransform import pyarmor_runtime'
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
