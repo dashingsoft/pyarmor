@@ -1672,3 +1672,7 @@ def _fix_up_gnu_hash(data, suffix):
                 write_integer(data, (k-8)*4, 0xffffffff)
 
         i += 1
+
+
+def is_pyscript(filename):
+    return os.path.splitext(filename)[-1].lower() in ('.py', '.pyw')

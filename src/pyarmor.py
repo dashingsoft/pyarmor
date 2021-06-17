@@ -54,7 +54,7 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   check_cross_platform, compatible_platform_names, \
                   get_name_suffix, get_bind_key, make_super_bootstrap, \
                   make_protection_code, DEFAULT_CAPSULE, PYARMOR_PATH, \
-                  activate_regcode
+                  activate_regcode, is_pyscript
 
 import packer
 
@@ -348,7 +348,7 @@ def _build(args):
             if not os.path.exists(d):
                 os.makedirs(d)
 
-            if not a.endswith('.py'):
+            if not is_pyscript(a):
                 shutil.copy2(a, b)
                 continue
 
@@ -573,7 +573,7 @@ def _obfuscate(args):
             logging.warning('Option --%s has been deprecated', x)
 
     if args.src is None:
-        if args.scripts[0].lower().endswith('.py'):
+        if is_pyscript(args.scripts[0]):
             path = os.path.abspath(os.path.dirname(args.scripts[0]))
         else:
             path = os.path.abspath(args.scripts[0])
@@ -583,7 +583,7 @@ def _obfuscate(args):
             args.scripts = []
     else:
         for s in args.scripts:
-            if not s.lower().endswith('.py'):
+            if not is_pyscript(s):
                 raise RuntimeError('Only one path is allowed')
             if os.path.isabs(s):
                 raise RuntimeError('Script must be relative path '
@@ -615,7 +615,7 @@ def _obfuscate(args):
         if args.exclude:
             for item in args.exclude:
                 for x in item.split(','):
-                    if x.endswith('.py'):
+                    if is_pyscript(x):
                         logging.info('Exclude pattern "%s"', x)
                         pats.append('exclude %s' % x)
                     else:
