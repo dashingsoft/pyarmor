@@ -629,6 +629,8 @@ NameError: name '__armor_wrap__' is not defined
 If :ref:`Restrict Mode` is set to 4 or 5, it may report this issue. In this case
 try to set restrict mode to 2.
 
+Also refer to :ref:`Using restrict mode with threading and multiprocessing`
+
 
 Packing Obfuscated Scripts Problem
 ----------------------------------
