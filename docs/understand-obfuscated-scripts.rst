@@ -212,7 +212,11 @@ Key Points to Use Obfuscated Scripts
   running or importing any obfuscated scripts.
 
 * The `runtime package`_ must be in any Python Path, so that the `bootstrap
-  code`_ can run correctly.
+  code`_ can run correctly. It's a normal Python package named `pytransform`,
+  and could be imported by Python import mechanism. If there are many packages
+  or modules named `pytransform`, make sure the right package is imported by the
+  obfuscated scripts. The runtime package for super mode is totally different
+  from the one for non-super mode.
 
 The following notes are only apply to non-super mode
 
