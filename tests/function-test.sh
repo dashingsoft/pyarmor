@@ -540,10 +540,21 @@ check_file_content $dist/result.log 'Found 92 solutions'
 csih_inform "C-43. Test entry script is .pyw"
 dist=test-c-43
 echo "print('Hello')" > foo.pyw
-$PYARMOR obfuscate -O $dist --exact foo.pyw
+$PYARMOR obfuscate -O $dist --exact foo.pyw >result.log 2>&1
 check_return_value
 check_file_exists $dist/foo.pyw
 check_file_content $dist/foo.pyw 'from pytransform import pyarmor_runtime'
+
+csih_inform "C-44. Test __del__ works for non-super mode"
+if ! [[ "yes" == "${SUPERMODE}" ]] ; then
+dist=test-c-44
+$PYARMOR obfuscate --exact -O $dist test/data/foo__del.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON foo__del.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "test __del__ OK"
+fi
 
 echo ""
 echo "-------------------- Command End -----------------------------"
@@ -819,6 +830,16 @@ cp sfoo13.py $dist
 check_return_value
 check_file_content $dist/result.log "Check armored return: False"
 check_file_content $dist/result.log "it is fake_check_armored" not
+
+csih_inform "S-15. Test __del__ works in super mode"
+dist=test-super-mode-15
+$PYARMOR obfuscate --exact --advanced 2 -O $dist \
+         test/data/foo__del.py >result.log 2>&1
+check_return_value
+
+(cd $dist; $PYTHON foo__del.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "test __del__ OK"
 
 echo ""
 echo "-------------------- Super Mode End --------------------------"
