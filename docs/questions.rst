@@ -629,8 +629,41 @@ NameError: name '__armor_wrap__' is not defined
 If :ref:`Restrict Mode` is set to 4 or 5, it may report this issue. In this case
 try to set restrict mode to 2.
 
-Also refer to :ref:`Using restrict mode with threading and multiprocessing`
+If it's raised in the object method `__del__`, upgrade pyarmor to v6.7.3+, and
+obfuscate the scripts again.
 
+Also refer to :ref:`Using restrict mode with threading and multiprocessing` and
+next question.
+
+Object method `__del__` raise NameError exception
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If method `__del__` raises this exception::
+
+    NameError: name '__armor_enter__' is not defined
+    NameError: name '__armor_wrap__' is not defined
+
+Please upgrade pyarmor to v6.7.3+, and obfuscate the scripts again, and make
+sure new runtime package is generated.
+
+If the scripts is obfuscated by non super mode and python is 3.7 and later,
+please obfuscate the scrits by super mode. Or refine the scripts, do not
+obfuscate the object method `__del__`. For example
+
+.. code:: python
+
+    class MyData:
+
+        ...
+
+        def lambda_del(self):
+           # Real code for method __del__
+           ...
+
+        __del__ = lambda_del
+
+Any function name which starts with `lambda_` will not be obfuscated by pyarmor,
+in above example, the method `lambda_del` is not obfuscated, so `__del__`  is.
 
 Packing Obfuscated Scripts Problem
 ----------------------------------
