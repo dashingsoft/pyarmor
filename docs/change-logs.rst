@@ -36,6 +36,12 @@ Incompatible issues
 ----------
 * Add option `-e` to set the entry script for `helper.repack`
 * The entension of entry script could be `.pyw`
+* Fix issue: in super mode `object.__del__` raises exception `NameError: name
+  '__armor_wrap__' is not defined`
+* Fix issue (#530): in non-super mode `object.__del__` raises exception
+  `NameError: name '__armor_enter__' is not defined`. Note that for Python >
+  3.7, this issue still exists in non-super mode. Use super mode for these
+  Python versions to solve this issue.
 
   The dev version could be installed by this command::
 
