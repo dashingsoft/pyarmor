@@ -29,7 +29,7 @@ advanced. For example::
 
 Then specify this license with option ``--with-license``, for example::
 
-  pyarmor obufscate --with-license licenses/regcode-01/license.lic \
+  pyarmor obfuscate --with-license licenses/regcode-01/license.lic \
                     --advanced 2 foo.py
 
 By this way the specified license file will be embedded into the extension
