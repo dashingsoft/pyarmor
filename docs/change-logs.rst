@@ -36,6 +36,7 @@ Incompatible issues
 ----------
 * Add option `-e` to set the entry script for `helper.repack`
 * The entension of entry script could be `.pyw`
+* Change core version to **r44.18**
 * Fix issue: in super mode `object.__del__` raises exception `NameError: name
   '__armor_wrap__' is not defined`
 * Fix issue (#530): in non-super mode `object.__del__` raises exception
@@ -49,7 +50,7 @@ Incompatible issues
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the latest pyarmor from PyPi.
+  dev version, install the stable version from PyPi.
 
 6.7.2
 -----
