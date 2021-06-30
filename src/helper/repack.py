@@ -298,7 +298,10 @@ def repacker(executable, obfpath, entry=None):
 
 def excepthook(type, exc, traceback):
     if hasattr(exc, 'args'):
-        logging.error(", ".join(['%s'] * len(exc.args)), *exc.args)
+        try:
+            logging.error(exc.args[0], *exc.args[1:])
+        except Exception:
+            logging.error(", ".join(['%s'] * len(exc.args)), *exc.args)
     else:
         logging.error('%s', exc)
     sys.exit(1)
