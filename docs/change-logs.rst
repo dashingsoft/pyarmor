@@ -31,9 +31,17 @@ Incompatible issues
    The scripts are obfuscated by this version and later, can not mixed with the
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
+..
+  The dev version could be installed by this command::
 
-6.7.3 (dev)
-----------
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.4.zip
+
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the stable version from PyPi.
+
+6.7.3
+-----
 * Add option `-e` to set the entry script for `helper.repack`
 * The entension of entry script could be `.pyw`
 * Change core version to **r44.18**
@@ -43,14 +51,6 @@ Incompatible issues
   `NameError: name '__armor_enter__' is not defined`. Note that for Python 3.7
   and later, this issue still exists in non-super mode. Use super mode for these
   Python versions to solve this issue.
-
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.3.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the stable version from PyPi.
 
 6.7.2
 -----
