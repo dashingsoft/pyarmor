@@ -56,9 +56,33 @@ the others easily, just set option ``--with-license`` to special value
 When the obfuscated scripts start, it will search ``license.lic`` in order:
 
 #. Check environment variable ``PYARMOR_LICENSE``, if set, use this filename
+#. Check ``sys.PYARMOR_LICENSE``, if set use this filename
 #. If it's not set, search ``license.lic`` in the current path
-#. If not found, search the path of extension module :mod:`pytransform`
 #. Raise exception if there is still not found
+
+Here it's the basic usage of ``sys.PYARMOR_LICENSE``
+
+For non super mode, edit the function ``pyarmor_runtime`` in the
+runtime file ``dist/pytransform/__init__.py``, add one line::
+
+    sys.PYARMOR_LICENSE = '/path/to/license.lic'
+
+For super mode, convert python extension ``pytransform.so`` to same
+name package ``pytransform``. For example::
+
+    cd dist
+    mkdir pytransform
+    mv pytransform.so pytransform/
+
+Then create ``dist/pytransform/__init__.py``
+
+.. code:: python
+
+    import sys
+    sys.PYARMOR_LICENSE = '/path/to/license.lic'
+    name = 'pytransform'
+    m = __import__(name, globals(), locals(), ['*'])
+    sys.modules[__name__].__dict__.update(m.__dict__)
 
 .. _obfuscating many packages:
 
