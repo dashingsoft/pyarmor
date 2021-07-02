@@ -31,7 +31,17 @@ Incompatible issues
    The scripts are obfuscated by this version and later, can not mixed with the
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
-..
+
+6.7.4 (dev)
+-----------
+* Change core version to **r44.18**
+* Fix issue: in super mode `object.__del__` raises exception `NameError: name
+  '__armor_wrap__' is not defined`
+* Fix issue (#530): in non-super mode `object.__del__` raises exception
+  `NameError: name '__armor_enter__' is not defined`. Note that for Python 3.7
+  and later, this issue still exists in non-super mode. Use super mode for these
+  Python versions to solve this issue.
+
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.4.zip
@@ -44,13 +54,6 @@ Incompatible issues
 -----
 * Add option `-e` to set the entry script for `helper.repack`
 * The entension of entry script could be `.pyw`
-* Change core version to **r44.18**
-* Fix issue: in super mode `object.__del__` raises exception `NameError: name
-  '__armor_wrap__' is not defined`
-* Fix issue (#530): in non-super mode `object.__del__` raises exception
-  `NameError: name '__armor_enter__' is not defined`. Note that for Python 3.7
-  and later, this issue still exists in non-super mode. Use super mode for these
-  Python versions to solve this issue.
 
 6.7.2
 -----
