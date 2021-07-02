@@ -665,6 +665,18 @@ obfuscate the object method `__del__`. For example
 Any function name which starts with `lambda_` will not be obfuscated by pyarmor,
 in above example, the method `lambda_del` is not obfuscated, so `__del__`  is.
 
+SystemError: module filename missing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When obfsucating the scripts by super mode, and with outer license, it may
+complain of this error if the obfuscated scripts could not find the license file
+`license.lic` in the current path.
+
+If `license.lic` is in the other path, set environment variable `PYARMOR_LICNSE`
+to it with full path, for example::
+
+    export PYARMOR_LICNSE=/path/to/license.lic
+
 Packing Obfuscated Scripts Problem
 ----------------------------------
 
