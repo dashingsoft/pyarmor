@@ -677,8 +677,8 @@ to it with full path, for example::
 
     export PYARMOR_LICNSE=/path/to/license.lic
 
-Android problem
-~~~~~~~~~~~~~~~
+Android protection problem
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Most of Android system don't allow load dynamic library in the data path, but
 there is one `_pytransform.so` in the runtime package of the obfuscated scripts,
