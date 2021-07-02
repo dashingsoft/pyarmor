@@ -677,6 +677,20 @@ to it with full path, for example::
 
     export PYARMOR_LICNSE=/path/to/license.lic
 
+Android problem
+~~~~~~~~~~~~~~~
+
+Most of Android system don't allow load dynamic library in the data path, but
+there is one `_pytransform.so` in the runtime package of the obfuscated scripts,
+so it may raise exception like this::
+
+    dlopen failed: couldn't map "/storage/emulated/0/dist/_pytransform.so"
+    segment 1: Operation not permitted
+
+Please consult Android development document, copy the whole folder `pytransform`
+to right location where Android allow to load dynamic library, and set
+`PYTHONPATH` or any other way only if Python could find and import it.
+
 Packing Obfuscated Scripts Problem
 ----------------------------------
 
