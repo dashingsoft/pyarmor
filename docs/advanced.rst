@@ -58,6 +58,7 @@ When the obfuscated scripts start, it will search ``license.lic`` in order:
 #. Check environment variable ``PYARMOR_LICENSE``, if set, use this filename
 #. Check ``sys.PYARMOR_LICENSE``, if set use this filename
 #. If it's not set, search ``license.lic`` in the current path
+#. For non super mode, search ``license.lic`` in the path of runtime package ``pytransform``
 #. Raise exception if there is still not found
 
 Here it's the basic usage of ``sys.PYARMOR_LICENSE``
