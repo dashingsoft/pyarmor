@@ -556,6 +556,24 @@ check_return_value
 check_file_content $dist/result.log "test __del__ OK"
 fi
 
+csih_inform "C-45. Test outer license with sys.PYARMOR_LICENSE"
+dist=test-c-45
+echo "print('Outer license OK')" > foo-c-45.py
+$PYARMOR obfuscate --exact -O $dist --with-license outer \
+         foo-c-45.py >result.log 2>&1
+check_return_value
+
+$PYARMOR licenses -O $dist --restrict 0 r001 >result.log 2>&1
+check_file_exists $dist/r001/license.lic
+
+echo "import sys" > $dist/foo.py
+echo "sys.PYARMOR_LICENSE = 'r001/license.lic'" >> $dist/foo.py
+cat $dist/foo-c-45.py >> $dist/foo.py
+
+(cd $dist; $PYTHON foo.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Outer license OK"
+
 echo ""
 echo "-------------------- Command End -----------------------------"
 echo ""
@@ -840,6 +858,24 @@ check_return_value
 (cd $dist; $PYTHON foo__del.py >result.log 2>&1)
 check_return_value
 check_file_content $dist/result.log "test __del__ OK"
+
+csih_inform "S-16. Test outer license with sys.PYARMOR_LICENSE in super mode"
+dist=test-s-16
+echo "print('Outer license OK')" > foo-s-16.py
+$PYARMOR obfuscate --exact -O $dist --with-license outer \
+         --advanced 2 foo-s-16.py >result.log 2>&1
+check_return_value
+
+$PYARMOR licenses -O $dist --restrict 0 r001 >result.log 2>&1
+check_file_exists $dist/r001/license.lic
+
+echo "import sys" > $dist/foo.py
+echo "sys.PYARMOR_LICENSE = 'r001/license.lic'" >> $dist/foo.py
+cat $dist/foo-s-16.py >> $dist/foo.py
+
+(cd $dist; $PYTHON foo.py >result.log 2>&1)
+check_return_value
+check_file_content $dist/result.log "Outer license OK"
 
 echo ""
 echo "-------------------- Super Mode End --------------------------"
