@@ -257,10 +257,16 @@ There are something changed after Python scripts are obfuscated:
 
 * The callback function set by ``sys.settrace``, ``sys.setprofile``,
   ``threading.settrace`` and ``threading.setprofile`` will be ignored by
-  obfuscated scripts.
+  obfuscated scripts. Any module uses this feature will not work.
 
 * Any module for example ``inspect`` may not work if it try to visit the byte
   code, or some attributes of code objects in the obfuscated scripts.
+
+* Pass the obfuscated code object by ``cPickle`` or any third serialize tool may
+  not work.
+
+* The obfuscated scripts duplicate the running frame, so ``sys._getframe([n])``
+  may get the different frame.
 
 * If the exception is raised, the line number in the traceback may be
   different from the original script, especially this script has been
@@ -270,7 +276,7 @@ There are something changed after Python scripts are obfuscated:
   will be ``<frozen name>`` other than real filename. So in the
   traceback, the filename is shown as ``<frozen name>``.
 
-  Note that ``__file__`` of moudle is still filename. For example,
+  Note that module attribute ``__file__`` is still filename. For example,
   obfuscate the script ``foo.py`` and run it::
 
       def hello(msg):
@@ -315,5 +321,6 @@ least to run the obfuscated scripts:
   must be set as the real handle of Python dynamic library, PyArmor
   will query some Python C APIs by this handle.
 
+`PyPy` could not work with pyarmor, it's total different from `CPython`
 
 .. include:: _common_definitions.txt
