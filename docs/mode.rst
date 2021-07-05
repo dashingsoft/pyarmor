@@ -355,7 +355,7 @@ Mode 6 is an enhancement of mode 5. When printing the dictionary of module which
 is obfuscated with mode 6, no any key and value is shown. For example, even in
 the obfsucated scripts:
 
-.. code:: python
+.. code-block:: python
   # rm6 is obfuscated with mode 6
   import rm6
 
