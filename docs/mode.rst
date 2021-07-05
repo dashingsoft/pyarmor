@@ -352,15 +352,17 @@ runtime, this may reduce the performance.
 * Mode 6 (New in v6.7.4)
 
 Mode 6 is an enhancement of mode 5. When printing the dictionary of module which
-is obfuscated with mode 6, no any key and value is shown. For example, even in
-the obfsucated scripts:
+is obfuscated with mode 6, no any key/value is shown. For example, if ``rm6`` is
+obfuscated with mode 6, even in the obfsucated script:
 
-.. code-block:: python
-  # rm6 is obfuscated with mode 6
-  import rm6
+.. code:: python
 
-  # The output is "{...}"
-  print(rm6.__dict__)
+    import rm6
+    print(rm6.__dict__)
+
+The final output is::
+
+    {...}
 
 .. important::
 
