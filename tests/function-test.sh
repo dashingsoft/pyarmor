@@ -1832,6 +1832,42 @@ check_file_content $output/result.log 'This is restrict mode 4 testing' not
 check_file_content $output/result.log " name '__armor_wrap__' is not defined"
 fi
 
+csih_inform "Case RM-6: test restrict mode 6"
+src=rest6
+output=test-restrict-6
+mkdir -p $src
+echo "from . import sass" > $src/__init__.py
+echo "def Config():" > $src/sass.py
+echo "    print('Hello rm6')" >> $src/sass.py
+$PYARMOR obfuscate -O $output/dist --restrict 1 --bootstrap 3 \
+         $src/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 6 --exact --bootstrap 0 \
+         $src/sass.py > result.log 2>&1
+check_return_value
+
+echo "from dist import sass" > $output/main.py
+echo "print(sass.__dict__)" >> $output/main.py
+(cd $output; $PYTHON main.py > result.log 2>&1)
+check_file_content $output/result.log 'Config' not
+check_file_content $output/result.log '{...}'
+
+if [[ "yes" == "${SUPERMODE}" ]] ; then
+csih_inform "Case RM-6.1: test restrict mode 6 in super mode"
+src=rest6
+output=test-restrict-6.1
+$PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 --bootstrap 3 \
+         $src/__init__.py > result.log 2>&1
+$PYARMOR obfuscate -O $output/dist --restrict 6 --advanced 2 --bootstrap 3 \
+          --exact $src/sass.py > result.log 2>&1
+check_return_value
+
+echo "from dist import sass" > $output/main.py
+echo "print(sass.__dict__)" >> $output/main.py
+(cd $output; $PYTHON main.py > result.log 2>&1)
+check_file_content $output/result.log 'Config' not
+check_file_content $output/result.log '{...}'
+fi
+
 csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
 output=test-restrict-bootstrap
 $PYARMOR obfuscate -O $output -r --restrict 0 --no-bootstrap \
