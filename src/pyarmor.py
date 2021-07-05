@@ -1103,7 +1103,7 @@ def _parser():
                          action='append',
                          help='Insert extra code to entry script, '
                          'it could be used multiple times')
-    cparser.add_argument('--restrict', type=int, choices=range(6),
+    cparser.add_argument('--restrict', type=int, choices=range(7),
                          default=1, help='Set restrict mode')
     cparser.add_argument('--capsule', help=argparse.SUPPRESS)
     cparser.add_argument('--platform', dest='platforms', metavar='NAME',
@@ -1242,7 +1242,7 @@ def _parser():
     cparser.add_argument('--disable-restrict-mode', type=int, choices=(0, 1),
                          help=argparse.SUPPRESS)
     cparser.add_argument('--restrict', '--restrict-mode', dest='restrict_mode',
-                         type=int, choices=range(6),
+                         type=int, choices=range(7),
                          help='Set restrict mode')
     cparser.add_argument('--obf-module-mode', choices=Project.OBF_MODULE_MODE,
                          help=argparse.SUPPRESS)

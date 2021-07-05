@@ -349,6 +349,19 @@ nothing from the globals of this function. It's highest security, works for both
 of standalone scripts and packages. But it will check each global variable in
 runtime, this may reduce the performance.
 
+* Mode 6 (New in v6.7.4)
+
+Mode 6 is an enhancement of mode 5. When printing the dictionary of module which
+is obfuscated with mode 6, no any key and value is shown. For example, even in
+the obfsucated scripts:
+
+.. code:: python
+  # rm6 is obfuscated with mode 6
+  import rm6
+
+  # The output is "{...}"
+  print(rm6.__dict__)
+
 .. important::
 
    The protection of module attributes for mode 3 and 4 is introduced in
