@@ -368,7 +368,7 @@ The final output is::
 
 The disadvantage of this mode is that the items in the ``__dict__`` may not be
 clean (memory leak) when destroy this module, and global variables only could be
-created / deteleted in the model level.
+created / deleted in the model level.
 
 .. important::
 
