@@ -351,9 +351,11 @@ runtime, this may reduce the performance.
 
 * Mode 6 (New in v6.7.4)
 
-Mode 6 is an enhancement of mode 5. When printing the dictionary of module which
-is obfuscated with mode 6, no any key/value is shown. For example, if ``rm6`` is
-obfuscated with mode 6, even in the obfsucated script:
+Only for Python 3.7 and later, it takes no effect for previous Python version.
+
+Mode 6 is an enhancement of mode 5. If the module is obfuscated with mode 6, the
+module attribute ``__dict__`` looks like an empty dictionary. For example, if
+``rm6`` is obfuscated with mode 6, even in the obfsucated script:
 
 .. code:: python
 
@@ -362,7 +364,11 @@ obfuscated with mode 6, even in the obfsucated script:
 
 The final output is::
 
-    {...}
+    {}
+
+The disadvantage of this mode is that the items in the ``__dict__`` may not be
+clean (memory leak) when destroy this module, and global variables only could be
+created / deteleted in the model level.
 
 .. important::
 
