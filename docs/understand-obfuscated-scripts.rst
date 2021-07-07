@@ -250,7 +250,7 @@ There are something changed after Python scripts are obfuscated:
   it's obfuscated by Python 3.6, it must run by Python 3.6. It doesn't work for
   Python 3.5
 
-* The obfuscated scripts are platform-dependent.
+* The obfuscated scripts are platform-dependent, here list all supported :ref:`Support Platforms`
 
 * If Python interpreter is compiled with Py_TRACE_REFS or Py_DEBUG, it
   will crash to run obfuscated scripts.
