@@ -351,8 +351,8 @@ runtime, this may reduce the performance.
 
 * Mode 100+ (New in v6.7.4)
 
-This mode is an enhancement for mode 1-5 to enable an extra feature: **module
-attribute ``__dict__`` restriction**. So mode 101 equals mode 1 plus this
+This mode is an enhancement for mode 1-5 to enable an extra feature: module
+attribute ``__dict__`` restriction. So mode 101 equals mode 1 plus this
 feature, and mode 102 equals mode 2 plus this feature, and so on.
 
 If this feature is enabled, the module attribute ``__dict__`` looks like an
