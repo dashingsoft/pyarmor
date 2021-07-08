@@ -1842,34 +1842,40 @@ echo "from . import sass" > $src/__init__.py
 echo "myname = 'abc'" > $src/sass.py
 echo "def Config():" >> $src/sass.py
 echo "    print('Hello rm6')" >> $src/sass.py
-$PYARMOR obfuscate -O $output/dist --restrict 1 --bootstrap 3 \
+$PYARMOR obfuscate -O $output/dist --restrict 101 --bootstrap 3 \
          $src/__init__.py > result.log 2>&1
 $PYARMOR obfuscate -O $output/dist --restrict 105 --exact --bootstrap 0 \
          $src/sass.py > result.log 2>&1
 check_return_value
 
-echo "from dist import sass" > $output/main.py
+echo "import dist" > $output/main.py
+echo "from dist import sass" >> $output/main.py
+echo "print('dist is', dist.__dict__)" >> $output/main.py
 echo "print('dict is', sass.__dict__)" >> $output/main.py
 echo "print('values is', list(sass.__dict__.values()))" >> $output/main.py
 (cd $output; $PYTHON main.py > result.log 2>&1)
 check_file_content $output/result.log 'Config' not
 check_file_content $output/result.log 'abc' not
+check_file_content $output/result.log 'sass' not
 
 csih_inform "Case RM-6.1: test restrict mode 6 in super mode"
 src=rest6
 output=test-restrict-6.1
-$PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 --bootstrap 3 \
+$PYARMOR obfuscate -O $output/dist --restrict 101 --advanced 2 --bootstrap 3 \
          $src/__init__.py > result.log 2>&1
 $PYARMOR obfuscate -O $output/dist --restrict 105 --advanced 2 --bootstrap 3 \
           --exact $src/sass.py > result.log 2>&1
 check_return_value
 
-echo "from dist import sass" > $output/main.py
+echo "import dist" > $output/main.py
+echo "from dist import sass" >> $output/main.py
+echo "print('dist is', dist.__dict__)" >> $output/main.py
 echo "print('dict is', sass.__dict__)" >> $output/main.py
 echo "print('values is', list(sass.__dict__.values()))" >> $output/main.py
 (cd $output; $PYTHON main.py > result.log 2>&1)
 check_file_content $output/result.log 'Config' not
 check_file_content $output/result.log 'abc' not
+check_file_content $output/result.log 'sass' not
 fi
 
 csih_inform "Case RM-bootstrap: test bootstrap mode restrict"
