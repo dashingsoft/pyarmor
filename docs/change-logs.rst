@@ -41,6 +41,7 @@ Incompatible issues
   `NameError: name '__armor_enter__' is not defined`. Note that for Python 3.7
   and later, this issue still exists in non-super mode. Use super mode for these
   Python versions to solve this issue.
+* Add restrict mode 100+, refer to :ref:`Restrict Mode`
 
   The dev version could be installed by this command::
 
