@@ -349,26 +349,39 @@ nothing from the globals of this function. It's highest security, works for both
 of standalone scripts and packages. But it will check each global variable in
 runtime, this may reduce the performance.
 
-* Mode 6 (New in v6.7.4)
+* Mode 100+ (New in v6.7.4)
 
-Only for Python 3.7 and later, it takes no effect for previous Python version.
+This mode is an enhancement for mode 1-5 to enable an extra feature: **module
+attribute ``__dict__`` restriction**. So mode 101 equals mode 1 plus this
+feature, and mode 102 equals mode 2 plus this feature, and so on.
 
-Mode 6 is an enhancement of mode 5. If the module is obfuscated with mode 6, the
-module attribute ``__dict__`` looks like an empty dictionary. For example, if
-``rm6`` is obfuscated with mode 6, even in the obfsucated script:
+If this feature is enabled, the module attribute ``__dict__`` looks like an
+empty dictionary. And there are something changed for this module:
+
+* All the objects in the `module.__dict__` will not be clean when cleanuping
+  this module
+* After this module has been imported, `module.__dict__` can't be inserted or
+  deleted an item both implicitly and explicitly
+* The function of `dirs`, `vars` will also return empty
+
+For example, if ``rm6`` is enabled with this feature, even in the obfsucated
+script:
 
 .. code:: python
 
     import rm6
-    print(rm6.__dict__)
 
-The final output is::
+    # The result is {}
+    rm6.__dict__
 
-    {}
+    # The output is {}
+    vars(rm6)
 
-The disadvantage of this mode is that the items in the ``__dict__`` may not be
-clean (memory leak) when destroy this module, and global variables only could be
-created / deleted in the model level.
+    # The output is []
+    dirs(rm6)
+
+This feature only works for Python 3.7 and later, it takes no effect for
+previous Python version.
 
 .. important::
 
