@@ -1844,7 +1844,7 @@ echo "def Config():" >> $src/sass.py
 echo "    print('Hello rm6')" >> $src/sass.py
 $PYARMOR obfuscate -O $output/dist --restrict 1 --bootstrap 3 \
          $src/__init__.py > result.log 2>&1
-$PYARMOR obfuscate -O $output/dist --restrict 6 --exact --bootstrap 0 \
+$PYARMOR obfuscate -O $output/dist --restrict 105 --exact --bootstrap 0 \
          $src/sass.py > result.log 2>&1
 check_return_value
 
@@ -1860,7 +1860,7 @@ src=rest6
 output=test-restrict-6.1
 $PYARMOR obfuscate -O $output/dist --restrict 1 --advanced 2 --bootstrap 3 \
          $src/__init__.py > result.log 2>&1
-$PYARMOR obfuscate -O $output/dist --restrict 6 --advanced 2 --bootstrap 3 \
+$PYARMOR obfuscate -O $output/dist --restrict 105 --advanced 2 --bootstrap 3 \
           --exact $src/sass.py > result.log 2>&1
 check_return_value
 
