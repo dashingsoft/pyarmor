@@ -995,6 +995,10 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         co = _check_code_object_for_super_mode(co, lines, modname)
 
     if rest_mode > 100:
+        if sum(sys.version_info[:2]) < 10:
+            raise RuntimeError('This Python version is not supported by '
+                               'restrict mode %s, it only works '
+                               'for Python 3.7 and later' % rest_mode)
         rest_mode -= 100
         rest_mod_dict = 2
     else:
