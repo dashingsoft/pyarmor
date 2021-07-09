@@ -1000,15 +1000,15 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                                'restrict mode %s, it only works '
                                'for Python 3.7 and later' % rest_mode)
         rest_mode -= 100
-        rest_mod_dict = 2
+        rest_mod_dict_flag = 2
     else:
-        rest_mod_dict = 0
+        rest_mod_dict_flag = 0
 
     flags = obf_code | obf_mod << 8 | (wrap_mode | (adv_mode << 4)) << 16 | \
         ((0x34 if rest_mode == 5 else 0xB0 if rest_mode == 4
           else 0xF0 if rest_mode == 3 else 0x70 if rest_mode == 2
           else 0x10 if rest_mode else 0)
-         | (8 if entry else 0) | rest_mod_dict) << 24
+         | (8 if entry else 0) | rest_mod_dict_flag) << 24
     s = pytransform.encrypt_code_object(pubkey, co, flags, suffix=suffix)
 
     with open(destname, 'w') as f:
