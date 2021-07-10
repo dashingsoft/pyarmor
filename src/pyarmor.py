@@ -929,7 +929,7 @@ def _runtime(args):
     filename = os.path.join(output, 'pytransform_protection.py')
     data = make_protection_code((args.inside, checklist, suffix),
                                 multiple=len(platforms) > 1,
-                                supermode=args.super_mode)
+                                supermode=supermode)
     advanced = args.advanced if args.advanced is not None else \
         (4 if vmode else 2) if supermode else 3 if vmode else 0
     header = ('# platforms: %s' % ','.join(platforms),
@@ -942,7 +942,7 @@ def _runtime(args):
         f.write(data)
     logging.info('Generate protection script "%s" OK', filename)
 
-    if not args.super_mode:
+    if not supermode:
         filename = os.path.join(output, '__init__.py') if args.inside else \
             os.path.join(args.output, name + '.py')
         logging.info('Generating bootstrap script ...')
