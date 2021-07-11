@@ -170,6 +170,11 @@ These names are used in the command :ref:`obfuscate`, :ref:`build`,
 * linux.mips64el
 * poky.x86
 
+If not sure which platform is right one, download this helper script and run it
+in the target machine
+
+https://github.com/dashingsoft/pyarmor/raw/master/src/helper/get_platform_name.py
+
 .. note:: New platforms in differnt versions
 
    * v5.9.3: android.armv7
