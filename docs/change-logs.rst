@@ -42,6 +42,9 @@ Incompatible issues
   and later, this issue still exists in non-super mode. Use super mode for these
   Python versions to solve this issue.
 * Add restrict mode 100+, refer to :ref:`Restrict Mode`
+* Check `sys.PYARMOR_LICENSE` for outer license, and refine outer license search
+  policy. Refer to :ref:`How to use outer license file`
+* Fix issue (#539): `runtime` command generates wrong protection code for super mode
 
   The dev version could be installed by this command::
 
