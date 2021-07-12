@@ -1,5 +1,6 @@
 import platform
 import struct
+import sys
 
 from ctypes import cdll, c_char_p, CFUNCTYPE
 from fnmatch import fnmatch
@@ -75,4 +76,7 @@ def format_platform():
 
 
 if __name__ == '__main__':
+    print('platform.system is "%s"' % platform.system())
+    print('platform.machine is "%s"' % platform.machine())
+    print('sys.byteorder is "%s"' % sys.byteorder)
     print('The standard platform name is "%s"' % format_platform())
