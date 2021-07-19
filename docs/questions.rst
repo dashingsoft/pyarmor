@@ -822,4 +822,18 @@ https://www.mycommerce.com/shopper-support/
 
 Or contact "ClientSupport@MyCommerce.com" directly
 
+Would pyarmor be able to provide an evaluation license
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sorry, pyarmor license could be work even offline, so there is no evaluation
+license.
+
+Generally the obfuscated scripts could replace the original scripts
+seamlessly. Excpet it uses the features changed by pyarmor, here list all
+:ref:`The Differences of Obfuscated Scripts`
+
+Most of packages could work with pyarmor, for a few packages, pyamor also works
+after patching these packages simplify. Only those packages which visit byte
+code or something like this could not work with pyarmor at all.
+
 .. include:: _common_definitions.txt
