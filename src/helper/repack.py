@@ -62,7 +62,7 @@ from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
 from PyInstaller.loader.pyimod02_archive import ZlibArchiveReader
 from PyInstaller.loader.pyimod02_archive import PYZ_TYPE_PKG
-from PyInstaller.compat import is_darwin, is_linux
+from PyInstaller.compat import is_darwin, is_linux, is_win
 
 
 logger = logging.getLogger('repack')
@@ -253,6 +253,12 @@ def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
         if hasattr(osxutils, 'sign_binary'):
             logger.info("Re-signing the EXE")
             osxutils.sign_binary(obfname, identity=codesign)
+
+    if is_win:
+        # Set checksum to appease antiviral software.
+        from PyInstaller.utils.win32 import winutils
+        if hasattr(winutils, 'set_exe_checksum'):
+            winutils.set_exe_checksum(obfname)
 
     logger.info('Generate patched bundle "%s" successfully', obfname)
 
