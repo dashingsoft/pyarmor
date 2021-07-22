@@ -212,8 +212,14 @@ def repack_pyz(pyz, obfpath, cipher=None, clean=False):
     logger.info('Patch PYZ done')
 
 
-def repack_exe(path, obfname, logic_toc, obfentry):
+def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
     logger.info('Repacking EXE "%s"', obfname)
+
+    if is_darwin:
+        import PyInstaller.utils.osx as osxutils
+        if hasattr(osxutils, 'remove_signature_from_binary'):
+            logger.info("Removing signature(s) from EXE")
+            osxutils.remove_signature_from_binary(obfname)
 
     offset, pylib_name = get_carchive_info(obfname)
     logger.info('Get archive info (%d, "%s")', offset, pylib_name)
@@ -244,10 +250,14 @@ def repack_exe(path, obfname, logic_toc, obfentry):
         import PyInstaller.utils.osx as osxutils
         osxutils.fix_exe_for_code_signing(obfname)
 
+        if hasattr(osxutils, 'sign_binary'):
+            logger.info("Re-signing the EXE")
+            osxutils.sign_binary(obfname, identity=codesign)
+
     logger.info('Generate patched bundle "%s" successfully', obfname)
 
 
-def repacker(executable, obfpath, entry=None):
+def repacker(executable, obfpath, entry=None, codesign=None):
     logger.info('Repack PyInstaller bundle "%s"', executable)
 
     obfpath = os.path.normpath(obfpath)
@@ -293,7 +303,7 @@ def repacker(executable, obfpath, entry=None):
 
     obfname = os.path.join(name + '_obf' + ext)
     shutil.copy2(executable, obfname)
-    repack_exe(path, obfname, logic_toc, obfentry)
+    repack_exe(path, obfname, logic_toc, obfentry, codesign=codesign)
 
 
 def excepthook(type, exc, traceback):
@@ -320,6 +330,8 @@ def main():
                         help='obfuscated scripts path (default: %(default)s)')
     parser.add_argument('-e', '--entry',
                         help="Entry script if it's different from bundle name")
+    parser.add_argument('--codesign-identity',
+                        help="Code signing identity (macOS only).")
     parser.add_argument('executable', metavar='executable',
                         help="PyInstaller archive")
 
@@ -328,7 +340,7 @@ def main():
         logger.setLevel(logging.DEBUG)
     else:
         sys.excepthook = excepthook
-    repacker(args.executable, args.obfpath, entry=args.entry)
+    repacker(args.executable, args.obfpath, args.entry, args.codesign_identity)
 
 
 if __name__ == '__main__':
