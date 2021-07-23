@@ -231,7 +231,8 @@ def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
 
     if is_linux:
         logger.info('Replace section "pydata" with "%s" in EXE', pkgname)
-        Popen(['objcopy', '--update-section', 'pydata=%s' % pkgname, obfname])
+        Popen(['objcopy', '--update-section', 'pydata=%s' % pkgname,
+               obfname]).wait()
     else:
         logger.info('Replace PKG with "%s" in EXE', pkgname)
         with open(obfname, 'r+b') as outf:
