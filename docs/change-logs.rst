@@ -36,6 +36,7 @@ Incompatible issues
 -----------
 * Fix issue (#547): in MacOS repack script fails if the executable is signed.
 * Add option `--code-identity` for repack script
+* Fix issue (#549): refine repack script to wait for the terminate of `objcopy`
 * Change core version to **r44.18**
 * Fix issue: in super mode `object.__del__` raises exception `NameError: name
   '__armor_wrap__' is not defined`
