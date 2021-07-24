@@ -56,7 +56,7 @@ import struct
 import sys
 import zlib
 
-from subprocess import Popen
+from subprocess import check_call
 
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
@@ -231,8 +231,8 @@ def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
 
     if is_linux:
         logger.info('Replace section "pydata" with "%s" in EXE', pkgname)
-        Popen(['objcopy', '--update-section', 'pydata=%s' % pkgname,
-               obfname]).wait()
+        check_call(['objcopy', '--update-section', 'pydata=%s' % pkgname,
+                    obfname])
     else:
         logger.info('Replace PKG with "%s" in EXE', pkgname)
         with open(obfname, 'r+b') as outf:
