@@ -48,7 +48,7 @@ Incompatible issues
 * Check `sys.PYARMOR_LICENSE` for outer license, and refine outer license search
   policy. Refer to :ref:`How to use outer license file`
 * Fix issue (#539): `runtime` command generates wrong protection code for super mode
-* Fix issue (#548): memory leak of builtin function `locals` in super mode
+* Fix issue (#550): memory leak of builtin function `locals` in super mode
 
   The dev version could be installed by this command::
 
