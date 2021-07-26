@@ -54,3 +54,5 @@ done
 for x in $(find . -name result.log) ; do
     grep -q "Found 92 solutions" $x || echo "Failed: $x"
 done
+
+echo "Test finished."
