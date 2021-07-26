@@ -34,9 +34,9 @@ Incompatible issues
 
 6.7.4 (dev)
 -----------
-* Fix issue (#547): in MacOS repack script fails if the executable is signed.
+* Fix issue (#547): in MacOS the repack script fails if the executable is signed.
 * Add option `--code-identity` for repack script
-* Fix issue (#549): refine repack script to wait for the terminate of `objcopy`
+* Fix issue (#549): refine repack script to wait for the termination of `objcopy`
 * Change core version to **r44.18**
 * Fix issue: in super mode `object.__del__` raises exception `NameError: name
   '__armor_wrap__' is not defined`
@@ -48,7 +48,7 @@ Incompatible issues
 * Check `sys.PYARMOR_LICENSE` for outer license, and refine outer license search
   policy. Refer to :ref:`How to use outer license file`
 * Fix issue (#539): `runtime` command generates wrong protection code for super mode
-* Fix issue (#548): memory leak for builtin function `locals` in super mode
+* Fix issue (#548): memory leak of builtin function `locals` in super mode
 
   The dev version could be installed by this command::
 
