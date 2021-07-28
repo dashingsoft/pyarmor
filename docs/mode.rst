@@ -364,21 +364,43 @@ empty dictionary. And there are something changed for this module:
   deleted an item both implicitly and explicitly
 * The function of `dirs`, `vars` will also return empty
 
-For example, if ``rm6`` is enabled with this feature, even in the obfsucated
-script:
+For example,
 
 .. code:: python
 
-    import rm6
+    # This is foo6.py, obfuscated with mode 106
+
+    # It's OK
+    global var_a
+    var_a = 'This is global variable a'
+    var_b = 'This is global variable b'
+    del var_a
+
+    def fabico():
+        global var_b
+
+        # Wrong, remove item from module.__dict__ not in modul level
+        del var_b
+
+    # This is foo.py, obfuscated with mode 101
+
+    import foo6
 
     # The result is {}
-    rm6.__dict__
+    foo6.__dict__
 
     # The output is {}
-    vars(rm6)
+    vars(foo6)
 
     # The output is []
-    dirs(rm6)
+    dirs(foo6)
+
+    # OK
+    foo6.var_a = 'Changed by foo'
+
+    # Wrong, add new item to __dict__
+    foo6.__dict__['var_c'] = 1
+    foo6.var_d = 2
 
 This feature only works for Python 3.7 and later, it takes no effect for
 previous Python version.
