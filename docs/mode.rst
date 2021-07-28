@@ -368,7 +368,7 @@ For example,
 
 .. code:: python
 
-    # This is foo6.py, obfuscated with mode 106
+    # This is foo6.py, obfuscated with mode 105
 
     # It's OK
     global var_a
