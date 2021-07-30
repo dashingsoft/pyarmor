@@ -56,10 +56,10 @@ options work with command :ref:`obfuscate`::
 
 .. note::
 
-   From PyArmor 5.5.0, it could improve the security by passing the obfuscated
-   option ``--advanced 1`` to enable :ref:`Advanced Mode`. For example::
+   It could improve the security by passing extra option ``--advanced 2`` to
+   enable :ref:`Super Mode`. For example::
 
-       pyarmor pack -x " --advanced 1 --exclude tests" foo.py
+       pyarmor pack -x " --advanced 2 --exclude tests" foo.py
 
 Running obfuscated Django site with Apache and mod_wsgi
 -------------------------------------------------------
