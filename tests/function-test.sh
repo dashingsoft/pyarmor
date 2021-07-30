@@ -1839,6 +1839,7 @@ src=rest6
 output=test-restrict-6
 mkdir -p $src
 echo "from . import sass" > $src/__init__.py
+echo "from .sass import Config" >> $src/__init__.py
 echo "myname = 'abc'" > $src/sass.py
 echo "def Config():" >> $src/sass.py
 echo "    print('Hello rm6')" >> $src/sass.py
