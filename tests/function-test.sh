@@ -1840,9 +1840,10 @@ output=test-restrict-6
 mkdir -p $src
 echo "from . import sass" > $src/__init__.py
 echo "from .sass import Config" >> $src/__init__.py
+echo "Config('init')" >> $src/__init__.py
 echo "myname = 'abc'" > $src/sass.py
-echo "def Config():" >> $src/sass.py
-echo "    print('Hello rm6')" >> $src/sass.py
+echo "def Config(msg=None):" >> $src/sass.py
+echo "    print('Hello rm6', msg)" >> $src/sass.py
 $PYARMOR obfuscate -O $output/dist --restrict 101 --bootstrap 3 \
          $src/__init__.py > result.log 2>&1
 $PYARMOR obfuscate -O $output/dist --restrict 105 --exact --bootstrap 0 \
@@ -1855,6 +1856,7 @@ echo "print('dist is', dist.__dict__)" >> $output/main.py
 echo "print('dict is', sass.__dict__)" >> $output/main.py
 echo "print('values is', list(sass.__dict__.values()))" >> $output/main.py
 (cd $output; $PYTHON main.py > result.log 2>&1)
+check_file_content $output/result.log 'Hello rm6 init'
 check_file_content $output/result.log 'Config' not
 check_file_content $output/result.log 'abc' not
 check_file_content $output/result.log 'sass' not
@@ -1874,6 +1876,7 @@ echo "print('dist is', dist.__dict__)" >> $output/main.py
 echo "print('dict is', sass.__dict__)" >> $output/main.py
 echo "print('values is', list(sass.__dict__.values()))" >> $output/main.py
 (cd $output; $PYTHON main.py > result.log 2>&1)
+check_file_content $output/result.log 'Hello rm6 init'
 check_file_content $output/result.log 'Config' not
 check_file_content $output/result.log 'abc' not
 check_file_content $output/result.log 'sass' not
