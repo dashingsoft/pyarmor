@@ -32,8 +32,18 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.7.4 (dev)
------------
+.. reserved:
+
+   The dev version could be installed by this command::
+
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-dev.zip
+
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the stable version from PyPi.
+
+6.7.4
+-----
 * Fix issue (#547): in MacOS the repack script fails if the executable is signed.
 * Add option `--code-identity` for repack script
 * Fix issue (#549): refine repack script to wait for the termination of `objcopy`
@@ -49,14 +59,6 @@ Incompatible issues
   policy. Refer to :ref:`How to use outer license file`
 * Fix issue (#539): `runtime` command generates wrong protection code for super mode
 * Fix issue (#550): memory leak of builtin function `locals` in super mode
-
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.4.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the stable version from PyPi.
 
 6.7.3
 -----
