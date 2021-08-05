@@ -1207,8 +1207,9 @@ def check_cross_platform(platforms, supermode=False, vmode=False):
             if not platid.startswith('windows'):
                 raise RuntimeError('VM Protect mode only works for Windows')
             nlist = platid.split('.')
-            if len(nlist) > 2:
-                raise RuntimeError('Invalid platform name for VM mode')
+            if len(nlist) > 2 and features[0] not in nlist:
+                raise RuntimeError('Invalid platform name "%s" for VM mode'
+                                   % platid)
         if not len(platforms):
             platforms = [_format_platid()]
     elif supermode:
