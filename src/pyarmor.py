@@ -1016,6 +1016,10 @@ def _check_runtime_license(rsettings, licfile):
         logging.warning('The runtime package uses outer license '
                         'but no license file is specified')
         licfile = False
+    elif licfile == 'outer' and rsettings[-1] != 'outer':
+        raise RuntimeError('Please specify outer license in the command '
+                           '`runtime` when using shared runtime files')
+
     return licfile
 
 
