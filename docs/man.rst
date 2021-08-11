@@ -937,7 +937,7 @@ Or specify the project path at the end::
 
 .. _benchmark:
 
-banchmark
+benchmark
 ---------
 
 Check the performance of obfuscated scripts.
