@@ -35,6 +35,9 @@ Incompatible issues
 6.7.5 (pre-release)
 -------------------
 * Fix issue (#557): Invalid platform name for VM mode
+* Change core version to **r45.19**
+* In Linux support to get the serial number of mmc/sd card
+* In Linux refine the code of getting default harddisk
 
    The dev version could be installed by this command::
 
