@@ -46,8 +46,6 @@ def makedirs(path, exist_ok=False):
 
 
 def parse_script(filename):
-    logging.info('Parse script %s', filename)
-
     n = 0
     with open(filename) as f:
         for s in f.readlines():
@@ -62,39 +60,61 @@ def parse_script(filename):
 
     left_size = len(code)
     offset = 0
-    pyvers = []
+    infos = []
     valid = False
 
     while left_size > 0:
         pymajor, pyminor = struct.unpack("BB", code[offset+9:offset+11])
-        logging.info('  Found Python %d.%d', pymajor, pyminor)
         size, = struct.unpack("i", code[offset+56:offset+60])
         if not size:
             valid = True
             size = left_size
         left_size -= size
-        pyvers.append([offset, size])
+        infos.append([offset, size, (pymajor, pyminor)])
         offset += size
 
     if not valid:
         raise RuntimeError('Invalid header in this script')
 
-    return n, flag, code, pyvers
+    return n, flag, code, infos
 
 
-def merge_scripts(scripts, output):
-    rlist = [parse_script(scripts[0])]
-    for script in scripts[1:]:
-        rlist.append(parse_script(script))
-        if rlist[0][:2] != rlist[-1][:2]:
+def merge_scripts(refscript, scripts, output):
+    logger.info('Parse reference script %s', refscript)
+    refn, reflag, refcode, refinfos = parse_script(refscript)
+
+    merged_vers = []
+    pieces = []
+
+    for script in reversed(scripts):
+        logger.info('Parse script %s', script)
+        n, flag, code, pyinfos = parse_script(script)
+        if reflag != flag:
             raise RuntimeError('The script "%s" is obfuscated with '
                                'different way' % script)
+        if len(pyinfos) > 1:
+            raise RuntimeError('The script "%s" is merged script' % script)
 
-    pieces = []
-    for fs in list(reversed(rlist))[:1]:
-        code = fs[2]
+        ver = pyinfos[0][-1]
+        logger.debug('\tFound Python %d.%d', *ver)
+
+        if ver in merged_vers:
+            logging.warning('\tIngore this Python %d.%d', *ver)
+            continue
+
+        logger.debug('\tMerge this Python %d.%d', *ver)
+        merged_vers.append(ver)
         pieces.extend([code[:56], struct.pack("i", len(code)), code[60:]])
-    pieces.append(rlist[0][2])
+
+    logger.debug('Handle reference script %s', refscript)
+    for offset, size, ver in refinfos:
+        logger.debug('\tFound Python %d.%d', *ver)
+        if ver in merged_vers:
+            logger.debug('\tIgnore this Python %d.%d', *ver)
+            continue
+        logger.debug('\tMerge this Python %d.%d', *ver)
+        merged_vers.append(ver)
+        pieces.append(refcode[offset:offset+size])
 
     scode = '\\x' + '\\x'.join(['%02x' % c
                                 for c in bytearray(b''.join(pieces))])
@@ -102,13 +122,14 @@ def merge_scripts(scripts, output):
     with open(scripts[0]) as f:
         lines = f.readlines()
 
-    index = rlist[0][0]
-    s = lines[index]
+    s = lines[refn]
     i = s.find(', b')
     j = s.rfind(',')
-    lines[index] = s[:i+4] + scode + s[j-1:]
+    lines[refn] = s[:i+4] + scode + s[j-1:]
 
-    logging.info('Write merged script: %s', output)
+    logger.info('Write merged script: %s', output)
+    for ver in merged_vers:
+        logger.info('\t* Python %d.%d', *ver)
     makedirs(os.path.dirname(output), exist_ok=True)
 
     with open(output, 'w') as f:
@@ -123,6 +144,9 @@ def walk_scripts(paths, output=None):
         return [[paths, refpath if output is None else
                  output if is_pyscript(output) else
                  os.path.join(output, os.path.basename(refpath))]]
+
+    if output and is_pyscript(output):
+        raise RuntimeError('--output must be a path when mergeing path')
 
     n = len(refpath) + 1
     for root, dirs, files in os.walk(refpath):
@@ -173,12 +197,12 @@ def main():
         sys.excepthook = excepthook
 
     for scripts, output in walk_scripts(args.path, args.output):
-        merge_scripts(scripts, output)
+        merge_scripts(scripts[0], scripts[1:], output)
 
 
 if __name__ == '__main__':
     logging.basicConfig(
         level=logging.INFO,
-        format='%(message)s',
+        format='%(levelname)-8s %(message)s',
     )
     main()
