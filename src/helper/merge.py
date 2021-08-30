@@ -29,6 +29,7 @@ If also possible to merge one script, for example:
 import argparse
 import logging
 import os
+import shutil
 import struct
 import sys
 
@@ -56,7 +57,7 @@ def parse_script(filename):
                 break
             n += 1
         else:
-            raise RuntimeError('This script is not an obfuscated script')
+            return None, None, None, None
 
     left_size = len(code)
     offset = 0
@@ -83,12 +84,21 @@ def merge_scripts(refscript, scripts, output):
     logger.info('Parse reference script %s', refscript)
     refn, reflag, refcode, refinfos = parse_script(refscript)
 
+    if refcode is None:
+        logger.info('This script is not obfuscated')
+        makedirs(os.path.dirname(output), exist_ok=True)
+        logger.info('Copy it to %s', output)
+        shutil.copy(refscript, output)
+        return
+
     merged_vers = []
     pieces = []
 
     for script in reversed(scripts):
         logger.info('Parse script %s', script)
         n, flag, code, pyinfos = parse_script(script)
+        if code is None:
+            raise RuntimeError('This script is not an obfuscated script')
         if reflag != flag:
             raise RuntimeError('The script "%s" is obfuscated with '
                                'different way' % script)
@@ -130,8 +140,8 @@ def merge_scripts(refscript, scripts, output):
     logger.info('Write merged script: %s', output)
     for ver in merged_vers:
         logger.info('\t* Python %d.%d', *ver)
-    makedirs(os.path.dirname(output), exist_ok=True)
 
+    makedirs(os.path.dirname(output), exist_ok=True)
     with open(output, 'w') as f:
         f.write(''.join(lines))
 
