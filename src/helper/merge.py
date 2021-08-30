@@ -204,10 +204,12 @@ def merge_runtimes(paths, output):
 
     for p, (major, minor) in zip(paths, pyvers):
         src = os.path.join(p, runtimes[0])
-        dst = os.path.join(pkgpath,  'py%s.%s' % (major, minor))
+        dst = os.path.join(pkgpath,  'py%s%s' % (major, minor))
         logger.info('Copy %s to %s', src, dst)
         makedirs(dst, exist_ok=True)
         shutil.copy2(src, dst)
+        with open(os.path.join(dst, '__init__.py'), 'w') as f:
+            f.write('')
 
 
 def find_scripts(paths):
