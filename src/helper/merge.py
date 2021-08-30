@@ -5,11 +5,11 @@ For example,
 
 1. First obfuscate the scripts by Python 2.7
 
-    python2.7 pyarmor.py obfuscate --no-cross-protection --O py27 foo.py
+    python2.7 pyarmor.py obfuscate --no-cross-protection -O py27 foo.py
 
 2. Then obfuscate the scripts by Python 3.8
 
-    python3.8 pyarmor.py obfuscate --no-cross-protection --O py38 foo.py
+    python3.8 pyarmor.py obfuscate --no-cross-protection -O py38 foo.py
 
 3. Run this tool to merge all of them to path `merged_dist`
 

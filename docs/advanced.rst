@@ -1643,5 +1643,59 @@ Finally build the source package::
    For super mode, the runtime files are different, please modify ``setup.py``
    as required.
 
+.. _run obfuscated scripts by different python versions:
+
+Run Obfuscated Scripts By Different Python Versions
+---------------------------------------------------
+
+This feature is introduced in v6.8.0
+
+Generally the obfuscated scripts can be run only by one Python version. In order
+to run it by other Python version, one solution is, first obfuscate the scripts
+by different Python version, then merge them to one script.
+
+There is a helper script ``merge.py`` in the package of pyarmor used to merge
+different obfuscated scripts to one.
+
+Here it's the basic usage::
+
+    # First obfuscate the scripts by Python 2.7
+    python2.7 pyarmor.py obfuscate --no-cross-protection -O py27 foo.py
+
+    # Then obfuscate the scripts by Python 3.8
+    python3.8 pyarmor.py obfuscate --no-cross-protection -O py38 foo.py
+
+    # Finally run this script to merge all of them
+    python merge.py py38/ py27/
+
+    # Look the results
+    ls merged_dist/
+
+Note that option ``--no-cross-protection`` must be used to obfuscate the scripts
+for non-super mode, otherwise protection error will be raised.
+
+It also works for super mode::
+
+    # First obfuscate the scripts by Python 2.7
+    python2.7 pyarmor.py obfuscate --advanced 2 -O py27 foo.py
+
+    # Then obfuscate the scripts by Python 3.8
+    python3.8 pyarmor.py obfuscate --advanced 2 -O py38 foo.py
+
+    # Finally run this script to merge all of them
+    python merge.py py38/ py27/
+
+    # Look the results
+    ls merged_dist/
+
+.. note::
+
+    Before v6.8.0, please download ``merge.py`` from
+
+    https://github.com/dashingsoft/pyarmor/raw/master/src/helper/merge.py
+
+    Since v6.8.0, run it by this way::
+
+        python -m pyarmor.helper.merge ...
 
 .. include:: _common_definitions.txt
