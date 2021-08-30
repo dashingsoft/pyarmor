@@ -142,8 +142,6 @@ def merge_scripts(scripts, output):
 
 
 def merge_runtimes(paths, output):
-    logging.info('Merging runtime files...')
-
     runtimes = []
     pyvers = []
     refpath = os.path.normpath(paths[-1])
@@ -192,7 +190,7 @@ def merge_runtimes(paths, output):
     makedirs(pkgpath, exist_ok=True)
 
     src = os.path.join(pkgpath, '__init__.py')
-    logger.info('Create runtime file: %s', src)
+    logger.info('Create super runtime package: %s', src)
     with open(src, 'w') as f:
         f.write(
             "import sys\n"
@@ -208,6 +206,8 @@ def merge_runtimes(paths, output):
         logger.info('Copy %s to %s', src, dst)
         makedirs(dst, exist_ok=True)
         shutil.copy2(src, dst)
+
+        logger.debug('Create package file "%s/__init__.py"', dst)
         with open(os.path.join(dst, '__init__.py'), 'w') as f:
             f.write('')
 
@@ -262,21 +262,30 @@ def main():
     else:
         sys.excepthook = excepthook
 
+    logger.info('Merge %s...', str(args.path)[1:-1])
     output = args.output
+
     if os.path.isfile(args.path[0]):
         output = output if is_pyscript(output) \
             else os.path.join(output, os.path.basename(args.path[0]))
+
         merge_scripts(args.path, output)
-        return
 
-    if output and is_pyscript(output):
-        raise RuntimeError('--output must be a path when mergeing path')
+    else:
+        if output and is_pyscript(output):
+            raise RuntimeError('--output must be a path when mergeing path')
 
-    for name in find_scripts(args.path):
-        merge_scripts([os.path.join(p, name) for p in args.path],
-                      os.path.join(output, name))
+        logging.info('Merging obfuscated scripts...')
+        for name in find_scripts(args.path):
+            merge_scripts([os.path.join(p, name) for p in args.path],
+                          os.path.join(output, name))
+        logging.info('Merging obfuscated scripts OK')
 
-    merge_runtimes(args.path, output)
+        logging.info('Merging runtime files...')
+        merge_runtimes(args.path, output)
+        logging.info('Merging runtime files OK')
+
+    logger.info('Merge all the scripts to %s successfully', output)
 
 
 if __name__ == '__main__':
