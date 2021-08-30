@@ -314,13 +314,11 @@ def repacker(executable, obfpath, entry=None, codesign=None):
 
 
 def excepthook(type, exc, traceback):
-    if hasattr(exc, 'args'):
-        try:
-            logging.error(exc.args[0], *exc.args[1:])
-        except Exception:
-            logging.error(", ".join(['%s'] * len(exc.args)), *exc.args)
-    else:
-        logging.error('%s', exc)
+    try:
+        msg = exc.args[0] % exc.args[1:]
+    except Exception:
+        msg = str(exc)
+    logging.error(msg)
     sys.exit(1)
 
 
