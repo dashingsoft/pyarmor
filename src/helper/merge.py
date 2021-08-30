@@ -5,25 +5,22 @@ For example,
 
 1. First obfuscate the scripts by Python 2.7
 
-    python2.7 pyarmor.py obfuscate --output dist/py27 foo.py
+    python2.7 pyarmor.py obfuscate --no-cross-protection --O py27 foo.py
 
 2. Then obfuscate the scripts by Python 3.8
 
-    python3.8 pyarmor.py obfuscate --output dist/py38 foo.py
+    python3.8 pyarmor.py obfuscate --no-cross-protection --O py38 foo.py
 
-3. Run this tool to merge all of them
+3. Run this tool to merge all of them to path `merged_dist`
 
-    python merge.py -O dist dist/py38/ dist/py27/
+    python merge.py py38/ py27/
 
-If no option `--output`, the obfuscated scripts in first path will be
-updated to save the final merged scripts. For example, this command
-will overwrite all the obfuscated scripts in the `dist/py38`:
-
-    python merge.py dist/py38/ dist/py27 dist/py39
+Note that option `--no-cross-protection` must be used to obfuscate the
+scripts for non-super mode, otherwise protection error will be raised.
 
 If also possible to merge one script, for example:
 
-    python merge.py dist/foo.py dist/py36/foo.py dist/py35/foo.py
+    python merge.py py27/foo.py py36/foo.py py35/foo.py
 
 '''
 import argparse
@@ -50,7 +47,7 @@ def parse_script(filename):
     n = 0
     with open(filename) as f:
         for s in f.readlines():
-            if s.startswith('__pyarmor__(') or s.startswith('pyarmor('):
+            if s.startswith('__pyarmor') or s.startswith('pyarmor('):
                 fs = s[s.find('__file__'):s.rfind(')')].split(', ')
                 code = eval(fs[-2])
                 flag = int(fs[-1])
@@ -80,15 +77,13 @@ def parse_script(filename):
     return n, flag, code, infos
 
 
-def merge_scripts(refscript, scripts, output):
+def merge_scripts(scripts, output):
+    refscript = scripts.pop(0)
     logger.info('Parse reference script %s', refscript)
     refn, reflag, refcode, refinfos = parse_script(refscript)
 
     if refcode is None:
-        logger.info('This script is not obfuscated')
-        makedirs(os.path.dirname(output), exist_ok=True)
-        logger.info('Copy it to %s', output)
-        shutil.copy(refscript, output)
+        logger.info('Ignore this script, it is not obfuscated')
         return
 
     merged_vers = []
@@ -146,17 +141,80 @@ def merge_scripts(refscript, scripts, output):
         f.write(''.join(lines))
 
 
-def walk_scripts(paths, output=None):
-    results = []
-    refpath = os.path.normpath(paths[0])
+def merge_runtimes(paths, output):
+    logging.info('Merging runtime files...')
 
-    if os.path.isfile(refpath):
-        return [[paths, refpath if output is None else
-                 output if is_pyscript(output) else
-                 os.path.join(output, os.path.basename(refpath))]]
+    runtimes = []
+    pyvers = []
+    refpath = os.path.normpath(paths[-1])
 
-    if output and is_pyscript(output):
-        raise RuntimeError('--output must be a path when mergeing path')
+    n = len(refpath) + 1
+    for root, dirs, files in os.walk(refpath):
+        if os.path.basename(root).startswith('pytransform'):
+            runtimes.append(root[n:])
+
+        for x in files:
+            if x.startswith('pytransform'):
+                runtimes.append(os.path.join(root, x)[n:])
+            elif is_pyscript(x) and not pyvers:
+                name = os.path.join(root, x)[n:]
+                for p in paths:
+                    pyinfos = parse_script(os.path.join(p, name))[-1]
+                    if pyinfos is None:
+                        pyvers = []
+                        break
+                    if len(pyinfos) > 1:
+                        raise RuntimeError('The runtime file in %s is merged'
+                                           % p)
+                    pyvers.append(pyinfos[0][-1])
+
+    logger.debug('Found runtimes: %s', runtimes)
+    if not runtimes:
+        raise RuntimeError('No runtime files found')
+    elif len(runtimes) > 1:
+        raise RuntimeError('Too many runtime files')
+
+    logger.debug('Found python versions: %s', pyvers)
+    if not pyvers:
+        raise RuntimeError('Could not get python version of runtime files')
+
+    r = os.path.join(refpath, runtimes[0])
+    if os.path.isdir(r):
+        logger.info('Copy non-super mode runtime package %s', r)
+        dst = os.path.join(output, runtimes[0])
+        logger.info('To %s', dst)
+        makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copytree(r, dst)
+        return
+
+    pkgname = os.path.basename(r).rsplit('.', 1)[0]
+    pkgpath = os.path.join(output, pkgname)
+    makedirs(pkgpath, exist_ok=True)
+
+    src = os.path.join(pkgpath, '__init__.py')
+    logger.info('Create runtime file: %s', src)
+    with open(src, 'w') as f:
+        f.write(
+            "import sys\n"
+            "sys.modules[__name__].__dict__.update("
+            "__import__('.'.join("
+            "[__name__, 'py%s%s' % sys.version_info[:2], __name__]),"
+            " globals(), locals(), ['*']).__dict__)"
+        )
+
+    for p, (major, minor) in zip(paths, pyvers):
+        src = os.path.join(p, runtimes[0])
+        dst = os.path.join(pkgpath,  'py%s.%s' % (major, minor))
+        logger.info('Copy %s to %s', src, dst)
+        makedirs(dst, exist_ok=True)
+        shutil.copy2(src, dst)
+
+
+def find_scripts(paths):
+    names = []
+
+    refpath = os.path.normpath(paths[-1])
+    logger.info('Find scripts in the path %s', refpath)
 
     n = len(refpath) + 1
     for root, dirs, files in os.walk(refpath):
@@ -165,12 +223,9 @@ def walk_scripts(paths, output=None):
                 continue
 
             scripts = [os.path.join(root, x)]
-            relname = scripts[0][n:]
-            for p in paths[1:]:
-                scripts.append(os.path.join(p, relname))
-            results.append([scripts, os.path.join(output, relname) if output
-                            else scripts[0]])
-    return results
+            names.append(scripts[0][n:])
+
+    return names
 
 
 def excepthook(type, exc, traceback):
@@ -189,7 +244,8 @@ def main():
         epilog=__doc__)
 
     parser.add_argument('-O', '--output',
-                        help='Where to save merged script')
+                        default='merged_dist',
+                        help='Default output path: %(default)s)')
     parser.add_argument('-d', '--debug',
                         default=False,
                         action='store_true',
@@ -204,8 +260,21 @@ def main():
     else:
         sys.excepthook = excepthook
 
-    for scripts, output in walk_scripts(args.path, args.output):
-        merge_scripts(scripts[0], scripts[1:], output)
+    output = args.output
+    if os.path.isfile(args.path[0]):
+        output = output if is_pyscript(output) \
+            else os.path.join(output, os.path.basename(args.path[0]))
+        merge_scripts(args.path, output)
+        return
+
+    if output and is_pyscript(output):
+        raise RuntimeError('--output must be a path when mergeing path')
+
+    for name in find_scripts(args.path):
+        merge_scripts([os.path.join(p, name) for p in args.path],
+                      os.path.join(output, name))
+
+    merge_runtimes(args.path, output)
 
 
 if __name__ == '__main__':
