@@ -100,10 +100,11 @@ $PYARMOR --help >result.log 2>&1 || csih_bug "Case 1.1 FAILED"
 
 csih_inform "1 Merge for non super mode"
 dist=merged_dist
-$PYARMOR1 obfuscate --no-cross-protection -O dist1 \
-          examples/simple/queens.py >result.log 2>&1
-$PYARMOR2 obfuscate --no-cross-protection -O dist2 \
-          examples/simple/queens.py >result.log 2>&1
+$PYARMOR licenses r001 >result.log 2>&1
+$PYARMOR1 obfuscate --with-license licenses/r001/license.lic \
+          -O dist1 examples/simple/queens.py >result.log 2>&1
+$PYARMOR2 obfuscate --with-license licenses/r001/license.lic \
+          -O dist2 examples/simple/queens.py >result.log 2>&1
 ${PYTHON} helper/merge.py -O $dist dist1 dist2 >result.log 2>&1
 
 csih_inform "run merged script by $PYTHON1"
