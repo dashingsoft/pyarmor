@@ -1660,19 +1660,16 @@ different obfuscated scripts to one.
 Here it's the basic usage::
 
     # First obfuscate the scripts by Python 2.7
-    python2.7 pyarmor.py obfuscate --no-cross-protection -O py27 foo.py
+    python2.7 pyarmor.py obfuscate -O py27 foo.py
 
     # Then obfuscate the scripts by Python 3.8
-    python3.8 pyarmor.py obfuscate --no-cross-protection -O py38 foo.py
+    python3.8 pyarmor.py obfuscate -O py38 foo.py
 
     # Finally run this script to merge all of them
     python merge.py py38/ py27/
 
     # Look the results
     ls merged_dist/
-
-Note that option ``--no-cross-protection`` must be used to obfuscate the scripts
-for non-super mode, otherwise protection error will be raised.
 
 It also works for super mode::
 
@@ -1687,6 +1684,11 @@ It also works for super mode::
 
     # Look the results
     ls merged_dist/
+
+.. note::
+
+   Try to use option ``--no-cross-protection`` to obfuscate the scripts if the
+   merged scripts raise protection error.
 
 .. note::
 
