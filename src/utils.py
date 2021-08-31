@@ -543,6 +543,9 @@ def _build_license_file(capsule, licfile, output=None):
             else:
                 logging.info('Generate default license file')
                 lickey = make_license_key(capsule, 'PyArmor-Project')
+                logging.info('Update capsule to add default license file')
+                with ZipFile(capsule, 'a') as f:
+                    f.writestr('default.lic', lickey)
         finally:
             myzip.close()
     elif licfile == 'no-restrict':
