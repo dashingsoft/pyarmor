@@ -19,12 +19,13 @@ uses 1024 bits RSA keys, called `public capsule`.
 For purchased version, each user will receive one exclusive `private capsule`,
 which use 2048 bits RSA key.
 
-The capsule can't help restoring the obfuscated scripts at all. If your `private
-capsuel` got by someone else, the risk is that he/she may generate new license
-for your obfuscated scripts.
-
 Generally this capsule is only in the build machine, it's not used by the
 obfuscated scripts, and should not be distributed to the end users.
+
+.. important::
+
+   The capsule may help others to hack the obfuscated scripts, please do not
+   share your `private capsuel` to anyone else.
 
 Obfuscated Scripts
 ------------------
