@@ -32,15 +32,17 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.7.5 (pre-release)
--------------------
+6.8.0
+-----
 * Fix issue (#557): Invalid platform name for VM mode
 * Change core version to **r45.19**
 * In Linux support to get the serial number of mmc/sd card
 * In Linux refine the code of getting default harddisk
 * Supprot to run obfuscated scripts by multiple Python versions, refer to
   :ref:`Run Obfuscated Scripts By Different Python Versions`
+* Fix Apple Silicon doesn't work issue
 
+..
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.7.5.zip
