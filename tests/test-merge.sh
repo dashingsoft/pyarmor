@@ -90,8 +90,16 @@ echo "-------------------- Merge Test -------------------------------"
 #
 # ======================================================================
 
-PYTHON1="python"
-PYTHON2="python3"
+if [[ -f "/home/jondy/workspace/pyarmor/tests/local-py1" ]] ; then
+    PYTHON1="/home/jondy/workspace/pyarmor/tests/local-py1"
+else
+    PYTHON1="python"
+fi
+if [[ -f "/home/jondy/workspace/pyarmor/tests/local-py2" ]] ; then
+    PYTHON2="/home/jondy/workspace/pyarmor/tests/local-py2"
+else
+    PYTHON2="python3"
+fi
 
 PYARMOR1="${PYTHON1} pyarmor.py"
 PYARMOR2="${PYTHON2} pyarmor.py"
