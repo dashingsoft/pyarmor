@@ -1441,7 +1441,9 @@ def _patch_extension(filename, keylist, suffix=''):
                 data[i:i+k] = bytes(suffix.encode())
 
         if filename.endswith('.so'):
-            _fix_up_gnu_hash(data, suffix)
+            if not _fix_up_gnu_hash(data, suffix):
+                raise RuntimeError('Failed to add symbol suffix for library %s'
+                                   % filename)
 
     return data
 
@@ -1651,9 +1653,8 @@ def _fix_up_gnu_hash(data, suffix):
     fmt = 'I' * n
     arr = struct.unpack(fmt, bytes(data[:n*4]))
 
-    # ix, kx, key, prefix = (0, 0, 0xb4239787, 'PyInit_')
-    # if sys.version_info[0] == 3 else (2, 0, 0xe746a6ab, 'init')
-    ix, kx, key, prefix = (0, 2, 0xb4270e0b, 'PyInit_') \
+    # ix, kx, key, prefix = (0, 2, 0xb4270e0b, 'PyInit_') \
+    ix, kx, key, prefix = (0, 0, 0xb4239787, 'PyInit_') \
         if sys.version_info[0] == 3 else (2, 0, 0xe746a6ab, 'init')
 
     symhash = 5381
@@ -1685,6 +1686,7 @@ def _fix_up_gnu_hash(data, suffix):
             write_integer(data, (k-7)*4, 0xffffffff)
             if arr[k-9] == 6:
                 write_integer(data, (k-8)*4, 0xffffffff)
+            return True
 
         i += 1
 
