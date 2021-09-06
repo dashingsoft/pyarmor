@@ -48,6 +48,7 @@ import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
     platform_url, platform_config, key_url, reg_url, \
     core_version, capsule_filename, platform_old_urls
+from sppmode import build as sppbuild, mixin as sppmixin
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.join('~', '.pyarmor'))
@@ -935,6 +936,12 @@ def _readlines(filename):
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, adv_mode=0, rest_mode=1, entry=0, protection=0,
                    platforms=None, plugins=None, rpath=None, suffix=''):
+    if adv_mode == 5:
+        spp_mode = True
+        adv_mode = 2
+    else:
+        spp_mode = False
+
     lines = _readlines(filename)
     if plugins:
         n = 0
@@ -992,7 +999,10 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             f.write(''.join(lines))
 
     modname = _frozen_modname(filename, destname)
-    co = compile(''.join(lines), modname, 'exec')
+    if spp_mode:
+        co, sppcode = sppbuild(''.join(lines), modname)
+    else:
+        co = compile(''.join(lines), modname, 'exec')
 
     if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2:
         co = _check_code_object_for_super_mode(co, lines, modname)
@@ -1015,7 +1025,8 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     s = pytransform.encrypt_code_object(pubkey, co, flags, suffix=suffix)
 
     with open(destname, 'w') as f:
-        f.write(s.decode())
+        f.write(sppmixin(s.decode(), sppcode)
+                if spp_mode else s.decode())
 
 
 def get_product_key(capsule):
