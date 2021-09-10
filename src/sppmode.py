@@ -2,7 +2,7 @@ import ast
 import os
 import struct
 
-from ctypes import cdll, c_char_p, c_int, c_void_p, py_object, PYFUNCTYPE
+from ctypes import cdll, py_object, PYFUNCTYPE
 
 
 def mixin(obfcode, sppcode):
@@ -10,8 +10,8 @@ def mixin(obfcode, sppcode):
     s = obfcode.find(r", b'") + 4
     t = obfcode.rfind("',")
 
-    oh = eval(obfcode[s:s+n*4] + "'")
-    vs = struct.unpack("I", oh[36:40]) | 16
+    oh = bytes([int('0x'+x, 16) for x in obfcode[s:s+n*4].split(r'\x')[1:]])
+    vs = struct.unpack("I", oh[36:40])[0] | 16
     bh = oh[:36] + struct.pack("I", vs) + oh[40:56] + oh[32:36] + oh[60:]
     ph = oh[:32] + struct.pack("I", len(sppcode) + n) + oh[36:]
 
@@ -23,7 +23,9 @@ def mixin(obfcode, sppcode):
 
 
 def build(source, dotname):
-    data = os.path.join('~', '.pyarmor', '_sppmode.so')
+    data = '/Users/jondy/workspace/pytransform/cmap/build/sppmode.so'
+    # os.path.join('~', '.pyarmor', '_sppmode.so')
     lib = cdll.LoadLibrary(data)
-    fb = PYFUNCTYPE(py_object, py_object, c_char_p)(('sppbuild', lib))
-    return fb(ast.parse(source, dotname), dotname)
+    fb = PYFUNCTYPE(py_object, py_object)(('sppbuild', lib))
+    co, cox, src = fb((ast.parse(source, dotname), 'a'))
+    return co, cox
