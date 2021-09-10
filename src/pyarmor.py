@@ -237,7 +237,7 @@ def _build(args):
     if rsettings:
         platforms, advanced, suffix = rsettings[:3]
 
-    supermode = advanced in (2, 4)
+    supermode = advanced in (2, 4, 5)
     vmenabled = advanced in (3, 4)
 
     _check_advanced_value(advanced)
@@ -338,7 +338,7 @@ def _build(args):
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
-        adv_mode = (advanced - 2) if advanced > 2 else advanced
+        adv_mode = (advanced - 2) if advanced in (3, 4) else advanced
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -560,7 +560,7 @@ def _obfuscate(args):
 
     _check_advanced_value(advanced)
 
-    supermode = advanced in (2, 4)
+    supermode = advanced in (2, 4, 5)
     vmenabled = advanced in (3, 4)
     restrict = args.restrict
 
@@ -696,7 +696,7 @@ def _obfuscate(args):
                 supermode=supermode)
 
     logging.info('Start obfuscating the scripts...')
-    adv_mode = (advanced - 2) if advanced > 2 else advanced
+    adv_mode = (advanced - 2) if advanced in (3, 4) else advanced
     for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -916,7 +916,7 @@ def _runtime(args):
     package = not args.no_package
     suffix = get_name_suffix() if args.enable_suffix else ''
     licfile = 'outer' if args.no_license else args.license_file
-    supermode = args.super_mode or (args.advanced in (2, 4))
+    supermode = args.super_mode or (args.advanced in (2, 4, 5))
     vmode = args.vm_mode or (args.advanced in (3, 4))
     platforms = compatible_platform_names(args.platforms)
     platforms = check_cross_platform(platforms, supermode, vmode=vmode)
@@ -1118,7 +1118,7 @@ def _parser():
     cparser.add_argument('--obf-mod', type=int, choices=(0, 1, 2), default=2)
     cparser.add_argument('--obf-code', type=int, choices=(0, 1, 2), default=1)
     cparser.add_argument('--wrap-mode', type=int, choices=(0, 1), default=1)
-    cparser.add_argument('--advanced', type=int, choices=(0, 1, 2, 3, 4),
+    cparser.add_argument('--advanced', type=int, choices=(0, 1, 2, 3, 4, 5),
                          default=0, help='Enable advanced mode or super mode')
     cparser.add_argument('--package-runtime', type=int, default=1,
                          choices=(0, 1), help='Package runtime files or not')
@@ -1270,7 +1270,7 @@ def _parser():
                          help='Insert extra code to entry script, '
                          'it could be used multiple times')
     cparser.add_argument('--advanced', '--advanced-mode', dest='advanced_mode',
-                         type=int, choices=(0, 1, 2, 3, 4),
+                         type=int, choices=(0, 1, 2, 3, 4, 5),
                          help='Enable advanced mode or super mode')
     cparser.add_argument('--package-runtime', choices=(0, 1), type=int,
                          help='Package runtime files or not')
@@ -1370,7 +1370,7 @@ def _parser():
                          default=1, type=int)
     cparser.add_argument('-w', '--wrap-mode', choices=(0, 1),
                          default=1, type=int)
-    cparser.add_argument('-a', '--advanced', choices=(0, 1, 2, 3, 4),
+    cparser.add_argument('-a', '--advanced', choices=(0, 1, 2, 3, 4, 5),
                          default=0, dest='adv_mode', type=int)
     cparser.add_argument('-d', '--debug', action='store_true',
                          help='Do not clean the test scripts'
@@ -1464,7 +1464,7 @@ def _parser():
                          help=argparse.SUPPRESS)
     cparser.add_argument('--vm-mode', action='store_true',
                          help=argparse.SUPPRESS)
-    cparser.add_argument('--advanced', type=int, choices=range(5),
+    cparser.add_argument('--advanced', type=int, choices=range(6),
                          help='Enable advanced mode or super mode')
     cparser.add_argument('pkgname', nargs='?', default='pytransform',
                          help=argparse.SUPPRESS)
