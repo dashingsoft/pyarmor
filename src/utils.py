@@ -935,13 +935,8 @@ def _readlines(filename):
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, adv_mode=0, rest_mode=1, entry=0, protection=0,
-                   platforms=None, plugins=None, rpath=None, suffix=''):
-    if adv_mode == 5:
-        spp_mode = True
-        adv_mode = 2
-    else:
-        spp_mode = False
-
+                   platforms=None, plugins=None, rpath=None, suffix='',
+                   sppmode=False):
     lines = _readlines(filename)
     if plugins:
         n = 0
@@ -999,8 +994,8 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             f.write(''.join(lines))
 
     modname = _frozen_modname(filename, destname)
-    if spp_mode:
-        co, sppcode = sppbuild(''.join(lines), modname)
+    if sppmode:
+        co, sppcode = sppbuild(''.join(lines), modname, destname)
     else:
         co = compile(''.join(lines), modname, 'exec')
 
@@ -1026,7 +1021,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
 
     with open(destname, 'w') as f:
         f.write(sppmixin(s.decode(), sppcode)
-                if spp_mode else s.decode())
+                if sppmode else s.decode())
 
 
 def get_product_key(capsule):

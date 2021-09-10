@@ -84,7 +84,7 @@ def _check_advanced_value(advanced):
             logging.warning('"--advanced %d" is deprecated for Python %s, '
                             'use "--advanced %d" instead'
                             % (advanced, pyver, advanced + 1))
-    elif advanced in (2, 4):
+    elif advanced in (2, 4, 5):
         raise RuntimeError('Python %s does not support super mode' % pyver)
 
 
@@ -237,10 +237,11 @@ def _build(args):
     if rsettings:
         platforms, advanced, suffix = rsettings[:3]
 
-    supermode = advanced in (2, 4, 5)
-    vmenabled = advanced in (3, 4)
-
     _check_advanced_value(advanced)
+    sppmode, advanced = (1, 2) if advanced == 5 else (False, advanced)
+
+    supermode = advanced in (2, 4)
+    vmenabled = advanced in (3, 4)
 
     platforms = compatible_platform_names(platforms)
     logging.info('Taget platforms: %s', platforms)
@@ -335,6 +336,7 @@ def _build(args):
         logging.info('Restrict mode is %s', restrict)
         logging.info('Advanced value is %s', advanced)
         logging.info('Super mode is %s', v(supermode))
+        logging.info('Super plus mode is %s', v(sppmode))
 
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
@@ -367,7 +369,7 @@ def _build(args):
                            rest_mode=restrict, entry=is_entry,
                            protection=pcode, platforms=platforms,
                            plugins=plugins, rpath=project.runtime_path,
-                           suffix=suffix)
+                           suffix=suffix, sppmode=sppmode)
 
             if supermode:
                 make_super_bootstrap(a, b, soutput, relative, suffix=suffix)
@@ -559,8 +561,9 @@ def _obfuscate(args):
         suffix = get_name_suffix() if args.enable_suffix else ''
 
     _check_advanced_value(advanced)
+    sppmode, advanced = (1, 2) if advanced == 5 else (False, advanced)
 
-    supermode = advanced in (2, 4, 5)
+    supermode = advanced in (2, 4)
     vmenabled = advanced in (3, 4)
     restrict = args.restrict
 
@@ -665,6 +668,7 @@ def _obfuscate(args):
     logging.info('Restrict mode is %d', restrict)
     logging.info('Advanced value is %d', advanced)
     logging.info('Super mode is %s', supermode)
+    logging.info('Super plus mode is%s enabled', ' ' if sppmode else ' not')
 
     licfile = args.license_file
     if (not restrict) and (not licfile):
@@ -715,7 +719,7 @@ def _obfuscate(args):
                        obf_code=args.obf_code, obf_mod=args.obf_mod,
                        adv_mode=adv_mode, rest_mode=restrict, entry=is_entry,
                        protection=protection, platforms=platforms,
-                       plugins=plugins, suffix=suffix)
+                       plugins=plugins, suffix=suffix, sppmode=sppmode)
 
         if supermode:
             make_super_bootstrap(a, b, output, relative, suffix=suffix)
