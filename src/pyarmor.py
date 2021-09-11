@@ -668,7 +668,7 @@ def _obfuscate(args):
     logging.info('Restrict mode is %d', restrict)
     logging.info('Advanced value is %d', advanced)
     logging.info('Super mode is %s', supermode)
-    logging.info('Super plus mode is%s enabled', ' ' if sppmode else ' not')
+    logging.info('Super plus mode is%s enabled', '' if sppmode else ' not')
 
     licfile = args.license_file
     if (not restrict) and (not licfile):
