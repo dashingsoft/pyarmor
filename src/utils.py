@@ -996,6 +996,13 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     modname = _frozen_modname(filename, destname)
     if sppmode:
         co, sppcode = sppbuild(''.join(lines), modname, destname)
+        if co is None:
+            logging.info('Ignore this module by sppmode because of '
+                         'pyarmor inline module option')
+            co = compile(''.join(lines), modname, 'exec')
+        elif sppcode is None:
+            logging.info('Ignore this module by sppmode because of '
+                         'no any function could be converted to c')
     else:
         co = compile(''.join(lines), modname, 'exec')
 
@@ -1021,7 +1028,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
 
     with open(destname, 'w') as f:
         f.write(sppmixin(s.decode(), sppcode)
-                if sppmode else s.decode())
+                if sppmode and sppcode else s.decode())
 
 
 def get_product_key(capsule):

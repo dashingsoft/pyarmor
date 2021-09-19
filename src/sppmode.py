@@ -23,7 +23,20 @@ def mixin(obfcode, sppcode):
                     to_str(ph), to_str(sppcode), obfcode[t:]])
 
 
+def _check_ignore_option(source):
+    for line in source[:1024].splitlines():
+        if not line.strip():
+            continue
+        if not line.startswith('#'):
+            break
+        i = line.lower().find('pyarmor option')
+        return (i > 0) and (line.find('no-spp-mode') > 0)
+
+
 def build(source, modname, destname=None):
+    if _check_ignore_option(source):
+        return None, None
+
     data = '/Users/jondy/workspace/pytransform/cmap/build/sppmode.so'
     # os.path.join('~', '.pyarmor', '_sppmode.so')
     lib = cdll.LoadLibrary(data)
