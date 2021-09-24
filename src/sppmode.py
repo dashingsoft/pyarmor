@@ -1,8 +1,13 @@
 import ast
+import logging
 import os
+import platform
 import struct
+import sys
 
-from ctypes import cdll, py_object, PYFUNCTYPE
+from ctypes import cdll, py_object, pythonapi, PYFUNCTYPE
+
+_spplib = None
 
 
 def mixin(obfcode, sppcode):
@@ -65,10 +70,45 @@ def build(source, modname, destname=None):
     if 'spp-export' in options:
         ExportDecorator().visit(mtree)
 
-    data = '/Users/jondy/workspace/pytransform/cmap/build/sppmode.so'
-    # os.path.join('~', '.pyarmor', '_sppmode.so')
-    lib = cdll.LoadLibrary(data)
-    fb = PYFUNCTYPE(py_object, py_object)(('sppbuild', lib))
+    fb = _load_sppbuild()
     co, cox, src = fb((mtree, modname))
-    print(src)
+
+    if sys._debug_pyarmor and destname:
+        _write_debug_file(co, cox, src, destname)
+
     return co, cox
+
+
+def _load_sppbuild():
+    global _spplib
+    if _spplib is None:
+        from utils import PYARMOR_PATH as libpath
+        plat = platform.system().lower()
+        mach = platform.machine().lower()
+        if mach != 'x86_64':
+            raise RuntimeError('sppmode now only works in x86_64 platform')
+        ext = '.dll' if plat.startswith('win') else '.so'
+        name = os.path.join(libpath, 'platforms', plat, mach, 'sppmode' + ext)
+        _spplib = cdll.LoadLibrary(name)
+        if _spplib.sppinit(pythonapi._handle) != 0:
+            raise RuntimeError('Init sppmode failed')
+    return PYFUNCTYPE(py_object, py_object)(('sppbuild', _spplib))
+
+
+def _write_debug_file(co, cox, src, destname):
+    if co:
+        from marshal import dumps
+        filename = destname + '.co'
+        logging.info('Write file %s', filename)
+        with open(destname + '.co', 'wb') as f:
+            f.write(dumps(co))
+    if cox:
+        filename = destname + '.cox'
+        logging.info('Write file %s', filename)
+        with open(destname + '.cox', 'wb') as f:
+            f.write(cox)
+    if src:
+        filename = destname + '.c'
+        logging.info('Write file %s', filename)
+        with open(destname + '.c', 'w') as f:
+            f.write(src)
