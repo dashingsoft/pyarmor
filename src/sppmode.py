@@ -99,14 +99,14 @@ def _load_sppbuild():
 
 
 def _check_ccompiler():
-    from subprocess import check_output, CalledProcessError
+    from subprocess import check_output
     if sys.platform.startswith('linux'):
         cc = os.environ.get('CC', 'gcc')
     elif sys.platform.startswith('darwin'):
         cc = os.environ.get('CC', 'clang')
     elif sys.platform.startswith('win'):
         from utils import PYARMOR_HOME as path
-        for cc in [os.environ.get('CC', ''),
+        for cc in [os.environ.get('CC', os.environ.get('CLANG', '')),
                    os.path.join(path, 'clang.exe'),
                    r'C:\Program Files\LLVM\bin\clang.exe']:
             if cc.endswith('clang.exe') and os.path.exists(cc):
