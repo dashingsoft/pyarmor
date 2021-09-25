@@ -70,6 +70,9 @@ def build(source, modname, destname=None):
     if 'spp-export' in options:
         ExportDecorator().visit(mtree)
 
+    if not os.environ.get('PYARMOR_CC'):
+        _check_ccompiler()
+
     fb = _load_sppbuild()
     co, cox, src = fb((mtree, modname))
 
@@ -93,6 +96,29 @@ def _load_sppbuild():
         if _spplib.sppinit(pythonapi._handle) != 0:
             raise RuntimeError('Init sppmode failed')
     return PYFUNCTYPE(py_object, py_object)(('sppbuild', _spplib))
+
+
+def _check_ccompiler():
+    if sys.platform.startswith('linux'):
+        os.environ['PYARMOR_CC'] = os.environ.get('CC', 'gcc')
+    elif sys.platform.startswith('darwin'):
+        os.environ['PYARMOR_CC'] = os.environ.get('CC', 'clang')
+    elif sys.platform.startswith('win'):
+        from utils import PYARMOR_HOME as path
+        from subprocess import check_output, CalledProcessError
+        for clang in [os.environ.get('CC', ''),
+                      os.path.join(path, 'clang.exe'),
+                      r'C:\Program Files\LLVM\bin\clang.exe']:
+            if clang.endswith('clang.exe') and os.path.exists(clang):
+                break
+        else:
+            clang = 'clang.exe'
+        try:
+            check_output([clang, '--version'])
+        except CalledProcessError:
+            raise RuntimeError('No available "clang.exe" found')
+        os.environ['PYARMOR_CC'] = clang
+    logging.info('Set PYARMOR_CC to "%s"', os.environ['PYARMOR_CC'])
 
 
 def _write_debug_file(co, cox, src, destname):
