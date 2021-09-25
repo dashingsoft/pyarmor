@@ -54,7 +54,7 @@ Python 3.7, 3.8, 3.9
 It requires ``c`` compiler. In Linux and Darwin, ``gcc`` and ``clang`` is OK. In
 Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 
-* If there is any other ``clang.exe``, it's OK if it could be run in any path.
+* If there is any ``clang.exe``, it's OK if it could be run in any path.
 * Download and install Windows version of `LLVM <https://releases.llvm.org>`_
 * Download `https://pyarmor.dashingsoft.com/downloads/tools/clang-9.0.zip`, save
   it into `$HOME/.pyarmor`
@@ -63,19 +63,19 @@ After ``c`` compiler works, enable super plus mode by ``--advanced 5``::
 
   pyarmor obfuscate --advanced 5 foo.py
 
-If the functions obfuscated by this mode are called by any plain script, the
-following exception is raised::
+If any plain script call the function obfuscated by this mode, the following
+exception raised::
 
     RuntimeError: Call spp code out of pyarmor
 
 When the functions in the module need to be exported, insert one line at the
-beginning of the module::
+beginning of the module to silence it::
 
   # pyarmor options: spp-export
 
 Super plus mode will scan from the first line, ignore blank lines, parse the
 line starts with ``#``, and stop scanning for any other line. If it finds one
-line starts with ``pyarmor options`` and there is an option ``spp-export``, it
+line begins with ``pyarmor options`` and there is an option ``spp-export``, it
 will add some extra codes to make those functions could be called by plain
 scripts.
 
