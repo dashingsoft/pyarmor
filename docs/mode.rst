@@ -42,6 +42,63 @@ More usage refer to :ref:`using super mode`
 
    It doesn't work to mix super mode obfuscated scripts and non-super mode ones.
 
+.. _super plus mode:
+
+Super Plus Mode
+---------------
+
+This is an enhancement of super mode, it will convert some functions to binary
+code. It's introduced in PyArmor 6.9.0, and now only works for arch X86_64 and
+Python 3.7, 3.8, 3.9
+
+It requires ``c`` compiler. In Linux and Darwin, ``gcc`` and ``clang`` is OK. In
+Windows, only ``clang.exe`` works. It could be configured by one of these ways:
+
+* If there is any other ``clang.exe``, it's OK if it could be run in any path.
+* Download and install Windows version of `LLVM <https://releases.llvm.org>`_
+* Download `https://pyarmor.dashingsoft.com/downloads/tools/clang-9.0.zip`, save
+  it into `$HOME/.pyarmor`
+
+After ``c`` compiler works, enable super plus mode by ``--advanced 5``::
+
+  pyarmor obfuscate --advanced 5 foo.py
+
+If the functions obfuscated by this mode are called by any plain script, the
+following exception is raised::
+
+    RuntimeError: Call spp code out of pyarmor
+
+When the functions in the module need to be exported, insert one line at the
+beginning of the module::
+
+  # pyarmor options: spp-export
+
+Super plus mode will scan from the first line, ignore blank lines, parse the
+line starts with ``#``, and stop scanning for any other line. If it finds one
+line starts with ``pyarmor options`` and there is an option ``spp-export``, it
+will add some extra codes to make those functions could be called by plain
+scripts.
+
+And there is another option ``no-spp-mode`` is used to ignore a module in case
+something is wrong with this module in super plus mode::
+
+  # pyarmor options: no-spp-mode
+
+It also could be used to ignore one function in the docstring, for example:
+
+.. code-block:: python
+
+    def foo(a, b):
+        '''pyarmor options: no-spp-mode'''
+        pass
+
+All of these ignored modules or functions are still obfuscated by super mode.
+
+.. note::
+
+   Only partial functions in the module will be obfuscated by spp mode, all the
+   others are still obfuscated by super mode.
+
 .. _advanced mode:
 
 Advanced Mode
