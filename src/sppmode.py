@@ -99,25 +99,25 @@ def _load_sppbuild():
 
 
 def _check_ccompiler():
+    from subprocess import check_output, CalledProcessError
     if sys.platform.startswith('linux'):
-        os.environ['PYARMOR_CC'] = os.environ.get('CC', 'gcc')
+        cc = os.environ.get('CC', 'gcc')
     elif sys.platform.startswith('darwin'):
-        os.environ['PYARMOR_CC'] = os.environ.get('CC', 'clang')
+        cc = os.environ.get('CC', 'clang')
     elif sys.platform.startswith('win'):
         from utils import PYARMOR_HOME as path
-        from subprocess import check_output, CalledProcessError
-        for clang in [os.environ.get('CC', ''),
-                      os.path.join(path, 'clang.exe'),
-                      r'C:\Program Files\LLVM\bin\clang.exe']:
-            if clang.endswith('clang.exe') and os.path.exists(clang):
+        for cc in [os.environ.get('CC', ''),
+                   os.path.join(path, 'clang.exe'),
+                   r'C:\Program Files\LLVM\bin\clang.exe']:
+            if cc.endswith('clang.exe') and os.path.exists(cc):
                 break
         else:
-            clang = 'clang.exe'
-        try:
-            check_output([clang, '--version'])
-        except CalledProcessError:
-            raise RuntimeError('No available "clang.exe" found')
-        os.environ['PYARMOR_CC'] = clang
+            cc = 'clang.exe'
+    try:
+        check_output([cc, '--version'])
+    except Exception:
+        raise RuntimeError('No available c compiler found')
+    os.environ['PYARMOR_CC'] = cc
     logging.info('Set PYARMOR_CC to "%s"', os.environ['PYARMOR_CC'])
 
 
