@@ -1,5 +1,4 @@
 def protect_pytransform():
-    '''pyarmor options: no-spp-mode'''
 
     def assert_builtin(func):
         type = ''.__class__.__class__
