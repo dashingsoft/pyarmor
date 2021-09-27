@@ -44,33 +44,13 @@ def _check_inline_option(source):
     return set([x.strip() for x in options])
 
 
-class ExportDecorator(ast.NodeTransformer):
-
-    SPP_EXPORT_DECORATOR = '''
-def spp_export_api(f):
-
-    def wrap(*args, **kwargs):
-        return f(*args, **kwargs)
-
-    return wrap
-'''
-
-    def visit(self, node):
-        a = ast.parse(self.SPP_EXPORT_DECORATOR).body[0]
-        node.body.insert(0, a)
-        a.lineno = a.end_lineno = 1
-        a.col_offset = a.end_col_offset = 1
-        ast.fix_missing_locations(a)
-
-
 def build(source, modname, destname=None):
     options = _check_inline_option(source)
     if 'no-spp-mode' in options:
         return
 
     mtree = ast.parse(source, modname)
-    if 'spp-export' in options:
-        ExportDecorator().visit(mtree)
+    mtree.pyarmor_options = options
 
     if not os.environ.get('PYARMOR_CC'):
         _check_ccompiler()
