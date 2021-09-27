@@ -56,9 +56,7 @@ def build(source, modname, destname=None):
         _check_ccompiler()
 
     fb = _load_sppbuild()
-    co = fb((mtree, modname))
-
-    return co
+    return fb((mtree, modname))
 
 
 def _load_sppbuild():
@@ -98,22 +96,3 @@ def _check_ccompiler():
         raise RuntimeError('No available c compiler found')
     os.environ['PYARMOR_CC'] = cc
     logging.info('Set PYARMOR_CC to "%s"', os.environ['PYARMOR_CC'])
-
-
-def _write_debug_file(co, cox, src, destname):
-    if co:
-        from marshal import dumps
-        filename = destname + '.co'
-        logging.info('Write file %s', filename)
-        with open(destname + '.co', 'wb') as f:
-            f.write(dumps(co))
-    if cox:
-        filename = destname + '.cox'
-        logging.info('Write file %s', filename)
-        with open(destname + '.cox', 'wb') as f:
-            f.write(cox)
-    if src:
-        filename = destname + '.c'
-        logging.info('Write file %s', filename)
-        with open(destname + '.c', 'w') as f:
-            f.write(src)
