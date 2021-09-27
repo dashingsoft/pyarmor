@@ -63,41 +63,24 @@ After ``c`` compiler works, enable super plus mode by ``--advanced 5``::
 
   pyarmor obfuscate --advanced 5 foo.py
 
-If any plain script call the function obfuscated by this mode, the following
-exception raised::
-
-    RuntimeError: Call spp code out of pyarmor
-
-When the functions in the module need to be exported, insert one line at the
-beginning of the module to silence it::
-
-  # pyarmor options: spp-export
-
-Super plus mode will scan from the first line, ignore blank lines, parse the
-line starts with ``#``, and stop scanning for any other line. If it finds one
-line begins with ``pyarmor options`` and there is an option ``spp-export``, it
-will add some extra codes to make those functions could be called by plain
-scripts.
-
-And there is another option ``no-spp-mode`` is used to ignore a module in case
-something is wrong with this module in super plus mode::
+Only partial functions in the module will be obfuscated by spp mode, all the
+others are still obfuscated by super mode. The functions using any feature not
+supported by spp mode will be ignored automatically, if something is wrong with
+this module in super plus mode, insert one line at the beginning of the module
+to ignore the module manually::
 
   # pyarmor options: no-spp-mode
 
-It also could be used to ignore one function in the docstring, for example:
+Super plus mode will scan from the first line, ignore blank lines, parse the
+line starts with ``#``, and stop scanning for any other line. If it finds one
+line begins with ``pyarmor options``, it will read the options after that. It
+also works in the docstring for ``function`` and ``class``, for example:
 
 .. code-block:: python
 
     def foo(a, b):
         '''pyarmor options: no-spp-mode'''
         pass
-
-All of these ignored modules or functions are still obfuscated by super mode.
-
-.. note::
-
-   Only partial functions in the module will be obfuscated by spp mode, all the
-   others are still obfuscated by super mode.
 
 .. _advanced mode:
 

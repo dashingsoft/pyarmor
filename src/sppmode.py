@@ -41,7 +41,7 @@ def _check_inline_option(source):
         i = line.lower().find(marker)
         if i > 0:
             options.extend(line[i+len(marker)].strip().split(','))
-    return set([x.strip() for x in options])
+    return [x.strip() for x in options]
 
 
 def build(source, modname, destname=None):
