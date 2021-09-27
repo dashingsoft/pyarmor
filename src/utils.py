@@ -998,14 +998,12 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         if sum(sys.version_info[:2]) < 10:
             raise RuntimeError('This Python version is not supported by spp '
                                'mode, only Python 3.7, 3.8 and 3.9 works')
-        co, sppcode = sppbuild(''.join(lines), modname, destname)
+        co = sppbuild(''.join(lines), modname, destname)
         if co is None:
             logging.info('Ignore this module by sppmode because of '
                          'pyarmor inline module option')
+            sppmode = False
             co = compile(''.join(lines), modname, 'exec')
-        elif sppcode is None:
-            logging.info('Ignore this module by sppmode because of '
-                         'no any function could be converted to c')
     else:
         co = compile(''.join(lines), modname, 'exec')
 
@@ -1030,8 +1028,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     s = pytransform.encrypt_code_object(pubkey, co, flags, suffix=suffix)
 
     with open(destname, 'w') as f:
-        f.write(sppmixin(s.decode(), sppcode)
-                if sppmode and sppcode else s.decode())
+        f.write(sppmixin(s.decode()) if sppmode else s.decode())
 
 
 def get_product_key(capsule):

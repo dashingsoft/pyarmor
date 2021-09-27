@@ -10,10 +10,12 @@ from ctypes import cdll, py_object, pythonapi, PYFUNCTYPE
 _spplib = None
 
 
-def mixin(obfcode, sppcode):
+def mixin(obfcode, sppcode=None):
     n = 64
     s = obfcode.find(r", b'") + 4
     t = obfcode.rfind("',")
+    if sppcode is None:
+        sppcode = b'\x00' * 16
 
     oh = bytes([int('0x'+x, 16) for x in obfcode[s+2:s+n*4].split(r'\x')])
     vs = struct.unpack("I", oh[36:40])[0] | 16
@@ -64,7 +66,7 @@ def spp_export_api(f):
 def build(source, modname, destname=None):
     options = _check_inline_option(source)
     if 'no-spp-mode' in options:
-        return None, None
+        return
 
     mtree = ast.parse(source, modname)
     if 'spp-export' in options:
@@ -74,12 +76,9 @@ def build(source, modname, destname=None):
         _check_ccompiler()
 
     fb = _load_sppbuild()
-    co, cox, src = fb((mtree, modname))
+    co = fb((mtree, modname))
 
-    if sys._debug_pyarmor and destname:
-        _write_debug_file(co, cox, src, destname)
-
-    return co, cox
+    return co
 
 
 def _load_sppbuild():
