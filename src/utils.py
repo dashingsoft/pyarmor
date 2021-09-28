@@ -999,9 +999,10 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             raise RuntimeError('This Python version is not supported by spp '
                                'mode, only Python 3.7, 3.8 and 3.9 works')
         co = sppbuild(''.join(lines), modname, destname)
-        if co is None:
-            logging.info('Ignore this module by sppmode because of '
-                         'pyarmor inline module option')
+        if not co:
+            logging.info('Ignore this module because of %s',
+                         'sppmode inline option' if co is False else
+                         'no any function available for sppmode')
             sppmode = False
             co = compile(''.join(lines), modname, 'exec')
     else:

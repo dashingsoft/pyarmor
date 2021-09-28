@@ -47,10 +47,10 @@ def _check_inline_option(source):
 def build(source, modname, destname=None):
     options = _check_inline_option(source)
     if 'no-spp-mode' in options:
-        return
+        return False
 
     mtree = ast.parse(source, modname)
-    options.append('no-spp-closure')
+    # options.append('no-spp-closure')
     mtree.pyarmor_options = options
 
     if not os.environ.get('PYARMOR_CC'):
