@@ -50,6 +50,7 @@ def build(source, modname, destname=None):
         return
 
     mtree = ast.parse(source, modname)
+    options.append('no-spp-closure')
     mtree.pyarmor_options = options
 
     if not os.environ.get('PYARMOR_CC'):
