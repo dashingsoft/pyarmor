@@ -1454,7 +1454,7 @@ def _patch_extension(filename, keylist, suffix=''):
                 logging.debug('Found marker at %x', i)
                 data[i:i+k] = bytes(suffix.encode())
 
-        if filename.endswith('.so'):
+        if data[0] == 0x7f and data[1:4] == b'ELF':
             if not _fix_up_gnu_hash(data, suffix):
                 raise RuntimeError('Failed to add symbol suffix for library %s'
                                    % filename)
