@@ -56,8 +56,9 @@ Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 
 * If there is any ``clang.exe``, it's OK if it could be run in any path.
 * Download and install Windows version of `LLVM <https://releases.llvm.org>`_
-* Download `https://pyarmor.dashingsoft.com/downloads/tools/clang-9.0.zip`, save
-  it into `$HOME/.pyarmor`
+* Download `https://pyarmor.dashingsoft.com/downloads/tools/clang-9.0.zip`, it's
+  about 26M bytes, there is only one file in it. Unzip it and save ``clang.exe``
+  to ``$HOME/.pyarmor``
 
 After ``c`` compiler works, enable super plus mode by ``--advanced 5``::
 
@@ -74,7 +75,7 @@ to ignore the module manually::
 Super plus mode will scan from the first line, ignore blank lines, parse the
 line starts with ``#``, and stop scanning for any other line. If it finds one
 line begins with ``pyarmor options``, it will read the options after that. It
-also works in the docstring for ``function`` and ``class``, for example:
+also works in the docstring to ignore ``function`` or ``class``, for example:
 
 .. code-block:: python
 
