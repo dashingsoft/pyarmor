@@ -32,10 +32,7 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-6.8.1 (pre-release)
--------------------
-* Fix issue (#571): In Linux super mode with `--enable-suffix` doesn't work
-
+..
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.8.1.zip
@@ -43,6 +40,11 @@ Incompatible issues
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
+
+6.8.1
+-----
+* Fix issue (#571): In Linux/Darwin super mode with `--enable-suffix` doesn't work
+* Fix issue (#584): In Cygwin pyarmor doesn't work
 
 6.8.0
 -----
