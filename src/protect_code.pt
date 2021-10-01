@@ -35,6 +35,7 @@ def protect_pytransform():
         platname = pytransform.sys.platform
         libname = '_pytransform{suffix}.dylib' if platname.startswith('darwin') else \
                   '_pytransform{suffix}.dll' if platname.startswith('win') else \
+                  '_pytransform{suffix}.dll' if platname.startswith('cygwin') else \
                   '_pytransform{suffix}.so'
         if getattr(pytransform.sys, 'frozen', False):
             filename = pytransform.os.path.join(pytransform.sys._MEIPASS, libname)

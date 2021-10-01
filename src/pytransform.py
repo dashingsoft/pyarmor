@@ -18,7 +18,7 @@ from fnmatch import fnmatch
 plat_path = 'platforms'
 
 plat_table = (
-    ('windows', ('windows', 'cygwin-*')),
+    ('windows', ('windows', 'cygwin*')),
     ('darwin', ('darwin',)),
     ('ios', ('ios',)),
     ('linux', ('linux*',)),
