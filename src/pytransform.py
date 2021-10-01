@@ -338,6 +338,9 @@ def _load_library(path=None, is_runtime=0, platid=None, suffix='', advanced=0):
 
     if not os.path.abspath('.') == os.path.abspath(path):
         m.set_option(1, path.encode() if sys.version_info[0] == 3 else path)
+    elif (not is_runtime) and sys.platform.startswith('cygwin'):
+        path = os.environ['PYARMOR_CYGHOME']
+        m.set_option(1, path.encode() if sys.version_info[0] == 3 else path)
 
     # Required from Python3.6
     m.set_option(2, sys.byteorder.encode())

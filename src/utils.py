@@ -35,7 +35,7 @@ from base64 import b64encode
 from codecs import BOM_UTF8
 from glob import glob
 from json import dumps as json_dumps, loads as json_loads
-from subprocess import Popen
+from subprocess import Popen, check_output
 from time import gmtime, strftime
 from zipfile import ZipFile
 
@@ -112,6 +112,15 @@ def pytransform_bootstrap(capsule=None, force=False):
                 else:
                     logging.info('Create trial license file: %s', licfile)
                     shutil.copy(os.path.join(path, 'license.tri'), licfile)
+                    if sys.platform.startswith('cygwin'):
+                        pyshieldlic = os.path.join(path, 'pyshield.lic')
+                        shutil.copy(pyshieldlic, HOME_PATH)
+
+    if sys.platform.startswith('cygwin'):
+        os.environ['PYARMOR_CYGHOME'] = '\\'.join([
+            check_output(['cygpath', '-w', '/']).strip(),
+            HOME_PATH.replace('/', '\\').strip('\\')
+        ])
 
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
@@ -995,6 +1004,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
 
     modname = _frozen_modname(filename, destname)
     if sppmode:
+        raise NotImplementedError
         if sum(sys.version_info[:2]) < 10:
             raise RuntimeError('This Python version is not supported by spp '
                                'mode, only Python 3.7, 3.8 and 3.9 works')
