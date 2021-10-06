@@ -602,7 +602,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
             return
 
         logging.info('Patch library %s', target)
-        data = _patch_extension(target, keylist, suffix)
+        data = _patch_extension(target, keylist, suffix, supermode=False)
         with open(target, 'wb') as f:
             f.write(data)
         checklist.append(sum(bytearray(data)))
@@ -1387,7 +1387,7 @@ def make_super_bootstrap(source, filename, output, relative=None, suffix=''):
         f.write(''.join(lines))
 
 
-def _patch_extension(filename, keylist, suffix=''):
+def _patch_extension(filename, keylist, suffix='', supermode=True):
     logging.debug('Patching %s', relpath(filename))
     patkey = b'\x60\x70\x00\x0f'
     patlen = len(patkey)
@@ -1463,8 +1463,7 @@ def _patch_extension(filename, keylist, suffix=''):
                 logging.debug('Found marker at %x', i)
                 data[i:i+k] = bytes(suffix.encode())
 
-        if os.path.basename(filename).startswith('pytransform') \
-           and data[0] == 0x7f and data[1:4] == b'ELF':
+        if supermode and data[0] == 0x7f and data[1:4] == b'ELF':
             if not _fix_up_gnu_hash(data, suffix):
                 raise RuntimeError('Failed to add symbol suffix for library %s'
                                    % filename)
