@@ -32,10 +32,14 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-..
+6.8.2 (dev)
+-----------
+* Fix issue (#586): In linux combining options both `--enable-suffix` and
+  `--advanced 1` doesn't work
+
   The dev version could be installed by this command::
 
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.8.1.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-6.8.2.zip
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
