@@ -117,10 +117,9 @@ def pytransform_bootstrap(capsule=None, force=False):
                         shutil.copy(pyshieldlic, HOME_PATH)
 
     if sys.platform.startswith('cygwin'):
-        os.environ['PYARMOR_CYGHOME'] = '\\'.join([
-            check_output(['cygpath', '-w', '/']).strip(),
-            HOME_PATH.replace('/', '\\').strip('\\')
-        ])
+        os.environ['PYARMOR_CYGHOME'] = check_output(
+            ['cygpath', '-w', HOME_PATH.strip('/')]
+        )
 
     libname = dll_name + dll_ext
     platid = pytransform.format_platform()
