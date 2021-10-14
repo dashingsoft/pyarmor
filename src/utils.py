@@ -698,16 +698,6 @@ def copy_runtime(path, output, licfile=None, dryrun=False):
         shutil.copy2(licfile, os.path.join(dst, 'license.lic'))
 
 
-def make_project_license(capsule, code, output):
-    myzip = ZipFile(capsule, 'r')
-    myzip.extract('private.key', tempfile.gettempdir())
-    prikey = os.path.join(tempfile.tempdir, 'private.key')
-    try:
-        pytransform.generate_license_file(output, prikey, code)
-    finally:
-        os.remove(prikey)
-
-
 def make_license_key(capsule, code, output=None, key=None):
     prikey = ZipFile(capsule, 'r').read('private.key') \
         if key is None else key
