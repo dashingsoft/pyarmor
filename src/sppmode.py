@@ -5,7 +5,7 @@ import platform
 import struct
 import sys
 
-from ctypes import cdll, py_object, pythonapi, PYFUNCTYPE
+from ctypes import cdll, py_object, pythonapi, PYFUNCTYPE, c_int, c_void_p
 
 _spplib = None
 
@@ -70,7 +70,8 @@ def _load_sppbuild():
         ext = '.dll' if plat.startswith('win') else '.so'
         name = os.path.join(libpath, 'platforms', plat, mach, 'sppmode' + ext)
         _spplib = cdll.LoadLibrary(name)
-        if _spplib.sppinit(pythonapi._handle) != 0:
+        sppinit = PYFUNCTYPE(c_int, c_void_p)(('sppinit', _spplib))
+        if sppinit(pythonapi._handle) != 0:
             raise RuntimeError('Init sppmode failed')
     return PYFUNCTYPE(py_object, py_object)(('sppbuild', _spplib))
 
