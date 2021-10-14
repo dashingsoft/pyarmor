@@ -551,7 +551,7 @@ def _build_license_file(capsule, licfile, output=None):
                 lickey = myzip.read('default.lic2')
             else:
                 logging.info('Generate default license file')
-                lickey = make_license_key(capsule, 'PyArmor-Project')
+                lickey = make_license_key(capsule, '*CODE:PyArmor-Project')
                 logging.info('Update capsule to add default license file')
                 with ZipFile(capsule, 'a') as f:
                     f.writestr('default.lic2', lickey)
