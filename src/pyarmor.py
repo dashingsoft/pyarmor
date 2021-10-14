@@ -527,7 +527,7 @@ def _licenses(args):
             txtinfo = '"Expired:%s%s"' % (args.expired,
                                           txtinfo[txtinfo.find(r'\n')+2:])
         logging.info('Generate license: %s', txtinfo)
-        make_license_key(capsule, licode, licfile)
+        make_license_key(capsule, licode, licfile, legency=args.legency)
         logging.info('Write license file: %s', licfile)
 
         if licfile not in ('stderr', 'stdout'):
@@ -1183,6 +1183,8 @@ def _parser():
                          help='Check license periodly (per hour)')
     cparser.add_argument('--restrict', type=int, choices=(0, 1),
                          default=1, help=argparse.SUPPRESS)
+    cparser.add_argument('--legency', type=int, choices=(0, 1),
+                         default=0, help=argparse.SUPPRESS)
 
     cparser.set_defaults(func=_licenses)
 
