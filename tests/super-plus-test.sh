@@ -26,6 +26,7 @@ WORKPATH=__runtest3__
 csih_inform "Create super mode test workpath: ${WORKPATH}"
 rm -rf ${WORKPATH}
 mkdir -p ${WORKPATH}
+cp ${SCRIPT} ${WORKPATH}
 csih_inform "Change to $WORKPATH"
 cd ${WORKPATH}
 
