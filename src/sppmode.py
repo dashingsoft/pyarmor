@@ -65,8 +65,9 @@ def _load_sppbuild():
         from utils import PYARMOR_PATH as libpath
         plat = platform.system().lower()
         mach = platform.machine().lower()
-        if mach != 'x86_64':
+        if mach not in ('x86_64', 'amd64'):
             raise RuntimeError('sppmode now only works in x86_64 platform')
+        mach = 'x86_64'
         ext = '.dll' if plat.startswith('win') else '.so'
         name = os.path.join(libpath, 'platforms', plat, mach, 'sppmode' + ext)
         _spplib = cdll.LoadLibrary(name)
