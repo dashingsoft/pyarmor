@@ -48,7 +48,7 @@ Super Plus Mode
 ---------------
 
 This is an enhancement of super mode, it will convert some functions to binary
-code. It's introduced in PyArmor 6.9.0, and now only works for arch X86_64 and
+code. It's introduced in PyArmor 7.0.1, and now only works for arch X86_64 and
 Python 3.7, 3.8, 3.9
 
 It requires ``c`` compiler. In Linux and Darwin, ``gcc`` and ``clang`` is OK. In
