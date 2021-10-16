@@ -35,13 +35,14 @@ Incompatible issues
 
 7.0.1 (dev)
 -----------
+* Fix issue (#584): failed to run pyarmor in Cygwin
 * Fix issue (#586): In linux combining options both `--enable-suffix` and
   `--advanced 1` doesn't work
 * Add sppmode, refer to :ref:`Super Plus Mode`
 
   The dev version could be installed by this command::
 
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.0.2.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.0.1.zip
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
