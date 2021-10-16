@@ -83,6 +83,20 @@ also works in the docstring to ignore ``function`` or ``class``, for example:
         '''pyarmor options: no-spp-mode'''
         pass
 
+There are a few differences in the spp mode:
+
+* Calling `raise` without argument not in the exception handler will raise
+  different exception
+
+.. code-block:: python
+
+    >>> raise
+    RuntimeError: No active exception to reraise
+
+    # In spp mode
+    >>> raise
+    UnboundlocalError: local variable referenced before assignment
+
 .. _advanced mode:
 
 Advanced Mode
