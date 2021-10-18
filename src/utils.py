@@ -993,9 +993,9 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
 
     modname = _frozen_modname(filename, destname)
     if sppmode:
-        if sum(sys.version_info[:2]) < 10:
+        if sys.version_info[0] * 100 + sys.version_info[1] < 307:
             raise RuntimeError('This Python version is not supported by spp '
-                               'mode, only Python 3.7, 3.8 and 3.9 works')
+                               'mode, only Python 3.7+ works')
         co = sppbuild(''.join(lines), modname, destname)
         if not co:
             logging.info('Ignore this module because of %s',
