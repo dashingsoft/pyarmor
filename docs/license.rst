@@ -103,7 +103,7 @@ version, then obfuscate them again.
 Upgrade Notes
 -------------
 
-The license purchased before **2018-12-01** don't support to upgrade the latest
+The license purchased before **2019-10-10** don't support to upgrade the latest
 version. A new license is required to use the latest version.
 
 Technical Support
