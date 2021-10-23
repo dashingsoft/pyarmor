@@ -78,13 +78,13 @@ def run_command(cmdlist, verbose=True):
     logging.info('\n\n%s\n\n', ' '.join(
         [x if x.find(' ') == -1 else ('"%s"' % x) for x in cmdlist]))
     if verbose:
-        s = '=' * 20
-        logging.info('%s Run command %s', s, s)
+        sep = '=' * 20
+        logging.info('%s Run command %s', sep, sep)
         p = Popen(cmdlist)
         p.wait()
-        logging.info('%s End command %s\n', s, s)
-        if p.returncode != 0:
+        if p.returncode == 0:
             raise RuntimeError('Run command failed')
+        logging.info('%s End command %s\n', sep, sep)
     else:
         p = Popen(cmdlist, stdout=PIPE, stderr=STDOUT)
         output, _ = p.communicate()
