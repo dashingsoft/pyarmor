@@ -9,10 +9,13 @@ assignees: jondy
 
 It's more readable in the issue Preview mode for the hints
 
+**IMPORTANT**
+Please provide the necessary information according to this template when reporting bug. If missing necessay information, for example, only an error message, the issue will be marked as "Invalid" and not be handled.
+
 **Hints**
 Every pyarmor command prints detail logs in the console, not only check the last error message, but also check each log to understand what pyarmor is doing. And `pyarmor -d subcommand ...` even prints more debug logs, it's very useful to find the problem.
 
-When running the obfuscated scripts, if there is traceback, check the source script according to script name and line number in the traceback, make sure it doesn't use some features changed by pyarmor 
+When running the obfuscated scripts, if there is traceback, check the source script according to script name and line number in the traceback, make sure it doesn't use some features changed by pyarmor
 
 Before report a bug, please read these common questions and solutions first
 https://pyarmor.readthedocs.io/en/latest/questions.html
@@ -32,7 +35,7 @@ Which pyarmor version is used, trial or purchased, and steps to reproduce the be
 
 ```
 pyarmor obfuscate foo.py
-... 
+...
 ```
 
 **Additional context**
