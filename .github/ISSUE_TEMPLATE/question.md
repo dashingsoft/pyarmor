@@ -15,13 +15,12 @@ Please first read the document list in the below before asking a question.
 
 If reporting the error, please provide the following information:
 
-1. Which pyarmor version is used, trial or purchased, which Python version and in which platform (All of these information are printed in the output log of pyarmor command).
-2. The full command to obfuscate the scripts
-3. How to distribute the obfuscated scripts to target machine if it's different from build machine
-4. Run the obfuscated scripts in which platform by which Python version
-5. When see error, provide the **full traceback** and all the **console output** by text not screen snapshot.
+1. A clear and concise description of the question
+2. The full pyarmor command and full output log
+3. If distributing the obfuscated script to other machine, which files are copied
+4. The command to run the obfuscated scripts and full traceback when something is wrong
 
-If missing the necessary information, or the question has been described in the document, the issue will be marked as "invalid" and be closed direclty.
+If missing the necessary information, or ambiguous description, or the question has been described in the document, the issue will be marked as "invalid" and be closed direclty.
 
 **Hint 1**
 [Basic usage](https://pyarmor.readthedocs.io/en/latest/usage.html)

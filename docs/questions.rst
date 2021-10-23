@@ -132,6 +132,9 @@ Here are several common solutions
   to use the default restrict mode. If low restrict mode works, check the
   scripts make sure they don't violate the restrict mode.
 
+* If you are using complex scripts or packages, try a simple script or package
+  to check it works or not.
+
 * Understanding pyarmor by doing a test in a few minutes if something you're not
   sure.
 
@@ -172,6 +175,80 @@ understand pyarmor quickly.
    There are a lot of reporeted `issues`_, search here first try to find same
    issue.
 
+.. _reporting an issue:
+
+Reporting an issue
+------------------
+
+When there is no solution in the document, please report an `issues`_ and provide the necessary information
+
+1. The full pyarmor command and full output log (required)
+2. If distributing the obfuscated script to other machine, which files are copied (optional)
+3. The command to run the obfuscated scripts and full traceback when something is wrong
+
+If `pyarmor` fails, run it with extra option `pyarmor -d` to get more information
+
+Here it's an example (copy all of these to github and modify it)::
+
+    1. On MacOS 10.14 run pyarmor to obfuscate the script
+    ```
+    $ pyarmor obfuscate --exact main.py
+    INFO     Create pyarmor home path: /Users/jondy/.pyarmor
+    INFO     Create trial license file: /Users/jondy/.pyarmor/license.lic
+    INFO     Generating public capsule ...
+    INFO     PyArmor Trial Version 7.0.1
+    INFO     Python 3.7.10
+    INFO     Target platforms: Native
+    INFO     Source path is "/Users/jondy/workspace/pyarmor-webui/test/__runner__/__src__"
+    INFO     Entry scripts are ['main.py']
+    INFO     Use cached capsule /Users/jondy/.pyarmor/.pyarmor_capsule.zip
+    INFO     Search scripts mode: Exact
+    INFO     Save obfuscated scripts to "dist"
+    INFO     Read product key from capsule
+    INFO     Obfuscate module mode is 2
+    INFO     Obfuscate code mode is 1
+    INFO     Wrap mode is 1
+    INFO     Restrict mode is 1
+    INFO     Advanced value is 0
+    INFO     Super mode is False
+    INFO     Super plus mode is not enabled
+    INFO     Generating runtime files to dist/pytransform
+    INFO     Extract pytransform.key
+    INFO     Generate default license file
+    INFO     Update capsule to add default license file
+    INFO     Copying /Users/jondy/workspace/pyarmor-webui/venv/lib/python3.7/site-packages/pyarmor/platforms/darwin/x86_64/_pytransform.dylib
+    INFO     Patch library dist/pytransform/_pytransform.dylib
+    INFO     Patch library file OK
+    INFO     Copying /Users/jondy/workspace/pyarmor-webui/venv/lib/python3.7/site-packages/pyarmor/pytransform.py
+    INFO     Rename it to pytransform/__init__.py
+    INFO     Generate runtime files OK
+    INFO     Start obfuscating the scripts...
+    INFO     	/Users/jondy/workspace/pyarmor-webui/test/__runner__/__src__/main.py -> dist/main.py
+    INFO     Insert bootstrap code to entry script dist/foo.py
+    INFO     Obfuscate 1 scripts OK.
+    ```
+    2. Copy the whole folder `dist/` to target machine Ubuntu
+    3. Failed to run the obfuscated script by Python 3.7 in Unbutu
+    ```
+    $ cd dist/
+    $ python3 main.py
+    Traceback (most recent call last):
+    File "main.py", line 1, in <module>
+      from pytransform import pyarmor
+    ImportError: cannot import name 'pyarmor' from 'pytransform' (/home/jondy/dist/pytransform/__init__.py)
+    ```
+
+The title of this issue::
+
+  cannot import name 'pyarmor' from 'pytransform'
+
+.. important::
+
+   About security issue, send email to `jondy.zhao@gmail.com`, all the others
+   click `issues`_ to report
+
+   The issue not reported with template or missing necessary information will be
+   marked as ``invalid`` and be closed directly.
 
 Segment fault
 -------------
