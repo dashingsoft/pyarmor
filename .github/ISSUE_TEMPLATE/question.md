@@ -9,6 +9,23 @@ assignees: jondy
 
 It's more readable in the issue Preview mode for all the hints
 
+**IMPORTANT**
+
+If reporting the error, please provide the following information:
+
+1. Which pyarmor version is used, trial or purchased, which Python version and
+   in which platform
+2. The full command to obfuscate the scripts
+3. How to distribute scripts and run the obfuscated scripts
+4. When see error, provide the **full traceback** and all the **console output**
+   by text not screen snapshot.
+
+If missing the necessary information, the issue will be marked as "invalid" and
+not be handled.
+
+And read the document list in the below, if the question is described in the
+document, the issue will not be handled.
+
 **Hint 1**
 [Basic usage](https://pyarmor.readthedocs.io/en/latest/usage.html)
 [Advanced usage](https://pyarmor.readthedocs.io/en/latest/advanced.html)
