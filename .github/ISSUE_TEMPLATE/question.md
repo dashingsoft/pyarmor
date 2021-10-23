@@ -11,20 +11,17 @@ It's more readable in the issue Preview mode for all the hints
 
 **IMPORTANT**
 
+Please first read the document list in the below before asking a question.
+
 If reporting the error, please provide the following information:
 
-1. Which pyarmor version is used, trial or purchased, which Python version and
-   in which platform
+1. Which pyarmor version is used, trial or purchased, which Python version and in which platform (All of these information are printed in the output log of pyarmor command).
 2. The full command to obfuscate the scripts
-3. How to distribute scripts and run the obfuscated scripts
-4. When see error, provide the **full traceback** and all the **console output**
-   by text not screen snapshot.
+3. How to distribute the obfuscated scripts to target machine if it's different from build machine
+4. Run the obfuscated scripts in which platform by which Python version
+5. When see error, provide the **full traceback** and all the **console output** by text not screen snapshot.
 
-If missing the necessary information, the issue will be marked as "invalid" and
-not be handled.
-
-And read the document list in the below, if the question is described in the
-document, the issue will not be handled.
+If missing the necessary information, or the question has been described in the document, the issue will be marked as "invalid" and be closed direclty.
 
 **Hint 1**
 [Basic usage](https://pyarmor.readthedocs.io/en/latest/usage.html)

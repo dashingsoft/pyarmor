@@ -10,7 +10,7 @@ assignees: jondy
 It's more readable in the issue Preview mode for the hints
 
 **IMPORTANT**
-Please provide the necessary information according to this template when reporting bug. If missing necessay information, for example, only an error message, the issue will be marked as "Invalid" and not be handled.
+Please provide the necessary information according to this template when reporting bug. If missing necessay information, the issue will be marked as "invalid" and be closed directly.
 
 **Hints**
 Every pyarmor command prints detail logs in the console, not only check the last error message, but also check each log to understand what pyarmor is doing. And `pyarmor -d subcommand ...` even prints more debug logs, it's very useful to find the problem.
@@ -26,12 +26,11 @@ And remove all the above hints.
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Which pyarmor version is used, trial or purchased, and steps to reproduce the behavior:
-1. Obfuscate the scripts by which Python version and in which platform
-2. What command options used
+1. Which pyarmor version is used, trial or purchased, which Python version and in which platform (All of these information are printed in the output log of pyarmor command).
+2. The full command to obfuscate the scripts
 3. How to distribute the obfuscated scripts to target machine if it's different from build machine
 4. Run the obfuscated scripts in which platform by which Python version
-5. When see error, provide the full traceback and console output by text not snapshot, quote them like this
+5. When see error, provide the **full traceback** and all the **console output** by text not screen snapshot, quote them like this
 
 ```
 pyarmor obfuscate foo.py
