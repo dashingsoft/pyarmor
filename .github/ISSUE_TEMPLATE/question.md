@@ -20,6 +20,10 @@ If reporting the error, please provide the following information:
 3. If distributing the obfuscated script to other machine, which files are copied
 4. The command to run the obfuscated scripts and full traceback when something is wrong
 
+The output log could be redirected to a file by this way. For example,
+
+    pyarmor obfuscate foo.py >log.txt 2>&1
+
 If missing the necessary information, or ambiguous description, or the question has been described in the document, the issue will be marked as "invalid" and be closed direclty.
 
 **Hint 1**

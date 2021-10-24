@@ -26,11 +26,16 @@ A clear and concise description of what the bug is.
 2. If distributing the obfuscated script to other machine, which files are copied (optional)
 3. The command to run the obfuscated scripts and full traceback when something is wrong
 
-If `pyarmor` fails, run it with extra option `pyarmor -d` to get more information
+The output log could be redirected to a file by this way. For example,
 
-Here is an example
+    pyarmor obfuscate foo.py >log.txt 2>&1
 
-*Title*: `cannot import name 'pyarmor' from 'pytransform'`
+Here is an issue instance
+
+*Title*:
+
+    cannot import name 'pyarmor' from 'pytransform'
+
 *Description*:
 
 1. On MacOS 10.14 run pyarmor to obfuscate the script

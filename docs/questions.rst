@@ -180,15 +180,23 @@ understand pyarmor quickly.
 Reporting an issue
 ------------------
 
-When there is no solution in the document, please report an `issues`_ and provide the necessary information
+When there is no solution in the document, about security issue, send email to
+`jondy.zhao@gmail.com`, all the others please click `issues`_ to report, and
+provide the necessary information
 
 1. The full pyarmor command and full output log (required)
 2. If distributing the obfuscated script to other machine, which files are copied (optional)
 3. The command to run the obfuscated scripts and full traceback when something is wrong
 
-If `pyarmor` fails, run it with extra option `pyarmor -d` to get more information
+The output log could be redirected to a file by this way::
 
-Here it's an example (copy all of these to github and modify it)::
+    pyarmor obfuscate foo.py >log.txt 2>&1
+
+Here it's an example, the title of issue::
+
+  cannot import name 'pyarmor' from 'pytransform'
+
+The content of issue (copy all of these to github and modify it)::
 
     1. On MacOS 10.14 run pyarmor to obfuscate the script
     ```
@@ -238,14 +246,7 @@ Here it's an example (copy all of these to github and modify it)::
     ImportError: cannot import name 'pyarmor' from 'pytransform' (/home/jondy/dist/pytransform/__init__.py)
     ```
 
-The title of this issue::
-
-  cannot import name 'pyarmor' from 'pytransform'
-
 .. important::
-
-   About security issue, send email to `jondy.zhao@gmail.com`, all the others
-   click `issues`_ to report
 
    The issue not reported with template or missing necessary information will be
    marked as ``invalid`` and be closed directly.
