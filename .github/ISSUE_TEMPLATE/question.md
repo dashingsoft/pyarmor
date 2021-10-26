@@ -11,20 +11,20 @@ It's more readable in the issue Preview mode for all the hints
 
 **IMPORTANT**
 
-Please first read the document list in the below before asking a question.
+If ask a question or describe the problem, please provide the following information:
 
-If reporting the error, please provide the following information:
-
-1. A clear and concise description of the question
-2. The full pyarmor command and full output log
-3. If distributing the obfuscated script to other machine, which files are copied
+1. A clear and concise description of the question (required)
+2. The full pyarmor command and full output log (required if something is wrong)
+3. If distributing the obfuscated script to other machine, which files are copied (optional)
 4. The command to run the obfuscated scripts and full traceback when something is wrong
 
 The output log could be redirected to a file by this way. For example,
 
     pyarmor obfuscate foo.py >log.txt 2>&1
 
-If missing the necessary information, or ambiguous description, or the question has been described in the document, the issue will be marked as "invalid" and be closed direclty.
+If missing the necessary information, or the question has been described in the document, the issue will be marked as "invalid" and be closed direclty.
+
+Please first read the document list in the below before asking a question.
 
 **Hint 1**
 [Basic usage](https://pyarmor.readthedocs.io/en/latest/usage.html)
@@ -34,6 +34,7 @@ If missing the necessary information, or ambiguous description, or the question 
 [Performance](https://pyarmor.readthedocs.io/en/latest/performance.html)
 [Security](https://pyarmor.readthedocs.io/en/latest/security.html)
 [License](https://pyarmor.readthedocs.io/en/latest/license.html)
+[Questions](https://pyarmor.readthedocs.io/en/latest/questions.html)
 
 **Hint 2**
 If something you're not sure, but it could be verified by doing a test in five minutes, just do it to save time for both of us. For example, understand the difference of super mode and non-super mode scripts by a simple test
