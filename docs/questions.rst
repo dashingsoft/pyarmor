@@ -499,6 +499,17 @@ No :ref:`Bootstrap Code` are executed before importing obfuscated scripts.
 * Also check system module `os`, `ctypes`, make sure they're not obfuscated, try
   to use option ``--exclude`` to exclude the whole Python system library path.
 
+How to check :ref:`Bootstrap Code` executed or not? One simple way is to insert
+one print statement before them. For example
+
+.. code:: python
+
+   print('Start to run bootstrap code')
+   from pytransfrom import pyarmor_runtime
+   pyarmor_runtime()
+
+If the message is printed, then it's OK. Removing the print statement and check
+other causes.
 
 Marshal loads failed when running xxx.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -776,9 +787,18 @@ The final bundle does not work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First make sure the scripts could pack by PyInstaller directly and the final
-bundle works.
+bundle works. For example::
 
-Then make sure the obfuscated scripts could work without packing.
+  pyinstaller foo.py
+  dist/foo/foo
+
+If the final bundle complains of no module found, it need some extra PyInstaller
+options, please refer to https://pyinstaller.readthedocs.io
+
+Then make sure the obfuscated scripts could work without packing. For example::
+
+  pyarmor obfuscate foo.py
+  python dist/foo.py
 
 If both of them OK, remove the output path `dist` and PyInstaller cached path
 `build`, then pack the script with ``--debug``::
