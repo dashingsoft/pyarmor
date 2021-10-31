@@ -11,6 +11,7 @@ version never expires, the limitations are
   anyone could generate the license file for these obfuscated scripts.
 - The trial version could not download the latest dynamic library of
   extra platforms, the old versions still are available.
+- The super plus mode is not availaible in the trial version.
 - Without permission the trial version may not be used to obfuscate
   the Python scripts of any commercial product.
 

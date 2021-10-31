@@ -18,7 +18,9 @@
      c. The trial version could not download the latest dynamic library
         of extra platforms, the old versions still are available.
 
-     d. Without permission the trial version may not be used for the Python
+     d. The super plus mode is not availaible in the trial version.
+
+     e. Without permission the trial version may not be used for the Python
         scripts of any commercial product.
 
   3. There are 2 basic types of licenses issued for the software. These are:
