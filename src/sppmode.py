@@ -75,8 +75,10 @@ def _load_sppbuild():
         licfile = os.path.expanduser(os.path.join(homepath, 'license.lic'))
         logging.debug('Check license file "%s"', licfile)
         ret = sppinit(pythonapi._handle, licfile.encode())
+        if ret == -1:
+            raise RuntimeError('sppmode is not available in trial version')
         if ret != 0:
-            raise RuntimeError('Init sppmode failed (%d)' % ret)
+            raise RuntimeError('failed to init sppmode (%d)' % ret)
     return PYFUNCTYPE(py_object, py_object)(('sppbuild', _spplib))
 
 
