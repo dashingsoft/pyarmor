@@ -33,13 +33,16 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-7.0.1 (dev)
------------
+7.0.1
+-----
+A big feature :ref:`Super Plus Mode` is introduced in this version.
+
 * Fix issue (#584): failed to run pyarmor in Cygwin
 * Fix issue (#586): In linux combining options both `--enable-suffix` and
   `--advanced 1` doesn't work
 * Add sppmode, refer to :ref:`Super Plus Mode`
 
+..
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.0.1.zip
