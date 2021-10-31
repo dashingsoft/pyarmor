@@ -54,7 +54,7 @@ cp ${datapath}/project.zip test/data/project-orig.zip
 if [[ "${PLATFORM}" != "win32" ]] ; then
 csih_inform "Make link to platforms for super mode"
 if [[ "OK" == $($PYTHON -c'from sys import version_info as ver, stdout
-stdout.write("OK" if (ver[0] * 10 + ver[1]) in (27, 37, 38, 39) else "")') ]] ; then
+stdout.write("OK" if (ver[0] * 100 + ver[1]) in (207, 307, 308, 309, 310) else "")') ]] ; then
 SUPERMODE=yes
 mkdir -p ${PYARMOR_DATA}/platforms
 PLATFORM_INDEX=${PYARMOR_DATA}/platforms/index.json
