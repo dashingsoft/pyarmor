@@ -82,7 +82,7 @@ def run_command(cmdlist, verbose=True):
         logging.info('%s Run command %s', sep, sep)
         p = Popen(cmdlist)
         p.wait()
-        if p.returncode == 0:
+        if p.returncode != 0:
             raise RuntimeError('Run command failed')
         logging.info('%s End command %s\n', sep, sep)
     else:
