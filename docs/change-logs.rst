@@ -33,6 +33,20 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+7.0.2
+-----
+* Fix bug: there is no error message to run `pack` command with common debug
+  option `-d`
+
+..
+  The dev version could be installed by this command::
+
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.0.2.zip
+
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the stable version from PyPi.
+
 7.0.1
 -----
 A big feature :ref:`Super Plus Mode` is introduced in this version.
@@ -41,15 +55,6 @@ A big feature :ref:`Super Plus Mode` is introduced in this version.
 * Fix issue (#586): In linux combining options both `--enable-suffix` and
   `--advanced 1` doesn't work
 * Add sppmode, refer to :ref:`Super Plus Mode`
-
-..
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.0.1.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the stable version from PyPi.
 
 6.8.1
 -----
