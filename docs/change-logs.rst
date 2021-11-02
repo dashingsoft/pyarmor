@@ -43,6 +43,7 @@ A big feature :ref:`Super Plus Mode` is introduced in this version.
 * Add sppmode, refer to :ref:`Super Plus Mode`
 
 ..
+
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.0.1.zip
