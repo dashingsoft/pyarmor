@@ -1705,3 +1705,9 @@ def _fix_up_gnu_hash(data, suffix):
 
 def is_pyscript(filename):
     return os.path.splitext(filename)[-1].lower() in ('.py', '.pyw')
+
+
+def exclude_functions(names=''):
+    if pytransform._pytransform.set_option(7, names.encode()) == -1:
+        raise RuntimeError('Excluding functions is not supported by this '
+                           'version, please upgrade pyarmor to the latest')
