@@ -504,9 +504,9 @@ one print statement before them. For example
 
 .. code:: python
 
-   print('Start to run bootstrap code')
-   from pytransfrom import pyarmor_runtime
-   pyarmor_runtime()
+    print('Start to run bootstrap code')
+    from pytransfrom import pyarmor_runtime
+    pyarmor_runtime()
 
 If the message is printed, then it's OK. Removing the print statement and check
 other causes.
