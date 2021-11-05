@@ -211,9 +211,10 @@ Improving Security Further
 
 These `PyArmor`_ features could import security further:
 
-1. :ref:`Using super mode` to obufscate scripts if possible, otherwise enable
-   :ref:`Advanced Mode` if the platform is supported. In Windows and the
-   performance meets the requirement, enable :ref:`VM Mode`
+1. Using :ref:`Super Plus Mode` to obufscate scripts if possible, otherwise
+   :ref:`Using super mode`, otherwise enable :ref:`Advanced Mode` if the platform
+   is supported. In Windows and the performance meets the requirement, enable
+   :ref:`VM Mode`
 2. Try to :ref:`binding obfuscated scripts to Python interpreter` if they're
    distributed as one executable bundle.
 3. Make sure the entry script is patched by `cross protection code
