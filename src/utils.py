@@ -1020,7 +1020,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         rest_mod_dict_flag = 0
 
     flags = obf_code | obf_mod << 8 | (wrap_mode | (adv_mode << 4)) << 16 | \
-        ((0x34 if rest_mode == 5 else 0xB0 if rest_mode == 4
+        ((0xB4 if rest_mode == 5 else 0xB0 if rest_mode == 4
           else 0xF0 if rest_mode == 3 else 0x70 if rest_mode == 2
           else 0x10 if rest_mode else 0)
          | (8 if entry else 0) | rest_mod_dict_flag) << 24
