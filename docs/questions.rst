@@ -511,6 +511,9 @@ one print statement before them. For example
 If the message is printed, then it's OK. Removing the print statement and check
 other causes.
 
+The other solution for this issue is :ref:`using super mode` to obfuscate the
+scripts.
+
 Marshal loads failed when running xxx.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1. Check whether the version of Python to run obfuscated scripts is same as the
@@ -753,6 +756,10 @@ obfuscate the object method `__del__`. For example
 
 Any function name which starts with `lambda_` will not be obfuscated by pyarmor,
 in above example, the method `lambda_del` is not obfuscated, so `__del__`  is.
+
+The other solution is not obfuscating the script which includes ``__del__`` by
+copying the plain script to overwrite the obfsucated one. Or obfuscate this
+script by ``--obf-code 0``.
 
 SystemError: module filename missing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
