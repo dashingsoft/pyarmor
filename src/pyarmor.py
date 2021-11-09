@@ -83,6 +83,9 @@ def _check_advanced_value(advanced):
         if pyver in ('3.10',) and advanced != 2:
             raise RuntimeError('Only "--advanced 2" is available for Python %s'
                                % pyver)
+        if pyver == '2.7' and advanced == 5:
+            raise RuntimeError('"--advanced 5" is not available for Python %s'
+                               % pyver)
         if advanced in (1, 3):
             logging.warning('"--advanced %d" is deprecated for Python %s, '
                             'use "--advanced 2" instead'
