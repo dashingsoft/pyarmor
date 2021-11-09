@@ -72,10 +72,25 @@ fi
              [[ -f "${y}" ]] && cp ${y} ${name}
          done
      else
-         ln -s ${x}/pytransform.* ${name}
+         ln -s ${x}/pytransform.* ${name}/
      fi
      update_pytransform_hash256 ${PLATFORM_INDEX} ${x}/pytransform.* $(basename ${x})
  done)
+fi
+if [[ "${PLATFORM}" == "macosx_x86_64" ]] ; then
+    for minor in 9 10 ; do
+        name="pytransform.cpython-3${minor}-darwin.so"
+        src="${PYARMOR_CORE_PLATFORM}/darwin.x86_64.11.py3${minor}/$name"
+        dest="${PYARMOR_DATA}/platforms/darwin/x86_64/11/py3${minor}/$name"
+        rm -f $dest
+        mkdir -p $(dirname $dest)
+        cp $src $dest
+        install_name_tool \
+            -change @rpath/Frameworks/Python.framework/Versions/3.${minor}/Python \
+            /Users/jondy/workspace/pytransform/python/lib/libpython3.${minor}.dylib \
+            $dest
+        update_pytransform_hash256 ${PLATFORM_INDEX} $dest darwin.x86_64.11.py3${minor}
+    done
 fi
 csih_inform "Super mode test is ${SUPERMODE}"
 fi
