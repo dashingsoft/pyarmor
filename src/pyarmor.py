@@ -80,6 +80,9 @@ def _format_entry(entry, src):
 def _check_advanced_value(advanced):
     pyver = '.'.join([str(x) for x in sys.version_info[:2]])
     if pyver in ('2.7', '3.7', '3.8', '3.9', '3.10'):
+        if pyver in ('3.10',) and advanced != 2:
+            raise RuntimeError('Only "--advanced 2" is available for Python %s'
+                               % pyver)
         if advanced in (1, 3):
             logging.warning('"--advanced %d" is deprecated for Python %s, '
                             'use "--advanced 2" instead'
