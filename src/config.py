@@ -1,9 +1,9 @@
 from sys import platform
 
-version = '7.0.3'
+version = '7.1.0'
 
 # The corresponding version of pytransform.so
-core_version = 'r46.20'
+core_version = 'r47.21'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
