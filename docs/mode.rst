@@ -97,6 +97,10 @@ There are a few differences in the spp mode:
     >>> raise
     UnboundlocalError: local variable referenced before assignment
 
+.. note::
+
+   Super plus mode is not available in the trial version.
+
 .. _advanced mode:
 
 Advanced Mode
