@@ -16,7 +16,7 @@ Also refer to [The Security of PyArmor](https://pyarmor.readthedocs.io/en/latest
 
 ## Support Platforms
 
-- Python 2.7 and Python3.0~Python3.9
+- Python 2.7 and Python3.0~Python3.10
 - Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_x86_64
 - Embedded Platform: Raspberry Pi, Banana Pi, Orange Pi, TS-4600 / TS-7600 and more
 
