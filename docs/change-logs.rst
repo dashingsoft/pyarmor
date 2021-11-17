@@ -49,7 +49,8 @@ Incompatible issues
 
 7.0.3
 -----
-* Raise RuntimeError if old core library is used for trial version
+* In trial version it will raise RuntimeError if old core library is used to
+  obfuscate the scripts
 
 7.0.2
 -----
