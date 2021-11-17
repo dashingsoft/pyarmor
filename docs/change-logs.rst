@@ -58,13 +58,22 @@ Incompatible issues
 
 7.0.1
 -----
-A big feature :ref:`Super Plus Mode` is introduced in this version.
+A big feature :ref:`Super Plus Mode` is introduced in this version, and the
+format of license file for obfuscated scripts is changed.
+
+Because the trial version uses the old core libraries, so it doesn't work with
+new license. When running the scripts which are obfuscated by trial version with
+option ``--platform`` or ``--advanced``, it will raise exception::
+
+    Check license failed, Invalid input packet.
 
 * Fix issue (#584): failed to run pyarmor in Cygwin
 * Fix issue (#586): In linux combining options both `--enable-suffix` and
   `--advanced 1` doesn't work
 * Change core version to **r46.20**
 * Add sppmode, refer to :ref:`Super Plus Mode`
+* Change the format of license file for obfuscated scripts and the old core
+  libraries (before r46.20) doesn't work with new licenses.
 
 6.8.1
 -----
