@@ -47,6 +47,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.0.3
+-----
+* Raise RuntimeError if old core library is used for trial version
+
 7.0.2
 -----
 * Fix bug: there is no error message to run `pack` command with common debug
