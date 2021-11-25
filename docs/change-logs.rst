@@ -51,6 +51,7 @@ Incompatible issues
 -----
 * In trial version it will raise RuntimeError if old core library is used to
   obfuscate the scripts
+* Check more for restrict mode 5
 
 7.0.2
 -----
