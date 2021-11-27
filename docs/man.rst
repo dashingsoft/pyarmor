@@ -162,7 +162,7 @@ Option ``--advanced`` is used to enable some advanced features to improve the
 security. The available value for this option
 
 * 0: Disable any advanced feature
-* 1: Enable :ref:`avanced mode`
+* 1: Enable :ref:`Advanced Mode`
 * 2: Enable :ref:`super mode`
 * 3: Enable :ref:`advanced mode` and :ref:`vm mode`
 * 4: Enable :ref:`super mode` and :ref:`vm mode`

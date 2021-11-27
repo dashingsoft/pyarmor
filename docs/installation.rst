@@ -44,6 +44,8 @@ the ``pyarmor`` command is :file:`{pyarmor-folder}/pyarmor.py`.
 
 ``pyarmor-webui`` is :file:`{pyarmor-folder}/webui/server.py`.
 
+.. _clean uninstallation:
+
 Clean uninstallation
 --------------------
 

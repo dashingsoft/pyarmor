@@ -315,7 +315,7 @@ First check whether the file exists. If it exists:
     from pytransform import pyarmor_runtime
     pyarmor_runtime('/path/to/dist')
 
-Still doesn't work, report an issue_
+Still doesn't work, report an issues_
 
 
 ERROR: Unsupport platform linux.xxx

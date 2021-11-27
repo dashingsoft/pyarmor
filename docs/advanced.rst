@@ -620,7 +620,7 @@ later easily. Here are basic steps:
 
   Option ``--without-license`` tells :ref:`pack` not to bundle the `license.lic`
   of obfuscated scripts to the final executable file. By option
-  ``--runtime-hook`` of `PyInstaller`_, the specified script
+  ``--runtime-hook`` of PyInstaller, the specified script
   :file:`copy_license.py` will be executed before any obfuscated scripts are
   imported. It will copy outer :file:`license.lic` to right path.
 
@@ -808,8 +808,8 @@ first
 Checking Imported Function Is Obfuscated
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In the :module:`pytransfrom` there is one decorator :ref:`assert_armored` and
-one function :ref:`check_armored` used to make sure the imported functions from
+In the :mod:`pytransform` there is one decorator :func:`assert_armored` and
+one function :func:`check_armored` used to make sure the imported functions from
 other module are obfuscated.
 
 For example, there are 2 scripts `main.py` and `foo.py`
@@ -880,7 +880,7 @@ Before call ``start_server``, the decorator function ``assert_armored`` will
 check both ``connect`` functions are pyarmored, otherwise it will raise
 exception.
 
-You can also check it by :ref:`check_armored`
+You can also check it by :func:`check_armored`
 
 .. code:: python
 
@@ -1090,7 +1090,7 @@ PyArmor then zipping and putting it into "/pyu-data/new" works. From there on
 you can just normally sign, process and upload your update.
 
 More information refer to the description of command :ref:`pack` and advanced
-usage :ref:`bundle-obfuscated-scripts-with-customized-spec-file`
+usage :ref:`Bundle obfuscated scripts with customized spec file`
 
 
 .. _binding obfuscated scripts to python interpreter:
@@ -1463,7 +1463,7 @@ finally run this script to repack the bundle with obfuscated scripts.
 * Pack the script with PyInstaller, make sure the final bundle works. For real
   scripts, other options may be required, please check `PyInstaller
   documentation <https://pyinstaller.readthedocs.io>`_. If the final bundle
-  could not work in this step, please report issues to `PyInstaller
+  could not work in this step, please report issues to `PyInstaller issues
   <https://github.com/pyinstaller/pyinstaller/issues>`_::
 
     # One folder mode

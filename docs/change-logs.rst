@@ -35,7 +35,9 @@ Incompatible issues
 
 7.1.0 (dev)
 -----------
-* Change core version to **r47.21**
+* Check the conflicts of option ``--restrict 0`` and ``--with-license``
+* Fix issue (#628): super plus mode crashes if any function is patched
+* Change core version to **r47.1**
 * Support Python 3.10. For super mode, now only 3 platforms: windows.x86_64,
   linux.x86_64, darwin.x86_64
 
@@ -214,7 +216,7 @@ Only fixed in purchased version
 -----
 * Refine output message when checking registration information by command
   `pyarmor register`
-* Runtime function :ref:`get_hd_info` accepts keyword parameters ``name`` to get
+* Runtime function :func:`get_hd_info` accepts keyword parameters ``name`` to get
   hardware information of named device
 * Command :ref:`hdinfo` accepts optional parameter ``name``
 * Command :ref:`licenses` could bind obfuscated scripts to named hard disk

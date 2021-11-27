@@ -224,8 +224,8 @@ These `PyArmor`_ features could import security further:
    obfuscated module.
 5. Use the high security code obfuscation `--obf-code=2`
 6. :ref:`Using plugin to improve security` by injecting your private checkpoints
-   in the obfuscated scripts, there is one decorator :ref:`assert_armored` and
-   one function :ref:`check_armored` in the :module:`pytransfrom` used to
+   in the obfuscated scripts, there is one decorator :func:`assert_armored` and
+   one function :func:`check_armored` in the :mod:`pytransform` used to
    prevent monkey trick hacking. You can also add any other check points to make
    sure the obfuscated scripts are not hacked.
 7. If data files need to be protected, refer to :ref:`How to protect data files`

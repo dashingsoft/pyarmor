@@ -62,7 +62,7 @@ example, ``linux/x86_64/11/py38``.
    * - darwin
      - x86_64
      - 11
-     - 27, 37, 38, 39
+     - 27, 37, 38, 39, 310
      -
    * - darwin
      - aarch64
@@ -75,7 +75,12 @@ example, ``linux/x86_64/11/py38``.
      - 38, 39
      -
    * - linux
-     - x86, x86_64, aarch64, aarch32, armv7
+     - x86_64
+     - 11
+     - 27, 37, 38, 39, 310
+     -
+   * - linux
+     - x86, aarch64, aarch32, armv7
      - 11
      - 27, 37, 38, 39
      -
@@ -85,12 +90,15 @@ example, ``linux/x86_64/11/py38``.
      - 27
      - Linux with glibc < 2.14 and UCS2
    * - windows
-     - x86, x86_64
+     - x86_64
+     - 11, 25
+     - 27, 37, 38, 39, 310
+     -
+   * - windows
+     - x86
      - 11, 25
      - 27, 37, 38, 39
      -
-
-For all the latest platforms, refer to `pyarmor-core/platforms/index.json <https://github.com/dashingsoft/pyarmor-core/blob/master/platforms/index.json>`_
 
 In some platforms, `pyarmor` doesn't know its standard name, just download the
 right one and save it in the path ``~/.pyarmor/platforms/SYSTEM/ARCH/N/``.  Run
@@ -213,7 +221,7 @@ run any `pyarmor` command in target machine, it raises exception. For example::
     ERROR    No platform list file /data/user/.pyarmor/platforms/index.json found
 
 There are 2 available urls in the log message, download one of them from other
-machine, for example::
+machine, for example:
 
 https://pyarmor.dashingsoft.com/downloads/r34.8/index.json
 
