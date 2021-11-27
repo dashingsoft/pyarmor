@@ -37,6 +37,7 @@ Incompatible issues
 -----------
 * Check the conflicts of option ``--restrict 0`` and ``--with-license``
 * Fix issue (#628): super plus mode crashes if any function is patched
+* Fix link errors in documentation
 * Change core version to **r47.1**
 * Support Python 3.10. For super mode, now only 3 platforms: windows.x86_64,
   linux.x86_64, darwin.x86_64
