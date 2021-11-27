@@ -267,8 +267,15 @@ def _build(args):
         if project.get('is_package') else output
     licfile = args.license_file if args.license_file is not None \
         else project.license_file
-    if not restrict and not licfile:
-        licfile = 'no-restrict'
+    if not restrict:
+        if not licfile:
+            licfile = 'no-restrict'
+        else:
+            raise RuntimeError(
+                'Option "--restrict 0" is conflicted with outer license, '
+                'do not use this option but generate the outer license '
+                'with option "--disable-restrict-mode"'
+            )
 
     if args.no_runtime:
         if protection == 1:
@@ -677,8 +684,15 @@ def _obfuscate(args):
     logging.info('Super plus mode is%s enabled', '' if sppmode else ' not')
 
     licfile = args.license_file
-    if (not restrict) and (not licfile):
-        licfile = 'no-restrict'
+    if not restrict:
+        if not licfile:
+            licfile = 'no-restrict'
+        else:
+            raise RuntimeError(
+                'Option "--restrict 0" is conflicted with outer license, '
+                'do not use this option but generate the outer license '
+                'with option "--disable-restrict-mode"'
+            )
 
     if args.no_runtime:
         if cross_protection == 1:

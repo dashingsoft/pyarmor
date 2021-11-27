@@ -128,6 +128,13 @@ class Project(dict):
             or self.license_file.endswith('license.lic'), \
             'Invalid license file'
 
+        if self.restrict_mode == 0 and self.license_file is not None:
+            raise RuntimeError('"--restrict 0" is ignored by license file'
+                               '"%s", set it to 1 if outer license is used'
+                               ' and make sure this license is generated'
+                               ' with option "--disable-restrict-mode"'
+                               % self.license_file)
+
     def _dump(self, filename):
         with open(filename, 'w') as f:
             json_dump(self, f, indent=2)
