@@ -1012,7 +1012,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     else:
         co = compile(''.join(lines), modname, 'exec')
 
-    if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2:
+    if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2 and not sppmode:
         co = _check_code_object_for_super_mode(co, lines, modname)
 
     if rest_mode > 100:
