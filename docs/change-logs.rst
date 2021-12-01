@@ -33,8 +33,8 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
-7.1.0 (dev)
------------
+7.1.0
+-----
 * Check the conflicts of option ``--restrict 0`` and ``--with-license``
 * Fix issue (#628): super plus mode crashes if any function is patched
 * Fix link errors in documentation
@@ -42,6 +42,7 @@ Incompatible issues
 * Support Python 3.10. For super mode, now only 3 platforms: windows.x86_64,
   linux.x86_64, darwin.x86_64
 
+..
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.1.0.zip
