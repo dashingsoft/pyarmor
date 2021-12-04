@@ -248,8 +248,11 @@ The content of issue (copy all of these to github and modify it)::
 
 .. important::
 
-   The issue not reported with template or missing necessary information will be
-   marked as ``invalid`` and be closed directly.
+   The issue may be marked as ``invalid`` and be closed directly in any of:
+
+   * Not reported with template or missing necessary information
+   * There is the exact solution in the documentation
+
 
 Segment fault
 -------------

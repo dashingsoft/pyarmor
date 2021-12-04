@@ -99,7 +99,7 @@ version, then obfuscate them again.
 .. important::
 
     The registration code is valid forever, it can be used permanently, but it
-    may not work with new versions.
+    may not work with future versions.
 
 Upgrade Notes
 -------------
@@ -116,7 +116,9 @@ solve the problem quickly.
 
 If there is no solution, for technical issue, click here to `report an issue
 <https://github.com/dashingsoft/pyarmor/issues>`_ according to the issue
-template, for business and security issue send email to jondy.zhao@gmail.com
+template, for business and security issue send email to pyarmor@163.com
+
+Generally all the other issues sent by email will be ignored.
 
 There are 3 kinds of issues:
 
