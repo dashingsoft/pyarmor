@@ -16,7 +16,9 @@ Please provide the necessary information according to this template when reporti
 Before report a bug, please read these common questions and solutions first
 https://pyarmor.readthedocs.io/en/latest/questions.html
 
-And remove all the above hints.
+If there is the exact solution in the documentation, the issue will be marked as `invalid` and be closed directly.
+
+And please remove all the above hints.
 
 **Title**
 A clear and concise description of what the bug is.
