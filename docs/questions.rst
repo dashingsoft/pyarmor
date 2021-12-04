@@ -181,7 +181,7 @@ Reporting an issue
 ------------------
 
 When there is no solution in the document, about security issue, send email to
-`jondy.zhao@gmail.com`, all the others please click `issues`_ to report, and
+pyarmor@163.com, all the others please click `issues`_ to report, and
 provide the necessary information
 
 1. The full pyarmor command and full output log (required)
@@ -250,7 +250,7 @@ The content of issue (copy all of these to github and modify it)::
 
    The issue may be marked as ``invalid`` and be closed directly in any of:
 
-   * Not reported with template or missing necessary information
+   * Not reported as template or missing necessary information
    * There is the exact solution in the documentation
 
 
