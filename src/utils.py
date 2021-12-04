@@ -1112,7 +1112,7 @@ def query_keyinfo(key):
         return '\nError: %s' % data['error']
 
     return '\nError: this code may NOT be issued by PyArmor officially.' \
-        '\nPlease contact the author Jondy Zhao <jondy.zhao@gmail.com>'
+        '\nPlease contact <pyarmor@163.com>'
 
 
 def activate_regcode(ucode):

@@ -813,9 +813,9 @@ def _register(args):
         print(msg)
         if msg.find('Registration Code') > 0:
             print('')
-            print('Please send request from registration email if you would '
-                  'like to change the registration information. Any issue '
-                  'feel free to contact jondy.zhao@gmail.com')
+            print('Please send request to "pyarmor.163.com" from '
+                  'the registration email if you would like to '
+                  'change the registration information.')
         else:
             print(purchase_info)
         return

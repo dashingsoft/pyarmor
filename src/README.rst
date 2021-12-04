@@ -79,7 +79,7 @@ solve the problem quickly.
 
 If there is no solution, for technical issue, click here to `report an issue
 <https://github.com/dashingsoft/pyarmor/issues>`_ according to the issue
-template, for business and security issue send email to jondy.zhao@gmail.com
+template, for business and security issue send email to pyarmor@163.com
 
 More Resources
 --------------
