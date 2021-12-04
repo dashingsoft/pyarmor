@@ -905,6 +905,9 @@ platform::
 
     armv5, android.aarch64, ppc64le, ios.arm64, freebsd, alpine, alpine.arm, poky-i586
 
+License Questions
+-----------------
+Refer to :ref:`License Questions`
 
 Misc. Questions
 ---------------

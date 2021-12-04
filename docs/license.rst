@@ -161,6 +161,8 @@ Generally in this case users provide the simple snapshot code around exception,
 or some running information, I analysis them to find where it may conflict with
 pyarmor and try to find the solution.
 
+.. _license questions:
+
 Q & A
 -----
 
@@ -188,12 +190,12 @@ Q & A
 
 5. Is there support provided in case of issues encountered?
 
-   | Report issue in github or send email to me.
+   | Report issue in github, refer to technical support section above.
 
 6. Does Pyarmor works on various Python versions?
 
-   | Most of features work on Python27, and Python30~Python38, a few features
-   | may only work for Python27, Python35 later.
+   | Most of features work on Python27, and Python30~Python310, a few features
+   | may only work for Python27, Python37 later.
 
 7. Are there plans to maintain PyArmor to support future released Python
    versions?
