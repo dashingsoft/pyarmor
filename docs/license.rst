@@ -218,6 +218,8 @@ Q & A
 10. What means a product serials under PyArmor EULA?
 
    | A product serial means a sale unit and its upgraded versions. For
-   | example, AutoCAD 2003, 2010 could be taken as a product serials.
+   | example, pyarmor for personal, pyarmor for enterprise, pyarmor from
+   | version 1.0 to 7.0, and pyarmor-webui, the grahpics user interface of
+   | pyarmor, all of them belong to one product serial.
 
 .. include:: _common_definitions.txt
