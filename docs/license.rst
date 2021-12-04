@@ -99,7 +99,8 @@ version, then obfuscate them again.
 .. important::
 
     The registration code is valid forever, it can be used permanently, but it
-    may not work with future versions.
+    may not work with future versions, it may need to purchase new license if
+    using a future version.
 
 Upgrade Notes
 -------------
@@ -181,7 +182,9 @@ Q & A
 
 3. How long the purchased license is valid for? is it life long?
 
-   | It's life long. But I can't promise it will work for the future version of PyArmor.
+   | It's valid for ever. But I can't promise it will work for all the future
+   | versions of PyArmor, it may need to purchase new license if using a future
+   | version.
 
 4. Can we use the single license to obfuscate various versions of Python
    package/modules?
