@@ -796,7 +796,9 @@ Packing Obfuscated Scripts Problem
 The final bundle does not work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First make sure the scripts could pack by PyInstaller directly and the final
+First of all, please read the man page of :ref:`pack` completely.
+
+Next make sure the scripts could pack by PyInstaller directly and the final
 bundle works. For example::
 
   pyinstaller foo.py
