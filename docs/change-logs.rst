@@ -33,6 +33,10 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+7.1.1
+-----
+* Change contact email to `pyarmor@163.com`
+
 7.1.0
 -----
 * Check the conflicts of option ``--restrict 0`` and ``--with-license``
