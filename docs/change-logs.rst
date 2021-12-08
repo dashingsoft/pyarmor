@@ -33,6 +33,10 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+7.1.2
+-----
+* Fix issue (#639): failed to obfuscate Python 3.10 scripts for non super mode
+
 7.1.1
 -----
 * Change contact email to `pyarmor@163.com`
