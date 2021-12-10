@@ -38,6 +38,7 @@ Contents:
    installation
    usage
    advanced
+   build-wheel
    examples
    project
    man
