@@ -67,4 +67,7 @@ About the details, please refer to function `bdist_wheel` in the
 `pyarmor/build_meta.py
 <https://github.com/dashingsoft/pyarmor/blob/master/src/build_meta.py#L83>`_
 
+It only implements basic functions, pull request for this feature is welcomed
+if there is any further requirement.
+
 .. include:: _common_definitions.txt
