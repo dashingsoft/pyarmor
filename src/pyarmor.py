@@ -623,6 +623,9 @@ def _obfuscate(args):
     output = args.output
     if os.path.abspath(output) == path:
         raise RuntimeError('Output path can not be same as src')
+    if args.in_place:
+        logging.debug('Obfuscate the scripts inplace')
+        output = path
 
     if args.recursive:
         logging.info('Search scripts mode: Recursive')
@@ -1159,6 +1162,7 @@ def _parser():
                        help='Do not insert protection code to entry script')
     group.add_argument('--cross-protection', metavar='SCRIPT',
                        help='Specify cross protection script')
+    cparser.add_argument('--in-place', help=argparse.SUPPRESS)
 
     cparser.set_defaults(func=_obfuscate)
 
