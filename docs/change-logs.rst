@@ -44,7 +44,8 @@ Incompatible issues
 
 7.2.0
 -----
-* Enhancement(#641): pyarmor as build-backend in pyproject.toml
+* Enhancement(#641): pyarmor as build-backend in pyproject.toml. Refer
+  to :ref:`Build pyarmored wheel`
 
 7.1.2
 -----
