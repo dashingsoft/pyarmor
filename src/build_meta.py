@@ -32,29 +32,27 @@ from wheel.wheelfile import WheelFile
 from wheel.cli.pack import pack as wheel_pack
 from pyarmor.pyarmor import main as pyarmor_main
 
-from setuptools.build_meta import \
+from setuptools.build_meta import build_wheel as setuptools_build_wheel, \
     get_requires_for_build_wheel, \
     get_requires_for_build_sdist, \
     prepare_metadata_for_build_wheel, \
-    build_sdist, \
-    build_wheel as setuptools_build_wheel
+    build_sdist
 
 
 def _wheel_unpack(path, dest='.'):
     with WheelFile(path) as wf:
         namever = wf.parsed_filename.group('namever')
         destination = os.path.join(dest, namever)
-        print("Unpacking to: {}...".format(destination), end='')
         sys.stdout.flush()
         wf.extractall(destination)
     return namever
 
 
-def _wheel_append_runtime_files(build_path, namever):
+def _wheel_append_runtime_files(build_path, namever, pkgname):
     namelist = []
-    for name in os.listdir(build_path):
+    for name in os.listdir(os.path.join(build_path, pkgname)):
         if name.startswith('pytransform'):
-            path = os.path.join(build_path, name)
+            path = os.path.join(build_path, pkgname, name)
             n = len(path) + 1
             if os.path.isdir(path):
                 for root, dirs, files in os.walk(path):
@@ -64,29 +62,29 @@ def _wheel_append_runtime_files(build_path, namever):
             else:
                 namelist.append(name)
 
-    pkgname = namever.split('-')[0]
     wheel_record = os.path.join(build_path, namever + '.dist-info', 'RECORD')
     with open(wheel_record, 'a') as f:
         for name in namelist:
-            f.writeline(pkgname + '/' + name + ',,')
+            f.write(pkgname + '/' + name + ',,\n')
 
 
-def _check_config(self, config_settings, pyarmor_options):
+def _fix_config(config_settings, pyarmor_options):
     config_settings = config_settings or {}
     global_options = config_settings.get('--global-option', [])
-    if '--super-plus-mode' in global_options:
-        pyarmor_options.extend(['--advanced', '5'])
-        global_options.remove('--super-plus-mode')
-    elif '--super-mode' in global_options:
+    if '--super-mode' in global_options:
         pyarmor_options.extend(['--advanced', '2'])
         global_options.remove('--super-mode')
+    elif '--super-plus-mode' in global_options:
+        pyarmor_options.extend(['--advanced', '5'])
+        global_options.remove('--super-plus-mode')
     return config_settings
 
 
-def build_wheel(self, wheel_directory, config_settings=None,
+def build_wheel(wheel_directory, config_settings=None,
                 metadata_directory=None):
-    obf_options = ['obfuscate', '--enable-suffix', '--in-place', '-r']
-    config_settings = self._check_config(config_settings, obf_options)
+    obf_options = ['obfuscate', '--enable-suffix', '--in-place',
+                   '-r', '--bootstrap', '3']
+    config_settings = _fix_config(config_settings, obf_options)
 
     # Build wheel by setuptools
     result_wheel = setuptools_build_wheel(
@@ -98,12 +96,13 @@ def build_wheel(self, wheel_directory, config_settings=None,
     # Unpack wheel and replace the original .py with obfuscated ones
     namever = _wheel_unpack(result_wheel, wheel_directory)
 
+    pkgname = namever.split('-')[0]
     build_path = os.path.join(wheel_directory, namever)
-    obf_options.extend(['--src', build_path, '__init__.py'])
+    obf_options.append(os.path.join(build_path, pkgname, '__init__.py'))
     pyarmor_main(obf_options)
 
     # Append runtime files of obfuscated scripts to wheel
-    _wheel_append_runtime_files(build_path, namever)
+    _wheel_append_runtime_files(build_path, namever, pkgname)
 
     # Pack the patched wheel again
     wheel_pack(build_path, wheel_directory, None)

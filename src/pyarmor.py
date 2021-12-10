@@ -641,7 +641,7 @@ def _obfuscate(args):
                         logging.info('Exclude path "%s"', x)
                         pats.append('prune %s' % x)
 
-        if os.path.abspath(output).startswith(path):
+        if os.path.abspath(output).startswith(path) and not args.in_place:
             x = os.path.abspath(output)[len(path):].strip('/\\')
             pats.append('prune %s' % x)
             logging.info('Auto exclude output path "%s"', x)
@@ -1162,7 +1162,8 @@ def _parser():
                        help='Do not insert protection code to entry script')
     group.add_argument('--cross-protection', metavar='SCRIPT',
                        help='Specify cross protection script')
-    cparser.add_argument('--in-place', help=argparse.SUPPRESS)
+    cparser.add_argument('--in-place', action='store_true',
+                         help=argparse.SUPPRESS)
 
     cparser.set_defaults(func=_obfuscate)
 
