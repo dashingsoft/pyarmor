@@ -9,6 +9,9 @@ first introduced in PEP 518 and later expanded in PEP 517, PEP 621 and
 PEP 660. This file contains build system requirements and information, which are
 used by pip to build the package.
 
+Since v7.2.0, pyarmor could be as PEP 517 backend to build a pyarmored wheel
+based on `setuptools.build_meta`.
+
 Here an example package structure::
 
   mypkg/
@@ -24,24 +27,20 @@ The `pyproject.toml` may like this::
     requires = ["setuptools", "wheel"]
     build-backend = "setuptools.build_meta"
 
-First of all, make sure this package could be built by PEP 517 with backend
-`setuptools.build_meta`. If it doesn't work, please learn the related knowledges
+First make sure backend ``setuptools.build_meta`` works by running the following
+commands to build wheel. If it doesn't work, please learn the related knowledges
 and make it works::
 
     cd mypkg/
     pip wheel .
 
-The python scripts obfuscated by pyarmor are same as normal python scripts with
-an extra dynamic library or extension. Since v7.2.0, pyarmor could be as PEP 517
-backend to build a pyarmored wheel based on `setuptools.build_meta`.
-
-Change ``pyproject.toml`` to this::
+Now edit ``pyproject.toml``, change build backend to ``pyarmor.build_meta``::
 
     [build-system]
     requires = ["setuptools", "wheel", "pyarmor>=7.2.0"]
     build-backend = "pyarmor.build_meta"
 
-Now build a pyarmored wheel by same commands::
+Build a pyarmored wheel by same commands::
 
     cd mypkg/
     pip wheel .
@@ -51,5 +50,21 @@ pip ``--global-option``::
 
     cd mypkg/
     pip wheel --global-option="--super-mode" .
+
+How to do it
+------------
+
+The Python scripts obfuscated by pyarmor are same as normal Python scripts with
+an extra dynamic library or extension. So ``pyarmor.build_meta`` just does
+
+1. Call ``setuptools.build_meta`` to build wheel
+2. Unpack wheel
+3. Obfuscate all the .py files in the unpacking path
+4. Append the pyarmor runtime files to wheel file ``RECORD``
+5. Repack the patched wheel
+
+About the details, please refer to function `bdist_wheel` in the
+`pyarmor/build_meta.py
+<https://github.com/dashingsoft/pyarmor/blob/master/src/build_meta.py#L83>`_
 
 .. include:: _common_definitions.txt
