@@ -33,6 +33,19 @@ Incompatible issues
    ones obfuscated by ealier version. All the scripts must be obfuscated again
    and replace the old runtime files with new ones.
 
+..
+  The dev version could be installed by this command::
+
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.2.0.zip
+
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the stable version from PyPi.
+
+7.2.0
+-----
+* Enhancement(#641): pyarmor as build-backend in pyproject.toml
+
 7.1.2
 -----
 * Fix issue (#639): failed to obfuscate Python 3.10 scripts for non super mode
@@ -49,15 +62,6 @@ Incompatible issues
 * Change core version to **r47.1**
 * Support Python 3.10. For super mode, now only 3 platforms: windows.x86_64,
   linux.x86_64, darwin.x86_64
-
-..
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.1.0.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the stable version from PyPi.
 
 7.0.3
 -----
