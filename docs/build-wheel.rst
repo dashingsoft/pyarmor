@@ -1,6 +1,6 @@
 .. _build pyarmored wheel:
 
-Build pyarmored wheel
+Build Pyarmored Wheel
 =====================
 
 Modern Python packages can contain a `pyproject.toml
@@ -51,8 +51,8 @@ pip ``--global-option``::
     cd mypkg/
     pip wheel --global-option="--super-mode" .
 
-How to do it
-------------
+How does it work
+----------------
 
 The Python scripts obfuscated by pyarmor are same as normal Python scripts with
 an extra dynamic library or extension. So ``pyarmor.build_meta`` just does
