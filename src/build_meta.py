@@ -87,13 +87,14 @@ def build_wheel(wheel_directory, config_settings=None,
     config_settings = _fix_config(config_settings, obf_options)
 
     # Build wheel by setuptools
-    result_wheel = setuptools_build_wheel(
+    basename = setuptools_build_wheel(
         wheel_directory,
         config_settings=config_settings,
         metadata_directory=metadata_directory
     )
 
     # Unpack wheel and replace the original .py with obfuscated ones
+    result_wheel = os.path.join(wheel_directory, basename)
     namever = _wheel_unpack(result_wheel, wheel_directory)
 
     pkgname = namever.split('-')[0]
