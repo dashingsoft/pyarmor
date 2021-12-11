@@ -42,6 +42,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.2.1
+-----
+* Fix issue: build wheel failed
+
 7.2.0
 -----
 * Enhancement(#641): pyarmor as build-backend in pyproject.toml. Refer
