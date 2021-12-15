@@ -68,25 +68,25 @@ def _wheel_append_runtime_files(build_path, namever, pkgname):
             f.write(pkgname + '/' + name + ',,\n')
 
 
-def _fix_config(config_settings, pyarmor_options):
+def _fix_config(config_settings):
     config_settings = config_settings or {}
     global_options = config_settings.get('--global-option', [])
-    if '--super-mode' in global_options:
-        pyarmor_options.extend(['--advanced', '2'])
-        global_options.remove('--super-mode')
-    elif '--super-plus-mode' in global_options:
-        pyarmor_options.extend(['--advanced', '5'])
-        global_options.remove('--super-plus-mode')
+
+    from distutils.util import get_platform
+    plat_name = get_platform().replace('-', '_').replace('.', '_')
+    global_options.append('--plat-name=%s' % plat_name)
+
+    global_options.append('--python-tag=cp%s%s' % sys.version_info[:2])
+    # global_options.append('--py-limited-api=cp%s%s' % sys.version_info[:2])
+
+    config_settings['--global-option'] = global_options
     return config_settings
 
 
 def build_wheel(wheel_directory, config_settings=None,
                 metadata_directory=None):
-    obf_options = ['obfuscate', '--enable-suffix', '--in-place',
-                   '-r', '--bootstrap', '3']
-    config_settings = _fix_config(config_settings, obf_options)
-
     # Build wheel by setuptools
+    config_settings = _fix_config(config_settings)
     result_basename = setuptools_build_wheel(
         wheel_directory,
         config_settings=config_settings,
@@ -99,6 +99,10 @@ def build_wheel(wheel_directory, config_settings=None,
 
     pkgname = namever.split('-')[0]
     build_path = os.path.join(wheel_directory, namever)
+
+    obf_options = ['obfuscate', '--enable-suffix', '--in-place',
+                   '-r', '--bootstrap', '3']
+    obf_options.extend(os.getenv('PIP_PYARMOR_OPTIONS', '').split())
     obf_options.append(os.path.join(build_path, pkgname, '__init__.py'))
     pyarmor_main(obf_options)
 

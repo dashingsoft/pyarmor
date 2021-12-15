@@ -45,11 +45,11 @@ Build a pyarmored wheel by same commands::
     cd mypkg/
     pip wheel .
 
-Or build a pyarmored wheel with :ref:`Super Mode` by passing extra settings to
-pip ``--global-option``::
+Or build a pyarmored wheel with :ref:`Super Mode` by setting extra obfuscation
+options in environment variable ``PIP_PYARMOR_OPTIONS``::
 
     cd mypkg/
-    pip wheel --global-option="--super-mode" .
+    PIP_PYARMOR_OPTIONS="--advanced 2" pip wheel .
 
 How does it work
 ----------------
@@ -65,7 +65,7 @@ an extra dynamic library or extension. So ``pyarmor.build_meta`` just does
 
 About the details, please refer to function `bdist_wheel` in the
 `pyarmor/build_meta.py
-<https://github.com/dashingsoft/pyarmor/blob/master/src/build_meta.py#L83>`_
+<https://github.com/dashingsoft/pyarmor/blob/master/src/build_meta.py#L86>`_
 
 It only implements basic functions, pull request for this feature is welcomed
 if there is any further requirement.
