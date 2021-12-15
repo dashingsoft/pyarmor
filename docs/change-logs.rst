@@ -42,8 +42,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
-7.2.1
+7.2.3
 -----
+* Fix issue(#644): build pyarmored wheel with the corresponding python tag and
+  platform tag
 * Fix issue: build wheel failed
 
 7.2.0
