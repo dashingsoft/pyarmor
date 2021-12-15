@@ -29,7 +29,7 @@ The `pyproject.toml` may like this::
 
 First make sure backend ``setuptools.build_meta`` works by running the following
 commands to build wheel. If it doesn't work, please learn the related knowledges
-and make it works::
+`pip wheel <https://pip.pypa.io/en/stable/cli/pip_wheel/>`_ and make it works::
 
     cd mypkg/
     pip wheel .
@@ -37,7 +37,7 @@ and make it works::
 Now edit ``pyproject.toml``, change build backend to ``pyarmor.build_meta``::
 
     [build-system]
-    requires = ["setuptools", "wheel", "pyarmor>=7.2.0"]
+    requires = ["setuptools", "wheel", "pyarmor>7.2.0"]
     build-backend = "pyarmor.build_meta"
 
 Build a pyarmored wheel by same commands::
@@ -45,11 +45,21 @@ Build a pyarmored wheel by same commands::
     cd mypkg/
     pip wheel .
 
-Or build a pyarmored wheel with :ref:`Super Mode` by setting extra obfuscation
-options in environment variable ``PIP_PYARMOR_OPTIONS``::
+``pyarmor.build_meta`` also supports pip configuration ``pyarmor.advanced`` to
+build a pyarmored wheel with :ref:`Super Mode`.
+
+First run `pip config <https://pip.pypa.io/en/stable/cli/pip_config/>`_ ::
+
+    pip config set pyarmor.advanced 2
+
+Then::
 
     cd mypkg/
-    PIP_PYARMOR_OPTIONS="--advanced 2" pip wheel .
+    pip wheel .
+
+Removing this configuration by this way::
+
+  pip config unset pyarmor.advanced
 
 How does it work
 ----------------
