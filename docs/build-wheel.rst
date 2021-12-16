@@ -45,6 +45,18 @@ Build a pyarmored wheel by same commands::
     cd mypkg/
     pip wheel .
 
+Or build a pyarmored wheel with :ref:`Super Mode` by setting extra obfuscation
+options in environment variable ``PIP_PYARMOR_OPTIONS``::
+
+    cd mypkg/
+
+    # In Windows
+    set PIP_PYARMOR_OPTIONS=--advanced 2
+    pip wheel .
+
+    # In Linux or MacOs
+    PIP_PYARMOR_OPTIONS="--advanced 2" pip wheel .
+
 ``pyarmor.build_meta`` also supports pip configuration ``pyarmor.advanced`` to
 build a pyarmored wheel with :ref:`Super Mode`.
 
@@ -59,7 +71,7 @@ Then::
 
 Removing this configuration by this way::
 
-  pip config unset pyarmor.advanced
+    pip config unset pyarmor.advanced
 
 How does it work
 ----------------

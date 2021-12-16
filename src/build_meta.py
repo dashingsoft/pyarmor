@@ -69,11 +69,13 @@ def _wheel_append_runtime_files(build_path, namever, pkgname):
 
 
 def _fix_config(config_settings, obf_options):
-    from pip._internal.configuration import Configuration
+    from pip._internal.configuration import Configuration, ConfigurationError
     config = Configuration(False)
     config.load()
-    for k, v in config.items():
+    for k, v in reversed(config.items()):
         if k in ('pyarmor.advanced', ':env:.pyarmor-advanced'):
+            if v not in ('2', '3', '4', '5'):
+                raise ConfigurationError('Invalid pyarmor.advanced')
             obf_options.extend(['--advanced', v])
             break
 
