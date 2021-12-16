@@ -57,14 +57,14 @@ options in environment variable ``PIP_PYARMOR_OPTIONS``::
     # In Linux or MacOs
     PIP_PYARMOR_OPTIONS="--advanced 2" pip wheel .
 
-``pyarmor.build_meta`` also supports pip configuration ``pyarmor.advanced`` to
-build a pyarmored wheel with :ref:`Super Mode`.
+Since v7.2.4 pip configuration ``pyarmor.advanced`` also could be used to build
+a pyarmored wheel with :ref:`Super Mode`.
 
 First run `pip config <https://pip.pypa.io/en/stable/cli/pip_config/>`_ ::
 
     pip config set pyarmor.advanced 2
 
-Then::
+Then run the building command::
 
     cd mypkg/
     pip wheel .
