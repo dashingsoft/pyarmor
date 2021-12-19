@@ -97,6 +97,42 @@ There are a few differences in the spp mode:
     >>> raise
     UnboundlocalError: local variable referenced before assignment
 
+Unsupport features for spp mode:
+
+.. code-block:: python
+
+    unsupport_nodes = (
+        ast.Nonlocal,
+        ast.AsyncFunctionDef, ast.AsyncFor, ast.AsyncWith,
+        ast.Await, ast.Yield, ast.YieldFrom, ast.GeneratorExp
+    )
+    if hasattr(ast, 'MatchValue'):
+        unsupport_nodes += (
+            ast.MatchValue, ast.MatchSingleton, ast.MatchSequence,
+            ast.MatchMapping, ast.MatchClass, ast.MatchStar,
+            ast.MatchAs, ast.MatchOr
+        )
+
+And unsupport functions::
+
+    exec, eval, super, locals, sys._getframe
+
+For example, the following functions will not obfuscated by super plus
+mode, because they use unsupport features or call unsupport functions:
+
+.. code-block:: python
+
+   async def nested():
+       return 42
+
+   def foo1():
+       for n range(10):
+           yield n
+
+   def foo2():
+      frame = sys._getframe(2)
+      print('parent frame is', frame)
+
 .. note::
 
    Super plus mode is not available in the trial version.
