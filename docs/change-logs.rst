@@ -42,6 +42,11 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.2.4
+-----
+* Fix typo in contact email when printing registration information.
+* Support `pip config` to pass extra option when building pyarmored wheel.
+
 7.2.3
 -----
 * Fix issue(#644): build pyarmored wheel with the corresponding python tag and
