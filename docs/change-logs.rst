@@ -42,6 +42,12 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.3.0
+-----
+* Change core version to **r48.2**
+* Fix Apple Silcon crash issue: use `darwin.aarch64.0` as default library
+* Add 2 super mode libraries: darwin.aarch64.8.py38, darwin.aarch64.8.py39
+
 7.2.4
 -----
 * Fix typo in contact email when printing registration information.
