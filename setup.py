@@ -37,10 +37,6 @@ platform_data_files = [
     'platforms/linux/x86/_pytransform.so',
     'platforms/linux/x86_64/_pytransform.so',
     'platforms/darwin/x86_64/_pytransform.dylib',
-
-    'platforms/windows/x86_64/sppmode.dll',
-    'platforms/linux/x86_64/sppmode.so',
-    'platforms/darwin/x86_64/sppmode.so',
 ]
 
 if argv[1] == 'bdist_wheel':
