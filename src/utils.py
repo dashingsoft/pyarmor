@@ -30,7 +30,6 @@ import re
 import shutil
 import struct
 import sys
-import tempfile
 from base64 import b64encode
 from codecs import BOM_UTF8
 from glob import glob
@@ -47,7 +46,7 @@ except ImportError:
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
     platform_url, platform_config, key_url, reg_url, \
-    core_version, capsule_filename, platform_old_urls
+    core_version, capsule_filename, platform_old_urls, sppmode_info
 from sppmode import build as sppbuild, mixin as sppmixin
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
@@ -1717,3 +1716,60 @@ def exclude_functions(names=''):
     if pytransform._pytransform.set_option(7, names.encode()) == -1:
         raise RuntimeError('Excluding functions is not supported by this '
                            'version, please upgrade pyarmor to the latest')
+
+
+def get_sppmode_files(timeout=None):
+    licfile = os.path.join(HOME_PATH, 'license.lic')
+    sppver = sppmode_info['version']
+    spplatforms = sppmode_info['platforms']
+
+    platpath = pytransform.format_platform().replace('\\', '/')
+    platid = platpath.replace('/', '.')
+    if platid not in spplatforms.keys():
+        raise RuntimeError('sppmode does NOT work in platform "%s"' % platid)
+
+    ext = '.dll' if platid.startswith('win') else '.so'
+    libname = os.path.join(HOME_PATH, 'sppmode' + ext)
+    vername = os.path.join(HOME_PATH, '.sppver')
+    if os.path.exists(vername) and os.path.exists(libname):
+        with open(vername) as f:
+            libver = f.readline().strip()
+    else:
+        libver = ''
+
+    if libver != sppver:
+        rcode = get_registration_code()
+        if not rcode:
+            raise RuntimeError('sppmode is not available in the trial version')
+        rcode = rcode.replace('-sn-1.txt', '')
+        with open(licfile, 'rb') as f:
+            licdata = f.read()
+        secret = _get_user_secret(licdata)
+
+        url = platform_url.format(version=sppver)
+        url = '/'.join([url, 'spp', platpath])
+        logging.info('Getting remote file: %s', url)
+
+        timeout = PYARMOR_TIMEOUT if timeout is None else timeout
+        req = Request(url)
+        auth = b64encode(('%s:%s' % (rcode, secret)).encode())
+        req.add_header('Authorization', 'Basic ' + auth.decode())
+        res = _urlopen(req, None, timeout)
+        logging.info('Downloading sppmode library for "%s" ...', platid)
+        if res is None:
+            raise RuntimeError('Download sppmode library failed')
+
+        data = res.read()
+        if hashlib.sha256(data).hexdigest() != spplatforms[platid]:
+            raise RuntimeError('Incomplete sppmode library is downloaded')
+
+        logging.info('Writing target file: %s', libname)
+        with open(libname, 'wb') as f:
+            f.write(data)
+        logging.info('Writing version file: %s', vername)
+        with open(vername, 'w') as f:
+            f.write(sppver)
+
+        logging.info('Download sppmode library "%s" OK', platid)
+
+    return libname, licfile

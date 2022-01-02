@@ -50,3 +50,12 @@ key_url = 'https://api.dashingsoft.com/product/key/%s/query'
 reg_url = 'https://api.dashingsoft.com/product/key/activate/%s/'
 buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1'
 help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
+
+sppmode_info = {
+    'version': 'r48.2',
+    'platforms': {
+        'darwin.x86_64': '',
+        'windows.x86_64': '',
+        'linux.x86_64': '',
+    }
+}

@@ -1,7 +1,6 @@
 import ast
 import logging
 import os
-import platform
 import struct
 import sys
 
@@ -62,17 +61,10 @@ def build(source, modname, destname=None):
 def _load_sppbuild():
     global _spplib
     if _spplib is None:
-        from utils import PYARMOR_PATH as libpath, PYARMOR_HOME as homepath
-        plat = platform.system().lower()
-        mach = platform.machine().lower()
-        if mach not in ('x86_64', 'amd64'):
-            raise RuntimeError('sppmode now only works in x86_64 platform')
-        mach = 'x86_64'
-        ext = '.dll' if plat.startswith('win') else '.so'
-        name = os.path.join(libpath, 'platforms', plat, mach, 'sppmode' + ext)
+        from utils import get_sppmode_files
+        name, licfile = get_sppmode_files()
         _spplib = cdll.LoadLibrary(name)
         sppinit = PYFUNCTYPE(c_int, c_void_p, c_void_p)(('sppinit', _spplib))
-        licfile = os.path.expanduser(os.path.join(homepath, 'license.lic'))
         logging.debug('Check license file "%s"', licfile)
         ret = sppinit(pythonapi._handle, licfile.encode())
         if ret == -1:
