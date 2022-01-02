@@ -1747,7 +1747,7 @@ def get_sppmode_files(timeout=None):
         secret = _get_user_secret(licdata)
 
         url = platform_url.format(version=sppver)
-        url = '/'.join([url, 'spp', platpath])
+        url = '/'.join([url, 'spp', platid, os.path.basename(libname)])
         logging.info('Getting remote file: %s', url)
 
         timeout = PYARMOR_TIMEOUT if timeout is None else timeout
