@@ -790,6 +790,14 @@ Please consult Android development document, copy the whole folder `pytransform`
 to right location where Android allow to load dynamic library, and set
 `PYTHONPATH` or any other way only if Python could find and import it.
 
+libpython3.9.so.1.0: cannot open shared object file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If missing any python core library such as `python39.dll`, `libpython3.9.so`,
+etc, make sure this python interpreter is built with `--enable-shared`. By
+default, the runtime extension `pytransform` is linked to python dynamic
+library.
+
 Packing Obfuscated Scripts Problem
 ----------------------------------
 
