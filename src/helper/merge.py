@@ -149,6 +149,8 @@ def merge_runtimes(paths, output):
             runtimes.append(root[n:])
 
         for x in files:
+            if x in ('pytransform_bootstrap.py', 'pytransform_protection.py'):
+                continue
             if x.startswith('pytransform'):
                 runtimes.append(os.path.join(root, x)[n:])
             elif is_pyscript(x) and not pyvers:
