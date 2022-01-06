@@ -252,6 +252,8 @@ def main():
                         action='store_true',
                         dest='debug',
                         help='print debug log (default: %(default)s)')
+    parser.add_argument('-n', '--no-runtime', action='store_true',
+                        help='Ignore runtime files')
     parser.add_argument('path', nargs='+',
                         help="Path or obfuscated script")
 
@@ -280,9 +282,10 @@ def main():
                           os.path.join(output, name))
         logging.info('Merging obfuscated scripts OK')
 
-        logging.info('Merging runtime files...')
-        merge_runtimes(args.path, output)
-        logging.info('Merging runtime files OK')
+        if not args.no_runtime:
+            logging.info('Merging runtime files...')
+            merge_runtimes(args.path, output)
+            logging.info('Merging runtime files OK')
 
     logger.info('Merge all the scripts to %s successfully', output)
 
