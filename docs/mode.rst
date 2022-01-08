@@ -58,7 +58,8 @@ Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 * Download and install Windows version of `LLVM <https://releases.llvm.org>`_
 * Download `https://pyarmor.dashingsoft.com/downloads/tools/clang-9.0.zip`, it's
   about 26M bytes, there is only one file in it. Unzip it and save ``clang.exe``
-  to ``$HOME/.pyarmor``
+  to ``$HOME/.pyarmor``. ``$HOME`` is home path of current logon user, check the
+  environment variable ``HOME`` to get the real path.
 
 After ``c`` compiler works, enable super plus mode by ``--advanced 5``::
 
