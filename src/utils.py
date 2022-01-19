@@ -1096,7 +1096,8 @@ def query_keyinfo(key):
         res = _urlopen(key_url % key, licdata, timeout=6.0)
         data = json_loads(res.read().decode())
     except Exception as e:
-        return '\nError: %s' % str(e)
+        note = 'Note: sometimes remote server is busy, please try it later'
+        return '\nError: %s\n%s' % (str(e), note)
 
     name = data['name']
     email = data['email']
