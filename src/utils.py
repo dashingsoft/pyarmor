@@ -747,17 +747,17 @@ def make_project_command(platform, python, pyarmor, output):
 
 def get_registration_code():
     try:
-        code = pytransform.get_license_info()['CODE']
-    except Exception:
-        # Sometimes dynamic library _pytransform has not been loaded
-        licfile = os.path.join(HOME_PATH, 'license.lic')
-        with open(licfile, 'rb') as f:
-            lictext = b64decode(f.read())
-        i = lictext.find(b'pyarmor-vax-')
-        if i > 0:
-            code = lictext[i:i+18].encode()
+        if pytransform._pytransform:
+            code = pytransform.get_license_info()['CODE']
         else:
-            code = None
+            # Sometimes dynamic library _pytransform has not been loaded
+            licfile = os.path.join(HOME_PATH, 'license.lic')
+            with open(licfile, 'rb') as f:
+                lictext = b64decode(f.read())
+            i = lictext.find(b'pyarmor-vax-')
+            code = lictext[i:i+18].encode() if i > 0 else None
+    except Exception:
+        code = None
     return code
 
 

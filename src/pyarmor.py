@@ -1586,8 +1586,8 @@ def main(argv):
 
     if args.func.__name__[1:] not in ('register', 'download'):
         pytransform_bootstrap(capsule=DEFAULT_CAPSULE, force=args.boot)
-        logging.info(_version_info(verbose=0))
 
+    logging.info(_version_info(verbose=0))
     logging.info('Python %d.%d.%d', *sys.version_info[:3])
     args.func(args)
 
