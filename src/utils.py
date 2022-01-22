@@ -30,7 +30,7 @@ import re
 import shutil
 import struct
 import sys
-from base64 import b64encode
+from base64 import b64encode, b64decode
 from codecs import BOM_UTF8
 from glob import glob
 from json import dumps as json_dumps, loads as json_loads
@@ -749,7 +749,15 @@ def get_registration_code():
     try:
         code = pytransform.get_license_info()['CODE']
     except Exception:
-        code = None
+        # Sometimes dynamic library _pytransform has not been loaded
+        licfile = os.path.join(HOME_PATH, 'license.lic')
+        with open(licfile, 'rb') as f:
+            lictext = b64decode(f.read())
+        i = lictext.find(b'pyarmor-vax-')
+        if i > 0:
+            code = lictext[i:i+18].encode()
+        else:
+            code = None
     return code
 
 
