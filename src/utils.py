@@ -235,7 +235,7 @@ def _get_platform_list(platid=None):
         cfg = json_loads(f.read())
 
     ver = cfg.get('version')
-    if not ver.split('.')[0] == core_version.split('.')[0]:
+    if not ver == core_version:
         if not get_registration_code():
             logging.warning('The trial version could not download the latest'
                             ' core libraries, tag r41.15a is always used')
