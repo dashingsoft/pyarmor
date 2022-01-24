@@ -818,7 +818,7 @@ def _register(args):
             print('')
             print('Please send request to "pyarmor@163.com" from '
                   'the registration email if you would like to '
-                  'change the registration information.')
+                  'change the typos of registration information.')
         else:
             print(purchase_info)
         return
