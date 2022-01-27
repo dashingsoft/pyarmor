@@ -3,8 +3,8 @@
 Change Logs
 ===========
 
-**Since v7.3.1, if the pyarmor license is issued before 2020 year,
- `pyarmor register` may show trial version**
+**Since v7.3.1, if the pyarmor license is issued before 2020 year, both of
+ `pyarmor register` and `pyarmor download` work in trial version**
 
 Incompatible issues
 -------------------
