@@ -89,7 +89,28 @@ About the details, please refer to function `bdist_wheel` in the
 `pyarmor/build_meta.py
 <https://github.com/dashingsoft/pyarmor/blob/master/src/build_meta.py#L86>`_
 
-It only implements basic functions, pull request for this feature is welcomed
-if there is any further requirement.
+It's a simple script, and only implements basic functions, if something is wrong
+with the script, do it manully or writeh a shell script as the following steps:
+
+1. Build wheel with original package
+2. Unpack this wheel to temporary path by this command::
+     python3 -m wheel unpack --dest /path/to/temp xxx.whl
+3. Obfuscate the scripts by `pyarmor obfuscate`, then overrite all the `.py`
+   files in the unpack path with the obfuscated ones.
+4. Append the pyarmor runtime files to wheel file ``RECORD``, search it in the
+   unpack path, the format please refer to the existing items
+5. Repack the patched wheel::
+     python3 -m wheel pack /path/to/temp
+
+Pull request for this feature is welcomed if there is any further requirement.
+
+.. important::
+
+    Build pyarmored wheel is a helper function, there is no more support for
+    this.
+
+    If you don't know how to build a wheel from a package which includes binary
+    file, please learn it by yourself, then take the obfuscated scripts as the
+    normal scripts, refer to :ref:`Key Points to Use Obfuscated Scripts`.
 
 .. include:: _common_definitions.txt
