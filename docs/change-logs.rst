@@ -45,7 +45,7 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
-7.3.2
+7.3.3
 -----
 * Fix issue: `pyarmor register` doesn't show register information for Python3
 * In Darwin codesign the runtime binary file to avoid the obfuscated scripts
