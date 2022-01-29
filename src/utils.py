@@ -755,7 +755,7 @@ def get_registration_code():
             with open(licfile, 'rb') as f:
                 lictext = b64decode(f.read())
             i = lictext.find(b'pyarmor-vax-')
-            code = lictext[i:i+18].encode() if i > 0 else None
+            code = lictext[i:i+18].decode() if i > 0 else None
     except Exception:
         code = None
     return code

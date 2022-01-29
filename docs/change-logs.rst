@@ -45,6 +45,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.3.2
+-----
+* Fix issue: `pyarmor register` doesn't show register information for Python3
+
 7.3.1
 -----
 * Fix issue (#663): the merge script raises exception `too many runtime files`
