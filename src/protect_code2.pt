@@ -17,6 +17,8 @@ def protect_pytransform():
             raise RuntimeError('unexpected obfuscated script')
 
     def check_lib_pytransform():
+        if sys.platform == 'darwin':
+            return
         {relative}import pytransform{suffix} as pytransform
         filename = pytransform.__file__
         with open(filename, 'rb') as f:

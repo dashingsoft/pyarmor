@@ -33,6 +33,8 @@ def protect_pytransform():
 
     def check_lib_pytransform():
         platname = pytransform.sys.platform
+        if platname.startswith('darwin'):
+            return
         libname = '_pytransform{suffix}.dylib' if platname.startswith('darwin') else \
                   '_pytransform{suffix}.dll' if platname.startswith('win') else \
                   '_pytransform{suffix}.dll' if platname.startswith('cygwin') else \

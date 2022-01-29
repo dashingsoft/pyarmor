@@ -34,7 +34,7 @@ from base64 import b64encode, b64decode
 from codecs import BOM_UTF8
 from glob import glob
 from json import dumps as json_dumps, loads as json_loads
-from subprocess import Popen, check_output
+from subprocess import PIPE, Popen, check_output
 from time import gmtime, strftime
 from zipfile import ZipFile
 
@@ -607,8 +607,6 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
 
         logging.info('Patch library %s', target)
         data = _patch_extension(target, keylist, suffix, supermode=False)
-        with open(target, 'wb') as f:
-            f.write(data)
         checklist.append(sum(bytearray(data)))
 
     if not platforms:
@@ -1456,8 +1454,6 @@ def _patch_extension(filename, keylist, suffix='', supermode=True):
             data[offset:offset+size] = keylist[j]
             offset += size
 
-    logging.info('Patch library file OK')
-
     if suffix:
         marker = bytes(b'_vax_000000')
         k = len(marker)
@@ -1471,6 +1467,12 @@ def _patch_extension(filename, keylist, suffix='', supermode=True):
                 raise RuntimeError('Failed to add symbol suffix for library %s'
                                    % filename)
 
+    with open(filename, 'wb') as f:
+        f.write(data)
+
+    sign_binary(filename)
+
+    logging.info('Patch library file OK')
     return data
 
 
@@ -1537,9 +1539,6 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
 
         logging.info('Patch extension %s', target)
         data = _patch_extension(target, keylist, suffix)
-
-        with open(target, 'wb') as f:
-            f.write(data)
         checklist.append(sum(bytearray(data)))
 
     logging.info('Generate runtime files OK')
@@ -1570,9 +1569,6 @@ def _package_super_runtime(output, platforms, filelist, keylist, suffix):
 
         logging.info('Patch extension %s', target)
         data = _patch_extension(target, keylist, suffix)
-
-        with open(target, 'wb') as f:
-            f.write(data)
         checklist.append(sum(bytearray(data)))
 
     logging.info('Generate super runtime package OK')
@@ -1782,3 +1778,26 @@ def get_sppmode_files(timeout=None):
         logging.info('Download sppmode library "%s" OK', platid)
 
     return libname, licfile
+
+
+def sign_binary(filename):
+    if not sys.platform.startswith('darwin'):
+        return
+
+    # Maybe cross platform
+    output = check_output(['file', filename])
+    if output.find(b' Mach-O ') == -1:
+        return
+
+    logging.info("Signing file %s", filename)
+    identity = '-'
+    cmdlist = ['codesign', '-s', identity, '--force', '--all-architectures',
+               '--timestamp', filename]
+    p = Popen(cmdlist, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = p.communicate()
+    if p.returncode != 0:
+        logging.warning("codesign command (%r) failed with error code %d!\n"
+                        "stdout: %r\n"
+                        "stderr: %r",
+                        cmdlist, p.returncode, stdout, stderr)
+        raise SystemError("codesign failure!")
