@@ -48,6 +48,8 @@ Incompatible issues
 7.3.2
 -----
 * Fix issue: `pyarmor register` doesn't show register information for Python3
+* In Darwin codesign the runtime binary file to avoid the obfuscated scripts
+  killed by Apple M1
 
 7.3.1
 -----
