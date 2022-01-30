@@ -641,6 +641,7 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         dest = os.path.join(output, name)
         logging.info('Generate universal binary %s', dest)
         osx_merge_binary(dest, *targets)
+        [os.remove(x) for x in targets]
 
     else:
         libpath = os.path.join(output, pytransform.plat_path)
@@ -1223,7 +1224,7 @@ def _get_preferred_platid(platname, features=None):
         features = nlist[2:3]
 
     elif features is None:
-        features = ['7', '3', '0']
+        features = ['7', '3'] if pytransform.version_info()[-1] else ['0']
 
     pyver = None
     if '8' in features or '11' in features or '25' in features:
@@ -1578,7 +1579,7 @@ def _package_super_runtime(output, platforms, filelist, keylist, suffix):
         dest = os.path.join(output, name)
         logging.info('Generate universal binary %s', dest)
         osx_merge_binary(dest, *targets)
-        os.remove(*targets)
+        [os.remove(x) for x in targets]
 
         logging.info('Generate super runtime package OK')
         return checklist
