@@ -625,6 +625,23 @@ def make_runtime(capsule, output, licfile=None, platforms=None, package=False,
         filename = _build_platforms(platforms)[0]
         logging.info('Copying %s', filename)
         copy3(filename, output)
+
+    elif osx_is_universal_platforms(platforms):
+        filelist = _build_platforms(platforms)
+        targets = [os.path.join(output, a + '.' + os.path.basename(b))
+                   for a, b in zip(platforms, filelist)]
+        for target, filename in zip(targets, filelist):
+            shutil.copy2(filename, target)
+            logging.info('Patch extension %s', target)
+            data = _patch_extension(target, keylist, suffix)
+            checklist.append(sum(bytearray(data)))
+        name = _format_extension_name(filelist[0])
+        if suffix:
+            name = name.replace('.', ''.join([suffix, '.']))
+        dest = os.path.join(output, name)
+        logging.info('Generate universal binary %s', dest)
+        osx_merge_binary(dest, *targets)
+
     else:
         libpath = os.path.join(output, pytransform.plat_path)
         logging.info('Create library path to support multiple platforms: %s',
@@ -1546,6 +1563,26 @@ def _make_super_runtime(capsule, output, platforms, licfile=None, suffix=''):
 
 
 def _package_super_runtime(output, platforms, filelist, keylist, suffix):
+    if osx_is_universal_platforms(platforms):
+        checklist = []
+        targets = [os.path.join(output, a + '.' + os.path.basename(b))
+                   for a, b in zip(platforms, filelist)]
+        for target, filename in zip(targets, filelist):
+            shutil.copy2(filename, target)
+            logging.info('Patch extension %s', target)
+            data = _patch_extension(target, keylist, suffix)
+            checklist.append(sum(bytearray(data)))
+        name = _format_extension_name(filelist[0])
+        if suffix:
+            name = name.replace('.', ''.join([suffix, '.']))
+        dest = os.path.join(output, name)
+        logging.info('Generate universal binary %s', dest)
+        osx_merge_binary(dest, *targets)
+        os.remove(*targets)
+
+        logging.info('Generate super runtime package OK')
+        return checklist
+
     output = os.path.join(output, 'pytransform' + suffix)
     logging.info('Make package path %s', os.path.basename(output))
     makedirs(output, exist_ok=True)
@@ -1801,3 +1838,26 @@ def sign_binary(filename):
                         "stderr: %r",
                         cmdlist, p.returncode, stdout, stderr)
         raise SystemError("codesign failure!")
+
+
+def osx_is_universal_platforms(platforms):
+    platforms = ['.'.join(name.split('.')[:2]) for name in platforms]
+    return set(platforms) == set(['darwin.x86_64', 'darwin.aarch64'])
+
+
+def osx_merge_binary(target, *filelist):
+    cmdlist = ['lipo', '-create', '-output', target]
+    for filename in filelist:
+        arch = os.path.basename(filename).split('.')[1]
+        if arch == 'aarch64':
+            arch = 'arm64'
+        cmdlist.extend(['-arch', arch, filename])
+    logging.debug('Call lipo: %s' % ' '.join(cmdlist))
+    p = Popen(cmdlist, stdout=PIPE, stderr=PIPE)
+    stdout, stderr = p.communicate()
+    if p.returncode != 0:
+        logging.warning("lipo command (%r) failed with error code %d!\n"
+                        "stdout: %r\n"
+                        "stderr: %r",
+                        cmdlist, p.returncode, stdout, stderr)
+        raise SystemError("merge binary failure!")
