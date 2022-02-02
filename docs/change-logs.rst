@@ -45,6 +45,12 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.3.5
+-----
+* Refine register function.
+* In Darwin support option `--platform darwin.aarch64,darwin.x86_64` to create
+  universal runtime binary when obfuscationg the scripts.
+
 7.3.3
 -----
 * Fix issue: `pyarmor register` doesn't show register information for Python3
