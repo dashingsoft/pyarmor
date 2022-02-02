@@ -45,7 +45,7 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-    platform_url, platform_config, key_url, reg_url, \
+    platform_url, platform_config, \
     core_version, capsule_filename, platform_old_urls, sppmode_info
 from sppmode import build as sppbuild, mixin as sppmixin
 
@@ -188,22 +188,36 @@ def _get_user_secret(data):
     return b64encode(bytearray(secret)).decode()
 
 
-def _get_remote_file(path, timeout=6.0, prefix=None):
-    rcode = get_registration_code()
+def _get_download_license_info():
+    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
+    if not os.path.exists(licfile):
+        licfile = os.path.join(HOME_PATH, 'license.lic')
+
+    logging.debug('Got license data from %s', licfile)
+    with open(licfile, 'rb') as f:
+        licdata = f.read()
+
+    rcode = decode_license_key(licdata)
     if not rcode:
+        licfile = os.path.join(PYARMOR_PATH, '.key', 'license.lic')
+        if os.path.exists(licfile):
+            logging.debug('Got seconday license data from %s', licfile)
+            with open(licfile, 'rb') as f:
+                licdata = f.read()
+        rcode = decode_license_key(licdata)
+        if not rcode:
+            raise RuntimeError('This license key may be expired')
+
+    return rcode, _get_user_secret(licdata)
+
+
+def _get_remote_file(path, timeout=6.0, prefix=None):
+    if is_trial_version():
         logging.warning('The trial version could not download '
                         'the latest platform library')
         return _get_old_remote_file(path, timeout=PYARMOR_TIMEOUT)
 
-    rcode = rcode.replace('-sn-1.txt', '')
-
-    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
-    if not os.path.exists(licfile):
-        licfile = os.path.join(HOME_PATH, 'license.lic')
-    logging.debug('Got license data from %s', licfile)
-    with open(licfile, 'rb') as f:
-        licdata = f.read()
-    secret = _get_user_secret(licdata)
+    rcode, secret = _get_download_license_info()
 
     url = platform_url if prefix is None else prefix
     url = '/'.join([url.format(version=core_version), path])
@@ -236,7 +250,7 @@ def _get_platform_list(platid=None):
 
     ver = cfg.get('version')
     if not ver == core_version:
-        if not get_registration_code():
+        if is_trial_version():
             logging.warning('The trial version could not download the latest'
                             ' core libraries, tag r41.15a is always used')
             if _format_platid() in ('windows.x86_64', 'windows.x86',
@@ -365,7 +379,7 @@ def make_capsule(filename):
         shutil.move(OLD_CAPSULE, filename)
         return
 
-    if get_registration_code():
+    if not is_trial_version():
         logging.error('The registered version would use private capsule.'
                       '\n\t Please run `pyarmor register KEYFILE` '
                       'to restore your private capsule.')
@@ -761,17 +775,28 @@ def make_project_command(platform, python, pyarmor, output):
     return filename
 
 
+def is_trial_version():
+    licfile = os.path.join(HOME_PATH, 'license.lic')
+    if not os.path.exists(licfile):
+        return True
+
+    with open(licfile, 'rb') as f:
+        return len(f.read()) == 256
+
+
+def decode_license_key(data):
+    if len(data) == 256:
+        return
+
+    data = b64decode(data)
+    i = data.find(b'pyarmor-vax-')
+    if i > -1:
+        return data[i:i+18].decode()
+
+
 def get_registration_code():
     try:
-        if pytransform._pytransform:
-            code = pytransform.get_license_info()['CODE']
-        else:
-            # Sometimes dynamic library _pytransform has not been loaded
-            licfile = os.path.join(HOME_PATH, 'license.lic')
-            with open(licfile, 'rb') as f:
-                lictext = b64decode(f.read())
-            i = lictext.find(b'pyarmor-vax-')
-            code = lictext[i:i+18].decode() if i > 0 else None
+        code = pytransform.get_license_info()['CODE']
     except Exception:
         code = None
     return code
@@ -1102,88 +1127,6 @@ def save_config(cfg, filename=None):
         f.write(s)
 
 
-def query_keyinfo(key):
-    try:
-        from urllib.parse import urlencode
-    except ImportError:
-        from urllib import urlencode
-
-    licfile = os.path.join(PYARMOR_PATH, 'license.lic')
-    if not os.path.exists(licfile):
-        licfile = os.path.join(HOME_PATH, 'license.lic')
-    logging.debug('Got license data from %s', licfile)
-    with open(licfile) as f:
-        licdata = urlencode({'rcode': f.read()}).encode('utf-8')
-
-    try:
-        logging.debug('Query url: %s', key_url % key)
-        res = _urlopen(key_url % key, licdata, timeout=6.0)
-        data = json_loads(res.read().decode())
-    except Exception as e:
-        note = 'Note: sometimes remote server is busy, please try it later'
-        return '\nError: %s\n%s' % (str(e), note)
-
-    name = data['name']
-    email = data['email']
-    if name and email:
-        return 'This code is authorized to "%s <%s>"\n\n' \
-            'Note: the registration name and email are got from ' \
-            'remote server and shown here only, they will not be used ' \
-            'anywhere else. But the code "%s" will be distributed ' \
-            'with obfusated scripts.' % (name, email, key)
-
-    if 'error' in data:
-        return '\nError: %s' % data['error']
-
-    return '\nError: this code may NOT be issued by PyArmor officially.' \
-        '\nPlease contact <pyarmor@163.com>'
-
-
-def activate_regcode(ucode):
-    res = _urlopen(reg_url % ucode, timeout=6.0)
-    if res is None:
-        raise RuntimeError('Activate registration code failed, '
-                           'got nothing from server')
-
-    if res.code != 200:
-        data = res.read().decode()
-        raise RuntimeError('Activate registration code failed: %s' % data)
-
-    data = res.read()
-    dis = res.headers.get('Content-Disposition')
-    filename = dis.split('"')[1] if dis else 'pyarmor-regfile-1.zip'
-    with open(filename, 'wb') as f:
-        f.write(data)
-
-    return filename
-
-
-def register_keyfile(filename, legency=False):
-    if (not legency) and \
-       not os.getenv('PYARMOR_HOME',
-                     os.getenv('HOME', os.getenv('USERPROFILE'))):
-        logging.debug('Force traditional way because no HOME set')
-        legency = True
-    old_path = HOME_PATH if legency else PYARMOR_PATH
-    old_license = os.path.join(old_path, 'license.lic')
-    if os.path.exists(old_license):
-        logging.info('Remove old license file `%s`', old_license)
-        os.remove(old_license)
-
-    path = PYARMOR_PATH if legency else HOME_PATH
-    if not os.path.exists(path):
-        logging.info('Create path: %s', path)
-        os.makedirs(path)
-    logging.info('Save registration data to: %s', path)
-    f = ZipFile(filename, 'r')
-    try:
-        for item in ('license.lic', '.pyarmor_capsule.zip'):
-            logging.info('Extracting %s' % item)
-            f.extract(item, path=path)
-    finally:
-        f.close()
-
-
 def relpath(path, start=os.curdir):
     try:
         r = os.path.relpath(path, start)
@@ -1354,7 +1297,7 @@ def make_bootstrap_script(output, capsule=None, relative=None, suffix=''):
 
 def get_name_suffix():
     rcode = get_registration_code()
-    if rcode is None:
+    if not rcode:
         return ''
 
     m, n = rcode.replace('-sn-1.txt', '').split('-')[-2:]
@@ -1781,13 +1724,9 @@ def get_sppmode_files(timeout=None):
         libver = ''
 
     if libver != sppver:
-        rcode = get_registration_code()
-        if not rcode:
+        if is_trial_version():
             raise RuntimeError('sppmode is not available in the trial version')
-        rcode = rcode.replace('-sn-1.txt', '')
-        with open(licfile, 'rb') as f:
-            licdata = f.read()
-        secret = _get_user_secret(licdata)
+        rcode, secret = _get_download_license_info()
 
         url = platform_url.format(version=sppver)
         url = '/'.join([url, 'spp', platid, os.path.basename(libname)])

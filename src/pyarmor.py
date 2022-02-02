@@ -49,12 +49,12 @@ from utils import make_capsule, make_runtime, relpath, make_bootstrap_script,\
                   make_license_key, make_entry, show_hd_info, copy_runtime, \
                   build_path, make_project_command, get_registration_code, \
                   pytransform_bootstrap, encrypt_script, search_plugins, \
-                  get_product_key, register_keyfile, query_keyinfo, \
                   get_platform_list, download_pytransform, update_pytransform,\
                   check_cross_platform, compatible_platform_names, \
                   get_name_suffix, get_bind_key, make_super_bootstrap, \
                   make_protection_code, DEFAULT_CAPSULE, PYARMOR_PATH, \
-                  activate_regcode, is_pyscript
+                  get_product_key, is_pyscript, is_trial_version
+from register import activate_regcode, register_keyfile, query_keyinfo
 
 import packer
 
@@ -823,10 +823,12 @@ def _register(args):
             print(purchase_info)
         return
 
+    if args.upgrade and is_trial_version():
+        logging.info('Ignore option --upgrade for trial version')
+        args.upgrade = None
+
     if args.filename.endswith('.zip'):
-        logging.info('Start to register keyfile: %s', args.filename)
-        register_keyfile(args.filename, legency=args.legency)
-        logging.info('This keyfile has been registered successfully.')
+        register_keyfile(args.filename, args.upgrade, legency=args.legency)
         return
 
     if args.filename in ('CODE', 'XXX'):
@@ -862,9 +864,7 @@ def _register(args):
                      os.path.abspath(filename))
         return
 
-    logging.info('Start to register PyArmor with keyfile')
-    register_keyfile(filename, legency=args.legency)
-    logging.info('This keyfile has been registered successfully.')
+    register_keyfile(filename, args.upgrage, legency=args.legency)
 
     logging.debug('Remove temporary keyfile %s', filename)
     os.remove(filename)
@@ -1050,23 +1050,17 @@ def _check_runtime_license(rsettings, licfile):
     return licfile
 
 
-def _version_action():
-    pytransform_bootstrap()
-    return _version_info()
-
-
 def _version_info(verbose=2):
-    rcode = get_registration_code()
-    if rcode:
-        rcode = rcode.replace('-sn-1.txt', '')
-        ver = 'PyArmor Version %s' % version
-    else:
-        ver = 'PyArmor Trial Version %s' % version
+    trial = ' Trial' if is_trial_version() else ''
+    ver = 'PyArmor%s Version %s' % (trial, version)
     if verbose == 0:
         return ver
 
+    pytransform_bootstrap()
+    rcode = get_registration_code()
     info = [ver]
     if rcode:
+        rcode = rcode.replace('-sn-1.txt', '')
         info.append('Registration Code: %s' % rcode)
         info.append(query_keyinfo(rcode))
     if verbose > 1:
@@ -1085,7 +1079,7 @@ def _parser():
                'https://pyarmor.readthedocs.io'
     )
     parser.add_argument('-v', '--version', action='version',
-                        version=_version_action)
+                        version=_version_info)
     parser.add_argument('-q', '--silent', action='store_true',
                         help='Suppress all normal output')
     parser.add_argument('-d', '--debug', action='store_true',
@@ -1436,6 +1430,8 @@ def _parser():
                          help='Open web browser to purchase code')
     cparser.add_argument('-s', '--save', action='store_true',
                          help=argparse.SUPPRESS)
+    cparser.add_argument('-u', '--upgrade', action='store_true',
+                         help='Upgrade the old license')
     cparser.add_argument('filename', nargs='?', metavar='KEYFILE',
                          help='Registration code or keyfile')
     cparser.set_defaults(func=_register)
