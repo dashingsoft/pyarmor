@@ -3,8 +3,8 @@
 Change Logs
 ===========
 
-**Since v7.3.1, if the pyarmor license is issued before 2020 year, both of
- `pyarmor register` and `pyarmor download` work in trial version**
+**Since v7.3.1, some features may be not available for old license. pyarmor will
+ report "This license may be expired" when using those features**
 
 Incompatible issues
 -------------------
