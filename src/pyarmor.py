@@ -864,7 +864,7 @@ def _register(args):
                      os.path.abspath(filename))
         return
 
-    register_keyfile(filename, args.upgrage, legency=args.legency)
+    register_keyfile(filename, args.upgrade, legency=args.legency)
 
     logging.debug('Remove temporary keyfile %s', filename)
     os.remove(filename)
