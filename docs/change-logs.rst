@@ -45,7 +45,7 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
-7.3.5
+7.3.6
 -----
 * Refine register function.
 * In Darwin support option `--platform darwin.aarch64,darwin.x86_64` to create
