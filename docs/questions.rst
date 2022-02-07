@@ -798,6 +798,9 @@ etc, make sure this python interpreter is built with `--enable-shared`. By
 default, the runtime extension `pytransform` is linked to python dynamic
 library.
 
+In Linux platform, try to install `libpython3.9` by `apt` or any other
+pacakge manage tool.
+
 Packing Obfuscated Scripts Problem
 ----------------------------------
 
