@@ -45,6 +45,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.3.7 (dev)
+-----------
+* Fix centos6 issue: GLIBC 2.14 not found
+
 7.3.6
 -----
 * Refine register function.
