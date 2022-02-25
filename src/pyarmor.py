@@ -559,7 +559,7 @@ def _capsule(args):
         logging.info('Generating public capsule ...')
         make_capsule(capsule)
     else:
-        logging.info('Do nothing, capsule %s has been exists', capsule)
+        logging.info('Do nothing, capsule %s already exists', capsule)
 
 
 @arcommand

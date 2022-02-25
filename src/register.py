@@ -58,8 +58,8 @@ def query_keyinfo(key):
     email = data['email']
     if name and email:
         return 'This code is authorized to "%s <%s>"\n\n' \
-            'Note: the registration name and email are got from ' \
-            'remote server and shown here only, they will not be used ' \
+            'Note: the registration name and email got from ' \
+            'remote server is shown here only, they will not be used ' \
             'anywhere else. But the code "%s" will be distributed ' \
             'with obfusated scripts.' % (name, email, key)
 
@@ -206,7 +206,7 @@ def select_key(rcode):
 
 
 def append_key(licfile, capsule):
-    '''Append license to keyfile, ignore if license has been exists'''
+    '''Append license to keyfile, ignore if license already exists'''
     with open(licfile, 'rb') as f:
         old_code = decode_license_key(f.read())
         if not old_code:
