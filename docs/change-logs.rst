@@ -45,9 +45,13 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
-7.3.7 (dev)
------------
+7.4.0
+-----
+* Change core version to **r49.3**
 * Fix centos6 issue: GLIBC 2.14 not found
+* Fix python3.10 super mode crash issue (#686)
+* Support new platform `musl.aarch64`
+* Add new super mode `darwin.aarch64` for Python 3.10
 
 7.3.6
 -----

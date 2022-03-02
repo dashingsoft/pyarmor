@@ -39,6 +39,7 @@ all the other supported platforms::
     musl.x86_64
     musl.arm
     musl.mips32
+    musl.aarch64
     poky.x86
 
 For Linux platforms, the first identifier stands for libc used in this
@@ -67,7 +68,7 @@ example, ``linux/x86_64/11/py38``.
    * - darwin
      - aarch64
      - 11
-     - 38, 39
+     - 38, 39, 310
      - Apple Silicon
    * - ios
      - aarch64
