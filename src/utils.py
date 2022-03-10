@@ -409,7 +409,11 @@ def _make_entry(filename, rpath=None, relative=None, shell=None, suffix='',
         '.' if (relative is True) or ((relative is None) and pkg) else '',
         suffix)
 
-    with open(filename, 'r') as f:
+    kwargs = {} if sys.version_info[0] == 2 else {
+        'encoding': _guess_encoding(filename)
+        }
+
+    with open(filename, 'r', **kwargs) as f:
         lines = f.readlines()
     # Fix empty file issue
     n = 0
@@ -422,7 +426,7 @@ def _make_entry(filename, rpath=None, relative=None, shell=None, suffix='',
         if line.strip() == entry_code.strip():
             return
 
-    with open(filename, 'w') as f:
+    with open(filename, 'w', **kwargs) as f:
         f.write(''.join(lines[:n]))
         if shell:
             f.write(shell)
