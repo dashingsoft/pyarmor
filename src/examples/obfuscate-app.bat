@@ -41,7 +41,7 @@ IF DEFINED LICENSE_EXPIRED_DATE (
   IF ERRORLEVEL 1 GOTO END
 
   REM Specify license file by option --with-license
-  SET WITH_LICENSE="--with-license licenses\%LICENSE_CODE%\license.lic"
+  SET WITH_LICENSE=--with-license licenses\%LICENSE_CODE%\license.lic
 )
 
 REM Obfuscate all the ".py" files
