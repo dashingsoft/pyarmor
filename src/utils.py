@@ -411,7 +411,7 @@ def _make_entry(filename, rpath=None, relative=None, shell=None, suffix='',
 
     kwargs = {} if sys.version_info[0] == 2 else {
         'encoding': _guess_encoding(filename)
-        }
+    }
 
     with open(filename, 'r', **kwargs) as f:
         lines = f.readlines()
