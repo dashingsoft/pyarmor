@@ -57,5 +57,7 @@ sppmode_info = {
         'darwin.x86_64': '5dc133de7b08beda06316a50e1b0dbc1cd9d408feda58c9d38b9ef5389d54720',
         'windows.x86_64': 'bf53e34355d0c932d161f96cba893497936cbcbd6aa9feb7b90e56f436d622d0',
         'linux.x86_64': 'f7af75c3042ee9aa5ca21701fb08c4e4b5331ac66c570192734e06e62a9d703c',
+        'darwin.aarch64': 'ab832ec8cbf3b0904e20cb816b8fca3189f2e0850ab82379380bddf8d2ac9d92',
+        'linux.aarch64': '44d9c5cb09da939b26142443ec5e1320e6b3a447f4b3307b6a95302427a5b96a',
     }
 }
