@@ -58,7 +58,7 @@ Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 * Download and install Windows version of `LLVM <https://releases.llvm.org>`_
 * Download `https://pyarmor.dashingsoft.com/downloads/tools/clang-9.0.zip`, it's
   about 26M bytes, there is only one file in it. Unzip it and save ``clang.exe``
-  to ``$HOME/.pyarmor``. ``$HOME`` is home path of current logon user, check the
+  to ``$HOME/.pyarmor/``. ``$HOME`` is home path of current logon user, check the
   environment variable ``HOME`` to get the real path.
 
 After ``c`` compiler works, enable super plus mode by ``--advanced 5``::
@@ -118,8 +118,8 @@ And unsupport functions::
 
     exec, eval, super, locals, sys._getframe
 
-For example, the following functions will not obfuscated by super plus
-mode, because they use unsupport features or call unsupport functions:
+For example, the following functions are not obfuscated by super plus
+mode, because they use unsupported features or unsupported functions:
 
 .. code-block:: python
 
