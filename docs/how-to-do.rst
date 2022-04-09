@@ -67,7 +67,7 @@ Then change code object as the following way
             POP_TOP
             END_FINALLY
 
-* Append function names ``__armor_enter``, ``__armor_exit__`` to ``co_consts``
+* Append function names ``__armor_enter__``, ``__armor_exit__`` to ``co_consts``
 
 * Increase ``co_stacksize`` by 2
 
