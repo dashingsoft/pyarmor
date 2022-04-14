@@ -170,7 +170,7 @@ It is recommended to upgrade in the next minor version.
 .. note::
 
    In trial version the module could not be obfuscated by advanced
-   mdoe if there are more than about 30 functions in this module, (It
+   mode if there are more than about 30 functions in this module, (It
    still could be obfuscated by non-advanced mode).
 
 .. important::
@@ -191,7 +191,7 @@ Enable vm mode with advanced mode by this way::
 
     pyarmor obfuscate --advanced 3 foo.py
 
-Enable vm mode with super mdoe by this way::
+Enable vm mode with super mode by this way::
 
     pyarmor obfuscate --advanced 4 foo.py
 
