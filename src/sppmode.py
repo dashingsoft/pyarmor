@@ -39,7 +39,7 @@ def _check_inline_option(source):
             break
         i = line.lower().find(marker)
         if i > 0:
-            options.extend(line[i+len(marker)].strip().split(','))
+            options.extend(line[i+len(marker):].strip().split(','))
     return [x.strip() for x in options]
 
 
