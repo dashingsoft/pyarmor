@@ -45,6 +45,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.4.2
+-----
+* Fix inline option `no-spp-mode` issue
+
 7.4.1
 -----
 * Fix encoding issue when generating entry script (#712)
