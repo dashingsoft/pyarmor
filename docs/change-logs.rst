@@ -45,6 +45,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.4.3
+-----
+* Fix `pack` issue: pass duplicated extra options to PyInstaller
+
 7.4.2
 -----
 * Fix inline option `no-spp-mode` issue
