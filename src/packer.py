@@ -351,7 +351,8 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     src = relpath(src)
     output = relpath(output)
     obfdist = os.path.join(output, 'obf')
-    packcmd = DEFAULT_PACKER['PyInstaller'][2] + [output] + options
+    initcmd = DEFAULT_PACKER['PyInstaller'][2] + [output]
+    packcmd = initcmd + options
     script = os.path.join(src, entry)
 
     if not script.endswith('.py') or not os.path.exists(script):
@@ -437,7 +438,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
-    run_command([sys.executable] + DEFAULT_PACKER['PyInstaller'][2] + [output] + ['-y', '--clean', patched_spec])
+    run_command([sys.executable] + initcmd + ['-y', '--clean', patched_spec])
 
     if not args.keep:
         if args.setup is None:
