@@ -437,7 +437,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
-    run_command([sys.executable] + packcmd + ['-y', '--clean', patched_spec])
+    run_command([sys.executable] + DEFAULT_PACKER['PyInstaller'][2] + [output] + ['-y', '--clean', patched_spec])
 
     if not args.keep:
         if args.setup is None:
