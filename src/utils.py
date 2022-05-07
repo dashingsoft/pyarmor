@@ -251,14 +251,13 @@ def _get_platform_list(platid=None):
     ver = cfg.get('version')
     if not ver == core_version:
         if is_trial_version():
-            logging.warning('The trial version could not download the latest'
-                            ' core libraries, tag r41.15a is always used')
             if _format_platid() in ('windows.x86_64', 'windows.x86',
                                     'linux.x86_64', 'linux.x86',
                                     'darwin.x86_64'):
-                raise RuntimeError('The latest pyarmor could not work with '
-                                   'core library r41.15a, please use '
-                                   'pyarmor < v7.0.0')
+                raise RuntimeError('The trial version pyarmor could not work, '
+                                   'please use pyarmor < v7.0.0')
+            logging.warning('The trial version could not download the latest'
+                            ' core libraries, tag r41.15a is always used')
         elif cached:
             logging.info('Remove cached platform list file %s', filename)
             os.remove(filename)
