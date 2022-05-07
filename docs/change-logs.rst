@@ -3,8 +3,9 @@
 Change Logs
 ===========
 
-**Since v7.3.1, some features may be not available for old license. pyarmor will
- report "This license may be expired" when using those features**
+**Since v7.3.1, some features may be not available for old pyarmor
+ license. pyarmor will report "This license may be expired" when using
+ those features**
 
 Incompatible issues
 -------------------
@@ -37,9 +38,15 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
+
+7.5.0 (dev)
+-----------
+* Change core version to **r50.4**
+* Support `sppmode` for platforms: darwin.aarch64, linux.aarch64
+
   The dev version could be installed by this command::
 
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.2.0.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.5.0.zip
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
