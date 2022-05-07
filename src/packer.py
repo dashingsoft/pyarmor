@@ -246,9 +246,9 @@ def _make_hook_pytransform(hookfile, obfdist, encoding=None):
             f.write('\n'.join(lines).format(p))
 
 
-def _pyi_makespec(hookpath, src, entry, packcmd, modname='pytransform'):
+def _pyi_makespec(hookpath, src, script, packcmd, modname='pytransform'):
     options = ['-p', hookpath, '--hidden-import', modname,
-               '--additional-hooks-dir', hookpath, os.path.join(src, entry)]
+               '--additional-hooks-dir', hookpath, os.path.join(src, script)]
     cmdlist = packcmd + options
     # cmdlist[:4] = ['pyi-makespec']
     cmdlist[:4] = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
@@ -344,6 +344,15 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
 
 
 def _pyinstaller(src, entry, output, options, xoptions, args):
+    '''
+    Args:
+        src: str - (absolute) or (relative to cwd) path for root;
+        entry: str - (absolute) or (relative to cwd) path for entry script;
+        output: str - (absolute) or (relative to cwd) path for pack output;
+        options: List[str] - options for pyinstaller
+        xoptions: List[str] - options for obfuscate
+        args - cli arguments
+    '''
     clean = args.clean
     licfile = args.license_file
     if licfile in ('no', 'outer') or args.no_license:
@@ -353,9 +362,9 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     obfdist = os.path.join(output, 'obf')
     initcmd = DEFAULT_PACKER['PyInstaller'][2] + [output]
     packcmd = initcmd + options
-    script = os.path.join(src, entry)
+    script = relpath(entry, start=src)
 
-    if not script.endswith('.py') or not os.path.exists(script):
+    if not script.endswith('.py') or not os.path.exists(os.path.join(src, script)):
         raise RuntimeError('No entry script %s found' % script)
 
     if args.name:
@@ -416,7 +425,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
 
     if args.setup is None:
         logging.info('Run PyInstaller to generate .spec file...')
-        _pyi_makespec(obftemp, src, entry, packcmd, runmodname)
+        _pyi_makespec(obftemp, src, script, packcmd, runmodname)
         if not os.path.exists(specfile):
             raise RuntimeError('No specfile "%s" found', specfile)
         logging.info('Save .spec file to %s', specfile)
@@ -502,22 +511,39 @@ def _check_entry_script(filename):
         pass
 
 
+def _get_src_from_xoptions(xoptions):
+    if xoptions is None:
+        return None
+
+    # src parameter for `obfuscate`
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--src', metavar='PATH', default=None)
+    args = parser.parse_known_args(xoptions)[0]
+    return args.src
+
+
 def packer(args):
     t = args.type
-    if args.entry[0].endswith('.py'):
-        src = os.path.abspath(os.path.dirname(args.entry[0]))
-        entry = os.path.basename(args.entry[0])
-    else:
-        src, entry = _get_project_entry(args.entry[0])
-        args.project = args.entry[0]
-
-    if _check_entry_script(os.path.join(src, entry)) is False:
-        raise RuntimeError('DO NOT pack the obfuscated script, please '
-                           'pack the original script directly')
 
     xoptions = [] if args.xoptions is None else split(args.xoptions)
     extra_options = [] if args.options is None else split(args.options)
     _check_extra_options(extra_options)
+
+    if args.entry[0].endswith('.py'):
+        xoption_src = _get_src_from_xoptions(xoptions)
+        src = os.path.abspath(
+            os.path.dirname(args.entry[0])
+            if xoption_src is None else
+            xoption_src
+        )
+        entry = relpath(args.entry[0])
+    else:
+        src, entry = _get_project_entry(args.entry[0])
+        args.project = args.entry[0]
+
+    if _check_entry_script(os.path.abspath(entry)) is False:
+        raise RuntimeError('DO NOT pack the obfuscated script, please '
+                           'pack the original script directly')
 
     if args.setup is None:
         build = src
