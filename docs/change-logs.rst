@@ -937,7 +937,7 @@ customer by email.
 
 For the previous purchased user, the old private capsules which are
 generated implicitly by PyArmor after registered PyArmor still work,
-but maybe not supported later. Contact jondy.zhao@gmail.com if you'd
+but maybe not supported later. Contact pyarmor@163.com if you'd
 like to use new `private capsule`.
 
 The other changes:

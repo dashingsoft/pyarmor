@@ -67,7 +67,7 @@ setup(
 
     url='https://github.com/dashingsoft/pyarmor',
     author='Jondy Zhao',
-    author_email='jondy.zhao@gmail.com',
+    author_email='pyarmor@163.com',
 
     # For a list of valid classifiers, see
     # https://pypi.python.org/pypi?%3Aaction=list_classifiers

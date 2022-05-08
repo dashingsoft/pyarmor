@@ -8,7 +8,7 @@ PyArmor's Documentation
 
 :Version: |PyArmorVersion|
 :Homepage: |Homepage|
-:Contact: jondy.zhao@gmail.com
+:Contact: pyarmor@163.com
 :Authors: Jondy Zhao
 :Copyright: This document has been placed in the public domain.
 
