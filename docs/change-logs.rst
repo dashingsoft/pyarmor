@@ -41,6 +41,8 @@ Incompatible issues
 
 7.5.0 (dev)
 -----------
+* Fix command `pack` issue: if using `--src` in the option `--xoptions`, pyarmor
+  raises excpetion "no entry script found"
 * Change core version to **r50.4**
 * Support `sppmode` for platforms: darwin.aarch64, linux.aarch64
 
