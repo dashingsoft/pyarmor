@@ -362,12 +362,8 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     obfdist = os.path.join(output, 'obf')
     initcmd = DEFAULT_PACKER['PyInstaller'][2] + [output]
     packcmd = initcmd + options
-    if hasattr(args, 'project'):
-        script = entry
-        srcentry = os.path.join(src, entry)
-    else:
-        script = relpath(entry, start=src)
-        srcentry = os.path.join(src, script)
+    script = entry if hasattr(args, 'project') else relpath(entry, start=src)
+    srcentry = os.path.join(src, script)
 
     if not script.endswith('.py') or not os.path.exists(srcentry):
         raise RuntimeError('No entry script %s found' % srcentry)
