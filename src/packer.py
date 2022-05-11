@@ -406,8 +406,8 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
                      + licargs + [args.project])
     else:
         call_pyarmor(['obfuscate', '-O', obfdist, '--package-runtime', '0',
-                      '-r', '--exclude', output]
-                     + licargs + xoptions + [srcentry])
+                      '-r', '--exclude', output] + licargs + xoptions +
+                     [script if _get_src_from_xoptions(xoptions) else srcentry])
 
     obftemp = os.path.join(obfdist, 'temp')
     if not os.path.exists(obftemp):
