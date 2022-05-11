@@ -271,6 +271,21 @@ check_return_value
 check_file_content dist-super-mode-2/result.log 'Found 92 solutions' not
 check_file_content dist-super-mode-2/result.log 'Check license failed, Invalid input packet'
 
+csih_inform "Case 3-15: Test xoption with --src"
+dist=test-xoption-src
+mkdir -p $dist/main
+echo "print('this is top directory')" > $dist/utils.py
+echo "" > $dist/main/__init__.py
+echo "print('Hello')" > $dist/main/main.py
+
+$PYARMOR pack -O $dist/dist -x " --src $dist" $dist/main/main.py >result.log 2>&1
+check_return_value
+
+check_file_exists $dist/dist/main/main 'No final executable generated'
+$dist/dist/main/main >$dist/result.log 2>&1
+
+check_file_content $dist/result.log 'Hello'
+
 echo -e "\n------------------ PyInstaller End -----------------------\n"
 
 # ======================================================================
