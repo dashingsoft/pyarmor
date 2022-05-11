@@ -363,8 +363,9 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     initcmd = DEFAULT_PACKER['PyInstaller'][2] + [output]
     packcmd = initcmd + options
     script = relpath(entry, start=src)
+    srcentry = os.path.join(src, script)
 
-    if not script.endswith('.py') or not os.path.exists(os.path.join(src, script)):
+    if not script.endswith('.py') or not os.path.exists(srcentry):
         raise RuntimeError('No entry script %s found' % script)
 
     if args.name:
@@ -402,7 +403,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     else:
         call_pyarmor(['obfuscate', '-O', obfdist, '--package-runtime', '0',
                       '-r', '--exclude', output]
-                     + licargs + xoptions + [script])
+                     + licargs + xoptions + [srcentry])
 
     obftemp = os.path.join(obfdist, 'temp')
     if not os.path.exists(obftemp):
