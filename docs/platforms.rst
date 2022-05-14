@@ -143,6 +143,13 @@ library. For security reason, the zero feature library uses different alogrithm
 to obfuscate the scripts. So the platform ``windows.x86_64.7`` can not share the
 same obfuscated scripts with platform ``linux.armv7.0``.
 
+.. note::
+
+   In Apple M1, dynamic libraris with feature 2 `JIT` will be killed by Python
+   interpreter. Try to resign executable with `com.apple.security.cs.allow-jit`
+   entitlement, it may fix the problem. Refer to
+
+   https://developer.apple.com/documentation/security/hardened_runtime
 
 .. _standard platform names:
 
