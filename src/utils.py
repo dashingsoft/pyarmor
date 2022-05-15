@@ -1788,13 +1788,14 @@ def sign_binary(filename):
 
 
 def osx_is_universal_platforms(platforms):
-    if 'linux.aarch64.3' in platforms or 'linux.aarch64.11' in platforms:
-        logging.warning('This universal library may not work in Apple M1. '
-                        'If the obfuscated script is killed, resign the '
-                        'executable (Python interpreter) with Allow-Jit '
-                        'entitlement or obfuscate the scripts with feature 0')
     platforms = ['.'.join(name.split('.')[:2]) for name in platforms]
-    return set(platforms) == set(['darwin.x86_64', 'darwin.aarch64'])
+    if set(platforms) == set(['darwin.x86_64', 'darwin.aarch64']):
+        if 'linux.aarch64.3' in platforms or 'linux.aarch64.11' in platforms:
+            logging.warning('This universal library may not work in Apple M1. '
+                            'If the obfuscated script is killed, resign the '
+                            'executable (Python interpreter) with Allow-Jit '
+                            'entitlement or obfuscate scripts with feature 0')
+        return True
 
 
 def osx_merge_binary(target, *filelist):
