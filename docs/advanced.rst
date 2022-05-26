@@ -986,7 +986,7 @@ work. For example, first obfustate the scripts::
 Then translate the obfuscated one as normal python scripts by Nuitka::
 
     cd ./dist
-    python -m nuitka --include-package pytransform foo.py
+    python -m nuitka --include-package=pytransform foo.py
     ./foo.bin
 
 There is one problem is that the imported modules (packages) in the obfuscated
