@@ -1726,11 +1726,12 @@ def get_sppmode_files(timeout=None):
     vername = os.path.join(HOME_PATH, '.sppver')
     if os.path.exists(vername) and os.path.exists(libname):
         with open(vername) as f:
-            libver = f.readline().strip()
+            hashinfo = f.readline().strip()
     else:
-        libver = ''
+        hashinfo = ''
 
-    if libver != sppver:
+    spphash = '%s,%s' % (sppver, spplatforms[platid])
+    if hashinfo != spphash:
         if is_trial_version():
             raise RuntimeError('sppmode is not available in the trial version')
         rcode, secret = _get_download_license_info()
@@ -1757,7 +1758,7 @@ def get_sppmode_files(timeout=None):
             f.write(data)
         logging.info('Writing version file: %s', vername)
         with open(vername, 'w') as f:
-            f.write(sppver)
+            f.write(spphash)
 
         logging.info('Download sppmode library "%s" OK', platid)
 
