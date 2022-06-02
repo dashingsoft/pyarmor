@@ -45,6 +45,8 @@ Incompatible issues
   raises excpetion "no entry script found"
 * Change core version and spp libraries version to **r50.4**
 * Support `sppmode` for platforms: darwin.aarch64, linux.aarch64
+* Support `sppmode` for Python 3.10 in platforms: windows.x86_64, linux.x86_64,
+  darwin.x86_64, darwin.aarch64, linux.aarch64
 * Fix sppmode bug: the result of inplace op for attribute is not right. For
   example, after `self.a += 1`, `self.a` isn't increased in old version.
 
