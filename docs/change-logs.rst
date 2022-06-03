@@ -43,13 +43,13 @@ Incompatible issues
 -----------
 * Fix command `pack` issue: if using `--src` in the option `--xoptions`, pyarmor
   raises excpetion "no entry script found"
-* Change core version and spp libraries version to **r50.4**
-* Support `sppmode` for platforms: darwin.aarch64, linux.aarch64
+* Change core version and spp library version to **r50.4**
+* Support `sppmode` for Python3.7~3.10 in platforms: darwin.aarch64, linux.aarch64
 * Support `sppmode` for Python 3.10 in platforms: windows.x86_64, linux.x86_64,
   darwin.x86_64, darwin.aarch64, linux.aarch64
-* Fix spp mode bug: the result of inplace op for attribute is not right. For
+* Fix `sppmode` bug: the result of inplace op for attribute is not right. For
   example, after `self.a += 1`, `self.a` isn't increased in old version.
-* Fix spp mode bug: AnnAssign is ignored. For example, after `x: int = 3`, `x`
+* Fix `sppmode` bug: AnnAssign is ignored. For example, after `x: int = 3`, `x`
   still is undefined in old version.
 
   The dev version could be installed by this command::
