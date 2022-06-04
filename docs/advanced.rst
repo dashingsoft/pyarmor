@@ -573,6 +573,12 @@ the plugin script::
     pyarmor obfuscate --with-license licenses/rcode-001/license.lic \
                       --plugin check_ntp_time foo.py
 
+For command :ref:`pack`::
+
+    pyarmor licenses -x 20190501 rcode-001
+    pyarmor pack --with-license licenses/rcode-001/license.lic \
+                 -x " --plugin check_ntp_time" foo.py
+
 More examples, refer to https://github.com/dashingsoft/pyarmor/tree/master/plugins
 
 About how plugins work, refer to :ref:`How to Deal With Plugins`
