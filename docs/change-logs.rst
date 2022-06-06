@@ -38,9 +38,16 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
+  The dev version could be installed by this command::
 
-7.5.0 (dev)
------------
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.5.0.zip
+
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the stable version from PyPi.
+
+7.5.0
+-----
 * Fix command `pack` issue: if using `--src` in the option `--xoptions`, pyarmor
   raises excpetion "no entry script found"
 * Change core version and spp library version to **r50.4**
@@ -51,14 +58,6 @@ Incompatible issues
   example, after `self.a += 1`, `self.a` isn't increased in old version.
 * Fix `sppmode` bug: AnnAssign is ignored. For example, after `x: int = 3`, `x`
   still is undefined in old version.
-
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.5.0.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the stable version from PyPi.
 
 7.4.3
 -----
