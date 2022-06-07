@@ -54,10 +54,10 @@ help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
 sppmode_info = {
     'version': 'r1.dev1',
     'platforms': {
-        'darwin.x86_64': 'bd7b778e2f33de12fccb08802f2f88ad314c9199c6f8aaa837a161264295e786',
-        'windows.x86_64': '8cd9501b94a6312562806ba730a94ffe0072390de1a0ec3ffd29308e124e4cef',
-        'linux.x86_64': 'f63d7119c217d8f2fc50e8db2a14e85343d59778049a8047f362b6c3cc7e4818',
-        'darwin.aarch64': '366ea86df90e681f4a20fc83467e8bd1ab4947073c7d16d3f0d85d7a6282de65',
-        'linux.aarch64': '2c875d19c779f08bd533992e52c15159c3e92aba1a9d92ebaf036131cc3063ff',
+        'darwin.x86_64': '9599f081ac5613871e141aac1926171f71b0add71858b039b0abc9754e3d9bdc',
+        'windows.x86_64': '26bf22bd0d14fcc0884f07092e8b704da9009bf58b406e2b904a7e0f02858d5a',
+        'linux.x86_64': '1546012bad89d7de05955d7ee8ac98b36505bf8c836cc87f64091245896d1722',
+        'darwin.aarch64': '790b219778956ebf2a489ccdef25fc51a84fe25181a58077ff8a30a51e412616',
+        'linux.aarch64': '4b65a9958db6916cbb624881e9928b697a4e0949c691314f6c5bbd0f5a36dffd',
     }
 }

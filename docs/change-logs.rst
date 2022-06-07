@@ -42,6 +42,8 @@ Incompatible issues
 7.5.1 (dev)
 -----------
 * Fix spp mode bug (#758): `from __future__ imports must occur at the beginning of the file`
+* Fix spp mode bug (#760): 'Set' object has no attribute 'ctx'
+* Fix spp mode bug (#760): redefinition of `_listcomp_326_1`
 
   The dev version could be installed by this command::
 

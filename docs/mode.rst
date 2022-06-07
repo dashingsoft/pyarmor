@@ -106,14 +106,14 @@ Unsupport features for spp mode:
     unsupport_nodes = (
         ast.Nonlocal,
         ast.AsyncFunctionDef, ast.AsyncFor, ast.AsyncWith,
-        ast.Await, ast.Yield, ast.YieldFrom, ast.GeneratorExp
+        ast.Await, ast.Yield, ast.YieldFrom, ast.GeneratorExp,
+
+        ast.NamedExpr,
+
+        ast.MatchValue, ast.MatchSingleton, ast.MatchSequence,
+        ast.MatchMapping, ast.MatchClass, ast.MatchStar,
+        ast.MatchAs, ast.MatchOr
     )
-    if hasattr(ast, 'MatchValue'):
-        unsupport_nodes += (
-            ast.MatchValue, ast.MatchSingleton, ast.MatchSequence,
-            ast.MatchMapping, ast.MatchClass, ast.MatchStar,
-            ast.MatchAs, ast.MatchOr
-        )
 
 And unsupport functions::
 
