@@ -1,6 +1,6 @@
 from sys import platform
 
-version = '7.5.0'
+version = '7.5.1'
 
 # The corresponding version of pytransform.so
 core_version = 'r50.4'
@@ -52,12 +52,12 @@ buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3008711
 help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
 
 sppmode_info = {
-    'version': 'r50.4',
+    'version': 'v1',
     'platforms': {
-        'darwin.x86_64': '75ae0ab2f1124acbd72caf2a78f5c444c2a5d556aabf3c2ea975a2e96a3a8e32',
-        'windows.x86_64': 'c8845476ac8913871565cc1632fbd1e6926db398a32c649d70c8d1c6e86928a6',
-        'linux.x86_64': '70e8c2468702ad4d6644670803bd5bdf77e1d905bacff8884696b5f228057586',
-        'darwin.aarch64': 'dd102b537c037e2abb57bda0b4cfec695798ad24b6df8a1f2dbb75bca0ba41e9',
-        'linux.aarch64': '96669ca1dabaa4575ac59c6097cc66d5d7641087e2c8f66e590a64792b56174c',
+        'darwin.x86_64': 'bd7b778e2f33de12fccb08802f2f88ad314c9199c6f8aaa837a161264295e786',
+        'windows.x86_64': '8cd9501b94a6312562806ba730a94ffe0072390de1a0ec3ffd29308e124e4cef',
+        'linux.x86_64': 'f63d7119c217d8f2fc50e8db2a14e85343d59778049a8047f362b6c3cc7e4818',
+        'darwin.aarch64': '366ea86df90e681f4a20fc83467e8bd1ab4947073c7d16d3f0d85d7a6282de65',
+        'linux.aarch64': '2c875d19c779f08bd533992e52c15159c3e92aba1a9d92ebaf036131cc3063ff',
     }
 }

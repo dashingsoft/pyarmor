@@ -1736,8 +1736,8 @@ def get_sppmode_files(timeout=None):
             raise RuntimeError('sppmode is not available in the trial version')
         rcode, secret = _get_download_license_info()
 
-        url = platform_url.format(version=sppver)
-        url = '/'.join([url, 'spp', platid, os.path.basename(libname)])
+        url = platform_url.format(version='/'.join(['spp', sppver]))
+        url = '/'.join([url, platid, os.path.basename(libname)])
         logging.info('Getting remote file: %s', url)
 
         timeout = PYARMOR_TIMEOUT if timeout is None else timeout
