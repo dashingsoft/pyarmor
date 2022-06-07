@@ -52,7 +52,7 @@ buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3008711
 help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
 
 sppmode_info = {
-    'version': 'v1',
+    'version': 'r1.dev1',
     'platforms': {
         'darwin.x86_64': 'bd7b778e2f33de12fccb08802f2f88ad314c9199c6f8aaa837a161264295e786',
         'windows.x86_64': '8cd9501b94a6312562806ba730a94ffe0072390de1a0ec3ffd29308e124e4cef',
