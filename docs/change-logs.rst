@@ -987,7 +987,7 @@ Then register this keyfile in the new version of pyarmor
 It's recommanded that you have not yet issued any customized "license.lic" to
 your customers.
 
-Forward the purchased email received from MyCommerce to jondy.zhao@gmail.com,
+Forward the purchased email received from MyCommerce to pyarmor@163.com,
 and the new key file will be sent to the registration email. If pyarmor license
 is purchased after 2017-10-10, no fee for this upgrading. Before 2017-10-10,
 please purchase a new license for latest pyarmor.
