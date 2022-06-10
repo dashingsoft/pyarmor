@@ -380,16 +380,26 @@ When run pyarmor in some dockers, it may raise this exception. Because these
 dockers are built with musl-libc, but the default ``_pytransform.so`` is built
 with glibc, ``__snprintf_chk`` is missed in the musl-libc.
 
-In this case, try to download the corresponding dynamic library
+In this case, try to download the corresponding dynamic library::
+
+  # For x86_64
+  pyarmor download musl.x86_64.7
+
+  # For arm64
+  pyarmor download musl.aarch64.3
+
+  # For armv7l
+  pyarmor download musl.arm.0
+
+And overwrite the old one which filename could be found in the traceback.
+
+Before pyarmor v6.7.0, download the latest version by this way:
 
 For x86/64
 http://pyarmor.dashingsoft.com/downloads/latest/alpine/_pytransform.so
 
 For ARM
 http://pyarmor.dashingsoft.com/downloads/latest/alpine.arm/_pytransform.so
-
-And overwrite the old one which filename could be found in the traceback.
-
 
 Obfuscating Scripts Problem
 ---------------------------
