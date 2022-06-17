@@ -92,12 +92,17 @@ example, ``linux/x86_64/11/py38``.
      - Linux with glibc < 2.14 and UCS2
    * - windows
      - x86_64
-     - 11, 25
+     - 11
      - 27, 37, 38, 39, 310
      -
    * - windows
      - x86
      - 11, 25
+     - 27, 37, 38, 39
+     -
+   * - windows
+     - x86_64
+     - 25
      - 27, 37, 38, 39
      -
 
