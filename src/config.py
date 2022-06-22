@@ -52,12 +52,12 @@ buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3008711
 help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
 
 sppmode_info = {
-    'version': 'r1.dev2',
+    'version': 'r1.dev3',
     'platforms': {
-        'darwin.x86_64': '083446edf256a7f2b0f4692756960787027951b47e20e3618c85dbec6b673927',
-        'windows.x86_64': 'a773a9ace90a8e4df7c51fcf1059b516a3627b6f47ea37b4a38feca835549c21',
-        'linux.x86_64': '4b352acce57f3562a5fc612dff4b92b956f4b7023132e453f260d0a23495c3d5',
-        'darwin.aarch64': '6ded7eea375437da0fc3f868cbbdfb83242d9073a0f5654d90f0488024467277',
-        'linux.aarch64': '1ea933ae3b44bcbe5b5bb41dc3ab69a4deb598f748ea43de898de7b0207e25bb',
+        'darwin.x86_64': '229a506ae3d351cbe1f4e5039c87d255009c5abc92c92100e2eece1d9578b5f2',
+        'windows.x86_64': '48c7298f1225f91bbcd14ffe01ffc992717217e6d590eb46703c5805c518a773',
+        'linux.x86_64': '220de6f34ed5aa9a7b407ca64a6b1c45712691b24f217e2001bc529ad91d8642',
+        'darwin.aarch64': 'ae37468bd7207eb064f391819af9f0efe8178baf0661e2607f0083c7668d870b',
+        'linux.aarch64': '54fdd923c33f6b076efee3e19a72f1f0ad49493d14c3512e10758fcd3c40305e',
     }
 }
