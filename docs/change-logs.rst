@@ -45,6 +45,8 @@ Incompatible issues
 * Fix spp mode bug (#760): 'Set' object has no attribute 'ctx'
 * Fix spp mode bug (#760): redefinition of `_listcomp_326_1`
 * Fix spp mode bug (#772): `Can not import XXX from MMM`
+* Fix spp mode bug: using `PYTHONOPTIMIZE` may results in sppmode fails.
+* Fix spp mode bugs regarding to `with/lambda/comprehension`
 
   The dev version could be installed by this command::
 
