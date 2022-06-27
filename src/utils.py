@@ -996,13 +996,9 @@ def _readlines(filename):
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, adv_mode=0, rest_mode=1, entry=0, protection=0,
                    platforms=None, plugins=None, rpath=None, suffix='',
-                   sppmode=False):
-    if isinstance(protection, (list, tuple)):
-        cross_protection = protection[0]
-        reforms = protection[1:]
-    else:
-        cross_protection = protection
-        reforms = []
+                   sppmode=False, obf_str=0):
+    cross_protection = protection
+    reforms = ['str'] if obf_str else []
 
     lines, encoding = _readlines(filename)
     if plugins:

@@ -374,11 +374,10 @@ def _build(args):
             else:
                 is_entry, pcode = 0, 0
 
-            protections = [pcode]
             encrypt_script(prokey, a, b, obf_code=obf_code, obf_mod=obf_mod,
                            wrap_mode=wrap_mode, adv_mode=adv_mode,
                            rest_mode=restrict, entry=is_entry,
-                           protection=protections, platforms=platforms,
+                           protection=pcode, platforms=platforms,
                            plugins=plugins, rpath=project.runtime_path,
                            suffix=suffix, sppmode=sppmode)
 
@@ -736,11 +735,10 @@ def _obfuscate(args):
         if not os.path.exists(d):
             os.makedirs(d)
 
-        protections = [protection]
         encrypt_script(prokey, a, b, wrap_mode=args.wrap_mode,
                        obf_code=args.obf_code, obf_mod=args.obf_mod,
                        adv_mode=adv_mode, rest_mode=restrict, entry=is_entry,
-                       protection=protections, platforms=platforms,
+                       protection=protection, platforms=platforms,
                        plugins=plugins, suffix=suffix, sppmode=sppmode)
 
         if supermode:

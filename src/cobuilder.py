@@ -26,13 +26,17 @@ def build_co_module(lines, modname, **kwargs):
     mtree = ast.parse(''.join(lines), modname)
 
     encoding = kwargs.get('encoding')
-    if 'str' in kwargs.get('reforms', []):
-        if sys.version_info[0] == 2:
-            raise RuntimeError("String protection doesn't work for Python 2")
-        protect_string_const(mtree, encoding)
+    for reform in kwargs.get('reforms', []):
+        if reform == 'str':
+            protect_string_const(mtree, encoding)
+        elif reform.startswith('str.'):
+            raise NotImplementedError('protection method "%s"' % reform)
+        elif isinstance(reform, str):
+            raise NotImplementedError('protection method "%s"' % reform)
+        else:
+            raise RuntimeError('Invalid protection method "%s"' % reform)
 
     sppmode = kwargs.get('sppmode')
-
     if sppmode and 'no-spp-mode' in options:
         logging.info('Ignore this module because of no-spp-mode inline option')
         sppmode = False
@@ -87,8 +91,10 @@ class StringPatcher(ast.NodeTransformer):
 
 
 def protect_string_const(mtree, encoding=None):
-    seed()
+    if sys.version_info[0] == 2:
+        raise RuntimeError("String protection doesn't work for Python 2")
 
+    seed()
     patcher = StringPatcher()
     patcher.encoding = encoding
     patcher.visit(mtree)
