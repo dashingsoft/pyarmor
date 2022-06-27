@@ -46,16 +46,24 @@ def _check_inline_option(source):
 def build(source, modname, destname=None):
     options = _check_inline_option(source)
     if 'no-spp-mode' in options:
+        logging.info('Ignore this module because of no-spp-mode inline option')
         return False
 
     mtree = ast.parse(source, modname)
     mtree.pyarmor_options = options
 
+    return build_co(mtree, modname)
+
+
+def build_co(mtree, modname):
     if not os.environ.get('PYARMOR_CC'):
         _check_ccompiler()
 
     fb = _load_sppbuild()
-    return fb((mtree, modname))
+    co = fb((mtree, modname))
+    if not co:
+        logging.info('No any function available for sppmode in this module')
+    return co
 
 
 def _load_sppbuild():

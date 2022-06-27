@@ -47,7 +47,8 @@ import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
     platform_url, platform_config, \
     core_version, capsule_filename, platform_old_urls, sppmode_info
-from sppmode import build as sppbuild, mixin as sppmixin
+from sppmode import mixin as sppmixin
+from cobuilder import build_co_module
 
 PYARMOR_PATH = os.getenv('PYARMOR_PATH', os.path.dirname(__file__))
 PYARMOR_HOME = os.getenv('PYARMOR_HOME', os.path.join('~', '.pyarmor'))
@@ -1053,19 +1054,10 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             f.write(''.join(lines))
 
     modname = _frozen_modname(filename, destname)
-    if sppmode:
-        if sys.version_info[0] * 100 + sys.version_info[1] < 307:
-            raise RuntimeError('This Python version is not supported by spp '
-                               'mode, only Python 3.7+ works')
-        co = sppbuild(''.join(lines), modname, destname)
-        if not co:
-            logging.info('Ignore this module because of %s',
-                         'sppmode inline option' if co is False else
-                         'no any function available for sppmode')
-            sppmode = False
-            co = compile(''.join(lines), modname, 'exec')
-    else:
-        co = compile(''.join(lines), modname, 'exec')
+    if sppmode and sys.version_info[0] * 100 + sys.version_info[1] < 307:
+        raise RuntimeError('This Python version is not supported by spp '
+                           'mode, only Python 3.7+ works')
+    sppmode, co = build_co_module(lines, modname, sppmode)
 
     if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2 and not sppmode:
         co = _check_code_object_for_super_mode(co, lines, modname)
