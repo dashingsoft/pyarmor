@@ -44,7 +44,7 @@ def build_co_module(lines, modname, **kwargs):
         co = sppbuild(mtree, modname)
         if not co:
             kwargs['sppmode'] = False
-            return build_co_module(lines, modname, kwargs)
+            return build_co_module(lines, modname, **kwargs)
     else:
         co = compile(mtree, modname, 'exec')
 
