@@ -842,7 +842,7 @@ def _patch_plugins(plugins):
     for key, filename, x in plugins:
         if x:
             logging.info('Apply plugin %s', key)
-            lines = _readlines(filename)
+            lines, encoding = _readlines(filename)
             result.append(''.join(lines))
     return ['\n'.join(result)]
 
@@ -969,11 +969,11 @@ def _guess_encoding(filename):
 
 
 def _readlines(filename):
+    encoding = _guess_encoding(filename)
     if sys.version_info[0] == 2:
         with open(filename, 'r') as f:
             lines = f.readlines()
     else:
-        encoding = _guess_encoding(filename)
         try:
             with open(filename, 'r', encoding=encoding) as f:
                 lines = f.readlines()
@@ -990,14 +990,14 @@ def _readlines(filename):
                 i += 1
             if i:
                 lines[0] = lines[0][i:]
-    return lines
+    return lines, encoding
 
 
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, adv_mode=0, rest_mode=1, entry=0, protection=0,
                    platforms=None, plugins=None, rpath=None, suffix='',
                    sppmode=False):
-    lines = _readlines(filename)
+    lines, encoding = _readlines(filename)
     if plugins:
         n = 0
         k = -1
@@ -1057,7 +1057,8 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
     if sppmode and sys.version_info[0] * 100 + sys.version_info[1] < 307:
         raise RuntimeError('This Python version is not supported by spp '
                            'mode, only Python 3.7+ works')
-    sppmode, co = build_co_module(lines, modname, sppmode)
+    sppmode, co = build_co_module(lines, modname, encoding=encoding,
+                                  sppmode=sppmode, reforms=['str'])
 
     if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2 and not sppmode:
         co = _check_code_object_for_super_mode(co, lines, modname)

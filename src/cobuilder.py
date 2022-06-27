@@ -1,5 +1,6 @@
 import ast
 import logging
+import sys
 
 from random import seed, randint
 
@@ -9,7 +10,7 @@ from sppmode import build_co as sppbuild
 def _check_inline_option(lines):
     options = []
     marker = 'pyarmor options:'
-    for line in lines[:100]:
+    for line in lines[:1000]:
         if not line.strip():
             continue
         if not line.startswith('#'):
@@ -20,9 +21,17 @@ def _check_inline_option(lines):
     return [x.strip() for x in options]
 
 
-def build_co_module(lines, modname, sppmode, reforms=None):
+def build_co_module(lines, modname, **kwargs):
     options = _check_inline_option(lines)
     mtree = ast.parse(''.join(lines), modname)
+
+    encoding = kwargs.get('encoding')
+    if 'str' in kwargs.get('reforms', []):
+        if sys.version_info[0] == 2:
+            raise RuntimeError("String protection doesn't work for Python 2")
+        protect_string_const(mtree, encoding)
+
+    sppmode = kwargs.get('sppmode')
 
     if sppmode and 'no-spp-mode' in options:
         logging.info('Ignore this module because of no-spp-mode inline option')
@@ -32,7 +41,8 @@ def build_co_module(lines, modname, sppmode, reforms=None):
         mtree.pyarmor_options = options
         co = sppbuild(mtree, modname)
         if not co:
-            return build_co_module(lines, modname, False, reforms)
+            kwargs['sppmode'] = False
+            return build_co_module(lines, modname, kwargs)
     else:
         co = compile(mtree, modname, 'exec')
 
@@ -41,7 +51,7 @@ def build_co_module(lines, modname, sppmode, reforms=None):
 
 def reform_str_const(node, encoding=None):
     s = node.s if isinstance(node, ast.Str) else node.value
-    value = bytearray(s.encode(encoding=encoding))
+    value = bytearray(s.encode(encoding) if encoding else s.encode())
     key = [randint(0, 255)] * len(value)
     data = [x ^ y for x, y in zip(value, key)]
     expr = 'bytearray([%s]).decode(%s)' % (
@@ -66,16 +76,19 @@ class StringPatcher(ast.NodeTransformer):
             if isinstance(value, list):
                 for i in range(len(value)):
                     if is_str_const(value[i]):
-                        value[i] = reform_str_const(value[i])
+                        value[i] = reform_str_const(value[i], self.encoding)
                     elif isinstance(value[i], ast.AST):
                         self.visit(value[i])
             elif is_str_const(value):
-                setattr(node, field, reform_str_const(value))
+                setattr(node, field, reform_str_const(value, self.encoding))
             elif isinstance(value, ast.AST):
                 self.visit(value)
         # [self.visit(x) for x in ast.iter_child_nodes(node)]
 
 
-def protect_string_const(mtree):
+def protect_string_const(mtree, encoding=None):
     seed()
-    StringPatcher().visit(mtree)
+
+    patcher = StringPatcher()
+    patcher.encoding = encoding
+    patcher.visit(mtree)
