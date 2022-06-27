@@ -996,10 +996,7 @@ def _readlines(filename):
 def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                    obf_mod=1, adv_mode=0, rest_mode=1, entry=0, protection=0,
                    platforms=None, plugins=None, rpath=None, suffix='',
-                   sppmode=False, obf_str=0):
-    cross_protection = protection
-    reforms = ['str'] if obf_str else []
-
+                   sppmode=False, mixins=None):
     lines, encoding = _readlines(filename)
     if plugins:
         n = 0
@@ -1031,7 +1028,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
             c = '@' if m[2] == '@' else ''
             lines[n] = lines[n][:i] + c + lines[n][i+len(m):]
 
-    if cross_protection:
+    if protection:
         n = 0
         for line in lines:
             if line.startswith('# No PyArmor Protection Code') or \
@@ -1041,16 +1038,16 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
                   or line.startswith("if __name__ == '__main__':")
                   or line.startswith('if __name__ == "__main__":')):
                 logging.info('Patch this entry script with protection code')
-                if os.path.exists(cross_protection):
-                    logging.info('Use template: %s', cross_protection)
-                    with open(cross_protection) as f:
+                if os.path.exists(protection):
+                    logging.info('Use template: %s', protection)
+                    with open(protection) as f:
                         lines[n:n] = [f.read()]
                 else:
-                    lines[n:n] = [cross_protection]
+                    lines[n:n] = [protection]
                 break
             n += 1
 
-    if hasattr(sys, '_debug_pyarmor') and (cross_protection or plugins):
+    if hasattr(sys, '_debug_pyarmor') and (protection or plugins):
         patched_script = filename + '.pyarmor-patched'
         logging.info('Write patched script for debugging: %s', patched_script)
         with open(patched_script, 'w') as f:
@@ -1061,7 +1058,7 @@ def encrypt_script(pubkey, filename, destname, wrap_mode=1, obf_code=1,
         raise RuntimeError('This Python version is not supported by spp '
                            'mode, only Python 3.7+ works')
     sppmode, co = build_co_module(lines, modname, encoding=encoding,
-                                  sppmode=sppmode, reforms=reforms)
+                                  sppmode=sppmode, mixins=mixins)
 
     if (adv_mode & 0x7) > 1 and sys.version_info[0] > 2 and not sppmode:
         co = _check_code_object_for_super_mode(co, lines, modname)
