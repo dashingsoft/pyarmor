@@ -38,9 +38,16 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
+
+
+7.6.0 (dev)
+-----------
+* For command `obfuscate` add option `--mix-str` to obfuscate the string value
+* For command `config` add option `--mixin`, only avaliable mixin is `str` now
+
   The dev version could be installed by this command::
 
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.5.1.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.6.0.zip
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
