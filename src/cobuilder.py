@@ -30,7 +30,7 @@ def build_co_module(lines, modname, **kwargs):
     if mixins:
         for mixer in mixins:
             if mixer == 'str':
-                protect_string_const(mtree, encoding=encoding)
+                ast_mixin_str(mtree, encoding=encoding)
             else:
                 raise NotImplementedError('mixer "%s"' % mixer)
 
@@ -87,7 +87,7 @@ class StrNodeTransformer(ast.NodeTransformer):
         # [self.visit(x) for x in ast.iter_child_nodes(node)]
 
 
-def protect_string_const(mtree, encoding=None):
+def ast_mixin_str(mtree, encoding=None):
     if sys.version_info[0] == 2:
         raise RuntimeError("String protection doesn't work for Python 2")
 
