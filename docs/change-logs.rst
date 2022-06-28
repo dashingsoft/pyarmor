@@ -38,16 +38,6 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
-
-7.5.1 (dev)
------------
-* Fix spp mode bug (#758): `from __future__ imports must occur at the beginning of the file`
-* Fix spp mode bug (#760): 'Set' object has no attribute 'ctx'
-* Fix spp mode bug (#760): redefinition of `_listcomp_326_1`
-* Fix spp mode bug (#772): `Can not import XXX from MMM`
-* Fix spp mode bug: using `PYTHONOPTIMIZE` may results in sppmode fails.
-* Fix spp mode bugs regarding to `with/lambda/comprehension`
-
   The dev version could be installed by this command::
 
       pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.5.1.zip
@@ -55,6 +45,15 @@ Incompatible issues
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
+
+7.5.1
+-----
+* Fix spp mode bug (#758): `from __future__ imports must occur at the beginning of the file`
+* Fix spp mode bug (#760): 'Set' object has no attribute 'ctx'
+* Fix spp mode bug (#760): redefinition of `_listcomp_326_1`
+* Fix spp mode bug: `Can not import XXX from MMM`
+* Fix spp mode bug: using `PYTHONOPTIMIZE` may results in sppmode fails.
+* Fix spp mode bugs regarding to `with/lambda/comprehension`
 
 7.5.0
 -----
