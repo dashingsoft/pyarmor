@@ -104,6 +104,7 @@ Obfuscate python scripts.
 --wrap-mode <0,1>             Disable or enable wrap mode
 --with-license FILENAME       Use this licese, special value `outer` means no license
 --cross-protection FILENAME   Specify customized protection script
+--mix-str                     Obfuscate the string value
 
 **DESCRIPTION**
 

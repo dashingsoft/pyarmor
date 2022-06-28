@@ -342,6 +342,7 @@ def _build(args):
             return 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
         logging.info('Obfuscating each function is %s', v(obf_code))
+        logging.info('Obfuscating string value is %s', v(args.mix_str))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
         logging.info('Restrict mode is %s', restrict)
         logging.info('Advanced value is %s', advanced)
@@ -351,6 +352,7 @@ def _build(args):
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
         adv_mode = (advanced - 2) if advanced in (3, 4) else advanced
+        mixins = ['str'] if args.mix_str else None
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -379,7 +381,7 @@ def _build(args):
                            rest_mode=restrict, entry=is_entry,
                            protection=pcode, platforms=platforms,
                            plugins=plugins, rpath=project.runtime_path,
-                           suffix=suffix, sppmode=sppmode)
+                           suffix=suffix, sppmode=sppmode, mixins=mixins)
 
             if supermode:
                 make_super_bootstrap(a, b, soutput, relative, suffix=suffix)
@@ -1155,6 +1157,8 @@ def _parser():
                        help='Specify cross protection script')
     cparser.add_argument('--in-place', action='store_true',
                          help=argparse.SUPPRESS)
+    cparser.add_argument('--mix-str', action='store_true',
+                         help='Obfuscating string value')
 
     cparser.set_defaults(func=_obfuscate)
 
