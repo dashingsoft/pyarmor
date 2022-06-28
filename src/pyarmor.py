@@ -684,7 +684,7 @@ def _obfuscate(args):
 
     logging.info('Obfuscate module mode is %s', args.obf_mod)
     logging.info('Obfuscate code mode is %s', args.obf_code)
-    logging.info('Obfuscate string value is %s', v(args.mix_str))
+    logging.info('Obfuscate string value is %s', bool(args.mix_str))
     logging.info('Wrap mode is %s', args.wrap_mode)
     logging.info('Restrict mode is %d', restrict)
     logging.info('Advanced value is %d', advanced)
