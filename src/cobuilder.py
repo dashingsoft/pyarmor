@@ -21,6 +21,23 @@ def _check_inline_option(lines):
     return [x.strip() for x in options]
 
 
+def find_mixins(mixins):
+    result = []
+    for name in mixins:
+        if name == 'str':
+            result.append(ast_mixin_str)
+        else:
+            refname = 'ast_mixin_' + name
+            try:
+                mtemp = __import__('mixins', fromlist=(refname,))
+            except ModuleNotFoundError:
+                raise RuntimeError('no module "mixins" found')
+            if not hasattr(mtemp, refname):
+                raise RuntimeError('no mixin "%s" found' % name)
+            result.append(getattr(mtemp, refname))
+    return result
+
+
 def build_co_module(lines, modname, **kwargs):
     options = _check_inline_option(lines)
     mtree = ast.parse(''.join(lines), modname)
@@ -28,11 +45,13 @@ def build_co_module(lines, modname, **kwargs):
     encoding = kwargs.get('encoding')
     mixins = kwargs.get('mixins')
     if mixins:
-        for mixer in mixins:
-            if mixer == 'str':
-                ast_mixin_str(mtree, encoding=encoding)
-            else:
-                raise NotImplementedError('mixer "%s"' % mixer)
+        mixargs = {
+            'module': modname,
+            'encoding': encoding,
+            'options': options
+        }
+        for mixer in find_mixins(mixins):
+            mixer(mtree, **mixargs)
 
     sppmode = kwargs.get('sppmode')
     if sppmode and 'no-spp-mode' in options:
@@ -87,11 +106,11 @@ class StrNodeTransformer(ast.NodeTransformer):
         # [self.visit(x) for x in ast.iter_child_nodes(node)]
 
 
-def ast_mixin_str(mtree, encoding=None):
+def ast_mixin_str(mtree, **kwargs):
     if sys.version_info[0] == 2:
         raise RuntimeError("String protection doesn't work for Python 2")
 
     seed()
     snt = StrNodeTransformer()
-    snt.encoding = encoding
+    snt.encoding = kwargs.get('encoding')
     snt.visit(mtree)
