@@ -820,6 +820,13 @@ For the details of each option, refer to :ref:`Project Configuration File`
 
     pyarmor config --wrap-mode 0
 
+* Obfuscate all string value in the scripts::
+
+    pyarmor config --mixin str
+
+    # Restore default value, no obfuscating strings
+    pyarmor config --mixin ''
+
 * Set plugin for entry script. The content of `check_ntp_time.py` will
   be insert into entry script as building project::
 
