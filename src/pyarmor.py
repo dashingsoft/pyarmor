@@ -182,6 +182,10 @@ def _config(args):
             args.platform = ''
         else:
             args.platform = ','.join(args.platforms)
+    if args.mixins is not None:
+        if '' in args.mixins:
+            logging.info('Clear mixins')
+            args.mixins = []
     if args.disable_restrict_mode is not None:
         if args.restrict_mode is not None:
             logging.warning('Option --disable_restrict_mode is ignored')
@@ -1309,6 +1313,9 @@ def _parser():
     # cparser.add_argument('--exclude', dest="exludes", action="append",
     #                      help='Exclude the path or script from project. '
     #                      'This option could be used multiple times')
+    cparser.add_argument('--mixin', dest='mixins', metavar='NAME',
+                         action='append', help='Available mixin: str')
+
     cparser.set_defaults(func=_config)
 
     #

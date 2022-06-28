@@ -775,6 +775,7 @@ Update project settings.
 --bootstrap <0,1,2,3>           How to insert bootstrap code to entry script
 --enable-suffix <0,1>           Generate the runtime package with unique name
 --with-license FILENAME         Use this license file, special value `outer` means no license
+--mixin NAME                    Available mixin `str`, used to obfuscate string value
 
 **DESCRIPTION**
 
