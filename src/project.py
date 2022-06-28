@@ -36,6 +36,7 @@
 #
 #    2.0: Add license_file, bootstrap_code
 #         Remove attribute capsule
+#    2.1: Add mixins
 #
 import os
 import time
@@ -51,7 +52,7 @@ from config import config_filename, default_output_path, \
 
 class Project(dict):
 
-    VERSION = 2, 0
+    VERSION = 2, 1
 
     OBF_MODULE_MODE = 'none', 'des', 'aes'
 
@@ -74,6 +75,7 @@ class Project(dict):
         ('advanced_mode', 0), \
         ('bootstrap_code', 1), \
         ('cross_protection', 1), \
+        ('mixins', None), \
         ('plugins', None), \
         ('platform', None), \
         ('package_runtime', 1), \
