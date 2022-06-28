@@ -239,6 +239,8 @@ def _build(args):
                            0 if project.get('disable_restrict_mode') else 1)
     advanced = (project.advanced_mode if project.advanced_mode else 0) \
         if hasattr(project, 'advanced_mode') else 0
+    mixins = project.get('mixins', None)
+    mix_str = mixins and 'str' in mixins
 
     rsettings = _check_runtime_settings(args.runtime)
     if rsettings:
@@ -346,7 +348,7 @@ def _build(args):
             return 'on' if t else 'off'
         logging.info('Obfuscating the whole module is %s', v(obf_mod))
         logging.info('Obfuscating each function is %s', v(obf_code))
-        logging.info('Obfuscating string value is %s', v(args.mix_str))
+        logging.info('Obfuscating string value is %s', v(mix_str))
         logging.info('Autowrap each code object mode is %s', v(wrap_mode))
         logging.info('Restrict mode is %s', restrict)
         logging.info('Advanced value is %s', advanced)
@@ -356,7 +358,6 @@ def _build(args):
         entries = [build_path(s.strip(), project.src)
                    for s in project.entry.split(',')] if project.entry else []
         adv_mode = (advanced - 2) if advanced in (3, 4) else advanced
-        mixins = ['str'] if args.mix_str else None
 
         for x in sorted(files):
             a, b = os.path.join(src, x), os.path.join(soutput, x)
@@ -683,6 +684,7 @@ def _obfuscate(args):
 
     logging.info('Obfuscate module mode is %s', args.obf_mod)
     logging.info('Obfuscate code mode is %s', args.obf_code)
+    logging.info('Obfuscate string value is %s', v(args.mix_str))
     logging.info('Wrap mode is %s', args.wrap_mode)
     logging.info('Restrict mode is %d', restrict)
     logging.info('Advanced value is %d', advanced)
@@ -727,6 +729,7 @@ def _obfuscate(args):
 
     logging.info('Start obfuscating the scripts...')
     adv_mode = (advanced - 2) if advanced in (3, 4) else advanced
+    mixins = ['str'] if args.mix_str else None
     for x in sorted(files):
         if os.path.isabs(x):
             a, b = x, os.path.join(output, os.path.basename(x))
@@ -745,7 +748,8 @@ def _obfuscate(args):
                        obf_code=args.obf_code, obf_mod=args.obf_mod,
                        adv_mode=adv_mode, rest_mode=restrict, entry=is_entry,
                        protection=protection, platforms=platforms,
-                       plugins=plugins, suffix=suffix, sppmode=sppmode)
+                       plugins=plugins, suffix=suffix, sppmode=sppmode,
+                       mixins=mixins)
 
         if supermode:
             make_super_bootstrap(a, b, output, relative, suffix=suffix)
