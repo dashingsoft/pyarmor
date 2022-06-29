@@ -72,16 +72,39 @@ def build_co_module(lines, modname, **kwargs):
 
 class StrNodeTransformer(ast.NodeTransformer):
 
-    def reform_node(self, node):
+    def _reform_str(self, s):
         encoding = getattr(self, 'encoding')
-        s = node.s if isinstance(node, ast.Str) else node.value
         value = bytearray(s.encode(encoding) if encoding else s.encode())
         key = [randint(0, 255)] * len(value)
         data = [x ^ y for x, y in zip(value, key)]
         expr = 'bytearray([%s]).decode(%s)' % (
             ','.join(['%s ^ %s' % k for k in zip(data, key)]),
             '' if encoding is None else encoding)
-        obfnode = ast.parse(expr).body[0].value
+        return ast.parse(expr).body[0].value
+
+    def reform_node(self, node):
+        value = node.s if isinstance(node, ast.Str) else node.value
+        if isinstance(value, (list, tuple, set)):
+            if not any([isinstance(x, str) for x in value]):
+                return node
+            elts = [self._reform_str(x) if isinstance(x, str)
+                    else ast.Constant(value=x) for x in value]
+            obfnode = ast.Set(elts=elts) if isinstance(value, set) \
+                else ast.List(elts=elts, ctx=ast.Load()) if isinstance(value, list) \
+                else ast.Tuple(elts=elts, ctx=ast.Load())
+        elif isinstance(value, dict):
+            if not any([isinstance(x, str) for x in value.keys()]):
+                return node
+            obfnode = ast.Dict(**{
+                'keys': [ast.Constant(value=x) for x in value.keys()],
+                'values': [self._reform_str(x) if isinstance(x, str)
+                           else ast.Constant(value=x) for x in value.values()]
+            })
+        elif isinstance(value, str):
+            obfnode = self._reform_str(value)
+        else:
+            return node
+
         ast.copy_location(obfnode, node)
         ast.fix_missing_locations(obfnode)
         return obfnode
