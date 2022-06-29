@@ -82,37 +82,41 @@ class StrNodeTransformer(ast.NodeTransformer):
             '' if encoding is None else encoding)
         return ast.parse(expr).body[0].value
 
-    def reform_node(self, node):
-        value = node.s if isinstance(node, ast.Str) else node.value
-        if isinstance(value, (list, tuple, set)):
-            if not any([isinstance(x, str) for x in value]):
-                return node
-            elts = [self._reform_str(x) if isinstance(x, str)
-                    else ast.Constant(value=x) for x in value]
-            obfnode = ast.Set(elts=elts) if isinstance(value, set) \
-                else ast.List(elts=elts, ctx=ast.Load()) if isinstance(value, list) \
-                else ast.Tuple(elts=elts, ctx=ast.Load())
+    def _reform_value(self, value):
+        if isinstance(value, str):
+            return self._reform_str(value)
+
         elif isinstance(value, dict):
-            if not any([isinstance(x, str) for x in value.keys()]):
-                return node
-            obfnode = ast.Dict(**{
+            return ast.Dict(**{
                 'keys': [ast.Constant(value=x) for x in value.keys()],
                 'values': [self._reform_str(x) if isinstance(x, str)
-                           else ast.Constant(value=x) for x in value.values()]
+                           else self._reform_value(x) for x in value.values()]
             })
-        elif isinstance(value, str):
-            obfnode = self._reform_str(value)
+
+        elif isinstance(value, (list, tuple, set)):
+            elts = [self._reform_str(x) if isinstance(x, str)
+                    else self._reform_value(x) for x in value]
+            if isinstance(value, set):
+                return ast.Set(elts=elts)
+            else:
+                cls = ast.List if isinstance(value, list) else ast.Tuple
+                return cls(elts=elts, ctx=ast.Load())
+
         else:
+            return ast.Constant(value=value)
+
+    def reform_node(self, node):
+        value = node.s if isinstance(node, ast.Str) else node.value
+        if not isinstance(value, (list, tuple, set, dict, str)):
             return node
 
+        obfnode = self._reform_value(value)
         ast.copy_location(obfnode, node)
         ast.fix_missing_locations(obfnode)
         return obfnode
 
     def filter_node(self, node):
-        return isinstance(node.s if isinstance(node, ast.Str)
-                          else node.value if isinstance(node, ast.Constant)
-                          else None, str)
+        return isinstance(node, (ast.Str, ast.Constant))
 
     def visit(self, node):
         for field, value in ast.iter_fields(node):
