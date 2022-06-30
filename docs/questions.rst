@@ -943,6 +943,25 @@ License Questions
 -----------------
 Refer to :ref:`License Questions`
 
+Is there anyway we could get an evaluation license
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Q: Is there anyway we could get an evaluation license that lifts the
+restriction of large file sizes to test it on our systems? Perhaps restricted to
+1-2 days with the promise that we will purchase if it fits our needs.
+
+A: There is no evaluation license for pyarmor at this time.
+
+For all of features changed by pyarmor, please check this section
+https://pyarmor.readthedocs.io/en/latest/understand-obfuscated-scripts.html#the-differences-of-obfuscated-scripts
+
+Generally if your scripts don’t use any mentioned features, and any lower
+features of Python like visiting frame (sys._getframe), inspecting code object
+directly, it should work with pyarmor.
+
+One license of pyarmor cost only a small amount of money, even purchasing one
+for evalution is not too hard to make a decision.
+
 Misc. Questions
 ---------------
 
