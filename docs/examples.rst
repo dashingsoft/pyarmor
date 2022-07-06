@@ -52,7 +52,7 @@ options work with command :ref:`obfuscate`::
 .. important::
 
    The command :ref:`pack` will obfuscate the scripts automatically, do not try
-   to pack the obfuscated the scripts.
+   to pack the obfuscated scripts.
 
 .. note::
 
