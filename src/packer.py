@@ -318,8 +318,8 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
 
     patched_lines = start_lines + main_lines + deps_lines + end_lines
 
-    # if encoding is not None and sys.version_info[0] == 2:
-    #     patched_lines = [x.decode(encoding) for x in patched_lines]
+    if encoding is not None and sys.version_info[0] == 2:
+        patched_lines = [x.decode(encoding) for x in patched_lines]
 
     for i in range(len(lines)):
         if lines[i].startswith("pyz = PYZ("):
@@ -364,7 +364,7 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
     return os.path.normpath(patched_file)
 
 
-def __obfuscate_dependency_pkgs(package_names, obf_options, temp_dir):
+def __obfuscate_dependency_pkgs(package_names, obf_options):
     '''
     Args:
         package_names: List[str] - packages' distribution names
@@ -372,6 +372,8 @@ def __obfuscate_dependency_pkgs(package_names, obf_options, temp_dir):
         temp_dir: str - Path to the temp folder containing the obfuscated pkg codes 
     '''
     src_and_obf_dirs = dict()
+    obf_temp_dir = "/tmp/pyarmor-obf-dep"
+    os.makedirs(obf_temp_dir, exist_ok=True)
 
     for pkg_name in package_names:
         pkg = get_distribution(pkg_name)
@@ -385,7 +387,7 @@ def __obfuscate_dependency_pkgs(package_names, obf_options, temp_dir):
             raise RuntimeError('%s does not have top level modules' % pkg_name)
 
         for module_name in top_modules:
-            obfdist = os.path.join(temp_dir, module_name)
+            obfdist = os.path.join(obf_temp_dir, module_name)
             src_dir = os.path.join(pkg.location, module_name)
             pkg_init_file = os.path.join(src_dir, '__init__.py')
 
@@ -476,7 +478,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     
     dep_src_and_obf_dirs = None
     if args.obf_deps:
-        dep_src_and_obf_dirs = __obfuscate_dependency_pkgs(args.obf_deps, xoptions, obftemp)
+        dep_src_and_obf_dirs = __obfuscate_dependency_pkgs(args.obf_deps, xoptions)
 
     supermode = True
     runmodname = None
