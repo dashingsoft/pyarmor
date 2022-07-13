@@ -574,6 +574,17 @@ When something is wrong, turn on PyArmor debug flag to print traceback::
 
     pyarmor -d pack ...
 
+.. important::
+
+   For option `-e` and `-x`, it need an extra whitespace in option value,
+   otherwise it will complain of `error: unrecognized arguments`. For exmaple::
+
+     # Wrong, no heading whitespace before --advanced 2
+     pyarmor pack -x "--advanced 2" ...
+
+     # Right
+     pyarmor pack -x " --advanced 2" ...
+
 **EXAMPLES**
 
 * Obfuscate `foo.py` and pack them into the bundle `dist/foo`::

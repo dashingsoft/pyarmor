@@ -823,6 +823,21 @@ pacakge manage tool.
 Packing Obfuscated Scripts Problem
 ----------------------------------
 
+error: unrecognized arguments
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For option `-e` and `-x`, it need an extra whitespace in option value, otherwise
+it will complain of `error: unrecognized arguments`. For exmaple::
+
+  # Wrong, no heading whitespace before --advanced 2
+  pyarmor pack -x "--advanced 2" ...
+
+  # Right
+  pyarmor pack -x " --advanced 2" ...
+
+If no `-e` or `-x` is used, please check the man page of :ref:`pack` to
+understand all support options.
+
 The final bundle does not work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
