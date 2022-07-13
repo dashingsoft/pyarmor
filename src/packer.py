@@ -51,6 +51,7 @@ from py_compile import compile as compile_file
 from shlex import split
 from subprocess import Popen, PIPE, STDOUT
 from zipfile import PyZipFile
+from pkg_resources import get_distribution
 
 import polyfills.argparse as argparse
 
@@ -266,7 +267,7 @@ def _guess_encoding(filename):
 
 
 def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
-                    modname='pytransform'):
+                    modname='pytransform', dep_src_and_obf_dirs=None):
     if encoding is None:
         with open(specfile, 'r') as f:
             lines = f.readlines()
@@ -275,8 +276,11 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
             lines = f.readlines()
 
     p = os.path.abspath(obfdist)
-    patched_lines = (
-        "", "# Patched by PyArmor",
+
+    start_lines = ("", "# Patched by PyArmor",)
+    end_lines = ("# Patch end.", "", "",)
+
+    main_lines = (
         "_src = %s" % repr(os.path.abspath(src)),
         "_obf = 0",
         "for i in range(len(a.scripts)):",
@@ -295,10 +299,27 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
         "                with open(x) as f:",
         "                    a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')",
         "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]",
-        "# Patch end.", "", "")
+    )
 
-    if encoding is not None and sys.version_info[0] == 2:
-        patched_lines = [x.decode(encoding) for x in patched_lines]
+    deps_lines = ()
+    if dep_src_and_obf_dirs:
+        deps_lines = (
+            "_dep_src_map = %s" % repr(dep_src_and_obf_dirs),
+            "for i in range(len(a.pure)):",
+            "    for src, obf in _dep_src_map.items():",
+            "        if a.pure[i][1].startswith(src):",
+            "            x = a.pure[i][1].replace(src, obf)",
+            "            if os.path.exists(x):",
+            "                if hasattr(a.pure, '_code_cache'):",
+            "                    with open(x) as f:",
+            "                        a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')",
+            "                a.pure[i] = a.pure[i][0], x, a.pure[i][2]",
+        )
+
+    patched_lines = start_lines + main_lines + deps_lines + end_lines
+
+    # if encoding is not None and sys.version_info[0] == 2:
+    #     patched_lines = [x.decode(encoding) for x in patched_lines]
 
     for i in range(len(lines)):
         if lines[i].startswith("pyz = PYZ("):
@@ -343,6 +364,47 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
     return os.path.normpath(patched_file)
 
 
+def __obfuscate_dependency_pkgs(package_names, obf_options, temp_dir):
+    '''
+    Args:
+        package_names: List[str] - packages' distribution names
+        obf_options: List[str] - obfuscation options
+        temp_dir: str - Path to the temp folder containing the obfuscated pkg codes 
+    '''
+    src_and_obf_dirs = dict()
+
+    for pkg_name in package_names:
+        pkg = get_distribution(pkg_name)
+        top_modules = [
+            x
+            for x in pkg.get_metadata('top_level.txt').split('\n')
+            if x not in ('test', 'tests', '')  # some not well packaged libraries might accidentally include their unit tests modules into the package
+        ]
+
+        if not top_modules:
+            raise RuntimeError('%s does not have top level modules' % pkg_name)
+
+        for module_name in top_modules:
+            obfdist = os.path.join(temp_dir, module_name)
+            src_dir = os.path.join(pkg.location, module_name)
+            pkg_init_file = os.path.join(src_dir, '__init__.py')
+
+            if not os.path.exists(pkg_init_file):
+                raise RuntimeError('%s does not exist' % pkg_init_file)
+
+            logging.info('> Obfuscating dependency: %s [%s]' % (pkg_name, module_name))
+            call_pyarmor([
+                'obfuscate', '-O', obfdist,
+                '--package-runtime', '0',
+                '--no-runtime',
+                '--bootstrap', '0',
+                '--recursive'] + obf_options + [pkg_init_file])
+
+            src_and_obf_dirs[src_dir] = os.path.abspath(obfdist)
+
+    return src_and_obf_dirs
+
+
 def _pyinstaller(src, entry, output, options, xoptions, args):
     '''
     Args:
@@ -353,6 +415,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         xoptions: List[str] - options for obfuscate
         args - cli arguments
     '''
+
     clean = args.clean
     licfile = args.license_file
     if licfile in ('no', 'outer') or args.no_license:
@@ -395,6 +458,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     logging.info('Run PyArmor to obfuscate scripts...')
     licargs = ['--with-license', licfile] if licfile else \
         ['--with-license', 'outer'] if licfile is False else []
+
     if hasattr(args, 'project'):
         if xoptions:
             logging.warning('Ignore xoptions as packing project')
@@ -409,6 +473,11 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if not os.path.exists(obftemp):
         logging.info('Create temp path: %s', obftemp)
         os.makedirs(obftemp)
+    
+    dep_src_and_obf_dirs = None
+    if args.obf_deps:
+        dep_src_and_obf_dirs = __obfuscate_dependency_pkgs(args.obf_deps, xoptions, obftemp)
+
     supermode = True
     runmodname = None
     for x in glob(os.path.join(obfdist, 'pytransform*')):
@@ -444,7 +513,7 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
 
     logging.info('Patching .spec file...')
     patched_spec = _patch_specfile(obfdist, src, specfile, hookpath,
-                                   encoding, runmodname)
+                                   encoding, runmodname, dep_src_and_obf_dirs)
     logging.info('Save patched .spec file to %s', patched_spec)
 
     logging.info('Run PyInstaller with patched .spec file...')
@@ -576,6 +645,8 @@ def packer(args):
 
 
 def add_arguments(parser):
+    comma_sep_str = lambda x: str(x).split(',')
+
     parser.add_argument('-v', '--version', action='version', version='v0.1')
 
     parser.add_argument('-t', '--type', default='PyInstaller', metavar='TYPE',
@@ -599,6 +670,8 @@ def add_arguments(parser):
                         help='Remove cached .spec file before packing')
     parser.add_argument('--keep', '--debug', dest='keep', action="store_true",
                         help='Do not remove build files after packing')
+    parser.add_argument('--obf-deps', type=comma_sep_str,
+                        help='Dependency packages to obfuscate, using the same "xoptions"')
     parser.add_argument('entry', metavar='SCRIPT', nargs=1,
                         help='Entry script or project path')
 
