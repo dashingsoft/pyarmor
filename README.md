@@ -81,7 +81,7 @@ versions.
 
 It's recommended to read this carefully before upgrading pyarmor.
 
-## [Report issuses](https://github.com/dashingsoft/pyarmor/issues)
+## [Report issues](https://github.com/dashingsoft/pyarmor/issues)
 
 If there is any question, first check these [questions and
 solutions](https://pyarmor.readthedocs.io/en/latest/questions.html), it may help

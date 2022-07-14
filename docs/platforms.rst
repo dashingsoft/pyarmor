@@ -198,7 +198,7 @@ and run it in the target machine::
 
     python get_platform_name.py
 
-.. note:: New platforms in differnt versions
+.. note:: New platforms in different versions
 
    * v5.9.3: android.armv7
    * v5.9.4: uclibc.armv7
