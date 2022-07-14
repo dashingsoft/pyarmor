@@ -11,7 +11,7 @@ Here are some examples:
 * [Check GPU](#example-5-check-gpu)
 
 
-**The sample code is only a guide, it's strongly recommanded to write your
+**The sample code is only a guide, it's strongly recommended to write your
 private code in plugin script**
 
 ##  Example 1: Check All the Mac Address

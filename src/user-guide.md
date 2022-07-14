@@ -605,7 +605,7 @@ optional arguments:
 
 ```
 
-Run benchmark test in current machine. This command used to test the performaces
+Run benchmark test in current machine. This command used to test the performances
 of obfuscated scripts in different obfuscate mode. For examples
 
 
@@ -822,7 +822,7 @@ This command creates an empty project in the specified path - basically a
 configure file .pyarmor_config, a project capsule .pyarmor_capsule.zip, and a
 shell script "pyarmor" will be created (in windows, it called "pyarmor.bat").
 
-Option --type specifies project type: app or package. If it's pakcage type, the
+Option --type specifies project type: app or package. If it's package type, the
 obfuscated scripts will be saved in the sub-directory `package-name` of output
 path. `auto` means project type will be set to package if there is `__init__.py`
 in the project src path, otherwise `app`.
@@ -1059,7 +1059,7 @@ path. This capsule is generated when run command `pyarmor init` to
 create a project. And `license.lic` of PyArmor will be as an input
 file to make this capsule.
 
-When runing command `pyarmor build` or `pyarmor licenses`, it will
+When running command `pyarmor build` or `pyarmor licenses`, it will
 generate a `license.lic` in project output path for obfuscated
 scripts. Here the project capsule `.pyarmor_capsule.zip` will be as
 input file to generate this `license.lic` of Obfuscated Scripts.
