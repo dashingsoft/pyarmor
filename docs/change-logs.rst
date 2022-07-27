@@ -44,6 +44,11 @@ Incompatible issues
 -----------
 * For command `obfuscate` add option `--mix-str` to obfuscate the string value
 * For command `config` add option `--mixin`, only avaliable mixin is `str` now
+* Change core version to **r50.4**
+* Change spp build library version to **r2**
+* Fix spp mode crash bugs because of the same list/dict/set constants conflicts
+* Fix spp mode crash bugs because cellvars and freevars are freed even they are
+  still used by other lambda/functions.
 
   The dev version could be installed by this command::
 

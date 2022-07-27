@@ -88,7 +88,7 @@ also works in the docstring to ignore ``function`` or ``class``, for example:
 There are a few differences in the spp mode:
 
 * Calling `raise` without argument not in the exception handler will raise
-  different exception
+  different exception.
 
 .. code-block:: python
 
@@ -99,12 +99,18 @@ There are a few differences in the spp mode:
     >>> raise
     UnboundlocalError: local variable referenced before assignment
 
+* Some exception messages may different from the plain script.
+
+* Most of function attributes which starts with `__` doesn't exists,
+  or the value is different from the original.
+
 Unsupport features for spp mode:
 
 .. code-block:: python
 
     unsupport_nodes = (
-        ast.Nonlocal,
+        ast.ExtSlice,
+
         ast.AsyncFunctionDef, ast.AsyncFor, ast.AsyncWith,
         ast.Await, ast.Yield, ast.YieldFrom, ast.GeneratorExp,
 
@@ -115,9 +121,14 @@ Unsupport features for spp mode:
         ast.MatchAs, ast.MatchOr
     )
 
-And unsupport functions::
+And unsupport functions:
 
-    exec, eval, super, locals, sys._getframe
+* exec,
+* eval
+* super
+* locals
+* sys._getframe
+* sys.exc_info
 
 For example, the following functions are not obfuscated by super plus
 mode, because they use unsupported features or unsupported functions:
