@@ -58,10 +58,8 @@ stdout.write("OK" if (ver[0] * 100 + ver[1]) in (207, 307, 308, 309, 310) else "
 SUPERMODE=yes
 mkdir -p ${PYARMOR_DATA}/platforms
 PLATFORM_INDEX=${PYARMOR_DATA}/platforms/index.json
-if ! [[ -f ${PLATFORM_INDEX} ]] ; then
-    csih_inform "Copy platform index.json from pyarmor-core"
-    cp ../../../../pyarmor-core/platforms/index.json ${PLATFORM_INDEX}
-fi
+csih_inform "Copy platform index.json from pyarmor-core"
+cp ../../../../pyarmor-core/platforms/index.json ${PLATFORM_INDEX}
 (cd ${PYARMOR_DATA}/platforms;
  for x in ${PYARMOR_CORE_PLATFORM}/*.py?? ; do
      name=$(basename ${x})
