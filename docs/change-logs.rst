@@ -44,6 +44,7 @@ Incompatible issues
 -----------
 * For command `obfuscate` add option `--mix-str` to obfuscate the string value
 * For command `config` add option `--mixin`, only avaliable mixin is `str` now
+* Project add new attribute `mixins` to support option `--mixin`
 * Change core version to **r51.5**
 * Change spp build library version to **r2**
 * Fix spp mode crash bugs because of the same list/dict/set constants conflicts
