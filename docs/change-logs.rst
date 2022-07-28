@@ -38,10 +38,16 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
+  The dev version could be installed by this command::
 
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.6.0.zip
 
-7.6.0 (dev)
------------
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the stable version from PyPi.
+
+7.6.0
+-----
 * For command `obfuscate` add option `--mix-str` to obfuscate the string value
 * For command `config` add option `--mixin`, only avaliable mixin is `str` now
 * Project add new attribute `mixins` to support option `--mixin`
@@ -50,14 +56,6 @@ Incompatible issues
 * Fix spp mode crash bugs because of the same list/dict/set constants conflicts
 * Fix spp mode crash bugs because cellvars and freevars are freed even they are
   still used by other lambda/functions.
-
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.6.0.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the stable version from PyPi.
 
 7.5.1
 -----
