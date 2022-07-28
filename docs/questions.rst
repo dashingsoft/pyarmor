@@ -403,11 +403,17 @@ http://pyarmor.dashingsoft.com/downloads/latest/alpine.arm/_pytransform.so
 
 Apple M1 Hangs Issue
 ~~~~~~~~~~~~~~~~~~~~
-When run pyarmor in Apple M1 with :ref:`Features` 3, it may hang. Because
-JIT-compile is used by the core library of pyarmor `_pytransform.dylib`
+When pyarmor hangs in Apple M1, try these solutions:
 
-It will be blocked by Apple M1, signing it with the corresponding entitlement
-may fix this problem. Refer to
+* Remove the whole folder of `~/.pyarmor/platforms`, refer to :ref:`Clean uninstallation`
+* Upgrade pyarmor to latest version and use paid version.
+* For trial version, export enviornment variable `PYARMOR_PLATFORM=darwin.aarch64.0`
+
+Because the default core library of `_pytransform.dylib` uses some features like
+JIT-compile which may be blocked by Apple M1.
+
+Signing python interpreter with the corresponding entitlement may fix this
+problem, but I'm not sure. Refer to
 https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
 
 Obfuscating Scripts Problem
