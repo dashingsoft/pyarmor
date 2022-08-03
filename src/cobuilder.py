@@ -1,8 +1,7 @@
 import ast
 import logging
+import random
 import sys
-
-from random import seed, randint
 
 from sppmode import build_co as sppbuild
 
@@ -75,7 +74,7 @@ class StrNodeTransformer(ast.NodeTransformer):
     def _reform_str(self, s):
         encoding = getattr(self, 'encoding')
         value = bytearray(s.encode(encoding) if encoding else s.encode())
-        key = [randint(0, 255)] * len(value)
+        key = [random.randint(0, 255)] * len(value)
         data = [x ^ y for x, y in zip(value, key)]
         expr = 'bytearray([%s]).decode(%s)' % (
             ','.join(['%s ^ %s' % k for k in zip(data, key)]),
@@ -137,7 +136,7 @@ def ast_mixin_str(mtree, **kwargs):
     if sys.version_info[0] == 2:
         raise RuntimeError("String protection doesn't work for Python 2")
 
-    seed()
+    random.seed()
     snt = StrNodeTransformer()
     snt.encoding = kwargs.get('encoding')
     snt.visit(mtree)
