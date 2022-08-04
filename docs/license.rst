@@ -36,24 +36,23 @@ There are 2 basic types of licenses issued for the software:
   property of the license owner.
 
 * A enterprise license for business users. The user purchases one
-  license to use the software for one product serials of an
-  organization. When placing an order of this kind of license, please
-  fill orginization name plus product name, this software is only
-  authorized to this registration name.
+  license to use the software for one product of an organization. When
+  placing an order of this kind of license, please fill orginization
+  name plus product name, this software is only authorized to this
+  registration name.
 
-  One product serials include the current version and any other latter
+  One product include the current version and any other latter
   versions of the same product.
 
   Business users may use their enterprise license on all computers and
-  embedded devices to obfuscate all the python scripts of this product
-  serials, to generate private license files for these obfuscated
-  scripts and distribute them and all the required files to any other
-  machine and device.
+  embedded devices to obfuscate all the python scripts of this product,
+  to generate private license files for these obfuscated scripts and
+  distribute them and all the required files to any other machine and
+  device.
 
-  Without permission of the software owner the license purchased for
-  one product serials should not be used for other product
-  serials. Business users should purchase new license for different
-  product serials.
+  Without permission of the software owner the license purchased for one
+  product should not be used for other product. Business users should
+  purchase new license for different product.
 
   In any case, the software is only used to obfuscate the Python scripts
   owned by the authorized person or enterprise.
