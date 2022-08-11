@@ -7,14 +7,14 @@ assignees: jondy
 
 ---
 
-It's more readable in the issue Preview mode for all the hints
+**Click Preview above**
 
-**Please first read the following pages and the related links mentioned in the common solutions**
+**Please read the following pages and the related links mentioned in the common solutions before submit new question**
 
 [Questions](https://pyarmor.readthedocs.io/en/latest/questions.html)
 [Basic usage](https://pyarmor.readthedocs.io/en/latest/usage.html)
 
-**If missing the necessary information, or the question has been described in the document, the issue will be marked as "invalid" and be closed direclty.**
+**If the question has been described in the document, the issue will be marked as "documented" and be closed direclty.**
 
 If ask a question or describe the problem, please provide the following information:
 
@@ -22,6 +22,8 @@ If ask a question or describe the problem, please provide the following informat
 2. The full pyarmor command and full output log (required if something is wrong)
 3. If distributing the obfuscated script to other machine, which files are copied (optional)
 4. The command to run the obfuscated scripts and full traceback when something is wrong
+
+**If missing necessary information and I don't know how to help you, the issue will be marked as "invalid" and be closed direclty**
 
 **Hint**
 If something you're not sure, but it could be verified by doing a test in five minutes, just do it to save time for both of us. For example, understand the difference of super mode and non-super mode scripts by a simple test
