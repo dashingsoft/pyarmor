@@ -7,16 +7,15 @@ assignees: jondy
 
 ---
 
-**Click Preview above**
+First please click Preview button above
 
-**Please read the following pages and the related links mentioned in the common solutions before submit new question**
+**Next please click the following link to read the page "Questions" and the related links mentioned in the section "Common Solutions"**
 
 [Questions](https://pyarmor.readthedocs.io/en/latest/questions.html)
-[Basic usage](https://pyarmor.readthedocs.io/en/latest/usage.html)
 
-**If the question has been described in the document, the issue will be marked as "documented" and be closed direclty.**
+**Do not submit the question solved in the documentation, this kind of issue will be marked as "documented" and be closed directly.**
 
-If ask a question or describe the problem, please provide the following information:
+If it's a new question, please provide the following information:
 
 1. A clear and concise description of the question (required)
 2. The full pyarmor command and full output log (required if something is wrong)
@@ -47,4 +46,4 @@ ls dist/
 cat dist/foo.py
 ```
 
-**Please remove all the above hints before your question**
+**Finally remove all the above content and submit your question**

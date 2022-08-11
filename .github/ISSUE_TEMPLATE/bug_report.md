@@ -1,89 +1,49 @@
 ---
 name: Bug report
 about: Report a bug of pyarmor
-title: ''
+title: "[BUG]"
 labels: bug
 assignees: jondy
 
 ---
 
-It's more readable in the issue Preview mode for the hints
+First please click Preview button above
 
-**IMPORTANT**
-Please provide the necessary information according to this template when reporting bug. If missing necessay information, the issue will be marked as `invalid` and be closed directly.
+**Next please click the following link to read the page "Questions" and the related links mentioned in the section "Common Solutions"**
 
-**Hints**
-Before report a bug, please read these common questions and solutions first
-https://pyarmor.readthedocs.io/en/latest/questions.html
+[Questions](https://pyarmor.readthedocs.io/en/latest/questions.html)
 
-If there is the exact solution in the documentation, the issue will be marked as `invalid` and be closed directly.
+**Do not submit the question solved in the documentation, this kind of issue will be marked as "documented" and be closed directly.**
 
-And please remove all the above hints.
+If it's a new question, please provide the following information:
 
-**Title**
-A clear and concise description of what the bug is.
+1. A clear and concise description of the question (required)
+2. The full pyarmor command and full output log (required if something is wrong)
+3. If distributing the obfuscated script to other machine, which files are copied (optional)
+4. The command to run the obfuscated scripts and full traceback when something is wrong
 
-**Description**
-1. The full pyarmor command and full output log (required)
-2. If distributing the obfuscated script to other machine, which files are copied (optional)
-3. The command to run the obfuscated scripts and full traceback when something is wrong
+**If missing necessary information and I don't know how to help you, the issue will be marked as "invalid" and be closed direclty**
 
-The output log could be redirected to a file by this way. For example,
-
-    pyarmor obfuscate foo.py >log.txt 2>&1
-
-Here is an issue instance
-
-*Title*:
-
-    cannot import name 'pyarmor' from 'pytransform'
-
-*Description*:
-
-1. On MacOS 10.14 run pyarmor to obfuscate the script
+**Hint**
+If something you're not sure, but it could be verified by doing a test in five minutes, just do it to save time for both of us. For example, understand the difference of super mode and non-super mode scripts by a simple test
 ```
-$ pyarmor obfuscate --exact main.py
-INFO     Create pyarmor home path: /Users/jondy/.pyarmor
-INFO     Create trial license file: /Users/jondy/.pyarmor/license.lic
-INFO     Generating public capsule ...
-INFO     PyArmor Trial Version 7.0.1
-INFO     Python 3.7.10
-INFO     Target platforms: Native
-INFO     Source path is "/Users/jondy/workspace/pyarmor-webui/test/__runner__/__src__"
-INFO     Entry scripts are ['main.py']
-INFO     Use cached capsule /Users/jondy/.pyarmor/.pyarmor_capsule.zip
-INFO     Search scripts mode: Exact
-INFO     Save obfuscated scripts to "dist"
-INFO     Read product key from capsule
-INFO     Obfuscate module mode is 2
-INFO     Obfuscate code mode is 1
-INFO     Wrap mode is 1
-INFO     Restrict mode is 1
-INFO     Advanced value is 0
-INFO     Super mode is False
-INFO     Super plus mode is not enabled
-INFO     Generating runtime files to dist/pytransform
-INFO     Extract pytransform.key
-INFO     Generate default license file
-INFO     Update capsule to add default license file
-INFO     Copying /Users/jondy/workspace/pyarmor-webui/venv/lib/python3.7/site-packages/pyarmor/platforms/darwin/x86_64/_pytransform.dylib
-INFO     Patch library dist/pytransform/_pytransform.dylib
-INFO     Patch library file OK
-INFO     Copying /Users/jondy/workspace/pyarmor-webui/venv/lib/python3.7/site-packages/pyarmor/pytransform.py
-INFO     Rename it to pytransform/__init__.py
-INFO     Generate runtime files OK
-INFO     Start obfuscating the scripts...
-INFO     	/Users/jondy/workspace/pyarmor-webui/test/__runner__/__src__/main.py -> dist/main.py
-INFO     Insert bootstrap code to entry script dist/foo.py
-INFO     Obfuscate 1 scripts OK.
+mkdir test-non-super-mode
+cd test-non-super-mode
+echo "print('Hello')" > foo.py
+pyarmor obfuscate foo.py
+
+# check the output file list and the content of obfuscated scripts in non-super mode
+ls dist/
+cat dist/foo.py
+
+mkdir test-super-mode
+cd test-super-mode
+echo "print('Hello')" > foo.py
+pyarmor obfuscate --advanced 2 foo.py
+
+# check the output file list and the content of obfuscated scripts in super mode
+ls dist/
+cat dist/foo.py
 ```
-2. Copy the whole folder `dist/` to target machine Ubuntu
-3. Failed to run the obfuscated script by Python 3.7 in Unbutu
-```
-$ cd dist/
-$ python3 main.py
-Traceback (most recent call last):
-File "main.py", line 1, in <module>
-  from pytransform import pyarmor
-ImportError: cannot import name 'pyarmor' from 'pytransform' (/home/jondy/dist/pytransform/__init__.py)
-```
+
+**Finally remove all the above content and submit your question**
