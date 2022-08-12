@@ -1683,7 +1683,7 @@ def _fix_up_gnu_hash(data, suffix):
         if (arr[k-12] == 3 and arr[k-10] == 1 and arr[k-9] == 6) \
            or (arr[k-11] == 3 and arr[k-9] == 1 and arr[k-8] == 5):
             logging.debug('Fix suffix symbol hash at %s', k)
-            write_integer(data, (k if ix else (k-3))*4, symhash)
+            write_integer(data, (k if ix else (k-2))*4, symhash)
             write_integer(data, (k-6+nx)*4, arr[k-6+ix])
 
             write_integer(data, (k-7)*4, 0xffffffff)

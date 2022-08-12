@@ -46,6 +46,11 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.6.1
+-----
+* Fix bug: `ImportError: dynamic module does not define module export function
+  (PyInit_pytransform_vax_xxxxxx)`
+
 7.6.0
 -----
 * For command `obfuscate` add option `--mix-str` to obfuscate the string value
