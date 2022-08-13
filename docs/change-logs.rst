@@ -38,9 +38,14 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
+
+7.6.2 (dev)
+-----------
+* Fix sppmode bug: `RuntimeError: Init spp mode failed`
+
   The dev version could be installed by this command::
 
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.6.0.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.6.2.zip
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
