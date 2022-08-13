@@ -1,9 +1,9 @@
 from sys import platform
 
-version = '7.6.1'
+version = '7.6.2'
 
 # The corresponding version of pytransform.so
-core_version = 'r51.5'
+core_version = 'r52.6'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
@@ -46,12 +46,12 @@ buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3008711
 help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
 
 sppmode_info = {
-    'version': 'r2',
+    'version': 'r3',
     'platforms': {
-        'darwin.x86_64': 'e15b4863c012f43d6e5de8a1abe12bf5baf2318254ad072f875d3eace2be2848',
-        'windows.x86_64': '424ea8b2ffb11ffabf6b8c87c90979c53ce121c98fa593a1902b56d8830cbc76',
-        'linux.x86_64': 'd7221bd6e9d889862b900307ae3e2ab117f8330c91e404deb45eeca3a17efce0',
-        'darwin.aarch64': 'aa1389afee7942bf4e25a6d956210ea8499ad5f9e83a6398fa4d0ab9af7bd1ab',
-        'linux.aarch64': 'd06e6d553f6f1e452913759a56325cc75557eb4b2c860b3f3e3406448d383fa4',
+        'darwin.x86_64': '581d549cc054f6d863f67069a149bf53e4f4fb608dd6ad531d9d497ee0adb773',
+        'windows.x86_64': '2f9509d345b42ad66dde6f38925ec9bc6008569b189d0b63ca269c716623fcbc',
+        'linux.x86_64': '0b7e885947b52b4373ae19e3410736a35e9dbc9a561c4b20d8f13628cb9a37c3',
+        'darwin.aarch64': 'ffbb70a443235e14cc0f498037ce7a93b07b4f35efb94fcdbf25d021d597d3e7',
+        'linux.aarch64': '8550a3c130c22dbd98a82c8a801f3538a2fec910fc2160a4c64505b9f1b87d6e',
     }
 }
