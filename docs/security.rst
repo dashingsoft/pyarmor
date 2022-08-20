@@ -18,7 +18,7 @@ example, there is a file `foo.py`::
       print('1 + 1 = %d' % sum(1, 1))
 
 |PyArmor| first obfuscates the function `hello` and `sum`, then
-obfuscates the whole moudle `foo`. In the runtime, only current called
+obfuscates the whole module `foo`. In the runtime, only current called
 function is restored and it will be obfuscated as soon as code object
 completed execution. So even trace code in any ``c`` debugger, only a
 piece of code object could be got one time.
