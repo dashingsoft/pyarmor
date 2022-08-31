@@ -38,10 +38,14 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
+7.7.0 (plan)
+-----------
+* Change core version to **r52.6**
+* Fix sppmode bug: `RuntimeError: Init spp mode failed`
 
 7.6.2 (dev)
 -----------
-* Fix sppmode bug: `RuntimeError: Init spp mode failed`
+* Fix bug(#814): `--mix-str` results in `from __future__ import xxx` error
 
   The dev version could be installed by this command::
 
@@ -53,6 +57,7 @@ Incompatible issues
 
 7.6.1
 -----
+* Change spp build library version to **r3**
 * Fix bug: `ImportError: dynamic module does not define module export function
   (PyInit_pytransform_vax_xxxxxx)`
 
