@@ -1017,7 +1017,7 @@ Generally the obfuscated scripts could replace the original scripts
 seamlessly. Excpet it uses the features changed by pyarmor, here list all
 :ref:`The Differences of Obfuscated Scripts`
 
-Most of packages could work with pyarmor, for a few packages, pyamor also works
+Most of packages could work with pyarmor, for a few packages, pyarmor also works
 after patching these packages simplify. Only those packages which visit byte
 code or something like this could not work with pyarmor at all.
 
