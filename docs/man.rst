@@ -431,7 +431,7 @@ For binding other hard disk card, specify a name for it. For example::
     pyarmor licenses --bind-disk "/dev/vda2:KDX3298FS6P5AX380" r008
 
 By option `-x` any data could be saved into the license file, it's mainly used
-to extend license tyoe. For example::
+to extend license type. For example::
 
     pyarmor licenses -x "2019-02-15" r005
 
