@@ -119,10 +119,11 @@ class StrNodeTransformer(ast.NodeTransformer):
 
     def ignore_docstring(self, node):
         if isinstance(node, ast.Module) and len(node.body) > 1 and \
-           isinstance(node.body[0], (ast.Str, ast.Constant))):
+           isinstance(node.body[0], ast.Expr) and \
+           isinstance(node.body[0].value, (ast.Str, ast.Constant)):
             n = 1
             for x in node.body[1:]:
-                if isinstance(x, (ast.Str, ast.Constant))):
+                if isinstance(x, (ast.Str, ast.Constant)):
                     n += 1
                     continue
                 if isinstance(x, ast.ImportFrom) and x.module == '__future__':
