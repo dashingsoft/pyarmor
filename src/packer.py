@@ -51,7 +51,6 @@ from py_compile import compile as compile_file
 from shlex import split
 from subprocess import Popen, PIPE, STDOUT
 from zipfile import PyZipFile
-from pkg_resources import get_distribution
 
 import polyfills.argparse as argparse
 
@@ -364,15 +363,17 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
     return os.path.normpath(patched_file)
 
 
-def __obfuscate_dependency_pkgs(package_names, obf_options):
+def __obfuscate_dependency_pkgs(package_names, obf_options, tempdir):
     '''
     Args:
         package_names: List[str] - packages' distribution names
         obf_options: List[str] - obfuscation options
-        temp_dir: str - Path to the temp folder containing the obfuscated pkg codes 
+        temp_dir: str - Path to the temp folder containing the obfuscated pkg codes
     '''
+    from pkg_resources import get_distribution
+
     src_and_obf_dirs = dict()
-    obf_temp_dir = "/tmp/pyarmor-obf-dep"
+    obf_temp_dir = os.path.join(tempdir, 'pyarmor-obf-dep')
     os.makedirs(obf_temp_dir, exist_ok=True)
 
     for pkg_name in package_names:
@@ -475,10 +476,11 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     if not os.path.exists(obftemp):
         logging.info('Create temp path: %s', obftemp)
         os.makedirs(obftemp)
-    
+
     dep_src_and_obf_dirs = None
     if args.obf_deps:
-        dep_src_and_obf_dirs = __obfuscate_dependency_pkgs(args.obf_deps, xoptions)
+        dep_src_and_obf_dirs = __obfuscate_dependency_pkgs(args.obf_deps,
+                                                           xoptions, obftemp)
 
     supermode = True
     runmodname = None
