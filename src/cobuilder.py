@@ -117,13 +117,16 @@ class StrNodeTransformer(ast.NodeTransformer):
     def filter_node(self, node):
         return isinstance(node, (ast.Str, ast.Constant))
 
+    def _is_string_value(self, value):
+        return isinstance(value, ast.Str) or (
+            isinstance(value, ast.Constant) and isinstance(value.value, str))
+
     def ignore_docstring(self, node):
         return 1 if (
             isinstance(node, ast.Module) and len(node.body) > 1 and
-            isinstance(node.body[0], ast.Expr) and
-            isinstance(node.body[0].value, (ast.Str, ast.Constant)) and
             isinstance(node.body[1], ast.ImportFrom) and
-            node.body[1].module == '__future__') else 0
+            node.body[1].module == '__future__' and
+            self._is_string_value(node.body[0].value)) else 0
 
     def visit(self, node):
         for field, value in ast.iter_fields(node):
