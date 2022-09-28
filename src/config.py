@@ -1,9 +1,9 @@
 from sys import platform
 
-version = '7.6.2'
+version = '7.7.0'
 
 # The corresponding version of pytransform.so
-core_version = 'r51.5'
+core_version = 'r52.6'
 
 version_info = '''
 PyArmor is a command line tool used to obfuscate python scripts, bind
@@ -46,7 +46,7 @@ buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[3008711
 help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
 
 sppmode_info = {
-    'version': 'r3',
+    'version': 'r4.dev1',
     'platforms': {
         'darwin.x86_64': '581d549cc054f6d863f67069a149bf53e4f4fb608dd6ad531d9d497ee0adb773',
         'windows.x86_64': '2f9509d345b42ad66dde6f38925ec9bc6008569b189d0b63ca269c716623fcbc',
