@@ -38,22 +38,24 @@ Incompatible issues
    and replace the old runtime files with new ones.
 
 ..
-7.7.0 (plan)
------------
-* Change core version to **r52.6**
-* Fix sppmode bug: `RuntimeError: Init spp mode failed`
-
-7.6.2 (dev)
------------
-* Fix bug(#814): `--mix-str` results in `from __future__ import xxx` error
-
   The dev version could be installed by this command::
 
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.6.2.zip
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.7.0.zip
 
   It may be changed from time to time to fix new bugs, please update it once it
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
+
+7.7.0
+-----
+* Fix bug(#814): `--mix-str` results in `from __future__ import xxx` error
+* Change core version to **r52.6**
+* Remove duplicated mac addresses when printing all mac addresses
+* Fix super mode crash bug in aarch64 platform
+* Change spp build library version to **r4**
+* Fix spp mode bug: `RuntimeError: Init spp mode failed` when function name
+  starts with `lambda_`
+* Fix spp mode crash bugs
 
 7.6.1
 -----
