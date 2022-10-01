@@ -1691,20 +1691,25 @@ def makedirs(path, exist_ok=False):
 
 
 def _fix_up_gnu_hash(data, suffix):
-    n = 0x200
-    fmt = 'I' * n
-    arr = struct.unpack(fmt, bytes(data[:n*4]))
+    maxn = 0x200
+    fmt = 'I' * maxn
+    arr = struct.unpack(fmt, bytes(data[:maxn*4]))
 
-    # ix, kx, key, prefix = (0, 2, 0xb4270e0b, 'PyInit_') \
-    ix, kx, key, prefix = (0, 0, 0xb4239787, 'PyInit_') \
-        if sys.version_info[0] == 3 else (2, 0, 0xe746a6ab, 'init')
+    nbuckets = 3
+    bloom_size = 1
+    bloom_shifts = 5, 6
+
+    # hash 0xe746a6ab for initpytransform_vax_000000, nx is 2
+    # hash 0x6456c1b3 for PyInit_pytransform_vax_000000, nx is 0
+    org_nx, prefix, hashlist = (0, 'PyInit_', 0x6456c1b2, 0x6456c1b3) \
+        if sys.version_info[0] == 3 else (2, 'init', 0xe746a6aa, 0xe746a6ab)
 
     symhash = 5381
     for c in ''.join([prefix, 'pytransform', suffix]):
         symhash = symhash * 33 + ord(c)
     symhash &= 0xffffffff
 
-    nx = symhash % 3
+    nx = symhash % nbuckets
     i = 0
 
     def write_integer(buf, offset, value):
@@ -1714,31 +1719,35 @@ def _fix_up_gnu_hash(data, suffix):
 
     while True:
         try:
-            i = arr.index(key, i)
+            i = arr.index(nbuckets, i)
         except Exception:
             return
 
-        k = i + kx
-        if (arr[k-12] == 3 and arr[k-10] == 1 and arr[k-9] == 6) \
-           or (arr[k-11] == 3 and arr[k-9] == 1 and arr[k-8] == 5):
-            logging.debug('Fix suffix symbol hash at %s', k)
-            if ix:
-                write_integer(data, (k if ix else (k-2))*4, symhash)
-            elif arr[k-2] == 0x6456c1b2:
-                write_integer(data, (k-2)*4, symhash)
-            elif arr[k-3] == 0x6456c1b2:
-                write_integer(data, (k-3)*4, symhash)
-            else:
-                logging.debug('No suffix symbol hash found')
-                return False
-            write_integer(data, (k-6+nx)*4, arr[k-6+ix])
+        if not (arr[i+2] == bloom_size and arr[i+3] in bloom_shifts):
+            i += 1
+            continue
 
-            write_integer(data, (k-7)*4, 0xffffffff)
-            if arr[k-9] == 6:
-                write_integer(data, (k-8)*4, 0xffffffff)
-            return True
+        symoff = arr[i+1]
+        shift = arr[i+3]
+        buckets = i + 4 + (shift - 4)
+        if not (symoff == arr[buckets] and arr[buckets+1] == 0):
+            i += 1
+            continue
 
+        chains = buckets + nbuckets
+        for k in range(chains, chains+nbuckets+2):
+            if arr[k] in hashlist:
+                logging.debug('Fix suffix symbol hash at %d', k*4)
+                write_integer(data, (i+4)*4, 0xffffffff)
+                if shift > 5:
+                    write_integer(data, (i+5)*4, 0xffffffff)
+                write_integer(data, (buckets+nx)*4, arr[buckets+org_nx])
+                write_integer(data, k*4, symhash)
+                return True
         i += 1
+
+    logging.debug('No suffix symbol hash found')
+    return False
 
 
 def is_pyscript(filename):
