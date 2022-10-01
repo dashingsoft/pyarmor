@@ -1364,16 +1364,20 @@ def _get_runtime_data():
     if os.path.exists(filename):
         runtime_cfg = load_config(filename)
         runtime_data = [0x80]
-        if runtime_cfg['errors'] == 'exit':
-            runtime_data.append(0xFF)
-        else:
-            assert isinstance(runtime_cfg['errors'], list)
-            for x in runtime_cfg['errors']:
-                msg = x.encode('utf-8')
-                assert (len(msg) < 255)
-                runtime_data.append(len(msg))
-                runtime_data.extend(msg)
-        return runtime_data
+        if 'errors' in runtime_cfg:
+            cfg = runtime_cfg['errors']
+            if cfg == 'exit':
+                runtime_data.append(0xFF)
+            else:
+                if isinstance(cfg, str):
+                    cfg = [cfg]
+                assert isinstance(cfg, list)
+                for x in cfg:
+                    msg = x.encode('utf-8')
+                    assert (len(msg) < 255)
+                    runtime_data.append(len(msg))
+                    runtime_data.extend(msg)
+            return runtime_data
 
 
 def _patch_extension(filename, keylist, suffix='', supermode=True):
