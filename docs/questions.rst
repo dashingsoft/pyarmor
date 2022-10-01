@@ -677,60 +677,7 @@ to `linux.armv7.0`. For examples::
 How to customize error message
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I have started to play around with pyarmor. When using a license file that
-expires you get the message “License is expired”. Is there a way to change this
-message?
-
-At this time, you need patch the source script `pytransform.py` in the pyarmor
-package. There is a function `pyarmor_runtime`
-
-.. code:: python
-
-    def pyarmor_runtime(path=None, suffix='', advanced=0):
-        ...
-        try:
-            pyarmor_init(path, is_runtime=1, suffix=suffix, advanced=advanced)
-            init_runtime()
-        except Exception as e:
-            if sys.flags.debug or hasattr(sys, '_catch_pyarmor'):
-                raise
-            sys.stderr.write("%s\n" % str(e))
-            sys.exit(1)
-
-Change the hanler of the exception as you desired.
-
-If the scripts are obfuscated by super mode, this solution doesn't work. You may
-create a script to catch exceptions raised by obfuscated script `foo.py`. For
-example
-
-.. code:: python
-
-   try:
-       import foo
-   except Exception as e:
-       print('something is wrong')
-
-By this way not only the exceptions of pyarmor but also of normal scripts are
-catched. In order to handle the exceptions of pyarmor only, first create runtime
-package by :ref:`runtime`, and obfuscate the scripts with it::
-
-    pyarmor runtime --advanced 2 -O dist
-    pyarmor obfuscate --advanced 2 --runtime @dist foo.py
-
-Then create a boot script ``dist/foo_boot.py`` like this
-
-.. code:: python
-
-   try:
-       import pytransform_bootstrap
-   except Exception as e:
-       print('something is wrong')
-   else:
-       import foo
-
-The script ``dist/pytransform_bootstrap.py`` is created by :ref:`runtime`, it's
-obfuscated from an empty script, so only pyarmor bootstrap exceptions are raised
-by it.
+Refer to :ref:`How to customize error message`
 
 
 undefined symbol: PyUnicodeUCS4_AsUTF8String

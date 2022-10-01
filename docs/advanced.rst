@@ -1718,4 +1718,92 @@ It also works for super mode::
 
         python -m pyarmor.helper.merge ...
 
+
+How to customize error message
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I have started to play around with pyarmor. When using a license file that
+expires you get the message “License is expired”. Is there a way to change this
+message?
+
+From pyarmor v7.8.0, there are 2 license error messages could be customied by
+runtime configure file `~/.pyarmor/runtime.cfg` with json format:
+
+* License is expired
+* License is not for this machine
+
+There are 3 kind of ways to customize error handlers:
+
+1. Quit directly if "errors" is set to keyword "exit"
+
+.. code:: json
+    {
+       "errors": "exit"
+    }
+
+2. Show same message for any license error
+
+.. code:: json
+    {
+       "errors": "something is wrong"
+    }
+
+3. Show customized message for different errors
+
+.. code:: json
+    {
+       "errors": ["this license is expired", "this license is not for this machine"]
+    }
+
+For old version, you need patch the source script `pytransform.py` in the pyarmor
+package. There is a function `pyarmor_runtime`
+
+.. code:: python
+
+    def pyarmor_runtime(path=None, suffix='', advanced=0):
+        ...
+        try:
+            pyarmor_init(path, is_runtime=1, suffix=suffix, advanced=advanced)
+            init_runtime()
+        except Exception as e:
+            if sys.flags.debug or hasattr(sys, '_catch_pyarmor'):
+                raise
+            sys.stderr.write("%s\n" % str(e))
+            sys.exit(1)
+
+Change the hanler of the exception as you desired.
+
+If the scripts are obfuscated by super mode, this solution doesn't work. You may
+create a script to catch exceptions raised by obfuscated script `foo.py`. For
+example
+
+.. code:: python
+
+   try:
+       import foo
+   except Exception as e:
+       print('something is wrong')
+
+By this way not only the exceptions of pyarmor but also of normal scripts are
+catched. In order to handle the exceptions of pyarmor only, first create runtime
+package by :ref:`runtime`, and obfuscate the scripts with it::
+
+    pyarmor runtime --advanced 2 -O dist
+    pyarmor obfuscate --advanced 2 --runtime @dist foo.py
+
+Then create a boot script ``dist/foo_boot.py`` like this
+
+.. code:: python
+
+   try:
+       import pytransform_bootstrap
+   except Exception as e:
+       print('something is wrong')
+   else:
+       import foo
+
+The script ``dist/pytransform_bootstrap.py`` is created by :ref:`runtime`, it's
+obfuscated from an empty script, so only pyarmor bootstrap exceptions are raised
+by it.
+
 .. include:: _common_definitions.txt
