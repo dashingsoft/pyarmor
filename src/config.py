@@ -28,6 +28,7 @@ entry_lines = 'from %spytransform%s import pyarmor_runtime\n', \
 protect_code_template = 'protect_code%s.pt'
 
 config_filename = '.pyarmor_config'
+runtime_filename = 'runtime.cfg'
 capsule_filename = '.pyarmor_capsule.zip'
 license_filename = 'license.lic'
 default_output_path = 'dist'

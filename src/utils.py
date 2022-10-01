@@ -45,7 +45,7 @@ except ImportError:
 
 import pytransform
 from config import dll_ext, dll_name, entry_lines, protect_code_template, \
-    platform_url, platform_config, \
+    platform_url, platform_config, runtime_filename, \
     core_version, capsule_filename, platform_old_urls, sppmode_info
 from sppmode import mixin as sppmixin
 from cobuilder import build_co_module
@@ -978,7 +978,7 @@ def _readlines(filename):
             with open(filename, 'r', encoding=encoding) as f:
                 lines = f.readlines()
         except UnicodeDecodeError:
-            encoding = 'utf-8'
+            encoding = os.getenv('PYARMOR_ENCODING', 'utf-8')
             with open(filename, 'r', encoding=encoding) as f:
                 lines = f.readlines()
         # Try to remove any UTF BOM bytes
@@ -1112,16 +1112,26 @@ def upgrade_capsule(capsule):
     logging.info('Upgrade capsule OK.')
 
 
-def load_config(filename):
+def load_config(filename, encoding=None):
     if os.path.exists(filename):
-        with open(filename, 'r') as f:
-            cfg = json_loads(f.read())
+        if encoding is None:
+            encoding = os.getenv('PYARMOR_ENCODING')
+        from io import open as fopen
+        with fopen(filename, 'r', encoding=encoding) as f:
+            try:
+                cfg = json_loads(f.read())
+            except UnicodeDecodeError:
+                logging.error('File %s is not encoding by %s, '
+                              'please set environment PYARMOR_ENCODING '
+                              'to the right encoding to fix this issue',
+                              filename, encoding if encoding else 'utf-8')
+                raise RuntimeError('Unrecognized encoding of config file')
     else:
         cfg = {}
     return cfg
 
 
-def save_config(cfg, filename=None):
+def save_config(cfg, filename=None, encoding=None):
     s = json_dumps(cfg, indent=2)
     with open(filename, 'w') as f:
         f.write(s)
@@ -1349,6 +1359,23 @@ def make_super_bootstrap(source, filename, output, relative=None, suffix=''):
         f.write(''.join(lines))
 
 
+def _get_runtime_data():
+    filename = os.path.join(HOME_PATH, runtime_filename)
+    if os.path.exists(filename):
+        runtime_cfg = load_config(filename)
+        runtime_data = [0x80]
+        if runtime_cfg['errors'] == 'exit':
+            runtime_data.append(0xFF)
+        else:
+            assert isinstance(runtime_cfg['errors'], list)
+            for x in runtime_cfg['errors']:
+                msg = x.encode('utf-8')
+                assert (len(msg) < 255)
+                runtime_data.append(len(msg))
+                runtime_data.extend(msg)
+        return runtime_data
+
+
 def _patch_extension(filename, keylist, suffix='', supermode=True):
     logging.debug('Patching %s', relpath(filename))
     patkey = b'\x60\x70\x00\x0f'
@@ -1414,6 +1441,14 @@ def _patch_extension(filename, keylist, suffix='', supermode=True):
             logging.debug('Patch %d bytes from %x', size, offset)
             data[offset:offset+size] = keylist[j]
             offset += size
+
+    runtime_data = _get_runtime_data()
+    if runtime_data:
+        sizecfg = len(runtime_data)
+        if max_size < sizelist[2] + sizecfg:
+            raise RuntimeError('No space to save runtime config')
+        logging.debug('Patch runtime config at %x', offset)
+        data[offset:offset+sizecfg] = bytearray(runtime_data)
 
     if suffix:
         marker = bytes(b'_vax_000000')
