@@ -1699,24 +1699,24 @@ def _fix_up_gnu_hash(data, suffix):
     bloom_size = 1
     bloom_shifts = 5, 6
 
-    # hash 0xe746a6ab for initpytransform_vax_000000, nx is 2
-    # hash 0x6456c1b3 for PyInit_pytransform_vax_000000, nx is 0
-    org_nx, prefix, hashlist = (0, 'PyInit_', 0x6456c1b2, 0x6456c1b3) \
-        if sys.version_info[0] == 3 else (2, 'init', 0xe746a6aa, 0xe746a6ab)
+    hashlist = 0x6456c1b2, 0x6456c1b3, 0xe746a6aa, 0xe746a6ab
 
-    symhash = 5381
-    for c in ''.join([prefix, 'pytransform', suffix]):
-        symhash = symhash * 33 + ord(c)
-    symhash &= 0xffffffff
+    def get_hash_info(is_py3):
+        org_nx, prefix = (0, 'PyInit_') if is_py3 else (2, 'init')
+        symhash = 5381
+        for c in ''.join([prefix, 'pytransform', suffix]):
+            symhash = symhash * 33 + ord(c)
+        symhash &= 0xffffffff
+        nx = symhash % nbuckets
 
-    nx = symhash % nbuckets
-    i = 0
+        return org_nx, nx, symhash
 
     def write_integer(buf, offset, value):
         for j in range(offset, offset + 4):
             buf[j] = value & 0xFF
             value >>= 8
 
+    i = 0
     while True:
         try:
             i = arr.index(nbuckets, i)
@@ -1730,14 +1730,15 @@ def _fix_up_gnu_hash(data, suffix):
         symoff = arr[i+1]
         shift = arr[i+3]
         buckets = i + 4 + (shift - 4)
-        if not (symoff == arr[buckets] and arr[buckets+1] == 0):
+        chains = buckets + nbuckets
+        if not symoff == arr[buckets]:
             i += 1
             continue
 
-        chains = buckets + nbuckets
         for k in range(chains, chains+nbuckets+2):
             if arr[k] in hashlist:
                 logging.debug('Fix suffix symbol hash at %d', k*4)
+                org_nx, nx, symhash = get_hash_info(arr[k] in hashlist[:2])
                 write_integer(data, (i+4)*4, 0xffffffff)
                 if shift > 5:
                     write_integer(data, (i+5)*4, 0xffffffff)
