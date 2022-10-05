@@ -478,8 +478,9 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
         call_pyarmor(['build', '-B', '-O', obfdist, '--package-runtime', '0']
                      + licargs + [args.project])
     else:
+        searchopt = [] if '--exact' in xoptions else ['-r']
         call_pyarmor(['obfuscate', '-O', obfdist, '--package-runtime', '0',
-                      '-r', '--exclude', output] + licargs + xoptions +
+                      '--exclude', output] + searchopt + licargs + xoptions +
                      [script if _get_src_from_xoptions(xoptions) else srcentry])
 
     obftemp = os.path.join(obfdist, 'temp')
