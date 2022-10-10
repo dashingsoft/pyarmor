@@ -1726,7 +1726,7 @@ I have started to play around with pyarmor. When using a license file that
 expires you get the message “License is expired”. Is there a way to change this
 message?
 
-From pyarmor v7.8.0, there are 2 license error messages could be customied by
+From pyarmor v7.8.0, there are 2 license error messages could be customized by
 runtime configure file `~/.pyarmor/runtime.cfg` with json format:
 
 * License is expired
