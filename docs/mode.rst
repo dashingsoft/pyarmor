@@ -487,7 +487,7 @@ For example,
     def fabico():
         global var_b
 
-        # Wrong, remove item from module.__dict__ not in modul level
+        # Wrong, remove item from module.__dict__ not in model level
         del var_b
 
     # This is foo.py, obfuscated with mode 101
