@@ -235,7 +235,7 @@ def _make_hook_pytransform(hookfile, obfdist, encoding=None):
     # On Mac OS X pyinstaller will call mac_set_relative_dylib_deps to
     # modify .dylib file, it results in the cross protection of pyarmor fails.
     # In order to fix this problem, we need add .dylib as data file
-    p = obfdist + os.sep
+    p = os.path.abspath(obfdist) + os.sep
     lines = ['binaries=[(r"{0}_pytransform*", ".")]']
 
     if encoding is None:
