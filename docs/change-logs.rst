@@ -46,6 +46,14 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.7.1
+-----
+* Fix bug(#853): `pack` command fails when passing the `--upx-dir` flag to PyInstaller
+* Fix bug(#860): `--exact` flag doesn't work in the option `-x` of `pack` command
+* Fix bug(#878): For pyinstaller 5.6.2, `pack` command fails with error
+  `win32ctypes.pywin32.pywintypes.error: (2, 'LoadLibraryEx', 'The system cannot
+  find the file specified')`
+
 7.7.0
 -----
 * Fix bug(#814): `--mix-str` results in `from __future__ import xxx` error
