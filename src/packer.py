@@ -250,7 +250,7 @@ def _pyi_makespec(hookpath, src, script, packcmd, modname='pytransform'):
     options = ['-p', hookpath, '--hidden-import', modname,
                '--additional-hooks-dir', hookpath, os.path.join(src, script)]
     cmdlist = packcmd[:]
-    for x in ('--noconfirm', '--ascii', '-a', '--clean'):
+    for x in ('--noconfirm', '--ascii', '-a', '--clean', '--onefile', '-F'):
         if x in cmdlist:
             cmdlist.remove(x)
     for x in ('--upx-dir', '--distpath', '--workpath'):
