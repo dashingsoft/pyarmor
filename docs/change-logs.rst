@@ -46,6 +46,18 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.7.4 (dev)
+-----------
+* Fix bug: pyinstaller option `--upx-dir` doesn't work in the command `pack`
+
+  The dev version could be installed by this command::
+
+      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.7.4.zip
+
+  It may be changed from time to time to fix new bugs, please update it once it
+  doesn't work. If the new version has been released in PyPi, please remove the
+  dev version, install the stable version from PyPi.
+
 7.7.3
 -----
 * Fix bug(#882, #883): `pack` command fails when using pyinstaller option `--onefile`
