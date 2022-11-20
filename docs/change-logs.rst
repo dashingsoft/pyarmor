@@ -46,6 +46,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+7.7.2
+-----
+* Fix bug(#882): `pack` command fails when using pyinstaller option `--onefile`
+
 7.7.1
 -----
 * Fix bug(#853): `pack` command fails when passing the `--upx-dir` flag to PyInstaller
