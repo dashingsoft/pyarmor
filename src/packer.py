@@ -441,6 +441,10 @@ def _pyinstaller(src, entry, output, options, xoptions, args):
     script = entry if hasattr(args, 'project') else relpath(entry, start=src)
     srcentry = os.path.join(src, script)
 
+    if '--upx-dir' in options:
+        n = options.index('--upx-dir')
+        initcmd.extend(options[n:n+2])
+
     if not script.endswith('.py') or not os.path.exists(srcentry):
         raise RuntimeError('No entry script %s found' % srcentry)
 
