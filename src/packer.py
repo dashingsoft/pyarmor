@@ -250,7 +250,7 @@ def _pyi_makespec(hookpath, src, script, packcmd, modname='pytransform'):
     options = ['-p', hookpath, '--hidden-import', modname,
                '--additional-hooks-dir', hookpath, os.path.join(src, script)]
     cmdlist = packcmd[:]
-    for x in ('--noconfirm', '--ascii', '-a', '--clean', '--onefile', '-F'):
+    for x in ('--noconfirm', '--ascii', '-a', '--clean'):
         if x in cmdlist:
             cmdlist.remove(x)
     for x in ('--upx-dir', '--distpath', '--workpath'):
@@ -261,7 +261,7 @@ def _pyi_makespec(hookpath, src, script, packcmd, modname='pytransform'):
             pass
     cmdlist.extend(options)
     # cmdlist[:4] = ['pyi-makespec']
-    cmdlist[:4] = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
+    cmdlist[:2] = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
     run_command(cmdlist)
 
 
