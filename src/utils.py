@@ -1670,7 +1670,11 @@ def _check_code_object_for_super_mode(co, lines, name):
             logging.info('\tPatch function "%s" at line %s', c.co_name, i + 1)
             s = lines[i]
             indent = pat.match(s).group(0)
-            lines[i] = '%s[None, None]\n%s' % (indent, s)
+            # For python 3.10+, use 8 "pass"
+            if sys.version_info[1] > 9:
+                lines[i] = '%s\n%s' % (('%spass\n' % indent) * 8, s)
+            else:
+                lines[i] = '%s[None, None]\n%s' % (indent, s)
         co = compile(''.join(lines), name, 'exec')
 
     return co
