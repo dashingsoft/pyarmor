@@ -49,6 +49,7 @@ Incompatible issues
 7.7.4 (dev)
 -----------
 * Fix bug: pyinstaller option `--upx-dir` doesn't work in the command `pack`
+* Fix bug (#884): "insert one redundant line" doesn't work in Python 3.10 for super mode
 
   The dev version could be installed by this command::
 
