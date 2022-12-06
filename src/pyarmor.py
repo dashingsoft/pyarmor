@@ -1592,6 +1592,10 @@ def main(argv):
         logging.info('Set boot platform: %s', args.boot)
         os.environ['PYARMOR_PLATFORM'] = args.boot
 
+    if sys.version_info[1] > 10:
+        logging.error('Python 3.11+ is not supported now')
+        return
+
     if args.func.__name__[1:] not in ('register', 'download'):
         pytransform_bootstrap(capsule=DEFAULT_CAPSULE, force=args.boot)
 
