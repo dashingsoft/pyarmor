@@ -46,18 +46,10 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
-7.7.4 (dev)
------------
+7.7.4
+-----
 * Fix bug: pyinstaller option `--upx-dir` doesn't work in the command `pack`
 * Fix bug (#884): "insert one redundant line" doesn't work in Python 3.10 for super mode
-
-  The dev version could be installed by this command::
-
-      pip install https://pyarmor.dashingsoft.com/downloads/temp/pyarmor-7.7.4.zip
-
-  It may be changed from time to time to fix new bugs, please update it once it
-  doesn't work. If the new version has been released in PyPi, please remove the
-  dev version, install the stable version from PyPi.
 
 7.7.3
 -----
