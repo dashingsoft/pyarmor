@@ -258,7 +258,7 @@ def _get_platform_list(platid=None):
                 raise RuntimeError(
                     'The trial version pyarmor could not work, please use '
                     'pyarmor < v7.0.0. For example, install latest work '
-                    'version by this command: pip install pyarmor=6.8.1')
+                    'version by this command: pip install pyarmor==6.8.1')
             logging.warning(
                 'The trial version could not download the latest core '
                 'libraries, tag r41.15a is always used. Some bugs fixed '
