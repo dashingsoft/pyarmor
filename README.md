@@ -90,3 +90,46 @@ you solve the problem quickly.
 If there is no solution, for technical issue, click here to [report an
 issue](https://github.com/dashingsoft/pyarmor/issues) according to the issue
 template, for business and security issue send email to <pyarmor@163.com>.
+
+## Release Plan
+
+In order to improve security and support Python 3.11, there are significant
+changes in the next major version PyArmor 8.0
+
+As the plan, PyArmor 8.0 release date is about 2023-03-01 (March 1, 2023)
+
+The main features for PyArmor 8.0
+
+* Support Python 3.11+
+* BCC mode for x86_64 and arm64, the enhancement of spp mode, Irreversible
+* RFT mode, rename function/method/class/variable/argument, Irreversible
+* Customize error message of runtime and localize message
+
+The scheduled features for PyArmor 8.0+ (not released with 8.0)
+
+* BCC mode for armv7 and x86
+* Support Python 3.12
+
+As the plan PyArmor status will be stable by the end of 2024 (Dec. 31, 2024)
+
+### New EULA
+
+The big changes of EULA for PyArmor 8.0+
+
+* For non-profit usage, one license is OK.
+* For commercial usage, one product one license.
+
+There are 2 license modes for PyArmor 8.0+
+
+* pyarmor-basic, one license price 52$
+* pyarmor-pro, one license price 89$
+
+The main differences for each mode
+
+* pyarmor-pro, there is 2 irreversible obfuscation methods: BCC, RFT mode
+* pyarmor-basic, no BCC and RFT mode
+* pyarmor trial version, the file size is limited
+
+The old license could be upgraded to pyarmor-basic without extra fee following
+new EULA. For old personal license, it need provide the product name bind to
+pyarmor-basic for commercial usage.
