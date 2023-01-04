@@ -124,9 +124,9 @@ There are only 2 new license types for PyArmor 8.0+
 * pyarmor-basic, one license price 52$
 * pyarmor-pro, one license price 89$
 
-The main differences for each mode
+The main differences for each type
 
-* pyarmor-pro: 2 irreversible obfuscation BCC/RFT modes
+* pyarmor-pro: 2 irreversible obfuscation modes BCC/RFT
 * pyarmor-basic: no BCC/RFT modes
 * pyarmor trial version: can't obfuscate big file
 
