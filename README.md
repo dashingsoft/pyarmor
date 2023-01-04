@@ -100,7 +100,7 @@ As the plan, PyArmor 8.0 release date is about 2023-03-01 (March 1, 2023)
 
 The main features for PyArmor 8.0
 
-* Support Python 3.11+
+* Support Python 3.11
 * BCC mode for x86_64 and arm64, the enhancement of spp mode, Irreversible
 * RFT mode, rename function/method/class/variable/argument, Irreversible
 * Customize error message of runtime and localize message
