@@ -103,7 +103,7 @@ The main features for PyArmor 8.0
 * Support Python 3.11
 * BCC mode for x86_64 and arm64, the enhancement of spp mode, Irreversible
 * RFT mode, rename function/method/class/variable/argument, Irreversible
-* Customize error message of runtime and localize message
+* Customize runtime error message and localize message
 
 The scheduled features for PyArmor 8.0+ (not released with 8.0)
 
@@ -131,6 +131,6 @@ The main differences for each mode
 * pyarmor trial version: can't obfuscate big file
 
 The old license code starts with "pyarmor-vax-" could be upgraded to
-pyarmor-basic without extra fee following new EULA. For old personal
-license, it need provide the product name bind to pyarmor-basic for
-commercial usage.
+pyarmor-basic without extra fee following new EULA. If it's personal
+license type, it need provide the product name bind to pyarmor-basic
+for commercial usage.
