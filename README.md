@@ -119,7 +119,7 @@ The big changes of EULA for PyArmor 8.0+
 * For non-profit usage, one license is OK.
 * For commercial usage, one product one license.
 
-There are 2 license modes for PyArmor 8.0+
+There are only 2 new license types for PyArmor 8.0+
 
 * pyarmor-basic, one license price 52$
 * pyarmor-pro, one license price 89$
