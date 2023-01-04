@@ -46,6 +46,26 @@ Incompatible issues
   doesn't work. If the new version has been released in PyPi, please remove the
   dev version, install the stable version from PyPi.
 
+8.0.1 (developing)
+------------------
+
+From PyArmor 8.0.1, there are some incompatible changes
+
+* SPP mode doesn't work prior to PyArmor 8.0, please upgrade pyarmor to 8.0+ to
+  use it. And it only works in arch x86_64 and aarch64, no plan to support new
+  platforms for SPP mode. For other platforms, use BCC mode instead. BCC mode is
+  an enhancement of SPP mode, and has schedule to support X86, armv7.
+
+* In previous versions, querying registration information by command `pyarmor
+  register` will not work after 2023-12-31. It still works in PyArmor 8.0+
+
+New big features:
+
+* Customize and localize runtime error messages
+* Introduce irreversible obfuscation mode BCC, it's an enhancement of SPP mode.
+* Introduce irreversible obfuscation mode RFT, it could rename all the
+  function/class/method/argument/variable.
+
 7.7.4
 -----
 * Fix bug: pyinstaller option `--upx-dir` doesn't work in the command `pack`
