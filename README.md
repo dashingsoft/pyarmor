@@ -103,7 +103,7 @@ The main features for PyArmor 8.0
 * Support Python 3.11
 * BCC mode for x86_64 and arm64, the enhancement of spp mode, Irreversible
 * RFT mode, rename function/method/class/variable/argument, Irreversible
-* Customize runtime error message and localize message
+* Customize and localize runtime error messages
 
 The scheduled features for PyArmor 8.0+ (not released with 8.0)
 
