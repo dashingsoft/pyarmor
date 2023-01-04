@@ -126,10 +126,11 @@ There are 2 license modes for PyArmor 8.0+
 
 The main differences for each mode
 
-* pyarmor-pro, there is 2 irreversible obfuscation methods: BCC, RFT mode
-* pyarmor-basic, no BCC and RFT mode
-* pyarmor trial version, the file size is limited
+* pyarmor-pro: 2 irreversible obfuscation BCC/RFT modes
+* pyarmor-basic: no BCC/RFT modes
+* pyarmor trial version: can't obfuscate big file
 
-The old license could be upgraded to pyarmor-basic without extra fee following
-new EULA. For old personal license, it need provide the product name bind to
-pyarmor-basic for commercial usage.
+The old license code starts with "pyarmor-vax-" could be upgraded to
+pyarmor-basic without extra fee following new EULA. For old personal
+license, it need provide the product name bind to pyarmor-basic for
+commercial usage.
