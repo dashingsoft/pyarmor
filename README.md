@@ -96,7 +96,7 @@ template, for business and security issue send email to <pyarmor@163.com>.
 In order to improve security and support Python 3.11, there are significant
 changes in the next major version PyArmor 8.0
 
-As the plan, PyArmor 8.0 release date is about 2023-03-01 (March 1, 2023)
+PyArmor 8.0 release date is about 2023-03-01 (March 1, 2023)
 
 The main features for PyArmor 8.0
 
@@ -110,7 +110,7 @@ The scheduled features for PyArmor 8.0+ (not released with 8.0)
 * BCC mode for armv7 and x86
 * Support Python 3.12
 
-As the plan PyArmor status will be stable by the end of 2024 (Dec. 31, 2024)
+PyArmor status will be stable by the end of 2024 (Dec. 31, 2024)
 
 ### New EULA
 
