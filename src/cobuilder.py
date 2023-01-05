@@ -78,7 +78,7 @@ class StrNodeTransformer(ast.NodeTransformer):
         data = [x ^ y for x, y in zip(value, key)]
         expr = 'bytearray([%s]).decode(%s)' % (
             ','.join(['%s ^ %s' % k for k in zip(data, key)]),
-            '' if encoding is None else encoding)
+            '' if encoding is None else repr(encoding))
         return ast.parse(expr).body[0].value
 
     def _reform_value(self, value):
