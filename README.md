@@ -134,3 +134,24 @@ The old license code starts with "pyarmor-vax-" could be upgraded to
 pyarmor-basic without extra fee following new EULA. If it's personal
 license type, it need provide the product name bind to pyarmor-basic
 for commercial usage.
+
+## IMPORTANT NOTE
+
+A few features may not work once PyArmor 8.0.1 is released:
+
+* SPP mode doesn't work for PyArmor prior to 8.0.1
+
+  In order to use SPP mode, it's necessary to upgrade PyArmor to 8.0+
+
+* Querying registration information by "pyarmor register" (no arguments)
+  doesn't work in future, it always return error even there is a valid
+  license
+
+  The command "pyarmor -v" could be used to check whether the registration
+  is successful
+
+* Registering PyArmor by "pyarmor register pyarmor-vax-xxxxxx.txt" can be
+  used no more than 10 times
+
+  If using PyArmor in CI server or docker, regsiter PyArmor by the second
+  method described in the registration file "pyarmor-vax-xxxxxx.txt"
