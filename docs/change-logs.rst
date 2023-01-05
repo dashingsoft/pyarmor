@@ -66,6 +66,10 @@ New big features:
 * Introduce irreversible obfuscation mode RFT, it could rename all the
   function/class/method/argument/variable.
 
+Fixed bugs:
+
+* Fix bug (#908): `--mix-str` doesn't work if there is encoding line
+
 7.7.4
 -----
 * Fix bug: pyinstaller option `--upx-dir` doesn't work in the command `pack`
