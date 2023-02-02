@@ -69,6 +69,13 @@ New big features:
 Fixed bugs:
 
 * Fix bug (#908): `--mix-str` doesn't work if there is encoding line
+* Fix spp mode bug: the decorators of nest function are ignored
+
+.. important::
+
+    In order to improve security and support Python 3.11, there are
+    significant changes from Pyarmor 8.0, more information refer to
+    https://github.com/dashingsoft/pyarmor#release-plan
 
 7.7.4
 -----
