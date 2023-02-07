@@ -1,9 +1,9 @@
-# PyArmor
+# Pyarmor
 
 * [Homepage](https://pyarmor.dashingsoft.com) ([中文版网站](https://pyarmor.dashingsoft.com/index-zh.html))
 * [Documentation](https://pyarmor.readthedocs.io/en/latest/)([中文版](https://pyarmor.readthedocs.io/zh/latest/))
 
-PyArmor is a command line tool used to obfuscate python scripts, bind
+Pyarmor is a command line tool used to obfuscate python scripts, bind
 obfuscated scripts to fixed machine or expire obfuscated scripts. It
 protects Python scripts by the following ways:
 
@@ -12,7 +12,7 @@ protects Python scripts by the following ways:
 * Clear f_locals of frame as soon as code object completed execution.
 * Verify the license file of obfuscated scripts while running it.
 
-Also refer to [The Security of PyArmor](https://pyarmor.readthedocs.io/en/latest/security.html)
+Also refer to [The Security of Pyarmor](https://pyarmor.readthedocs.io/en/latest/security.html)
 
 ## Support Platforms
 
@@ -57,14 +57,14 @@ Start webui, open web page in browser ([snapshots](https://github.com/dashingsof
 More usage, refer to
 
 * [Examples](https://pyarmor.readthedocs.io/en/latest/examples.html)
-* [Using PyArmor](https://pyarmor.readthedocs.io/en/latest/usage.html)
+* [Using Pyarmor](https://pyarmor.readthedocs.io/en/latest/usage.html)
 * [Advanced Usage](https://pyarmor.readthedocs.io/en/latest/advanced.html)
 * [Man Page](https://pyarmor.readthedocs.io/en/latest/man.html)
 * [Sample Shell Scripts](src/examples/README.md)
 
 ## License & Purchase
 
-PyArmor is published as shareware, free trial version never expires, but there are
+Pyarmor is published as shareware, free trial version never expires, but there are
 some limitations:
 
 * The trial version could not obfuscate the big scripts
@@ -72,7 +72,7 @@ some limitations:
 * The trial version could not download the latest dynamic library of extra platforms
 * The super plus mode is not available in the trial version
 
-For details, refer to [PyArmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
+For details, refer to [Pyarmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
 
 ## [Change Logs](docs/change-logs.rst)
 
@@ -94,32 +94,32 @@ template, for business and security issue send email to <pyarmor@163.com>.
 ## Release Plan
 
 In order to improve security and support Python 3.11, there are significant
-changes in the next major version PyArmor 8.0
+changes in the next major version Pyarmor 8.0
 
-PyArmor 8.0 release date is about 2023-03-01 (March 1, 2023)
+Pyarmor 8.0 release date is about 2023-03-01 (March 1, 2023)
 
-The main features for PyArmor 8.0
+The main features for Pyarmor 8.0
 
 * Support Python 3.11
 * BCC mode for x86_64 and arm64, the enhancement of spp mode, Irreversible
 * RFT mode, rename function/method/class/variable/argument, Irreversible
 * Customize and localize runtime error messages
 
-The scheduled features for PyArmor 8.0+ (not released with 8.0)
+The scheduled features for Pyarmor 8.0+ (not released with 8.0)
 
 * BCC mode for armv7 and x86
 * Support Python 3.12
 
-PyArmor status will be stable by the end of 2024 (Dec. 31, 2024)
+Pyarmor status will be stable by the end of 2024 (Dec. 31, 2024)
 
 ### New EULA
 
-The big changes of EULA for PyArmor 8.0+
+The big changes of EULA for Pyarmor 8.0+
 
 * For non-profit usage, one license is OK.
 * For commercial usage, one product one license.
 
-There are only 2 new license types for PyArmor 8.0+
+There are only 2 new license types for Pyarmor 8.0+
 
 * pyarmor-basic, one license price 52$
 * pyarmor-pro, one license price 89$
@@ -137,11 +137,11 @@ for commercial usage.
 
 ## IMPORTANT NOTE
 
-A few features may not work once PyArmor 8.0.1 is released:
+A few features may not work once Pyarmor 8.0.1 is released:
 
-* SPP mode doesn't work for PyArmor prior to 8.0.1
+* SPP mode doesn't work for Pyarmor prior to 8.0.1
 
-  In order to use SPP mode, it's necessary to upgrade PyArmor to 8.0+
+  In order to use SPP mode, it's necessary to upgrade Pyarmor to 8.0+
 
 * Querying registration information by "pyarmor register" (no arguments)
   doesn't work in future, it always return error even there is a valid
@@ -150,8 +150,8 @@ A few features may not work once PyArmor 8.0.1 is released:
   The command "pyarmor -v" could be used to check whether the registration
   is successful
 
-* Registering PyArmor by "pyarmor register pyarmor-vax-xxxxxx.txt" can be
+* Registering Pyarmor by "pyarmor register pyarmor-vax-xxxxxx.txt" can be
   used no more than 10 times
 
-  If using PyArmor in CI server or docker, regsiter PyArmor by the second
+  If using Pyarmor in CI server or docker, regsiter Pyarmor by the second
   method described in the registration file "pyarmor-vax-xxxxxx.txt"
