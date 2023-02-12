@@ -90,7 +90,7 @@ About the details, please refer to function `bdist_wheel` in the
 <https://github.com/dashingsoft/pyarmor/blob/master/src/build_meta.py#L86>`_
 
 It's a simple script, and only implements basic functions, if something is wrong
-with the script, do it manully or writeh a shell script as the following steps:
+with the script, do it manully or write a shell script as the following steps:
 
 1. Build wheel with original package
 2. Unpack this wheel to temporary path by this command::

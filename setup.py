@@ -105,15 +105,20 @@ setup(
     # Note that this is a string of words separated by whitespace, not a list.
     keywords='protect obfuscate encrypt obfuscation distribute',
 
-    packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.helper'],
+    packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.helper', 'pyarmro.cli'],
     package_dir={'pyarmor': 'src'},
     package_data={
         'pyarmor': pyarmor_data_files + platform_data_files,
     },
 
+    install_requires=[
+        'pyarmor.cli.core>=1.0'
+    ],
+
     entry_points={
         'console_scripts': [
-            'pyarmor=pyarmor.pyarmor:main_entry',
+            'pyarmor=pyarmor.cli',
+            'pyarmor-cfg=pyarmor.cli.config',
         ],
     },
 )
