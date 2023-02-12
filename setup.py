@@ -118,7 +118,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'pyarmor=pyarmor.cli',
+            'pyarmor=pyarmor',
             'pyarmor-cfg=pyarmor.cli.config',
         ],
     },

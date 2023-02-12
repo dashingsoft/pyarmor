@@ -417,11 +417,6 @@ def main_entry(argv):
         parser.print_help()
 
 
-def call_old_pyarmor():
-    from pyarmor.pyarmor import main_entry
-    main_entry()
-
-
 def main():
     logging.basicConfig(
         level=logging.INFO,
@@ -434,8 +429,6 @@ def main():
     # except (CliError, RuntimeError) as e:
     #     logger.error(e)
     #     sys.exit(1)
-    except argparse.ArgumentError:
-        call_old_pyarmor()
     except Exception as e:
         log_exception(e)
         logger.error(e)
