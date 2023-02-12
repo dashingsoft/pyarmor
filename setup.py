@@ -105,7 +105,7 @@ setup(
     # Note that this is a string of words separated by whitespace, not a list.
     keywords='protect obfuscate encrypt obfuscation distribute',
 
-    packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.helper', 'pyarmro.cli'],
+    packages=['pyarmor', 'pyarmor.polyfills', 'pyarmor.helper', 'pyarmor.cli'],
     package_dir={'pyarmor': 'src'},
     package_data={
         'pyarmor': pyarmor_data_files + platform_data_files,
