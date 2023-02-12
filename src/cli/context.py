@@ -203,8 +203,8 @@ class Context(object):
 
     @property
     def license_info(self):
-        from .core import Pytransform3
-        return Pytransform3.parse_token(self.read_token())
+        from .register import parse_token
+        return parse_token(self.read_token())
 
     @property
     def license_token(self):

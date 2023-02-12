@@ -23,10 +23,49 @@ import logging
 
 from string import Template
 
-from .errors import CliError
-from .core import Pytransform3
 
 logger = logging.getLogger('Pyarmor')
+
+
+def parse_token(data):
+    from base64 import b64decode
+    from struct import unpack
+
+    if not data or data.find(' ') == -1:
+        return {
+            'token': 0,
+            'rev': 0,
+            'features': 0,
+            'licno': 'pyarmor-vax-000000',
+            'regname': '',
+            'product': '',
+            'note': 'This is trial license'
+        }
+
+    buf = b64decode(data.split()[0])
+
+    token, value = unpack('II', buf[:8])
+    rev, features = value & 0xff, value >> 8
+    licno = unpack('20s', buf[16:36]).decode('utf-8')
+
+    pstr = []
+    i = 64
+    for k in range(4):
+        n = buf[i]
+        i += 1
+        pstr.append(buf[i:i+n].decode('utf-8'))
+        i += n
+
+    return {
+        'token': token,
+        'rev': rev,
+        'features': features,
+        'licno': licno,
+        'machine': pstr[0],
+        'regname': pstr[1],
+        'product': pstr[2],
+        'note': pstr[3],
+    }
 
 
 class Register(object):
@@ -36,7 +75,7 @@ class Register(object):
 
     def check_args(self, args):
         if args.upgrade and args.keyfile.endswith('.zip'):
-            raise CliError('use .txt file to upgrade, not .zip file')
+            raise RuntimeError('use .txt file to upgrade, not .zip file')
 
     def regurl(self, ucode, upgrade=False):
         url = self.ctx.cfg['pyarmor']['regurl'] % ucode
@@ -46,7 +85,7 @@ class Register(object):
 
     @property
     def license_info(self):
-        return Pytransform3.parse_token(self.ctx.read_token())
+        return parse_token(self.ctx.read_token())
 
     def _license_type(self, info):
         return 'basic' if info['features'] == 1 else \
@@ -73,7 +112,7 @@ class Register(object):
                 if len(line) == 192 and line.find(' ') == -1:
                     return regname, line
 
-        raise CliError('no registration code found in %s' % filename)
+        raise RuntimeError('no registration code found in %s' % filename)
 
     def __str__(self):
         '''$advanced
@@ -124,6 +163,7 @@ class LocalRegister(Register):
 class RealRegister(Register):
 
     def _request_license_info(self):
+        from .core import Pytransform3
         return Pytransform3.get_license_info(self.ctx)
 
     def _send_request(self, url, timeout=3.0):
@@ -147,9 +187,9 @@ class RealRegister(Register):
         if res and res.code == 200:
             self._request_license_info()
         elif res:
-            raise CliError(res.read().decode())
+            raise RuntimeError(res.read().decode())
 
-        raise CliError('no response from license server')
+        raise RuntimeError('no response from license server')
 
     def register(self, keyfile, regname, product):
         if keyfile.endswith('.zip'):
@@ -172,6 +212,6 @@ class RealRegister(Register):
             return filename
 
         elif res:
-            raise CliError(res.read().decode())
+            raise RuntimeError(res.read().decode())
 
-        raise CliError('no response from license server')
+        raise RuntimeError('no response from license server')

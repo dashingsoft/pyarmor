@@ -26,7 +26,6 @@ import sys
 
 from .errors import CliError
 from .context import Context
-from .generate import Builder
 from .register import LocalRegister, RealRegister
 from .config import Configer, PyarmorShell
 
@@ -42,7 +41,7 @@ def _cmd_gen_key(ctx, options):
         raise CliError('missing outer key name')
 
     logger.info('start to generate outer runtime key OK')
-    data = Builder(ctx).generate_runtime_key(outer=True)
+    data = ctx.builder.generate_runtime_key(outer=True)
     output = options.get('output', 'dist')
     os.makedirs(output, exist_ok=True)
 
@@ -60,11 +59,14 @@ def _cmd_gen_runtime(ctx, options):
     output = options.get('output', 'dist')
 
     logger.info('start to generate runtime files')
-    Builder(ctx).generate_runtime(output)
+    ctx.builder.generate_runtime(output)
     logger.info('generate runtime files OK')
 
 
 def cmd_gen(ctx, args):
+    from .generate import Builder
+    ctx.builder = Builder(ctx)
+
     options = {}
     for x in ('recursive', 'findall', 'inputs', 'output', 'prebuilt_runtime',
               'enable_bcc', 'enable_jit', 'enable_refactor', 'enable_themida',
@@ -98,7 +100,7 @@ def cmd_gen(ctx, args):
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(ctx, options)
     else:
-        Builder(ctx).build(options, pack=args.pack, no_runtime=args.no_runtime)
+        ctx.Builder.build(options, pack=args.pack, no_runtime=args.no_runtime)
 
 
 def cmd_env(ctx, args):
