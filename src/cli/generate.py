@@ -113,7 +113,7 @@ class Builder(object):
                 with open(fullpath, 'w') as f:
                     f.write(source)
 
-    def build(self, options, no_runtime=False, pack=False):
+    def process(self, options, no_runtime=False, pack=False):
         for opt in options['inputs']:
             if not os.path.exists(opt):
                 raise CliError('no found input "%s"' % opt)

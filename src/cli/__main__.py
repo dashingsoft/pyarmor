@@ -65,7 +65,7 @@ def _cmd_gen_runtime(ctx, options):
 
 def cmd_gen(ctx, args):
     from .generate import Builder
-    ctx.builder = Builder(ctx)
+    builder = Builder(ctx)
 
     options = {}
     for x in ('recursive', 'findall', 'inputs', 'output', 'prebuilt_runtime',
@@ -96,11 +96,13 @@ def cmd_gen(ctx, args):
     ctx.push(options)
 
     if args.inputs[0].lower() in ('key', 'k'):
+        ctx.builder = builder
         _cmd_gen_key(ctx, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
+        ctx.builder = builder
         _cmd_gen_runtime(ctx, options)
     else:
-        ctx.Builder.build(options, pack=args.pack, no_runtime=args.no_runtime)
+        builder.process(options, pack=args.pack, no_runtime=args.no_runtime)
 
 
 def cmd_env(ctx, args):
