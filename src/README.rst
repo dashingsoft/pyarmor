@@ -22,7 +22,7 @@ Key Features
 Support Platforms
 -----------------
 
-* Python 3.7+
+* Python 3.7~3.11
 * Windows
 * Many linuxs, include embedded systems
 * Apple Intel and Apple Silicon
@@ -34,7 +34,7 @@ Install::
 
     pip install pyarmor
 
-Obfuscate scripts::
+Obfuscate the script `foo.py`::
 
     pyarmor generate foo.py
 
