@@ -105,7 +105,7 @@ def cmd_gen(ctx, args):
         builder.process(options, pack=args.pack, no_runtime=args.no_runtime)
 
 
-def cmd_env(ctx, args):
+def cmd_cfg(ctx, args):
     if args.interactive:
         return PyarmorShell(ctx).cmdloop()
 
@@ -148,7 +148,7 @@ def main_parser():
     )
 
     gen_parser(subparsers)
-    env_parser(subparsers)
+    cfg_parser(subparsers)
     reg_parser(subparsers)
 
     return parser
@@ -283,17 +283,17 @@ generate runtime package only
     cparser.set_defaults(func=cmd_gen)
 
 
-def env_parser(subparsers):
+def cfg_parser(subparsers):
     '''get or set option's value
     if no section, show all the available sections
     if no option, show all the options in this section
     if no value, show option value, otherwise change option to value'''
 
     cparser = subparsers.add_parser(
-        'environ',
-        aliases=['env', 'e'],
+        'shell',
+        aliases=['cfg', 's'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=env_parser.__doc__,
+        description=cfg_parser.__doc__,
         help='show and config Pyarmor environments',
     )
 
@@ -310,7 +310,7 @@ def env_parser(subparsers):
     cparser.add_argument('option', nargs='?', help='option name')
     cparser.add_argument('value', nargs='?', help='change option to value')
 
-    cparser.set_defaults(func=cmd_env)
+    cparser.set_defaults(func=cmd_cfg)
 
 
 def reg_parser(subparsers):
