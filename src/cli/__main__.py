@@ -106,7 +106,7 @@ def cmd_gen(ctx, args):
 
 
 def cmd_cfg(ctx, args):
-    if args.interactive:
+    if args.interactive or not any([args.section, args.option, args.value]):
         return PyarmorShell(ctx).cmdloop()
 
     cfg = Configer(ctx)
