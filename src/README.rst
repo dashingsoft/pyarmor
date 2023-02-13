@@ -1,43 +1,31 @@
-Protect Python Scripts By PyArmor
+Protect Python Scripts By Pyarmor
 =================================
 
-PyArmor is a command line tool used to obfuscate python scripts, bind
-obfuscated scripts to fixed machine or expire obfuscated scripts. It
-protects Python scripts by the following ways:
+Pyarmor is a command line tool used to obfuscate python scripts, bind
+obfuscated scripts to fixed machine or expire obfuscated scripts.
 
-* Obfuscate code object to protect constants and literal strings.
-* Obfuscate co_code of each function (code object) in runtime.
-* Clear f_locals of frame as soon as code object completed execution.
-* Verify the license file of obfuscated scripts while running it.
+Key Features
+------------
 
-Look at what happened after ``foo.py`` is obfuscated by PyArmor. Here
-are the files list in the output path ``dist``::
-
-    foo.py
-
-    pytransform/
-        __init__.py
-        _pytransform.so or _pytransform.dll or _pytransform.dylib
-
-``dist/foo.py`` is obfuscated script, the content is::
-
-    from pytransform import pyarmor_runtime
-    pyarmor_runtime()
-    __pyarmor__(__name__, __file__, b'\x06\x0f...', 1)
-
-There is an extra folder ``pytransform`` called ``Runtime Package``,
-which are the only required to run or import obfuscated scripts. So
-long as this package is in any Python path, the obfuscated script
-``dist/foo.py`` can be used as normal Python script.
-
-**The original python scripts can be replaced with obfuscated scripts seamlessly.**
+* The obfuscated scritpt is still a normal `.py` script, in most of
+  cases the original python scripts can be replaced with obfuscated
+  scripts seamlessly.
+* Provide many ways to obfuscate the scripts to balance security and
+  performance
+* Rename functions/methods/classes/variables/arguments, irreversible
+  obfuscation
+* Convert part of Python functions to C function, compile to binary by
+  high optimize option, irreversible obfuscation
+* Bind obfuscated scripts to fixed machine or expire obfuscted scripts
+* Protect obfuscated scripts by Themida (Only for Windows)
 
 Support Platforms
 -----------------
 
-* Python 2.5, 2.6, 2.7 and Python3
-* win32, win_amd64, linux_i386, linux_x86_64, macosx_x86_64
-* Embedded Platform: Raspberry Pi, Banana Pi, Orange Pi, TS-4600 / TS-7600
+* Python 3.7+
+* Windows
+* Many linuxs, include embedded systems
+* Apple Intel and Apple Silicon
 
 Quick Start
 -----------
@@ -48,45 +36,24 @@ Install::
 
 Obfuscate scripts::
 
-    pyarmor obfuscate foo.py
+    pyarmor generate foo.py
 
-Run obfuscated scripts::
+This command generates an obfuscated script `dist/foo.py` like this:
 
-    cd dist
-    python foo.py
+.. code:: python
 
-Obfuscate scripts with an expired license::
+    from pyarmor_runtime import __pyarmor__
+    __pyarmor__(__name__, __file__, b'\x28\x83\x20\x58....')
 
-    pyarmor licenses --expired 2018-12-31 r001
-    pyarmor obfuscate --with-license licenses/r001/license.lic foo.py
+Run it::
 
-Pack obfuscated scripts to one bundle::
-
-    pip install pyinstaller
-    pyarmor pack foo.py
-
-There is also a web-ui package `pyarmor-webui`::
-
-    pip install pyarmor-webui
-
-Start webui, open web page in browser::
-
-    pyarmor-webui
-
-If there is any question, first check these `questions and solutions
-<https://pyarmor.readthedocs.io/en/latest/questions.html>`_, it may help you
-solve the problem quickly.
-
-If there is no solution, for technical issue, click here to `report an issue
-<https://github.com/dashingsoft/pyarmor/issues>`_ according to the issue
-template, for business and security issue send email to pyarmor@163.com
+    python dist/foo.py
 
 More Resources
 --------------
 
+- `Home <https://github.com/dashingsoft/pyarmor>`_
 - `Website <http://pyarmor.dashingsoft.com>`_
   `中文网站 <http://pyarmor.dashingsoft.com/index-zh.html>`_
+- `Issues <https://github.com/dashingsoft/pyarmor/issues>`_
 - `Documentation <https://pyarmor.readthedocs.io/en/latest/>`_
-- `pyarmor-webui <http://github.com/dashingsoft/pyarmor-webui>`_
-- `Source Code <https://github.com/dashingsoft/pyarmor>`_
-- `Examples <https://github.com/dashingsoft/pyarmor/blob/master/src/examples>`_
