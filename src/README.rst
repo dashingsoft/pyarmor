@@ -36,7 +36,7 @@ Install::
 
 Obfuscate the script `foo.py`::
 
-    pyarmor generate foo.py
+    pyarmor gen foo.py
 
 This command generates an obfuscated script `dist/foo.py` like this:
 

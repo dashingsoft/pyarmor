@@ -164,8 +164,8 @@ generate runtime key only
 generate runtime package only
     pyarmor gen runtime <options>'''
     cparser = subparsers.add_parser(
-        'generate',
-        aliases=['gen', 'g'],
+        'gen',
+        aliases=['generate', 'g'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=gen_parser.__doc__,
         help='obfuscate scripts and generate runtime files'
@@ -290,8 +290,8 @@ def cfg_parser(subparsers):
     if no value, show option value, otherwise change option to value'''
 
     cparser = subparsers.add_parser(
-        'shell',
-        aliases=['cfg', 's'],
+        'cfg',
+        aliases=['s'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=cfg_parser.__doc__,
         help='show and config Pyarmor environments',
@@ -322,8 +322,8 @@ make sure everything is fine, then remove `-T` to register really
 once register successfully, regname and product can't be changed
     '''
     cparser = subparsers.add_parser(
-        'register',
-        aliases=['reg', 'r'],
+        'reg',
+        aliases=['register', 'r'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=reg_parser.__doc__,
         help='register or upgrade Pyarmor license'
