@@ -25,7 +25,7 @@ obfuscated scripts, and should not be distributed to the end users.
 .. important::
 
    The capsule may help others to hack the obfuscated scripts, please do not
-   share your `private capsuel` to anyone else.
+   share your `private capsule` to anyone else.
 
 Obfuscated Scripts
 ------------------
