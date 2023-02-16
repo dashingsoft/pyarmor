@@ -1,8 +1,6 @@
 import os
 import sys
 
-from configparser import ConfigParser
-
 
 def call_pyarmor():
     from .pyarmor import main_entry
@@ -14,22 +12,12 @@ def call_pyarmor_cli():
     main()
 
 
-def find_cli_command(args):
-    commands = 'generate', 'register', 'shell'
-    return not args or len(args) < 2 \
-        or set(['cfg', 's']).intersection(args) \
-        or any([cmd.startswith(arg) for arg in args for cmd in commands])
+def find_cli_command(argv):
+    args = argv[1:8]
+    cmds = 'generate', 'gen', 'g', 'register', 'reg', 'r', 'cfg'
+    return not args or len(args) < 2 or set(cmds).intersection(args)
 
 
-def boot_pyarmor():
-    try:
-        c = ConfigParser()
-        c.read(os.path.expanduser(os.path.join('~', '.pyarmor', 'global')))
-        call_pyarmor_cli() if c.getint('pyarmor', 'boot') else call_pyarmor()
-        return True
-    except Exception:
-        pass
-
-
-if boot_pyarmor() is None:
-    call_pyarmor_cli() if find_cli_command(sys.argv[1:8]) else call_pyarmor()
+call_pyarmor() if os.getenv('PYARMOR_CLI', '') == '7' else \
+    call_pyarmor_cli() if find_cli_command(sys.argv) else \
+    call_pyarmor()
