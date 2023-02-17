@@ -27,7 +27,8 @@ import sys
 from .errors import CliError
 from .context import Context
 from .register import LocalRegister, RealRegister
-from .config import Configer, PyarmorShell
+from .config import Configer
+from .shell import PyarmorShell
 
 logger = logging.getLogger('Pyarmor')
 
@@ -112,9 +113,6 @@ def cmd_gen(ctx, args):
 
 
 def cmd_cfg(ctx, args):
-    if args.interactive:
-        return PyarmorShell(ctx).cmdloop()
-
     scope = 'global' if args.scope else 'local'
 
     if args.clear:
@@ -156,6 +154,10 @@ def main_parser():
     parser.add_argument(
         '-d', '--debug', action='store_true',
         help='print more informations in the console'
+    )
+    parser.add_argument(
+        '-i', dest='interactive', action='store_true',
+        help='interactive mode'
     )
     parser.add_argument('--home', help=argparse.SUPPRESS)
 
@@ -320,10 +322,6 @@ def cfg_parser(subparsers):
     )
 
     cparser.add_argument(
-        '-i', dest='interactive', action='store_true',
-        help='interactive mode'
-    )
-    cparser.add_argument(
         '-p', dest='name',
         help='do everyting for special module or package'
     )
@@ -434,6 +432,9 @@ def main_entry(argv):
     if args.version:
         print_version(ctx)
         parser.exit()
+
+    if args.interactive:
+        return PyarmorShell(ctx).cmdloop()
 
     logger.info('Python %d.%d.%d', *sys.version_info[:3])
     logger.info('%s', ctx.version_info())
