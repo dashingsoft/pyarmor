@@ -56,7 +56,8 @@ path.insert(0, __file__.replace('__init__.py', 'libs'))
 class Context(object):
 
     def __init__(self, home, local=None, encoding=None):
-        self.home_path = home
+        self.home_path, path = (home + ',').split(',')[:2]
+        self.reg_path = os.path.normpath(os.path.join(self.home_path, path))
         self.local_path = local if local else '.pyarmor'
 
         # self.encoding is just for reading config file
@@ -72,6 +73,7 @@ class Context(object):
         self.runtime_package_templates = (
             runtime_package_template,
             runtime_package_template2,
+            runtime_package_template3,
         )
 
         self.bcc_call_function_ex = False
@@ -92,8 +94,7 @@ class Context(object):
 
         self.runtime_key = None
 
-        # Context stack
-        self._stacks = []
+        self.cmd_options = {}
 
     def _read_config(self):
         cfg = configparser.ConfigParser(empty_lines_in_values=False)
@@ -116,17 +117,10 @@ class Context(object):
                 return f.read()
 
     def push(self, options):
-        self._stacks.append(options)
+        self.cmd_options.update(options)
 
     def pop(self):
-        return self._stacks.pop()
-
-    def get_core_config(self, encoding=None):
-        encoding = encoding if encoding else self.encoding
-        cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        cfg.read(os.path.join(os.path.dirname(__file__), 'core', 'config'),
-                 encoding=encoding)
-        return cfg
+        return self.cmd_options.clear()
 
     def get_res_options(self, name, sect):
         options = {}
@@ -174,10 +168,6 @@ class Context(object):
             self.cfg.getint('pyarmor', 'patch')
 
     @property
-    def core_version(self):
-        return self.cfg['pyarmor'].getint('core')
-
-    @property
     def python_version(self):
         return sys.version_info[:2]
 
@@ -195,11 +185,15 @@ class Context(object):
 
     @property
     def private_capsule(self):
-        return os.path.join(self.home_path, '.pyarmor_capsule.zip')
+        return os.path.join(self.reg_path, '.pyarmor_capsule.zip')
 
     @property
     def license_file(self):
-        return os.path.join(self.home_path, 'license.lic')
+        return os.path.join(self.reg_path, 'license.lic')
+
+    @property
+    def license_token(self):
+        return os.path.join(self.reg_path, '.license.token')
 
     @property
     def license_info(self):
@@ -207,31 +201,22 @@ class Context(object):
         return parse_token(self.read_token())
 
     @property
-    def license_token(self):
-        return os.path.join(self.home_path, '.license.token')
-
-    def _format_platform(self):
+    def native_platform(self):
         from platform import system, machine
         return '.'.join([system().lower(), machine().lower()])
-
-    @property
-    def native_platform(self):
-        return os.environ.get('PYARMOR_PLATFORM',
-                              self.cfg['pyarmor'].get('platform',
-                                                      self._format_platform()))
 
     @property
     def debug_logfile(self):
         return os.path.join(self.home_path, 'pyarmor.debug.log')
 
     def _opt(self, section, name):
-        return self.cfg.getboolean(section, name, vars=self._stacks[-1])
+        return self.cfg.getboolean(section, name, vars=self.cmd_options)
 
     def _opts(self, section, name):
-        return self.cfg.get(section, name, vars=self._stacks[-1])
+        return self.cfg.get(section, name, vars=self.cmd_options)
 
     def _opti(self, section, name):
-        return self.cfg.getint(section, name, vars=self._stacks[-1])
+        return self.cfg.getint(section, name, vars=self.cmd_options)
 
     @property
     def recursive(self):
@@ -299,20 +284,24 @@ class Context(object):
         return int(v) if v.isdecimal() else v
 
     @property
-    def prebuilt_runtime(self):
-        return self._opts('builder', 'prebuilt_runtime')
+    def runtime_share(self):
+        return self._opts('runtime', 'share')
 
     @property
-    def target_platforms(self):
+    def runtime_platforms(self):
         return self._opts('runtime', 'platforms')
 
     @property
-    def outer_name(self):
-        return self._opts('runtime', 'outer_name')
+    def runtime_on_error(self):
+        return self._opti('runtime', 'on_error')
 
     @property
-    def check_period(self):
-        period = self._opti('runtime', 'check_period')
+    def runtime_outer(self):
+        return self._opts('runtime', 'outer')
+
+    @property
+    def runtime_period(self):
+        period = self._opti('runtime', 'period')
         if period:
             c = period[-1].lower()
             if c.isdecimal():
@@ -330,21 +319,51 @@ class Context(object):
             return -1
 
     @property
-    def expired(self):
+    def runtime_expired(self):
         return self._opts('runtime', 'expired')
 
     @property
-    def nts(self):
+    def runtime_nts(self):
         return self._opts('runtime', 'nts')
 
     @property
-    def bind_machines(self):
-        return self._opts('runtime', 'machines').splitlines()
+    def runtime_nts_timeout(self):
+        return self._opti('runtime', 'nts_timeout')
 
     @property
-    def bind_interps(self):
+    def runtime_machines(self):
+        return self._opts('runtime', 'machines')
+
+    @property
+    def runtime_interps(self):
         return self._opts('runtime', 'interps')
 
     @property
-    def bind_data(self):
-        return self._opts('runtime', 'data')
+    def runtime_timer(self):
+        return self._opti('runtime', 'timer')
+
+    @property
+    def runtime_simple_extension_name(self):
+        return self._opt('runtime', 'simple_extension_name')
+
+    @property
+    def runtime_hooks(self):
+        value = self.cfg['runtime'].get('hooks', '')
+        if value:
+            from ast import literal_eval
+            name, encoding = (value + ':utf-8').split(':')[:2]
+            for x in self.local_path, self.global_path:
+                filename = os.path.join(x, name)
+                if os.path.exists(filename):
+                    with open(filename, encoding=encoding) as f:
+                        return literal_eval(f.read())
+
+    @property
+    def runtime_messages(self):
+        value = self.cfg['runtime'].get('messages', '')
+        if value:
+            name, encoding = (value + ':utf-8').split(':')[:2]
+            cfg = configparser.ConfigParser(empty_lines_in_values=False)
+            paths = self.global_path, self.local_path
+            cfg.read([os.path.join(x, name) for x in paths], encoding=encoding)
+            return cfg

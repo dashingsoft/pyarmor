@@ -13,11 +13,15 @@ def call_pyarmor_cli():
 
 
 def find_cli_command(argv):
-    args = argv[1:8]
+    args = argv[1:6]
     cmds = 'generate', 'gen', 'g', 'register', 'reg', 'r', 'cfg'
     return not args or len(args) < 2 or set(cmds).intersection(args)
 
 
-call_pyarmor() if os.getenv('PYARMOR_CLI', '') == '7' else \
-    call_pyarmor_cli() if find_cli_command(sys.argv) else \
+cli = os.getenv('PYARMOR_CLI', '')
+if cli == '7':
+    call_pyarmor()
+elif cli == '8' or find_cli_command(sys.argv):
+    call_pyarmor_cli()
+else:
     call_pyarmor()

@@ -32,16 +32,16 @@ from .config import Configer, PyarmorShell
 logger = logging.getLogger('Pyarmor')
 
 
-def _cmd_gen_key(ctx, options):
+def _cmd_gen_key(builder, options):
     if len(options['inputs']) > 1:
         raise CliError('too many args %s' % options['inputs'][1:])
 
-    name = ctx.outer_name
+    name = builder.ctx.outer_name
     if not name:
         raise CliError('missing outer key name')
 
     logger.info('start to generate outer runtime key OK')
-    data = ctx.builder.generate_runtime_key(outer=True)
+    data = builder.generate_runtime_key(outer=True)
     output = options.get('output', 'dist')
     os.makedirs(output, exist_ok=True)
 
@@ -52,26 +52,23 @@ def _cmd_gen_key(ctx, options):
     logger.info('generate outer runtime key OK')
 
 
-def _cmd_gen_runtime(ctx, options):
+def _cmd_gen_runtime(builder, options):
     if len(options['inputs']) > 1:
         raise CliError('too many args %s' % options['inputs'][1:])
 
     output = options.get('output', 'dist')
 
     logger.info('start to generate runtime files')
-    ctx.builder.generate_runtime(output)
+    builder.generate_runtime(output)
     logger.info('generate runtime files OK')
 
 
-def cmd_gen(ctx, args):
-    from .generate import Builder
-    builder = Builder(ctx)
-
+def format_gen_args(ctx, args):
     options = {}
-    for x in ('recursive', 'findall', 'inputs', 'output', 'prebuilt_runtime',
+    for x in ('recursive', 'findall', 'inputs', 'output', 'share_runtime',
               'enable_bcc', 'enable_jit', 'enable_refactor', 'enable_themida',
               'mix_name', 'mix_str', 'relative_import', 'restrict_module',
-              'platforms', 'outer_name', 'check_period', 'expired'):
+              'platforms', 'outer', 'period', 'expired', 'devices'):
         v = getattr(args, x)
         if v is not None:
             options[x] = v
@@ -79,28 +76,32 @@ def cmd_gen(ctx, args):
     if args.relative:
         options['relative_import'] = args.relative
 
-    if args.mode:
+    return options
+
+
+def check_gen_context(ctx):
+    if ctx.runtime_platforms:
+        if ctx.enable_themida and not ctx.native_platform.startswith('win'):
+            raise CliError('--enable_themida only works for Windows')
+
+    if ctx.runtime_hooks:
         pass
 
-    machine = ''
-    if args.disk:
-        machine += '*HARDDISK:' + args.disk
-    if args.net:
-        machine += '*IFMAC:' + args.net
-    if args.ipv4:
-        machine += '*IFIPV4:' + args.ipv4
-    if machine:
-        options['machines'] = machine
 
+def cmd_gen(ctx, args):
+    from .generate import Builder
+
+    options = format_gen_args(ctx, args)
     logger.debug('command options: %s', options)
     ctx.push(options)
+    check_gen_context(ctx)
+
+    builder = Builder(ctx)
 
     if args.inputs[0].lower() in ('key', 'k'):
-        ctx.builder = builder
-        _cmd_gen_key(ctx, options)
+        _cmd_gen_key(builder, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
-        ctx.builder = builder
-        _cmd_gen_runtime(ctx, options)
+        _cmd_gen_runtime(builder, options)
     else:
         builder.process(options, pack=args.pack, no_runtime=args.no_runtime)
 
@@ -132,15 +133,19 @@ def main_parser():
         prog='pyarmor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('-v', '--version', action='store_true',
-                        help='show program\'s version number and exit')
-    parser.add_argument('-q', '--silent', action='store_true',
-                        help=argparse.SUPPRESS)
-    parser.add_argument('-d', '--debug', action='store_true',
-                        help=argparse.SUPPRESS)
-    parser.add_argument('-C', '--encoding', help=argparse.SUPPRESS)
+    parser.add_argument(
+        '-v', '--version', action='store_true',
+        help='show version information and exit'
+    )
+    parser.add_argument(
+        '-q', '--silent', action='store_true',
+        help='suppress all normal output'
+    )
+    parser.add_argument(
+        '-d', '--debug', action='store_true',
+        help='print more informations in the console'
+    )
     parser.add_argument('--home', help=argparse.SUPPRESS)
-    parser.add_argument('--boot', help=argparse.SUPPRESS)
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
@@ -148,8 +153,8 @@ def main_parser():
     )
 
     gen_parser(subparsers)
-    cfg_parser(subparsers)
     reg_parser(subparsers)
+    cfg_parser(subparsers)
 
     return parser
 
@@ -180,6 +185,10 @@ generate runtime package only
         '--pack', action='store_true', help='pack the obfuscated scripts'
     )
     group.add_argument(
+        '--repack', metavar='BUNDLE',
+        help='repack bundle with the obfuscated scripts'
+    )
+    group.add_argument(
         '--no-runtime', action='store_true',
         help='do not generate runtime package'
     )
@@ -192,11 +201,6 @@ generate runtime package only
     group.add_argument(
         '-a', '--all', dest='findall', action='store_true', default=None,
         help='find all dependent modules and packages'
-    )
-
-    group.add_argument(
-        '-m', '--mode', type=int, choices=(-2, -1, 1, 2),
-        help='from the fastest mode -2 to the safest mode 2'
     )
 
     group.add_argument(
@@ -246,38 +250,37 @@ generate runtime package only
         'use this option multiple times for more platforms'
     )
     group.add_argument(
-        '--with-runtime', dest='prebuilt_runtime', help=argparse.SUPPRESS
+        '--with-runtime', dest='share_runtime', help=argparse.SUPPRESS
     )
 
     group = cparser.add_argument_group('runtime key arguments')
     group.add_argument(
-        '--outer', metavar='NAME', dest='outer_name',
+        '--outer', metavar='NAME', dest='outer',
         help='using outer runtime key'
     )
     group.add_argument(
-        '--expired', metavar='YYYY-MM-DD',
-        help='expired date for runtime key'
+        '-e', '--expired', metavar='DATE', help='expire obfuscated scripts'
     )
     group.add_argument(
-        '--disk', metavar='xxxx',
-        help='bind script to harddisk serial number'
-    )
-    group.add_argument(
-        '--ipv4', metavar='a.b.c.d',
-        help='bind script to ipv4 addr'
-    )
-    group.add_argument(
-        '--net', metavar='x:x:x:x',
-        help='Bind script to mac addr'
-    )
-    group.add_argument(
-        '--period', type=int, metavar='N', dest='check_period',
+        '--period', type=int, metavar='N', dest='period',
         help='check runtime key in hours periodically'
+    )
+    group.add_argument(
+        '-b', '--bind-device', dest='devices', metavar='DEV', action='append',
+        help='bind obfuscated scripts to device'
+    )
+    group.add_argument(
+        '--bind-interp', metavar='INTERP',
+        help=argparse.SUPPRESS
+    )
+    group.add_argument(
+        '--hook', metavar='HOOK',
+        help=argparse.SUPPRESS
     )
 
     cparser.add_argument(
         'inputs', metavar='ARG', nargs='+',
-        help='scripts or keyword "key", "runtime"'
+        help='script, package or keyword "key", "runtime"'
     )
 
     cparser.set_defaults(func=cmd_gen)
@@ -291,7 +294,6 @@ def cfg_parser(subparsers):
 
     cparser = subparsers.add_parser(
         'cfg',
-        aliases=['s'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=cfg_parser.__doc__,
         help='show and config Pyarmor environments',
@@ -382,21 +384,22 @@ def print_version(ctx):
     print('\n'.join(info))
 
 
-def main_entry(argv):
-    home = os.getenv('PYARMOR_HOME')
+def get_home(args):
+    home = args.home if args.home else os.getenv('PYARMOR_HOME')
     if not home:
-        home = os.path.expanduser(os.path.join('~', '.pyarmor'))
-    home = os.path.abspath(home)
+        home = os.path.join('~', '.pyarmor')
+    return os.path.abspath(os.path.expandvars(os.path.expanduser(home)))
 
+
+def main_entry(argv):
     parser = main_parser()
     args = parser.parse_args(argv)
 
     if sys.version_info[0] == 2 or sys.version_info[1] < 7:
         raise CliError('only Python 3.7+ is supported now')
 
-    if args.home:
-        home = args.home
-    ctx = Context(home, encoding=args.encoding)
+    home = get_home(args)
+    ctx = Context(home)
 
     log_settings(ctx, args)
 
@@ -409,9 +412,6 @@ def main_entry(argv):
 
     logger.debug('native platform %s', ctx.native_platform)
     logger.debug('home path: %s', home)
-    if args.boot:
-        logger.info('change platform %s', args.boot)
-        os.environ['PYARMOR_PLATFORM'] = args.boot
 
     if hasattr(args, 'func'):
         args.func(ctx, args)
