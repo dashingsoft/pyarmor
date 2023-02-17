@@ -21,6 +21,7 @@
 #
 import logging
 import os
+import shutil
 
 from .errors import CliError
 from .core import Pytransform3
@@ -34,9 +35,11 @@ class Finder(object):
     def __init__(self, ctx):
         self.ctx = ctx
 
-    def prepare(self, input_paths, recursive=False):
+    def get_res_filter(self):
+        pass
+
+    def prepare(self, input_paths):
         resources = []
-        pyexts = self.ctx.pyexts
         for path in input_paths:
             if not os.path.exists(path):
                 raise CliError('argument "%s" doesn\'t exists' % path)
@@ -48,18 +51,13 @@ class Finder(object):
                 logger.info('find package at %s', path)
                 res = PathResource(path)
                 resources.append(res)
-                res.rebuild(recursive, pyexts)
+                options = self.ctx.get_res_filter(res.fullname)
+                res.rebuild(**options)
         self.ctx.resources = resources
 
     def process(self):
         logger.info('search inputs ...')
-
-        logger.debug('recursive mode is %s', self.ctx.recursive)
-        logger.debug('find-all mode is %s', self.ctx.findall)
-        logger.debug('exts are %s', self.ctx.pyexts)
-        self.prepare(self.ctx.input_paths, self.ctx.recursive)
-
-        self.ctx.obfucated_modules = [x.fullname for x in self.ctx.resources]
+        self.prepare(self.ctx.input_paths)
         logger.info('find %d top resources', len(self.ctx.resources))
 
 
@@ -90,9 +88,12 @@ class Builder(object):
         bootpath = self.ctx.cfg.get('builder', 'bootstrap_file')
 
         namelist = []
-        for res in self.ctx.resources + self.ctx.extra_resources:
-            logger.info('process resource "%s"', res.fullname)
+        for res in self.ctx.resources:
+            if not res.is_script():
+                # shutil.copy2(res, output)
+                continue
 
+            logger.info('process script "%s"', res.fullname)
             name = res.name
             path = self.format_output(self.ctx.outputs, namelist.count(name))
             namelist.append(name)

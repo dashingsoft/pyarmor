@@ -119,8 +119,6 @@ class Context(object):
             runtime_package_template3,
         )
 
-        self.bcc_call_function_ex = False
-
         # Alias format for duplicated input names
         self.alias_suffix = '{0}-{1}'
 
@@ -132,7 +130,6 @@ class Context(object):
         self.module_relations = {}
         self.module_types = {}
         self.module_builtins = set()
-        self.obfuscated_modules = set()
         self.extra_libs = {}
 
         self.runtime_key = None
@@ -163,10 +160,26 @@ class Context(object):
                 return f.read()
 
     def push(self, options):
+        finder = {}
+        for opt in ('recursive', 'findall', 'includes', 'excludes'):
+            if opt in options:
+                finder[opt] = options[opt]
+        if finder:
+            self.cmd_options['finder'] = finder
         self.cmd_options.update(options)
 
     def pop(self):
         return self.cmd_options.clear()
+
+    def get_res_filter(self, name, sect='finder'):
+        options = {}
+        if self.cfg.has_section(sect):
+            options.update(self.cfg.items(sect))
+        options.update(self.cmd_options.get('finder', {}))
+        sect2 = ':'.join(name, sect)
+        if self.cfg.has_section(sect2):
+            options.update(self.cfg.items(sect2))
+        return options
 
     def get_res_options(self, name, sect):
         options = {}
@@ -418,3 +431,7 @@ class Context(object):
             paths = self.global_path, self.local_path
             cfg.read([os.path.join(x, name) for x in paths], encoding=encoding)
             return cfg
+
+    @property
+    def obfuscated_modules(self):
+        return set([x.fullname for x in self.resources if x.is_script()])

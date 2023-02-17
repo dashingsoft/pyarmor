@@ -76,6 +76,11 @@ def format_gen_args(ctx, args):
     if args.relative:
         options['relative_import'] = args.relative
 
+    if args.includes:
+        options['includes'] = ' '.join(args.includes)
+    if args.excludes:
+        options['excludes'] = ' '.join(args.excludes)
+
     return options
 
 
@@ -201,6 +206,14 @@ generate runtime package only
     group.add_argument(
         '-a', '--all', dest='findall', action='store_true', default=None,
         help='find all dependent modules and packages'
+    )
+    group.add_argument(
+        '--include', dest='includes', metavar='PATTERN', action='append',
+        help=argparse.SUPPRESS
+    )
+    group.add_argument(
+        '--exclude', dest='excludes', metavar='PATTERN', action='append',
+        help=argparse.SUPPRESS
     )
 
     group.add_argument(
