@@ -53,6 +53,49 @@ path.insert(0, __file__.replace('__init__.py', 'libs'))
 '''
 
 
+def format_platform(plat, arch):
+    from struct import calcsize
+    from fnmatch import fnmatchcase
+
+    plat_table = (
+        ('windows', ('windows', 'cygwin*')),
+        ('darwin', ('darwin',)),
+        ('ios', ('ios',)),
+        ('linux', ('linux*',)),
+        ('freebsd', ('freebsd*', 'openbsd*', 'isilon onefs')),
+        ('poky', ('poky',)),
+    )
+
+    arch_table = (
+        ('x86', ('i?86', )),
+        ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
+        ('arm', ('armv5',)),
+        ('armv6', ('armv6l',)),
+        ('armv7', ('armv7l',)),
+        ('ppc64', ('ppc64le',)),
+        ('mips32', ('mips',)),
+        ('aarch32', ('aarch32',)),
+        ('aarch64', ('aarch64', 'arm64'))
+    )
+
+    for alias, platlist in plat_table:
+        if any([fnmatchcase(plat, x) for x in platlist]):
+            plat = alias
+            break
+
+    for alias, archlist in arch_table:
+        if any([fnmatchcase(arch, x) for x in archlist]):
+            mach = alias
+            break
+
+    if plat == 'windows' and mach == 'x86_64':
+        bitness = calcsize('P'.encode()) * 8
+        if bitness == 32:
+            mach = 'x86'
+
+    return os.path.join(plat, mach)
+
+
 class Context(object):
 
     def __init__(self, home, local=None, encoding=None):
@@ -97,7 +140,10 @@ class Context(object):
         self.cmd_options = {}
 
     def _read_config(self):
-        cfg = configparser.ConfigParser(empty_lines_in_values=False)
+        cfg = configparser.ConfigParser(
+            empty_lines_in_values=False,
+            interpolation=configparser.ExtendedInterpolation,
+        )
         cfg.read([self.default_config, self.global_config, self.local_config],
                  encoding=self.encoding)
         return cfg
@@ -204,6 +250,11 @@ class Context(object):
     def native_platform(self):
         from platform import system, machine
         return '.'.join([system().lower(), machine().lower()])
+
+    @property
+    def pyarmor_platform(self):
+        platname = os.getenv('PYARMOR_PLATFORM', self.native_platform)
+        return format_platform(*platname.split('.'))
 
     @property
     def debug_logfile(self):
