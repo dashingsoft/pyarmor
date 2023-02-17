@@ -32,29 +32,20 @@ class PyarmorShell(cmd.Cmd):
     def __init__(self, ctx):
         super().__init__()
         self.ctx = ctx
-        self._scopes = ['global']
-        self._cfg = None
         self._reset()
 
     def _reset(self):
-        self._filename = self.ctx.global_config
-        self._cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        self._cfg.read(self._filename, encoding=self.ctx.encoding)
-        self._scopes = ['global', self._filename]
+        ctx = self.ctx
+        cfg = configparser.ConfigParser(
+            empty_lines_in_values=False,
+            interpolation=configparser.ExtendedInterpolation(),
+        )
+        cfg.read([ctx.default_config, ctx.global_config, ctx.local_config])
+        self._cfg = cfg
 
     def _reset_prompt(self):
         prompts = ['(pyarmor) ']
-        if self._scopes:
-            prompts.insert(0, '::'.join(self._scopes))
         self.prompt = '\n'.join(prompts)
-
-    @property
-    def global_path(self):
-        return os.path.join(self.ctx.home_path, 'config')
-
-    @property
-    def local_path(self):
-        return '.pyarmor'
 
     def do_exit(self, arg):
         'Finish config and exit'
@@ -62,40 +53,11 @@ class PyarmorShell(cmd.Cmd):
         return True
     do_EOF = do_q = do_exit
 
-    def do_global(self, arg):
-        'Select global scope'
-        self._reset()
-
-    def do_local(self, arg):
-        'Select local scope'
-        self._filename = self.ctx.local_config
-        self._cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        self._cfg.read(self._filename, encoding=self.ctx.encoding)
-        self._scopes = ['local', self._filename]
-
-    def do_new(self, arg):
-        'Create config in global/local scope'
-        scope = self._scopes[0]
-        path = self.global_path if scope == 'global' else self.local_path
-        self._filename = os.path.join(path, arg)
-        self._scopes = [scope, self._filename]
-
     def do_use(self, arg):
         'Select config file'
-        scope = self._scopes[0]
-        path = self.global_path if scope == 'global' else self.local_path
-        self._filename = os.path.join(path, arg)
-        self._cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        self._cfg.read(self._filename, encoding=self.ctx.encoding)
-        self._scopes = [scope, self._filename]
 
     def do_ls(self, arg):
-        '''List all the available items in current scope
-        list all config files in scope
-        list all sections in file scope
-        list all options in section scope
-        list option hint in option scope
-        '''
+        '''List all the available items in current scope'''
 
     def do_cd(self, arg):
         '''Change scope'''
