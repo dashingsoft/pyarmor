@@ -102,10 +102,12 @@ class Context(object):
         self.home_path, path = (home + ',').split(',')[:2]
         self.reg_path = os.path.normpath(os.path.join(self.home_path, path))
         self.local_path = local if local else '.pyarmor'
+        self.global_path = os.path.join(self.home_path, 'config')
 
         # self.encoding is just for reading config file
         self.encoding = encoding
-        self.cfg = self._read_config()
+        cfglist = self.default_config, self.global_config, self.local_config
+        self.cfg = self._read_config(cfglist, encoding=encoding)
 
         self.inline_plugin_marker = '# PyArmor Plugin: '
         self.runtime_package = 'pyarmor_runtime'
@@ -136,14 +138,18 @@ class Context(object):
 
         self.cmd_options = {}
 
-    def _read_config(self):
+    def _read_config(self, filelist, encoding=None):
         cfg = configparser.ConfigParser(
             empty_lines_in_values=False,
             interpolation=configparser.ExtendedInterpolation(),
         )
-        cfg.read([self.default_config, self.global_config, self.local_config],
-                 encoding=self.encoding)
+        cfg.read(filelist, encoding=encoding)
         return cfg
+
+    def _named_config(self, name, encoding=None):
+        flist = [os.path.join(x, name)
+                 for x in (self.global_path, self.local_path)]
+        return self._read_config(flist, encoding=encoding)
 
     def read_token(self):
         if os.path.exists(self.license_token):
@@ -171,24 +177,25 @@ class Context(object):
     def pop(self):
         return self.cmd_options.clear()
 
-    def get_res_filter(self, name, sect='finder'):
+    def get_res_options(self, name, sect='finder'):
         options = {}
         if self.cfg.has_section(sect):
             options.update(self.cfg.items(sect))
-        options.update(self.cmd_options.get('finder', {}))
-        sect2 = ':'.join(name, sect)
-        if self.cfg.has_section(sect2):
-            options.update(self.cfg.items(sect2))
+        if sect == 'finder':
+            options.update(self.cmd_options.get('finder', {}))
+        extra_sect = ':'.join(name, sect)
+        if self.cfg.has_section(extra_sect):
+            options.update(self.cfg.items(extra_sect))
+        cfg = self._named_config(name + '.ruler')
+        options.update(cfg.items(sect))
         return options
 
-    def get_res_options(self, name, sect):
-        options = {}
-        if self.cfg.has_section(sect):
-            options.update(self.cfg.items(sect))
-        sect2 = ':'.join(name, sect)
-        if self.cfg.has_section(sect2):
-            options.update(self.cfg.items(sect2))
-        return options
+    def get_path(self, local=True):
+        return self.local_path if local else self.global_path
+
+    def get_filename(self, local=True, name=None):
+        return os.path.join(self.get_path(local), name + '.ruler') if name \
+            else self.local_config if local else self.global_config
 
     def version_info(self, verbose=3):
         #    8.0.1
@@ -236,7 +243,7 @@ class Context(object):
 
     @property
     def global_config(self):
-        return os.path.join(self.home_path, 'config', 'global')
+        return os.path.join(self.global_path, 'global')
 
     @property
     def local_config(self):
@@ -427,10 +434,7 @@ class Context(object):
         value = self.cfg['runtime'].get('messages', '')
         if value:
             name, encoding = (value + ':utf-8').split(':')[:2]
-            cfg = configparser.ConfigParser(empty_lines_in_values=False)
-            paths = self.global_path, self.local_path
-            cfg.read([os.path.join(x, name) for x in paths], encoding=encoding)
-            return cfg
+            return self._named_config(name, encoding=encoding)
 
     @property
     def obfuscated_modules(self):

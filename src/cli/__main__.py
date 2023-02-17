@@ -87,11 +87,8 @@ def format_gen_args(ctx, args):
 
 def check_gen_context(ctx):
     if ctx.runtime_platforms:
-        if ctx.enable_themida and not ctx.native_platform.startswith('win'):
+        if ctx.enable_themida and not ctx.pyarmor_platform.startswith('win'):
             raise CliError('--enable_themida only works for Windows')
-
-    if ctx.runtime_hooks:
-        pass
 
 
 def cmd_gen(ctx, args):
@@ -114,14 +111,9 @@ def cmd_gen(ctx, args):
 
 def cmd_cfg(ctx, args):
     scope = 'global' if args.scope else 'local'
-
-    if args.clear:
-        logger.info('remove %s config file', scope)
-        os.remove(ctx.global_config if scope == 'global' else ctx.local_config)
-        return
-
-    cfg = Configer(ctx)
-    cfg.run(args.section, args.option, args.value, scope == 'local', args.name)
+    configer = Configer(ctx)
+    handle = getattr(configer, 'clear' if args.clear else 'run')
+    handle(args.section, args.option, scope == 'local', args.name)
 
 
 def cmd_reg(ctx, args):
@@ -331,12 +323,11 @@ def cfg_parser(subparsers):
     )
     cparser.add_argument(
         '-C', '--clear', action='store_true',
-        help='clear all settings'
+        help='clear section, option or configuration file'
     )
 
     cparser.add_argument('section', nargs='?', help='section name')
-    cparser.add_argument('option', nargs='?', help='option name')
-    cparser.add_argument('value', nargs='?', help='change option to value')
+    cparser.add_argument('option', nargs='?', help='option name or value')
 
     cparser.set_defaults(func=cmd_cfg)
 

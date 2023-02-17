@@ -35,9 +35,6 @@ class Finder(object):
     def __init__(self, ctx):
         self.ctx = ctx
 
-    def get_res_filter(self):
-        pass
-
     def prepare(self, input_paths):
         resources = []
         for path in input_paths:
@@ -51,7 +48,7 @@ class Finder(object):
                 logger.info('find package at %s', path)
                 res = PathResource(path)
                 resources.append(res)
-                options = self.ctx.get_res_filter(res.fullname)
+                options = self.ctx.get_res_options(res.fullname)
                 res.rebuild(**options)
         self.ctx.resources = resources
 
