@@ -112,11 +112,18 @@ def cmd_gen(ctx, args):
 
 
 def cmd_cfg(ctx, args):
-    if args.interactive or not any([args.section, args.option, args.value]):
+    if args.interactive:
         return PyarmorShell(ctx).cmdloop()
 
+    scope = 'global' if args.scope else 'local'
+
+    if args.clear:
+        logger.info('remove %s config file', scope)
+        os.remove(ctx.global_config if scope == 'global' else ctx.local_config)
+        return
+
     cfg = Configer(ctx)
-    cfg.run(args.section, args.option, args.value, args.local)
+    cfg.run(args.section, args.option, args.value, scope == 'local', args.name)
 
 
 def cmd_reg(ctx, args):
@@ -317,8 +324,16 @@ def cfg_parser(subparsers):
         help='interactive mode'
     )
     cparser.add_argument(
-        '-L', '--local', action='store_true',
-        help='do everything in local settings'
+        '-p', dest='name',
+        help='do everyting for special module or package'
+    )
+    cparser.add_argument(
+        '-g', '--global', dest='scope', action='store_true',
+        help='do everything in global settings'
+    )
+    cparser.add_argument(
+        '-C', '--clear', action='store_true',
+        help='clear all settings'
     )
 
     cparser.add_argument('section', nargs='?', help='section name')

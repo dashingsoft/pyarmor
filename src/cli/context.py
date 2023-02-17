@@ -139,7 +139,7 @@ class Context(object):
     def _read_config(self):
         cfg = configparser.ConfigParser(
             empty_lines_in_values=False,
-            interpolation=configparser.ExtendedInterpolation,
+            interpolation=configparser.ExtendedInterpolation(),
         )
         cfg.read([self.default_config, self.global_config, self.local_config],
                  encoding=self.encoding)
