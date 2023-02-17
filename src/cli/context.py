@@ -349,6 +349,12 @@ class Context(object):
     def restrict_module(self):
         return self._opti('builder', 'restrict_module')
 
+    #
+    # runtime configuration
+    #
+    def _rt_opt(self, opt):
+        return self.cmd_options.get(opt, self.cfg['runtime'].get(opt))
+
     @property
     def relative_import(self):
         v = self._opts('builder', 'relative_import')
@@ -356,11 +362,11 @@ class Context(object):
 
     @property
     def runtime_share(self):
-        return self._opts('runtime', 'share')
+        return self._rt_opt('share')
 
     @property
     def runtime_platforms(self):
-        return self._opts('runtime', 'platforms')
+        return self._rt_opt('platforms')
 
     @property
     def runtime_on_error(self):
@@ -368,11 +374,11 @@ class Context(object):
 
     @property
     def runtime_outer(self):
-        return self._opts('runtime', 'outer')
+        return self._rt_opt('outer')
 
     @property
     def runtime_period(self):
-        period = self._opti('runtime', 'period')
+        period = self._rt_opt('period')
         if period:
             c = period[-1].lower()
             if c.isdecimal():
@@ -391,7 +397,7 @@ class Context(object):
 
     @property
     def runtime_expired(self):
-        return self._opts('runtime', 'expired')
+        return self._rt_opt('expired')
 
     @property
     def runtime_nts(self):
@@ -411,7 +417,7 @@ class Context(object):
 
     @property
     def runtime_timer(self):
-        return self._opti('runtime', 'timer')
+        return self._opts('runtime', 'timer')
 
     @property
     def runtime_simple_extension_name(self):

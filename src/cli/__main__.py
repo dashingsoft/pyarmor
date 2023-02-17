@@ -66,7 +66,7 @@ def _cmd_gen_runtime(builder, options):
 
 def format_gen_args(ctx, args):
     options = {}
-    for x in ('recursive', 'findall', 'inputs', 'output', 'share_runtime',
+    for x in ('recursive', 'findall', 'inputs', 'output', 'share',
               'enable_bcc', 'enable_jit', 'enable_refactor', 'enable_themida',
               'mix_name', 'mix_str', 'relative_import', 'restrict_module',
               'platforms', 'outer', 'period', 'expired', 'devices'):
@@ -145,7 +145,7 @@ def main_parser():
     )
     parser.add_argument(
         '-d', '--debug', action='store_true',
-        help='print more informations in the console'
+        help='print debug informations in the console'
     )
     parser.add_argument(
         '-i', dest='interactive', action='store_true',
@@ -179,7 +179,7 @@ generate runtime package only
         aliases=['generate', 'g'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=gen_parser.__doc__,
-        help='obfuscate scripts and generate runtime files'
+        help='generate obfuscated scripts and required runtime files'
     )
 
     cparser.add_argument('-O', '--output', metavar='PATH', help='output path')
@@ -244,8 +244,7 @@ generate runtime package only
 
     group.add_argument(
         '--restrict', type=int, default=1, choices=(0, 1, 2, 3),
-        dest='restrict_module',
-        help='restrict obfuscated script'
+        dest='restrict_module', help='restrict obfuscated scripts'
     )
 
     group = cparser.add_argument_group('runtime package arguments')
@@ -264,16 +263,17 @@ generate runtime package only
         'use this option multiple times for more platforms'
     )
     group.add_argument(
-        '--with-runtime', dest='share_runtime', help=argparse.SUPPRESS
+        '--with-runtime', dest='share', help=argparse.SUPPRESS
     )
 
     group = cparser.add_argument_group('runtime key arguments')
     group.add_argument(
-        '--outer', metavar='NAME', dest='outer',
+        '--outer', metavar='KEYNAME', dest='outer',
         help='using outer runtime key'
     )
     group.add_argument(
-        '-e', '--expired', metavar='DATE', help='expire obfuscated scripts'
+        '-e', '--expired', metavar='DATE',
+        help='expired date of obfuscated scripts'
     )
     group.add_argument(
         '--period', type=int, metavar='N', dest='period',
@@ -335,10 +335,21 @@ def cfg_parser(subparsers):
 def reg_parser(subparsers):
     '''register or upgrade Pyarmor license
 
-it's better to use option `-T` to check registration information
-make sure everything is fine, then remove `-T` to register really
+In the first time to register Pyarmor license, `-r` (regname) and
+`-p` (product name) can be set.
 
-once register successfully, regname and product can't be changed
+Once register successfully, regname and product name can't be changed
+
+Exception:
+
+If product name is set to "TBD" at the first time, it can be changed
+once later.
+
+Suggestion:
+
+Use option `-t` to check registration information first, make sure
+everything is fine, then remove `-t` to register really
+
     '''
     cparser = subparsers.add_parser(
         'reg',
@@ -353,7 +364,7 @@ once register successfully, regname and product can't be changed
         help='owner of this license'
     )
     cparser.add_argument(
-        '-p', '--product', metavar='Name',
+        '-p', '--product', metavar='NAME',
         help='license to this product'
     )
     cparser.add_argument(
@@ -361,7 +372,7 @@ once register successfully, regname and product can't be changed
         help='upgrade license to pyarmor-pro'
     )
     cparser.add_argument(
-        '-T', '--dry', action='store_true',
+        '-t', '--dry', action='store_true',
         help='dry run, not really register'
     )
 
@@ -428,7 +439,7 @@ def main_entry(argv):
         return PyarmorShell(ctx).cmdloop()
 
     logger.info('Python %d.%d.%d', *sys.version_info[:3])
-    logger.info('%s', ctx.version_info())
+    logger.info('Pyarmor %s', ctx.version_info())
 
     logger.debug('native platform %s', ctx.native_platform)
     logger.debug('home path: %s', home)
@@ -442,7 +453,7 @@ def main_entry(argv):
 def main():
     logging.basicConfig(
         level=logging.INFO,
-        format='%(levelname)-8s %(name)-8s %(message)s',
+        format='%(levelname)-8s %(message)s',
     )
 
     try:
