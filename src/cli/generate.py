@@ -89,10 +89,6 @@ class Builder(object):
 
         namelist = []
         for res in self.ctx.resources:
-            if not res.is_script():
-                # shutil.copy2(res, output)
-                continue
-
             logger.info('process script "%s"', res.fullname)
             name = res.name
             path = self.format_output(self.ctx.outputs, namelist.count(name))
@@ -100,6 +96,11 @@ class Builder(object):
             os.makedirs(path, exist_ok=True)
 
             for r in res:
+                if not res.is_script():
+                    logger.info('copy data file %s', res.path)
+                    shutil.copy2(res.path, path)
+                    continue
+
                 logger.info('obfuscating %s', r)
                 code = Pytransform3.generate_obfuscated_script(self.ctx, r)
                 source = r.generate_output(
