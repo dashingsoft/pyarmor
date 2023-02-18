@@ -67,7 +67,7 @@ def format_platform(plat, arch):
     )
 
     arch_table = (
-        ('x86', ('i?86', )),
+        ('i386', ('i?86', )),
         ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
         ('arm', ('armv5',)),
         ('armv6', ('armv6l',)),
@@ -349,16 +349,16 @@ class Context(object):
     def restrict_module(self):
         return self._opti('builder', 'restrict_module')
 
+    @property
+    def relative_import(self):
+        v = self._opts('builder', 'relative_import')
+        return int(v) if v.isdecimal() else v
+
     #
     # runtime configuration
     #
     def _rt_opt(self, opt):
         return self.cmd_options.get(opt, self.cfg['runtime'].get(opt))
-
-    @property
-    def relative_import(self):
-        v = self._opts('builder', 'relative_import')
-        return int(v) if v.isdecimal() else v
 
     @property
     def runtime_share(self):
@@ -409,15 +409,15 @@ class Context(object):
 
     @property
     def runtime_machines(self):
-        return self._opts('runtime', 'machines')
+        return self._rt_opt('machines')
 
     @property
     def runtime_interps(self):
-        return self._opts('runtime', 'interps')
+        return self._rt_opt('interps')
 
     @property
     def runtime_timer(self):
-        return self._opts('runtime', 'timer')
+        return self._opt('runtime', 'timer')
 
     @property
     def runtime_simple_extension_name(self):
@@ -425,7 +425,7 @@ class Context(object):
 
     @property
     def runtime_hooks(self):
-        value = self.cfg['runtime'].get('hooks', '')
+        value = self._rt_opt('hooks')
         if value:
             from ast import literal_eval
             name, encoding = (value + ':utf-8').split(':')[:2]
@@ -440,7 +440,9 @@ class Context(object):
         value = self.cfg['runtime'].get('messages', '')
         if value:
             name, encoding = (value + ':utf-8').split(':')[:2]
-            return self._named_config(name, encoding=encoding)
+            cfg = self._named_config(name, encoding=encoding)
+            if cfg.has_section('runtime.message'):
+                return cfg
 
     @property
     def obfuscated_modules(self):

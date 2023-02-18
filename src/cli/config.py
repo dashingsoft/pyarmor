@@ -130,7 +130,14 @@ class Configer(object):
         if not cfg.has_section(sect):
             cfg.add_section(sect)
 
+        # TBD: input multiple lines
         name, value = opt.split('=', 2)
+        if value and value[0] in ("'", '"'):
+            value = value.strip(value[0])
+
+        if not value:
+            return self.clear(sect, name, local, name)
+
         logger.info('change option "%s" to new value "%s"', name, value)
         cfg.set(sect, name, value)
 
