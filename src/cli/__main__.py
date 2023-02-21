@@ -111,9 +111,9 @@ def cmd_gen(ctx, args):
 
 def cmd_cfg(ctx, args):
     scope = 'global' if args.scope else 'local'
-    configer = Configer(ctx)
-    handle = getattr(configer, 'clear' if args.clear else 'run')
-    handle(args.section, args.option, scope == 'local', args.name)
+    cfg = Configer(ctx)
+    name = 'clear' if args.clear else 'remove' if args.remove else 'run'
+    getattr(cfg, name)(args.section, args.options, scope == 'local', args.name)
 
 
 def cmd_reg(ctx, args):
@@ -321,13 +321,18 @@ def cfg_parser(subparsers):
         '-g', '--global', dest='scope', action='store_true',
         help='do everything in global settings'
     )
-    cparser.add_argument(
-        '-C', '--clear', action='store_true',
-        help='clear section, option or configuration file'
+    group = cparser.add_mutually_exclusive_group()
+    group.add_argument(
+        '-r', '--remove', action='store_true',
+        help='remove section or options'
+    )
+    group.add_argument(
+        '--clear', action='store_true',
+        help='clear configuration file'
     )
 
     cparser.add_argument('section', nargs='?', help='section name')
-    cparser.add_argument('option', nargs='?', help='option name or value')
+    cparser.add_argument('options', nargs='*', help='option name or value')
 
     cparser.set_defaults(func=cmd_cfg)
 

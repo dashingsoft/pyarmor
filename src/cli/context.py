@@ -183,11 +183,12 @@ class Context(object):
             options.update(self.cfg.items(sect))
         if sect == 'finder':
             options.update(self.cmd_options.get('finder', {}))
-        extra_sect = ':'.join(name, sect)
+        extra_sect = ':'.join([name, sect])
         if self.cfg.has_section(extra_sect):
             options.update(self.cfg.items(extra_sect))
         cfg = self._named_config(name + '.ruler')
-        options.update(cfg.items(sect))
+        if cfg.has_section(sect):
+            options.update(cfg.items(sect))
         return options
 
     def get_path(self, local=True):
@@ -353,6 +354,10 @@ class Context(object):
     def relative_import(self):
         v = self._opts('builder', 'relative_import')
         return int(v) if v.isdecimal() else v
+
+    @property
+    def complex_mode(self):
+        return self._opti('builder', 'complex_mode')
 
     #
     # runtime configuration

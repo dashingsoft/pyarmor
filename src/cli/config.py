@@ -93,35 +93,37 @@ class Configer(object):
 
         return lines
 
-    def list_value(self, sect, opt, local=True, name=None):
-        lines = ['Current settings']
+    def _list_value(self, sect, opt, local=True, name=None):
+        clines, glines, lines, plines = self.infos
+
+        def format_value(opt):
+            v = cfg[sect].get(opt)
+            return 'no option "%s"' % opt if v is None else str_opt(opt, v)
+
         cfg = self.ctx.cfg
         if cfg.has_section(sect):
-            lines.append(str_opt(opt, cfg[sect].get(opt, '')))
+            clines.append(format_value(opt))
 
-        lines.extend(['', 'Global settings'])
         cfg = configparser.ConfigParser(empty_lines_in_values=False)
         cfg.read(self.ctx.global_config)
-        if cfg.has_section(sect):
-            lines.append(str_opt(opt, cfg[sect].get(opt, '')))
+        if cfg.has_section(sect) and cfg.has_option(sect, opt):
+            glines.append(format_value(opt))
 
         if local:
-            lines.extend(['', 'Local settings'])
             cfg = configparser.ConfigParser(empty_lines_in_values=False)
             cfg.read(self.ctx.local_config)
-            if cfg.has_section(sect):
-                lines.append(str_opt(opt, cfg[sect].get(opt, '')))
+            if cfg.has_section(sect) and cfg.has_option(sect, opt):
+                lines.append(format_value(opt))
 
         if name:
-            lines.extend(['', 'Private "%s" settings' % name])
             cfg = configparser.ConfigParser(empty_lines_in_values=False)
             cfg.read(self.ctx.get_filename(local, name))
-            if cfg.has_section(sect):
-                lines.append(str_opt(opt, cfg[sect].get(opt, '')))
+            if cfg.has_section(sect) and cfg.has_option(sect, opt):
+                plines.append(format_value(opt))
 
-        return lines
+        return clines, glines, lines, plines
 
-    def set_option(self, sect, opt, local=True, name=None):
+    def _set_option(self, sect, opt, local=True, name=None):
         ctx = self.ctx
         filename = ctx.get_filename(local=local, name=name)
 
@@ -145,9 +147,9 @@ class Configer(object):
         with open(filename, 'w') as f:
             cfg.write(f)
 
-        return self.list_value(sect, name, local=local, name=name)
+        self._list_value(sect, name, local=local, name=name)
 
-    def clear(self, section=None, option=None, local=True, name=None):
+    def remove(self, section=None, options=None, local=True, name=None):
         ctx = self.ctx
         filename = ctx.get_filename(local=local, name=name)
 
@@ -161,30 +163,61 @@ class Configer(object):
         cfg.read(filename)
 
         if cfg.has_section(section):
-            if option is None:
+            if not options:
                 logger.info('remove section "%s"', section)
                 cfg.remove_section(section)
+            else:
+                for opt in [x for x in options if cfg.has_option(section, x)]:
+                    logger.info('remove option "%s:%s"', section, opt)
+                    cfg.remove_option(section, opt)
 
-            elif cfg.has_option(section, option):
-                logger.info('remove option "%s:%s"', section, option)
-                cfg.remove_option(section, option)
-
-                if not cfg.options(section):
-                    logger.info('remove empty section "%s"', section)
-                    cfg.remove_section(section)
+                    if not cfg.options(section):
+                        logger.info('remove empty section "%s"', section)
+                        cfg.remove_section(section)
 
             with open(filename, 'w') as f:
                 cfg.write(f)
 
-    def run(self, section=None, option=None, local=True, name=None):
+    def clear(self, section=None, options=None, local=True, name=None):
+        ctx = self.ctx
+        scope = '%s%s config file' % (
+            'local' if local else 'global',
+            ' "%s"' % name if name else ''
+        )
+        filename = ctx.get_filename(local=local, name=name)
+
+        if not filename:
+            logger.info('no %s', scope)
+            return
+
+        logger.info('remove %s "%s"', scope, filename)
+        if os.path.exists(filename):
+            os.remove(filename)
+
+    def run(self, section=None, options=None, local=True, name=None):
         lines = []
+
         if section is None:
             lines.extend(self.list_sections(local, name))
-        elif option is None:
+
+        elif not options:
             lines.extend(self.list_options(section, local, name))
+
         else:
-            if option.find('=') == -1:
-                lines.extend(self.list_value(section, option, local, name))
-            else:
-                lines.extend(self.set_option(section, option, local, name))
+            self.infos = [], [], [], []
+            for opt in options:
+                if opt.find('=') == -1:
+                    self._list_value(section, opt, local, name)
+                else:
+                    self._set_option(section, opt, local, name)
+            lines.extend(['', 'Current settings'])
+            lines.extend(self.infos[0])
+            lines.extend(['', 'Global settings'])
+            lines.extend(self.infos[1])
+            lines.extend(['', 'Local settings'])
+            lines.extend(self.infos[2])
+            if name:
+                lines.extend(['', 'Private "%s" settings' % name])
+                lines.extend(self.infos[3])
+
         print('\n'.join(lines))

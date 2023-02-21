@@ -65,6 +65,11 @@ class FileResource(Resource):
         self.mtree = None
         self.mco = None
 
+        # Do not touch these nodes in final protector
+        self.exclude_nodes = set()
+        # Do not touch these code objects in final patcher
+        self.exclude_co_objects = set()
+
     def __str__(self):
         return 'file %s%s' % (self.name, self.pyext)
 
