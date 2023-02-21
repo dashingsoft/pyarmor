@@ -111,7 +111,7 @@ def cmd_gen(ctx, args):
 
 def cmd_cfg(ctx, args):
     scope = 'global' if args.scope else 'local'
-    cfg = Configer(ctx)
+    cfg = Configer(ctx, encoding=args.encoding)
     name = 'clear' if args.clear else 'remove' if args.remove else 'run'
     getattr(cfg, name)(args.section, args.options, scope == 'local', args.name)
 
@@ -301,10 +301,18 @@ generate runtime package only
 
 
 def cfg_parser(subparsers):
-    '''get or set option's value
-    if no section, show all the available sections
-    if no option, show all the options in this section
-    if no value, show option value, otherwise change option to value'''
+    '''show all sections:
+    pyarmor cfg
+
+show all options in section `SECT`:
+    pyarmor cfg SECT
+
+show option `OPT` value:
+    pyarmor cfg SECT OPT
+
+change option value:
+    pyarmor cfg SECT OPT=VALUE
+    '''
 
     cparser = subparsers.add_parser(
         'cfg',
@@ -319,7 +327,7 @@ def cfg_parser(subparsers):
     )
     cparser.add_argument(
         '-g', '--global', dest='scope', action='store_true',
-        help='do everything in global settings'
+        help='do everything in global settings, otherwise local settings'
     )
     group = cparser.add_mutually_exclusive_group()
     group.add_argument(
@@ -330,9 +338,16 @@ def cfg_parser(subparsers):
         '--clear', action='store_true',
         help='clear configuration file'
     )
+    cparser.add_argument(
+        '--encoding',
+        help='specify encoding to read configuration file'
+    )
 
     cparser.add_argument('section', nargs='?', help='section name')
-    cparser.add_argument('options', nargs='*', help='option name or value')
+    cparser.add_argument(
+        'options', nargs='*', metavar='option',
+        help='option name or "name=value"'
+    )
 
     cparser.set_defaults(func=cmd_cfg)
 

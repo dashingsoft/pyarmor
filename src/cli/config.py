@@ -37,8 +37,14 @@ def str_opt(k, v, n=30):
 
 class Configer(object):
 
-    def __init__(self, ctx):
+    def __init__(self, ctx, encoding=None):
         self.ctx = ctx
+        self._encoding = encoding
+
+    def _read_config(self, filename):
+        cfg = configparser.ConfigParser(empty_lines_in_values=False)
+        cfg.read(filename, encoding=self._encoding)
+        return cfg
 
     def list_sections(self, local=True, name=None):
         lines = ['All available sections:']
@@ -46,20 +52,17 @@ class Configer(object):
         lines.extend(indent(cfg.sections()))
 
         lines.extend(['', 'Global sections'])
-        cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        cfg.read(self.ctx.global_config)
+        cfg = self._read_config(self.ctx.global_config)
         lines.extend(indent(cfg.sections()))
 
         if local:
             lines.extend(['', 'Local sections'])
-            cfg = configparser.ConfigParser(empty_lines_in_values=False)
-            cfg.read(self.ctx.local_config)
+            cfg = self._read_config(self.ctx.local_config)
             lines.extend(indent(cfg.sections()))
 
         if name:
             lines.extend(['', 'Private "%s" sections' % name])
-            cfg = configparser.ConfigParser(empty_lines_in_values=False)
-            cfg.read(self.ctx.get_filename(local, name))
+            cfg = self._read_config(self.ctx.get_filename(local, name))
             lines.extend(indent(cfg.sections()))
 
         return lines
@@ -72,22 +75,19 @@ class Configer(object):
             lines.extend([str_opt(*x) for x in cfg.items(sect)])
 
         lines.extend(['', 'Global options'])
-        cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        cfg.read(self.ctx.global_config)
+        cfg = self._read_config(self.ctx.global_config)
         if cfg.has_section(sect):
             lines.extend([str_opt(*x) for x in cfg.items(sect)])
 
         if local:
             lines.extend(['', 'Local options'])
-            cfg = configparser.ConfigParser(empty_lines_in_values=False)
-            cfg.read(self.ctx.local_config)
+            cfg = self._read_config(self.ctx.local_config)
             if cfg.has_section(sect):
                 lines.extend([str_opt(*x) for x in cfg.items(sect)])
 
         if name:
             lines.extend(['', 'Private "%s" options' % name])
-            cfg = configparser.ConfigParser(empty_lines_in_values=False)
-            cfg.read(self.ctx.get_filename(local, name))
+            cfg = self._read_config(self.ctx.get_filename(local, name))
             if cfg.has_section(sect):
                 lines.extend([str_opt(*x) for x in cfg.items(sect)])
 
@@ -104,20 +104,17 @@ class Configer(object):
         if cfg.has_section(sect):
             clines.append(format_value(opt))
 
-        cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        cfg.read(self.ctx.global_config)
+        cfg = self._read_config(self.ctx.global_config)
         if cfg.has_section(sect) and cfg.has_option(sect, opt):
             glines.append(format_value(opt))
 
         if local:
-            cfg = configparser.ConfigParser(empty_lines_in_values=False)
-            cfg.read(self.ctx.local_config)
+            cfg = self._read_config(self.ctx.local_config)
             if cfg.has_section(sect) and cfg.has_option(sect, opt):
                 lines.append(format_value(opt))
 
         if name:
-            cfg = configparser.ConfigParser(empty_lines_in_values=False)
-            cfg.read(self.ctx.get_filename(local, name))
+            cfg = self._read_config(self.ctx.get_filename(local, name))
             if cfg.has_section(sect) and cfg.has_option(sect, opt):
                 plines.append(format_value(opt))
 
@@ -127,8 +124,7 @@ class Configer(object):
         ctx = self.ctx
         filename = ctx.get_filename(local=local, name=name)
 
-        cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        cfg.read(filename)
+        cfg = self._read_config(filename)
         if not cfg.has_section(sect):
             cfg.add_section(sect)
 
@@ -159,8 +155,7 @@ class Configer(object):
                 os.remove(filename)
             return
 
-        cfg = configparser.ConfigParser(empty_lines_in_values=False)
-        cfg.read(filename)
+        cfg = self._read_config(filename)
 
         if cfg.has_section(section):
             if not options:
