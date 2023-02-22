@@ -109,10 +109,10 @@ class Context(object):
         cfglist = self.default_config, self.global_config, self.local_config
         self.cfg = self._read_config(cfglist, encoding=encoding)
 
-        self.inline_plugin_marker = '# PyArmor Plugin: '
+        self.inline_plugin_marker = '# pyarmor: '
         self.runtime_package = 'pyarmor_runtime'
         self.runtime_suffix = '_000000'
-        self.runtime_keyfile = '.pyarmor.key'
+        self.runtime_keyfile = '.pyarmor.ikey'
 
         self.bootstrap_template = bootstrap_template
         self.runtime_package_templates = (
@@ -132,7 +132,9 @@ class Context(object):
         self.module_relations = {}
         self.module_types = {}
         self.module_builtins = set()
+
         self.extra_libs = {}
+        self.obfuscated_modules = set()
 
         self.runtime_key = None
 
@@ -448,7 +450,3 @@ class Context(object):
             cfg = self._named_config(name, encoding=encoding)
             if cfg.has_section('runtime.message'):
                 return cfg
-
-    @property
-    def obfuscated_modules(self):
-        return set([x.fullname for x in self.resources if x.is_script()])

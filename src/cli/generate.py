@@ -52,10 +52,16 @@ class Finder(object):
                 res.rebuild(**options)
         self.ctx.resources = resources
 
-    def process(self):
+    def process(self, pack=None):
         logger.info('search inputs ...')
         self.prepare(self.ctx.input_paths)
         logger.info('find %d top resources', len(self.ctx.resources))
+
+        modules = [x.fullname for x in self.ctx.resources if x.is_script()]
+        self.ctx.obfuscated_modules.update(modules)
+        if pack:
+            from .repack import list_modules
+            self.ctx.obfuscated_modules.update(list_modules(pack))
 
 
 class Builder(object):
@@ -112,7 +118,7 @@ class Builder(object):
                 with open(fullpath, 'w') as f:
                     f.write(source)
 
-    def process(self, options, no_runtime=False, pack=False):
+    def process(self, options, pack=None):
         for opt in options['inputs']:
             if not os.path.exists(opt):
                 raise CliError('no found input "%s"' % opt)
@@ -122,13 +128,13 @@ class Builder(object):
         self.ctx.outputs = output.split(',')
 
         finder = Finder(self.ctx)
-        finder.process()
+        finder.process(pack=pack)
 
         if self.ctx.enable_refactor:
             Pytransform3.refactor_preprocess(self.ctx)
 
         self.ctx.runtime_key = Pytransform3.generate_runtime_key(self.ctx)
-        if not no_runtime:
+        if not options.get('no_runtime'):
             logger.info('start to generate runtime files')
             self.generate_runtime_package(self.ctx.outputs[0])
             logger.info('generate runtime files OK')

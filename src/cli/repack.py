@@ -57,6 +57,7 @@ import sys
 import zlib
 
 from subprocess import check_call
+from tempfile import TemporaryDirectory
 
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
@@ -311,6 +312,28 @@ def repacker(executable, obfpath, entry=None, codesign=None):
     obfname = os.path.join(name + '_obf' + ext)
     shutil.copy2(executable, obfname)
     repack_exe(path, obfname, logic_toc, obfentry, codesign=codesign)
+
+
+def list_modules(executable):
+    modules = []
+    arch = CArchiveReader(executable)
+
+    def read_toc(nm, dlen):
+        with TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, nm)
+            with open(path, 'wb') as f:
+                f.write(arch.lib.read(dlen))
+            return ZlibArchiveReader(path).toc
+
+    for item in arch.toc:
+        logger.debug('toc: %s', item)
+        dpos, dlen, ulen, flag, typcd, nm = item
+        with arch.lib:
+            arch.lib.seek(arch.pkg_start + dpos)
+            if nm.endswith('.pyz') and typcd in ('z', 'Z'):
+                modules.extend(read_toc(nm, dlen))
+
+    return modules
 
 
 def excepthook(type, exc, traceback):

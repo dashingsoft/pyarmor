@@ -66,16 +66,23 @@ def _cmd_gen_runtime(builder, options):
 
 def format_gen_args(ctx, args):
     options = {}
-    for x in ('recursive', 'findall', 'inputs', 'output', 'share',
-              'enable_bcc', 'enable_jit', 'enable_refactor', 'enable_themida',
+    for x in ('recursive', 'findall', 'inputs', 'output', 'no_runtime',
+              'enable_bcc', 'enable_jit', 'enable_rft', 'enable_themida',
               'mix_name', 'mix_str', 'relative_import', 'restrict_module',
               'platforms', 'outer', 'period', 'expired', 'devices'):
         v = getattr(args, x)
         if v is not None:
             options[x] = v
 
+    if args.enables:
+        for x in args.enables:
+            options['enable_' + x] = True
+
     if args.relative:
         options['relative_import'] = args.relative
+
+    if args.no_wrap:
+        options['wrap_mode'] = 0
 
     if args.includes:
         options['includes'] = ' '.join(args.includes)
@@ -106,7 +113,7 @@ def cmd_gen(ctx, args):
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
     else:
-        builder.process(options, pack=args.pack, no_runtime=args.no_runtime)
+        builder.process(options, pack=args.pack)
 
 
 def cmd_cfg(ctx, args):
@@ -188,11 +195,8 @@ generate runtime package only
         'action arguments'
     ).add_mutually_exclusive_group()
     group.add_argument(
-        '--pack', action='store_true', help='pack the obfuscated scripts'
-    )
-    group.add_argument(
-        '--repack', metavar='BUNDLE',
-        help='repack bundle with the obfuscated scripts'
+        '--pack', metavar='BUNDLE',
+        help='pack obfuscated script'
     )
     group.add_argument(
         '--no-runtime', action='store_true',
@@ -206,7 +210,7 @@ generate runtime package only
     )
     group.add_argument(
         '-a', '--all', dest='findall', action='store_true', default=None,
-        help='find all dependent modules and packages'
+        help=argparse.SUPPRESS
     )
     group.add_argument(
         '--include', dest='includes', metavar='PATTERN', action='append',
@@ -218,8 +222,21 @@ generate runtime package only
     )
 
     group.add_argument(
+        '--obf-module', type=int, default=None, choices=(0, 1),
+        help='obfuscate module level code'
+    )
+    group.add_argument(
+        '--obf-code', type=int, default=None, choices=(0, 1),
+        help='obfuscate each function'
+    )
+    group.add_argument(
+        '--no-wrap', action='store_true', default=None,
+        help='do not wrap function',
+    )
+
+    group.add_argument(
         '--mix-str', action='store_true', default=None,
-        help=argparse.SUPPRESS
+        help='protect string constant',
     )
     group.add_argument(
         '--mix-name', action='store_true', default=None,
@@ -230,7 +247,7 @@ generate runtime package only
         help=argparse.SUPPRESS
     )
     group.add_argument(
-        '--enable-refactor', action='store_true', default=None,
+        '--enable-rft', action='store_true', default=None,
         help=argparse.SUPPRESS
     )
     group.add_argument(
@@ -241,9 +258,22 @@ generate runtime package only
         '--enable-themida', action='store_true', default=None,
         help=argparse.SUPPRESS
     )
+    group.add_argument(
+        '--assert-call', action='store_true', default=None,
+        help=argparse.SUPPRESS
+    )
+    group.add_argument(
+        '--assert-import', action='store_true', default=None,
+        help=argparse.SUPPRESS
+    )
+    group.add_argument(
+        '--enable', action='append', dest='enables',
+        choices=('jit', 'bcc', 'rft', 'themida'),
+        help='enable different obfuscation features',
+    )
 
     group.add_argument(
-        '--restrict', type=int, default=1, choices=(0, 1, 2, 3),
+        '--restrict', type=int, default=None, choices=(0, 1, 2, 3, 4),
         dest='restrict_module', help='restrict obfuscated scripts'
     )
 
@@ -262,14 +292,11 @@ generate runtime package only
         help='target platform to run obfuscated scripts, '
         'use this option multiple times for more platforms'
     )
-    group.add_argument(
-        '--with-runtime', dest='share', help=argparse.SUPPRESS
-    )
 
     group = cparser.add_argument_group('runtime key arguments')
     group.add_argument(
-        '--outer', metavar='KEYNAME', dest='outer',
-        help='using outer runtime key'
+        '--outer', '--name', metavar='NAME', dest='outer',
+        help='outer key name, typical value is ".pyarmor.key"'
     )
     group.add_argument(
         '-e', '--expired', metavar='DATE',
@@ -355,10 +382,10 @@ change option value:
 def reg_parser(subparsers):
     '''register or upgrade Pyarmor license
 
-In the first time to register Pyarmor license, `-r` (regname) and
-`-p` (product name) can be set.
+In the first time to register Pyarmor license, `-p` (product name) can
+be set.
 
-Once register successfully, regname and product name can't be changed
+Once register successfully, product name can't be changed
 
 Exception:
 
@@ -381,7 +408,7 @@ everything is fine, then remove `-t` to register really
 
     cparser.add_argument(
         '-r', '--regname', metavar='NAME',
-        help='owner of this license'
+        help=argparse.SUPPRESS
     )
     cparser.add_argument(
         '-p', '--product', metavar='NAME',
