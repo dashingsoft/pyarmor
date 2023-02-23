@@ -284,7 +284,7 @@ class Context(object):
     def debug_logfile(self):
         return os.path.join(self.home_path, 'pyarmor.debug.log')
 
-    def _opt(self, section, name):
+    def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
 
     def _opts(self, section, name):
@@ -295,11 +295,11 @@ class Context(object):
 
     @property
     def recursive(self):
-        return self._opt('finder', 'recursive')
+        return self._optb('finder', 'recursive')
 
     @property
     def findall(self):
-        return self._opt('finder', 'findall')
+        return self._optb('finder', 'findall')
 
     @property
     def pyexts(self):
@@ -307,35 +307,35 @@ class Context(object):
 
     @property
     def enable_jit(self):
-        return self._opt('builder', 'enable_jit')
+        return self._optb('builder', 'enable_jit')
 
     @property
     def enable_themida(self):
-        return self._opt('builder', 'enable_themida')
+        return self._optb('builder', 'enable_themida')
 
     @property
     def enable_bcc(self):
-        return self._opt('builder', 'enable_bcc')
+        return self._optb('builder', 'enable_bcc')
 
     @property
     def enable_refactor(self):
-        return self._opt('builder', 'enable_refactor')
+        return self._optb('builder', 'enable_refactor')
 
     @property
     def assert_call(self):
-        return self._opt('builder', 'assert_call')
+        return self._optb('builder', 'assert_call')
 
     @property
     def assert_import(self):
-        return self._opt('builder', 'assert_import')
+        return self._optb('builder', 'assert_import')
 
     @property
     def mix_name(self):
-        return self._opt('builder', 'mix_name')
+        return self._optb('builder', 'mix_name')
 
     @property
     def mix_str(self):
-        return self._opt('builder', 'mix_str')
+        return self._optb('builder', 'mix_str')
 
     @property
     def obf_module(self):
@@ -347,7 +347,7 @@ class Context(object):
 
     @property
     def wrap_mode(self):
-        return self._opt('builder', 'wrap_mode')
+        return self._optb('builder', 'wrap_mode')
 
     @property
     def restrict_module(self):
@@ -395,7 +395,7 @@ class Context(object):
 
     @property
     def runtime_outer(self):
-        return self._rt_opt('outer')
+        return self._optb('runtime', 'outer')
 
     @property
     def runtime_period(self):
@@ -437,11 +437,11 @@ class Context(object):
 
     @property
     def runtime_timer(self):
-        return self._opt('runtime', 'timer')
+        return self._opti('runtime', 'timer')
 
     @property
     def runtime_simple_extension_name(self):
-        return self._opt('runtime', 'simple_extension_name')
+        return self._optb('runtime', 'simple_extension_name')
 
     @property
     def runtime_hooks(self):
