@@ -372,12 +372,12 @@ class Context(object):
 
     @property
     def outer_keyname(self):
-        self.cfg['builder'].get('outer_keyname', 'pyarmor.key')
+        self.cfg['builder'].get('outer_keyname', 'pyarmor.rkey')
 
     @property
     def use_runtime(self):
-        opt = 'use_runtime'
-        return self.cmd_options.get(opt, self.cfg['builder'].get(opt))
+        return self.cmd_options.get('use_runtime',
+                                    self.cfg['builder'].get('use_runtime'))
 
     #
     # runtime configuration
