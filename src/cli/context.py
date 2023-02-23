@@ -98,11 +98,13 @@ def format_platform(plat, arch):
 
 class Context(object):
 
-    def __init__(self, home, local=None, encoding=None):
-        self.home_path, path = (home + ',').split(',')[:2]
-        self.reg_path = os.path.normpath(os.path.join(self.home_path, path))
-        self.local_path = local if local else '.pyarmor'
-        self.global_path = os.path.join(self.home_path, 'config')
+    def __init__(self, home, gpath='', lpath='', rpath='', encoding=None):
+        self.home_path = os.path.normpath(home)
+        self.global_path = os.path.join(home, gpath if gpath else 'config')
+        self.local_path = lpath if lpath else '.pyarmor'
+        self.reg_path = self.home_path if not rpath else \
+            rpath if os.path.isabs(rpath) else \
+            os.path.join(self.home_path, rpath)
 
         # self.encoding is just for reading config file
         self.encoding = encoding

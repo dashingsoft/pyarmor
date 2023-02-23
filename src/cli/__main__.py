@@ -181,7 +181,7 @@ def main_parser():
     )
     parser.add_argument(
         '-i', dest='interactive', action='store_true',
-        help='interactive mode'
+        help=argparse.SUPPRESS,
     )
     parser.add_argument('--home', help=argparse.SUPPRESS)
 
@@ -488,11 +488,14 @@ def print_version(ctx):
     print('\n'.join(info))
 
 
-def get_home(args):
+def get_home_paths(args):
     home = args.home if args.home else os.getenv('PYARMOR_HOME')
     if not home:
         home = os.path.join('~', '.pyarmor')
-    return os.path.abspath(os.path.expandvars(os.path.expanduser(home)))
+    elif home.startswith(','):
+        home = os.path.join('~', '.pyarmor') + home
+    home = os.path.abspath(os.path.expandvars(os.path.expanduser(home)))
+    return (home + ',,,').split(',')[:4]
 
 
 def main_entry(argv):
@@ -502,8 +505,7 @@ def main_entry(argv):
     if sys.version_info[0] == 2 or sys.version_info[1] < 7:
         raise CliError('only Python 3.7+ is supported now')
 
-    home = get_home(args)
-    ctx = Context(home)
+    ctx = Context(*get_home_paths(args))
 
     log_settings(ctx, args)
 
