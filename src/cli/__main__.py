@@ -71,7 +71,7 @@ def format_gen_args(ctx, args):
     options = {}
     for x in ('recursive', 'findall', 'inputs', 'output', 'no_runtime',
               'enable_bcc', 'enable_jit', 'enable_rft', 'enable_themida',
-              'obj_module', 'obf_code', 'assert_import', 'assert_call',
+              'obf_module', 'obf_code', 'assert_import', 'assert_call',
               'mix_name', 'mix_str', 'relative_import', 'restrict_module',
               'platforms', 'outer', 'period', 'expired', 'devices'):
         v = getattr(args, x)
@@ -289,11 +289,11 @@ generate runtime package only
     )
     group.add_argument(
         '--assert-call', action='store_true', default=None,
-        help=argparse.SUPPRESS
+        help='assert called function is obfuscated'
     )
     group.add_argument(
         '--assert-import', action='store_true', default=None,
-        help=argparse.SUPPRESS
+        help='assert imported module is obfuscated'
     )
     group.add_argument(
         '--enable', action='append', dest='enables',
@@ -325,7 +325,7 @@ generate runtime package only
     group = cparser.add_argument_group('runtime key arguments')
     group.add_argument(
         '--outer', action='store_true', default=None,
-        help='use outer key for obfuscated scripts'
+        help='using outer key for obfuscated scripts'
     )
     group.add_argument(
         '-e', '--expired', metavar='DATE',
@@ -333,7 +333,7 @@ generate runtime package only
     )
     group.add_argument(
         '--period', type=int, metavar='N', dest='period',
-        help='check runtime key in hours periodically'
+        help='check runtime key periodically'
     )
     group.add_argument(
         '-b', '--bind-device', dest='devices', metavar='DEV', action='append',

@@ -364,7 +364,7 @@ class Context(object):
 
     @property
     def co_threshold(self):
-        return self.opti('builder', 'co_threshold')
+        return self._opti('builder', 'co_threshold')
 
     @property
     def exclude_co_names(self):
