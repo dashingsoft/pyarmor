@@ -35,13 +35,12 @@ logger = logging.getLogger('Pyarmor')
 
 def _cmd_gen_key(builder, options):
     n = len(options['inputs'])
-    if n > 2:
+    if n > 1:
         raise CliError('too many args %s' % options['inputs'][1:])
-
-    keyname = builder.ctx.runtime_keyid if n == 1 else options['inputs'][1]
+    keyname = builder.ctx.outer_keyname
 
     logger.info('start to generate outer runtime key "%s"', keyname)
-    data = builder.generate_runtime_key(outer=keyname)
+    data = builder.generate_runtime_key(outer=True)
     output = options.get('output', 'dist')
     os.makedirs(output, exist_ok=True)
 
@@ -79,6 +78,10 @@ def format_gen_args(ctx, args):
         if v is not None:
             options[x] = v
 
+    if args.use_runtime:
+        options['no_runtime'] = True
+        options['use_runtime'] = args.use_runtime
+
     restrict = options.get('restrict_module', 0)
     if restrict > 1:
         options['mix_name'] = 1
@@ -109,17 +112,15 @@ def check_gen_context(ctx):
     if ctx.cmd_options['no_runtime'] and not ctx.runtime_outer:
         raise CliError('--no_runtime need pass outer key by --outer')
 
-    if ctx.runtime_outer:
-        if os.path.exists(ctx.runtime_outer):
-            keyname = os.path.join(ctx.runtime_outer, ctx.runtime_keyfile)
+    if ctx.use_runtime and not ctx.runtime_outer:
+        if os.path.exists(ctx.use_runtime):
+            keyname = os.path.join(ctx.use_runtime, ctx.runtime_keyfile)
             if not os.path.exists(keyname):
-                raise CliError('no runtime key in "%s"', ctx.runtime_outer)
-        else:
-            try:
-                ctx.read_outer_info(ctx.runtime_outer)
-            except FileNotFoundError:
-                raise CliError('no outer key "%s" found, please generated it '
-                               'by "pyarmor gen key"', ctx.runtime_outer)
+                raise CliError('no runtime key in "%s"', ctx.use_runtime)
+
+    if ctx.runtime_outer and any(
+            [ctx.runtime_machines, ctx.runtime_period, ctx.runtime_expired]):
+        raise CliError('--outer conflicts with any -e, --period, -b')
 
 
 def cmd_gen(ctx, args):
@@ -201,7 +202,7 @@ def gen_parser(subparsers):
     pyarmor gen <options> <scripts>
 
 generate runtime key only
-    pyarmor gen key <options> [NAME]
+    pyarmor gen key <options>
 
 generate runtime package only
     pyarmor gen runtime <options>'''
@@ -225,6 +226,10 @@ generate runtime package only
     group.add_argument(
         '--no-runtime', action='store_true',
         help='do not generate runtime package'
+    )
+    group.add_argument(
+        '--use-runtime', metavar='PATH',
+        help='use shared runtime package'
     )
 
     group = cparser.add_argument_group('obfuscation arguments')
@@ -319,7 +324,7 @@ generate runtime package only
 
     group = cparser.add_argument_group('runtime key arguments')
     group.add_argument(
-        '--outer', metavar='NAME', dest='outer',
+        '--outer', action='store_true', default=None,
         help='use outer key for obfuscated scripts'
     )
     group.add_argument(

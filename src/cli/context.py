@@ -114,8 +114,6 @@ class Context(object):
         self.runtime_suffix = '_000000'
         # default inner key filename within runtime package
         self.runtime_keyfile = '.pyarmor.ikey'
-        # default outer runtime key id
-        self.runtime_keyid = 'pyarmor.rkey'
 
         self.bootstrap_template = bootstrap_template
         self.runtime_package_templates = (
@@ -181,25 +179,6 @@ class Context(object):
 
     def pop(self):
         return self.cmd_options.clear()
-
-    def read_outer_info(self, keyname):
-        info = {}
-        filename = os.path.join(self.global_path, keyname)
-        with open(filename) as f:
-            for line in f:
-                if not line.startswith('#'):
-                    k, v = line.strip().split('=', 2)
-                    info[k.strip()] = v.strip()
-        return info
-
-    def save_outer_info(self, keyname, info):
-        lines = []
-        for k, v in info.items():
-            lines.append('%s = %s' % (k, v))
-
-        filename = os.path.join(self.global_path, keyname)
-        with open(filename, 'w') as f:
-            f.write('\n'.join(lines))
 
     def get_res_options(self, name, sect='finder'):
         options = {}
@@ -390,6 +369,15 @@ class Context(object):
     @property
     def exclude_co_names(self):
         return self.cfg['builder'].get('exclude_co_names', '').split()
+
+    @property
+    def outer_keyname(self):
+        self.cfg['builder'].get('outer_keyname', 'pyarmor.key')
+
+    @property
+    def use_runtime(self):
+        opt = 'use_runtime'
+        return self.cmd_options.get(opt, self.cfg['builder'].get(opt))
 
     #
     # runtime configuration
