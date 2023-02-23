@@ -59,9 +59,11 @@ class Finder(object):
 
         modules = [x.fullname for x in self.ctx.resources if x.is_script()]
         self.ctx.obfuscated_modules.update(modules)
-        if pack:
-            from .repack import list_modules
-            self.ctx.obfuscated_modules.update(list_modules(pack))
+
+        # TBD: implement it in next Release
+        # if pack:
+        #     from .repack import list_modules
+        #     self.ctx.obfuscated_modules.update(list_modules(pack))
 
 
 class Builder(object):
@@ -76,7 +78,7 @@ class Builder(object):
             output = self.ctx.alias_suffix.format(outputs[0], count)
         return output
 
-    def generate_runtime_key(self, outer=False):
+    def generate_runtime_key(self, outer=None):
         return Pytransform3.generate_runtime_key(self.ctx, outer)
 
     def generate_runtime_package(self, output):

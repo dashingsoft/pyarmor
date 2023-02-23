@@ -1,52 +1,3 @@
-'''
-This script is used to repack PyInstaller bundle with obfuscated scripts
-
-First pack the script by PyInstaller, next obfuscate the scripts by PyArmor,
-finally run this script to repack the bundle with obfuscated scripts.
-
-* Pack the script with PyInstaller, make sure the final bundle works
-
-    # One folder mode
-    pyinstaller foo.py
-
-    # Check it works
-    dist/foo/foo
-
-    # One file mode
-    pyinstaller --onefile foo.py
-
-    # Check it works
-    dist/foo
-
-* Obfuscate the scripts to "obfdist", make sure the obfuscated scripts
-  work
-
-    # Option --package-runtime should be set to 0
-    pyarmor obfuscate -O obfdist --package-runtime 0 foo.py
-
-    # For super mode
-    pyarmor obfuscate -O obfdist --advanced 2 foo.py
-
-    # Check it works
-    python dist/foo.py
-
-* Repack the final executable, use the same Python interpreter as PyInstaller using
-
-    # One folder mode
-    python repack.py -p obfdist dist/foo/foo
-
-    # Overwrite the old one
-    cp foo-obf dist/foo/foo
-
-    # One file mode
-    python repack.py -p obfdist dist/foo
-
-    # Overwrite the old one
-    cp foo-obf dist/foo
-
-Here "foo-obf" is the patched bundle.
-
-'''
 import argparse
 import logging
 import marshal
@@ -66,7 +17,7 @@ from PyInstaller.loader.pyimod02_archive import PYZ_TYPE_PKG
 from PyInstaller.compat import is_darwin, is_linux, is_win
 
 
-logger = logging.getLogger('packer')
+logger = logging.getLogger('Packer')
 
 
 class ZlibArchive(ZlibArchiveReader):

@@ -34,19 +34,18 @@ logger = logging.getLogger('Pyarmor')
 
 
 def _cmd_gen_key(builder, options):
-    if len(options['inputs']) > 1:
+    n = len(options['inputs'])
+    if n > 2:
         raise CliError('too many args %s' % options['inputs'][1:])
 
-    name = builder.ctx.outer_name
-    if not name:
-        raise CliError('missing outer key name')
+    keyname = builder.ctx.runtime_keyid if n == 1 else options['inputs'][1]
 
-    logger.info('start to generate outer runtime key OK')
-    data = builder.generate_runtime_key(outer=True)
+    logger.info('start to generate outer runtime key "%s"', keyname)
+    data = builder.generate_runtime_key(outer=keyname)
     output = options.get('output', 'dist')
     os.makedirs(output, exist_ok=True)
 
-    target = os.path.join(output, name)
+    target = os.path.join(output, keyname)
     logger.info('write %s', target)
     with open(target, 'wb') as f:
         f.write(data)
@@ -59,20 +58,30 @@ def _cmd_gen_runtime(builder, options):
 
     output = options.get('output', 'dist')
 
-    logger.info('start to generate runtime files')
+    logger.info('start to generate runtime package')
     builder.generate_runtime(output)
-    logger.info('generate runtime files OK')
+
+    keyname = os.path.join(output, builder.ctx.runtime_keyfile)
+    logger.info('write "%s"', keyname)
+    with open(keyname, 'wb') as f:
+        f.write(builder.ctx.runtime_key)
+    logger.info('generate runtime package to "%s" OK', output)
 
 
 def format_gen_args(ctx, args):
     options = {}
     for x in ('recursive', 'findall', 'inputs', 'output', 'no_runtime',
               'enable_bcc', 'enable_jit', 'enable_rft', 'enable_themida',
+              'obj_module', 'obf_code', 'assert_import', 'assert_call',
               'mix_name', 'mix_str', 'relative_import', 'restrict_module',
               'platforms', 'outer', 'period', 'expired', 'devices'):
         v = getattr(args, x)
         if v is not None:
             options[x] = v
+
+    restrict = options.get('restrict_module', 0)
+    if restrict > 1:
+        options['mix_name'] = 1
 
     if args.enables:
         for x in args.enables:
@@ -96,6 +105,21 @@ def check_gen_context(ctx):
     if ctx.runtime_platforms:
         if ctx.enable_themida and not ctx.pyarmor_platform.startswith('win'):
             raise CliError('--enable_themida only works for Windows')
+
+    if ctx.cmd_options['no_runtime'] and not ctx.runtime_outer:
+        raise CliError('--no_runtime need pass outer key by --outer')
+
+    if ctx.runtime_outer:
+        if os.path.exists(ctx.runtime_outer):
+            keyname = os.path.join(ctx.runtime_outer, ctx.runtime_keyfile)
+            if not os.path.exists(keyname):
+                raise CliError('no runtime key in "%s"', ctx.runtime_outer)
+        else:
+            try:
+                ctx.read_outer_info(ctx.runtime_outer)
+            except FileNotFoundError:
+                raise CliError('no outer key "%s" found, please generated it '
+                               'by "pyarmor gen key"', ctx.runtime_outer)
 
 
 def cmd_gen(ctx, args):
@@ -177,7 +201,7 @@ def gen_parser(subparsers):
     pyarmor gen <options> <scripts>
 
 generate runtime key only
-    pyarmor gen key <options>
+    pyarmor gen key <options> [NAME]
 
 generate runtime package only
     pyarmor gen runtime <options>'''
@@ -273,7 +297,7 @@ generate runtime package only
     )
 
     group.add_argument(
-        '--restrict', type=int, default=None, choices=(0, 1, 2, 3, 4),
+        '--restrict', type=int, default=None, choices=(0, 1, 2),
         dest='restrict_module', help='restrict obfuscated scripts'
     )
 
@@ -295,8 +319,8 @@ generate runtime package only
 
     group = cparser.add_argument_group('runtime key arguments')
     group.add_argument(
-        '--outer', '--name', metavar='NAME', dest='outer',
-        help='outer key name, typical value is ".pyarmor.key"'
+        '--outer', metavar='NAME', dest='outer',
+        help='use outer key for obfuscated scripts'
     )
     group.add_argument(
         '-e', '--expired', metavar='DATE',

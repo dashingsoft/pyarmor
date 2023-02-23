@@ -65,11 +65,11 @@ class PyarmorShell(cmd.Cmd):
     def do_rm(self, arg):
         '''Remove item in the scope'''
 
-    def do_get(self, arg):
-        'Show option value'
-
     def do_set(self, arg):
         'Change option value'
+
+    def do_show(self, arg):
+        'Show option value'
 
 
 def parse(arg):
