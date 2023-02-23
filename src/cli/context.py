@@ -380,8 +380,16 @@ class Context(object):
         return int(v) if v.isdecimal() else v
 
     @property
-    def complex_mode(self):
-        return self._opti('builder', 'complex_mode')
+    def exclude_restrict_modules(self):
+        return self._opts('builder', 'exclude_restrict_modules')
+
+    @property
+    def co_threshold(self):
+        return self.opti('builder', 'co_threshold')
+
+    @property
+    def exclude_co_names(self):
+        return self.cfg['builder'].get('exclude_co_names', '').split()
 
     #
     # runtime configuration
