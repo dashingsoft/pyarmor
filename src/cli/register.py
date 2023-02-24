@@ -166,7 +166,7 @@ class RealRegister(Register):
         from .core import Pytransform3
         return Pytransform3.get_license_info(self.ctx)
 
-    def _send_request(self, url, timeout=3.0):
+    def _send_request(self, url, timeout=6.0):
         from urllib.request import urlopen
         from ssl import _create_unverified_context
         context = _create_unverified_context()

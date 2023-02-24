@@ -83,7 +83,7 @@ class Builder(object):
 
     def generate_runtime_package(self, output):
         if self.ctx.runtime_key is None:
-            self.ctx.runtime_key = Pytransform3.generate_runtime_key(self.ctx)
+            self.ctx.runtime_key = self.generate_runtime_key()
         Pytransform3.generate_runtime_package(self.ctx, output)
 
     def _obfuscate_scripts(self):
@@ -136,7 +136,7 @@ class Builder(object):
         if self.ctx.enable_refactor:
             Pytransform3.refactor_preprocess(self.ctx)
 
-        self.ctx.runtime_key = Pytransform3.generate_runtime_key(self.ctx)
+        self.ctx.runtime_key = self.generate_runtime_key()
 
         if not options.get('no_runtime'):
             logger.info('start to generate runtime files')

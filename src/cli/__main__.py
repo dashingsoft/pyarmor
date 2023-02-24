@@ -520,7 +520,7 @@ def main_entry(argv):
     logger.info('Pyarmor %s', ctx.version_info())
 
     logger.debug('native platform %s', ctx.native_platform)
-    logger.debug('home path: %s', home)
+    logger.debug('home path: %s', ctx.home_path)
 
     if hasattr(args, 'func'):
         args.func(ctx, args)
