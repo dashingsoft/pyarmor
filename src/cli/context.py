@@ -369,6 +369,10 @@ class Context(object):
         return self._opti('builder', 'co_threshold')
 
     @property
+    def jit_iv_threshold(self):
+        return self._opti('builder', 'jit_iv_threshold')
+
+    @property
     def exclude_co_names(self):
         return self.cfg['builder'].get('exclude_co_names', '').split()
 
