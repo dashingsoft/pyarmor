@@ -332,8 +332,16 @@ class Context(object):
         return self._optb('builder', 'assert_import')
 
     @property
-    def mix_name(self):
-        return self._optb('builder', 'mix_name')
+    def mix_coname(self):
+        return self._optb('builder', 'mix_coname')
+
+    @property
+    def mix_localnames(self):
+        return self._optb('builder', 'mix_localnames')
+
+    @property
+    def mix_argnames(self):
+        return self._optb('builder', 'mix_argnames')
 
     @property
     def mix_str(self):
