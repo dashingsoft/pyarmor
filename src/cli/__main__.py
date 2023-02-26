@@ -118,7 +118,7 @@ def check_gen_context(ctx):
                 raise CliError('no runtime key in "%s"', ctx.use_runtime)
 
     if ctx.runtime_outer and any(
-            [ctx.runtime_machines, ctx.runtime_period, ctx.runtime_expired]):
+            [ctx.runtime_devices, ctx.runtime_period, ctx.runtime_expired]):
         raise CliError('--outer conflicts with any -e, --period, -b')
 
 

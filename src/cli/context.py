@@ -446,8 +446,9 @@ class Context(object):
         return self._opti('runtime', 'nts_timeout')
 
     @property
-    def runtime_machines(self):
-        return self._rt_opt('machines')
+    def runtime_devices(self):
+        value = self._rt_opt('devices')
+        return value.splitlines() if isinstance(value, str) else value
 
     @property
     def runtime_interps(self):
