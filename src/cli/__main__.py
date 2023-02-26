@@ -463,14 +463,19 @@ def log_settings(ctx, args):
         handler.setLevel(logging.DEBUG)
         logging.getLogger().addHandler(handler)
 
+        plog = logging.getLogger('protector')
+        plog.propagate = False
+        plog.addHandler(logging.NullHandler())
+        handler = logging.FileHandler(ctx.trace_logfile, mode='w')
+        handler.setFormatter(logging.Formatter('%(name)s %(message)s'))
+        handler.setLevel(logging.DEBUG)
+        plog.addHandler(handler)
+
+        # TBD: debug
+        # plog.addHandler(logging.StreamHandler())
+
     if args.silent:
         logging.getLogger().setLevel(100)
-
-    log = logging.getLogger('protector')
-    log.propagate = False
-    log.addHandler(logging.NullHandler())
-    # TBD: debug
-    log.addHandler(logging.StreamHandler())
 
 
 def log_exception(e):

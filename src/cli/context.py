@@ -284,11 +284,11 @@ class Context(object):
 
     @property
     def debug_logfile(self):
-        return os.path.join(self.home_path, 'pyarmor.debug.log')
+        return self.cfg['logging'].get('debug_logfile', 'pyarmor.debug.log')
 
     @property
     def trace_logfile(self):
-        return os.path.join(self.local_path, 'pyarmor.trace.log')
+        return self.cfg['logging'].get('trace_logfile', 'pyarmor.trace.log')
 
     def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
