@@ -109,8 +109,10 @@ class FileResource(Resource):
         self.lines = None
         self.mtree = None
         self.mco = None
-        self.jit_iv = None
-        self.jit_data = None
+        if hasattr(self, 'jit_iv'):
+            self.jit_iv = None
+        if hasattr(self, 'jit_data'):
+            self.jit_data = None
 
     def generate_output(self, tpl, code, relative=0, pkgname='pyarmor_runtime',
                         bootpath='__file__', rev=''):

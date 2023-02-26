@@ -286,6 +286,10 @@ class Context(object):
     def debug_logfile(self):
         return os.path.join(self.home_path, 'pyarmor.debug.log')
 
+    @property
+    def trace_logfile(self):
+        return os.path.join(self.local_path, 'pyarmor.trace.log')
+
     def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
 
@@ -320,8 +324,8 @@ class Context(object):
         return self._optb('builder', 'enable_bcc')
 
     @property
-    def enable_refactor(self):
-        return self._optb('builder', 'enable_refactor')
+    def enable_rft(self):
+        return self._optb('builder', 'enable_rft')
 
     @property
     def assert_call(self):

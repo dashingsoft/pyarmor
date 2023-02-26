@@ -72,7 +72,7 @@ def format_gen_args(ctx, args):
     for x in ('recursive', 'findall', 'inputs', 'output', 'no_runtime',
               'enable_bcc', 'enable_jit', 'enable_rft', 'enable_themida',
               'obf_module', 'obf_code', 'assert_import', 'assert_call',
-              'mix_name', 'mix_str', 'relative_import', 'restrict_module',
+              'mix_str', 'relative_import', 'restrict_module',
               'platforms', 'outer', 'period', 'expired', 'devices'):
         v = getattr(args, x)
         if v is not None:
@@ -82,9 +82,8 @@ def format_gen_args(ctx, args):
         options['no_runtime'] = True
         options['use_runtime'] = args.use_runtime
 
-    restrict = options.get('restrict_module', 0)
-    if restrict > 1:
-        options['mix_name'] = 1
+    if options.get('restrict_module', 0) > 1:
+        options['mix_coname'] = 1
 
     if args.enables:
         for x in args.enables:
@@ -268,10 +267,6 @@ generate runtime package only
         help='protect string constant',
     )
     group.add_argument(
-        '--mix-name', action='store_true', default=None,
-        help=argparse.SUPPRESS
-    )
-    group.add_argument(
         '--enable-bcc', action='store_true', default=None,
         help=argparse.SUPPRESS
     )
@@ -302,7 +297,7 @@ generate runtime package only
     )
 
     group.add_argument(
-        '--restrict', type=int, default=None, choices=(0, 1, 2),
+        '--restrict', action="store_const", default=None, const=2,
         dest='restrict_module', help='restrict obfuscated scripts'
     )
 
@@ -461,6 +456,7 @@ everything is fine, then remove `-t` to register really
 
 def log_settings(ctx, args):
     if args.debug:
+        # TODO: create debug_logfile path if not exists
         logging.getLogger().setLevel(logging.DEBUG)
         handler = logging.FileHandler(ctx.debug_logfile, mode='w')
         handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
@@ -469,6 +465,12 @@ def log_settings(ctx, args):
 
     if args.silent:
         logging.getLogger().setLevel(100)
+
+    log = logging.getLogger('protector')
+    log.propagate = False
+    log.addHandler(logging.NullHandler())
+    # TBD: debug
+    log.addHandler(logging.StreamHandler())
 
 
 def log_exception(e):

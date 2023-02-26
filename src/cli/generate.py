@@ -57,7 +57,8 @@ class Finder(object):
         self.prepare(self.ctx.input_paths)
         logger.info('find %d top resources', len(self.ctx.resources))
 
-        modules = [x.fullname for x in self.ctx.resources if x.is_script()]
+        modules = [x.fullname for res in self.ctx.resources for x in res
+                   if x.is_script()]
         self.ctx.obfuscated_modules.update(modules)
 
         # TBD: implement it in next Release
@@ -133,8 +134,7 @@ class Builder(object):
         finder = Finder(self.ctx)
         finder.process(pack=pack)
 
-        if self.ctx.enable_refactor:
-            Pytransform3.refactor_preprocess(self.ctx)
+        Pytransform3.pre_build(self.ctx)
 
         self.ctx.runtime_key = self.generate_runtime_key()
 
@@ -147,8 +147,7 @@ class Builder(object):
         self._obfuscate_scripts()
         logger.info('obfuscate scripts OK')
 
-        if self.ctx.enable_refactor:
-            Pytransform3.refactor_postprocess(self.ctx)
+        Pytransform3.post_build(self.ctx)
 
         if pack:
             pass
