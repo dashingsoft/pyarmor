@@ -93,7 +93,7 @@ def format_platform(plat, arch):
         if bitness == 32:
             mach = 'x86'
 
-    return os.path.join(plat, mach)
+    return '.'.join([plat, mach])
 
 
 class Context(object):
