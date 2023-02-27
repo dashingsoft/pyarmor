@@ -96,7 +96,7 @@ template, for business and security issue send email to <pyarmor@163.com>.
 In order to improve security and support Python 3.11, there are significant
 changes in the next major version Pyarmor 8.0
 
-Pyarmor 8.0 release date is about 2023-03-01 (March 1, 2023)
+Pyarmor 8.0 release date is about 2023-03-08 (March 8, 2023) (delay one week)
 
 The main features for Pyarmor 8.0
 
