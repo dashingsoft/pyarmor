@@ -46,12 +46,6 @@ else:
     raise ModuleNotFoundError('no pyarmor_runtime extension found')
 '''
 
-runtime_package_template3 = '''# Pyarmor $rev, $timestamp
-from .pyarmor_runtime import __pyarmor__
-from sys import path
-path.insert(0, __file__.replace('__init__.py', 'libs'))
-'''
-
 
 def format_platform(plat, arch):
     from struct import calcsize
@@ -121,7 +115,6 @@ class Context(object):
         self.runtime_package_templates = (
             runtime_package_template,
             runtime_package_template2,
-            runtime_package_template3,
         )
 
         # Alias format for duplicated input names

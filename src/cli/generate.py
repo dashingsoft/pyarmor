@@ -87,6 +87,11 @@ class Builder(object):
             self.ctx.runtime_key = self.generate_runtime_key()
         Pytransform3.generate_runtime_package(self.ctx, output)
 
+    def _pack_script(self, bundle, output, entry=None, codesign=None):
+        from .repack import repacker
+        build = os.path.join('.pyarmor', 'build')
+        repacker(bundle, output, build, entry=entry, codesign=codesign)
+
     def _obfuscate_scripts(self):
         rev = self.ctx.version_info(verbose=2)
         template = self.ctx.bootstrap_template
@@ -150,4 +155,4 @@ class Builder(object):
         Pytransform3.post_build(self.ctx)
 
         if pack:
-            pass
+            self._pack_script(pack, output)

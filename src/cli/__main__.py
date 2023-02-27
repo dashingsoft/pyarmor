@@ -103,7 +103,7 @@ def format_gen_args(ctx, args):
     return options
 
 
-def check_gen_context(ctx):
+def check_gen_context(ctx, args):
     if ctx.runtime_platforms:
         if ctx.enable_themida and not ctx.pyarmor_platform.startswith('win'):
             raise CliError('--enable_themida only works for Windows')
@@ -121,6 +121,10 @@ def check_gen_context(ctx):
             [ctx.runtime_devices, ctx.runtime_period, ctx.runtime_expired]):
         raise CliError('--outer conflicts with any -e, --period, -b')
 
+    if args.pack and (args.no_runtime or ctx.relative_import):
+        raise CliError('--pack conficts with --no-runtime, --use-runtime, '
+                       '-i, --prefix')
+
 
 def cmd_gen(ctx, args):
     from .generate import Builder
@@ -128,7 +132,7 @@ def cmd_gen(ctx, args):
     options = format_gen_args(ctx, args)
     logger.debug('command options: %s', options)
     ctx.push(options)
-    check_gen_context(ctx)
+    check_gen_context(ctx, args)
 
     builder = Builder(ctx)
 
@@ -152,8 +156,12 @@ def cmd_reg(ctx, args):
     regname = args.regname if args.regname else ''
     product = args.product if args.product else 'non-profits'
 
-    reg = LocalRegister(ctx) if args.dry else RealRegister(ctx)
-    reg.check_args(args)
+    reg = RealRegister(ctx)
+    if regfile.endswith('.txt') and not args.confirm:
+        prompt = 'Are you sure (yes/no): '
+        if input(prompt) != 'yes':
+            logger.info('do nothing')
+            return
 
     meth = 'upgrade' if args.upgrade else 'register'
     getattr(reg, meth)(regfile, regname, product)
@@ -416,11 +424,6 @@ Exception:
 If product name is set to "TBD" at the first time, it can be changed
 once later.
 
-Suggestion:
-
-Use option `-t` to check registration information first, make sure
-everything is fine, then remove `-t` to register really
-
     '''
     cparser = subparsers.add_parser(
         'reg',
@@ -443,8 +446,8 @@ everything is fine, then remove `-t` to register really
         help='upgrade license to pyarmor-pro'
     )
     cparser.add_argument(
-        '-t', '--dry', action='store_true',
-        help='dry run, not really register'
+        '-y', '--confirm', action='store_true',
+        help='answer "yes" for any prompt'
     )
 
     cparser.add_argument(

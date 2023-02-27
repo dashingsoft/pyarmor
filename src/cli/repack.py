@@ -32,7 +32,7 @@ class ZlibArchive(ZlibArchiveReader):
             raise RuntimeError("%s is not a valid %s archive file"
                                % (self.path, self.__class__.__name__))
         if self.lib.read(len(self.pymagic)) != self.pymagic:
-            print("Warning: pyz is from a different Python version")
+            logger.warning("pyz is from a different Python version")
         self.lib.read(4)
 
 
@@ -42,19 +42,15 @@ class CArchiveWriter2(CArchiveWriter):
         patched, dlen, ulen, flag, typcd, nm, pathnm = entry
         where = self.lib.tell()
 
-        logger.debug('Add item "%s"', nm)
-
-        if is_darwin and patched and typcd == 'b':
-            from PyInstaller.depend import dylib
-            dylib.mac_set_relative_dylib_deps(pathnm, os.path.basename(pathnm))
+        logger.debug('add item "%s"', nm)
 
         fh = open(pathnm, 'rb')
         filedata = fh.read()
         fh.close()
 
         if patched:
-            logger.info('Replace item "%s" with "%s"', nm, pathnm)
-            if typcd in ('s', 'M'):
+            logger.info('replace item with "%s"(%s)', pathnm, typcd)
+            if typcd.lower() in ('s', 'm'):
                 code = compile(filedata, '<%s>' % nm, 'exec')
                 filedata = marshal.dumps(code)
                 ulen = len(filedata)
@@ -94,38 +90,31 @@ def get_carchive_info(filepath):
     return pos, pylibname.decode()
 
 
-def append_runtime_files(logic_toc, obfpath):
-    logger.info('Appending runtime files to archive')
-
-    n = 0
+def append_runtime_files(obfpath, rtname):
+    logger.info('appending runtime files to archive')
+    logic_toc = []
 
     def add_toc(typcd, name, pathnm):
-        logger.info('Add "%s"', pathnm)
-        if os.path.isdir(pathnm):
-            raise RuntimeError('It is not allowed to write path "%s" to '
-                               'bundle. When obfuscating the scripts, '
-                               'make sure "--package-runtime 0" is used',
-                               pathnm)
-        if n > 1:
-            raise RuntimeError('In the path "%s", there are too many '
-                               'files start with "pytransform" or '
-                               '"_pytransform", there shuold be only one',
-                               obfpath)
+        logger.info('add "%s"(%s)', pathnm, typcd)
         logic_toc.append((1, 0, 0, 1, typcd, name, pathnm))
 
-    for name in os.listdir(obfpath):
-        pathnm = os.path.join(obfpath, name)
-        if (name.startswith('pytransform') and name[-3:] != '.py') \
-           or name.startswith('_pytransform'):
-            n += 1
-            add_toc('b', name, pathnm)
-        elif name == 'license.lic':
-            add_toc('x', name, pathnm)
+    for name in os.listdir(os.path.join(obfpath, rtname)):
+        if name.endswith('.py'):
+            continue
+        typcd = 'x' if name.endswith('key') else 'b'
+        pathnm = os.path.join(obfpath, rtname, name)
+        distname = '/'.join([rtname, name])
+        add_toc(typcd, distname, pathnm)
 
-    logger.info('Append runtime files OK')
+        if is_darwin and typcd == 'b':
+            from PyInstaller.depend import dylib
+            logger.debug('mac_set_relative_dylib_deps "%s"', distname)
+            dylib.mac_set_relative_dylib_deps(pathnm, distname)
+
+    return logic_toc
 
 
-def repack_pyz(pyz, obfpath, cipher=None, clean=False):
+def repack_pyz(pyz, obfpath, rtname, cipher=None, clean=False):
     code_dict = {}
     obflist = []
 
@@ -133,60 +122,70 @@ def repack_pyz(pyz, obfpath, cipher=None, clean=False):
     for dirpath, dirnames, filenames in os.walk(obfpath):
         for pyfile in [x for x in filenames if x.endswith('.py')]:
             pyfile = os.path.join(dirpath, pyfile)
-            logger.info('Compile %s', pyfile)
+            logger.info('compile %s', pyfile)
             name = pyfile[n:].replace('\\', '.').replace('/', '.')[:-3]
             if name.endswith('__init__.py'):
                 name = name[:-len('__init__.py')].strip('.')
             with open(pyfile, 'r') as f:
                 source = f.read()
-            logger.debug('Got obfuscated item: %s', name)
+            logger.debug('got obfuscated item: %s', name)
             code_dict[name] = compile(source, '<%s>' % name, 'exec')
             obflist.append(name)
-    logger.info('Got %d obfuscated items', len(obflist))
+    logger.info('got %d obfuscated items', len(obflist))
 
-    logger.info('Patching PYZ file "%s"', pyz)
+    logger.info('patching PYZ file "%s"', pyz)
     arch = ZlibArchive(pyz)
 
     logic_toc = []
     for name in arch.toc:
-        logger.debug('Extract %s', name)
+        logger.debug('extract %s', name)
         typ, obj = arch.extract(name)
         if name in obflist:
-            logger.info('Replace item "%s" with obfsucated one', name)
+            logger.info('replace item "%s" with obfsucated one', name)
             obflist.remove(name)
         else:
             code_dict[name] = obj
         pathname = '__init__.py' if typ == PYZ_TYPE_PKG else name
         logic_toc.append((name, pathname, 'PYMODULE'))
+
+        if name == rtname:
+            raise RuntimeError('this bundle has been patched by Pyarmor')
+
+    logic_toc.append((rtname, '__init__.py', 'PYMODULE'))
+    pathname = os.path.join(obfpath, rtname, '__init__.py')
+    with open(pathname, 'r') as f:
+        source = f.read()
+    code_dict[rtname] = compile(source, '<%s>' % rtname, 'exec')
+
     logger.debug('unhandled obfuscated items are %s', obflist)
 
     ZlibArchiveWriter(pyz, logic_toc, code_dict=code_dict, cipher=cipher)
-    logger.info('Patch PYZ done')
+    logger.info('patch PYZ done')
 
 
 def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
-    logger.info('Repacking EXE "%s"', obfname)
+    logger.info('repacking EXE "%s"', obfname)
 
     if is_darwin:
         import PyInstaller.utils.osx as osxutils
         if hasattr(osxutils, 'remove_signature_from_binary'):
-            logger.info("Removing signature(s) from EXE")
+            logger.info("removing signature(s) from EXE")
             osxutils.remove_signature_from_binary(obfname)
 
     offset, pylib_name = get_carchive_info(obfname)
-    logger.info('Get archive info (%d, "%s")', offset, pylib_name)
+    logger.info('get archive info (%d, "%s")', offset, pylib_name)
 
     pkgname = os.path.join(path, 'PKG-pyarmor-patched')
-    logging.info('Patching PKG file "%s"', pkgname)
+    logging.info('patching PKG file "%s"', pkgname)
     CArchiveWriter2(pkgname, logic_toc, pylib_name=pylib_name)
-    logging.info('Patch PKG done')
+    logging.info('patch PKG done')
 
     if is_linux:
-        logger.info('Replace section "pydata" with "%s" in EXE', pkgname)
+        logger.info('replace section "pydata" with "%s" in EXE', pkgname)
         check_call(['objcopy', '--update-section', 'pydata=%s' % pkgname,
                     obfname])
     else:
-        logger.info('Replace PKG with "%s" in EXE', pkgname)
+        logger.info('replace PKG with "%s" in EXE', pkgname)
         with open(obfname, 'r+b') as outf:
             # Keep bootloader
             outf.seek(offset, os.SEEK_SET)
@@ -199,12 +198,12 @@ def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
 
     if is_darwin:
         # Fix Mach-O header for codesigning on OS X.
-        logger.info('Fixing EXE for code signing "%s"', obfname)
+        logger.info('fixing EXE for code signing "%s"', obfname)
         import PyInstaller.utils.osx as osxutils
         osxutils.fix_exe_for_code_signing(obfname)
 
         if hasattr(osxutils, 'sign_binary'):
-            logger.info("Re-signing the EXE")
+            logger.info("re-signing the EXE")
             osxutils.sign_binary(obfname, identity=codesign)
 
     if is_win:
@@ -213,28 +212,36 @@ def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
         if hasattr(winutils, 'set_exe_checksum'):
             winutils.set_exe_checksum(obfname)
 
-    logger.info('Generate patched bundle "%s" successfully', obfname)
+    logger.info('generate patched bundle "%s" successfully', obfname)
 
 
-def repacker(executable, obfpath, entry=None, codesign=None):
-    logger.info('Repack PyInstaller bundle "%s"', executable)
+def repacker(executable, obfpath, buildpath='', entry=None, codesign=None):
+    logger.info('repack bundle "%s"', executable)
 
     obfpath = os.path.normpath(obfpath)
-    logger.info('Obfuscated scripts in the path "%s"', obfpath)
+    logger.info('obfuscated scripts at "%s"', obfpath)
 
     name, ext = os.path.splitext(os.path.basename(executable))
     entry = name if entry is None else entry
-    logger.info('Entry script name is "%s.py"', entry)
+    logger.info('entry script name is "%s.py"', entry)
 
     arch = CArchiveReader(executable)
     logic_toc = []
 
     obfentry = os.path.join(obfpath, entry + '.py')
     if not os.path.exists(obfentry):
-        raise RuntimeError('No obfuscated script "%s" found', obfentry)
+        raise RuntimeError('no obfuscated entry "%s" found', obfentry)
 
-    path = os.path.join(name + '_extracted')
-    logger.info('Extracted bundle files to "%s"', path)
+    for item in os.listdir(obfpath):
+        if item.startswith('pyarmor_runtime_'):
+            logger.info('runtime package is "%s"', item)
+            rtname = item
+            break
+    else:
+        raise RuntimeError('no runtime package found')
+
+    path = os.path.join(buildpath, name + '_extracted')
+    logger.info('extracted bundle files to "%s"', path)
     makedirs(path, exist_ok=True)
 
     for item in arch.toc:
@@ -248,8 +255,8 @@ def repacker(executable, obfpath, entry=None, codesign=None):
                 f.write(arch.lib.read(dlen))
 
             if nm.endswith('.pyz') and typcd in ('z', 'Z'):
-                logger.info('Extract pyz file "%s"', pathnm)
-                repack_pyz(pathnm, obfpath)
+                logger.info('extract pyz file "%s"', pathnm)
+                repack_pyz(pathnm, obfpath, rtname)
                 patched = 1
             elif name == nm:
                 patched = 1
@@ -258,11 +265,21 @@ def repacker(executable, obfpath, entry=None, codesign=None):
                 patched = 0
             logic_toc.append((patched, dlen, ulen, flag, typcd, nm, pathnm))
 
-    append_runtime_files(logic_toc, obfpath)
+    extra_toc = append_runtime_files(obfpath, rtname)
+    if len(logic_toc) > 10:
+        logic_toc.extend(extra_toc)
+    else:
+        dest = os.path.dirname(executable)
+        logger.info('copy runtime files to "%s"', dest)
+        for item in extra_toc:
+            shutil.copy2(item[-1], os.path.join(dest, item[-2]))
 
-    obfname = os.path.join(name + '_obf' + ext)
+    obfname = os.path.join(buildpath, name + '_obf' + ext)
     shutil.copy2(executable, obfname)
     repack_exe(path, obfname, logic_toc, obfentry, codesign=codesign)
+
+    logger.info('move "%s" to "%s"', obfname, executable)
+    shutil.move(obfname, executable)
 
 
 def list_modules(executable):
