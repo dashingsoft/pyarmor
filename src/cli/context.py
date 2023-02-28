@@ -361,8 +361,8 @@ class Context(object):
         return self._opti('builder', 'restrict_module')
 
     @property
-    def relative_import(self):
-        v = self._opts('builder', 'relative_import')
+    def import_prefix(self):
+        v = self._opts('builder', 'import_prefix')
         return int(v) if v.isdecimal() else v
 
     @property

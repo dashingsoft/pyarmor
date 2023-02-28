@@ -96,7 +96,7 @@ class Builder(object):
     def _obfuscate_scripts(self):
         rev = self.ctx.version_info(verbose=2)
         template = self.ctx.bootstrap_template
-        relative = self.ctx.relative_import
+        relative = self.ctx.import_prefix
         pkgname = self.ctx.runtime_package + self.ctx.runtime_suffix
         bootpath = self.ctx.cfg.get('builder', 'bootstrap_file')
 

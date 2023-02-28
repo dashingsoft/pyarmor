@@ -72,7 +72,7 @@ def format_gen_args(ctx, args):
     for x in ('recursive', 'findall', 'inputs', 'output', 'no_runtime',
               'enable_bcc', 'enable_jit', 'enable_rft', 'enable_themida',
               'obf_module', 'obf_code', 'assert_import', 'assert_call',
-              'mix_str', 'relative_import', 'restrict_module',
+              'mix_str', 'import_prefix', 'restrict_module',
               'platforms', 'outer', 'period', 'expired', 'devices'):
         v = getattr(args, x)
         if v is not None:
@@ -89,8 +89,8 @@ def format_gen_args(ctx, args):
         for x in args.enables:
             options['enable_' + x] = True
 
-    if args.relative:
-        options['relative_import'] = args.relative
+    if args.prefix:
+        options['import_prefix'] = args.prefix
 
     if args.no_wrap:
         options['wrap_mode'] = 0
@@ -121,7 +121,7 @@ def check_gen_context(ctx, args):
             [ctx.runtime_devices, ctx.runtime_period, ctx.runtime_expired]):
         raise CliError('--outer conflicts with any -e, --period, -b')
 
-    if args.pack and (args.no_runtime or ctx.relative_import):
+    if args.pack and (args.no_runtime or ctx.import_prefix):
         raise CliError('--pack conficts with --no-runtime, --use-runtime, '
                        '-i, --prefix')
 
@@ -324,12 +324,12 @@ generate runtime package only
 
     group = cparser.add_argument_group('runtime package arguments')
     group.add_argument(
-        '-i', dest='relative_import', action='store_const',
+        '-i', dest='import_prefix', action='store_const',
         default=None, const=1,
         help='import runtime package by relative way'
     )
     group.add_argument(
-        '--relative', metavar='PREFIX',
+        '--prefix', metavar='PREFIX',
         help='import runtime package with PREFIX'
     )
     group.add_argument(
