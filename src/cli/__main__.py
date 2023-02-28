@@ -385,8 +385,10 @@ change option value:
         '-g', '--global', dest='scope', action='store_true',
         help='do everything in global settings, otherwise local settings'
     )
-    group = cparser.add_mutually_exclusive_group()
-    group.add_argument(
+    cparser.add_argument(
+        '-s', '--section', help=argparse.SUPPRESS
+    )
+    cparser.add_argument(
         '-r', '--reset', action='store_true',
         help='reset option to default value'
     )
@@ -404,17 +406,16 @@ change option value:
 
 
 def reg_parser(subparsers):
-    '''register or upgrade Pyarmor license
+    '''register Pyarmor or upgrade Pyarmor license
 
-In the first time to register Pyarmor license, `-p` (product name) can
-be set.
+At the first time to register Pyarmor, `-p` (product name) should be
+set. If not set, this Pyarmor license is bind to "non-profits", and
+could not be used for commercial product.
 
-Once register successfully, product name can't be changed
+Once register successfully, product name can't be changed.
 
-Exception:
-
-If product name is set to "TBD" at the first time, it can be changed
-once later.
+There is only one exception, if product name is set to "TBD" at the
+first time, it can be changed once later.
 
     '''
     cparser = subparsers.add_parser(
@@ -422,7 +423,7 @@ once later.
         aliases=['register', 'r'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=reg_parser.__doc__,
-        help='register or upgrade Pyarmor license'
+        help='register Pyarmor or upgrade Pyarmor license'
     )
 
     cparser.add_argument(
@@ -435,11 +436,11 @@ once later.
     )
     cparser.add_argument(
         '-u', '--upgrade', action='store_true',
-        help='upgrade license to pyarmor-pro'
+        help='upgrade Pyarmor license'
     )
     cparser.add_argument(
         '-y', '--confirm', action='store_true',
-        help='answer "yes" for any prompt'
+        help='register Pyarmor without asking for confirmation'
     )
 
     cparser.add_argument(
