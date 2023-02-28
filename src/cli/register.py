@@ -20,7 +20,10 @@
 #  @Create Date: Mon Jan  2 15:39:08 CST 2023
 #
 import logging
+import os
 
+from base64 import b64decode, urlsafe_b64encode
+from json import loads as json_loads
 from string import Template
 
 
@@ -28,7 +31,6 @@ logger = logging.getLogger('Pyarmor')
 
 
 def parse_token(data):
-    from base64 import b64decode
     from struct import unpack
 
     if not data or data.find(' ') == -1:
@@ -72,16 +74,37 @@ class Register(object):
 
     def __init__(self, ctx):
         self.ctx = ctx
+        self.notes = []
 
     def check_args(self, args):
         if args.upgrade and args.keyfile.endswith('.zip'):
             raise RuntimeError('use .txt file to upgrade, not .zip file')
 
-    def regurl(self, ucode, upgrade=False):
+    def _get_old_rcode(self):
+        old_license = self.ctx.read_license()
+        if not old_license:
+            raise RuntimeError('no license file')
+        if len(old_license) == 256:
+            raise RuntimeError('no old purchased license')
+        data = b64decode(old_license)
+        i = data.find(b'pyarmor-vax-')
+        if i == -1:
+            raise RuntimeError('no valid old license')
+        return data[i:i+18].decode()
+
+    def regurl(self, ucode, product=None, rcode=None, prepare=False):
         url = self.ctx.cfg['pyarmor']['regurl'] % ucode
-        if upgrade:
-            url += '&upgrade=1'
+        if product:
+            url += '&product=' + urlsafe_b64encode(product.encode('utf-8'))
+        if rcode:
+            url += '&rcode=' + rcode
+        if prepare:
+            url += '&prepare=1'
         return url
+
+    def update_license_token(self):
+        from .core import Pytransform3
+        return Pytransform3.get_license_info(self.ctx)
 
     @property
     def license_info(self):
@@ -114,12 +137,24 @@ class Register(object):
 
         raise RuntimeError('no registration code found in %s' % filename)
 
+    def register_regfile(self, regfile, clean=True):
+        from zipfile import ZipFile
+
+        path = self.ctx.home_path
+        with ZipFile(regfile, 'r') as f:
+            for item in ('license.lic', '.pyarmor_capsule.zip'):
+                logger.debug('extracting %s' % item)
+                f.extract(item, path=path)
+
+        if clean:
+            self._remove_token()
+
     def __str__(self):
         '''$advanced
 
 Notes
 * Internet connection is required to verify Pyarmor license
-$limitations
+$notes
 '''
 
         info = self.license_info
@@ -139,32 +174,37 @@ $limitations
             fmt % ('BCC Mode', 'Yes' if bccmode else 'No'),
             fmt % ('RFT Mode', 'Yes' if rftmode else 'No'),
         ]
-        limitations = []
         if lictype == 'trial':
-            limitations.append('* Trial license can\'t obfuscate big script')
+            self.notes.append(
+                '* Trial license can\'t obfuscate big script and mix str'
+            )
 
         lines.append(Template(self.__str__.__doc__).substitute(
             advanced='\n'.join(advanced),
-            limitations='\n'.join(limitations),
+            notes='\n'.join(self.notes),
         ))
 
         return '\n'.join(lines)
 
 
-class LocalRegister(Register):
+upgrade_to_basic_info = Template('''
+You are about to upgrade old Pyarmor license to Pyarmor Basic
+License for Pyarmor 8.0+
 
-    def upgrade(self, keyfile, regname, product):
-        pass
+The original license no: $rcode
 
-    def register(self, keyfile, regname, product):
-        pass
+The upgraded license information will be''')
+
+upgrade_to_pro_info = Template('''
+You are about to upgrade old Pyarmor license to Pyarmor Pro
+License for Pyarmor 8.0+
+
+The original license no: $rcode
+
+The upgraded license information will be''')
 
 
-class RealRegister(Register):
-
-    def _request_license_info(self):
-        from .core import Pytransform3
-        return Pytransform3.get_license_info(self.ctx)
+class WebRegister(Register):
 
     def _send_request(self, url, timeout=6.0):
         from urllib.request import urlopen
@@ -172,46 +212,119 @@ class RealRegister(Register):
         context = _create_unverified_context()
         return urlopen(url, None, timeout, context=context)
 
-    def _register_regfile(self, regfile):
-        from zipfile import ZipFile
-        path = self.ctx.home_path
-        with ZipFile(regfile, 'r') as f:
-            for item in ('license.lic', '.pyarmor_capsule.zip'):
-                logger.debug('extracting %s' % item)
-                f.extract(item, path=path)
+    def _remove_token(self):
+        if os.path.exists(self.ctx.license_token):
+            logger.debug('remove old token')
+            os.remove(self.ctx.license_token)
 
-    def upgrade(self, keyfile, regname, product):
+    def prepare(self, keyfile, product, upgrade=False):
         reginfo = self.parse_keyfile(keyfile)
-        url = self.regurl(reginfo[1])
-        res = self._request_license_info(url)
-        if res and res.code == 200:
-            self._request_license_info()
-        elif res:
+        logger.info('prepare "%s"', keyfile)
+
+        rcode = self._get_old_rcode() if upgrade else None
+        url = self.regurl(reginfo[1], rcode=rcode, prepare=True)
+        logger.debug('url: %s', url)
+
+        logger.info('query key file from server')
+        res = self._send_request(url)
+        if not res:
+            raise RuntimeError('no response from license server')
+        if res.code != 200:
+            raise RuntimeError(res.read().decode('utf-8'))
+
+        info = json_loads(res.read(), encoding='utf-8')
+        if info['product'] not in ('', 'TBD') and product != info['product']:
+            raise RuntimeError('product name has been set to "%s"',
+                               info['product'])
+        if info['product'] in ('', 'TBD'):
+            info['product'] = product if product else 'non-profits'
+
+        lines = []
+        if upgrade:
+            if info['upgrade']:
+                lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
+            else:
+                lines.append(upgrade_to_basic_info.substitute(rcode=rcode))
+        else:
+            if info['lictype'] not in ('BASIC', 'PRO'):
+                raise RuntimeError('unknown license type %s' % info['lictype'])
+            lines.append('This license registration information will be')
+
+        fmt = '%-16s: %s'
+        lines.extend([
+            '',
+            fmt % ('License Type', 'pyarmor-' + info['lictype'].lower()),
+            fmt % ('License Owner', info['regname']),
+            fmt % ('Bind Product', info['product']),
+            '',
+        ])
+        if info['product'] == 'non-profits':
+            lines.append('This license is about to be ussd for non-profits')
+
+        lines.extend(['', ''])
+        return '\n'.join(lines)
+
+    def upgrade(self, keyfile, product):
+        logger.info('process upgrading file "%s"', keyfile)
+        reginfo = self.parse_keyfile(keyfile)
+
+        rcode = self._get_old_rcode()
+        logger.info('old license no: %s', rcode)
+
+        url = self.regurl(reginfo[1], product=product, rcode=rcode)
+        logger.debug('url: %s', url)
+
+        logger.info('send upgrade request to server')
+        res = self._send_request(url)
+
+        if not res:
+            raise RuntimeError('no response from license server')
+        if res.code != 200:
             raise RuntimeError(res.read().decode())
 
-        raise RuntimeError('no response from license server')
+        logger.info('update license token')
+        self.update_license_token()
+        logger.info('The upgraded license information:\n\n%s', str(self))
 
-    def register(self, keyfile, regname, product):
+    def register(self, keyfile, product):
         if keyfile.endswith('.zip'):
-            self._register_regfile(keyfile)
+            logger.info('register "%s"', keyfile)
+            self.register_regfile(keyfile)
             return
 
+        logger.info('process activation file "%s"', keyfile)
         reginfo = self.parse_keyfile(keyfile)
-        url = self.regurl(reginfo[1])
-        res = self._request_license_info(url)
+
+        url = self.regurl(reginfo[1], product=product)
+        logger.debug('url: %s', url)
+
+        logger.info('send register request to server')
+        res = self._send_request(url)
         regfile = self._handle_response(res)
-        self._register_regfile(regfile)
-        self._request_license_info()
+
+        logger.info('register "%s"', regfile)
+        self.register_regfile(regfile)
+
+        logger.info('update license token')
+        self.update_license_token()
+
+        self.notes = (
+            '* Please backup regfile "%s" carefully, and '
+            'use this file for next registration' % regfile,
+            '* Do not use "%s" again, it may not work' % keyfile,
+        )
+        logger.info('This license registration information:\n\n%s', str(self))
 
     def _handle_response(self, res):
         if res and res.code == 200:
             dis = res.headers.get('Content-Disposition')
             filename = dis.split('"')[1] if dis else 'pyarmor-regfile.zip'
+            logger.info('write registration file "%s"', filename)
             with open(filename, 'wb') as f:
                 f.write(res.read())
             return filename
 
         elif res:
-            raise RuntimeError(res.read().decode())
+            raise RuntimeError(res.read().decode('utf-8'))
 
         raise RuntimeError('no response from license server')

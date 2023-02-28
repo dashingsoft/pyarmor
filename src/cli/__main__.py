@@ -26,7 +26,7 @@ import sys
 
 from .errors import CliError
 from .context import Context
-from .register import LocalRegister, RealRegister
+from .register import Register, WebRegister
 from .config import Configer
 from .shell import PyarmorShell
 
@@ -153,20 +153,33 @@ def cmd_cfg(ctx, args):
 
 def cmd_reg(ctx, args):
     regfile = args.regfile
-    regname = args.regname if args.regname else ''
-    product = args.product if args.product else 'non-profits'
+    if not regfile:
+        reg = Register(ctx)
+        logger.info('Current license information:\n\n%s', reg)
+        return
 
-    reg = RealRegister(ctx)
-    if regfile.endswith('.txt') and not args.confirm:
-        prompt = 'Are you sure (yes/no): '
-        if input(prompt) != 'yes':
-            logger.info('do nothing')
-            return
+    if args.upgrade and not regfile.endswith('.txt'):
+        raise CliError('upgrade need text file "pyarmor-keycode-xxxx.txt"')
 
-    meth = 'upgrade' if args.upgrade else 'register'
-    getattr(reg, meth)(regfile, regname, product)
+    if regfile.endswith('.zip'):
+        reg = Register(ctx)
+        logger.info('register "%s"', regfile)
+        reg.register_regfile(regfile)
 
-    logger.info('\n%s', reg)
+        logger.info('update license token')
+        reg.update_license_token()
+        logger.info('This license registration information:\n\n%s', str(reg))
+
+    else:
+        regsvr = WebRegister(ctx)
+        if not args.confirm:
+            msg = regsvr.prepare(regfile, args.product, upgrade=args.upgrade)
+            prompt = 'Are you sure to continue? (yes/no) '
+            if input(msg + prompt) != 'yes':
+                return
+
+        meth = 'upgrade' if args.upgrade else 'register'
+        getattr(regsvr, meth)(regfile, args.product)
 
 
 def main_parser():
@@ -444,7 +457,7 @@ first time, it can be changed once later.
     )
 
     cparser.add_argument(
-        'regfile', nargs=1, metavar='FILE',
+        'regfile', nargs='?', metavar='FILE',
         help='pyarmor-regcode-xxx.txt or pyarmor-regfile-xxxx.zip'
     )
     cparser.set_defaults(func=cmd_reg)
@@ -487,7 +500,7 @@ def log_exception(e):
 
 
 def print_version(ctx):
-    info = 'Pyarmor %s' % ctx.version_info(), '', str(LocalRegister(ctx))
+    info = 'Pyarmor %s' % ctx.version_info(), '', str(Register(ctx))
     print('\n'.join(info))
 
 
