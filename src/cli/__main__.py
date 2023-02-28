@@ -147,8 +147,8 @@ def cmd_gen(ctx, args):
 def cmd_cfg(ctx, args):
     scope = 'global' if args.scope else 'local'
     cfg = Configer(ctx, encoding=args.encoding)
-    name = 'clear' if args.clear else 'remove' if args.remove else 'run'
-    getattr(cfg, name)(args.section, args.options, scope == 'local', args.name)
+    name = 'reset' if args.reset else 'run'
+    getattr(cfg, name)(args.options, scope == 'local', args.name)
 
 
 def cmd_reg(ctx, args):
@@ -360,17 +360,14 @@ generate runtime package only
 
 
 def cfg_parser(subparsers):
-    '''show all sections:
+    '''show all options:
     pyarmor cfg
 
-show all options in section `SECT`:
-    pyarmor cfg SECT
-
 show option `OPT` value:
-    pyarmor cfg SECT OPT
+    pyarmor cfg OPT
 
 change option value:
-    pyarmor cfg SECT OPT=VALUE
+    pyarmor cfg OPT=VALUE
     '''
 
     cparser = subparsers.add_parser(
@@ -382,7 +379,7 @@ change option value:
 
     cparser.add_argument(
         '-p', dest='name',
-        help='do everyting for special module or package'
+        help='private settings for special module or package'
     )
     cparser.add_argument(
         '-g', '--global', dest='scope', action='store_true',
@@ -390,19 +387,14 @@ change option value:
     )
     group = cparser.add_mutually_exclusive_group()
     group.add_argument(
-        '-r', '--remove', action='store_true',
-        help='remove section or options'
-    )
-    group.add_argument(
-        '--clear', action='store_true',
-        help='clear configuration file'
+        '-r', '--reset', action='store_true',
+        help='reset option to default value'
     )
     cparser.add_argument(
         '--encoding',
         help='specify encoding to read configuration file'
     )
 
-    cparser.add_argument('section', nargs='?', help='section name')
     cparser.add_argument(
         'options', nargs='*', metavar='option',
         help='option name or "name=value"'

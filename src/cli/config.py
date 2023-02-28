@@ -20,6 +20,7 @@
 #  @Create Date: Thu Jan 12 10:27:05 CST 2023
 #
 import configparser
+import fnmatch
 import logging
 import os
 
@@ -37,6 +38,9 @@ def str_opt(k, v, n=30):
 
 class Configer(object):
 
+    SECTIONS = 'pyarmor', 'logging', 'finder', 'builder', \
+        'pack', 'bcc', 'rft', 'mix.str', 'assert.call', 'assert.import'
+
     def __init__(self, ctx, encoding=None):
         self.ctx = ctx
         self._encoding = encoding
@@ -49,7 +53,7 @@ class Configer(object):
     def list_sections(self, local=True, name=None):
         lines = ['All available sections:']
         cfg = self.ctx.cfg
-        lines.extend(indent(cfg.sections()))
+        lines.extend(indent(self.SECTIONS))
 
         lines.extend(['', 'Global sections'])
         cfg = self._read_config(self.ctx.global_config)
@@ -68,7 +72,7 @@ class Configer(object):
         return lines
 
     def list_options(self, sect, local=True, name=None):
-        lines = ['Current options in section "%s":' % sect]
+        lines = ['Current options']
 
         cfg = self.ctx.cfg
         if cfg.has_section(sect):
@@ -98,7 +102,8 @@ class Configer(object):
 
         def format_value(opt):
             v = cfg[sect].get(opt)
-            return 'no option "%s"' % opt if v is None else str_opt(opt, v)
+            n = 1 << 30
+            return 'no option "%s"' % opt if v is None else str_opt(opt, v, n)
 
         cfg = self.ctx.cfg
         if cfg.has_section(sect):
@@ -145,7 +150,7 @@ class Configer(object):
 
         self._list_value(sect, name, local=local, name=name)
 
-    def remove(self, section=None, options=None, local=True, name=None):
+    def _remove(self, section=None, options=None, local=True, name=None):
         ctx = self.ctx
         filename = ctx.get_filename(local=local, name=name)
 
@@ -173,7 +178,7 @@ class Configer(object):
             with open(filename, 'w') as f:
                 cfg.write(f)
 
-    def clear(self, section=None, options=None, local=True, name=None):
+    def _clear(self, section=None, options=None, local=True, name=None):
         ctx = self.ctx
         scope = '%s%s config file' % (
             'local' if local else 'global',
@@ -189,30 +194,56 @@ class Configer(object):
         if os.path.exists(filename):
             os.remove(filename)
 
-    def run(self, section=None, options=None, local=True, name=None):
+    def _parse_opt(self, opt):
+        i = opt.find(':')
+        if i == -1:
+            j = opt.find('=')
+            pat, v = (opt, '') if j == -1 else (opt[:j], opt[j:])
+            cfg = self.ctx.cfg
+            rlist = []
+            for sect in self.SECTIONS:
+                if cfg.has_section(sect):
+                    rlist.append((sect, [x+v for x in cfg.options(sect)
+                                         if fnmatch.fnmatch(x, pat)]))
+            return [x for x in rlist if x[1]]
+        else:
+            return [(opt[:i], [opt[i+1:]])]
+
+    def reset(self, options=None, local=True, name=None):
+        for pat in options:
+            for sect, opts in self._parse_opt(pat):
+                self._remove(sect, opts, local, name)
+
+    def run(self, options=None, local=True, name=None):
         lines = []
 
-        if section is None:
-            lines.extend(self.list_sections(local, name))
+        if options:
+            for pat in options:
+                for sect, opts in self._parse_opt(pat):
+                    title = 'Section: %s' % sect
+                    lines.extend(['', '-' * 60, title])
+                    self.infos = [], [], [], []
 
-        elif not options:
-            lines.extend(self.list_options(section, local, name))
+                    for opt in opts:
+                        if opt.find('=') == -1:
+                            self._list_value(sect, opt, local, name)
+                        else:
+                            self._set_option(sect, opt, local, name)
+
+                    lines.extend(['', 'Current settings'])
+                    lines.extend(self.infos[0])
+                    lines.extend(['', 'Global settings'])
+                    lines.extend(self.infos[1])
+                    lines.extend(['', 'Local settings'])
+                    lines.extend(self.infos[2])
+                    if name:
+                        lines.extend(['', 'Private "%s" settings' % name])
+                        lines.extend(self.infos[3])
 
         else:
-            self.infos = [], [], [], []
-            for opt in options:
-                if opt.find('=') == -1:
-                    self._list_value(section, opt, local, name)
-                else:
-                    self._set_option(section, opt, local, name)
-            lines.extend(['', 'Current settings'])
-            lines.extend(self.infos[0])
-            lines.extend(['', 'Global settings'])
-            lines.extend(self.infos[1])
-            lines.extend(['', 'Local settings'])
-            lines.extend(self.infos[2])
-            if name:
-                lines.extend(['', 'Private "%s" settings' % name])
-                lines.extend(self.infos[3])
+            for sect in self.SECTIONS:
+                title = 'Section: %s' % sect
+                lines.extend(['', '-' * 60, title, ''])
+                lines.extend(self.list_options(sect, local, name))
 
         print('\n'.join(lines))

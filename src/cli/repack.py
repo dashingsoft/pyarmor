@@ -1,10 +1,8 @@
-import argparse
 import logging
 import marshal
 import os
 import shutil
 import struct
-import sys
 import zlib
 
 from subprocess import check_call
@@ -302,46 +300,3 @@ def list_modules(executable):
                 modules.extend(read_toc(nm, dlen))
 
     return modules
-
-
-def excepthook(type, exc, traceback):
-    try:
-        msg = exc.args[0] % exc.args[1:]
-    except Exception:
-        msg = str(exc)
-    logging.error(msg)
-    sys.exit(1)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--debug',
-                        default=False,
-                        action='store_true',
-                        dest='debug',
-                        help='print debug log (default: %(default)s)')
-    parser.add_argument('-p', '--path',
-                        default='obfdist',
-                        dest='obfpath',
-                        help='obfuscated scripts path (default: %(default)s)')
-    parser.add_argument('-e', '--entry',
-                        help="Entry script if it's different from bundle name")
-    parser.add_argument('--codesign-identity',
-                        help="Code signing identity (macOS only).")
-    parser.add_argument('executable', metavar='executable',
-                        help="PyInstaller archive")
-
-    args = parser.parse_args(sys.argv[1:])
-    if args.debug:
-        logger.setLevel(logging.DEBUG)
-    else:
-        sys.excepthook = excepthook
-    repacker(args.executable, args.obfpath, args.entry, args.codesign_identity)
-
-
-if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(message)s',
-    )
-    main()
