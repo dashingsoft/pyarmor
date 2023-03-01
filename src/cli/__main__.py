@@ -152,6 +152,11 @@ def cmd_cfg(ctx, args):
 
 
 def cmd_reg(ctx, args):
+    if args.buy:
+        from webbrowser import open_new_tab
+        open_new_tab(ctx.cfg['pyarmor', 'buyurl'])
+        return
+
     regfile = args.regfile
     if not regfile:
         reg = Register(ctx)
@@ -450,6 +455,10 @@ first time, it can be changed once later.
     cparser.add_argument(
         '-u', '--upgrade', action='store_true',
         help='upgrade Pyarmor license'
+    )
+    cparser.add_argument(
+        '--buy', action='store_true',
+        help='open buy link in default web browser'
     )
     cparser.add_argument(
         '-y', '--confirm', action='store_true',
