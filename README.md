@@ -58,7 +58,7 @@ Also look at the [getting started][tutorial]
 Pyarmor is published as shareware, free trial version never expires, but there are
 some limitations.
 
-[Pyarmor licenses][licneses] introduces the license type, the features and
+[Pyarmor licenses][licneses] introduces license type, features and
 limitations for each license type and how to purchase Pyarmor license.
 
 Also read [Pyarmor End User License Agreement](LICENSE)
@@ -90,12 +90,10 @@ Send email to <pyarmor@163.com> for business and security issue.
 
 It's important to read this carefully before upgrading pyarmor.
 
-It describes the fixed issues, new features, incompatible issues in different
-versions.
+Each major version has one file to log changes, it describes the fixed
+issues, new features, incompatible issues in different versions
 
-Each major version has one file to log changes
-
-* [Pyarmor 8.x change logs](docs/ChangeLogs.8)
+* [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
 
 There are significant changes in Pyarmor 8.0, users prior to 8.0 should be
 read this to make judge whether upgrade Pyarmor
