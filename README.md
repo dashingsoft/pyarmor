@@ -1,157 +1,115 @@
 # Pyarmor
 
-* [Homepage](https://pyarmor.dashingsoft.com) ([中文版网站](https://pyarmor.dashingsoft.com/index-zh.html))
-* [Documentation](https://pyarmor.readthedocs.io/en/latest/)([中文版](https://pyarmor.readthedocs.io/zh/latest/))
-
 Pyarmor is a command line tool used to obfuscate python scripts, bind
-obfuscated scripts to fixed machine or expire obfuscated scripts. It
-protects Python scripts by the following ways:
+obfuscated scripts to fixed machine or expire obfuscated scripts.
 
-* Obfuscate code object to protect constants and literal strings.
-* Obfuscate co_code of each function (code object) in runtime.
-* Clear f_locals of frame as soon as code object completed execution.
-* Verify the license file of obfuscated scripts while running it.
+## Key features
 
-Also refer to [The Security of Pyarmor](https://pyarmor.readthedocs.io/en/latest/security.html)
+* The obfuscated scritpt is still a normal `.py` script, in most of
+  cases the original python scripts can be replaced with obfuscated
+  scripts seamlessly.
+* Provide many ways to obfuscate the scripts to balance security and
+  performance
+* Rename functions/methods/classes/variables/arguments, irreversible
+  obfuscation
+* Convert part of Python functions to C function, compile to binary by
+  high optimize option, irreversible obfuscation
+* Bind obfuscated scripts to fixed machine or expire obfuscted scripts
+* Protect obfuscated scripts by Themida (Only for Windows)
 
-## Support Platforms
+## Support platforms
 
-- Python 2.7 and Python3.0~Python3.10
-- Prebuilt Platform: win32, win_amd64, linux_i386, linux_x86_64, macosx_x86_64
-- Embedded Platform: Raspberry Pi, Banana Pi, Orange Pi, TS-4600 / TS-7600 and more
+* Python 2 and Python 3[^1]
+* Windows
+* Many linuxs, include embedded systems, Raspberry Pi etc.
+* Apple Intel and Apple Silicon
+* Support arches: x86_64, aarch64, armv7 etc.[^2]
 
-Refer to [support platforms](https://pyarmor.readthedocs.io/en/latest/platforms.html)
+[^1]: some features may only for Python3
+[^2]: some features may only for special arch.
 
-## Quick Start
+## Quick start
 
-Installation
+Install
 
     pip install pyarmor
 
-Obfuscate scripts
+Obfuscate the script `foo.py`
 
-    pyarmor obfuscate foo.py
+    pyarmor gen foo.py
 
-Run obfuscated scripts
+This command generates an obfuscated script `dist/foo.py` like this:
+
+```python
+    from pyarmor_runtime import __pyarmor__
+    __pyarmor__(__name__, __file__, b'\x28\x83\x20\x58....')
+```
+
+Run it
 
     python dist/foo.py
 
-Pack obfuscated scripts into one bundle
+Also look at the [getting started][tutorial]
 
-    pip install pyinstaller
-    pyarmor pack foo.py
+[tutorial]: https://pyarmor.readthedocs.io/en/stable/tutorial/getting-started.html
 
-Obfuscate scripts with an expired license
-
-    pyarmor licenses --expired 2018-12-31 r001
-    pyarmor obfuscate --with-license licenses/r001/license.lic foo.py
-
-There is also a web-ui package [pyarmor-webui](https://github.com/dashingsoft/pyarmor-webui)
-
-    pip install pyarmor-webui
-
-Start webui, open web page in browser ([snapshots](https://github.com/dashingsoft/pyarmor-webui/tree/master/snapshots))
-
-    pyarmor-webui
-
-More usage, refer to
-
-* [Examples](https://pyarmor.readthedocs.io/en/latest/examples.html)
-* [Using Pyarmor](https://pyarmor.readthedocs.io/en/latest/usage.html)
-* [Advanced Usage](https://pyarmor.readthedocs.io/en/latest/advanced.html)
-* [Man Page](https://pyarmor.readthedocs.io/en/latest/man.html)
-* [Sample Shell Scripts](src/examples/README.md)
-
-## License & Purchase
+## License
 
 Pyarmor is published as shareware, free trial version never expires, but there are
-some limitations:
+some limitations.
 
-* The trial version could not obfuscate the big scripts
-* The trial version uses same public capsule other than private capsule
-* The trial version could not download the latest dynamic library of extra platforms
-* The super plus mode is not available in the trial version
+[Pyarmor licenses][licneses] introduces the license type, the features and
+limitations for each license type and how to purchase Pyarmor license.
 
-For details, refer to [Pyarmor License](https://pyarmor.readthedocs.io/en/latest/license.html).
+Also read [Pyarmor End User License Agreement](LICENSE)
 
-## [Change Logs](docs/change-logs.rst)
+[licenses]: https://pyarmor.readthedocs.io/en/latest/licenses.html
+
+## Getting help
+
+Having trouble?
+
+Try the [FAQ][faq] – it's got answers to many common questions.
+
+Looking for specific information? Try the documentation [index][genindex],
+or [the detailed table of contents][mastertoc].
+
+Not found anything? See [asking questions in github][asking].
+
+[Report bugs][issues] according to the issue template.
+
+Send email to <pyarmor@163.com> for business and security issue.
+
+[faq]: https://pyarmor.readthedocs.io/en/stable/questions.html
+[issues]: https://github.com/dashingsoft/pyarmor/issues
+[genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
+[mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
+[asking]: https://pyarmor.readthedocs.io/en/stable/questions.html#asking-questions-in-github
+
+## Change logs
+
+It's important to read this carefully before upgrading pyarmor.
 
 It describes the fixed issues, new features, incompatible issues in different
 versions.
 
-It's recommended to read this carefully before upgrading pyarmor.
+Each major version has one file to log changes
 
-## [Report issues](https://github.com/dashingsoft/pyarmor/issues)
+* [Pyarmor 8.x change logs](docs/ChangeLogs.8)
 
-If there is any question, first check these [questions and
-solutions](https://pyarmor.readthedocs.io/en/latest/questions.html), it may help
-you solve the problem quickly.
+There are significant changes in Pyarmor 8.0, users prior to 8.0 should be
+read this to make judge whether upgrade Pyarmor
 
-If there is no solution, for technical issue, click here to [report an
-issue](https://github.com/dashingsoft/pyarmor/issues) according to the issue
-template, for business and security issue send email to <pyarmor@163.com>.
+* [Pyarmor 8.0 Release Notes](docs/ReleaseNotes.8)
 
-## Release Plan
+## Resources
 
-In order to improve security and support Python 3.11, there are significant
-changes in the next major version Pyarmor 8.0
+* [Website](https://pyarmor.dashingsoft.com)
+* [Documentation](https://pyarmor.readthedocs.io/)
+* [Documentation 7.x](https://pyarmor.readthedocs.io/en/v7.7/)
 
-Pyarmor 8.0 release date is about 2023-03-08 (March 8, 2023) (delay one week)
+中文资源
 
-The main features for Pyarmor 8.0
-
-* Support Python 3.11
-* BCC mode for x86_64 and arm64, the enhancement of spp mode, Irreversible
-* RFT mode, rename function/method/class/variable/argument, Irreversible
-* Customize and localize runtime error messages
-
-The scheduled features for Pyarmor 8.0+ (not released with 8.0)
-
-* BCC mode for armv7 and x86
-* Support Python 3.12
-
-Pyarmor status will be stable by the end of 2024 (Dec. 31, 2024)
-
-### New EULA
-
-The big changes of EULA for Pyarmor 8.0+
-
-* For non-profit usage, one license is OK.
-* For commercial usage, one product one license.
-
-There are only 2 new license types for Pyarmor 8.0+
-
-* pyarmor-basic, one license price 52$
-* pyarmor-pro, one license price 89$
-
-The main differences for each type
-
-* pyarmor-pro: 2 irreversible obfuscation modes BCC/RFT
-* pyarmor-basic: no BCC/RFT modes
-* pyarmor trial version: can't obfuscate big file
-
-The old license code starts with "pyarmor-vax-" could be upgraded to
-pyarmor-basic without extra fee following new EULA. If it's personal
-license type, it need provide the product name bind to pyarmor-basic
-for commercial usage.
-
-## IMPORTANT NOTE
-
-A few features may not work once Pyarmor 8.0.1 is released:
-
-* SPP mode doesn't work for Pyarmor prior to 8.0.1
-
-  In order to use SPP mode, it's necessary to upgrade Pyarmor to 8.0+
-
-* Querying registration information by "pyarmor register" (no arguments)
-  doesn't work in future, it always return error even there is a valid
-  license
-
-  The command "pyarmor -v" could be used to check whether the registration
-  is successful
-
-* Registering Pyarmor by "pyarmor register pyarmor-vax-xxxxxx.txt" can be
-  used no more than 10 times
-
-  If using Pyarmor in CI server or docker, regsiter Pyarmor by the second
-  method described in the registration file "pyarmor-vax-xxxxxx.txt"
+* [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
+* [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/)
+* [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/))
