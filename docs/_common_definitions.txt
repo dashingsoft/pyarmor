@@ -1,18 +1,24 @@
-.. _PyArmor: https://pyarmor.dashingsoft.com/
+.. _Pyarmor: https://pypi.python.org/pypi/pyarmor/
+.. _issues: https://github.com/dashingsoft/pyarmor/issues/
+.. _Pyarmor 7.x Doc: https://pyarmor.readthedocs.io/en/v7.7/
 
+.. |pyarmor| replace:: :doc:`pyarmor <man>`
+.. |Pyarmor| replace:: Pyarmor
 .. |Homepage| replace:: https://pyarmor.dashingsoft.com/
 .. |Manual| replace:: https://pyarmor.readthedocs.io/
-.. |PyArmor| replace:: `PyArmor`
-.. |PyArmorVersion| replace:: PyArmor |version|
+.. |Author| replace:: Jondy
+.. |Contact| replace:: pyarmor@163.com
 
-.. _issues: https://github.com/dashingsoft/pyarmor/issues/
-.. _pypi: https://pypi.python.org/pypi/pyarmor/
-.. _pyarmor-webui: https://pypi.python.org/pypi/pyarmor-webui/
+.. |FAQ| replace:: :doc:`FAQ <questions>`
 
+.. |Python| replace:: Python
+
+.. _Python: https://www.python.org/
+.. _PyPI: https://pypi.python.org/pypi/
 .. _PyInstaller: https://www.pyinstaller.org/
 .. _Cython: https://cython.org/
-.. _PyUpdater: https://www.pyupdater.org/
-.. _pip: http://www.pip-installer.org/
-.. _ASProtect: http://www.aspack.com/
-.. _VMProtect: https://vmpsoft.com/
 .. _NTP: http://www.ntp.org
+
+.. _bytecode: https://docs.python.org/3.11/glossary.html#term-bytecode
+.. _extension module: https://docs.python.org/3.11/glossary.html#term-extension-module
+.. _Packaging binary extensions: https://packaging.python.org/en/latest/guides/packaging-binary-extensions/
