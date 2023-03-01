@@ -1,6 +1,7 @@
 .. _Pyarmor: https://pypi.python.org/pypi/pyarmor/
 .. _issues: https://github.com/dashingsoft/pyarmor/issues/
 .. _Pyarmor 7.x Doc: https://pyarmor.readthedocs.io/en/v7.7/
+.. _Pyarmor End User License Agreements: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
 
 .. |pyarmor| replace:: :doc:`pyarmor <man>`
 .. |Pyarmor| replace:: Pyarmor

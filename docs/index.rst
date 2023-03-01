@@ -1,57 +1,65 @@
-.. pyarmor documentation master file, created by
-   sphinx-quickstart on Sat Dec  1 11:22:25 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+=================================
+ Pyarmor |version| Documentation
+=================================
 
-PyArmor's Documentation
-=======================
-
-:Version: |PyArmorVersion|
+:Version: |release|
 :Homepage: |Homepage|
-:Contact: pyarmor@163.com
-:Authors: Jondy Zhao
+:Contact: |Contact|
+:Authors: |Author|
 :Copyright: This document has been placed in the public domain.
 
+How the documentation is organized
+==================================
 
-|PyArmor| is a command line tool used to obfuscate python scripts,
-bind obfuscated scripts to fixed machine or expire obfuscated
-scripts. It protects Python scripts by the following ways:
+|Pyarmor| has a lot of documentation. A high-level overview of how it's
+organized will help you know where to look for certain things:
 
-* Obfuscate code object to protect constants and literal strings.
-* Obfuscate co_code of each function (code object) in runtime.
-* Clear f_locals of frame as soon as code object completed execution.
-* Verify the license file of obfuscated scripts while running it.
+* :doc:`Part 1: Tutorials <part-1>` takes you by the hand through a series
+  of steps to obfuscate |Python| scripts and packages. Start here if you're
+  new to |Pyarmor|. Also look at the :doc:`tutorial/getting-started`
 
-|PyArmor| supports Python 2.6, 2.7 and Python 3.
+* :doc:`Part 2: How To <part-2>` guides are recipes. They guide you through
+  the steps involved in addressing key problems and use-cases. They are more
+  advanced than tutorials and assume some knowledge of how |Python| works.
 
-|PyArmor| is tested against ``Windows``, ``Mac OS X``, and ``Linux``.
+* :doc:`Part 3: References <part-3>` guides contain key concepts, man page,
+  configurations and other aspects of |Pyarmor| machinery.
 
-|PyArmor| has been used successfully with ``FreeBSD`` and embedded
-platform such as ``Raspberry Pi``, ``Banana Pi``, ``Orange Pi``, ``TS-4600 / TS-7600`` etc.
-but is not fullly tested against them.
+* :doc:`Part 4: Topics <part-4>` guides insight into key topics and provide
+  useful background information and explanation. They describe how it works and
+  how to use it but assume that you have a basic understanding of key concepts.
 
-Contents:
+* :doc:`Part 5: Licneses <licenses>` describes EULA of |Pyarmor|, the different
+  |Pyarmor| licenses and how to purchase |Pyarmor| license.
+
+Getting help
+============
+
+Having trouble? We'd like to help!
+
+Try the :doc:`FAQ <questions>` – it's got answers to many common questions.
+
+Looking for specific information? Try the :ref:`genindex`, or :ref:`the
+detailed table of contents <mastertoc>`.
+
+Not found anything? See :ref:`asking questions in github <asking questions>`.
+
+Report bugs with Pyarmor_ in issues_
+
+Table of Contents
+=================
 
 .. toctree::
-   :maxdepth: 2
+   :numbered:
+   :maxdepth: 3
+   :name: mastertoc
 
-   installation
-   usage
-   advanced
-   build-wheel
-   examples
-   project
-   man
-   understand-obfuscated-scripts
-   how-to-do
-   pytransform
-   platforms
-   mode
-   performance
-   security
+   part-1
+   part-2
+   part-3
+   part-4
+   licenses
    questions
-   license
-   change-logs
 
 Indices and tables
 ==================

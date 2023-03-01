@@ -19,7 +19,7 @@ are some limitations:
 
 a. Can not obfuscate big scritps [1]_
 b. Can not use feature mix-str [2]_ to obfuscate string constant in scripts
-c. Can not RFT Mode [3]_, BCC Mode [4]_
+c. Can not use RFT Mode [3]_, BCC Mode [4]_
 d. Can not be used for any commercial product without permission
 
 These limitations can be unlocked by different `License Types`_
@@ -52,9 +52,9 @@ Pyarmor has 3 kind of licenses:
 Internet connection is only used to verify Pyarmor License in the build machine
 to generate the obfuscated scripts.
 
-For the obfuscated scripts generally run in the customer's device, Pyarmor has
-no any limitions, it's controlled totally by users. Pyarmor only cares about
-build machine.
+For the obfuscated scripts run in the customer's device, Pyarmor has no any
+limitions, it's totally controlled by users. Pyarmor only cares about build
+machine.
 
 Each license has an unique number, the format is ``pyarmor-vax-xxxxxx``, which x
 stands for a digital.
@@ -64,7 +64,7 @@ unique number in Pyarmor world.
 
 If user has many products, many license are required.
 
-In details read `Pyarmor End User License Agreements`__
+In details read `Pyarmor End User License Agreements`_
 
 License features
 ----------------
@@ -102,16 +102,20 @@ License features
 .. [9] Assert Protection: preventing others from hacking obfuscated scripts
 .. [10] Themedia Protection: using Themedia to protect Widnows dlls
 
-__ https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
-
 Purchasing license
 ==================
 
-除了购买软件许可的费用之外，没有其它任何费用。获得许可的用户可以使用本软件在许可
-的范围之内加密任何脚本并自由发布，不需要在向许可人支付任何费用。
+Open shopping cart in any web browser:
 
-购买软件许可的费用是一次性收费，可以永久在购买本软件时候的版本中使用，但是许可证
-可能在任何一个升级版本中失效，许可人不承诺许可证可以在今后所有的升级版本中使用。
+    https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
+
+If you have Pyarmor 8.0+ installed, this command also could open shopping cart::
+
+    $ pyarmor reg --buy
+
+In the shopping cart, select License Type and complete the payment online.
+
+Please fill regname with personal or company name when placing order.
 
 .. list-table:: Table-2. License Prices
    :header-rows: 1
@@ -129,24 +133,45 @@ Purchasing license
      - 158
      -
 
+An activation file named ``pyarmor-regcode-xxxx.txt`` will be sent by email
+immediately after payment is completed successfully.
+
+Following the guide in activation file to take the purchased license effects.
+
+There are no additional license fees, apart from the cost of the license. And it
+only needs to be paid once, not periodically
+
 Refund policy
 -------------
 
-If license code isn't activated, since purchasing date in six months, refund is
-accepted. Please send request to <pyarmor@163.com>, Pyarmor will refund the
-order in a week. Out of six monthes, or license code has been activated, refund
-request is not accepted.
+If activation file isn't used, and purchasing date is in six months, refund is
+accepted. Please send request to |Contact|, Pyarmor will refund the order in a
+week. Out of six monthes, or activation file has been used to activate the
+license, refund request is not accepted.
 
 Why no refund even if my PayPal account is hacked and someone else bought
 Pyarmor by this PayPal account?
 
-Imaging you lost cash €100, someone else got it and buys a cloth, then you think
-the shopper should refund the money to you. It's same for money in PayPal, it's
-your duty to keep your PayPal money safe, and bear the loss because of your own
-fault.
+Imaging you lost cash €100, someone else got it and buys a cloth, I don't think
+the shopper should refund money to you. It's same for money in PayPal, you lost
+money by yourself, the shopper should not bear loss because of your fault.
 
 Upgrading old license
 =====================
+
+Not all the old license could be upgraded to latest version.
+
+The old license could be upgraded to Pyarmor Basic freely only if it matchs
+these conditions:
+
+* Following new `Pyarmor End User License Agreements`_
+* The license no. starts with "pyarmor-vax-"
+* The original activation file ``pyarmor-regcode-xxxx.txt`` is used not more
+  than 100 times.
+
+If it's not matched, please purchase new license to use Pyarmor latest version.
+
+Upgrading to Pyarmor Pro needs extra fees.
 
 .. list-table:: Table-3. Upgrade fee from old license
    :header-rows: 1
@@ -154,19 +179,61 @@ Upgrading old license
    * - License Type
      - Upgrading fee($)
      - Remark
-   * - pyarmor-basic
+   * - Basic
      - 0
-     - following new EULA and match conditions, see [#]_
-   * - pyarmor-pro
+     - following new EULA and match some conditions
+   * - Pro
      - 50
      -
-   * - pyarmor-group
+   * - Group
      - N/A
      -
 
-.. [#] The old license code starts with "pyarmor-vax-" could be upgraded to
-       pyarmor-basic without extra fee following new EULA. If it's personal
-       license type, it need provide the product name bind to pyarmor-basic for
-       commercial usage.
+Freely to Pyarmor-Basic
+-----------------------
+
+First find the activation file ``pyarmor-regcode-xxxx.txt``, which is sent
+to registration email when purchasing the license.
+
+In any build machine which has old license, first install Pyarmor 8.0+.
+
+Be careful to keep old license file still in the Pyarmor :term:`Home Path`,
+generally it's :file:`~/.pyarmor`.
+
+If product name is set when purchasing old license, run this command::
+
+    $ pyarmor reg -u pyarmor-regcode-xxxx.txt
+
+If no product name is set when purchasing old license, please decide which
+product will use this upgraded license. According to new `Pyarmor End User
+License Agreements`_, each license is only for one product. If old license is
+used by many products (only for old personal license), only one product could be
+used after upgrading. For the others, it need purchase new license.
+
+Assume product ``Robot Studio`` will use this license, run this command::
+
+    $ pyarmor reg -u -p "Robot Studio" pyarmor-regcode-xxxx.txt
+
+Check the upgraded license information::
+
+    $ pyarmor reg
+
+With extra fee to Pyarmor-Pro
+-----------------------------
+
+Open shopping cart in any web browser:
+
+    https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
+
+If you have Pyarmor 8.0+ installed, this command also could open shopping cart::
+
+    $ pyarmor reg --buy
+
+In the shopping cart, select ``Pyarmor-upgrade`` and complete the payment online.
+
+An activation file named ``pyarmor-regcode-to-pro.txt`` will be sent by email
+immediately after payment is completed successfully.
+
+Following the guide in activation file to take the purchased license effects.
 
 .. include:: _common_definitions.txt
