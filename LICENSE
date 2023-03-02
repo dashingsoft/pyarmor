@@ -8,7 +8,7 @@ accessing or in any other way using Pyarmor - referred to as "user" or
 1. Definitions
 --------------
 
-1.1. "This software"
+1.1. "This Software"
     means Pyarmor 8.0, it doesn't include Pyarmor prior to 8.0
 
 1.2. "Product"
@@ -142,7 +142,7 @@ Each Pyarmor License only need pay once, not periodically.
       product name can be changed once. Before this product is sold, user
       must change registration name to real product name.
 
-2.5 Modified Software
+2.5 Modifing Software
 
 User could modify Python scripts of this software to meet needs. But this
 modifed software could only be used in Licensed Product, it could not be
@@ -181,13 +181,13 @@ copyright doctrines of fair use, fair dealing, or other equivalents.
 The rights granted under this License will terminate automatically if You
 fail to comply with any of its terms.
 
-4.1 User issues chargeback after purchased Pyarmor License has been
-    registered to one product. Even chargeback is rejected by bank or user
-    cancels chargeback, this Pyarmor License can't be used again.
+4.1 You issue chargeback after purchased Pyarmor License has been registered
+    to one product. Even chargeback is rejected by bank or user cancels
+    chargeback, this Pyarmor License can't be used again.
 
-4.2 User lets others got Pyarmor License intentionally or unintentionally
+4.2 You let others got Pyarmor License intentionally or unintentionally
 
-4.3 User losts Pyarmor License by hacker
+4.3 You lost Pyarmor License by hacker
 
 4.4 In any cases include 4.2, 4.3, once licensor find too many machines use
     one Pyarmor License exceeds permission, this Pyarmor License will be
@@ -212,7 +212,7 @@ You shall not (and shall not allow any third party to):
 5.3 remove any product identification, proprietary, copyright, or other
     notices contained in this software;
 
-5.4 copy (except as expressly permitted in this Agreement), modify or
+5.4 copy, modify (except as expressly permitted in this Agreement) or
     translate any part of this software, create a derivative work of any
     part of this software, or incorporate this software into or with other
     software, except to the extent expressly authorized in writing by
@@ -240,9 +240,10 @@ under this disclaimer.
 ----------------------------
 
 Licensor reserves the right, at its sole discretion, to modify or replace
-this Agreement at any time. If a revision is material we will provide at
-least 30 days' notice prior to any new terms taking effect. What constitutes
-a material change will be determined at the sole discretion of the licensor.
+this Agreement at any time. If a revision is material licensor will provide
+at least 30 days' notice prior to any new terms taking effect. What
+constitutes a material change will be determined at the sole discretion of
+the licensor.
 
 By continuing to access or use this software after any revisions become
 effective, You agree to be bound by the revised terms. If You do not agree
@@ -251,9 +252,8 @@ to the new terms, You are no longer authorized to use this software.
 8. Litigation
 -------------
 
-Any litigation relating to this License may be brought only in the
-courts of a jurisdiction where the defendant maintains its principal
-place of business and such litigation shall be governed by laws of that
-jurisdiction, without reference to its conflict-of-law provisions.
-Nothing in this Section shall prevent a party's ability to bring
-cross-claims or counter-claims.
+Any litigation relating to this License may be brought only in the courts of
+a jurisdiction where the defendant maintains its principal place of business
+and such litigation shall be governed by laws of that jurisdiction, without
+reference to its conflict-of-law provisions.  Nothing in this Section shall
+prevent a party's ability to bring cross-claims or counter-claims.
