@@ -1,145 +1,239 @@
-     END USER LICENSE AGREEMENT
+Pyarmor End User License Agreement
 
-     The following agreement regarding PyArmor - referred to as "software" - is
-     made between Jondy Zhao - referred to as "licensor" - and anyone who is
-     installing, accessing or in any other way using the software - referred to
-     as "user".
+The following agreement regarding Pyarmor is made between Jondy Zhao -
+referred to as "licensor" - and anyone or organization who is installing,
+accessing or in any other way using Pyarmor - referred to as "user".
 
-  1. The author and holder of the copyright of the software is Jondy Zhao.
+1. Definitions
+--------------
 
-  2. The software is distributed as Free To Use But Restricted:
+1.1. "This software"
+    means Pyarmor 8.0, it doesn't include Pyarmor prior to 8.0
 
-     a. The trial version could not obfuscate the big scripts.
+1.2. "Product"
+    means any application or software for sale.
 
-     b. The scripts obfuscated by trial version are not private. It
-        means anyone could generate the license file which works for
-        these obfuscated scripts.
+1.3. "One Product"
+    means a product name and everything that makes up this name. It includes
+    all the devices to develop, build, debug, test product. It also includes
+    product current version, history versions and all the future versions.
 
-     c. The trial version could not download the latest dynamic library
-        of extra platforms, the old versions still are available.
+    One product may has several variants, each variant name is composed of
+    product name plus feature name. As long as the proportion of the
+    variable part is far less than that of the common part, they're
+    considered as "one product".
 
-     d. The super plus mode is not availaible in the trial version.
+1.4. "Customer"
+    means anyone who uses user's product.
 
-     e. Without permission the trial version may not be used for the Python
-        scripts of any commercial product.
+1.5  "Script"
+    means Python script.
 
-  3. There are 2 basic types of licenses issued for the software. These are:
+1.6  "User Script"
+    means user owns this script.
 
-     a. A personal license for home users. The user purchases one license to use
-        the software on his own computer. When placing an order of this kind of
-        license, please fill real name as registration name, this software is
-        only authorized to this registration name.
+1.7  "Other Script"
+    means user doesn't own this script.
 
-        Home users may use their personal license to obfuscate all the python
-        scripts which are property of the license owner, to generate private
-        license files for the obfuscated scripts and distribute them and all the
-        required files to any other machine or device.
+1.8  "Mix Str"
+    means a feature of this software to obfuscate string constant in script
 
-        Home users could NOT obfuscate any python script which is NOT property
-        of the license owner.
+1.9  "BCC Mode"
+    means an irreversible obfuscation method, a feature of this software
 
-     b. A enterprise license for business users. The user purchases one license
-        to use the software for one product of an organization. When placing an
-        order of this kind of license, please fill orginization name plus
-        product name, this software is only authorized to this registration
-        name.
+1.10 "RFT Mode"
+    means an irreversible obfuscation method, a feature of this software
 
-        One product include the current version and any other latter versions of
-        the same product.
+1.11 "Big Script"
+    means script size exceeds a cerntain value
 
-        Business users may use their enterprise license on all computers and
-        embedded devices to obfuscate all the python scripts of this product, to
-        generate private license files for these obfuscated scripts and
-        distribute them and all the required files to any other machine and
-        device.
+1.12 "Pyarmor License"
+    means a file issued by licensor to unlock this software limitations
 
-        Without permission of "licensor" the license purchased for one product
-        should not be used for other product. Business users should purchase new
-        license for different product.
+1.13 "Basic License"
+    means a kind of Pyarmor License
 
-     A user who purchased a license, is granted a non-exclusive right to use
-     the software on as many computers as defined by the licensing terms above
-     according to the number of licenses purchased, for any legal purpose.
+1.13 "Pro License"
+    means a kind of Pyarmor License
 
-     In any case, the software is only used to obfuscate the Python scripts
-     owned by the authorized person or enterprise.
+1.14 "Group License"
+    means a kind of Pyarmor License
 
-  4. There are no additional license fees, apart from the cost of the license,
-     associated with the creation and distribution of obfuscated python scripts.
-     Owners of a license may use their copies of the software to produce
-     obfuscated python scripts and to distribute those files free of any
-     additional royalties.
+1.15 "License No."
+    means a string with format "pyarmor-vax-xxxxxx", "x" stands for a
+    digital, each Pyarmor License has an unique License No.
 
-  5. To buy a license, please run command
+1.16 "Licensed Product"
+    means product has been registered to one Pyarmor License.
 
-         pyarmor register --buy
+2. License Grants and Conditions
+--------------------------------
 
-     Or open the following url in any web browser
+Installing and using this software signifies acceptance of these terms and
+conditions of the license. If you do not agree with the terms of this
+license, you must remove all of this software files from your storage
+devices and cease to use this software.
 
-         https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1
+2.1. Trial Version Limitations
 
-     For personal license, please fill the registeration name with real name
-     when placing an order.
+This software is published as shareware, free trial version never expires,
+but there are some limitations.
 
-     For enterprise license, please fill the registeration name with enterprise
-     name, and also fill "License To Product" with the product name which will
-     use this software.
+2.1.1 Can not obfuscate big script
+2.1.2 Can not use feature Mix Str
+2.1.3 Can not use feature RFT Mode, BCC Mode
+2.1.4 Can not be used in any commercial product without permission
+2.1.5 Can not be used to provide obfuscation service in any form
 
-     A registration file generally named "pyarmor-regcode-xxxx.txt" will be sent
-     by email immediately after payment is completed successfully.
+2.2. Grants
 
-     Save it to disk, then run the following command to register PyArmor
+User purchases Pyarmor License to unlock these limitations except 2.1.5.
 
-         pyarmor register /path/to/pyarmor-regcode-xxxx.txt
+Licensor issues 3 kind of Pyarmor License.
 
-     Check the registration information:
+2.2.1 Pyarmor Basic, unlock limitations 2.1.1, 2.1.2, 2.1.4
+2.2.2 Pyarmor Pro, unlock limitations 2.1.1, 2.1.2, 2.1.3, 2.1.4
+2.2.3 Pyarmor Group, unlock limitations 2.1.1, 2.1.2, 2.1.3, 2.1.4
 
-         pyarmor register
+Pyarmor Basic and Pyarmor Pro need internet connection to verify, it doesn't
+work in the device without internet connection.
 
-     After registration successfully, remove all the obfuscated scripts by trial
-     version, then obfuscate them again.
+Pyarmor Group need not internet connection.
 
-     The registration code is valid forever, it can be used permanently. But it
-     may not be rented or leased.
+Each Pyarmor License only need pay once, not periodically.
 
-  6. The software's free version may be freely distributed, with exceptions
-     noted below, provided the distribution package is not modified in any way.
+2.3 Conditions
 
-     a. Nobody may distribute separate parts of the package, without written
-        permission.
+2.3.1 Each Pyarmor License can only be used to register One Product. Each
+      Licensed Product has an unique License No. in global. If user has many
+      products, each product need purchase one Pyarmor License.
 
-     b. The software's unlicensed free version may not be distributed inside of
-        any other software package without written permission.  The software
-        must remain in the original unmodified installation file for download
-        without any barrier and conditions to the user such as collecting fees
-        for the download or making the download conditional on the user giving
-        his contact data.
+2.3.2 Pyarmor License could be installed in many machines and devices which
+      used to develop, build, debug, test and support Licensed Product. But
+      there is limitation to be used at the same time. See 2.3.3
 
-     c. The unmodified installation file of PyArmor must be provided pure and
-        unpaired. Any bundling is interdicted. In particular the use of any
-        install or download software which is providing any kind of download
-        bundles is prohibited unless granted by Jondy Zhao written form.
+2.3.3 Pyarmor Basic and Pro License can only be used in no more than 100
+      devices in 24 hours. Pyarmor License be used means use any feature of
+      Pyarmor in one machine. Running obfuscated scripts generated by
+      Pyarmor is not considered as Pyarmor License be used.
 
-     d. Hacks/cracks, keys or key generators may not be included, pointed to
-        or referred to by the distributor of the free version.
+2.3.4 Pyarmor Basic and Pro License need internet connection to verify.
 
-     e. In case of violation of the precedent conditions the allowance
-        lapses immediately and automatically.
+2.3.5 Pyarmor License could not be installed in customer's devices.
 
-  7. The software is distributed "as is". No warranty of any kind is expressed
-     or implied. You use at your own risk. Neither the author, the licensor
-     nor the agents of the licensor will be liable for data loss, damages,
-     loss of profits or any other kind of loss while using or misusing
-     this software.
+2.3.6 Pyarmor License could not be used to obfuscate any other scripts.
 
-  8. The dynamic library of the software may not be used for reverse engineer to
-     re-create the PyArmor obfuscated algorithm.
+2.3.7 Pyarmor License could not be transferred to other product.
 
-  9. The licensor shall be responsible for interpretation of the
-     agreement. Anytime the licensor made any modifications to the agreement,
-     the modified version shall be applicable to the user automatically.
+2.4 Special Cases
 
- 10. Installing and using the software signifies acceptance of these terms
-     and conditions of the license. If you do not agree with the terms of this
-     license, you must remove all software files from your storage devices
-     and cease to use the software.
+2.4.1 When product name is changed, but the proudct features are same,
+      Pyarmor License could be used without changing registration product
+      name.
+
+2.4.2 When organization user is renamed, or acquired by others, only product
+      name is not changed, Pyarmor License need change nothing, and still
+      could be used. But if product name is changed, even product functions
+      are same, Pyarmor License can't be used again.
+
+2.4.3 When product in deveoping and its name is not defined, the initial
+      registartion could use "TBD" as the product name. In this case,
+      product name can be changed once. Before this product is sold, user
+      must change registration name to real product name.
+
+2.5 Modified Software
+
+User could modify Python scripts of this software to meet needs. But this
+modifed software could only be used in Licensed Product, it could not be
+distributed to others.
+
+2.6 Fair Use
+
+This License is not intended to limit any rights users have under applicable
+copyright doctrines of fair use, fair dealing, or other equivalents.
+
+3. Responsibilities and Commitments
+-----------------------------------
+
+3.1 This software does nothing except the features described in the software
+    documention.
+
+3.2 Using Pyarmor Basic and Pro License, this software need internet
+    connection to request authorization. And only the related files of
+    Pyarmor License, serial number of hard disk, ethnet address, IPv4/IPv6
+    address will be sent to remote server for verification.
+
+3.3 Except 3.2, this software does not record and collect any other device
+    informations, and need not connect to internet.
+
+3.4 Regarding to obfuscated scripts generated by this software
+
+3.4.1 this software has no any control or limitation to obfuscated scripts,
+      the behaviours of obfuscated scripts are totally defined by user.
+
+3.4.2 License No. and product name will be embedded into obfuscated scripts,
+      user's regname, email and other information are not.
+
+4. Termination
+--------------
+
+The rights granted under this License will terminate automatically if You
+fail to comply with any of its terms.
+
+4.1 User issues chargeback after purchased Pyarmor License has been
+    registered to one product. Even chargeback is rejected by bank or user
+    cancels chargeback, this Pyarmor License can't be used again.
+
+4.2 User lets others got Pyarmor License intentionally or unintentionally
+
+4.3 User losts Pyarmor License by hacker
+
+4.4 In any cases include 4.2, 4.3, once licensor find too many machines use
+    one Pyarmor License exceeds permission, this Pyarmor License will be
+    ceased, and never could be used again.
+
+4.5 In any cases if licensor finds one Pyarmor License is used to other
+    product, even it's caused by 4.3, this Pyarmor License will be ceased. A
+    notify email will be sent to registration email of this Pyarmor License.
+
+5. Claims
+---------
+
+The dynamic library of this software may not be used for reverse engineer to
+re-create obfuscation algorithm.
+
+6. Disclaimer of Warranty
+-------------------------
+
+This Software is provided under this License on an "as is" basis, without
+warranty of any kind, either expressed, implied, or statutory, including,
+without limitation, warranties that this Software is free of defects, fit
+for a particular purpose or non-infringing. The entire risk as to the
+quality and performance of this Software is with users. Neither the licensor
+nor the agents of the licensor will be liable for data loss, damages, loss
+of profits or any other kind of loss while using or misusing this
+software. This disclaimer of warranty constitutes an essential part of this
+License. No use of this Software is authorized under this License except
+under this disclaimer.
+
+7. Changes to this Agreement
+----------------------------
+
+Licensor reserves the right, at its sole discretion, to modify or replace
+this Agreement at any time. If a revision is material we will provide at
+least 30 days' notice prior to any new terms taking effect. What constitutes
+a material change will be determined at the sole discretion of the licensor.
+
+By continuing to access or use this software after any revisions become
+effective, You agree to be bound by the revised terms. If You do not agree
+to the new terms, You are no longer authorized to use this software.
+
+8. Litigation
+-------------
+
+Any litigation relating to this License may be brought only in the
+courts of a jurisdiction where the defendant maintains its principal
+place of business and such litigation shall be governed by laws of that
+jurisdiction, without reference to its conflict-of-law provisions.
+Nothing in this Section shall prevent a party's ability to bring
+cross-claims or counter-claims.
