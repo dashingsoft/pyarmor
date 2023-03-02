@@ -108,7 +108,7 @@ License features
    BCC MODE                No         No         Y           Y
    ===================  ========   ========   =========   ========  ==============
 
-.. rubric:: feature notes
+.. rubric:: notes
 
 .. [1] Big Script means file size exceeds a cerntain value.
 .. [2] Mix Str: obfscating string constant in script
