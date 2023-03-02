@@ -186,7 +186,7 @@ The old license could be upgraded to Pyarmor Basic freely only if it matchs
 these conditions:
 
 * Following new `Pyarmor End User License Agreements`_
-* The license no. starts with "pyarmor-vax-"
+* The license no. starts with ``pyarmor-vax-``
 * The original activation file ``pyarmor-regcode-xxxx.txt`` is used not more
   than 100 times.
 
