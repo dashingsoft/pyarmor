@@ -12,8 +12,8 @@ obfuscated scripts to fixed machine or expire obfuscated scripts.
   performance
 * Rename functions/methods/classes/variables/arguments, irreversible
   obfuscation
-* Convert part of Python functions to C function, compile to binary by
-  high optimize option, irreversible obfuscation
+* Convert part of Python functions to C functions, compile them to machine
+  instructions by high optimize option, irreversible obfuscation
 * Bind obfuscated scripts to fixed machine or expire obfuscted scripts
 * Protect obfuscated scripts by Themida (Only for Windows)
 
@@ -58,7 +58,7 @@ Also look at the [getting started][tutorial]
 Pyarmor is published as shareware, free trial version never expires, but there are
 some limitations.
 
-[Pyarmor licenses][licneses] introduces license type, features and
+[Pyarmor licenses][licenses] introduces license type, features and
 limitations for each license type and how to purchase Pyarmor license.
 
 Also read [Pyarmor End User License Agreement](LICENSE)
