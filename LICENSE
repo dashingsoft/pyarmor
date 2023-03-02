@@ -2,7 +2,8 @@ Pyarmor End User License Agreement
 
 The following agreement regarding Pyarmor is made between Jondy Zhao -
 referred to as "licensor" - and anyone or organization who is installing,
-accessing or in any other way using Pyarmor - referred to as "user".
+accessing or in any other way using Pyarmor - referred to as "user" or
+"you".
 
 1. Definitions
 --------------
@@ -196,24 +197,43 @@ fail to comply with any of its terms.
     product, even it's caused by 4.3, this Pyarmor License will be ceased. A
     notify email will be sent to registration email of this Pyarmor License.
 
-5. Claims
----------
+5. Restrictions
+---------------
 
-The dynamic library of this software may not be used for reverse engineer to
-re-create obfuscation algorithm.
+You shall not (and shall not allow any third party to):
+
+5.1 decompile, disassemble, or otherwise reverse engineer any binary files
+    of this software;
+
+5.2 distribute, sell, sublicense, rent, lease, or use this software (or any
+    portion thereof) for time sharing, hosting, service provider, or like
+    purposes;
+
+5.3 remove any product identification, proprietary, copyright, or other
+    notices contained in this software;
+
+5.4 copy (except as expressly permitted in this Agreement), modify or
+    translate any part of this software, create a derivative work of any
+    part of this software, or incorporate this software into or with other
+    software, except to the extent expressly authorized in writing by
+    licensor;
+
+5.5 attempt to circumvent or disable the security key mechanism that
+    protects this software against unauthorized use (except and only to the
+    extent that applicable law prohibits or restricts such restrictions);
 
 6. Disclaimer of Warranty
 -------------------------
 
 This Software is provided under this License on an "as is" basis, without
 warranty of any kind, either expressed, implied, or statutory, including,
-without limitation, warranties that this Software is free of defects, fit
+without limitation, warranties that this software is free of defects, fit
 for a particular purpose or non-infringing. The entire risk as to the
-quality and performance of this Software is with users. Neither the licensor
+quality and performance of this software is with users. Neither the licensor
 nor the agents of the licensor will be liable for data loss, damages, loss
 of profits or any other kind of loss while using or misusing this
 software. This disclaimer of warranty constitutes an essential part of this
-License. No use of this Software is authorized under this License except
+License. No use of this software is authorized under this License except
 under this disclaimer.
 
 7. Changes to this Agreement
