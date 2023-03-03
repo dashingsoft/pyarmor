@@ -1,6 +1,6 @@
-==================
- Pyarmor Licenses
-==================
+=======================
+ Pyarmor License Types
+=======================
 
 .. contents:: Contents
    :depth: 2

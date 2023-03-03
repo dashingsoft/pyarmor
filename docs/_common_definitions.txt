@@ -21,6 +21,7 @@
 .. _PyInstaller: https://www.pyinstaller.org/
 .. _Cython: https://cython.org/
 .. _NTP: http://www.ntp.org
+.. _Themida: https://www.themida.com
 
 .. _bytecode: https://docs.python.org/3.11/glossary.html#term-bytecode
 .. _extension module: https://docs.python.org/3.11/glossary.html#term-extension-module

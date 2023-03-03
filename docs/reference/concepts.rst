@@ -44,7 +44,9 @@
 
   Pyarmor License
 
-    A
+    Issued by Pyarmor Team to unlock some limitations in Pyarmor trial version.
+
+    Refer to :doc:`Pyarmor License Types <../licenses>`
 
   Pyarmor Package
 
@@ -74,11 +76,32 @@
     Refer to https://docs.python.org/3.11/glossary.html#term-package
 
   Runtime Files
-  Runtime Hooks
+
+    All the files required to run the obfuscated scripts.
+
+    Generally it equals :term:`Runtime Package`. If :term:`outer key` is used,
+    plus this outer key file.
+
   Runtime Key
+
+    The settings of obfuscated scripts. It may include the expired date, device
+    information of bind to obfuscated scripts. Also include all the flags to
+    control the behaviours of obfuscated scripts.
+
+    Generally it's embedded into :term:`Runtime Package`, but it also could be
+    stored to a independent file :term:`outer key`
+
   Runtime Package
-  Runtime Outer Key
-  Runtime Inner Key
+
+    A :term:`Python Package` generally named ``pyarmor_runtime_000000``.
+
+    When obfuscating the scripts, it's be generated at the same time.
+
+    It's required to run the obfuscated scripts.
+
+  Outer Key
+
+    A file generally named ``pyarmor.rkey`` to store :term:`Runtime Key`
 
   Home Path
 
@@ -98,8 +121,8 @@
 
   Registration File Path
 
-    Store registration file of Pyarmor License, default is same as :term:`Home
-    Path`
+    Store registration information of Pyarmor License, default is same as
+    :term:`Home Path`
 
   Build Machine
 
@@ -135,31 +158,22 @@
 
   JIT
 
-    JUST-IN-TIME
+    Abbr. JUST-IN-TIME, just generating machine instructions in run time.
 
   extension module
 
     A module written in C or C++, using Python’s C API to interact with the core
     and with user code.
 
-Pyarmor Package
-===============
-
 .. module:: pyarmor
-    :platform: any
     :synopsis: A command line tool used to obfuscate Python scripts
 
 .. module:: pyarmor.cli
 .. module:: pyarmor.cli.core
-    :platform: windows, many linux, apple intel and silicon
     :synopsis: A binary wheel to provide extension modules to pyarmor
 
 .. module:: pyarmor.cli.runtime
-    :platform: windows, many linux, apple intel and silicon
     :synopsis: A binary wheel for pyarmor to obfuscate scripts to run
                in multiple arches.
-
-.. module:: pyarmor.webui
-
 
 .. include:: ../_common_definitions.txt

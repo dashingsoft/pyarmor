@@ -2,11 +2,12 @@
  Environments
 ==============
 
-支持的平台
-支持的 Python 版本
-
 加密环境
 ========
+
+支持的平台
+
+支持的 Python 版本
 
 环境变量
 --------
@@ -21,30 +22,25 @@
 命令行选项
 ----------
 
-支持的平台列表
---------------
-
 加密脚本的运行环境
 ==================
 
-查找外部许可证的时候的位置
+支持的平台
+
+支持的 Python 版本
+
+外部许可证
 
 sys._MEIPASS
 
 sys._PARLANG
+
+环境变量
 
 .. envvar:: LANG
 
 .. envvar:: PYARMOR_LANG
 
 .. envvar:: PYARMOR_RKEY
-
-
-错误信息代码
-------------
-
-支持平台列表
-------------
-
 
 .. include:: ../_common_definitions.txt

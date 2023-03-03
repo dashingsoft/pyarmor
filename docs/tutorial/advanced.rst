@@ -9,6 +9,8 @@
    :local:
    :backlinks: top
 
+.. program:: pyarmor gen
+
 Using rftmode :sup:`pro`
 ========================
 
@@ -110,7 +112,7 @@ will be as a plugin marker.
 For example, these lines
 
 .. code-block:: python
-    :emphasize lines: 3,4
+    :emphasize-lines: 3,4
 
     print('start ...')
 
@@ -120,7 +122,7 @@ For example, these lines
 will be changed to
 
 .. code-block:: python
-    :emphasize lines: 3,4
+    :emphasize-lines: 3,4
 
     print('start ...')
 
@@ -154,7 +156,7 @@ But this results in a problem, The plain script could not be run because
 The plugin marker is right solution for this case. Let's make a little change
 
 .. code-block:: python
-                :emphasize lines: 2
+    :emphasize-lines: 2
 
     m = __import__('abc')
     # pyarmor: __assert_armored__(m)
