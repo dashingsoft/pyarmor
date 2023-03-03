@@ -210,23 +210,42 @@ If no found in these paths, raise runtime error and exits.
 Localization runtime error
 ==========================
 
-创建一个文件 :file:`.pyarmor/messages.cfg` 替换对应的错误信息，
+Some of runtime error messages could be customized. When something is wrong with
+the obfuscated scripts, it prints your own messages.
+
+First create :file:`messages.cfg` in the path :file:`.pyarmor`::
+
+    $ mkdir .pyarmor
+    $ vi .pyarmor/message.cfg
+
+Then edit it. It's a ``.ini`` format file, change the error messages as needed
 
 .. code-block:: ini
 
   [runtime.message]
 
-    error_1 = 脚本许可证已经过期
-    error_2 = 脚本许可证不可用于当前设备
-    error_3 = 非法使用脚本
+    error_1 = this license key is expired
+    error_2 = this license key is not for this machine
+    error_3 = missing license key to run the script
+    error_4 = unauthorized use of script
 
-    error_4 = 缺少运行许可文件
-    error_5 = 脚本不支持当前 Python 版本
-    error_6 = 脚本不支持当前系统
+Now obfuscate the script in the current path to use customized messages::
 
-    error_7 = 加密模块的数据格式不正确
+    $ pyarmor gen foo.py
 
-    error_8 = 加密函数的数据格式不正确
+If we want to show same message for all of license errors, edit it like this
+
+.. code-block:: ini
+
+  [runtime.message]
+
+    error_1 = invalid license key
+    error_2 = invalid license key
+    error_3 = invalid license key
+
+Here no ``error_4``, it means this error uses the default message.
+
+And then obfuscate the scripts again.
 
 Packing obfuscated scripts
 ==========================
@@ -270,14 +289,5 @@ Like above section, ``dist/foo/foo`` will be repacked with obfuscated scripts.
 Now run it::
 
     $ dist/foo/foo
-
-Protect system packages
-=======================
-
-.. versionadded:: 8.1
-                  This feature is not implemented in 8.0
-
-When packing the scripts, Pyarmor could also obfuscate system packages in the
-bundle.
 
 .. include:: ../_common_definitions.txt

@@ -3,7 +3,7 @@
 =================================
 
 :Version: |release|
-:Homepage: |Homepage|
+:Homepage: |Website|
 :Contact: |Contact|
 :Authors: |Author|
 :Copyright: This document has been placed in the public domain.

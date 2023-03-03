@@ -7,6 +7,7 @@
 
    topic/obfuscation
    topic/obfuscated-script
+   topic/differences
    topic/localization
    topic/repack
    topic/rftmode

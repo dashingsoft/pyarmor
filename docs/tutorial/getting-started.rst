@@ -314,11 +314,11 @@ Next is :doc:`obfuscation`. It covers
 
 And then :doc:`advanced`, some of them are not available in trial pyarmor
 
-* changing Pyarmor default behaviours by :ref:`pyarmor cfg`
-* plugin and hooks
-* cross platform, multiple platforms and multiple Python version
-* runtime error internationalization
 * 2 irreversible obfuscation: RFT mode, BCC mode :sup:`pyarmor-pro`
+* Customization error handler
+* plugin and hooks
+* runtime error internationalization
+* cross platform, multiple platforms and multiple Python version
 
 Also you may be instersting in this guide :doc:`../how-to/security`
 

@@ -1,18 +1,20 @@
 .. _Pyarmor: https://pypi.python.org/pypi/pyarmor/
 .. _issues: https://github.com/dashingsoft/pyarmor/issues/
+.. _Pyarmor Doc: https://pyarmor.readthedocs.io/en/stable/
 .. _Pyarmor 7.x Doc: https://pyarmor.readthedocs.io/en/v7.7/
-.. _Pyarmor End User License Agreements: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
+.. _EULA of Pyarmor: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
 
 .. |pyarmor| replace:: :doc:`pyarmor <man>`
-.. |Pyarmor| replace:: Pyarmor
-.. |Homepage| replace:: https://pyarmor.dashingsoft.com/
+.. |Pyarmor| replace:: :term:`Pyarmor`
+.. |Home| replace:: https://github.com/dashingsoft/pyarmor/
+.. |Website| replace:: https://pyarmor.dashingsoft.com/
 .. |Manual| replace:: https://pyarmor.readthedocs.io/
 .. |Author| replace:: Jondy
 .. |Contact| replace:: pyarmor@163.com
 
 .. |FAQ| replace:: :doc:`FAQ <questions>`
 
-.. |Python| replace:: Python
+.. |Python| replace:: :term:`Python`
 
 .. _Python: https://www.python.org/
 .. _PyPI: https://pypi.python.org/pypi/

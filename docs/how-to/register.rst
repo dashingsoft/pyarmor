@@ -90,6 +90,6 @@ Check the registration information::
 Upgrade Pyarmor from prior to 8.0
 =================================
 
-Refer to :ref:`upgrade old liense`
+Refer to :ref:`upgrade old license <upgrading old license>`
 
 .. include:: ../_common_definitions.txt

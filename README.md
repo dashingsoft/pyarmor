@@ -61,7 +61,7 @@ some limitations.
 [Pyarmor licenses][licenses] introduces license type, features and
 limitations for each license type and how to purchase Pyarmor license.
 
-Also read [Pyarmor End User License Agreement](LICENSE)
+Also read [EULA of Pyarmor](LICENSE)
 
 [licenses]: https://pyarmor.readthedocs.io/en/latest/licenses.html
 

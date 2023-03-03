@@ -10,6 +10,6 @@ References
    reference/concepts
    reference/man
    reference/environments
-   reference/differences
+   reference/errors
 
 .. include:: _common_definitions.txt

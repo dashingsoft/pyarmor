@@ -10,7 +10,7 @@
 ======================
 
 ========================
- obfuscating django app
+ Obfuscating django app
 ========================
 
 ===========================
@@ -24,5 +24,11 @@
 ============================
  Protecting system packages
 ============================
+
+.. versionadded:: 8.1
+                  This feature is not implemented in 8.0
+
+When packing the scripts, Pyarmor could also obfuscate system packages in the
+bundle.
 
 .. include:: ../_common_definitions.txt

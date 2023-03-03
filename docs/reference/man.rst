@@ -404,7 +404,7 @@ pyarmor reg
 
 register Pyarmor or upgrade Pyarmor license
 
-.. program:: pyarmor cfg
+.. program:: pyarmor reg
 
 .. describe:: Syntax
 
@@ -434,6 +434,21 @@ Check the registration information::
 Show verbose information::
 
     $ pyarmor reg
+
+.. option:: -p NAME, --product NAME
+
+            Set product name bind to license
+
+When initial registration, use this option to set proudct name bind to license.
+
+If no this option, the product name is set to ``non-profits``.
+
+It's meanless to use this option after initial registration.
+
+``TBD`` is a special product name. If product name is ``TBD`` at initial
+registration, the product name can be changed later.
+
+For any other product name, it can't be changed any more.
 
 .. option:: -y, --confirm
 
