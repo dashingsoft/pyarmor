@@ -12,18 +12,6 @@
 如何使用选项进行定制
 ====================
 
-如何定制包的输出模块
---------------------
-
-设置输出函数::
-
-    $ pyarmor cfg exclude_restrict_modules="__init__ queens"
-
-恢复默认值::
-
-    $ pyarmor cfg --reset exclude_restrict_modules
-
-
 如何定制错误处理方式
 --------------------
 
@@ -49,6 +37,26 @@
     $ pyarmor cfg on_error=0
 
 这个命令主要影响的运行辅助包和运行密钥。
+
+Check license when importing module
+-----------------------------------
+
+$ pyarmor cfg import_check_license=1
+
+如何定制包的输出模块
+--------------------
+
+设置输出函数::
+
+    $ pyarmor cfg exclude_restrict_modules="__init__ queens"
+
+恢复默认值::
+
+    $ pyarmor cfg --reset exclude_restrict_modules
+
+文件编码要使用 utf-8，如果需要使用其它编码，运行下面的命令::
+
+    $ pyarmor cfg messages=messages.cfg:gbk
 
 Using rftmode
 =============

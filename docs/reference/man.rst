@@ -379,12 +379,14 @@ Not only option ``excludes`` in section ``finder``, but also in other sections
 ``assert.call``, ``mix.str`` etc. are changed.
 
 .. option:: -p NAME
-            private settings for special module or package
+
+            Private settings for special module or package
 
 All the settings is only used for specified module `NAME`.
 
 .. option:: -g, --global
-            do everything in global settings
+
+            Do everything in global settings
 
 Without this option, all the changed settings are soted in :term:`Local
 Configuration Path`, generally it's ``.pyarmor`` in the current path. By this
@@ -392,6 +394,7 @@ option, everything is stored in :term:`Global Configuration Path`, generally
 it's ``~/.pyarmor/config``
 
 .. option:: -r, --reset
+
             Reset option to default value
 
 .. _pyarmor reg:
@@ -419,39 +422,10 @@ register Pyarmor or upgrade Pyarmor license
 
 The ``FILENAME`` must be one of these forms:
 
-* ``pyarmor-keycode-xxxx.txt`` got by purchasing Pyarmor license
+* ``pyarmor-regcode-xxxx.txt`` got by purchasing Pyarmor license
 * ``pyarmor-regfile-xxxx.zip`` got by initial registration with above file
 
 .. describe:: Description
-
-Before register Pyarmor, first purchase one :term:`pyarmor-basic` license or
-:term:`pyarmor-pro` license as needed in `MyCommerce website
-<https://order.mycommerce.com/product?vendorid=200089125&productid=301044051>`_
-
-After payment is complete successfully, in a few hours an activation file like
-:file:`pyarmor-keycode-xxxx.txt` will be sent to you by email.
-
-This file is used to initial registration. At the first time to register
-Pyarmor, :option:`-p` (product name) should be set. If not set, this Pyarmor
-license is bind to "non-profits", and could not be used for commercial product.
-
-For example, assume this license is used to protect your product ``Robot
-Studio``, initial registration by this command::
-
-    $ pyarmor reg -p "Robot Studio" /path/to/pyarmor-keycode-xxxx.txt
-
-Pyarmor will show registration information and ask your confirmation. If
-everything is fine, type :kbd:`yes` and :kbd:`Enter` to continue.
-
-If initial registration is successful, it prints final license information in
-the console. And a registration file named :file:`pyarmor-regfile-xxxx.zip` for
-this license is generated in the current path at the sametime. This file is used
-for next registration in other machines.
-
-Once register successfully, product name can't be changed.
-
-There is only one exception, if product name is set to ``TBD`` at the first
-time, it can be changed once later.
 
 Check the registration information::
 
@@ -473,15 +447,12 @@ This option is mainly used for purchased license before Pyarmor 8.0
 
 .. important::
 
-   Once initial registration successfully, :file:`pyarmor-keycode-xxxx.txt` may
+   Once initial registration successfully, :file:`pyarmor-regcode-xxxx.txt` may
    not work again. Using registration file :file:`pyarmor-regfile-xxxx.zip` for
    next registration instead.
 
    PLEASE BACKUP registration file :file:`pyarmor-regfile-xxxx.zip` carefully,
    Pyarmor doesn't provide lost-found service
-
-Registration in other devices
------------------------------
 
 Using registration file :file:`pyarmor-regfile-xxxx.zip` to register Pyarmor in
 other machine.
@@ -489,79 +460,6 @@ other machine.
 Copy it to target device, then run this command::
 
     $ pyarmor reg pyarmor-regfile-xxxx.zip
-
-Upgrade to pyarmor-basic
-------------------------
-
-如果老版本许可证的注册文件的名称是像 pyarmor-keycode-xxxx.txt 这样的，可以免费升
-级到 pyarmor-basic，其它的无法升级到新版本，需要购买新的许可证使用最新版本。
-
-如果选择免费升级, 那么需要遵循新的许可协议。最明显的变化在于老版本的许可证升级之
-后，不管是个人版还是企业版，都必须绑定到一个产品。如果原来没有指定产品名称的，那
-么升级的时候需要指定产品名称。这一点主要是对个人版影响比较大，新的许可协议要求每
-一个产品对应一个许可证。所以个人版升级之后，升级后的许可证只能用于指定的产品，其
-它产品如需使用 Pyarmor 8.0+ 需要购买新的许可证。
-
-升级需要原来的注册码文件，是购买之后发送到注册邮箱里面的一个附件。
-
-下面的命令要在原来已经注册成功的机器上运行，首先升级到 Pyarmor 8.0 以上::
-
-    $ pip install pyarmor
-
-如果原来许可证没有产品名称，假定现在绑定的产品名称为 ``Robot Studio`` ，那么使用
-下面的命令进行升级::
-
-    $ pyarmor reg -p "Robot Studio" -u pyarmor-keycode-xxxx.txt
-
-如果原来的许可证已经有产品名称，不要指定产品名称，直接使用下面的命令进行升级::
-
-    $ pyarmor reg -u pyarmor-keycode-xxxx.txt
-
-Upgrade to pyarmor-pro
-------------------------
-
-如果老版本许可证的注册文件的名称是像 pyarmor-keycode-xxxx.txt 这样的，可以付费升
-级到 pyarmor-pro，其它的无法升级到新版本，需要购买新的许可证使用最新版本。
-
-根据需要购买 Pyarmor 基础版或者专家版许可证，
-
-支付成功之后会通过电子邮件收到许可证的激活码，在邮件的附件中，一般名称为
-:file:`pyarmor-keycode-xxxx.txt`
-
-第一次注册
-~~~~~~~~~~
-
-第一次注册 PyArmor 需要指定产品名称，根据 Pyarmor 许可协议，每一个许可证都绑定到
-一个指定产品，假设产品名称为 ``Robot Studio``::
-
-    pyarmor reg -p "Robot Studio" /path/to/pyarmor-keycode-xxxx.txt
-
-查看注册信息::
-
-    pyarmor -v
-
-注册成功的同时会在当前目录下生成离线注册文件 :file:`pyarmor-regfile-xxxx.zip`
-
-文本格式的激活码文件 :file:`pyarmor-keycode-xxxx.txt` 只能使用十次，超过之后将无法使用。
-
-所以一旦第一次注册成功之后，就可以使用离线注册文件在其它机器上注册 Pyarmor，而不
-要在使用激活码文件进行注册。
-
-请妥善保管离线注册文件，以后的在其它机器上注册都要使用此文件。如果丢失，Pyarmor
-不负责找回，由此造成该许可证无法使用的后果由用户自己承担。在此情况下，如果用户还
-需要使用 Pyarmor 需要重新购买。
-
-在其它设备注册
-~~~~~~~~~~~~~~
-
-离线注册文件可以在授权范围内的任何机器上使用，同样使用 :ref:`pyarmor reg` 命令进
-行注册，但是不需要指定产品名称。例如::
-
-      pyarmor reg pyarmor-regfile-xxxx.zip
-
-对于同时使用一个许可证的设备数量目前是限制在 100 台，所谓同时使用就是在 24 小时
-内使用 Pyarmor 进行过加密操作的不同设备的总数。可以安装在 1000 台设备上，只要不
-同时使用的数目不超过限制就可以。
 
 Environment Variables
 =====================
@@ -589,10 +487,10 @@ It's mainly used in some platforms Pyarmor could not tell right but still works.
 .. envvar:: PYARMOR_CLI
 
             Only for compatible with old Pyarmor, ignore this if you don't use
-            old command prior to Pyarmor 8.0
+            old command prior to 8.0
 
-If you always use old Pyarmor command prior to Pyarmor 8.0, set it to ``7``, for
-example::
+If you do not use new commands in Pyarmor 8.0, and prefer to only use old
+commands, set it to ``7``, for example::
 
     # In Linux
     export PYARMOR_CLI=7
@@ -605,9 +503,11 @@ example::
     set PYARMOR_CLI=7
     pyarmor -h
 
-By default :command:`pyarmor` first check new cli, if the command line couldn't
+It forces command :command:`pyarmor` to use old cli directly.
+
+Without it, :command:`pyarmor` first try new cli, if the command line couldn't
 be parsed by new cli, fallback to old cli.
 
-It could force :command:`pyarmor` to use specify cli directly.
+This only works for command :command:`pyarmor`.
 
 .. include:: ../_common_definitions.txt

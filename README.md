@@ -95,8 +95,8 @@ issues, new features, incompatible issues in different versions
 
 * [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
 
-There are significant changes in Pyarmor 8.0, users prior to 8.0 should be
-read this to make judge whether upgrade Pyarmor
+There are significant changes in Pyarmor 8.0, users prior to 8.0 should read
+this to make judge whether upgrade Pyarmor
 
 * [Pyarmor 8.0 Release Notes](docs/ReleaseNotes.8)
 

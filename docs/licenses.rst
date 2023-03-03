@@ -177,6 +177,8 @@ Imaging you lost cash €100, someone else got it and buys a cloth, I don't thin
 the shopper should refund money to you. It's same for money in PayPal, you lost
 money by yourself, the shopper should not bear loss because of your fault.
 
+.. _upgrade old liense:
+
 Upgrading old license
 =====================
 
@@ -227,17 +229,25 @@ If product name is set when purchasing old license, run this command::
 
 If no product name is set when purchasing old license, please decide which
 product will use this upgraded license. According to new `Pyarmor End User
-License Agreements`_, each license is only for one product. If old license is
-used by many products (only for old personal license), only one product could be
-used after upgrading. For the others, it need purchase new license.
+License Agreements`_, each license is only for one product.
 
-Assume product ``Robot Studio`` will use this license, run this command::
+If this license is only for internal use or non-profits use, run this command as
+above, in this case product name will be set to ``non-profits``::
+
+    $ pyarmor reg -u pyarmor-regcode-xxxx.txt
+
+For commercial use, assume product ``Robot Studio`` will use this license, run
+this command::
 
     $ pyarmor reg -u -p "Robot Studio" pyarmor-regcode-xxxx.txt
 
 Check the upgraded license information::
 
     $ pyarmor reg
+
+If old license is used by many products (mainly old personal license), only one
+product could be used after upgrading. For the others, it need purchase new
+license.
 
 With extra fee to Pyarmor-Pro
 -----------------------------
