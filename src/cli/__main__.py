@@ -246,7 +246,7 @@ generate runtime package only
     ).add_mutually_exclusive_group()
     group.add_argument(
         '--pack', metavar='BUNDLE',
-        help='pack obfuscated script'
+        help='repack bundle with obfuscated scripts'
     )
     group.add_argument(
         '--no-runtime', action='store_true',
@@ -277,15 +277,15 @@ generate runtime package only
 
     group.add_argument(
         '--obf-module', type=int, default=None, choices=(0, 1),
-        help='obfuscate module level code'
+        help='obfuscate whole module (default is 1)'
     )
     group.add_argument(
         '--obf-code', type=int, default=None, choices=(0, 1),
-        help='obfuscate each function'
+        help='obfuscate each function (default is 1)'
     )
     group.add_argument(
         '--no-wrap', action='store_true', default=None,
-        help='do not wrap function',
+        help='disable wrap mode',
     )
 
     group.add_argument(
@@ -310,11 +310,11 @@ generate runtime package only
     )
     group.add_argument(
         '--assert-call', action='store_true', default=None,
-        help='assert called function is obfuscated'
+        help='assert function is obfuscated'
     )
     group.add_argument(
         '--assert-import', action='store_true', default=None,
-        help='assert imported module is obfuscated'
+        help='assert module is obfuscated'
     )
     group.add_argument(
         '--enable', action='append', dest='enables',
@@ -324,14 +324,14 @@ generate runtime package only
 
     group.add_argument(
         '--restrict', action="store_const", default=None, const=2,
-        dest='restrict_module', help='restrict obfuscated scripts'
+        dest='restrict_module', help='enable restrict mode for package'
     )
 
     group = cparser.add_argument_group('runtime package arguments')
     group.add_argument(
         '-i', dest='import_prefix', action='store_const',
         default=None, const=1,
-        help='import runtime package by relative way'
+        help='store runtime files inside package'
     )
     group.add_argument(
         '--prefix', metavar='PREFIX',
@@ -339,18 +339,17 @@ generate runtime package only
     )
     group.add_argument(
         '--platform', dest='platforms', metavar='NAME', action='append',
-        help='target platform to run obfuscated scripts, '
-        'use this option multiple times for more platforms'
+        help='cross platform obfuscation'
     )
 
     group = cparser.add_argument_group('runtime key arguments')
     group.add_argument(
         '--outer', action='store_true', default=None,
-        help='using outer key for obfuscated scripts'
+        help='enable outer runtime key'
     )
     group.add_argument(
         '-e', '--expired', metavar='DATE',
-        help='expired date of obfuscated scripts'
+        help='set expired date'
     )
     group.add_argument(
         '--period', type=int, metavar='N', dest='period',
