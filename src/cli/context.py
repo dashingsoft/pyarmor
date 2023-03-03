@@ -361,6 +361,14 @@ class Context(object):
         return self._opti('builder', 'restrict_module')
 
     @property
+    def import_check_license(self):
+        return self._optb('builder', 'import_check_license')
+
+    @property
+    def clear_module_co(self):
+        return self._optb('builder', 'clear_module_co')
+
+    @property
     def import_prefix(self):
         v = self._opts('builder', 'import_prefix')
         return int(v) if v.isdecimal() else v
