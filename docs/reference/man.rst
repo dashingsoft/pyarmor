@@ -414,11 +414,11 @@ Use :term:`JIT` to process some sentensive data to improve security.
 
 .. option:: --enable-rft
 
-            Enable :term:`RFT mode` to obfuscate the script :sup:`pro`
+            Enable :term:`RFT Mode` to obfuscate the script :sup:`pro`
 
 .. option:: --enable-bcc
 
-            Enable :term:`BCC mode` to obfuscate the script :sup:`pro`
+            Enable :term:`BCC Mode` to obfuscate the script :sup:`pro`
 
 .. option:: --enable-themida
 
@@ -636,7 +636,7 @@ it's ``~/.pyarmor/config``
 pyarmor reg
 ===========
 
-register Pyarmor or upgrade Pyarmor license
+Register Pyarmor or upgrade Pyarmor license
 
 .. program:: pyarmor reg
 

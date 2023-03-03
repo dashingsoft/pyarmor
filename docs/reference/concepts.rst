@@ -11,6 +11,10 @@
     When purchasing any :term:`Pyarmor License`, an activation file is be sent
     to registration email after payment is completed.
 
+  BCC Mode
+
+    An obfuscation method of Pyarmor by converting Python functions to C functions
+
   Registration File
 
     A zip file generated after initial registration is successful. It's used to
@@ -75,6 +79,10 @@
 
     Refer to https://docs.python.org/3.11/glossary.html#term-package
 
+  RFT Mode
+
+    An obfuscation method of Pyarmor by renaming function/class in the scripts
+
   Runtime Files
 
     All the files required to run the obfuscated scripts.
@@ -102,6 +110,13 @@
   Outer Key
 
     A file generally named ``pyarmor.rkey`` to store :term:`Runtime Key`
+
+    The outer key file must be located in one of path
+
+      - :term:`Runtime package`
+      - :envvar:`PYARMOR_RKEY`
+      - :attr:`sys._MEIPASS`
+      - Current path
 
   Home Path
 
