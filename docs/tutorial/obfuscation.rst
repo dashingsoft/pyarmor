@@ -52,7 +52,7 @@ For scripts, use these options to get more security::
 Using :option:`--enable-jit` tells Pyarmor processes some sentensive data by
 ``c`` function generated in runtime.
 
-Using :option:`--mix-str` could mix the string constant (length > 4) in the scripts.
+Using :option:`--mix-str` [#]_ could mix the string constant (length > 4) in the scripts.
 
 Using :option:`--assert-call` makes sure function is obfuscated, to prevent
 called function from being replaced by special ways
@@ -91,6 +91,8 @@ String constant ``abcxyz`` and function ``fib`` will be protected like this
 
 If function ``fib`` is obfuscated, ``__assert_call__(fib)`` returns original
 function ``fib``. Otherwise it will raise protection exception.
+
+.. [#] :option:`--mix-str` is not available in trial version
 
 More options to protect package
 ===============================
@@ -147,59 +149,66 @@ Then do above test again, now it should work::
 Checking runtime key periodically
 =================================
 
-check runtime key periodically::
+Checking runtime key every hour::
 
-    $ pyarmor gen --period 1h foo.py
-    $ pyarmor gen --period 30m foo.py
+    $ pyarmor gen --period 1 foo.py
 
 Binding to many machines
 ========================
 
-Using :option:`-b` many times::
+Using :option:`-b` many times to bind obfuscated scripts to many machines.
 
-    $ pyarmor gen -b "" -b "" foo.py
+For example, machine A and B, the ethernet addresses are ``66:77:88:9a:cc:fa``
+and ``f8:ff:c2:27:00:7f`` respectively. The obfuscated script could run in both
+of machine A and B by this command ::
+
+    $ pyarmor gen -b "66:77:88:9a:cc:fa" -b "f8:ff:c2:27:00:7f" foo.py
 
 Using outer file to store runtime key
 =====================================
 
-在加密脚本的时候指定使用外部密钥::
+First obfuscating script with :option:`--outer`::
 
     $ pyarmor gen --outer foo.py
 
-创建一个外部密钥 ``pyarmor.rkey``::
+In this case, it could not be run at this time::
 
-    $ pyarmor gen key -e 30
+    $ python dist/foo.py
 
-把外部密钥文件拷贝到发布包里面::
+Let generate an outer runtime key valid for 3 days by this command::
 
-    $ cp dist/pyarmor.rkey dist/pyarmor_runtime_000000
+    $ pyarmor gen key -e 3
 
-再次发布新的许可证，生成一个新的::
+It generates a file ``dist/pyarmor.rkey``, copy it to runtime package::
 
-    $ pyarmor gen key -O dist/key2 -b ""
+    $ cp dist/pyarmor.rkey dist/pyarmor_runtime_000000/
+
+Now run :file:`dist/foo.py` again::
+
+    $ python dist/foo.py
+
+Let's generate another license valid for 10 days::
+
+    $ pyarmor gen key -O dist/key2 -e 10
 
     $ ls dist/key2/pyarmor.rkey
 
-外部运行密钥必须至少包含一个约束条件，要么是有效期，要么是设备信息。
+Copy it to runtime package to replace the original one::
 
-外部运行密钥的名称默认是 `pyarmor.rkey`
+    $ cp dist/key2/pyarmor.rkey dist/pyarmor_runtime_000000/
 
-加密脚本在导入模块 pyarmor_runtime 的时候，pyarmor_runtime 会按照下面的顺序查找
-外部许可证文件，一旦找到就停止后面的搜索
+The outer runtime key file also could be saved to other paths, but the file name
+must be ``pyarmor.rkey``, here list the search order:
 
-1. 首先在运行辅助包里面查找和运行密钥同名的文件 ``pyarmor.rkey``
-2. 查找环境变量 :envvar:`PYARMOR_RKEY` 指定的路径下面是否有和运行密钥同名的文件
-3. 查找 sys._MEIPASS 指定的路径下面是否有和运行密钥同名的文件
-4. 查找当前路径是否存在和运行密钥同名的文件
-5. 没有找到那么报错退出
+1. First search runtime package
+2. Next search path :envvar:`PYARMOR_RKEY`
+3. Next search path :attr:`sys._MEIPASS`
+4. Next search current path
 
-外部运行密钥必须存放在以上任意一个路径下面。
+If no found in these paths, raise runtime error and exits.
 
 Localization runtime error
 ==========================
-
-如何本地化错误信息
-==================
 
 创建一个文件 :file:`.pyarmor/messages.cfg` 替换对应的错误信息，
 
@@ -219,23 +228,48 @@ Localization runtime error
 
     error_8 = 加密函数的数据格式不正确
 
-文件编码要使用 utf-8，如果需要使用其它编码，运行下面的命令::
-
-    $ pyarmor cfg runtime messages=messages.cfg:gbk
-
-
 Packing obfuscated scripts
 ==========================
 
-基本步骤
+Pyarmor need PyInstaller to pack scripts first, then replace plain scripts with
+obfuscated ones in bundle.
 
-1. 使用 PyInstaller 打包::
+Packing to one file
+-------------------
 
-     $ pyinstaller foo.py
+First packing script to one file by PyInstaller with option ``-F``::
 
-2. 使用 Pyarmor 替换 .pyc 为加密后的脚本::
+    $ pyinstaller -F foo.py
 
-     $ pyarmor gen --pack dist/foo/foo foo.py
+It generates one bundle file ``dist/foo``, pass this to pyarmor::
+
+    $ pyarmor gen -O obfdist --pack dist/foo foo.py
+
+This command will obfuscate ``foo.py`` first, then repack ``dist/foo``, replace
+the original ``foo.py`` with ``obfdist/foo.py``, and append all the runtime
+files to bundle.
+
+The final output is still ``dist/foo``::
+
+    $ dist/foo
+
+Packing to one folder
+---------------------
+
+First packing script to one foler by PyInstaller::
+
+    $ pyinstaller foo.py
+
+It generates one bundle folder ``dist/foo``, and an executable file
+``dist/foo/foo``, pass this executable to pyarmor::
+
+    $ pyarmor gen -O obfdist --pack dist/foo/foo foo.py
+
+Like above section, ``dist/foo/foo`` will be repacked with obfuscated scripts.
+
+Now run it::
+
+    $ dist/foo/foo
 
 Protect system packages
 =======================
