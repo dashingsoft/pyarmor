@@ -1,0 +1,18 @@
+# Pyarmor 8.x Change Logs
+
+In order to improve security and support Python 3.11, there are significant
+changes in Pyarmor 8.0
+
+## New features
+
+* Support Python 3.11
+* Introduce 3 new commands: gen, cfg, reg
+* Introduce BCC Mode, an irreversible obfuscation method
+* Introduce RFT mode, an irreversible obfuscation method
+* Localize and internationalize runtime error messages
+* Check expired date by NTP server
+
+## Fix bugs for old modes
+
+* Fix bug (#908): `--mix-str` of command `obfuscate` doesn't work if
+  there is encoding line

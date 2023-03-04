@@ -69,6 +69,8 @@ Also read [EULA of Pyarmor](LICENSE)
 
 Having trouble?
 
+Read this [documentation](https://pyarmor.readthedocs.io/) at first.
+
 Try the [FAQ][faq] – it's got answers to many common questions.
 
 Looking for specific information? Try the documentation [index][genindex],
@@ -96,18 +98,70 @@ issues, new features, incompatible issues in different versions
 * [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
 
 There are significant changes in Pyarmor 8.0, users prior to 8.0 should read
-this to make judge whether upgrade Pyarmor
+this [Import Notes][import-notes] to make judge whether upgrade Pyarmor
 
-* [Pyarmor 8.0 Release Notes](docs/ReleaseNotes.8)
+[import-notes]: #import-notes-for-pyarmor-prior-to-8.0
 
 ## Resources
 
 * [Website](https://pyarmor.dashingsoft.com)
-* [Documentation](https://pyarmor.readthedocs.io/)
+* [Documentation](https://pyarmor.readthedocs.io/en/latest/)
 * [Documentation 7.x](https://pyarmor.readthedocs.io/en/v7.7/)
 
 中文资源
 
 * [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
-* [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/)
+* [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/))
+
+## Import Notes for Pyarmor prior to 8.0
+
+Pyarmor 8.0 has rewritten its core libraries, and provides 3 new commands to
+generate new mode scripts.
+
+Most of the old commands could be used normally, but there still have some
+changes.
+
+In future only bug fix for old modes, no new features for old modes.
+
+There are 3 cases for old users after Pyarmor 8.0 is released:
+
+1. Never upgrade to 8.0+
+2. Upgrade to 8.0 but only use old features
+3. Upgrade to 8.0 and use new features
+
+The notes for each case
+
+* Never upgrade to 8.0+
+
+  - SPP mode doesn't work
+
+    In order to use SPP mode, it's necessary to upgrade Pyarmor to 8.0+
+
+  - Command `pyarmor register` without any argument return `404` error
+
+    It is used to query registration information, but now license server doesn't
+    serve this web api.
+
+    Instead use `pyarmor -v` to make sure it's not trial version.
+
+  - Registering Pyarmor by `pyarmor register pyarmor-regcode-xxxxxx.txt` can be
+    used no more than 10 times
+
+    If using Pyarmor in CI server or docker, regsiter Pyarmor by the second
+    method described in the registration file "pyarmor-regcode-xxxxxx.txt"
+
+* Upgrade to 8.0 but only use old features
+
+  - Command `pyarmor -v` only checks and prints new Pyarmor License
+  - Command `pyarmor -h` only prints help for new cli
+
+  There are 2 solutions to make command `pyarmor` same as before:
+
+  - Export environment variable `PYARMOR_CLI=7`
+  - Recreate command `pyarmor` link to `python -m pyarmor.pyarmor`
+
+* Upgrade to 8.0 and use new features
+
+  - Follow new EULA of Pyarmor. Especially for old personal license and it's
+    used in many products, new license only allows one proudct.
