@@ -119,10 +119,12 @@ this [Import Notes][import-notes] to make judge whether upgrade Pyarmor
 Pyarmor 8.0 has rewritten its core libraries, and provides 3 new commands to
 generate new mode scripts.
 
-Most of the old commands could be used normally, but there still have some
-changes.
+All the new features are implemented by new commands: `gen`, `reg`, `cfg`.
 
 In future only bug fix for old modes, no new features for old modes.
+
+Most of the old commands could be used normally, but there still have some
+changes.
 
 There are 3 cases for old users after Pyarmor 8.0 is released:
 
@@ -165,3 +167,6 @@ The notes for each case
 
   - Follow new EULA of Pyarmor. Especially for old personal license and it's
     used in many products, new license only allows one proudct.
+
+  - Not all old licenses could be upgraded to new license freely, refer to
+    [Pyarmor licenses][licenses]
