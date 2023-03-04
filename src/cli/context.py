@@ -61,12 +61,13 @@ def format_platform(plat, arch):
     )
 
     arch_table = (
-        ('i386', ('i?86', )),
+        ('i686', ('i?86', )),
         ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
         ('arm', ('armv5',)),
-        ('armv6', ('armv6l',)),
-        ('armv7', ('armv7l',)),
-        ('ppc64', ('ppc64le',)),
+        ('armv6l', ('armv6l',)),
+        ('armv7l', ('armv7l',)),
+        ('ppc64', ('ppc64',)),
+        ('ppc64le', ('ppc64le',)),
         ('mips32', ('mips',)),
         ('aarch32', ('aarch32',)),
         ('aarch64', ('aarch64', 'arm64'))

@@ -54,6 +54,6 @@ More Resources
 
 - `Home <https://github.com/dashingsoft/pyarmor>`_
 - `Website <http://pyarmor.dashingsoft.com>`_
-  `中文网站 <http://pyarmor.dashingsoft.com/index-zh.html>`_
+- `中文网站 <http://pyarmor.dashingsoft.com/index-zh.html>`_
 - `Issues <https://github.com/dashingsoft/pyarmor/issues>`_
-- `Documentation <https://pyarmor.readthedocs.io/en/latest/>`_
+- `Documentation <https://pyarmor.readthedocs.io/>`_
