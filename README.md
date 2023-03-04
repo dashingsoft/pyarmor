@@ -51,7 +51,7 @@ Run it
 
 Also look at the [getting started][tutorial]
 
-[tutorial]: https://pyarmor.readthedocs.io/en/stable/tutorial/getting-started.html
+[tutorial]: https://pyarmor.readthedocs.io/en/latest/tutorial/getting-started.html
 
 ## License
 
@@ -82,11 +82,11 @@ Not found anything? See [asking questions in github][asking].
 
 Send email to <pyarmor@163.com> for business and security issue.
 
-[faq]: https://pyarmor.readthedocs.io/en/stable/questions.html
+[faq]: https://pyarmor.readthedocs.io/en/latest/questions.html
 [issues]: https://github.com/dashingsoft/pyarmor/issues
-[genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
-[mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
-[asking]: https://pyarmor.readthedocs.io/en/stable/questions.html#asking-questions-in-github
+[genindex]: https://pyarmor.readthedocs.io/en/latest/genindex.html
+[mastertoc]: https://pyarmor.readthedocs.io/en/latest/index.html#table-of-contents
+[asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
 
 ## Change logs
 
@@ -100,7 +100,7 @@ issues, new features, incompatible issues in different versions
 There are significant changes in Pyarmor 8.0, users prior to 8.0 should read
 this [Import Notes][import-notes] to make judge whether upgrade Pyarmor
 
-[import-notes]: #import-notes-for-pyarmor-prior-to-8.0
+[import-notes]: #import-notes-for-pyarmor-prior-to-80
 
 ## Resources
 

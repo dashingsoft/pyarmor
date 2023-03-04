@@ -1,0 +1,8 @@
+# Release Plan
+
+The scheduled features for Pyarmor 8.0+ (not released with 8.0)
+
+* BCC mode for armv7 and x86
+* Support Python 3.12
+
+Pyarmor status will be stable by the end of 2024 (Dec. 31, 2024)
