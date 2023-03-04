@@ -69,7 +69,7 @@ Also read [EULA of Pyarmor](LICENSE)
 
 Having trouble?
 
-Read this [documentation](https://pyarmor.readthedocs.io/en/latest/) at first.
+Read this [Pyarmor 8.0 Documentation][doc] at first.
 
 Try the [FAQ][faq] – it's got answers to many common questions.
 
@@ -87,6 +87,7 @@ Send email to <pyarmor@163.com> for business and security issue.
 [genindex]: https://pyarmor.readthedocs.io/en/latest/genindex.html
 [mastertoc]: https://pyarmor.readthedocs.io/en/latest/index.html#table-of-contents
 [asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
+[doc]: https://pyarmor.readthedocs.io/en/latest/
 
 ## Change logs
 
@@ -105,13 +106,13 @@ this [Import Notes][import-notes] to make judge whether upgrade Pyarmor
 ## Resources
 
 * [Website](https://pyarmor.dashingsoft.com)
-* [Documentation](https://pyarmor.readthedocs.io/en/latest/)
+* [Documentation 8.0][doc]
 * [Documentation 7.x](https://pyarmor.readthedocs.io/en/v7.7/)
 
 中文资源
 
 * [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
-* [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
+* [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/))
 
 ## Import Notes for Pyarmor prior to 8.0
