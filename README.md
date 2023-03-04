@@ -69,7 +69,7 @@ Also read [EULA of Pyarmor](LICENSE)
 
 Having trouble?
 
-Read this [documentation](https://pyarmor.readthedocs.io/) at first.
+Read this [documentation](https://pyarmor.readthedocs.io/en/latest/) at first.
 
 Try the [FAQ][faq] – it's got answers to many common questions.
 
@@ -165,8 +165,8 @@ The notes for each case
 
 * Upgrade to 8.0 and use new features
 
-  - Follow new EULA of Pyarmor. Especially for old personal license and it's
-    used in many products, new license only allows one proudct.
+  - Follow new [EULA of Pyarmor](LICENSE). Especially for old personal license
+    and it's used in many products, new license only allows one proudct.
 
   - Not all old licenses could be upgraded to new license freely, refer to
     [Pyarmor licenses][licenses]
