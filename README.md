@@ -89,20 +89,6 @@ Send email to <pyarmor@163.com> for business and security issue.
 [asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
 [doc]: https://pyarmor.readthedocs.io/en/latest/
 
-## Change logs
-
-It's important to read this carefully before upgrading pyarmor.
-
-Each major version has one file to log changes, it describes the fixed
-issues, new features, incompatible issues in different versions
-
-* [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
-
-There are significant changes in Pyarmor 8.0, users prior to 8.0 should read
-this [Import Notes][import-notes] to make judge whether upgrade Pyarmor
-
-[import-notes]: #import-notes-for-pyarmor-prior-to-80
-
 ## Resources
 
 * [Website](https://pyarmor.dashingsoft.com)
@@ -115,12 +101,32 @@ this [Import Notes][import-notes] to make judge whether upgrade Pyarmor
 * [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/))
 
+## Change logs
+
+It's important to read this carefully before upgrading pyarmor.
+
+Each major version has one file to log changes, it describes the fixed
+issues, new features, incompatible issues in different versions
+
+* [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
+
+There are significant changes in Pyarmor 8.0. Pyarmor 8.0 has been rewritten,
+and new features are implemented by new commands: `gen`, `reg`, `cfg`. And they
+only works for Python 3.7+.
+
+At first release, only x86_64 for windows, linux, macosx works (2023-03-08). But
+aarch64 for linux and macosx works soon (before 2023-04-01), armv7 and x86 will
+work about 2023-06-01. For all the others archs it's only on demand.
+
+For compatibility the old commands like `obfuscate` etc. are still available,
+but they're not belong to Pyarmor 8.0
+
+Users prior to 8.0 should read this [Import Notes][import-notes] to make judge
+whether upgrade Pyarmor
+
+[import-notes]: #import-notes-for-pyarmor-prior-to-80
+
 ## Import Notes for Pyarmor prior to 8.0
-
-Pyarmor 8.0 has rewritten its core libraries, and provides 3 new commands to
-generate new mode scripts.
-
-All the new features are implemented by new commands: `gen`, `reg`, `cfg`.
 
 In future only bug fix for old modes, no new features for old modes.
 
@@ -171,3 +177,8 @@ The notes for each case
 
   - Not all old licenses could be upgraded to new license freely, refer to
     [Pyarmor licenses][licenses]
+
+  - The old features need not internect connection, but new features need
+
+  - The old features support Python 2.7~3.10, but new features only support
+    Python 3.7+

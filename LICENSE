@@ -1,4 +1,4 @@
-Pyarmor End User License Agreement
+Pyarmor 8.0 End User License Agreement
 
 The following agreement regarding Pyarmor is made between Jondy Zhao -
 referred to as "licensor" - and anyone or organization who is installing,
@@ -9,7 +9,11 @@ accessing or in any other way using Pyarmor - referred to as "user" or
 --------------
 
 1.1. "This Software"
-    means Pyarmor 8.0, it doesn't include Pyarmor prior to 8.0
+
+    means Pyarmor 8.0, it doesn't include Pyarmor prior to 8.0. Pyarmor 8.0 is
+    rewritten, and provides new features. For compatibility, Pyarmor 8.0 also
+    includes most of the old features, this license doesn't apply to those old
+    features. It's only for new features.
 
 1.2. "Product"
     means any application or software for sale.
