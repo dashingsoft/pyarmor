@@ -103,26 +103,26 @@ Send email to <pyarmor@163.com> for business and security issue.
 
 ## Change logs
 
-It's important to read this carefully before upgrading pyarmor.
-
-Each major version has one file to log changes, it describes the fixed
-issues, new features, incompatible issues in different versions
-
-* [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
-
 There are significant changes in Pyarmor 8.0. Pyarmor 8.0 has been rewritten,
 and new features are implemented by new commands: `gen`, `reg`, `cfg`. And they
 only works for Python 3.7+.
 
-At first release, only x86_64 for windows, linux, macosx works (2023-03-08). But
+At first release, only x86_64 for windows, linux, macosx works (2023-03-08), and
 aarch64 for linux and macosx works soon (before 2023-04-01), armv7 and x86 will
-work about 2023-06-01. For all the others archs it's only on demand.
+work about 2023-06-01. For all the other arches only on demand.
 
 For compatibility the old commands like `obfuscate` etc. are still available,
 but they're not belong to Pyarmor 8.0
 
 Users prior to 8.0 should read this [Import Notes][import-notes] to make judge
 whether upgrade Pyarmor
+
+Each major version has one file to log changes, it describes the fixed issues,
+new features, incompatible issues in different versions
+
+It's important to read this carefully before upgrading pyarmor.
+
+* [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
 
 [import-notes]: #import-notes-for-pyarmor-prior-to-80
 
@@ -135,12 +135,6 @@ changes.
 
 There are 3 cases for old users after Pyarmor 8.0 is released:
 
-1. Never upgrade to 8.0+
-2. Upgrade to 8.0 but only use old features
-3. Upgrade to 8.0 and use new features
-
-The notes for each case
-
 * Never upgrade to 8.0+
 
   - SPP mode doesn't work
@@ -149,8 +143,8 @@ The notes for each case
 
   - Command `pyarmor register` without any argument return `404` error
 
-    It is used to query registration information, but now license server doesn't
-    serve this web api.
+    It is used to query registration information in old Pyarmor, but now license
+    server doesn't serve this web api.
 
     Instead use `pyarmor -v` to make sure it's not trial version.
 
