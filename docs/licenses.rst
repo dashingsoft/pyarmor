@@ -243,7 +243,7 @@ this command::
 
 Check the upgraded license information::
 
-    $ pyarmor reg
+    $ pyarmor -v
 
 If old license is used by many products (mainly old personal license), only one
 product could be used after upgrading. For the others, it need purchase new

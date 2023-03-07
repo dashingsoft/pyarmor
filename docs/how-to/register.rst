@@ -85,7 +85,7 @@ It need not internet connection.
 
 Check the registration information::
 
-    $ pyarmor reg
+    $ pyarmor -v
 
 Upgrade Pyarmor from prior to 8.0
 =================================
