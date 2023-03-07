@@ -33,7 +33,7 @@ logger = logging.getLogger('Pyarmor')
 def parse_token(data):
     from struct import unpack
 
-    if not data or data.find(' ') == -1:
+    if not data or data.find(b' ') == -1:
         return {
             'token': 0,
             'rev': 0,
@@ -48,14 +48,14 @@ def parse_token(data):
 
     token, value = unpack('II', buf[:8])
     rev, features = value & 0xff, value >> 8
-    licno = unpack('20s', buf[16:36]).decode('utf-8')
+    licno = buf[16:36].decode('utf-8')
 
     pstr = []
     i = 64
     for k in range(4):
         n = buf[i]
         i += 1
-        pstr.append(buf[i:i+n].decode('utf-8'))
+        pstr.append(buf[i:i+n].decode('utf-8') if n else '')
         i += n
 
     return {
@@ -95,16 +95,17 @@ class Register(object):
     def regurl(self, ucode, product=None, rcode=None, prepare=False):
         url = self.ctx.cfg['pyarmor']['regurl'] % ucode
         if product:
-            url += '&product=' + urlsafe_b64encode(product.encode('utf-8'))
+            url += '&product=' + \
+                urlsafe_b64encode(product.encode('utf-8')).decode()
         if rcode:
             url += '&rcode=' + rcode
         if prepare:
             url += '&prepare=1'
         return url
 
-    def update_license_token(self):
-        from .core import Pytransform3
-        return Pytransform3.get_license_info(self.ctx)
+    def update_token(self):
+        with open(self.ctx.license_token, 'wb') as f:
+            f.close()
 
     @property
     def license_info(self):
@@ -118,8 +119,8 @@ class Register(object):
     def _license_to(self, info):
         name = info['regname']
         product = info['product']
-        return '%s - %s' % (name, product) if name and product else \
-            '' if not name else '%s - %s' % (name, 'non-profits')
+        return '%s (%s)' % (product, name) if name and product else \
+            '' if not name else 'non-profits (%s)' % name
 
     def parse_keyfile(self, filename):
         with open(filename, 'r') as f:
@@ -234,8 +235,8 @@ class WebRegister(Register):
 
         info = json_loads(res.read(), encoding='utf-8')
         if info['product'] not in ('', 'TBD') and product != info['product']:
-            raise RuntimeError('product name has been set to "%s"',
-                               info['product'])
+            raise RuntimeError(
+                'product name has been set to "%s"' % info['product'])
         if info['product'] in ('', 'TBD'):
             info['product'] = product if product else 'non-profits'
 
@@ -283,8 +284,8 @@ class WebRegister(Register):
             raise RuntimeError(res.read().decode())
 
         logger.info('update license token')
-        self.update_license_token()
-        logger.info('The upgraded license information:\n\n%s', str(self))
+        self.update_token()
+        logger.info('This license has been upgraded successfully')
 
     def register(self, keyfile, product):
         if keyfile.endswith('.zip'):
@@ -306,14 +307,15 @@ class WebRegister(Register):
         self.register_regfile(regfile)
 
         logger.info('update license token')
-        self.update_license_token()
+        self.update_token()
+        logger.info('This license has been registered successfully')
 
-        self.notes = (
+        notes = (
             '* Please backup regfile "%s" carefully, and '
             'use this file for next registration' % regfile,
-            '* Do not use "%s" again, it may not work' % keyfile,
+            '* "%s" can be used only 10 times' % os.path.basename(keyfile),
         )
-        logger.info('This license registration information:\n\n%s', str(self))
+        logger.info('Import Notes:\n\n%s', '\n'.join(notes))
 
     def _handle_response(self, res):
         if res and res.code == 200:
