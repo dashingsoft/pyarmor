@@ -48,7 +48,7 @@ def parse_token(data):
 
     token, value = unpack('II', buf[:8])
     rev, features = value & 0xff, value >> 8
-    licno = buf[16:36].decode('utf-8')
+    licno = buf[16:34].decode('utf-8')
 
     pstr = []
     i = 64
