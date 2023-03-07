@@ -159,6 +159,11 @@ class Context(object):
         with open(self.license_token, 'wb') as f:
             f.write(data)
 
+    def clear_token(self):
+        if os.path.exists(self.license_token):
+            with open(self.license_token, 'wb') as f:
+                f.close()
+
     def read_license(self):
         if os.path.exists(self.license_file):
             with open(self.license_file, 'rb') as f:
