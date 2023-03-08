@@ -170,9 +170,6 @@ def cmd_reg(ctx, args):
         reg = Register(ctx)
         logger.info('register "%s"', regfile)
         reg.register_regfile(regfile)
-
-        logger.info('update license token')
-        reg.update_license_token()
         logger.info('This license registration information:\n\n%s', str(reg))
 
     else:

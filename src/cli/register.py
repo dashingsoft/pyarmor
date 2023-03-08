@@ -104,8 +104,10 @@ class Register(object):
         return url
 
     def update_token(self):
+        from .core import Pytransform3
         with open(self.ctx.license_token, 'wb') as f:
             f.close()
+        Pytransform3._update_token(self.ctx)
 
     @property
     def license_info(self):
@@ -147,8 +149,8 @@ class Register(object):
                 logger.debug('extracting %s' % item)
                 f.extract(item, path=path)
 
-        if clean:
-            self._remove_token()
+        logger.info('update license token')
+        self.update_token()
 
     def __str__(self):
         '''$advanced
@@ -306,8 +308,6 @@ class WebRegister(Register):
         logger.info('register "%s"', regfile)
         self.register_regfile(regfile)
 
-        logger.info('update license token')
-        self.update_token()
         logger.info('This license has been registered successfully')
 
         notes = (

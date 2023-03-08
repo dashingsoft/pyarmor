@@ -108,7 +108,7 @@ class Context(object):
 
         self.inline_plugin_marker = '# pyarmor: '
         self.runtime_package = 'pyarmor_runtime'
-        self.runtime_suffix = '_000000'
+        # self.runtime_suffix = '_000000'
         # default inner key filename within runtime package
         self.runtime_keyfile = '.pyarmor.ikey'
 
@@ -269,6 +269,10 @@ class Context(object):
     def license_info(self):
         from .register import parse_token
         return parse_token(self.read_token())
+
+    @property
+    def runtime_suffix(self):
+        return '_' + self.license_info['licno'][-6:]
 
     @property
     def native_platform(self):
