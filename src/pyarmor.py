@@ -1612,5 +1612,24 @@ def main_entry():
     main(sys.argv[1:])
 
 
+def call_pyarmor_cli():
+    from .cli.__main__ import main
+    main()
+
+
+def find_cli_command(argv):
+    args = argv[1:6]
+    cmds = 'generate', 'gen', 'g', 'register', 'reg', 'r', 'cfg'
+    return not args or len(args) < 2 or set(cmds).intersection(args)
+
+
+def main_entry_8():
+    cli = os.getenv('PYARMOR_CLI', '')
+    if cli == '8' or find_cli_command(sys.argv):
+        call_pyarmor_cli()
+    else:
+        main_entry()
+
+
 if __name__ == '__main__':
     main_entry()
