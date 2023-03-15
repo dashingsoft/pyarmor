@@ -255,7 +255,13 @@ class Context(object):
 
     @property
     def private_capsule(self):
-        return os.path.join(self.reg_path, '.pyarmor_capsule.zip')
+        filename = os.path.join(self.reg_path, '.pyarmor_capsule.zip')
+        if not os.path.exists(filename):
+            from shutil import copy
+            path = os.path.dirname(__file__)
+            public_capsule = os.path.join(path, '..', 'public_capsule.zip')
+            copy(public_capsule, filename)
+        return filename
 
     @property
     def license_file(self):

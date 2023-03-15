@@ -125,7 +125,7 @@ class Register(object):
             '' if not name else 'non-profits (%s)' % name
 
     def parse_keyfile(self, filename):
-        with open(filename, 'r') as f:
+        with open(filename, 'r', encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
                 marker = 'Dear '
