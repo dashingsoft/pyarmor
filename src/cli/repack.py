@@ -10,8 +10,8 @@ from tempfile import TemporaryDirectory
 
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
-from PyInstaller.loader.pyimod02_archive import ZlibArchiveReader
-from PyInstaller.loader.pyimod02_archive import PYZ_TYPE_PKG
+from PyInstaller.loader.pyimod01_archive import ZlibArchiveReader
+from PyInstaller.loader.pyimod01_archive import PYZ_TYPE_PKG
 from PyInstaller.compat import is_darwin, is_linux, is_win
 
 
