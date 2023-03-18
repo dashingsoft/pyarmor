@@ -236,7 +236,8 @@ class WebRegister(Register):
             raise RuntimeError(res.read().decode('utf-8'))
 
         info = json_loads(res.read())
-        if info['product'] not in ('', 'TBD') and product != info['product']:
+        if info['product'] not in ('', 'TBD') and \
+           product and product != info['product']:
             raise RuntimeError(
                 'product name has been set to "%s"' % info['product'])
         if info['product'] in ('', 'TBD'):
