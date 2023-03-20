@@ -235,7 +235,7 @@ class Context(object):
     @property
     def version(self):
         getint = self.cfg.getint
-        return getint('pyarmor', 'major'), getint('pyarmor', 'minor')
+        return [getint('pyarmor', x) for x in ('major', 'minor', 'patch')]
 
     @property
     def python_version(self):
