@@ -75,20 +75,55 @@ def makedirs(path, exist_ok=False):
         os.makedirs(path)
 
 
+def get_cookie_pos(fp, filesize):
+    MAGIC = b'MEI\014\013\012\013\016'
+    blocksize = 8192
+    end_pos = filesize
+    result = -1
+
+    if end_pos < len(MAGIC):
+        raise RuntimeError('invalid PyInstaller bundle')
+
+    while True:
+        start_pos = end_pos - blocksize if end_pos >= blocksize else 0
+        chunksize = end_pos - start_pos
+
+        if chunksize < len(MAGIC):
+            break
+
+        fp.seek(start_pos, os.SEEK_SET)
+        data = fp.read(chunksize)
+
+        offs = data.rfind(MAGIC)
+        if offs != -1:
+            result = start_pos + offs
+            break
+
+        end_pos = start_pos + len(MAGIC) - 1
+
+        if start_pos == 0:
+            break
+
+    if result == -1:
+        raise RuntimeError('invalid PyInstaller bundle')
+
+    return result
+
+
 def get_carchive_info(filepath):
     PYINST_COOKIE_SIZE = 24 + 64        # For pyinstaller 2.1+
     fp = open(filepath, 'rb')
-    size = os.stat(filepath).st_size
-
-    fp.seek(size - PYINST_COOKIE_SIZE, os.SEEK_SET)
+    filesize = os.stat(filepath).st_size
+    pos = get_cookie_pos(fp, filesize)
+    fp.seek(pos, os.SEEK_SET)
 
     # Read CArchive cookie
     magic, lengthofPackage, toc, tocLen, pyver, pylibname = \
-        struct.unpack('!8siiii64s', fp.read(PYINST_COOKIE_SIZE))
+        struct.unpack('!8sIIii64s', fp.read(PYINST_COOKIE_SIZE))
     fp.close()
 
     # Overlay is the data appended at the end of the PE
-    pos = size - lengthofPackage
+    pos = filesize - lengthofPackage
     return pos, pylibname.decode()
 
 
@@ -273,6 +308,7 @@ def repacker(executable, obfpath, buildpath='', entry=None, codesign=None):
     else:
         dest = os.path.dirname(executable)
         logger.info('copy runtime files to "%s"', dest)
+        os.makedirs(os.path.join(dest, rtname), exist_ok=True)
         for item in extra_toc:
             shutil.copy2(item[-1], os.path.join(dest, item[-2]))
 
