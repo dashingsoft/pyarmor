@@ -51,7 +51,7 @@ Run it
 
 Also look at the [getting started][tutorial]
 
-[tutorial]: https://pyarmor.readthedocs.io/en/latest/tutorial/getting-started.html
+[tutorial]: https://pyarmor.readthedocs.io/en/stable/tutorial/getting-started.html
 
 ## License
 
@@ -63,7 +63,7 @@ limitations for each license type and how to purchase Pyarmor license.
 
 Also read [EULA of Pyarmor](LICENSE)
 
-[licenses]: https://pyarmor.readthedocs.io/en/latest/licenses.html
+[licenses]: https://pyarmor.readthedocs.io/en/stable/licenses.html
 
 ## Getting help
 
@@ -82,12 +82,12 @@ Not found anything? See [asking questions in github][asking].
 
 Send email to <pyarmor@163.com> for business and security issue.
 
-[faq]: https://pyarmor.readthedocs.io/en/latest/questions.html
+[faq]: https://pyarmor.readthedocs.io/en/stable/questions.html
 [issues]: https://github.com/dashingsoft/pyarmor/issues
-[genindex]: https://pyarmor.readthedocs.io/en/latest/genindex.html
-[mastertoc]: https://pyarmor.readthedocs.io/en/latest/index.html#table-of-contents
-[asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
-[doc]: https://pyarmor.readthedocs.io/en/latest/
+[genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
+[mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
+[asking]: https://pyarmor.readthedocs.io/en/stable/questions.html#asking-questions-in-github
+[doc]: https://pyarmor.readthedocs.io/en/stable/
 
 ## Resources
 
@@ -98,7 +98,7 @@ Send email to <pyarmor@163.com> for business and security issue.
 中文资源
 
 * [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
-* [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
+* [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/stable/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/))
 
 ## Change logs
