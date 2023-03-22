@@ -260,6 +260,7 @@ class Context(object):
             from shutil import copy
             path = os.path.dirname(__file__)
             public_capsule = os.path.join(path, '..', 'public_capsule.zip')
+            os.makedirs(self.reg_path, exist_ok=True)
             copy(public_capsule, filename)
         return filename
 
