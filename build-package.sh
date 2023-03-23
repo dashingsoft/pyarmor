@@ -29,7 +29,7 @@ make_platform_files()
 {
     src=../pyarmor-core/platforms
     dst=src/platforms
-    cp -a dist/platforms $dst
+    cp -a dist/platforms/* $dst
     # mkdir -p ${dst} ${dst}/windows ${dst}/linux ${dst}/darwin
     # cp -a ${src}/win32 ${dst}/windows/x86;
     # cp -a ${src}/win_amd64 ${dst}/windows/x86_64;
