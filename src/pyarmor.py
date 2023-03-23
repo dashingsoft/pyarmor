@@ -1619,8 +1619,11 @@ def call_pyarmor_cli():
 
 def find_cli_command(argv):
     args = argv[1:6]
+    if set(['hdinfo', 'download', 'info', 'init']).intersection(args):
+        return False
+
     cmds = 'generate', 'gen', 'g', 'register', 'reg', 'r', 'cfg'
-    return not args or len(args) < 2 or set(cmds).intersection(args)
+    return (not args) or len(args) < 2 or set(cmds).intersection(args)
 
 
 def main_entry_8():
