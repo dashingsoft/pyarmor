@@ -126,8 +126,8 @@
 
   Global Configuration Path
 
-    Store Pyarmor local configuration file, default is :file:`.pyarmor` in the
-    current path
+    Store Pyarmor global configuration file, default is :file:`config/global` in
+    the :term:`Home Path`
 
   Local Configuration Path
 
@@ -161,15 +161,15 @@
     Supported platforms list:
 
       * Windows
-        - windows.x86_64
-        - windows.i386
+          - windows.x86_64
+          - windows.i686
       * Many Linuxs
-        - linux.x86_64
-        - linux.i386
-        - linux.aarch64
+          - linux.x86_64
+          - linux.i686
+          - linux.aarch64
       * Apple Intel and Silicon
-        - darwin.x86_64
-        - darwin.aarch64
+          - darwin.x86_64
+          - darwin.aarch64
 
   JIT
 
