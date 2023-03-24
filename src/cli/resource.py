@@ -119,7 +119,7 @@ class FileResource(Resource):
         if relative == 0:
             prefix = ''
         elif relative == 1:
-            prefix = '.' * (self.fullname.count('.') + relative)
+            prefix = '.' * (self.fullname.count('.') + relative - 1)
         else:
             assert(isinstance(relative, str))
             prefix = relative + '.'
