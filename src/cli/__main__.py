@@ -69,7 +69,7 @@ def _cmd_gen_runtime(builder, options):
 
 def format_gen_args(ctx, args):
     options = {}
-    for x in ('recursive', 'findall', 'inputs', 'output', 'no_runtime',
+    for x in ('recursive', 'findall', 'output', 'no_runtime',
               'enable_bcc', 'enable_jit', 'enable_rft', 'enable_themida',
               'obf_module', 'obf_code', 'assert_import', 'assert_call',
               'mix_str', 'import_prefix', 'restrict_module',
@@ -77,6 +77,9 @@ def format_gen_args(ctx, args):
         v = getattr(args, x)
         if v is not None:
             options[x] = v
+
+    if args.inputs:
+        options['inputs'] = [os.path.normpath(x) for x in args.inputs]
 
     if args.use_runtime:
         options['no_runtime'] = True
