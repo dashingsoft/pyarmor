@@ -40,4 +40,18 @@ Purchasing and Registration
   2. Scroll page to last part: ``Need help with an order you placed``
   3. Click `submit this form` and following the guide in this page to submit refund request
 
+* I want to test obfs with version 8. Of course i want to buy your great product
+  but i want to test if it is applicable with my current project. Is it possible
+  to have 7 days demo?
+
+  Answer::
+
+  > Sorry, Pyarmor is a small tool and only cost small money, there is no demo
+  > license plan.
+  >
+  > Most of features could be verified in trial version, other advanced
+  > features, for example, mix-str, bcc mode and rft mode, could be configured
+  > to ignore one function or one script so that all the others could work with
+  > these advanced features.
+
 .. include:: _common_definitions.txt
