@@ -152,24 +152,27 @@ There are 3 cases for old users after Pyarmor 8.0 is released:
     used no more than 10 times
 
     If using Pyarmor in CI server or docker, regsiter Pyarmor by the second
-    method described in the registration file "pyarmor-regcode-xxxxxx.txt"
+    method described in the registration file "pyarmor-regcode-xxxxxx.txt":
+
+    Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to
+    register Pyarmor later.
 
 * Upgrade to 8.0 but only use old features
 
   - Command `pyarmor -v` only checks and prints new Pyarmor License
   - Command `pyarmor -h` only prints help for new cli
 
-  There are 2 solutions to make command `pyarmor` same as before:
+  There are 3 ways to use old commands `obfuscate`, `licenses` etc.:
 
   - Export environment variable `PYARMOR_CLI=7`
   - Use command `pyarmor-7`
-  - Recreate command `pyarmor` link to `python -m pyarmor.pyarmor`, or
-    any way to call `pyarmor.pyarmor:main_entry`
+  - Any way to call `pyarmor.pyarmor:main_entry` or recreate command `pyarmor`
+    link to this entry point
 
 * Upgrade to 8.0 and use new features
 
-  - Follow new [EULA of Pyarmor](LICENSE). Especially for old personal license
-    and it's used in many products, new license only allows one proudct.
+  - Follow new [EULA of Pyarmor](LICENSE). Especially for old personal license,
+    because new license only allows one proudct.
 
   - Not all old licenses could be upgraded to new license freely, refer to
     [Pyarmor licenses][licenses]
