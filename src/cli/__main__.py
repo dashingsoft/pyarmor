@@ -319,8 +319,13 @@ generate runtime package only
         help='enable different obfuscation features',
     )
 
-    group.add_argument(
-        '--restrict', action="store_const", default=None, const=2,
+    restrict = group.add_mutually_exclusive_group()
+    restrict.add_argument(
+        '--private', action="store_const", default=None, const=2,
+        dest='restrict_module', help='enable private mode for script'
+    )
+    restrict.add_argument(
+        '--restrict', action="store_const", default=None, const=3,
         dest='restrict_module', help='enable restrict mode for package'
     )
 
