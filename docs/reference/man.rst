@@ -168,6 +168,7 @@ Generate obfuscated scripts and all the required runtime files.
 --no-wrap                       disable wrap mode :option:`... <--no-wrap>`
 --enable <jit,rft,bcc,themida>  enable different obfuscation features :option:`... <--enable>`
 --mix-str                       protect string constant :option:`... <--mix-str>`
+--private                       enable private mode for script :option:`... <--private>`
 --restrict                      enable restrict mode for package :option:`... <--restrict>`
 --assert-import                 assert module is obfuscated :option:`... <--assert-import>`
 --assert-call                   assert function is obfuscated  :option:`... <--assert-call>`
@@ -345,9 +346,22 @@ The name must be one of standard :term:`platform` defined by Pyarmor.
 It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other
 platforms.
 
+.. option:: --private
+
+            Enable private mode for scripts.
+
+When private mode is enabled, the function name is empty in traceback. And the
+obfuscated scripts could not be imported by plain script or Python interpreter.
+
+It can't be used with :option:`--restrict`, the latter enables private mode
+implicitly.
+
 .. option:: --restrict
 
             Enable restirct mode for package, do not use it to obfuscate scripts.
+
+            It enables :option:`--private` implicitly, and has all the features
+            of private mode.
 
 When restrict mode is enabled, all the modules excpet ``__init__.py`` in the
 package could not be imported by plain scripts.
