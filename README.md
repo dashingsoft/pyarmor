@@ -125,14 +125,14 @@ It's important to read this carefully before upgrading pyarmor.
 
 ## Import Notes for Pyarmor prior to 8.0
 
-In future only bug fix for old modes, no new features for old modes.
+In future only bug fix for old commands, no new features for old commands.
 
-Most of the old commands could be used normally, but there still have some
-changes.
+The old commands `obfuscate`, `licenses` etc. still could be used, but there
+have some changes.
 
 There are 3 cases for old users after Pyarmor 8.0 is released:
 
-1. Never upgrade to 8.0+
+### 1. Never upgrade to 8.0+
 
   - SPP mode doesn't work
 
@@ -148,33 +148,30 @@ There are 3 cases for old users after Pyarmor 8.0 is released:
   - Registering Pyarmor by `pyarmor register pyarmor-regcode-xxxxxx.txt` can be
     used no more than 10 times
 
-    If using Pyarmor in CI server or docker, regsiter Pyarmor by the second
+    In order to use Pyarmor in new machine, CI server or docker, check the second
     method described in the registration file "pyarmor-regcode-xxxxxx.txt":
 
-    Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to
-    register Pyarmor later.
+        Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to
+        register Pyarmor later.
 
-2. Upgrade to 8.0 but only use old features
+### 2. Upgrade to 8.0 but only use old features
 
-  - Command `pyarmor -v` only checks and prints new Pyarmor License
-  - Command `pyarmor -h` only prints help for new cli
+  By default, command `pyarmor` only accepts new commands, there are 3 ways to
+  use old commands such as `obfuscate`, `licenses`:
 
-  There are 3 ways to use old commands `obfuscate`, `licenses` etc.:
+  - Use `pyarmor-7` instead `pyarmor`
+  - Export environment variable `PYARMOR_CLI=7`, then still use `pyarmor`
+  - Any way to call entry point `pyarmor.pyarmor:main_entry`
 
-  - Export environment variable `PYARMOR_CLI=7`
-  - Use command `pyarmor-7`
-  - Any way to call `pyarmor.pyarmor:main_entry` or recreate command `pyarmor`
-    link to this entry point
+### 3. Upgrade to 8.0 and use new features
 
-3. Upgrade to 8.0 and use new features
-
-  - Follow new [EULA of Pyarmor](LICENSE). Especially for old personal license,
-    because new license only allows one proudct.
+  - Follow new [EULA of Pyarmor](LICENSE). It's a big change for old personal
+    license, because new license only allows one proudct.
 
   - Not all old licenses could be upgraded to new license freely, refer to
     [Pyarmor licenses][licenses]
 
-  - The old features need not internect connection, but new features need
+  - The old commands need not internect connection, but new command need
 
-  - The old features support Python 2.7~3.10, but new features only support
+  - The old commands support Python 2.7~3.10, but new command only support
     Python 3.7+
