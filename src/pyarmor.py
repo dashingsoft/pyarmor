@@ -1617,21 +1617,12 @@ def call_pyarmor_cli():
     main()
 
 
-def find_cli_command(argv):
-    args = argv[1:6]
-    if set(['hdinfo', 'download', 'info', 'init']).intersection(args):
-        return False
-
-    cmds = 'generate', 'gen', 'g', 'register', 'reg', 'r', 'cfg'
-    return (not args) or len(args) < 2 or set(cmds).intersection(args)
-
-
 def main_entry_8():
     cli = os.getenv('PYARMOR_CLI', '')
-    if cli == '8' or find_cli_command(sys.argv):
-        call_pyarmor_cli()
-    else:
+    if cli == '7':
         main_entry()
+    else:
+        call_pyarmor_cli()
 
 
 if __name__ == '__main__':

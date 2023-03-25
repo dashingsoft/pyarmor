@@ -162,7 +162,9 @@ There are 3 cases for old users after Pyarmor 8.0 is released:
   There are 2 solutions to make command `pyarmor` same as before:
 
   - Export environment variable `PYARMOR_CLI=7`
-  - Recreate command `pyarmor` link to `python -m pyarmor.pyarmor`
+  - Use command `pyarmor-7`
+  - Recreate command `pyarmor` link to `python -m pyarmor.pyarmor`, or
+    any way to call `pyarmor.pyarmor:main_entry`
 
 * Upgrade to 8.0 and use new features
 
