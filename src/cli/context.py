@@ -253,15 +253,18 @@ class Context(object):
     def local_config(self):
         return os.path.join(self.local_path, 'config')
 
+    def _make_public_capsule(self, filename):
+        from shutil import copy
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        path = os.path.dirname(__file__)
+        public_capsule = os.path.join(path, 'public_capsule.zip')
+        copy(public_capsule, filename)
+
     @property
     def private_capsule(self):
         filename = os.path.join(self.reg_path, '.pyarmor_capsule.zip')
         if not os.path.exists(filename):
-            from shutil import copy
-            path = os.path.dirname(__file__)
-            public_capsule = os.path.join(path, '..', 'public_capsule.zip')
-            os.makedirs(self.reg_path, exist_ok=True)
-            copy(public_capsule, filename)
+            self._make_public_capsule(self.reg_path)
         return filename
 
     @property
