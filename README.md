@@ -99,7 +99,7 @@ Send email to <pyarmor@163.com> for business and security issue.
 
 * [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
 * [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/stable/)
-* [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/))
+* [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/)
 
 ## Change logs
 
@@ -110,9 +110,6 @@ only works for Python 3.7+.
 At first release, only x86_64 for windows, linux, macosx works (2023-03-08), and
 aarch64 for linux and macosx works soon (before 2023-04-01), armv7 and x86 will
 work about 2023-06-01. For all the other arches only on demand.
-
-For compatibility the old commands like `obfuscate` etc. are still available,
-but they're not belong to Pyarmor 8.0
 
 Users prior to 8.0 should read this [Import Notes][import-notes] to make judge
 whether upgrade Pyarmor
@@ -135,7 +132,7 @@ changes.
 
 There are 3 cases for old users after Pyarmor 8.0 is released:
 
-* Never upgrade to 8.0+
+1. Never upgrade to 8.0+
 
   - SPP mode doesn't work
 
@@ -157,7 +154,7 @@ There are 3 cases for old users after Pyarmor 8.0 is released:
     Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to
     register Pyarmor later.
 
-* Upgrade to 8.0 but only use old features
+2. Upgrade to 8.0 but only use old features
 
   - Command `pyarmor -v` only checks and prints new Pyarmor License
   - Command `pyarmor -h` only prints help for new cli
@@ -169,7 +166,7 @@ There are 3 cases for old users after Pyarmor 8.0 is released:
   - Any way to call `pyarmor.pyarmor:main_entry` or recreate command `pyarmor`
     link to this entry point
 
-* Upgrade to 8.0 and use new features
+3. Upgrade to 8.0 and use new features
 
   - Follow new [EULA of Pyarmor](LICENSE). Especially for old personal license,
     because new license only allows one proudct.
