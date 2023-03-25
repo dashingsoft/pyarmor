@@ -110,25 +110,22 @@ to another user.
 When there are many Pyarmor Licenses registerred in one machine, set each
 license to different :term:`Registration File Path`
 
-There are 2 soltions
+There are 2 solutions
 
-* one license one home
-* same home, one license one path
-
-For example, the first solution::
+The first solution, one license one home::
 
     $ pyarmor --home ~/.pyarmor1 reg pyarmor-regfile-2051.zip
-    $ pyarmor --home ~/.pyarmor2 reg pyarmor-regfile-2052.zip
-
     $ pyarmor --home ~/.pyarmor1 gen project1/foo.py
+
+    $ pyarmor --home ~/.pyarmor2 reg pyarmor-regfile-2052.zip
     $ pyarmor --home ~/.pyarmor2 gen project2/foo.py
 
-The second solution::
+The second solution, same home, one license one path::
 
     $ pyarmor --home ,,,pyarmor1 reg pyarmor-regfile-2051.zip
-    $ pyarmor --home ,,,pyarmor2 reg pyarmor-regfile-2052.zip
-                     ,,,
     $ pyarmor --home ,,,pyarmor1 gen project1/foo.py
+
+    $ pyarmor --home ,,,pyarmor2 reg pyarmor-regfile-2052.zip
     $ pyarmor --home ,,,pyarmor2 gen project2/foo.py
 
 Start pyarmor with clean configuration by setting :term:`Global Configuration
@@ -309,7 +306,7 @@ Support units:
 * m
 * h
 
-The default unit is hour, for example, the following examples are Equivalent::
+The default unit is hour, for example, the following examples are equivalent::
 
     $ pyarmor gen --period 1 foo.py
     $ pyarmor gen --period 3600s foo.py
@@ -625,7 +622,7 @@ All the settings is only used for specified module `NAME`.
 Without this option, all the changed settings are soted in :term:`Local
 Configuration Path`, generally it's ``.pyarmor`` in the current path. By this
 option, everything is stored in :term:`Global Configuration Path`, generally
-it's ``~/.pyarmor/config``
+it's ``~/.pyarmor/config/global``
 
 .. option:: -r, --reset
 

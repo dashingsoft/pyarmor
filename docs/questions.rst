@@ -12,6 +12,23 @@ TBD
 Purchasing and Registration
 ===========================
 
+* Our company has a suite of products that we offer together or separately to
+  our clients. Do we need a different license for each of them?
+
+  Answer::
+
+  > For a suite of products, if each product is different totally, for example,
+  > a suite "Microsoft Office” includes “Microsoft Excel”, “Microsoft Word”,
+  > each product need one license.
+  >
+  > If a suite of products share most of Python scripts, as long as the
+  > proportion of the variable part of each product is far less than that of the
+  > common part, they’re considered as "one product".
+  >
+  > If each product in a suite of products is functionally complementary, for
+  > example, product “Editor” for editing the file, product “Viewer” for
+  > view the file, they’re considered as “one product"
+
 * How to refund my order?
 
   Answer::
