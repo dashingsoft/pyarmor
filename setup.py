@@ -119,6 +119,7 @@ setup(
     entry_points={
         'console_scripts': [
             'pyarmor=pyarmor.pyarmor:main_entry_8',
+            'pyarmor-7=pyarmor.pyarmor:main_entry',
         ],
     },
 )
