@@ -1617,10 +1617,28 @@ def call_pyarmor_cli():
     main()
 
 
+def find_old_commands(argv):
+    n = 0
+    for x in argv:
+        if x in ('-h', '--help', '-v', '--version',
+                 '-q', '--silent', '-d', '--debug'):
+            n += 1
+        elif x in ('--home', '--boot'):
+            n += 2
+
+    old_cmds = ('obfuscate', 'o', 'licenses', 'l', 'pack', 'p', 'init', 'i',
+                'config', 'c', 'build', 'b', 'info', 'check', 'hdinfo',
+                'benchmark', 'register', 'download', 'runtime')
+    return set(old_cmds).intersection(argv[:n+1])
+
+
 def main_entry_8():
     cli = os.getenv('PYARMOR_CLI', '')
     if cli == '7':
         main_entry()
+    elif find_old_commands(sys.argv[1:]):
+        print('Pyarmor 8.0+ has only 3 commands: gen, reg, cfg')
+        print('Please replace `pyarmor` with `pyarmor-7` to run old commands')
     else:
         call_pyarmor_cli()
 
