@@ -119,12 +119,12 @@ class FileResource(Resource):
         if relative == 0:
             prefix = ''
         elif relative == 1:
-            prefix = '.' * (self.fullname.count('.') + relative - 1)
+            prefix = '.' * self.fullname.count('.')
         else:
             assert(isinstance(relative, str))
             prefix = relative + '.'
             if self.fullname.startswith(prefix):
-                prefix = '.' * (self.fullname.count('.') + 1)
+                prefix = '.' * self.fullname.count('.')
 
         return Template(tpl).safe_substitute(
             timestamp=datetime.now().isoformat(),
