@@ -263,7 +263,7 @@ class WebRegister(Register):
             '',
         ])
         if info['product'] == 'non-profits':
-            lines.append('This license is about to be ussd for non-profits')
+            lines.append('This license is about to be used for non-profits')
 
         lines.extend(['', ''])
         return '\n'.join(lines)
