@@ -2,6 +2,8 @@
  FAQ
 ==========
 
+.. highlight:: none
+
 .. _asking questions:
 
 Asking Questions In Github
