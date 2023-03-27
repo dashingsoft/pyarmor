@@ -84,6 +84,11 @@ class FileResource(Resource):
     def output_filename(self):
         return self.fullname.replace('.', os.path.sep) + self.pyext
 
+    @property
+    def frozenname(self):
+        n = self.fullname.find('.__init__')
+        return '<frozen %s>' % self.fullname[:None if n == -1 else n]
+
     def readlines(self, encoding=None):
         if not os.path.exists(self.fullpath):
             raise RuntimeError('file "%s" doesn\'t exists' % self.fullpath)
@@ -95,15 +100,13 @@ class FileResource(Resource):
     def reparse(self, lines=None, encoding=None):
         if lines is None:
             lines = self.readlines(encoding=encoding)
-        co_filename = '<%s>' % self.fullname
-        self.mtree = ast.parse(''.join(lines), co_filename, 'exec')
+        self.mtree = ast.parse(''.join(lines), self.frozenname, 'exec')
 
     def recompile(self, mtree=None, optimize=1):
         if mtree is None:
             mtree = self.mtree
         assert mtree is not None
-        co_filename = '<%s>' % self.fullname
-        self.mco = compile(mtree, co_filename, 'exec', optimize=optimize)
+        self.mco = compile(mtree, self.frozenname, 'exec', optimize=optimize)
 
     def clean(self):
         self.lines = None
