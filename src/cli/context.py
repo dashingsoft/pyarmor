@@ -264,7 +264,7 @@ class Context(object):
     def private_capsule(self):
         filename = os.path.join(self.reg_path, '.pyarmor_capsule.zip')
         if not os.path.exists(filename):
-            self._make_public_capsule(self.reg_path)
+            self._make_public_capsule(filename)
         return filename
 
     @property
