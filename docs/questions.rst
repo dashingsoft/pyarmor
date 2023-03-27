@@ -36,11 +36,13 @@ Purchasing and Registration
   Answer::
 
       If this key of this order isn't activated, you can refund the order
-      as the following steps
+      by one of ways
 
-  1. Open web browser and enter http://www.mycommerce.com
-  2. Scroll page to last part: ``Need help with an order you placed``
-  3. Click `submit this form` and following the guide in this page to submit refund request
+  1. Email to Ordersupport@mycommerce.com with order information and ask for
+     refund.
+  2. Or click `FindMyOrder page`_ to submit refund request
+
+.. _FindMyOrder page: https://www.findmyorder.com/store?Action=DisplayEmailCustomerServicePage&Env=BASE&Locale=en_US&SiteID=findmyor
 
 * I want to test obfs with version 8. Of course i want to buy your great product
   but i want to test if it is applicable with my current project. Is it possible
