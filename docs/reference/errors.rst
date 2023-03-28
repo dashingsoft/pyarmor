@@ -1,6 +1,30 @@
-=================
- Building Errors
-=================
+================
+ Error Messages
+================
+
+Here list all the errors when running :command:`pyarmor` or obfuscated scripts.
+
+If something is wrong, search error message here to find the reason.
+
+If no exact error message found, most likely it's not caused by Pyarmor, search
+it in google or any other search engine to find the solution.
+
+For example, someone reports error ``Operation did not complete successfully
+because the file contains a virus or is potentially unwanted software question``
+
+It's caused by Windows Defender, not Pyarmor. I'm sure Pyarmor is safe, but it
+uses some technics which let anti-virtus tools makes wrong decision.
+
+In most of case, the outer error is out of my control, for this example, the
+solutions what I thought of
+
+1. Check documentation of Windows Defender
+2. Ask question in MSDN
+3. Google this error message
+
+
+Building Errors
+===============
 
 Here list all the errors when run :command:`pyarmor` in building machine
 
@@ -21,18 +45,6 @@ Here list all the errors when run :command:`pyarmor` in building machine
   Pyarmor need query harddisk serial number or mac address, if it could not get
   hardware information, it complains of this.
 
-* Operation did not complete successfully because the file contains a virus or
-  is potentially unwanted software question
-
-  Pyarmor uses some technics which let anti-virtus tools makes wrong decision.
-
-  It's out of my control, the solutions what I thought of
-
-  1. First mark pytransform3.pyd and pyarmor_runtime_xxxxx.pyd is safe in any
-     path in Windows Defender
-  2. Check documentation of Windows Defender
-  3. Ask question in MSDN
-
 * unknown license type OLD
 
   You purchase old license for Pyarmor 7.x, here are :doc:`the latest licenses
@@ -47,9 +59,8 @@ Here list all the errors when run :command:`pyarmor` in building machine
       refund.
     - Or click FindMyOrder page to submit refund request
 
-================
- Runtime Errors
-================
+Runtime Errors
+==============
 
 Here list all the errors when run the obfuscated scripts
 
