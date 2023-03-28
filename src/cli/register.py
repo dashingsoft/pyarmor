@@ -280,15 +280,18 @@ class WebRegister(Register):
 
         logger.info('send upgrade request to server')
         res = self._send_request(url)
-
-        if not res:
-            raise RuntimeError('no response from license server')
-        if res.code != 200:
-            raise RuntimeError(res.read().decode())
+        regfile = self._handle_response(res)
 
         logger.info('update license token')
         self.update_token()
         logger.info('This license has been upgraded successfully')
+
+        notes = (
+            '* Please backup regfile "%s" carefully, and '
+            'use this file for next registration' % regfile,
+            '* Please do not upgrade this code again'
+        )
+        logger.info('Import Notes:\n\n%s', '\n'.join(notes))
 
     def register(self, keyfile, product):
         if keyfile.endswith('.zip'):
