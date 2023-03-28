@@ -83,9 +83,12 @@ class Register(object):
     def _get_old_rcode(self):
         old_license = self.ctx.read_license()
         if not old_license:
-            raise RuntimeError('no license file')
+            logger.debug('no license file found')
+            return
         if len(old_license) == 256:
-            raise RuntimeError('no old purchased license')
+            logger.debug('no old purchased license')
+            return
+
         data = b64decode(old_license)
         i = data.find(b'pyarmor-vax-')
         if i == -1:
@@ -194,8 +197,6 @@ upgrade_to_basic_info = Template('''
 You are about to upgrade old Pyarmor license to Pyarmor Basic
 License for Pyarmor 8.0+
 
-The original license no: $rcode
-
 The upgraded license information will be''')
 
 upgrade_to_pro_info = Template('''
@@ -248,7 +249,7 @@ class WebRegister(Register):
             if info['upgrade']:
                 lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
             else:
-                lines.append(upgrade_to_basic_info.substitute(rcode=rcode))
+                lines.append(upgrade_to_basic_info.substitute())
         else:
             if info['lictype'] not in ('BASIC', 'PRO'):
                 raise RuntimeError('unknown license type %s' % info['lictype'])
@@ -266,9 +267,9 @@ class WebRegister(Register):
             lines.append('This license is about to be used for non-profits')
 
         lines.extend(['', ''])
-        return '\n'.join(lines)
+        return info, '\n'.join(lines)
 
-    def upgrade(self, keyfile, product):
+    def upgrade_to_pro(self, keyfile, product):
         logger.info('process upgrading file "%s"', keyfile)
         reginfo = self.parse_keyfile(keyfile)
 
@@ -293,7 +294,7 @@ class WebRegister(Register):
         )
         logger.info('Import Notes:\n\n%s', '\n'.join(notes))
 
-    def register(self, keyfile, product):
+    def register(self, keyfile, product, upgrade=False):
         if keyfile.endswith('.zip'):
             logger.info('register "%s"', keyfile)
             self.register_regfile(keyfile)
@@ -305,14 +306,15 @@ class WebRegister(Register):
         url = self.regurl(reginfo[1], product=product)
         logger.debug('url: %s', url)
 
-        logger.info('send register request to server')
+        logger.info('send request to server')
         res = self._send_request(url)
         regfile = self._handle_response(res)
 
         logger.info('register "%s"', regfile)
         self.register_regfile(regfile)
 
-        logger.info('This license has been registered successfully')
+        logger.info('This license has been %s successfully',
+                    'upgraded' if upgrade else 'registered')
 
         notes = (
             '* Please backup regfile "%s" carefully, and '

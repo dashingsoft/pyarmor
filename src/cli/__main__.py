@@ -171,7 +171,8 @@ def cmd_reg(ctx, args):
         logger.info('Current license information:\n\n%s', reg)
         return
 
-    if args.upgrade and not regfile.endswith('.txt'):
+    upgrade = args.upgrade
+    if upgrade and not regfile.endswith('.txt'):
         raise CliError('upgrade need text file "pyarmor-keycode-xxxx.txt"')
 
     if regfile.endswith('.zip'):
@@ -182,13 +183,16 @@ def cmd_reg(ctx, args):
 
     else:
         regsvr = WebRegister(ctx)
-        if not args.confirm:
-            msg = regsvr.prepare(regfile, args.product, upgrade=args.upgrade)
+        if (not args.confirm) or upgrade:
+            info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
             prompt = 'Are you sure to continue? (yes/no) '
             if input(msg + prompt) != 'yes':
                 return
+            # Free upgrade to Pyarmor Basic
+            if upgrade and not info['upgrade']:
+                return regsvr.register(regfile, args.product, upgrade=True)
 
-        meth = 'upgrade' if args.upgrade else 'register'
+        meth = 'upgrade_to_pro' if upgrade else 'register'
         getattr(regsvr, meth)(regfile, args.product)
 
 
