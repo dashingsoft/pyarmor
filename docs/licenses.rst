@@ -220,26 +220,23 @@ to registration email when purchasing the license.
 
 In any build machine which has old license, first install Pyarmor 8.0+.
 
-Be careful to keep old license file still in the Pyarmor :term:`Home Path`,
-generally it's :file:`~/.pyarmor`.
-
-If product name is set when purchasing old license, run this command::
-
-    $ pyarmor reg -u pyarmor-regcode-xxxx.txt
-
 If no product name is set when purchasing old license, please decide which
 product will use this upgraded license. According to new `EULA of Pyarmor`_,
 each license is only for one product.
 
-If this license is only for internal use or non-profits use, run this command as
-above, in this case product name will be set to ``non-profits``::
+Assume this license will be used to obfuscate product ``Robot Studio``, run this
+command::
+
+    $ pyarmor reg -u -p "Robot Studio" pyarmor-regcode-xxxx.txt
+
+If product name has been set when purchasing old license, run this command::
 
     $ pyarmor reg -u pyarmor-regcode-xxxx.txt
 
-For commercial use, assume product ``Robot Studio`` will use this license, run
-this command::
+If this license is only for non-profits use, run this command as above, in this
+case product name will be set to ``non-profits``::
 
-    $ pyarmor reg -u -p "Robot Studio" pyarmor-regcode-xxxx.txt
+    $ pyarmor reg -u pyarmor-regcode-xxxx.txt
 
 Check the upgraded license information::
 
