@@ -222,8 +222,8 @@ class Context(object):
             verinfo.append(licinfo['licno'][-6:])
 
         if verbose > 2:
-            product = licinfo['product']
-            verinfo.append(product if product else 'non-profits')
+            pname = licinfo['product']
+            verinfo.append('non-profits' if pname in ('', 'TBD') else pname)
 
         if verbose > 3:
             regname = licinfo['regname']

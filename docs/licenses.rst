@@ -1,6 +1,6 @@
-=======================
- Pyarmor License Types
-=======================
+===============
+ License Types
+===============
 
 .. contents:: Contents
    :depth: 2
@@ -234,7 +234,7 @@ If product name has been set when purchasing old license, run this command::
     $ pyarmor reg -u pyarmor-regcode-xxxx.txt
 
 If this license is only for non-profits use, run this command as above, in this
-case product name will be set to ``non-profits``::
+case product name will be set to ``TBD``::
 
     $ pyarmor reg -u pyarmor-regcode-xxxx.txt
 

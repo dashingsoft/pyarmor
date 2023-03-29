@@ -242,7 +242,7 @@ class WebRegister(Register):
             raise RuntimeError(
                 'product name has been set to "%s"' % info['product'])
         if info['product'] in ('', 'TBD'):
-            info['product'] = product if product else 'non-profits'
+            info['product'] = product if product else 'TBD'
 
         lines = []
         if upgrade:
@@ -263,7 +263,7 @@ class WebRegister(Register):
             fmt % ('Bind Product', info['product']),
             '',
         ])
-        if info['product'] == 'non-profits':
+        if info['product'] in ('', 'TBD'):
             lines.append('This license is about to be used for non-profits')
 
         lines.extend(['', ''])
@@ -304,6 +304,8 @@ class WebRegister(Register):
         reginfo = self.parse_keyfile(keyfile)
 
         url = self.regurl(reginfo[1], product=product)
+        if upgrade:
+            url += '&upgrade_to_basic=1'
         logger.debug('url: %s', url)
 
         logger.info('send request to server')

@@ -20,7 +20,7 @@ An activation file like :file:`pyarmor-regcode-xxxx.txt` will be sent
 to you by email. This file is used to initial registration.
 
 At the first time to register Pyarmor, :option:`-p` (product name) should be
-set. If not set, this Pyarmor license is bind to "non-profits", and could not be
+set. If not set, this Pyarmor license is bind to ``TBD``, and could not be
 used for commercial product.
 
 It need internet connection for intial registration.

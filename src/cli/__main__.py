@@ -188,6 +188,15 @@ def cmd_reg(ctx, args):
             prompt = 'Are you sure to continue? (yes/no) '
             if input(msg + prompt) != 'yes':
                 return
+            if info['upgrade'] and info['product'] in ('TBD', 'non-profits'):
+                msg = '\n'.join([
+                    '',
+                    'The product name is set to "%s", once upgrade, '
+                    'it can not be changed.' % info['product'],
+                    ''
+                ])
+                if input(msg + prompt) != 'yes':
+                    return
             # Free upgrade to Pyarmor Basic
             if upgrade and not info['upgrade']:
                 return regsvr.register(regfile, args.product, upgrade=True)
