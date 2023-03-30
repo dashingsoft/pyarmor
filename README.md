@@ -37,8 +37,8 @@ pyarmor gen foo.py
 This command generates an obfuscated script like this at `dist/foo.py`:
 
 ```python
-from pyarmor_runtime import pyarmor
-pyarmor(name, file, b'\x28\x83\x20\x58....')
+from pyarmor_runtime import __pyarmor__
+__pyarmor__(__name__, __file__, b'\x28\x83\x20\x58....')
 ```
 
 3. **Run the obfuscated script**:
@@ -90,9 +90,8 @@ Please read the [Pyarmor EULA](LICENSE).
 
 ## Changelog
 
-Pyarmor 8.0 introduces significant changes, having been completely rewritten with
-new features implemented by the following new commands: gen, reg, and cfg.
-These commands only work for Python 3.7+.
+Pyarmor 8.0 introduces significant changes. It has been rewritten and new features are implemented through the new commands:
+`gen`, `reg`, `cfg`. These commands only work for Python 3.7 and above.
 
 ### Initial Release Support (2023-03-08)
 
@@ -105,7 +104,7 @@ These commands only work for Python 3.7+.
 - **armv7 and x86**: Around 2023-06-01
 - **Other architectures**: On request
 
-Users of versions prior to 8.0 should read the [Import Notes][import-notes] section to decide whether to upgrade Pyarmor.
+Users of versions prior to 8.0 should read the [Import Notes][important-notes] section to decide whether to upgrade Pyarmor.
 
 Each major version comes with a separate changelog file, detailing fixed issues, new features, and compatibility
 issues between different versions.
@@ -122,7 +121,7 @@ No new features will be added to these commands, but they will continue to be us
 
 Upon the release of Pyarmor 8.0, there are three scenarios for existing users:
 
-### 1. Remain on version < 8.0
+### 1. Never upgrade to version 8.0+
 
 - **SPP mode will not work**
   - To use SPP mode, you must upgrade Pyarmor to version 8.0 or later.
@@ -133,13 +132,12 @@ Upon the release of Pyarmor 8.0, there are three scenarios for existing users:
 - **Registering Pyarmor with `pyarmor register pyarmor-regcode-xxxxxx.txt` is limited to 10 uses**:
   - To use Pyarmor on a new machine, CI server, or Docker, refer to the second method described in the registration file "pyarmor-regcode-xxxxxx.txt":
 ```
-Download "pyarmor-regfile-xxxxxx.zip" once and use this .zip file to register Pyarmor later.
+Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to register Pyarmor later.
 ```
-
 
 ### 2. Upgrade to version 8.0 but only use old features
 
-By default, the `pyarmor` command only accepts new commands.
+By default, the `pyarmor` command only accepts the new commands.
 
 To continue using older commands like `obfuscate` and `licenses`, you can:
 - Use `pyarmor-7` instead of `pyarmor`
