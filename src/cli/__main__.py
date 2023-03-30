@@ -172,8 +172,24 @@ def cmd_reg(ctx, args):
         return
 
     upgrade = args.upgrade
-    if upgrade and not regfile.endswith('.txt'):
-        raise CliError('upgrade need text file "pyarmor-keycode-xxxx.txt"')
+    if upgrade:
+        if not regfile.endswith('.txt'):
+            raise CliError('upgrade need text file "pyarmor-keycode-xxxx.txt"')
+        url = 'https://github.com/dashingsoft/pyarmor/issues/980'
+        msg = ("",
+               "Pyarmor 8.0 changes EULA and uses new commands",
+               "It's different from previous Pyarmor totally",
+               "Please read this import notes first:",
+               url,
+               "Do not upgrade to Pyarmor 8 if you don't known what's changed",
+               "", "")
+        prompt = 'I have known the changes of Pyarmor 8? (yes/no/help) '
+        choice = input('\n'.join(msg) + prompt).lower()[:1]
+        if choice == 'h':
+            import webbrowser
+            webbrowser.open(url)
+        if not choice == 'y':
+            return
 
     if regfile.endswith('.zip'):
         reg = Register(ctx)
