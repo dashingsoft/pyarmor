@@ -1,86 +1,73 @@
 # Pyarmor
 
-Pyarmor is a command line tool used to obfuscate python scripts, bind
-obfuscated scripts to fixed machine or expire obfuscated scripts.
+Pyarmor is a command-line tool designed for obfuscating Python scripts, binding obfuscated scripts to specific machines, and setting expiration dates for obfuscated scripts.
 
-## Key features
+## Key Features
 
-* The obfuscated scritpt is still a normal `.py` script, in most of
-  cases the original python scripts can be replaced with obfuscated
-  scripts seamlessly.
-* Provide many ways to obfuscate the scripts to balance security and
-  performance
-* Rename functions/methods/classes/variables/arguments, irreversible
-  obfuscation
-* Convert part of Python functions to C functions, compile them to machine
-  instructions by high optimize option, irreversible obfuscation
-* Bind obfuscated scripts to fixed machine or expire obfuscted scripts
-* Protect obfuscated scripts by Themida (Only for Windows)
+- **Seamless Replacement**: Obfuscated scripts remain as standard `.py` files, allowing them to seamlessly replace the original Python scripts in most cases.
+- **Balanced Obfuscation**: Offers multiple ways to obfuscate scripts to balance security and performance.
+- **Irreversible Obfuscation**: Renames functions, methods, classes, variables, and arguments.
+- **C Function Conversion**: Converts some Python functions to C functions and compiles them into machine instructions using high optimization options for irreversible obfuscation.
+- **Script Binding**: Binds obfuscated scripts to specific machines or sets expiration dates for obfuscated scripts.
+- **Themida Protection**: Protects obfuscated scripts using Themida (Windows only).
 
-## Support platforms
+## Supported Platforms
 
-* Python 2 and Python 3[^1]
-* Windows
-* Many linuxs, include embedded systems, Raspberry Pi etc.
-* Apple Intel and Apple Silicon
-* Support arches: x86_64, aarch64, armv7 etc.[^2]
+- Python 2 and Python 3[^1]
+- Windows
+- Various Linux distributions, including embedded systems and Raspberry Pi
+- Apple Intel and Apple Silicon
+- Supported architectures: x86_64, aarch64, armv7, etc.[^2]
 
-[^1]: some features may only for Python3
-[^2]: some features may only for special arch.
+[^1]: Some features may be exclusive to Python 3.
+[^2]: Some features may be exclusive to specific architectures.
 
 ## Quick start
 
-Install
-
-    pip install pyarmor
-
-Obfuscate the script `foo.py`
-
-    pyarmor gen foo.py
-
-This command generates an obfuscated script `dist/foo.py` like this:
-
-```python
-    from pyarmor_runtime import __pyarmor__
-    __pyarmor__(__name__, __file__, b'\x28\x83\x20\x58....')
+1. **Install Pyarmor**:
+```shell
+pip install pyarmor
 ```
 
-Run it
+2. **Obfuscate the `foo.py` script**:
+```shell
+pyarmor gen foo.py
+```
 
-    python dist/foo.py
+This command generates an obfuscated script like this at `dist/foo.py`:
 
-Also look at the [getting started][tutorial]
+```python
+from pyarmor_runtime import __pyarmor__
+__pyarmor__(__name__, __file__, b'\x28\x83\x20\x58....')
+```
+
+3. **Run the obfuscated script**:
+```shell
+python dist/foo.py
+```
+
+For more information, check out the [getting started tutorial][tutorial].
 
 [tutorial]: https://pyarmor.readthedocs.io/en/stable/tutorial/getting-started.html
 
 ## License
 
-Pyarmor is published as shareware, free trial version never expires, but there are
-some limitations.
+Pyarmor is published as shareware. The free trial version never expires, but has some limitations.
 
-[Pyarmor licenses][licenses] introduces license type, features and
-limitations for each license type and how to purchase Pyarmor license.
+Refer to [Pyarmor licenses][licenses] for information on license types, features, limitations, and purchasing a Pyarmor license.
 
-Also read [EULA of Pyarmor](LICENSE)
+Please read the [Pyarmor EULA](LICENSE).
 
 [licenses]: https://pyarmor.readthedocs.io/en/stable/licenses.html
 
-## Getting help
+## Getting Help
 
-Having trouble?
-
-Read this [Pyarmor 8.0 Documentation][doc] at first.
-
-Try the [FAQ][faq] – it's got answers to many common questions.
-
-Looking for specific information? Try the documentation [index][genindex],
-or [the detailed table of contents][mastertoc].
-
-Not found anything? See [asking questions in github][asking].
-
-[Report bugs][issues] according to the issue template.
-
-Send email to <pyarmor@163.com> for business and security issue.
+1. **Consult the [Pyarmor 8.0 Documentation][doc].**
+2. **Check the [FAQ][faq] for answers to common questions.**
+3. **Try the documentation [index][genindex] or the [detailed table of contents][mastertoc].**
+4. **If you still can't find the information you need, see [asking questions on GitHub][asking].**
+5. **[Report bugs][issues] following the issue template.**
+6. **For business and security inquiries, send an email to <pyarmor@163.com>.**
 
 [faq]: https://pyarmor.readthedocs.io/en/stable/questions.html
 [issues]: https://github.com/dashingsoft/pyarmor/issues
@@ -101,77 +88,72 @@ Send email to <pyarmor@163.com> for business and security issue.
 * [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/stable/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/)
 
-## Change logs
+## Changelog
 
-There are significant changes in Pyarmor 8.0. Pyarmor 8.0 has been rewritten,
-and new features are implemented by new commands: `gen`, `reg`, `cfg`. And they
-only works for Python 3.7+.
+Pyarmor 8.0 introduces significant changes. It has been rewritten and new features are implemented through the new commands:
+`gen`, `reg`, `cfg`. These commands only work for Python 3.7 and above.
 
-At first release, only x86_64 for windows, linux, macosx works (2023-03-08), and
-aarch64 for linux and macosx works soon (before 2023-04-01), armv7 and x86 will
-work about 2023-06-01. For all the other arches only on demand.
+### Initial Release Support (2023-03-08)
 
-Users prior to 8.0 should read this [Import Notes][import-notes] to make judge
-whether upgrade Pyarmor
+- **Supported Architectures**: x86_64
+- **Supported Platforms**: Windows, Linux, and macOS
 
-Each major version has one file to log changes, it describes the fixed issues,
-new features, incompatible issues in different versions
+### Upcoming Support
 
-It's important to read this carefully before upgrading pyarmor.
+- **aarch64 for Linux and macOS**: Before 2023-04-01
+- **armv7 and x86**: Around 2023-06-01
+- **Other architectures**: On request
 
-* [Pyarmor 8.x Change Logs](docs/ChangeLogs.8)
+Users of versions prior to 8.0 should read the [Import Notes][important-notes] section to decide whether to upgrade Pyarmor.
 
-[import-notes]: #import-notes-for-pyarmor-prior-to-80
+Each major version comes with a separate changelog file, detailing fixed issues, new features, and compatibility
+issues between different versions.
 
-## Import Notes for Pyarmor prior to 8.0
+Make sure to read the changelog carefully before upgrading Pyarmor:
+- [Pyarmor 8.x Changelog](docs/ChangeLogs.8)
 
-In future only bug fix for old commands, no new features for old commands.
+[important-notes]: #important-notes-for-users-of-pyarmor-prior-to-80
 
-The old commands `obfuscate`, `licenses` etc. still could be used, but there
-have some changes.
+## Important Notes for Users of Pyarmor Prior to 8.0
 
-There are 3 cases for old users after Pyarmor 8.0 is released:
+Going forward, only bug fixes will be provided for older commands, such as `obfuscate` and `licenses`.
+No new features will be added to these commands, but they will continue to be usable.
 
-### 1. Never upgrade to 8.0+
+Upon the release of Pyarmor 8.0, there are three scenarios for existing users:
 
-  - SPP mode doesn't work
+### 1. Never upgrade to version 8.0+
 
-    In order to use SPP mode, it's necessary to upgrade Pyarmor to 8.0+
+- **SPP mode will not work**
+  - To use SPP mode, you must upgrade Pyarmor to version 8.0 or later.
 
-  - Command `pyarmor register` without any argument return `404` error
+- **`pyarmor register` command without arguments returns a `404` error**
+  - This command was used to query registration information in earlier versions of Pyarmor. However, the license server no longer supports this web API. Use `pyarmor -v` to ensure you are not using a trial version.
 
-    It is used to query registration information in old Pyarmor, but now license
-    server doesn't serve this web api.
+- **Registering Pyarmor with `pyarmor register pyarmor-regcode-xxxxxx.txt` is limited to 10 uses**:
+  - To use Pyarmor on a new machine, CI server, or Docker, refer to the second method described in the registration file "pyarmor-regcode-xxxxxx.txt":
+```
+Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to register Pyarmor later.
+```
 
-    Instead use `pyarmor -v` to make sure it's not trial version.
+### 2. Upgrade to version 8.0 but only use old features
 
-  - Registering Pyarmor by `pyarmor register pyarmor-regcode-xxxxxx.txt` can be
-    used no more than 10 times
+By default, the `pyarmor` command only accepts the new commands.
 
-    In order to use Pyarmor in new machine, CI server or docker, check the second
-    method described in the registration file "pyarmor-regcode-xxxxxx.txt":
+To continue using older commands like `obfuscate` and `licenses`, you can:
+- Use `pyarmor-7` instead of `pyarmor`
+- Set the environment variable `PYARMOR_CLI=7` and continue using `pyarmor`
+- Call the entry point `pyarmor.pyarmor:main_entry` in any other way
 
-        Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to
-        register Pyarmor later.
+### 3. Upgrade to version 8.0 and use new features
 
-### 2. Upgrade to 8.0 but only use old features
+- **New EULA**:
+  - Adhere to the new [Pyarmor EULA](LICENSE). This is a significant change for users with old personal licenses, as the new license only allows one product.
 
-  By default, command `pyarmor` only accepts new commands, there are 3 ways to
-  use old commands such as `obfuscate`, `licenses`:
+- **License Upgrades**:
+  - Not all old licenses can be freely upgraded to the new license. Please refer to the [Pyarmor licenses][licenses] for more information.
 
-  - Use `pyarmor-7` instead `pyarmor`
-  - Export environment variable `PYARMOR_CLI=7`, then still use `pyarmor`
-  - Any way to call entry point `pyarmor.pyarmor:main_entry`
+- **Internet Connection**:
+  - Older commands do not require an internet connection, but new commands do.
 
-### 3. Upgrade to 8.0 and use new features
-
-  - Follow new [EULA of Pyarmor](LICENSE). It's a big change for old personal
-    license, because new license only allows one proudct.
-
-  - Not all old licenses could be upgraded to new license freely, refer to
-    [Pyarmor licenses][licenses]
-
-  - The old commands need not internect connection, but new command need
-
-  - The old commands support Python 2.7~3.10, but new command only support
-    Python 3.7+
+- **Python Version Support**:
+  - While older commands support Python 2.7-3.10, new commands only support Python 3.7+.
