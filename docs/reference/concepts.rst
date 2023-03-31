@@ -162,11 +162,12 @@
 
       * Windows
           - windows.x86_64
-          - windows.i686
+          - windows.x86
       * Many Linuxs
           - linux.x86_64
-          - linux.i686
+          - linux.x86
           - linux.aarch64
+          - linux.armv7
       * Apple Intel and Silicon
           - darwin.x86_64
           - darwin.aarch64
