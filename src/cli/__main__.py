@@ -539,23 +539,20 @@ first time, it can be changed once later.
 
 def log_settings(ctx, args):
     if args.debug:
-        # TODO: create debug_logfile path if not exists
         logging.getLogger().setLevel(logging.DEBUG)
         handler = logging.FileHandler(ctx.debug_logfile, mode='w')
         handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
         handler.setLevel(logging.DEBUG)
         logging.getLogger().addHandler(handler)
 
-        plog = logging.getLogger('protector')
-        plog.propagate = False
-        plog.addHandler(logging.NullHandler())
+    if ctx.cfg.getboolean('builder', 'enable_trace'):
+        tracelog = logging.getLogger('trace')
+        tracelog.propagate = False
+        tracelog.addHandler(logging.NullHandler())
         handler = logging.FileHandler(ctx.trace_logfile, mode='w')
         handler.setFormatter(logging.Formatter('%(name)s %(message)s'))
-        handler.setLevel(logging.DEBUG)
-        plog.addHandler(handler)
-
-        # TBD: debug
-        # plog.addHandler(logging.StreamHandler())
+        handler.setLevel(logging.INFO)
+        tracelog.addHandler(handler)
 
     if args.silent:
         logging.getLogger().setLevel(100)

@@ -293,13 +293,21 @@ class Context(object):
         platforms = self.cmd_options.get('platforms')
         return platforms if platforms else [self.native_platform]
 
+    def _check_logpath(self, logfile):
+        path = os.path.dirname(logfile)
+        if path not in ('', '.') and not os.path.exists(path):
+            os.makedirs(path)
+        return logfile
+
     @property
     def debug_logfile(self):
-        return self.cfg['logging'].get('debug_logfile', 'pyarmor.debug.log')
+        return self._check_logpath(
+            self.cfg['logging'].get('debug_logfile', 'pyarmor.debug.log'))
 
     @property
     def trace_logfile(self):
-        return self.cfg['logging'].get('trace_logfile', 'pyarmor.trace.log')
+        return self._check_logpath(
+            self.cfg['logging'].get('trace_logfile', 'pyarmor.trace.log'))
 
     def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
