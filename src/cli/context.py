@@ -291,7 +291,7 @@ class Context(object):
     @property
     def target_platforms(self):
         platforms = self.cmd_options.get('platforms')
-        return platforms if platforms else [self.pyarmor_platform]
+        return platforms if platforms else [self.native_platform]
 
     @property
     def debug_logfile(self):
