@@ -550,8 +550,8 @@ def log_settings(ctx, args):
         tracelog.propagate = False
         tracelog.addHandler(logging.NullHandler())
         handler = logging.FileHandler(ctx.trace_logfile, mode='w')
-        handler.setFormatter(logging.Formatter('%(name)s %(message)s'))
-        handler.setLevel(logging.INFO)
+        handler.setFormatter(logging.Formatter('%(name)-20s %(message)s'))
+        handler.setLevel(logging.DEBUG if args.debug else logging.INFO)
         tracelog.addHandler(handler)
 
     if args.silent:
