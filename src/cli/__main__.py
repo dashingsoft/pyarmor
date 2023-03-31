@@ -113,18 +113,20 @@ def format_gen_args(ctx, args):
 
 def check_cross_platform(ctx, platforms):
     try:
-        m = __import__('pyarmor.cli.runtime')
+        from pyarmor.cli import runtime
     except ModuleNotFoundError:
         raise CliError('cross platform need pyarmor.cli.runtime, please '
                        'run "pip install pyarmor.cli.runtime" first')
 
     platnames = []
-    for p in m.__path__:
-        platnames.extend(os.listdir(os.path.join(p, 'libs')))
+    for path in runtime.__path__:
+        platnames.extend(os.listdir(os.path.join(path, 'libs')))
 
-    unknowns = set(platforms) - set(platnames)
-    if unknowns:
-        raise CliError('unsupported platforms "%s"' % ', '.join(unknowns))
+    map_platform = runtime.map_platform
+    unknown = set([map_platform(x) for x in platforms]) - set(platnames)
+
+    if unknown:
+        raise CliError('unsupported platforms "%s"' % ', '.join(unknown))
 
 
 def check_gen_context(ctx, args):
@@ -606,6 +608,7 @@ def main_entry(argv):
 
     logger.info('Python %d.%d.%d', *sys.version_info[:3])
     logger.info('Pyarmor %s', ctx.version_info())
+    logger.debug('Platform %s', ctx.pyarmor_platform)
 
     logger.debug('native platform %s', ctx.native_platform)
     logger.debug('home path: %s', ctx.home_path)

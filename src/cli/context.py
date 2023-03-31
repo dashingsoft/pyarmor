@@ -289,6 +289,11 @@ class Context(object):
         return format_platform(*platname.split('.'))
 
     @property
+    def target_platforms(self):
+        platforms = self.cmd_options.get('platforms')
+        return platforms if platforms else [self.pyarmor_platform]
+
+    @property
     def debug_logfile(self):
         return self.cfg['logging'].get('debug_logfile', 'pyarmor.debug.log')
 
