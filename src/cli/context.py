@@ -387,6 +387,10 @@ class Context(object):
         return self._optb('builder', 'clear_module_co')
 
     @property
+    def clear_frame_locals(self):
+        return self._optb('builder', 'clear_frame_locals')
+
+    @property
     def import_prefix(self):
         v = self._opts('builder', 'import_prefix')
         return int(v) if v.isdecimal() else v
