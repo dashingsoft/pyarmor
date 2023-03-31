@@ -309,6 +309,9 @@ class Context(object):
         return self._check_logpath(
             self.cfg['logging'].get('trace_logfile', 'pyarmor.trace.log'))
 
+    def trace_rftfile(self, name):
+        return self._check_logpath(os.path.join(self.local_path, 'rft', name))
+
     def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
 
