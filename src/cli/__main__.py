@@ -111,6 +111,22 @@ def format_gen_args(ctx, args):
     return options
 
 
+def check_cross_platform(ctx, platforms):
+    try:
+        m = __import__('pyarmor.cli.runtime')
+    except ModuleNotFoundError:
+        raise CliError('cross platform need pyarmor.cli.runtime, please '
+                       'run "pip install pyarmor.cli.runtime" first')
+
+    platnames = []
+    for p in m.__path__:
+        platnames.extend(os.listdir(os.path.join(p, 'libs')))
+
+    unknowns = set(platforms) - set(platnames)
+    if unknowns:
+        raise CliError('unsupported platforms "%s"' % ', '.join(unknowns))
+
+
 def check_gen_context(ctx, args):
     enable_bcc = args.enable_bcc or (args.enables and 'bcc' in args.enables)
     if ctx.runtime_platforms:
@@ -118,7 +134,7 @@ def check_gen_context(ctx, args):
             raise CliError('--enable_themida only works for Windows')
         if enable_bcc:
             raise CliError('bcc mode does not support cross platform')
-        # Check pyarmor.runtime package
+        check_cross_platform(ctx, ctx.runtime_platforms)
 
     if enable_bcc:
         plat, arch = ctx.pyarmor_platform.split('.')
