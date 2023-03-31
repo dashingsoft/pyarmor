@@ -54,21 +54,15 @@ def format_platform(plat, arch):
     plat_table = (
         ('windows', ('windows', 'cygwin*')),
         ('darwin', ('darwin',)),
-        ('ios', ('ios',)),
         ('linux', ('linux*',)),
-        ('freebsd', ('freebsd*', 'openbsd*', 'isilon onefs')),
-        ('poky', ('poky',)),
     )
 
     arch_table = (
-        ('i686', ('i?86', )),
+        ('x86', ('i?86', )),
         ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
         ('arm', ('armv5',)),
-        ('armv6l', ('armv6l',)),
-        ('armv7l', ('armv7l',)),
-        ('ppc64', ('ppc64',)),
-        ('ppc64le', ('ppc64le',)),
-        ('mips32', ('mips',)),
+        ('armv6', ('armv6l',)),
+        ('armv7', ('armv7l',)),
         ('aarch32', ('aarch32',)),
         ('aarch64', ('aarch64', 'arm64'))
     )
@@ -410,7 +404,7 @@ class Context(object):
 
     @property
     def outer_keyname(self):
-        self.cfg['builder'].get('outer_keyname', 'pyarmor.rkey')
+        return self.cfg['builder'].get('outer_keyname', 'pyarmor.rkey')
 
     @property
     def use_runtime(self):
