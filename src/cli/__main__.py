@@ -112,9 +112,18 @@ def format_gen_args(ctx, args):
 
 
 def check_gen_context(ctx, args):
+    enable_bcc = args.enable_bcc or (args.enables and 'bcc' in args.enables)
     if ctx.runtime_platforms:
         if ctx.enable_themida and not ctx.pyarmor_platform.startswith('win'):
             raise CliError('--enable_themida only works for Windows')
+        if enable_bcc:
+            raise CliError('bcc mode does not support cross platform')
+        # Check pyarmor.runtime package
+
+    if enable_bcc:
+        plat, arch = ctx.pyarmor_platform.split('.')
+        if arch not in ('x86_64', 'aarch64'):
+            raise CliError('bcc mode still not support arch "%s"' % arch)
 
     if ctx.cmd_options['no_runtime'] and not ctx.runtime_outer:
         raise CliError('--no_runtime need pass outer key by --outer')
