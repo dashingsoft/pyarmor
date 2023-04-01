@@ -165,17 +165,18 @@ only needs to be paid once, not periodically
 Refund policy
 -------------
 
-If activation file isn't used, and purchasing date is in six months, refund is
-accepted. Please send request to |Contact|, Pyarmor will refund the order in a
-week. Out of six monthes, or activation file has been used to activate the
-license, refund request is not accepted.
+If activation file isn't used, and purchasing date is in 3 months, refund is
+accepted. Please
 
-Why no refund even if my PayPal account is hacked and someone else bought
-Pyarmor by this PayPal account?
+1. Email to Ordersupport@mycommerce.com with order information and ask for
+   refund.
+2. Or click `FindMyOrder page`_ to submit refund request
 
-Imaging you lost cash €100, someone else got it and buys a cloth, I don't think
-the shopper should refund money to you. It's same for money in PayPal, you lost
-money by yourself, the shopper should not bear loss because of your fault.
+Out of 3 monthes, or activation file has been used, refund request will be
+rejected.
+
+.. _FindMyOrder page: https://www.findmyorder.com/store?Action=DisplayEmailCustomerServicePage&Env=BASE&Locale=en_US&SiteID=findmyor
+
 
 .. _upgrading old license:
 
@@ -212,17 +213,14 @@ Upgrading to Pyarmor Pro needs extra fees.
      - N/A
      -
 
-Freely to Pyarmor-Basic
------------------------
+Upgrading to Pyarmor-Basic
+--------------------------
 
 First find the activation file ``pyarmor-regcode-xxxx.txt``, which is sent
 to registration email when purchasing the license.
 
-In any build machine which has old license, first install Pyarmor 8.0+.
-
-If no product name is set when purchasing old license, please decide which
-product will use this upgraded license. According to new `EULA of Pyarmor`_,
-each license is only for one product.
+First upgrade to Pyarmor 8.0+, according to new `EULA of Pyarmor`_, each license
+is only for one product.
 
 Assume this license will be used to obfuscate product ``Robot Studio``, run this
 command::
@@ -233,8 +231,8 @@ If product name has been set when purchasing old license, run this command::
 
     $ pyarmor reg -u pyarmor-regcode-xxxx.txt
 
-If this license is only for non-profits use, run this command as above, in this
-case product name will be set to ``TBD``::
+If this license is only for non-profits use, run this command, in this case
+product name will be set to ``TBD``::
 
     $ pyarmor reg -u pyarmor-regcode-xxxx.txt
 
@@ -246,8 +244,8 @@ If old license is used by many products (mainly old personal license), only one
 product could be used after upgrading. For the others, it need purchase new
 license.
 
-With extra fee to Pyarmor-Pro
------------------------------
+Upgrading to Pyarmor-Pro
+------------------------
 
 Open shopping cart in any web browser:
 
