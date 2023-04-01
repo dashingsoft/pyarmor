@@ -101,7 +101,7 @@ Pyarmor 8.0 introduces significant changes. It has been rewritten and new featur
 ### Upcoming Support
 
 - **aarch64 for Linux and macOS**: Before 2023-04-01
-- **armv7 and x86**: Around 2023-06-01
+- **armv7 and x86 without bcc mode**: Around 2023-04-10
 - **Other architectures**: On request
 
 Users of versions prior to 8.0 should read the [Import Notes][important-notes] section to decide whether to upgrade Pyarmor.
