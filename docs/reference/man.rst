@@ -177,6 +177,15 @@ Generate obfuscated scripts and all the required runtime files.
 
 .. describe:: Description
 
+This command is used to obfuscate all the scripts and packages listed in the
+command line. For example::
+
+    pyarmor gen foo.py
+    pyarmor gen src/mypkg
+    pyarmor gen -r src/mypkg
+    pyarmor gen -r src/pkg1 src/pkg2 libs/dbpkg
+    pyarmor gen -r main.py src/*.py libs/utils.py libs/dbpkg
+
 .. option:: -O PATH, --output PATH
 
 Set the output path for all the generated files, default is ``dist``
