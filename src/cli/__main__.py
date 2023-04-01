@@ -189,7 +189,7 @@ def cmd_cfg(ctx, args):
 def cmd_reg(ctx, args):
     if args.buy:
         from webbrowser import open_new_tab
-        open_new_tab(ctx.cfg['pyarmor', 'buyurl'])
+        open_new_tab(ctx.cfg['pyarmor']['buyurl'])
         return
 
     regfile = args.regfile
