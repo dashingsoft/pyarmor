@@ -539,11 +539,12 @@ first time, it can be changed once later.
 
 def log_settings(ctx, args):
     if args.debug:
-        logging.getLogger().setLevel(logging.DEBUG)
+        root = logging.getLogger()
+        root.setLevel(logging.DEBUG)
         handler = logging.FileHandler(ctx.debug_logfile, mode='w')
         handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
         handler.setLevel(logging.DEBUG)
-        logging.getLogger().addHandler(handler)
+        root.addHandler(handler)
 
     if ctx.cfg.getboolean('builder', 'enable_trace'):
         tracelog = logging.getLogger('trace')
