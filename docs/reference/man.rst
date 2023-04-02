@@ -177,8 +177,7 @@ Generate obfuscated scripts and all the required runtime files.
 
 .. describe:: Description
 
-This command is used to obfuscate all the scripts and packages listed in the
-command line. For example::
+This command is used to obfuscate all the scripts and packages listed in the command line. For example::
 
     pyarmor gen foo.py
     pyarmor gen src/mypkg
@@ -186,14 +185,30 @@ command line. For example::
     pyarmor gen -r src/pkg1 src/pkg2 libs/dbpkg
     pyarmor gen -r main.py src/*.py libs/utils.py libs/dbpkg
 
+All the files list in the command line will be taken as scripts. For example::
+
+    pyarmor gen foo.pyw README.txt
+
+pyarmor will try to compile ``README.txt``, then may complain of ``syntax error``
+
+If obfuscate all the scripts in one path, use one of these commands::
+
+    pyarmor gen src/*.py
+    pyarmor gen src/
+    pyarmor gen -r src/
+
+Here is wrong command, it will obfuscate all the files in ``src``::
+
+    pyarmor gen src/*
+
+
 .. option:: -O PATH, --output PATH
 
 Set the output path for all the generated files, default is ``dist``
 
 .. option:: -r, --recursive
 
-When obfuscating package, search all scripts recursively. No this option, only
-the scripts in package path are obfuscated.
+When obfuscating package, search all scripts recursively. No this option, only the scripts in package path are obfuscated.
 
 .. option:: -i
 
@@ -219,17 +234,13 @@ This option can't be used to obfuscate script.
 
 .. option:: --prefix PREFIX
 
-Only used when obfuscating many packages at the same time and still store the
-runtime package inside package.
+Only used when obfuscating many packages at the same time and still store the runtime package inside package.
 
-In this case, use this option to specify which package is used to store runtime
-package. For example::
+In this case, use this option to specify which package is used to store runtime package. For example::
 
     $ pyarmor gen --prefix mypkg src/mypkg mypkg1 mypkg2
 
-This command tells pyarmor to store runtime package inside ``dist/mypkg``, and
-make ``dist/mypkg1`` and ``dist/mypkg2`` to import runtime package from
-``mypkg``.
+This command tells pyarmor to store runtime package inside ``dist/mypkg``, and make ``dist/mypkg1`` and ``dist/mypkg2`` to import runtime package from ``mypkg``.
 
 Checking  the content of ``.py`` files in output path to make it clear.
 
@@ -263,8 +274,7 @@ With leading dot, it checks local time. For example::
 
             Use this option multiple times to bind multiple machines
 
-Bind obfuscated script to specified device. Now only harddisk serial number,
-ethernet address and IPv4 address are available.
+Bind obfuscated script to specified device. Now only harddisk serial number, ethernet address and IPv4 address are available.
 
 For example::
 
@@ -280,8 +290,7 @@ Check all of hardware informations in this device::
 
     $ pyarmor gen -b "128.16.4.10 52:38:6a:f2:c2:ff HXS2000CN2A" foo.py
 
-Using this options multiple times means binding many machines. For example, the
-following command makes the obfuscated scripts could run 2 machiens::
+Using this options multiple times means binding many machines. For example, the following command makes the obfuscated scripts could run 2 machiens::
 
     $ pyarmor gen -b "52:38:6a:f2:c2:ff" -b "f8:ff:c2:27:00:7f" foo.py
 
@@ -325,8 +334,7 @@ The default unit is hour, for example, the following examples are equivalent::
 
 .. note::
 
-   If the obfuscated script enters an infinite loop without call any obfuscated
-   function, it doesn't trigger periodic check.
+   If the obfuscated script enters an infinite loop without call any obfuscated function, it doesn't trigger periodic check.
 
 .. option:: --outer
 
@@ -334,13 +342,9 @@ The default unit is hour, for example, the following examples are equivalent::
 
 It tells the obfuscated scripts find :term:`runtime key` in outer file.
 
-Once this option is specified, :ref:`pyarmor gen key` must be used to generate
-an outer key file and copy to the corresponding path in :term:`target
-device`. Otherwise the obfuscated scripts will complain of ``missing license key
-to run the script``
+Once this option is specified, :ref:`pyarmor gen key` must be used to generate an outer key file and copy to the corresponding path in :term:`target device`. Otherwise the obfuscated scripts will complain of ``missing license key to run the script``
 
-The default name of outer key is ``pyarmor.rkey``, it can be changed by this
-command::
+The default name of outer key is ``pyarmor.rkey``, it can be changed by this command::
 
     $ pyarmor cfg outer_keyname=".pyarmor.key"
 
@@ -352,28 +356,23 @@ By this command the name of outer key is set to ``.pyarmor.key``.
 
 The name must be one of standard :term:`platform` defined by Pyarmor.
 
-It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other
-platforms.
+It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other platforms.
 
 .. option:: --private
 
             Enable private mode for scripts.
 
-When private mode is enabled, the function name is empty in traceback. And the
-obfuscated scripts could not be imported by plain script or Python interpreter.
+When private mode is enabled, the function name is empty in traceback. And the obfuscated scripts could not be imported by plain script or Python interpreter.
 
-It can't be used with :option:`--restrict`, the latter enables private mode
-implicitly.
+It can't be used with :option:`--restrict`, the latter enables private mode implicitly.
 
 .. option:: --restrict
 
             Enable restirct mode for package, do not use it to obfuscate scripts.
 
-            It enables :option:`--private` implicitly, and has all the features
-            of private mode.
+            It enables :option:`--private` implicitly, and has all the features of private mode.
 
-When restrict mode is enabled, all the modules excpet ``__init__.py`` in the
-package could not be imported by plain scripts.
+When restrict mode is enabled, all the modules excpet ``__init__.py`` in the package could not be imported by plain scripts.
 
 For example, obfuscate a restrict package to ``dist/joker``::
 
@@ -397,8 +396,7 @@ Run it to verify::
     ... import joker should be OK
     ... RuntimeError: unauthorized use of script
 
-If there are extra modules need to be exported, list all the modules in this
-command::
+If there are extra modules need to be exported, list all the modules in this command::
 
     $ pyarmor cfg exclude_restrict_modules="__init__ queens"
 

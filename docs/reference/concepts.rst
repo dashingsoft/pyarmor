@@ -170,7 +170,7 @@
           - linux.armv7
       * Apple Intel and Silicon
           - darwin.x86_64
-          - darwin.aarch64
+          - darwin.aarch64 or darwin.arm64
 
   JIT
 
@@ -189,7 +189,6 @@
     :synopsis: A binary wheel to provide extension modules to pyarmor
 
 .. module:: pyarmor.cli.runtime
-    :synopsis: A binary wheel for pyarmor to obfuscate scripts to run
-               in multiple arches.
+    :synopsis: An universal wheel is used for cross-platform obfuscation
 
 .. include:: ../_common_definitions.txt

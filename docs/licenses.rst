@@ -23,7 +23,7 @@ c. Can not use RFT Mode [3]_, BCC Mode [4]_
 d. Can not be used for any commercial product without permission
 e. Can not be used to provide obfuscation service in any form
 
-These limitations can be unlocked by different `License Types`_ except last one.
+These limitations can be unlocked by different License Types except last one.
 
 License types
 =============

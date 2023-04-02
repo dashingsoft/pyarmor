@@ -2,11 +2,12 @@
  Environments
 ==============
 
+.. highlight:: none
+
 Building Device
 ===============
 
-Building device is to run :command:`pyarmor` to geneate obfuscated
-scripts and all the other required files.
+Building device is to run :command:`pyarmor` to geneate obfuscated scripts and all the other required files.
 
 Supported Platforms:
 
@@ -17,8 +18,8 @@ Supported Platforms:
 Support Arches:
 
 * x86_64
+* x86
 * aarch64
-* i386
 * aarch32
 * armv7
 
@@ -35,8 +36,8 @@ There are 3 kinds of configuration files
 
 * global: an ini file :file:`~/.pyarmor/config/global`
 * local: an ini file :file:`.pyarmor/config`
-* private: each module ``foo`` may has one ini file either
-  :file:`~/.pyarmor/foo.rules` or :file:`.pyarmor/foo.rules`
+* private: each module may has one ini file in :term:`Local Configuration Path`. For example, :file:`.pyarmor/foo.rules` is private configuration of module ``foo``
+
 
 Target Device
 =============
@@ -57,19 +58,16 @@ Support platforms, arches and Python versions are same as `Building device`_
 
 .. envvar:: LANG
 
-            OS environment variable, used to select language for runtime error
-            message.
+      OS environment variable, used to select language for runtime error message.
 
 .. envvar:: PYARMOR_LANG
 
-            It's used to set language for runtime error message.
+      It's used to set language for runtime error message.
 
-            If it's set, both :envvar:`LANG` and :attr:`sys._PARLANG` are ignored.
+      If it's set, both :envvar:`LANG` and :attr:`sys._PARLANG` are ignored.
 
 .. envvar:: PYARMOR_RKEY
 
-            Set search path for :term:`outer key`
-
-
+      Set search path for :term:`outer key`
 
 .. include:: ../_common_definitions.txt

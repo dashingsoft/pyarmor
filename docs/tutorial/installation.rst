@@ -49,6 +49,7 @@ Installed command
 -----------------
 
 * :program:`pyarmor` is the main command to do everything. See :doc:`../reference/man`.
+* :programe:`pyarmor-7` is used to call old commands, it equals bug fixed Pyarmor 7.x
 
 Start Pyarmor by Python interpreter
 -----------------------------------
