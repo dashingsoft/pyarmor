@@ -56,6 +56,10 @@ class Resource(object):
         return self.path if self.is_top() else \
             os.path.join(self.parent.fullpath, self.path)
 
+    @property
+    def output_path(self):
+        return self.parent.fullname.replace('.', os.path.sep)
+
 
 class FileResource(Resource):
 
@@ -158,19 +162,19 @@ class PathResource(Resource):
     def rebuild(self, **options):
         pyexts = options.get('pyexts', ['.py'])
         recursive = options.get('recursive', False)
-        includes = options.get('includes', [])
-        excludes = options.get('excludes', [])
+        includes = options.get('includes', '').split()
+        excludes = options.get('excludes', '').split()
         patterns = options.get('data_files', '').split()
 
         def in_filter(path, name):
-            s = os.path.join(path, name)
-            return not ex_filter(s) and (
-                os.path.splitext(s)[1] in pyexts
-                or any([fnmatch(s, x) for x in includes]))
+            fullpath = os.path.join(path, name)
+            return not ex_filter(path, name) and (
+                os.path.splitext(name)[1] in pyexts
+                or any([fnmatch(fullpath, x) for x in includes]))
 
         def ex_filter(path, name):
-            s = os.path.join(path, name)
-            return excludes and any([fnmatch(s, x) for x in excludes])
+            fullpath = os.path.join(path, name)
+            return excludes and any([fnmatch(fullpath, x) for x in excludes])
 
         def is_res(path, name):
             s = os.path.join(path, name)
@@ -189,4 +193,4 @@ class PathResource(Resource):
 
         if recursive:
             for res in self.respaths:
-                res.rebuild(recursive=True)
+                res.rebuild(**options)

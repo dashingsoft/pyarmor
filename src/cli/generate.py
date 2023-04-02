@@ -110,8 +110,10 @@ class Builder(object):
 
             for r in res:
                 if not r.is_script():
-                    logger.info('copy data file %s', r.path)
-                    shutil.copy2(r.path, path)
+                    logger.info('copy data file %s', r.fullpath)
+                    data_path = os.path.join(path, r.output_path)
+                    os.makedirs(data_path, exist_ok=True)
+                    shutil.copy2(r.fullpath, data_path)
                     continue
 
                 logger.info('obfuscating %s', r)
