@@ -91,6 +91,7 @@ class Configer(object):
 
         if name:
             lines.extend(['', 'Private "%s" options' % name])
+
             cfg = self._read_config(self.ctx.get_filename(local, name))
             if cfg.has_section(sect):
                 lines.extend([str_opt(*x) for x in cfg.items(sect)])
@@ -134,21 +135,21 @@ class Configer(object):
             cfg.add_section(sect)
 
         # TBD: input multiple lines
-        name, value = opt.split('=', 2)
-        if value and value[0] in ("'", '"'):
-            value = value.strip(value[0])
+        optname, optvalue = opt.split('=', 2)
+        if optvalue and optvalue[0] in ("'", '"'):
+            optvalue = optvalue.strip(optvalue[0])
 
-        if not value:
-            return self.clear(sect, name, local, name)
+        if not optvalue:
+            return self.clear(sect, optname, local, name)
 
-        logger.info('change option "%s" to new value "%s"', name, value)
-        cfg.set(sect, name, value)
+        logger.info('change option "%s" to new value "%s"', optname, optvalue)
+        cfg.set(sect, optname, optvalue)
 
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, 'w') as f:
             cfg.write(f)
 
-        self._list_value(sect, name, local=local, name=name)
+        self._list_value(sect, optname, local=local, name=name)
 
     def _remove(self, section=None, options=None, local=True, name=None):
         ctx = self.ctx
