@@ -49,10 +49,9 @@ Here list all the errors when run :command:`pyarmor` in building machine
    * - query machine id failed
      - Could not get hardware information in this machine
 
-       Pyarmor need query harddisk serial number or mac address
+       Pyarmor need query harddisk serial number, mac address etc.
 
        If it could not get hardware information, it complains of this.
-
 
 The following errors may occur when registering Pyarmor
 
@@ -63,14 +62,17 @@ The following errors may occur when registering Pyarmor
 
    * - Error
      - Reasons
-   * - HTTP 400 Bad request
-     -
+   * - HTTP Error 400: Bad Request
+     - 1. Running upgrading command `pyarmor -u` more than once
+
+          Try to register Pyarmor again with zip, for example::
+             pyarmor reg pyarmor-regfile-xxxxxx.zip
    * - HTTP Error 401: Unauthorized
-     - Using old pyarmor command with new license
+     - Using old pyarmor commands with new license
 
        Please using Pyarmor 8 commands to obfuscate the scripts
    * - HTTP Error 503: Service Temporarily Unavailable
-     - Using too many register command in 1 minute
+     - Invoking too many register command in 1 minute
 
        For security reason, the license server only allows 3 register request in 1 minute
    * - unknown license type OLD
