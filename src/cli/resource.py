@@ -23,7 +23,7 @@ import ast
 import os
 
 from datetime import datetime
-from fnmatch import fnmatchcase
+from fnmatch import fnmatch
 from string import Template
 
 
@@ -162,24 +162,29 @@ class PathResource(Resource):
         excludes = options.get('excludes', [])
         patterns = options.get('data_files', '').split()
 
-        def in_filter(name):
-            return not ex_filter(name) and (
-                os.path.splitext(name)[1] in pyexts
-                or any([fnmatchcase(name, x) for x in includes]))
+        def in_filter(path, name):
+            s = os.path.join(path, name)
+            return not ex_filter(s) and (
+                os.path.splitext(s)[1] in pyexts
+                or any([fnmatch(s, x) for x in includes]))
 
-        def ex_filter(name):
-            return excludes and any([fnmatchcase(name, x) for x in excludes])
+        def ex_filter(path, name):
+            s = os.path.join(path, name)
+            return excludes and any([fnmatch(s, x) for x in excludes])
 
-        def is_res(name):
-            return any([fnmatchcase(name, x) for x in patterns])
+        def is_res(path, name):
+            s = os.path.join(path, name)
+            return any([fnmatch(s, x) for x in patterns])
 
-        for dirpath, dirnames, filenames in os.walk(self.fullpath):
-            self.resfiles = [FileResource(name, parent=self) if in_filter(name)
-                             else Resource(name, parent=self) if is_res(name)
-                             else None for name in filenames]
+        for path, dirnames, filenames in os.walk(self.fullpath):
+            self.resfiles = [x for x in [
+                Resource(name, parent=self) if is_res(path, name)
+                else FileResource(name, parent=self) if in_filter(path, name)
+                else None for name in filenames
+            ] if x]
             self.respaths = [PathResource(name, parent=self)
                              for name in dirnames
-                             if not ex_filter(name)]
+                             if not ex_filter(path, name)]
             break
 
         if recursive:
