@@ -184,6 +184,7 @@ class Context(object):
         extra_sect = ':'.join([name, sect])
         if self.cfg.has_section(extra_sect):
             options.update(self.cfg.items(extra_sect))
+        options.update(self.cmd_options)
         cfg = self._named_config(name + '.ruler')
         if cfg.has_section(sect):
             options.update(cfg.items(sect))
@@ -334,12 +335,12 @@ class Context(object):
         return self._opts('finder', 'pyexts').split()
 
     @property
-    def enable_jit(self):
-        return self._optb('builder', 'enable_jit')
-
-    @property
     def enable_themida(self):
         return self._optb('builder', 'enable_themida')
+
+    @property
+    def enable_jit(self):
+        return self._optb('builder', 'enable_jit')
 
     @property
     def enable_bcc(self):
