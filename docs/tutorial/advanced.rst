@@ -237,8 +237,11 @@ Now add 2 extra sections ``runtime.message.zh_CN`` and ``runtime.message.zh_TW``
 
 Then obfuscate script again to make it works.
 
-:envvar:`PYARMOR_LANG` could be used to set runtime language. If it's set, the
-obfuscated scripts ignore :envvar:`LANG`.
+:envvar:`PYARMOR_LANG` could be used to set runtime language. If it's set, the obfuscated scripts ignore :envvar:`LANG`. For example, force the obfuscated scripts ``obf_foo.py`` to use lang ``zh_TW`` by this way::
+
+    export PYARMOR_LANG=zh_TW
+    python obf_foo.py
+
 
 Generating cross platform scripts
 =================================
