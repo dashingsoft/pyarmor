@@ -246,6 +246,8 @@ class WebRegister(Register):
 
         lines = []
         if upgrade:
+            if not (rcode and rcode.startswith('pyarmor-vax-')):
+                raise RuntimeError('old code "%s" can not be upgraded' % rcode)
             if info['upgrade']:
                 lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
             else:
