@@ -8,23 +8,7 @@ Here list all the errors when running :command:`pyarmor` or obfuscated scripts.
 
 If something is wrong, search error message here to find the reason.
 
-If no exact error message found, most likely it's not caused by Pyarmor, search
-it in google or any other search engine to find the solution.
-
-For example, someone reports error::
-
-    Operation did not complete successfully because the file contains a virus or is potentially unwanted software question
-
-It's caused by Windows Defender, not Pyarmor. I'm sure Pyarmor is safe, but it
-uses some technics which let anti-virtus tools make wrong decision.
-
-In most of case, they're out of my control, for this example, the solutions what
-I thought of
-
-1. Check documentation of Windows Defender
-2. Ask question in MSDN
-3. Google this error message
-
+If no exact error message found, most likely it's not caused by Pyarmor, search it in google or any other search engine to find the solution.
 
 Building Errors
 ===============
@@ -113,5 +97,20 @@ Runtime Errors
        2. can not get runtime package path
    * - the format of obfuscated function is incorrect
      -
+
+Outer Errors
+============
+
+Here list some outer errors. Most of them are caused by missing some system libraries, or unexpected configuration. It need nothing to do by Pyarmor, just install necessary libraries or change system configurations to fix the problem.
+
+By searching error message in google or any other search engine to find the solution.
+
+- **Operation did not complete successfully because the file contains a virus or is potentially unwanted software question**
+
+  It's caused by Windows Defender, not Pyarmor. I'm sure Pyarmor is safe, but it uses some technics which let anti-virtus tools make wrong decision. The solutions what I thought of
+
+  1. Check documentation of Windows Defender
+  2. Ask question in MSDN
+  3. Google this error message
 
 .. include:: ../_common_definitions.txt
