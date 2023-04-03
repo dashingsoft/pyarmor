@@ -116,7 +116,7 @@ def check_cross_platform(ctx, platforms):
         from pyarmor.cli import runtime
     except ModuleNotFoundError:
         raise CliError('cross platform need pyarmor.cli.runtime, please '
-                       'run "pip install pyarmor.cli.runtime==1.0.1a2" first')
+                       'run "pip install pyarmor.cli.runtime==1.0.1a3" first')
 
     platnames = []
     for path in runtime.__path__:
@@ -546,10 +546,10 @@ def log_settings(ctx, args):
         handler.setLevel(logging.DEBUG)
         root.addHandler(handler)
 
+    tracelog = logging.getLogger('trace')
+    tracelog.propagate = False
+    tracelog.addHandler(logging.NullHandler())
     if ctx.cfg.getboolean('builder', 'enable_trace'):
-        tracelog = logging.getLogger('trace')
-        tracelog.propagate = False
-        tracelog.addHandler(logging.NullHandler())
         handler = logging.FileHandler(ctx.trace_logfile, mode='w')
         handler.setFormatter(logging.Formatter('%(name)-20s %(message)s'))
         handler.setLevel(logging.DEBUG if args.debug else logging.INFO)
