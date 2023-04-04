@@ -127,6 +127,9 @@ class Context(object):
         self.extra_libs = {}
         self.obfuscated_modules = set()
 
+        self.rft_auto_excludes = set()
+        self.rft_modules = set()
+
         self.runtime_key = None
 
         self.cmd_options = {}
@@ -184,7 +187,8 @@ class Context(object):
         extra_sect = ':'.join([name, sect])
         if self.cfg.has_section(extra_sect):
             options.update(self.cfg.items(extra_sect))
-        options.update(self.cmd_options)
+        if sect in ('builder', 'finder'):
+            options.update(self.cmd_options)
         cfg = self._named_config(name + '.ruler')
         if cfg.has_section(sect):
             options.update(cfg.items(sect))

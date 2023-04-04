@@ -139,6 +139,9 @@ class Builder(object):
         output = options.get('output', 'dist')
         self.ctx.outputs = output.split(',')
 
+        rft_auto_excludes = self.ctx.cfg['rft'].get('auto_excludes').split()
+        self.ctx.rft_auto_excludes.update(rft_auto_excludes)
+
         finder = Finder(self.ctx)
         finder.process(pack=pack)
 
