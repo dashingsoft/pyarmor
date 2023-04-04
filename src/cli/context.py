@@ -184,11 +184,11 @@ class Context(object):
             options.update(self.cfg.items(sect))
         if sect == 'finder':
             options.update(self.cmd_options.get('finder', {}))
+        elif sect == 'builder':
+            options.update(self.cmd_options)
         extra_sect = ':'.join([name, sect])
         if self.cfg.has_section(extra_sect):
             options.update(self.cfg.items(extra_sect))
-        if sect in ('builder', 'finder'):
-            options.update(self.cmd_options)
         cfg = self._named_config(name + '.ruler')
         if cfg.has_section(sect):
             options.update(cfg.items(sect))
