@@ -9,10 +9,13 @@
 Asking Questions In Github
 ==========================
 
-TBD
+Before ask question, please also do a simple test, obfuscate a hello world script, and run it with python, check the obfuscated scripts or not.
 
 Purchasing and Registration
 ===========================
+
+- **If we buy version 8 license, is it compatible with earlier versions like 6.7.2?**
+  No. Pyarmor 8 license can't be used with earlier versions, it may report HTTP 401 error or some unknown errors.
 
 - **Our company has a suite of products that we offer together or separately to our clients. Do we need a different license for each of them?**
 
