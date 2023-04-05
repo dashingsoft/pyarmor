@@ -122,13 +122,14 @@ class Context(object):
 
         self.module_relations = {}
         self.module_types = {}
+        self.variable_types = {}
         self.module_builtins = set()
 
-        self.extra_libs = {}
         self.obfuscated_modules = set()
+        self.extra_libs = {}
 
         self.rft_auto_excludes = set()
-        self.rft_modules = set()
+        self.rft_export_names = set()
 
         self.runtime_key = None
 
