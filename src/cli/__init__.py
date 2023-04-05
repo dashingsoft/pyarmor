@@ -18,6 +18,8 @@ class Component(object):
         'StrProtector': 'trace.mix.str',
         'CallProtector': 'trace.assert.call',
         'ImportProtector': 'trace.assert.import',
+        'CoPatcher': 'trace.co',
+        'BccPatcher': 'trace.bcc',
     }
 
     def __init__(self, ctx):
