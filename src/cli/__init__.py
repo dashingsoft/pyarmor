@@ -36,7 +36,9 @@ class Component(object):
             return int(self._options.get(opt[3:]))
         elif opt.startswith('ob_'):
             v = self._options.get(opt[3:], '')
-            return v is True or v.lower() in ('1', 'true', 'on', 'yes')
+            if isinstance(v, str):
+                return v.lower() in ('1', 'true', 'on', 'yes')
+            return v
         return AttributeError(opt)
 
     def trace(self, res, node, value):
