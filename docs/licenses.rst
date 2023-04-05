@@ -162,6 +162,8 @@ Following the guide in activation file to take the purchased license effects.
 There are no additional license fees, apart from the cost of the license. And it
 only needs to be paid once, not periodically
 
+**Pyarmor Group License will be available around May 15, and it's only for enterprise user**
+
 Refund policy
 -------------
 
