@@ -253,7 +253,7 @@ class WebRegister(Register):
             else:
                 lines.append(upgrade_to_basic_info.substitute())
         else:
-            if info['lictype'] not in ('BASIC', 'PRO'):
+            if info['lictype'] not in ('BASIC', 'PRO', 'GROUP'):
                 raise RuntimeError('unknown license type %s' % info['lictype'])
             lines.append('This license registration information will be')
 

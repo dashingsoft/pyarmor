@@ -528,4 +528,4 @@ class Context(object):
         opts = self.get_res_options('xxx', 'builder')
         vals = [opts.get(x)
                 for x in ('enable_rft', 'assert_call', 'assert_import')]
-        return any([x in ('1', 1, True) for x in vals])
+        return any([x in ('1', 'true', 'on', 1, True) for x in vals])
