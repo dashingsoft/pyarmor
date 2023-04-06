@@ -58,8 +58,9 @@ class Resource(object):
 
     @property
     def pkgname(self):
-        if self.fullname.endswith('.__init__'):
-            return self.parent.fullname if self.parent else ''
+        suffix = '.__init__'
+        if self.fullname.endswith(suffix):
+            return self.fullname[:-len(suffix)]
         return self.fullname
 
     @property
