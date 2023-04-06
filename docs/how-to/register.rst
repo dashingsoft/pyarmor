@@ -81,8 +81,6 @@ Copy this file to other machines, then run the following command::
 
     $ pyarmor reg pyarmor-regfile-xxxx.zip
 
-It need not internet connection.
-
 Check the registration information::
 
     $ pyarmor -v
