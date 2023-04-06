@@ -526,5 +526,6 @@ class Context(object):
     @property
     def need_package_relations(self):
         opts = self.get_res_options('xxx', 'builder')
-        return any([opts.get(x) for x in (
-            'enable_rft', 'assert_call', 'assert_import')])
+        vals = [opts.get(x)
+                for x in ('enable_rft', 'assert_call', 'assert_import')]
+        return any([x in ('1', 1, True) for x in vals])

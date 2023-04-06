@@ -625,9 +625,10 @@ def main():
 
     try:
         main_entry(sys.argv[1:])
-    except (CliError, RuntimeError) as e:
-        logger.error(e)
-        sys.exit(1)
+    # # TBD: comment for debug
+    # except (CliError, RuntimeError) as e:
+    #     logger.error(e)
+    #     sys.exit(1)
     except Exception as e:
         log_exception(e)
         logger.error(e)
