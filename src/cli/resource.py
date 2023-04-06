@@ -57,6 +57,12 @@ class Resource(object):
             os.path.join(self.parent.fullpath, self.path)
 
     @property
+    def pkgname(self):
+        if self.fullname.endswith('.__init__'):
+            return self.parent.fullname if self.parent else ''
+        return self.fullname
+
+    @property
     def output_path(self):
         return self.parent.fullname.replace('.', os.path.sep)
 
