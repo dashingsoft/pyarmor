@@ -523,10 +523,3 @@ class Context(object):
             cfg = self._named_config(name, encoding=encoding)
             if cfg.has_section('runtime.message'):
                 return cfg
-
-    @property
-    def need_package_relations(self):
-        opts = self.get_res_options('', 'builder')
-        vals = [opts.get(x)
-                for x in ('enable_rft', 'assert_call', 'assert_import')]
-        return any([x in ('1', 'true', 'on', 1, True) for x in vals])
