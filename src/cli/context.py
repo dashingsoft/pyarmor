@@ -190,9 +190,10 @@ class Context(object):
         extra_sect = ':'.join([name, sect])
         if self.cfg.has_section(extra_sect):
             options.update(self.cfg.items(extra_sect))
-        cfg = self._named_config(name + '.ruler')
-        if cfg.has_section(sect):
-            options.update(cfg.items(sect))
+        if name:
+            cfg = self._named_config(name + '.ruler')
+            if cfg.has_section(sect):
+                options.update(cfg.items(sect))
         return options
 
     def get_path(self, local=True):
@@ -525,7 +526,7 @@ class Context(object):
 
     @property
     def need_package_relations(self):
-        opts = self.get_res_options('xxx', 'builder')
+        opts = self.get_res_options('', 'builder')
         vals = [opts.get(x)
                 for x in ('enable_rft', 'assert_call', 'assert_import')]
         return any([x in ('1', 'true', 'on', 1, True) for x in vals])
