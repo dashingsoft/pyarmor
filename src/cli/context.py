@@ -128,7 +128,7 @@ class Context(object):
         self.obfuscated_modules = set()
         self.extra_libs = {}
 
-        self.rft_auto_excludes = set()
+        self.rft_auto_excludes = set(['super'])
         self.rft_export_names = set()
 
         self.runtime_key = None
