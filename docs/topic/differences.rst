@@ -1,5 +1,5 @@
-========================================
- Changed features by obfuscated scripts
-========================================
+=====================================
+The differences of obfuscated scripts
+=====================================
 
 .. include:: ../_common_definitions.txt

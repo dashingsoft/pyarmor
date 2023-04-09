@@ -177,30 +177,20 @@ Generate obfuscated scripts and all the required runtime files.
 
 .. describe:: Description
 
-This command is used to obfuscate all the scripts and packages listed in the command line. For example::
+This command is designed to obfuscate all the scripts and packages in the command line. For example::
 
     pyarmor gen foo.py
+    pyarmor gen foo.py goo.py koo.py
     pyarmor gen src/mypkg
+    pyarmor gen src/pkg1 src/pkg2 libs/dbpkg
     pyarmor gen -r src/mypkg
-    pyarmor gen -r src/pkg1 src/pkg2 libs/dbpkg
     pyarmor gen -r main.py src/*.py libs/utils.py libs/dbpkg
 
-All the files list in the command line will be taken as scripts. For example::
+All the files in the command line will be taken as Python script, because a few scripts has unknown extension but it's still Python script.
 
-    pyarmor gen foo.pyw README.txt
+All the paths in the command line will be taken as Python Package, package name is set to path's basename, all the ``.py`` files in this path are package modules. If this package has any sub-pacakge, use  :option:`-r` to search recursively.
 
-pyarmor will try to compile ``README.txt``, then may complain of ``syntax error``
-
-If obfuscate all the scripts in one path, use one of these commands::
-
-    pyarmor gen src/*.py
-    pyarmor gen src/
-    pyarmor gen -r src/
-
-Here is wrong command, it will obfuscate all the files in ``src``::
-
-    pyarmor gen src/*
-
+Do not use ``pyarmor gen src/*`` to obfuscate a package, it will obfuscate any file in the ``src``, even they're not python scripts.
 
 .. option:: -O PATH, --output PATH
 

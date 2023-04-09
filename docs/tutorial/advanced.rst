@@ -1,7 +1,7 @@
 .. highlight:: console
 
 ====================
- Advanced Tutorials
+ Advanced Tutorial
 ====================
 
 .. contents:: Contents
@@ -10,6 +10,20 @@
    :backlinks: top
 
 .. program:: pyarmor gen
+
+Filter mix string
+=================
+
+Add new ruler::
+
+    $ pyarmor cfg -r mix.str:excludes
+    $ pyarmor cfg mix.str:excludes += "abc"
+    $ pyarmor cfg mix.str:excludes -= "abc"
+    $ pyarmor cfg mix.str:excludes = "abc"
+    $ pyarmor cfg -r mix.str:excludes
+
+Filter assert function and import
+=================================
 
 Using rftmode :sup:`pro`
 ========================
@@ -213,8 +227,7 @@ If it still doesn't work, or you want to know more about BCC mode, goto :doc:`..
 Customization error handler
 ===========================
 
-By default when something is wrong with obfuscated scripts, a RuntimeError with
-error message is raised.
+By default when something is wrong with obfuscated scripts, a RuntimeError with error message is raised.
 
 If prefer to show error message only::
 
@@ -237,11 +250,9 @@ After the option is changed, obfuscating the script again to make it effects.
 Patching source by plugin marker
 ================================
 
-Before obfuscating a script, Pyarmor scans each line, remove plugin marker plus
-the following one whitespace, leave the rest as it is.
+Before obfuscating a script, Pyarmor scans each line, remove plugin marker plus the following one whitespace, leave the rest as it is.
 
-The default plugin marker is ``# pyarmor:``, any comment line with this prefix
-will be as a plugin marker.
+The default plugin marker is ``# pyarmor:``, any comment line with this prefix will be as a plugin marker.
 
 For example, these lines
 
@@ -265,8 +276,7 @@ will be changed to
 
 One real case: protecting hidden imported modules
 
-By default :option:`--assert-import` could only protect modules imported by
-statement ``import``, it doesn't handle modules imported by other methods.
+By default :option:`--assert-import` could only protect modules imported by statement ``import``, it doesn't handle modules imported by other methods.
 
 For example,
 
@@ -274,9 +284,7 @@ For example,
 
     m = __import__('abc')
 
-In obfuscated script, there is a builtin function ``__assert_armored__`` could
-be used to check ``m`` is obfuscated. In order to make sure ``m`` could not be
-replaced by others, check it manually:
+In obfuscated script, there is a builtin function ``__assert_armored__`` could be used to check ``m`` is obfuscated. In order to make sure ``m`` could not be replaced by others, check it manually:
 
 .. code-block:: python
 
@@ -284,8 +292,7 @@ replaced by others, check it manually:
     __assert_armored__(m)
 
 
-But this results in a problem, The plain script could not be run because
-``__assert_armored__`` is only available in the obfuscated script.
+But this results in a problem, The plain script could not be run because ``__assert_armored__`` is only available in the obfuscated script.
 
 The plugin marker is right solution for this case. Let's make a little change
 
@@ -295,8 +302,7 @@ The plugin marker is right solution for this case. Let's make a little change
     m = __import__('abc')
     # pyarmor: __assert_armored__(m)
 
-By plugin marker, both the plain script and the obfsucated script work as
-expected.
+By plugin marker, both the plain script and the obfsucated script work as expected.
 
 Using plugins
 =============
@@ -308,13 +314,15 @@ Plugin is used in generating obfuscated scripts.
 
 It may do some pre-build or post-build work.
 
+TODO
+
 Using hooks
 ===========
 
 .. versionadded:: 8.x
                   This feature is still not implemented
 
-Hook is used to do some extra checks when running obfuscated scripts.
+Hook is used when running obfuscated scripts, it mainly does some special protection work.
 
 A hook is a Python script called at
 
@@ -322,22 +330,7 @@ A hook is a Python script called at
 * period: only called when runtime key is in period mode
 * import: when imporing an obfuscated module
 
-An example of hook script :file:`hook.py`
-
-.. code:: python
-
-    {
-       'boot': '''def boot_hook(*args):
-       print('hello, boot hook')''',
-
-       'import': '''def import_hook(*args):
-       print('hello, import hook')''',
-
-       'period': '''def period_hook(*args):
-       print('hello, period hook')''',
-    }
-
-Save it to global or local configuration path
+TODO
 
 Internationalization runtime error message
 ==========================================
@@ -347,9 +340,7 @@ Create :file:`messages.cfg` in the path :file:`.pyarmor`::
     $ mkdir .pyarmor
     $ vi .pyarmor/message.cfg
 
-It's a ``.ini`` format file, add a section ``runtime.message`` with option
-``languages``. The language code is same as environment variable ``LANG``,
-assume we plan to support 2 languages, and only customize 2 errors:
+It's a ``.ini`` format file, add a section ``runtime.message`` with option ``languages``. The language code is same as environment variable ``LANG``, assume we plan to support 2 languages, and only customize 2 errors:
 
 * error_1: license is expired
 * error_2: license is not for this machine
@@ -363,11 +354,18 @@ assume we plan to support 2 languages, and only customize 2 errors:
   error_1 = invalid license
   error_2 = invalid license
 
-error_1 and error_2 is default message for any non-matched language.
+``invalid license`` is default message for any non-matched language.
 
 Now add 2 extra sections ``runtime.message.zh_CN`` and ``runtime.message.zh_TW``
 
 .. code:: ini
+
+  [runtime.message]
+
+  languages = zh_CN zh_TW
+
+  error_1 = invalid license
+  error_2 = invalid license
 
   [runtime.message.zh_CN]
 
@@ -381,13 +379,12 @@ Now add 2 extra sections ``runtime.message.zh_CN`` and ``runtime.message.zh_TW``
 
 Then obfuscate script again to make it works.
 
-When obfuscated scripts start, it uses :envvar:`LANG` as runtime language code. If there is no matched language, default language is used.
+When obfuscated scripts start, it checks :envvar:`LANG` to get current language code. If this language code is not ``zh_CN`` or ``zh_TW``, default message is used.
 
-:envvar:`PYARMOR_LANG` could be used to set runtime language. If it's set, the obfuscated scripts ignore :envvar:`LANG`. For example, force the obfuscated scripts ``obf_foo.py`` to use lang ``zh_TW`` by this way::
+:envvar:`PYARMOR_LANG` could force the obfuscated scripts to use specified language. If it's set, the obfuscated scripts ignore :envvar:`LANG`. For example, force the obfuscated script ``dist/foo.py`` to use lang ``zh_TW`` by this way::
 
     export PYARMOR_LANG=zh_TW
-    python obf_foo.py
-
+    python dist/foo.py
 
 Generating cross platform scripts
 =================================
@@ -403,5 +400,7 @@ Obfuscating scripts for multiple Pythons
                   This feature is still not implemented
 
 Use helper script `merge.py`
+
+TODO
 
 .. include:: ../_common_definitions.txt

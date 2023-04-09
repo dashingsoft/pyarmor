@@ -5,10 +5,6 @@
    :local:
    :backlinks: top
 
-======================
- Packaging data files
-======================
-
 ========================
  Obfuscating django app
 ========================
@@ -25,10 +21,12 @@
  Protecting system packages
 ============================
 
-.. versionadded:: 8.1
-                  This feature is not implemented in 8.0
+.. versionadded:: 8.x
+                  This feature is still not implemented
 
 When packing the scripts, Pyarmor could also obfuscate system packages in the
 bundle.
+
+TODO
 
 .. include:: ../_common_definitions.txt

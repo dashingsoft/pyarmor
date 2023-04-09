@@ -1,7 +1,7 @@
 .. highlight:: console
 
 ===================
- Basic Obfuscation
+ Basic Tutorial
 ===================
 
 .. contents:: Contents
@@ -9,7 +9,7 @@
    :local:
    :backlinks: top
 
-.. program:: pyarmor gen
+.. program:: pyarmor
 
 We'll assume you have Pyarmor 8.0+ installed already. You can tell Pyarmor is installed and which version by running the following command in a shell prompt (indicated by the $ prefix)::
 
@@ -33,6 +33,39 @@ Pyarmor uses :ref:`pyarmor gen` with rich options to obfuscate scripts to meet t
 
 Here only introduces common options in a short, using any combination of them as needed. About usage of each option in details please refer to :ref:`pyarmor gen`
 
+Debug mode and trace log
+========================
+
+When someting is wrong, check console log to find what Pyarmor does, and use :option:`-d` to enable debug mode to print more information::
+
+    $ pyarmor -d gen foo.py
+
+Trace log is useful to check what're protected by Pyarmor, enable it by this command::
+
+    $ pyarmor cfg enable_trace=1
+
+After that, :ref:`pyarmor gen` will generate a logfile :file:`.pyarmor/pyarmor.trace.log`. For example::
+
+    $ pyarmor gen foo.py
+    $ cat .pyarmor/pyarmor.trace.log
+
+    trace.co             foo:1:<module>
+    trace.co             foo:5:hello
+    trace.co             foo:9:sum2
+    trace.co             foo:12:main
+
+Each line starts with ``trace.co`` is reported by code object protector. The first log says ``foo.py`` module level code is obfuscated, second says function ``hello`` at line 5 is obfuscated, and so on.
+
+Enable both debug and trace mode could show much more information::
+
+    $ pyarmor -d gen foo.py
+
+Disable trace log by this command::
+
+    $ pyarmor cfg enable_trace=0
+
+.. program:: pyarmor gen
+
 More options to protect script
 ==============================
 
@@ -46,7 +79,7 @@ Using :option:`--mix-str` [#]_ could mix the string constant (length > 4) in the
 
 Using :option:`--assert-call` makes sure function is obfuscated, to prevent called function from being replaced by special ways
 
-Using :option:`--private` makes script could be imported by Python interpreter or other scripts
+Using :option:`--private` makes the script could not be imported by plain scripts
 
 For example,
 
@@ -82,12 +115,24 @@ String constant ``abcxyz`` and function ``fib`` will be protected like this
 
 If function ``fib`` is obfuscated, ``__assert_call__(fib)`` returns original function ``fib``. Otherwise it will raise protection exception.
 
+To check which function or which string are protected, enable trace log and check trace logfile::
+
+    $ pyarmor cfg enable_trace=1
+    $ pyarmor gen --mix-str --assert-call fib.py
+    $ cat .pyarmor/pyarmor.trace.log
+
+    trace.assert.call    fib:10:'fib'
+    trace.mix.str        fib:1:'abcxyz'
+    trace.mix.str        fib:9:'__main__'
+    trace.co             fib:1:<module>
+    trace.co             fib:3:fib
+
 .. [#] :option:`--mix-str` is not available in trial version
 
 More options to protect package
 ===============================
 
-For package, append 2 extra options::
+For package, remove :option:`--private` and append 2 extra options::
 
     $ pyarmor gen --enable-jit --mix-str --assert-call --assert-import --restrict joker/
 
@@ -95,9 +140,7 @@ Using :option:`--assert-import` prevents obfsucated modules from being replaced 
 
 Using :option:`--restrict` makes sure the obfuscated module is only available inside package. It couldn't be imported from any plain script, also not be run by Python interpreter.
 
-By default ``__init__.py`` is not restricted, in order to let others use your package functions, just import them in the ``__init__.py``, then others could get exported functions in the public ``__init__.py``.
-
-In this test package, ``joker/__init__.py`` is an empty file, so module ``joker.queens`` is not exported. Let's check this, first create a script :file:`dist/a.py`
+By default ``__init__.py`` is not restricted, all the other modules are invisible from outside. Let's check this, first create a script :file:`dist/a.py`
 
 .. code-block:: python
 
@@ -113,19 +156,38 @@ Then run it::
     ... import joker OK
     ... RuntimeError: unauthorized use of script
 
-In order to export ``joker.queens``, edit :file:`joker/__init__.py`, add one line
+In order to export ``joker.queens``, config this module is not restrict::
 
-.. code-block:: python
+    $ pyarmor cfg -p joker.queens restrict_module=0
 
-    from joker import queens
+Then obfuscate this package with restrict mode::
 
-Then do above test again, now it should work::
+    $ pyarmor gen --restrict joker/
+
+Now do above test again, it should work::
 
     $ cd dist/
     $ python a.py
     ... import joker OK
-    ... import joker.queens OK
+    ... import joker.queens
 
+Copying package data files
+==========================
+
+Many packages have data files, but they're not copied to output path.
+
+There are 2 ways to solve this problem:
+
+1. Before generating the obfuscated scripts, copy the whole package to output path, then run :ref:`pyarmor gen` to overwite all the ``.py`` files::
+
+     $ mkdir dist/joker
+     $ cp -a joker/* dist/joker
+     $ pyarmor gen -O dist -r joker/
+
+2. Changing default configuration let Pyarmor copy data files::
+
+     $ pyarmor cfg data_files=*
+     $ pyarmor gen -O dist -r joker/
 
 Checking runtime key periodically
 =================================
