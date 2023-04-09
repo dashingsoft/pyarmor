@@ -11,6 +11,20 @@ Asking Questions In Github
 
 Before ask question, please also do a simple test, obfuscate a hello world script, and run it with python, check the obfuscated scripts or not.
 
+If not using latest Pyarmor version, try to upgrade Pyarmor to latest version.
+
+If using Pyarmor < 8.0, please check Pyarmor 7.x documentation.
+
+Enable debug mode
+
+Enable trace mode
+
+Check console log, and trace log
+
+Common
+======
+
+
 License
 =======
 
@@ -20,17 +34,20 @@ License
 
   Most of features could be verified in trial version, other advanced features, for example, mix-str, bcc mode and rft mode, could be configured to ignore one function or one script so that all the others could work with these advanced features.
 
-  **Is the Internet connection only required to generate the obfuscated script? No internet connection is required on the target device that uses such script?**
+- **Is the Internet connection only required to generate the obfuscated script? No internet connection is required on the target device that uses such script?**
 
-  No internet connection is required on target device, please check Pyarmor EULA 3.4.1
+  No internet connection is required on target device.
 
-  > this software has no any control or limitation to obfuscated scripts, the behaviours of obfuscated scripts are totally defined by user.
+  Pyarmor has no any control or limitation to obfuscated scripts, the behaviours of obfuscated scripts are totally defined by user.
+
+  Please check Pyarmor EULA 3.4.1
 
 - **I am interested to know if the users are entitled to updates to ensure compatibility with future versions of Python.**
 
-  No. Pyarmor license works for ever with current Pyarmor version, but may not work with future Pyarmor version. I can't make sure current Pyarmor version could support all the future versions of Python, so the answer is no.
+  No. Pyarmor license works with current Pyarmor version forever, but may not work with future Pyarmor version. I can't make sure current Pyarmor version could support all the future versions of Python, so the answer is no.
 
 - **If we buy version 8 license, is it compatible with earlier versions like 6.7.2?**
+
   No. Pyarmor 8 license can't be used with earlier versions, it may report HTTP 401 error or some unknown errors.
 
 - **Our company has a suite of products that we offer together or separately to our clients. Do we need a different license for each of them?**

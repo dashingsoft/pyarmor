@@ -14,10 +14,13 @@
 Using rftmode :sup:`pro`
 ========================
 
-RFT mode could rename most of builints, functions, classes, local
-variables. It equals rewritting scripts in source level.
+RFT mode could rename most of builints, functions, classes, local variables. It equals rewritting scripts in source level.
 
-For example, the following Python script
+Using :option:`--enable-rft` to enable RTF mode [#]_::
+
+    $ pyarmor gen --enable-rft foo.py
+
+For example, this script
 
 .. code-block:: python
     :linenos:
@@ -36,7 +39,7 @@ For example, the following Python script
     if __name__ == '__main__':
         main('pass: %s' % data)
 
-will be reformed to
+transform to
 
 .. code-block:: python
     :linenos:
@@ -55,26 +58,157 @@ will be reformed to
     if __name__ == '__main__':
         pyarmor__16('pass: %s' % pyarmor__20)
 
-Using :option:`--enable-rft` to enable RTF mode::
+By default if RFT mode doesn't make sure this name could be changed, it will leave this name as it is.
+
+RFT mode doesn't change names in the module attribute ``__all__``, it also doesn't change function arguments.
+
+For example, this script
+
+.. code-block:: python
+    :emphasize-lines: 3,5,9
+
+    import re
+
+    __all__ = ['make_scanner']
+
+    def py_make_scanner(context):
+        parse_obj = context.parse_object
+        parse_arr = context.parse_array
+
+    make_scanner = py_make_scanner
+
+transform to
+
+.. code-block:: python
+    :emphasize-lines: 3,5,9
+
+    pyarmor__3 = __assert_armored__(b'\x83e\x9d')
+
+    __all__ = ['make_scanner']
+
+    def pyarmor__1(context):
+        pyarmor__4 = context.parse_object
+        pyarmor__5 = context.parse_array
+
+    make_scanner = pyarmor__1
+
+For a simple script, Pyarmor may transform the script automatically. In most of cases, it need add some rulers manually to make refactor works.
+
+When something is wrong, first enable trace mode::
+
+    $ pyarmor cfg enable_trace=1 trace_rft=1
+
+Then run::
 
     $ pyarmor gen --enable-rft foo.py
 
-This feature is only available for :term:`Pyarmor Pro`.
+Trace mdoe could generate the result script in the path ``.pyarmor/rft``::
+
+    $ cat .pyarmor/rft/foo.py
+
+And also generate trace log ``.pyarmor/pyarmor.trace.log``::
+
+    $ cat .pyarmor/pyarmor.trace.log
+
+There are 2 kinds of rft log::
+
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            alec.t1090:32 (! self.dwFlags)
+    trace.rft            alec.t1090:80 (self.width->self.pyarmor__21)
+
+The first log says in the ``alec/t1090.py``, at line 32 ``self.dwFlags`` isn't changed.
+
+The second log says at line 80 ``self.width`` transforms to ``self.pyarmor__21``
+
+Now run the obfuscated script again::
+
+    $ python dist/foo.py
+
+If it complains of any name not found error, just exclude this name. For example, do not rename ``mouse_keybd`` in any position by this command::
+
+    $ pyarmor cfg rft_excludes="mouse_keybd"
+
+If this name looks like ``pyarmor__22``, find the original name in the trace log::
+
+    $ grep pyarmor__22 .pyarmor/pyarmor.trace.log
+
+    trace.rft            alec.t1090:65 (self.height->self.pyarmor__22)
+    trace.rft            alec.t1090:81 (self.height->self.pyarmor__22)
+
+From search result, we know ``height`` is the source of ``pyarmor__22``, let's exclude both of them::
+
+    $ pyarmor cfg rft_excludes="mouse_keybd height"
+
+Test it again::
+
+    $ pyarmor gen --enable-rft foo.py
+    $ python dist/foo.py
+
+Repeat these steps to exclude all the problem names, until it works.
+
+If it still doesn't work, or you need transform more names, refer to :doc:`../topic/rftmode` to learn more usage.
+
+.. [#] This feature is only available for :term:`Pyarmor Pro`.
 
 Using bccmode :sup:`pro`
 ========================
 
-BCC mode could convert most of functions and methods in the scripts to
-equivalent C functions, those c functions will be comipled to machine
-instructions directly, then called by obfuscated scripts.
+BCC mode could convert most of functions and methods in the scripts to equivalent C functions, those c functions will be comipled to machine instructions directly, then called by obfuscated scripts.
 
-Note that the code in model level is not converted to C function.
+It requires ``c`` compiler. In Linux and Darwin, ``gcc`` and ``clang`` is OK. In Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 
-Using :option:`--enable-bcc` to enable BCC mode::
+* If there is any ``clang.exe``, it's OK if it could be run in other path.
+* Download and install Windows version of `LLVM <https://releases.llvm.org>`_
+* Download `https://pyarmor.dashingsoft.com/downloads/tools/clang-9.0.zip`, it's about 26M bytes, there is only one file in it. Unzip it and save ``clang.exe`` to ``$HOME/.pyarmor/``. ``$HOME`` is home path of current logon user, check the environment variable ``HOME`` to get the real path.
+
+After compiler works, using :option:`--enable-bcc` to enable BCC mode [#]_::
 
     $ pyarmor gen --enable-bcc foo.py
 
-This feature is only available for :term:`Pyarmor Pro`.
+All the source in module level is not converted to C function.
+
+To check which functions are converted to C function, enable trace mode before obfuscate the script::
+
+    $ pyarmor cfg enable_trace=1
+    $ pyarmor gen --enable-bcc foo.py
+
+Then check the trace log::
+
+    $ ls .pyarmor/pyarmor.trace.log
+    $ grep trace.bcc .pyarmor/pyarmor.trace.log
+
+    trace.bcc            foo:5:hello
+    trace.bcc            foo:9:sum2
+    trace.bcc            foo:12:main
+
+The first log means ``foo.py`` line 5 function ``hello`` is protected by bcc.
+The second log means ``foo.py`` line 9 function ``sum2`` is protected by bcc.
+
+When something is wrong, enable debug mode by common option ``-d``::
+
+    $ pyarmor -d gen --enable-bcc foo.py
+
+Check console log and trace log, most of cases there is modname and lineno in console or trace log. Assume the problem funtion is ``sum2``, then tell BCC mode does not deal with it by this way::
+
+    $ pyarmor cfg -p foo bcc:excludes="sum2"
+
+Use ``-p`` to specify modname, and option ``bcc:excludes`` for function name.
+
+In order to exclude more functions, list all of them in the excludes::
+
+    $ pyarmor cfg -p foo bcc:excludes="sum2 hello"
+
+When obfuscating package, it also could exclude one script seperataly. For example, the following commands tell BCC mode doesn't handle ``joker/card.py``, but all the other scripts in package ``joker`` are still handled by BCC mode::
+
+    $ pyarmor cfg -p joker.card bcc:disabled=1
+    $ pyarmor gen --enable-bcc /path/to/pkg/joker
+
+It's possible that BCC mode could not support some Python features, in this case, use ``bcc:excludes`` and ``bcc:disabled`` to ignore them, and make all the others work.
+
+If it still doesn't work, or you want to know more about BCC mode, goto :doc:`../topic/bccmode`.
+
+.. [#] This feature is only available for :term:`Pyarmor Pro`.
 
 Customization error handler
 ===========================
@@ -164,15 +298,25 @@ The plugin marker is right solution for this case. Let's make a little change
 By plugin marker, both the plain script and the obfsucated script work as
 expected.
 
+Using plugins
+=============
+
+.. versionadded:: 8.x
+                  This feature is still not implemented
+
+Plugin is used in generating obfuscated scripts.
+
+It may do some pre-build or post-build work.
+
 Using hooks
 ===========
 
-.. versionadded:: 8.1
-                  This feature is not implemented in 8.0
+.. versionadded:: 8.x
+                  This feature is still not implemented
 
-Hooks is used to do some extra checks when running obfuscated scripts.
+Hook is used to do some extra checks when running obfuscated scripts.
 
-A hook is a Python script called in any of
+A hook is a Python script called at
 
 * boot: when importing the runtime package :mod:`pyarmor_runtime`
 * period: only called when runtime key is in period mode
@@ -237,6 +381,8 @@ Now add 2 extra sections ``runtime.message.zh_CN`` and ``runtime.message.zh_TW``
 
 Then obfuscate script again to make it works.
 
+When obfuscated scripts start, it uses :envvar:`LANG` as runtime language code. If there is no matched language, default language is used.
+
 :envvar:`PYARMOR_LANG` could be used to set runtime language. If it's set, the obfuscated scripts ignore :envvar:`LANG`. For example, force the obfuscated scripts ``obf_foo.py`` to use lang ``zh_TW`` by this way::
 
     export PYARMOR_LANG=zh_TW
@@ -247,15 +393,14 @@ Generating cross platform scripts
 =================================
 
 .. versionadded:: 8.1
-                  This feature is not implemented in 8.0
 
 Use :option:`--platform`
 
 Obfuscating scripts for multiple Pythons
 ========================================
 
-.. versionadded:: 8.1
-                  This feature is not implemented in 8.0
+.. versionadded:: 8.x
+                  This feature is still not implemented
 
 Use helper script `merge.py`
 

@@ -4,8 +4,7 @@
  Getting Started
 =================
 
-New to |Pyarmor|? Well, you came to the right place: read this material to
-quickly get up and running.
+New to |Pyarmor|? Well, you came to the right place: read this material to quickly get up and running.
 
 .. contents:: Content
    :depth: 2
@@ -15,25 +14,21 @@ quickly get up and running.
 What's Pyarmor
 ==============
 
-|Pyarmor| is a command line tool used to obfuscate |Python| scripts, bind
-obfuscated scripts to fixed machine or expire obfuscated scripts.
+Pyarmor is a command-line tool designed for obfuscating Python scripts, binding obfuscated scripts to specific machines, and setting expiration dates for obfuscated scripts.
 
 Key Features:
 
-* The obfuscated scritpt is still a normal ``.py`` script, in most of cases the
-  original python scripts can be replaced with obfuscated scripts seamlessly.
-* Provide many options to obfuscate the scripts to balance security and performance
-* Rename functions/methods/classes/variables/arguments, irreversible obfuscation
-* Convert part of Python functions to C function, irreversible obfuscation
-* Bind obfuscated scripts to fixed machine or expire obfuscted scripts
-* Protect obfuscated scripts by Themida (Only for Windows)
+- **Seamless Replacement**: Obfuscated scripts remain as standard `.py` files, allowing them to seamlessly replace the original Python scripts in most cases.
+- **Balanced Obfuscation**: Offers multiple ways to obfuscate scripts to balance security and performance.
+- **Irreversible Obfuscation**: Renames functions, methods, classes, variables, and arguments.
+- **C Function Conversion**: Converts some Python functions to C functions and compiles them into machine instructions using high optimization options for irreversible obfuscation.
+- **Script Binding**: Binds obfuscated scripts to specific machines or sets expiration dates for obfuscated scripts.
+- **Themida Protection**: Protects obfuscated scripts using Themida (Windows only).
 
 Installation from PyPI
 ======================
 
-Pyarmor_ packages are published on the PyPI_. The preferred tool for installing
-packages from PyPI_ is :command:`pip`. This tool is provided with all modern
-versions of Python.
+Pyarmor_ packages are published on the PyPI_. The preferred tool for installing packages from PyPI_ is :command:`pip`. This tool is provided with all modern versions of Python.
 
 On Linux or MacOS, you should open your terminal and run the following command::
 

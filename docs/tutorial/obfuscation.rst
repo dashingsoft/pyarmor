@@ -11,22 +11,15 @@
 
 .. program:: pyarmor gen
 
-We'll assume you have Pyarmor 8.0+ installed already. You can tell Pyarmor is
-installed and which version by running the following command in a shell prompt
-(indicated by the $ prefix)::
+We'll assume you have Pyarmor 8.0+ installed already. You can tell Pyarmor is installed and which version by running the following command in a shell prompt (indicated by the $ prefix)::
 
     $ pyarmor --version
 
-If Pyarmor is installed, you should see the version of your installation. If it
-isn't, you'll get an error.
+If Pyarmor is installed, you should see the version of your installation. If it isn't, you'll get an error.
 
-This tutorial is written for Pyarmor 8.0+, which supports Python 3.7 and
-later. If the Pyarmor version doesn't match, you can refer to the tutorial for
-your version of Pyarmor by using the version switcher at the bottom right corner
-of this page, or update Pyarmor to the newest version.
+This tutorial is written for Pyarmor 8.0+, which supports Python 3.7 and later. If the Pyarmor version doesn't match, you can refer to the tutorial for your version of Pyarmor by using the version switcher at the bottom right corner of this page, or update Pyarmor to the newest version.
 
-Throughout this tutorial, assume run :command:`pyarmor` in project path which
-includes::
+Throughout this tutorial, assume run :command:`pyarmor` in project path which includes::
 
     project/
         ├── foo.py
@@ -36,26 +29,24 @@ includes::
             ├── queens.py
             └── config.json
 
-Pyarmor uses :ref:`pyarmor gen` with rich options to obfuscate scripts to meet
-the needs of different applications.
+Pyarmor uses :ref:`pyarmor gen` with rich options to obfuscate scripts to meet the needs of different applications.
 
-Here only introduces common options in a short, using any combination of them as
-needed. About usage of each option in details please refer to :ref:`pyarmor gen`
+Here only introduces common options in a short, using any combination of them as needed. About usage of each option in details please refer to :ref:`pyarmor gen`
 
 More options to protect script
 ==============================
 
 For scripts, use these options to get more security::
 
-    $ pyarmor gen --enable-jit --mix-str --assert-call foo.py
+    $ pyarmor gen --enable-jit --mix-str --assert-call --private foo.py
 
-Using :option:`--enable-jit` tells Pyarmor processes some sentensive data by
-``c`` function generated in runtime.
+Using :option:`--enable-jit` tells Pyarmor processes some sentensive data by ``c`` function generated in runtime.
 
 Using :option:`--mix-str` [#]_ could mix the string constant (length > 4) in the scripts.
 
-Using :option:`--assert-call` makes sure function is obfuscated, to prevent
-called function from being replaced by special ways
+Using :option:`--assert-call` makes sure function is obfuscated, to prevent called function from being replaced by special ways
+
+Using :option:`--private` makes script could be imported by Python interpreter or other scripts
 
 For example,
 
@@ -89,8 +80,7 @@ String constant ``abcxyz`` and function ``fib`` will be protected like this
     if __name__ == '__main__':
         __assert_call__(fib)(n)
 
-If function ``fib`` is obfuscated, ``__assert_call__(fib)`` returns original
-function ``fib``. Otherwise it will raise protection exception.
+If function ``fib`` is obfuscated, ``__assert_call__(fib)`` returns original function ``fib``. Otherwise it will raise protection exception.
 
 .. [#] :option:`--mix-str` is not available in trial version
 
@@ -101,21 +91,13 @@ For package, append 2 extra options::
 
     $ pyarmor gen --enable-jit --mix-str --assert-call --assert-import --restrict joker/
 
-Using :option:`--assert-import` prevents obfsucated modules from being replaced
-with plain script. It checks each import statement to make sure the modules are
-obfuscated.
+Using :option:`--assert-import` prevents obfsucated modules from being replaced with plain script. It checks each import statement to make sure the modules are obfuscated.
 
-Using :option:`--restrict` makes sure the obfuscated module is only available
-inside package. It couldn't be imported from any plain script, also not be run
-by Python interpreter.
+Using :option:`--restrict` makes sure the obfuscated module is only available inside package. It couldn't be imported from any plain script, also not be run by Python interpreter.
 
-By default ``__init__.py`` is not restricted, in order to let others use your
-package functions, just import them in the ``__init__.py``, then others could
-get exported functions in the public ``__init__.py``.
+By default ``__init__.py`` is not restricted, in order to let others use your package functions, just import them in the ``__init__.py``, then others could get exported functions in the public ``__init__.py``.
 
-In this test package, ``joker/__init__.py`` is an empty file, so module
-``joker.queens`` is not exported. Let's check this, first create a script
-:file:`dist/a.py`
+In this test package, ``joker/__init__.py`` is an empty file, so module ``joker.queens`` is not exported. Let's check this, first create a script :file:`dist/a.py`
 
 .. code-block:: python
 
@@ -131,8 +113,7 @@ Then run it::
     ... import joker OK
     ... RuntimeError: unauthorized use of script
 
-In order to export ``joker.queens``, edit :file:`joker/__init__.py`, add one
-line
+In order to export ``joker.queens``, edit :file:`joker/__init__.py`, add one line
 
 .. code-block:: python
 
@@ -158,9 +139,7 @@ Binding to many machines
 
 Using :option:`-b` many times to bind obfuscated scripts to many machines.
 
-For example, machine A and B, the ethernet addresses are ``66:77:88:9a:cc:fa``
-and ``f8:ff:c2:27:00:7f`` respectively. The obfuscated script could run in both
-of machine A and B by this command ::
+For example, machine A and B, the ethernet addresses are ``66:77:88:9a:cc:fa`` and ``f8:ff:c2:27:00:7f`` respectively. The obfuscated script could run in both of machine A and B by this command ::
 
     $ pyarmor gen -b "66:77:88:9a:cc:fa" -b "f8:ff:c2:27:00:7f" foo.py
 
@@ -197,8 +176,7 @@ Copy it to runtime package to replace the original one::
 
     $ cp dist/key2/pyarmor.rkey dist/pyarmor_runtime_000000/
 
-The outer runtime key file also could be saved to other paths, but the file name
-must be ``pyarmor.rkey``, here list the search order:
+The outer runtime key file also could be saved to other paths, but the file name must be ``pyarmor.rkey``, here list the search order:
 
 1. First search runtime package
 2. Next search path :envvar:`PYARMOR_RKEY`
@@ -210,8 +188,7 @@ If no found in these paths, raise runtime error and exits.
 Localization runtime error
 ==========================
 
-Some of runtime error messages could be customized. When something is wrong with
-the obfuscated scripts, it prints your own messages.
+Some of runtime error messages could be customized. When something is wrong with the obfuscated scripts, it prints your own messages.
 
 First create :file:`messages.cfg` in the path :file:`.pyarmor`::
 
@@ -250,8 +227,7 @@ And then obfuscate the scripts again.
 Packing obfuscated scripts
 ==========================
 
-Pyarmor need PyInstaller to pack scripts first, then replace plain scripts with
-obfuscated ones in bundle.
+Pyarmor need PyInstaller to pack scripts first, then replace plain scripts with obfuscated ones in bundle.
 
 Packing to one file
 -------------------
@@ -264,9 +240,7 @@ It generates one bundle file ``dist/foo``, pass this to pyarmor::
 
     $ pyarmor gen -O obfdist --pack dist/foo foo.py
 
-This command will obfuscate ``foo.py`` first, then repack ``dist/foo``, replace
-the original ``foo.py`` with ``obfdist/foo.py``, and append all the runtime
-files to bundle.
+This command will obfuscate ``foo.py`` first, then repack ``dist/foo``, replace the original ``foo.py`` with ``obfdist/foo.py``, and append all the runtime files to bundle.
 
 The final output is still ``dist/foo``::
 
@@ -279,8 +253,7 @@ First packing script to one foler by PyInstaller::
 
     $ pyinstaller foo.py
 
-It generates one bundle folder ``dist/foo``, and an executable file
-``dist/foo/foo``, pass this executable to pyarmor::
+It generates one bundle folder ``dist/foo``, and an executable file ``dist/foo/foo``, pass this executable to pyarmor::
 
     $ pyarmor gen -O obfdist --pack dist/foo/foo foo.py
 
@@ -289,5 +262,7 @@ Like above section, ``dist/foo/foo`` will be repacked with obfuscated scripts.
 Now run it::
 
     $ dist/foo/foo
+
+More information about pack feature, refer to :doc:`../topic/repack`
 
 .. include:: ../_common_definitions.txt
