@@ -130,6 +130,7 @@ class Context(object):
 
         self.rft_auto_excludes = set(['super'])
         self.rft_export_names = set()
+        self.rft_transform_op = '?'
 
         self.runtime_key = None
 
