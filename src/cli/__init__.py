@@ -31,7 +31,7 @@ class Component(object):
 
     def __getattr__(self, opt):
         if opt.startswith('o_'):
-            return self._options.get(opt[2:])
+            return self._options.get(opt[2:], '')
         elif opt.startswith('oi_'):
             return int(self._options.get(opt[3:]))
         elif opt.startswith('ob_'):

@@ -189,8 +189,8 @@ class PathResource(Resource):
 
         for path, dirnames, filenames in os.walk(self.fullpath):
             self.resfiles = [x for x in [
-                Resource(name, parent=self) if is_res(path, name)
-                else FileResource(name, parent=self) if in_filter(path, name)
+                FileResource(name, parent=self) if in_filter(path, name)
+                else Resource(name, parent=self) if is_res(path, name)
                 else None for name in filenames
             ] if x]
             self.respaths = [PathResource(name, parent=self)
