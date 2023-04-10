@@ -167,7 +167,7 @@ only needs to be paid once, not periodically
 Refund policy
 -------------
 
-If activation file isn't used, and purchasing date is in 3 months, refund is
+If activation file isn't used, and purchasing date is in 30 days, refund is
 accepted. Please
 
 1. Email to Ordersupport@mycommerce.com with order information and ask for
