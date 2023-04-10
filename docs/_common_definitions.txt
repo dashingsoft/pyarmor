@@ -1,5 +1,6 @@
 .. _Pyarmor: https://pypi.python.org/pypi/pyarmor/
 .. _issues: https://github.com/dashingsoft/pyarmor/issues/
+.. _discussions: https://github.com/dashingsoft/pyarmor/discussions/
 .. _Pyarmor Doc: https://pyarmor.readthedocs.io/en/stable/
 .. _Pyarmor 7.x Doc: https://pyarmor.readthedocs.io/en/v7.7/
 .. _EULA of Pyarmor: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE

@@ -1,6 +1,6 @@
-===========
-Performance
-===========
+========================
+Performance and Security
+========================
 
 .. highlight:: console
 

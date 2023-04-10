@@ -1,6 +1,6 @@
-==============================
-Insight Into Obfuscated Script
-==============================
+===============================
+Understanding Obfuscated Script
+===============================
 
 .. highlight:: console
 

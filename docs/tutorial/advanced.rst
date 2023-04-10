@@ -11,19 +11,22 @@
 
 .. program:: pyarmor gen
 
-Filter mix string
-=================
+..
+    Filter mix string
+    =================
 
-Add new ruler::
+    Add new ruler::
 
-    $ pyarmor cfg -r mix.str:excludes
-    $ pyarmor cfg mix.str:excludes += "abc"
-    $ pyarmor cfg mix.str:excludes -= "abc"
-    $ pyarmor cfg mix.str:excludes = "abc"
-    $ pyarmor cfg -r mix.str:excludes
+        $ pyarmor cfg -r mix.str:excludes
+        $ pyarmor cfg mix.str:excludes += "abc"
+        $ pyarmor cfg mix.str:excludes -= "abc"
+        $ pyarmor cfg mix.str:excludes = "abc"
+        $ pyarmor cfg -r mix.str:excludes
 
-Filter assert function and import
-=================================
+    Filter assert function and import
+    =================================
+
+.. _using rftmode:
 
 Using rftmode :sup:`pro`
 ========================
@@ -139,20 +142,20 @@ Now run the obfuscated script again::
 
     $ python dist/foo.py
 
-If it complains of any name not found error, just exclude this name. For example, do not rename ``mouse_keybd`` in any position by this command::
+If RFT script complains of name not found error, just exclude this name. For example, if no found name ``mouse_keybd``, exclude this name by this command::
 
-    $ pyarmor cfg rft_excludes="mouse_keybd"
+    $ pyarmor cfg rft_excludes "mouse_keybd"
 
-If this name looks like ``pyarmor__22``, find the original name in the trace log::
+If no found name like ``pyarmor__22``, find the original name in the trace log::
 
     $ grep pyarmor__22 .pyarmor/pyarmor.trace.log
 
     trace.rft            alec.t1090:65 (self.height->self.pyarmor__22)
     trace.rft            alec.t1090:81 (self.height->self.pyarmor__22)
 
-From search result, we know ``height`` is the source of ``pyarmor__22``, let's exclude both of them::
+From search result, we know ``height`` is the source of ``pyarmor__22``, let's append it to exclude table::
 
-    $ pyarmor cfg rft_excludes="mouse_keybd height"
+    $ pyarmor cfg rft_excludes +"height"
 
 Test it again::
 
@@ -164,6 +167,8 @@ Repeat these steps to exclude all the problem names, until it works.
 If it still doesn't work, or you need transform more names, refer to :doc:`../topic/rftmode` to learn more usage.
 
 .. [#] This feature is only available for :term:`Pyarmor Pro`.
+
+.. _using bccmode:
 
 Using bccmode :sup:`pro`
 ========================
@@ -391,7 +396,21 @@ Generating cross platform scripts
 
 .. versionadded:: 8.1
 
-Use :option:`--platform`
+Here list all the standard :term:`platform` names.
+
+In order to generate scripts for other platform, use :option:`--platform` specify target platform. For example, building scripts for windows.x86_64 in Darwin::
+
+    $ pyarmor gen --platform windows.x86_64 foo.py
+
+:mod:`pyarmor.cli.runtime` provides prebuilt binaries for these platforms. If it's not installed, pyarmor may complain of ``cross platform need pyarmor.cli.runtime, please run "pip install pyarmor.cli.runtime==2.1" first``. Following the hint to install pyarmor.cli.runtime with the right version.
+
+
+Using :option:`--platform` multiple times to support multiple platforms. For example, the command could generate the scripts to run in most of x86_64 platforms::
+
+    $ pyarmor gen --platform windows.x86_64
+                  --platform linux.x86_64 \
+                  --platform darwin.x86_64 \
+                  foo.py
 
 Obfuscating scripts for multiple Pythons
 ========================================

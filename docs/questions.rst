@@ -6,24 +6,34 @@
 
 .. _asking questions:
 
-Asking Questions In Github
+Asking questions in Github
 ==========================
 
-Before ask question, please also do a simple test, obfuscate a hello world script, and run it with python, check the obfuscated scripts or not.
+Before ask question, please try these solutions:
 
-If not using latest Pyarmor version, try to upgrade Pyarmor to latest version.
+- If you have not read :doc:`tutorial/getting-started`, read it first
 
-If using Pyarmor < 8.0, please check Pyarmor 7.x documentation.
+- Check :doc:`reference/errors`
 
-Enable debug mode
+- If you have trouble in :term:`RFT Mode`, check :ref:`using rftmode` first
 
-Enable trace mode
+- If you have trouble in :term:`BCC Mode`, check :ref:`using bccmode` first
 
-Check console log, and trace log
+- Look through in this chapter
 
-Common
-======
+- Enable debug mode and trace log, check console log and trace log to find more information
 
+- Do a simple test, obfuscate a hello world script, and run it with python, check the obfuscated scripts or not.
+
+- If not using latest Pyarmor version, try to upgrade Pyarmor to latest version.
+
+- If using Pyarmor < 8.0, please check Pyarmor 7.x documentation.
+
+- Search in the Pyarmor `issues`_
+
+- Search in the Pyarmor `discussions`_
+
+Please report bug in `issues`_ and ask questions in `discussions`_
 
 License
 =======

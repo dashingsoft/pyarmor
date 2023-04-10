@@ -70,13 +70,152 @@ Enable **rft-auto-exclude** method::
     $ pyarmor cfg rft_auto_exclude=1
 
 Check transformed script
+========================
+
+When trace rft mode is enabled, RFT mode will generate transformed script in the path ``.pyarmor/rft`` with full package name::
+
+    $ pyarmor cfg trace_rft 1
+    $ pyarmor gen --enable-rft foo.py
+    $ ls .pyarmor/rft
+
+Check the transformed script::
+
+    $ cat .pyarmor/rft/foo.py
 
 Trace rft log
+=============
+
+When both of trace log and trace rft are enabled, RFT mode will log how to deal with attributes::
+
+    $ pyarmor cfg enable_trace=1 trace_rft=1
+    $ pyarmor gen --enable-rft foo.py
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            alec.t1090:32 (! self.dwFlags)
+    trace.rft            alec.t1090:33 (self.wScan->self.pyarmor__4)
+
+The first log starts with ``!`` means no transform ``self.dwFlags``
+
+The second log means ``self.wScan`` is transfrormed to ``self.pyarmor__4``
+
+Enable debug mode could generate more trace log::
+
+    $ pyarmor -d gen --enable-rft foo.py
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    ...
+    trace.rft            alec.t1090:15 (exclude "wintypes LONG")
+    ...
+
+This log starts with ``exclude`` means 2 words ``wintypes`` and ``LONG`` are kept
 
 Exclude name rule
+=================
+
+When RFT scripts complain of name not found error, just exclude this name. For example, if no found name ``mouse_keybd``, exclude this name by this command::
+
+    $ pyarmor cfg rft_excludes "mouse_keybd"
+    $ pyarmor gen --enable-rft foo.py
+
+If no found name like ``pyarmor__22``, find the original name in the trace log::
+
+    $ grep pyarmor__22 .pyarmor/pyarmor.trace.log
+
+    trace.rft            alec.t1090:65 (self.height->self.pyarmor__22)
+    trace.rft            alec.t1090:81 (self.height->self.pyarmor__22)
+
+From search result, we know ``height`` is the source of ``pyarmor__22``, let's append it to exclude table::
+
+    $ pyarmor cfg rft_excludes +"height"
+    $ pyarmor gen --enable-rft foo.py
+    $ python dist/foo.py
+
+Repleat these step until all the problem names are excluded.
 
 Include name rule
+=================
 
-Issues for ``from xxx impor *``
+This is only for **rft-auto-include**
+
+The rule is used to transform name in chain attributes
+
+One line one rule, the rule format::
+
+    patterns actions
+
+    patterns = pattern1.pattern2.pattern3...
+    actions = [%?].[%?].[%?]...
+
+Each pattern is same as pattern in :mod:`fnmatch`, each action is char ``?`` or ``%``. ``%`` means no transform, ``?`` means transform the corresponding attribute.
+
+For example, a ruler::
+
+    self.task.x %.%.?
+
+apply to this script
+
+.. code-block:: python
+    :linenos:
+    :emphasize-lines: 8,9
+
+    class Sdipmk:
+
+        def __init__(self):
+            self.width = 100
+            self.height = 200
+
+        def move(self, x, y, absolute=False):
+            self.task.x = int(abs(x*65536/self.width)) if absolute else int(x)
+            self.task.y = int(abs(y*65536/self.height)) if absolute else int(y)
+            return Mouse(MS_MOVE, x, y)
+
+First configure this ruler by command::
+
+    $ pyarmor cfg rft_rulers "self.task.x %.%.?"
+
+Then check the result::
+
+    $ pyarmor gen --enable-rft foo.py
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.task.pyarmor__2)
+
+line 8 ``self.task.x`` will be transformed to ``self.task.pyarmor__2``
+
+Let's change action to ``%.?.?``, and check the result::
+
+    $ pyarmor cfg rft_rulers "self.task.x %.?.?"
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
+
+Do not change action to ``?.?.?``, it doesn't work, the first action can't be ``?``
+
+Let's add new ruler to change ``self.task.y``, here need to use ``^`` to append new line to rulers::
+
+    $ pyarmor cfg rft_rulers ^"self.task.y %.?.?"
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
+    trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
+
+Actually, both of rulers can combined to one::
+
+    $ pyarmor cfg rft_rulers = "self.task.* %.?.?"
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
+    trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
+
+Special for wild card form of import
+====================================
+
+The wild card form of import — `from module import *` — is a special case.
+
+If module is in the obfuscated pakcage, RFT mode will parse the source and check the module’s namespace for a variable named ``__all__``
+
+If this module is outer package, RFT mode could not get the source. So RFT mode will import it and query module attribute ``__all__``. If this module could not be imported, it may raise ``ModuleNotFoundError``, please set :envvar:`PYTHONPATH` or any otherway let Python could import this module.
+
+If ``__all__`` is not defined, the set of public names includes all names found in the module’s namespace which do not begin with an underscore character ('_').
 
 .. include:: ../_common_definitions.txt
