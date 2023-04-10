@@ -601,24 +601,75 @@ Show all options which start with ``obf``::
 
     $ pyarmor cfg obf*
 
-Set option to new value::
+Set option to int value by any of these forms::
 
+    $ pyarmor cfg obf_module 0
     $ pyarmor cfg obf_module=0
+    $ pyarmor cfg obf_module =0
+    $ pyarmor cfg obf_module = 0
+
+Set option to boolean value::
+
+    $ pyarmor cfg wrap_mode 0
+    $ pyarmor cfg wrap_mode=1
+
+Set option to string value::
+
+    $ pyarmor cfg outer_keyname "sky.lic"
+    $ pyarmor cfg outer_keyname = "sky.lic"
+
+Append word to an option. For example, ``pyexts`` has 2 words ``.py .pyw``, append new one to it::
+
+    $ pyarmor cfg pyexts + ".pym"
+
+    Current settings
+        pyexts = .py .pyw .pym
+
+Remove word from option::
+
+    $ pyarmor cfg pyexts - ".pym"
+
+    Current settings
+        pyexts = .py .pyw .pym
+
+Append new line to option::
+
+    $ pyarmor cfg rft_excludes ^ "/win.*/"
+
+    Current settings
+        rft_excludes = super
+            /win.*/
 
 Reset option to default::
 
-    $ pyarmor cfg -r obf_module
+    $ pyarmor cfg rft_excludes ""
+    $ pyarmor cfg rft_excludes=""
+    $ pyarmor cfg -r rft_excludes
 
 Change option ``excludes`` in the section ``finder`` by this form::
 
-    $ pyarmor cfg finder:excludes=ast
+    $ pyarmor cfg finder:excludes "ast"
 
 If no prefix ``finder``, for example::
 
-    $ pyarmor cfg excludes=ast
+    $ pyarmor cfg excludes "ast"
 
 Not only option ``excludes`` in section ``finder``, but also in other sections
 ``assert.call``, ``mix.str`` etc. are changed.
+
+.. describe:: Sections
+
+Section is group name of options, here are popular sections
+
+* finder: how to search scripts
+* builder: how to obfuscate scripts, main section
+* runtime: how to generate runtime package and runtime key
+
+These are not popular sections
+* mix.str: how to filter mix string
+* assert.call: how to filter assert function
+* assert.import: how to filter assert module
+* bcc: how to convert function to C code
 
 .. option:: -p NAME
 

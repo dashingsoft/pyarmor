@@ -33,6 +33,7 @@ def indent(lines, n=2):
 
 
 def str_opt(k, v, n=30):
+    v = '\n\t'.join(v.splitlines())
     return '  %s = %s%s' % (k, v[:n], '...' if len(v) > n else '')
 
 
@@ -126,7 +127,7 @@ class Configer(object):
 
         return clines, glines, lines, plines
 
-    def _set_option(self, sect, opt, local=True, name=None):
+    def _set_option(self, sect, opt, value, local=True, name=None):
         ctx = self.ctx
         filename = ctx.get_filename(local=local, name=name)
 
@@ -135,12 +136,30 @@ class Configer(object):
             cfg.add_section(sect)
 
         # TBD: input multiple lines
-        optname, optvalue = opt.split('=', 2)
-        if optvalue and optvalue[0] in ("'", '"'):
+        optname, optvalue = opt, value
+        if optvalue and optvalue[:1] in ('+', '-', '=', '^'):
+            op = optvalue[:1]
+            optvalue = optvalue.strip(op)
+            if op == '=':
+                op = None
+        else:
+            op = None
+        if optvalue and optvalue[:1] in ("'", '"'):
             optvalue = optvalue.strip(optvalue[0])
 
         if not optvalue:
-            return self.clear(sect, optname, local, name)
+            if op is None:
+                self._clear(sect, optname, local, name)
+            return
+
+        old = cfg[sect].get(optname, '') if cfg.has_section(sect) else ''
+        if op == '+':
+            if (optvalue + ' ').find(old + ' ') == -1:
+                optvalue = ('%s %s' % (old, optvalue)).strip()
+        elif op == '-':
+            optvalue = (old + ' ').replace(optvalue + ' ', '').strip()
+        elif op == '^':
+            optvalue = '\n'.join((old.splitlines() + [optvalue]))
 
         logger.info('change option "%s" to new value "%s"', optname, optvalue)
         cfg.set(sect, optname, optvalue)
@@ -218,18 +237,54 @@ class Configer(object):
     def run(self, options=None, local=True, name=None):
         lines = []
 
-        if options:
-            for pat in options:
-                for sect, opts in self._parse_opt(pat):
+        if options and len(options) == 1 and options[0].find('=') == -1:
+            for sect, opts in self._parse_opt(options[0]):
+                title = 'Section: %s' % sect
+                lines.extend(['', '-' * 60, title])
+                self.infos = [], [], [], []
+
+                for opt in opts:
+                    self._list_value(sect, opt, local, name)
+
+                lines.extend(['', 'Current settings'])
+                lines.extend(self.infos[0])
+                lines.extend(['', 'Global settings'])
+                lines.extend(self.infos[1])
+                lines.extend(['', 'Local settings'])
+                lines.extend(self.infos[2])
+                if name:
+                    lines.extend(['', 'Private "%s" settings' % name])
+                    lines.extend(self.infos[3])
+
+        elif options:
+            pairs = []
+            prev, op = None, ''
+            for opt in options:
+                i = opt.find('=')
+                if i > -1:
+                    pairs.append([opt[:i], opt[i+1:]])
+                elif opt in ('+', '=', '-', '^'):
+                    op = opt
+                elif prev:
+                    pairs.append((prev, op + opt))
+                    prev, op = None, ''
+                else:
+                    prev = opt
+            if prev:
+                raise RuntimeError('no value for option "%s"' % prev)
+
+            for pat, value in pairs:
+                sect_opts = self._parse_opt(pat)
+                if not sect_opts:
+                    logger.debug('new builder option "%s"', pat)
+                    sect_opts = [('builder', [pat])]
+                for sect, opts in sect_opts:
                     title = 'Section: %s' % sect
                     lines.extend(['', '-' * 60, title])
                     self.infos = [], [], [], []
 
                     for opt in opts:
-                        if opt.find('=') == -1:
-                            self._list_value(sect, opt, local, name)
-                        else:
-                            self._set_option(sect, opt, local, name)
+                        self._set_option(sect, opt, value, local, name)
 
                     lines.extend(['', 'Current settings'])
                     lines.extend(self.infos[0])
