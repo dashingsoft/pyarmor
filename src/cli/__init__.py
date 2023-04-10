@@ -20,6 +20,7 @@ class Component(object):
         'StrProtector': 'trace.mix.str',
         'CallProtector': 'trace.assert.call',
         'ImportProtector': 'trace.assert.import',
+        'CodeProtector': 'trace.co',
         'CoPatcher': 'trace.co',
         'BccPatcher': 'trace.bcc',
     }
