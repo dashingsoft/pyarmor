@@ -11,44 +11,6 @@
 
 .. program:: pyarmor gen
 
-Filter mix string
-=================
-
-Exclude short strings by length < 10::
-
-    $ pyarmor cfg mix.str:threshold 10
-
-Exclude any string startswith and endswith ``__`` by regular expression::
-
-    $ pyarmor cfg mix.str:excludes "/__.*__/"
-
-Append new ruler to exclude exact words::
-
-    $ pyarmor cfg mix.str:excludes ^ "main xyz"
-
-Reset exclude ruler::
-
-    $ pyarmor cfg mix.str:excludes = ""
-
-Encrypt only string length between 8 and 32 by regular expression::
-
-    $ pyarmor cfg mix.str:includes = "/.{8,32}/"
-
-Check trace log to find which strings are protected.
-
-Filter assert function and import
-=================================
-
-Do not protect function::
-
-    $ pyarmor cfg assert.call:excludes "fa fb"
-
-Do not protect module::
-
-    $ pyarmor cfg assert.import:excludes "ma mb"
-
-Protect extra module or function by inline marker, refer to section `Patching source by inline marker`_
-
 .. _using rftmode:
 
 Using rftmode :sup:`pro`
@@ -275,6 +237,44 @@ Or reset this option::
 
 After the option is changed, obfuscating the script again to make it effects.
 
+Filter mix string
+=================
+
+Exclude short strings by length < 10::
+
+    $ pyarmor cfg mix.str:threshold 10
+
+Exclude any string startswith and endswith ``__`` by regular expression::
+
+    $ pyarmor cfg mix.str:excludes "/__.*__/"
+
+Append new ruler to exclude exact words::
+
+    $ pyarmor cfg mix.str:excludes ^ "main xyz"
+
+Reset exclude ruler::
+
+    $ pyarmor cfg mix.str:excludes = ""
+
+Encrypt only string length between 8 and 32 by regular expression::
+
+    $ pyarmor cfg mix.str:includes = "/.{8,32}/"
+
+Check trace log to find which strings are protected.
+
+Filter assert function and import
+=================================
+
+Do not protect function::
+
+    $ pyarmor cfg assert.call:excludes "fa fb"
+
+Do not protect module::
+
+    $ pyarmor cfg assert.import:excludes "ma mb"
+
+Protect extra module or function by inline marker, refer to next section `Patching source by inline marker`_
+
 Patching source by inline marker
 ================================
 
@@ -347,11 +347,13 @@ Using plugins
 .. versionadded:: 8.x
                   This feature is still not implemented
 
-Plugin is used in generating obfuscated scripts.
+Plugin is used to do some pre-build or post-build work in generating obfuscated scripts.
 
-It may do some pre-build or post-build work.
+Use cases:
 
-TODO
+- Copy data files to output
+- In MacOS, codesign binary extension :mod:`pyarmor_runtime`
+- For multiple platforms, rename binary extension :mod:`pyarmor_runtime` suffix to avoid name confilcts
 
 Using hooks
 ===========
@@ -361,13 +363,18 @@ Using hooks
 
 Hook is used when running obfuscated scripts, it mainly does some special protection work.
 
-A hook is a Python script called at
+A hook is a Python script, generally run in main script, but it also could be called
 
-* boot: when importing the runtime package :mod:`pyarmor_runtime`
-* period: only called when runtime key is in period mode
-* import: when imporing an obfuscated module
+- when loading the runtime package :mod:`pyarmor_runtime`
+- when imporing each obfuscated module
+- periodically only when runtime key is in period mode
 
-TODO
+Use cases:
+
+- read user data in runtime key, and verify it by user
+- set runtime language in boot
+- pack to one file with outer runtime key
+- call some extra anti-debug routines defined by user
 
 Internationalization runtime error message
 ==========================================
@@ -437,7 +444,7 @@ In order to generate scripts for other platform, use :option:`--platform` specif
 :mod:`pyarmor.cli.runtime` provides prebuilt binaries for these platforms. If it's not installed, pyarmor may complain of ``cross platform need pyarmor.cli.runtime, please run "pip install pyarmor.cli.runtime==2.1" first``. Following the hint to install pyarmor.cli.runtime with the right version.
 
 
-Using :option:`--platform` multiple times to support multiple platforms. For example, the command could generate the scripts to run in most of x86_64 platforms::
+Using :option:`--platform` multiple times to support multiple platforms. For example, generate the scripts to run in most of x86_64 platforms::
 
     $ pyarmor gen --platform windows.x86_64
                   --platform linux.x86_64 \
