@@ -38,7 +38,7 @@ for suffix in '', '_a1', '_a2', '_a3':
         __pyarmor__ = __import__('pyarmor_runtime' + suffix,
                                  globals(), locals(),
                                  ('__pyarmor__',),
-                                 0)
+                                 0).__pyarmor__
         break
     except ModuleNotFoundError:
         pass
