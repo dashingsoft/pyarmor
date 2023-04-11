@@ -98,7 +98,7 @@ Third party libraries
      - [#patch]_
      -
    * - `pandas`_
-     - [#patch]_, [#obfcode]_
+     - [#patch]_
      - use sys._getframe
    * - playwright
      - [#RFT]_
@@ -107,8 +107,9 @@ Third party libraries
 .. rubric:: Footnotes
 
 .. [#patch] the patched packge could work with Pyarmor
-.. [#obfcode] this package only work with ``--obf-code 0``
 .. [#RFT] this package work with Pyarmor RFT mode
+.. [#obfcode0] this package only work with ``--obf-code 0``
+.. [#not] this package not work with Pyarmor any mode
 
 pandas
 ------
