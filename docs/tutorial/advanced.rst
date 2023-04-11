@@ -240,17 +240,21 @@ After the option is changed, obfuscating the script again to make it effects.
 Filter mix string
 =================
 
+By default :option:`--mix-str` encrypts all the string length > 8.
+
+But it can be configured to filter any string to meet various needs.
+
 Exclude short strings by length < 10::
 
     $ pyarmor cfg mix.str:threshold 10
 
-Exclude any string startswith and endswith ``__`` by regular expression::
+Exclude any string by regular expression with format ``/pattern/``, the pattern syntax is same as module :mod:`re`. For example, exclude all strings length > 2000::
 
-    $ pyarmor cfg mix.str:excludes "/__.*__/"
+    $ pyarmor cfg mix.str:excludes "/.{,2000}/"
 
-Append new ruler to exclude exact words::
+Append new ruler to exclude 2 words ``__main__`` and ``xyz``::
 
-    $ pyarmor cfg mix.str:excludes ^ "main xyz"
+    $ pyarmor cfg mix.str:excludes ^ "__main__ xyz"
 
 Reset exclude ruler::
 
@@ -265,15 +269,19 @@ Check trace log to find which strings are protected.
 Filter assert function and import
 =================================
 
-Do not protect function::
+:option:`--assert-call` and :option:`--assert-import` could protect function and module, but sometimes it may make mistakes.
 
-    $ pyarmor cfg assert.call:excludes "fa fb"
+One case is that pyarmor asserts a third-party function is obfuscated, thus the obfuscated scripts always raise protection error.
 
-Do not protect module::
+Adding an assert rule to fix this problem. For example, tell :option:`--assert-import` ignore module ``json`` and ``inspect`` by word list::
 
-    $ pyarmor cfg assert.import:excludes "ma mb"
+    $ pyarmor cfg assert.import:excludes = "json inspect"
 
-Protect extra module or function by inline marker, refer to next section `Patching source by inline marker`_
+Tell :option:`--assert-call` ignore all the function startswith ``wintype_`` by regular expression::
+
+    $ pyarmor cfg assert.call:excludes "/wintype_.*/"
+
+The other case is that some functions or modules are obfuscated, but pyarmor doesn't protect them. refer to next section `Patching source by inline marker`_ to fix this issue.
 
 Patching source by inline marker
 ================================
@@ -373,7 +381,7 @@ Use cases:
 
 - read user data in runtime key, and verify it by user
 - set runtime language in boot
-- pack to one file with outer runtime key
+- copy runtime key when packing script to one file
 - call some extra anti-debug routines defined by user
 
 Internationalization runtime error message
@@ -457,8 +465,6 @@ Obfuscating scripts for multiple Pythons
 .. versionadded:: 8.x
                   This feature is still not implemented
 
-Use helper script `merge.py`
-
-TODO
+.. Use helper script `merge.py`
 
 .. include:: ../_common_definitions.txt
