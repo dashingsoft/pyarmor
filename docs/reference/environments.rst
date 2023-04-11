@@ -20,7 +20,6 @@ Support Arches:
 * x86_64
 * x86
 * aarch64
-* aarch32
 * armv7
 
 Supported Pyton versions:

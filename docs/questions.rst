@@ -19,11 +19,15 @@ Before ask question, please try these solutions:
 
 - If you have trouble in :term:`BCC Mode`, check :ref:`using bccmode` first
 
-- Look through in this chapter
+- If you have trouble with third-party libraries check :doc:`how-to/third-party`
+
+- Look through this page
 
 - Enable debug mode and trace log, check console log and trace log to find more information
 
-- Do a simple test, obfuscate a hello world script, and run it with python, check the obfuscated scripts or not.
+- Make sure the scripts work without obfuscation
+
+- Do a simple test, obfuscate a hello world script, and run it with python
 
 - If not using latest Pyarmor version, try to upgrade Pyarmor to latest version.
 
