@@ -88,6 +88,8 @@ The common solutions to fix third-party libraries issue
 Third party libraries
 =====================
 
+Here are list problem libraries and possible solutions. Welcome create pull request to append new libraries sort alphabetically case insentensive.
+
 .. list-table:: Table-1. Third party libraries
    :header-rows: 1
 
