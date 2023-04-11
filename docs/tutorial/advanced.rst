@@ -11,20 +11,43 @@
 
 .. program:: pyarmor gen
 
-..
-    Filter mix string
-    =================
+Filter mix string
+=================
 
-    Add new ruler::
+Exclude short strings by length < 10::
 
-        $ pyarmor cfg -r mix.str:excludes
-        $ pyarmor cfg mix.str:excludes += "abc"
-        $ pyarmor cfg mix.str:excludes -= "abc"
-        $ pyarmor cfg mix.str:excludes = "abc"
-        $ pyarmor cfg -r mix.str:excludes
+    $ pyarmor cfg mix.str:threshold 10
 
-    Filter assert function and import
-    =================================
+Exclude any string startswith and endswith ``__`` by regular expression::
+
+    $ pyarmor cfg mix.str:excludes "/__.*__/"
+
+Append new ruler to exclude exact words::
+
+    $ pyarmor cfg mix.str:excludes ^ "main xyz"
+
+Reset exclude ruler::
+
+    $ pyarmor cfg mix.str:excludes = ""
+
+Encrypt only string length between 8 and 32 by regular expression::
+
+    $ pyarmor cfg mix.str:includes = "/.{8,32}/"
+
+Check trace log to find which strings are protected.
+
+Filter assert function and import
+=================================
+
+Do not protect function::
+
+    $ pyarmor cfg assert.call:excludes "fa fb"
+
+Do not protect module::
+
+    $ pyarmor cfg assert.import:excludes "ma mb"
+
+Protect extra module or function by inline marker, refer to section `Patching source by inline marker`_
 
 .. _using rftmode:
 
@@ -252,12 +275,12 @@ Or reset this option::
 
 After the option is changed, obfuscating the script again to make it effects.
 
-Patching source by plugin marker
+Patching source by inline marker
 ================================
 
-Before obfuscating a script, Pyarmor scans each line, remove plugin marker plus the following one whitespace, leave the rest as it is.
+Before obfuscating a script, Pyarmor scans each line, remove inline marker plus the following one whitespace, leave the rest as it is.
 
-The default plugin marker is ``# pyarmor:``, any comment line with this prefix will be as a plugin marker.
+The default inline marker is ``# pyarmor:``, any comment line with this prefix will be as a inline marker.
 
 For example, these lines
 
@@ -266,7 +289,7 @@ For example, these lines
 
     print('start ...')
 
-    # pyarmor: print('this is plugin code')
+    # pyarmor: print('this script is obfuscated')
     # pyarmor: check_something()
 
 will be changed to
@@ -276,7 +299,7 @@ will be changed to
 
     print('start ...')
 
-    print('this is plugin code')
+    print('this script is obfuscated')
     check_something()
 
 One real case: protecting hidden imported modules
@@ -299,7 +322,7 @@ In obfuscated script, there is a builtin function ``__assert_armored__`` could b
 
 But this results in a problem, The plain script could not be run because ``__assert_armored__`` is only available in the obfuscated script.
 
-The plugin marker is right solution for this case. Let's make a little change
+The inline marker is right solution for this case. Let's make a little change
 
 .. code-block:: python
     :emphasize-lines: 2
@@ -307,7 +330,16 @@ The plugin marker is right solution for this case. Let's make a little change
     m = __import__('abc')
     # pyarmor: __assert_armored__(m)
 
-By plugin marker, both the plain script and the obfsucated script work as expected.
+By inline marker, both the plain script and the obfsucated script work as expected.
+
+Sometimes :option:`--assert-call` may miss some functions, in this case, using inline marker to protect them. Here is an example to protect extra function ``self.foo.meth``:
+
+.. code-block:: python
+    :emphasize-lines: 2
+
+    # pyarmor: __assert_armored__(self.foo.meth)
+    self.foo.meth(x, y, z)
+
 
 Using plugins
 =============
