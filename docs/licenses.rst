@@ -170,10 +170,10 @@ The old license could be upgraded to Pyarmor Basic freely only if it matchs thes
 
 * Following new `EULA of Pyarmor`_
 * The license no. starts with ``pyarmor-vax-``
-* The original activation file ``pyarmor-regcode-xxxx.txt`` is used not more
-  than 100 times.
+* The original activation file ``pyarmor-regcode-xxxx.txt`` is used not more than 100 times
+* No error returns by license server
 
-If it's not matched, please purchase new license to use Pyarmor latest version.
+If failed to upgrade the old license, please purchase new license to use Pyarmor latest version.
 
 Upgrading to Pyarmor Pro needs extra fees.
 
