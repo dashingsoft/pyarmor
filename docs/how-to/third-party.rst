@@ -1,5 +1,3 @@
-.. highlight:: console
-
 =================================
  Work with Third-Party Libraries
 =================================
@@ -8,6 +6,8 @@
    :depth: 2
    :local:
    :backlinks: top
+
+.. highlight:: console
 
 .. program:: pyarmor gen
 
@@ -42,45 +42,76 @@ The common solutions to fix third-party libraries issue
 - Ignore problem scripts
 
   If only a few scripts are in trouble, try to obfuscate them with ``--obf-code 0``. For example, only module ``config.py`` has problem, all the other are fine, then::
+
     $ pyarmor cfg -p myapp.config obf_code=0
     $ pyarmor gen [other options] /path/to/myapp
 
-  Another way is to copy plain script to overwite the obfsucated one directly::
+  Another way is to copy plain script to overwite the obfsucated one roughly::
 
     $ pyarmor gen [other options] /path/to/myapp
     $ cp /path/to/myapp/config.py dist/myapp/config.py
 
 - Patch third-party library
 
-Here are 2 examples
+  Here are an example
 
-.. code-block:: python
+  .. code-block:: python
 
-    @cherrypy.expose(alias='myapi')
-       @cherrypy.tools.json_out()
-       # pylint: disable=no-member
-       @cherrypy.tools.authenticate()
-       @cherrypy.tools.validateOptOut()
-       @cherrypy.tools.validateHttpVerbs(allowedVerbs=['POST'])
-       # pylint: enable=no-member
-       def abc_xyz(self, arg1, arg2):
-           """
-           This is the doc string
-           """
+      @cherrypy.expose(alias='myapi')
+         @cherrypy.tools.json_out()
+         # pylint: disable=no-member
+         @cherrypy.tools.authenticate()
+         @cherrypy.tools.validateOptOut()
+         @cherrypy.tools.validateHttpVerbs(allowedVerbs=['POST'])
+         # pylint: enable=no-member
+         def abc_xyz(self, arg1, arg2):
+             """
+             This is the doc string
+             """
 
-If call this API with alias name "myapi" it throws me 404 Error and the API's which do not have any alias name works perfectly.
+  If call this API with alias name "myapi" it throws me 404 Error and the API's which do not have any alias name works perfectly. Because ``cherrypy.expose`` decorator uses
 
-Because ``cherrypy.expose`` decorator uses
+  .. code-block:: python
 
-.. code-block:: python
+      parents = sys._getframe(1).f_locals
 
-    parents = sys._getframe(1).f_locals
+  And ``sys._getframe(1)`` return unexpected frame in obfuscated scripts. But it could be fixed by patching this decorator to
 
-And ``sys._getframe(1)`` return unexpected frame in obfuscated scripts. But it could be fixed by patching this decorator::
+  .. code-block:: python
 
-.. code-block:: python
+      parents = sys._getframe(2).f_locals
 
-    parents = sys._getframe(2).f_locals
+  .. note::
+
+      If :mod:`cheerypy` is also used by others, clone private one.
+
+Third party libraries
+=====================
+
+.. list-table:: Table-1. Third party libraries
+   :header-rows: 1
+
+   * - Package
+     - Status
+     - Remark
+   * - cherrypy
+     - [#patch]_
+     -
+   * - `pandas`_
+     - [#patch]_, [#obfcode]_
+     - use sys._getframe
+   * - playwright
+     - [#RFT]_
+     -
+
+.. rubric:: Footnotes
+
+.. [#patch] the patched packge could work with Pyarmor
+.. [#obfcode] this package only work with ``--obf-code 0``
+.. [#RFT] this package work with Pyarmor RFT mode
+
+pandas
+------
 
 Another similar example is :mod:`pandas`
 
@@ -102,12 +133,10 @@ Another similar example is :mod:`pandas`
     sampler = Sample()
     sampler.func(0.3)
 
-After obfuscated, it raises ``pandas.core.computation.ops.UndefinedVariableError: local variable 'val' is not defined``
+After obfuscated, it raises::
 
-It could be fixed by changing "sys._getframe(self.level)" to "sys._getframe(self.level+1)", "sys._getframe(self.level+2)" or "sys._getframe(self.level+3)" in scope.py of pandas.
+    pandas.core.computation.ops.UndefinedVariableError: local variable 'val' is not defined
 
-.. note::
-
-   If :mod:`pandas` is also used by others, then clone private one.
+It could be fixed by changing ``sys._getframe(self.level)`` to ``sys._getframe(self.level+1)``, ``sys._getframe(self.level+2)`` or ``sys._getframe(self.level+3)`` in ``scope.py`` of pandas.
 
 .. include:: ../_common_definitions.txt
