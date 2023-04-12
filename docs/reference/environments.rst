@@ -9,27 +9,54 @@ Building Device
 
 Building device is to run :command:`pyarmor` to geneate obfuscated scripts and all the other required files.
 
-Supported Platforms:
+Supported Python versions
+-------------------------
 
-* Windows
-* Linux
-* Darwin
+.. table:: Table-1. Supported Python Versions
+   :widths: auto
 
-Support Arches:
+   ===================  =====  =========  =========  ==========  ======  =======  ==============
+   Python Version        2.7    3.0~3.4    3.5~3.6    3.7~3.10    3.11    3.12+   Remark
+   ===================  =====  =========  =========  ==========  ======  =======  ==============
+   pyarmor 8 RFT Mode     N        N          N          Y         Y        Nx    [#]_
+   pyarmor 8 BCC Mode     N        N          N          Y         Y        Nx
+   pyarmor 8 others       N        N          Nx         Y         Y        Nx
+   pyarmor-7              Y        Y          Y          Y         N        N
+   ===================  =====  =========  =========  ==========  ======  =======  ==============
 
-* x86_64
-* x86
-* aarch64
-* armv7
+.. rubric:: notes
 
-Supported Pyton versions:
+.. [#] ``Nx`` means supported in futer
 
-* Python 3.7 ~ Python 3.11
+Supported platforms
+-------------------
+
+.. table:: Table-2. Supported Platforms
+   :widths: auto
+
+   ===================  ============  ========  =======  ============  =========  =======  =======
+   OS                     Windows           Apple                    Linux
+   -------------------  ------------  -----------------  -----------------------------------------
+   Arch                  x86/x86_64    x86_64    arm64    x86/x86_64    aarch64    armv7    armv6
+   ===================  ============  ========  =======  ============  =========  =======  =======
+   Themida Protection        Y           N         N          N           N        N        N
+   pyarmor 8 RFT Mode        Y           Y         Y          Y           Y        Y        Nx
+   pyarmor 8 BCC Mode        Y           Y         Y          Y           Y        Nx       Nx
+   pyarmor 8 others          Y           Y         Y          Y           Y        Y        Y
+   pyarmor-7 [#]_            Y           Y         Y          Y           Y        Y        Y
+   ===================  ============  ========  =======  ============  =========  =======  =======
+
+.. [#] need purchasing old license in order to use pyarmor-7 in most of platforms, and it also supports more linux arches, refer to `Pyarmor 7.x platforms`__
+
+__ https://pyarmor.readthedocs.io/en/v7.7/platforms.html
+
+Command line options
+--------------------
 
 Command line options and environment variables are described in :doc:`man`
 
-Configuration files
--------------------
+Configuration options
+---------------------
 
 There are 3 kinds of configuration files
 
@@ -37,6 +64,7 @@ There are 3 kinds of configuration files
 * local: an ini file :file:`.pyarmor/config`
 * private: each module may has one ini file in :term:`Local Configuration Path`. For example, :file:`.pyarmor/foo.rules` is private configuration of module ``foo``
 
+Use command :ref:`pyarmor cfg` to change options in configuration files.
 
 Target Device
 =============
