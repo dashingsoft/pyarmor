@@ -4,7 +4,7 @@ Insight Into RFT Mode
 
 .. highlight:: console
 
-For a simple script, pyarmor may reform the scripts automatically. In most of cases, it need extra configuration to make it works.
+For a simple script, pyarmor may reform the scripts automatically. In most of cases, it need extra work to make it works.
 
 This chapter describes how RFT mode work, and how to solve issues for complex package and scripts.
 
@@ -22,7 +22,7 @@ What're RFT mode not changed?
 
 * argument in function definition
 * keyword argument name in call
-* all the string names defined in the module attribute ``__all__``
+* all the strings defined in the module attribute ``__all__``
 
 It's simple to decide whether or not transform a single name, but it's difficult for each name in attribute chains. For example,
 
@@ -31,7 +31,9 @@ It's simple to decide whether or not transform a single name, but it's difficult
     foo().stack[2].count = 3
     (a+b).tostr().get()
 
-So how to handle attribute ``stack``, ``count``, ``tostr`` and ``get``? There are 2 methods for RFT mode to handle name in the attribute chains
+So how to handle attribute ``stack``, ``count``, ``tostr`` and ``get``? The problem is that it's impossible to confirm function return type or expression result type.In some cases, it may be valid to return different types with different arguments.
+
+There are 2 methods for RFT mode to handle name in the attribute chains which don't know parent type.
 
 - **rft-auto-exclude**
 
@@ -43,7 +45,7 @@ So how to handle attribute ``stack``, ``count``, ``tostr`` and ``get``? There ar
 
 - **rft-auto-include**
 
-  This method first renames all the functions, classes and methods, add them to include table. If same name is used in attribute chains, but can't make sure its type, leave it but log it with format ``modname:lineno:attribute chains``.
+  This method first search all the functions, classes and methods in the scripts, add them to include table, and transform all of them. If same name is used in attribute chains, but can't make sure its type, leave attribute name as it is, but log it with format ``modname:lineno:chains``.
 
   Then users manually analysis these logs, convert it to a ruler if it need to be renamed.
 
@@ -61,11 +63,11 @@ Enabled by :command:`pyarmor cfg`::
     $ pyarmor cfg enable_rft=1
     $ pyarmor gen foo.py
 
-Enable **rft-auto-include** method::
+Enable **rft-auto-include** method by disable ``rft_auto_exclude``::
 
     $ pyarmor cfg rft_auto_exclude=0
 
-Enable **rft-auto-exclude** method::
+Enable **rft-auto-exclude** method again::
 
     $ pyarmor cfg rft_auto_exclude=1
 
@@ -107,7 +109,7 @@ Enable debug mode could generate more trace log::
     trace.rft            alec.t1090:15 (exclude "wintypes LONG")
     ...
 
-This log starts with ``exclude`` means 2 words ``wintypes`` and ``LONG`` are kept
+This log starts with ``exclude`` means 2 words ``wintypes`` and ``LONG`` are excluded by refactor, do not touch them in all the attribute chains.
 
 Exclude name rule
 =================
@@ -212,7 +214,7 @@ Special for wild card form of import
 
 The wild card form of import — `from module import *` — is a special case.
 
-If module is in the obfuscated pakcage, RFT mode will parse the source and check the module’s namespace for a variable named ``__all__``
+If this module is in the obfuscated pakcage, RFT mode will parse the source and check the module’s namespace for a variable named ``__all__``
 
 If this module is outer package, RFT mode could not get the source. So RFT mode will import it and query module attribute ``__all__``. If this module could not be imported, it may raise ``ModuleNotFoundError``, please set :envvar:`PYTHONPATH` or any otherway let Python could import this module.
 
