@@ -127,7 +127,6 @@ class UnitTestCases(BaseTestCase):
 
     def test_default_restrict(self):
         args = ['g', 'samples/foo.py']
-
         self.pyarmor_gen(args)
         self._update_dist_foo()
         self.verify_dist_foo_fail()
