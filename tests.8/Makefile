@@ -76,8 +76,8 @@ platform = $(strip $(subst linux.x86,manylinux1_i686,\
 
 pkgpath := ../dist
 whlpath := ../../pytransform/publish/core/dist
-pkgpath := $(shell (test -d ${pkgpath} && echo ${pkgpath}) || echo ./buildpkg)
-whlpath := $(shell (test -d ${whlpath} && echo ${whlpath}) || echo ./buildpkg)
+pkgpath := $(shell (test -d ${pkgpath} && echo ${pkgpath}) || echo ./pkgdist)
+whlpath := $(shell (test -d ${whlpath} && echo ${whlpath}) || echo ./pkgdist)
 
 pkgfile := $(word 1,$(shell cd ${pkgpath}; ls -t pyarmor-*.tar.gz))
 testver := $(subst pyarmor-,,$(subst .tar.gz,,${pkgfile}))
