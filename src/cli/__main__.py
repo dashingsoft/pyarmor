@@ -116,7 +116,7 @@ def check_cross_platform(ctx, platforms):
         from pyarmor.cli import runtime
     except ModuleNotFoundError:
         raise CliError('cross platform need pyarmor.cli.runtime, please run '
-                       '"pip install pyarmor.cli.runtime==2.1.2" first')
+                       '"pip install pyarmor.cli.runtime==2.1.3" first')
 
     platnames = []
     for path in runtime.__path__:
@@ -606,7 +606,7 @@ def main_entry(argv):
 
     logger.info('Python %d.%d.%d', *sys.version_info[:3])
     logger.info('Pyarmor %s', ctx.version_info())
-    logger.debug('Platform %s', ctx.pyarmor_platform)
+    logger.info('Platform %s', ctx.pyarmor_platform)
 
     logger.debug('native platform %s', ctx.native_platform)
     logger.debug('home path: %s', ctx.home_path)
