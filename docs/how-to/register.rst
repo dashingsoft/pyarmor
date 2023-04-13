@@ -85,6 +85,11 @@ Check the registration information::
 
     $ pyarmor -v
 
+Registeration in Docker or CI pipeline
+--------------------------------------
+
+It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. But It's not allowed to distribute pakcage pyarmor and any Pyarmor License to customer. And don't run too many build dockers.
+
 Upgrade Pyarmor from prior to 8.0
 =================================
 

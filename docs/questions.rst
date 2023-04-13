@@ -49,6 +49,10 @@ When report :ref:`pyarmor gen` bug, please also copy the first 4 lines in the co
 License
 =======
 
+- **we use Docker to build/obfuscate the code locally then publish the Dockerfile to the client. After the build stage, the whole environment (and the license) is gone. I wonder how the workflow would be? Can I add the license file to the pipeline and register everytime and build?**
+
+  It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate application. Each build registering pyarmor with :file:`pyarmor-regfile-xxxx.zip` which is generated in initial registration. But It's not allowed to distribute pakcage pyarmor and :term:`Pyarmor Basic`, :term:`Pyarmor Pro`, :term:`Pyarmor Group` License to customer, and don't run too many build dockers.
+
 - **We are currently using a trial license for testing, but unfortunately our scripts are big and we are not able to statistically test the operation of Pyarmor. Do you have a commercial trial license for a certain trial period so that we can test the operation of Pyarmor for our scripts?**
 
   Sorry, Pyarmor is a small tool and only cost small money, there is no demo license plan.
