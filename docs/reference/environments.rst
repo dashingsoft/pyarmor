@@ -20,13 +20,9 @@ Supported Python versions
    ===================  =====  =========  =========  ==========  ======  =======  ==============
    pyarmor 8 RFT Mode     N        N          N          Y         Y        Nx    [#]_
    pyarmor 8 BCC Mode     N        N          N          Y         Y        Nx
-   pyarmor 8 others       N        N          Nx         Y         Y        Nx
+   pyarmor 8 others       N        N          N          Y         Y        Nx
    pyarmor-7              Y        Y          Y          Y         N        N
    ===================  =====  =========  =========  ==========  ======  =======  ==============
-
-.. rubric:: notes
-
-.. [#] ``Nx`` means supported in futer
 
 Supported platforms
 -------------------
@@ -46,6 +42,9 @@ Supported platforms
    pyarmor-7 [#]_            Y           Y         Y          Y           Y        Y        Y
    ===================  ============  ========  =======  ============  =========  =======  =======
 
+.. rubric:: notes
+
+.. [#] ``Nx`` means supported in futer
 .. [#] need purchasing old license in order to use pyarmor-7 in most of platforms, and it also supports more linux arches, refer to `Pyarmor 7.x platforms`__
 
 __ https://pyarmor.readthedocs.io/en/v7.7/platforms.html
