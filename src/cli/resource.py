@@ -175,8 +175,9 @@ class PathResource(Resource):
 
         def in_filter(path, name):
             fullpath = os.path.join(path, name)
+            ext = os.path.splitext(name)[1]
             return not ex_filter(path, name) and (
-                os.path.splitext(name)[1] in pyexts
+                (ext and ext in pyexts)
                 or any([fnmatch(fullpath, x) for x in includes]))
 
         def ex_filter(path, name):
