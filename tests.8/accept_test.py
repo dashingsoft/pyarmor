@@ -189,4 +189,4 @@ if __name__ == '__main__':
     loader = unittest.TestLoader()
     # loader.testMethodPrefix = 'test_mix_str'
     suite = loader.loadTestsFromTestCase(UnitTestCases)
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner().run(suite)

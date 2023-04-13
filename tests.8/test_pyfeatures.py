@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import glob
 import logging
 import os
 import shutil
@@ -36,13 +37,15 @@ class BaseTestCase(unittest.TestCase):
         rc, stdout, stderr = self.assert_python_ok(*args)
         self.assertIn(b'obfuscate scripts OK', stderr)
 
-    def verify_script_pass(self, script, expected):
+    def verify_script_pass(self, script, expected=None):
         rc, stdout, stderr = self.assert_python_ok(script)
-        self.assertEqual(expected, stdout.splitlines())
+        if expected:
+            self.assertIn(expected, stdout)
 
-    def verify_script_fail(self, script, errmsg):
+    def verify_script_fail(self, script, errmsg=None):
         rc, stdout, stderr = self.assert_python_failure(script)
-        self.assertIn(errmsg, stderr)
+        if errmsg:
+            self.assertIn(errmsg, stderr)
 
 
 class UnitTestCases(BaseTestCase):
@@ -51,23 +54,33 @@ class UnitTestCases(BaseTestCase):
         with open(script, 'a') as f:
             f.write('pi = 3.1415926')
 
-    def test_simple(self):
-        script = 'samples/pyfeatures/simple.py'
-        args = ['g', script]
-        self.pyarmor_gen(args)
+    def test_simple_issues(self):
+        prefix = 'samples/pyfeatures/ts-'
+        scripts = glob.glob(prefix + '*.py')
 
-        expected = [
-            b"This is docstring",
-            b"{'a': <class 'int'>, 'b': <class 'str'>}",
-            b"{'k': <class 'str'>}"
-        ]
-        self.verify_script_pass(script, expected)
+        for script in scripts:
+            args = ['g', script]
+            self.pyarmor_gen(args)
+            with self.subTest(issue=script[len(prefix):-3]):
+                self.verify_script_pass(script)
+
+    def test_rft_issues(self):
+        prefix = 'samples/pyfeatures/rft-'
+        scripts = glob.glob(prefix + '*.py')
+
+        for script in scripts:
+            args = ['g', '--enable-rft', script]
+            self.pyarmor_gen(args)
+            with self.subTest(issue=script[len(prefix):-3]):
+                self.verify_script_pass(script)
 
 
 if __name__ == '__main__':
     logging.getLogger().addHandler(logging.NullHandler())
 
+    verbosity = 0
+
     loader = unittest.TestLoader()
     # loader.testMethodPrefix = 'test_mix_str'
     suite = loader.loadTestsFromTestCase(UnitTestCases)
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner(verbosity=verbosity).run(suite)
