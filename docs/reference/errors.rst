@@ -113,4 +113,21 @@ By searching error message in google or any other search engine to find the solu
   2. Ask question in MSDN
   3. Google this error message
 
+- **Library not loaded: '@rpath/Frameworks/Python.framework/Versions/3.9/Python'**
+
+  When Python is not installed in the standard path, or this Python is not Framework, pyarmor reports this error. The solution is using ``install_name_tool`` to change ``pytransform3.so``. For example, in `anaconda3` with Python 3.9, first search which CPython library is installed::
+
+    $ otool -L /Users/my_username/anaconda3/bin/python
+
+  Find any line includes ``Python.framework``, ``libpython3.9.dylib``, or ``libpython3.9.so``, the filename in this line is CPython library. Or find it in the path::
+
+    $ find /Users/my_username/anaconda3 -name "Python.framework/Versions/3.9/Python"
+    $ find /Users/my_username/anaconda3 -name "libpython3.9.dylib"
+    $ find /Users/my_username/anaconda3 -name "libpython3.9.so"
+
+  Once find CPython library, using ``install_name_tool`` to change and codesign it again::
+
+    $ install_name_tool -change @rpath/Frameworks/Python.framework/Versions/3.9/Python /Users/my_username/anaconda3/lib/libpython3.9.dylib /Users/my_username/anaconda3/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
+    $ codesign -f -s - /Users/my_username/anaconda3/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
+
 .. include:: ../_common_definitions.txt
