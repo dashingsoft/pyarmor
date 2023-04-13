@@ -39,6 +39,13 @@ Before ask question, please try these solutions:
 
 Please report bug in `issues`_ and ask questions in `discussions`_
 
+When report :ref:`pyarmor gen` bug, please also copy the first 4 lines in the console to issue report::
+
+    $ pyarmor gen foo.py
+    INFO     Python 3.10.0
+    INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
+    INFO     Platform darwin.x86_64
+
 License
 =======
 
