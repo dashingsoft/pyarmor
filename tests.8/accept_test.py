@@ -29,6 +29,9 @@ class BaseTestCase(unittest.TestCase):
         self.local_path = '.pyarmor'
         self.default_output = 'dist'
 
+    def is_trial(self):
+        return not os.path.exists(os.path.join(self.home, 'license.lic'))
+
     def tearDown(self):
         shutil.rmtree(self.local_path, ignore_errors=True)
         shutil.rmtree(self.default_output, ignore_errors=True)
@@ -119,9 +122,35 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @unittest.skip("not trial")
     def test_mix_str(self):
+        if self.is_trial():
+            self.skipTest('trial')
+
         args = ['g', '--mix-str', 'samples/foo.py']
+        self.pyarmor_gen(args)
+        self.verify_dist_foo()
+
+    def test_enable_bcc(self):
+        if self.is_trial():
+            self.skipTest('trial')
+
+        args = ['g', '--enable-bcc', 'samples/foo.py']
+        self.pyarmor_gen(args)
+        self.verify_dist_foo()
+
+    def test_enable_rft(self):
+        if self.is_trial():
+            self.skipTest('trial')
+
+        args = ['g', '--enable-rft', 'samples/foo.py']
+        self.pyarmor_gen(args)
+        self.verify_dist_foo()
+
+    def test_enable_rft_bcc(self):
+        if self.is_trial():
+            self.skipTest('trial')
+
+        args = ['g', '--enable-rft', '--enable-bcc', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 

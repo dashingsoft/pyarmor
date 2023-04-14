@@ -115,4 +115,4 @@ ptest:
 	${PYTHON} test_pyfeatures.py
 
 clean:
-	rm -rf ${homepath} ${localpath} ./pyarmor ./pyarmor-*
+	rm -rf ${homepath} ${localpath} ./pyarmor ./pyarmor-* ./pyarmor.*.log
