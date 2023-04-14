@@ -85,6 +85,15 @@ License
 
   If each product in a suite of products is functionally complementary, for example, product “Editor” for editing the file, product “Viewer” for view the file, they’re considered as “one product"
 
+Upgrading
+---------
+
+- **Can we obfuscate our codebase with the same level as current? (we are obfuscating our code using super plus mode ("--advanced 5"). Is that available on PyArmor Basic? If we upgrade the old license, will the current license expire? (no more available in terms of PyArmor v7? How long is the current license valid? Is there a published end-of-support schedule?**
+
+  The old license is valid for ever. In this case need not upgrade old license to Pyarmor Basic licnse, just install Pyarmor 8.x, and using :command:`pyarmor-7` with old license.
+
+  Check :doc:`licenses` for more information about upgrading
+
 Purchasing
 ==========
 
