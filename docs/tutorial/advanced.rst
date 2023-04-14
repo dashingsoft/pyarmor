@@ -237,6 +237,10 @@ Or reset this option::
 
 After the option is changed, obfuscating the script again to make it effects.
 
+.. note::
+
+   This only works for execute the obfusated scripts by Python interpreter directly. If :option:`--pack` is used, the script is loaded by `PyInstaller`_ loader, it may not work as expected.
+
 Filter mix string
 =================
 
