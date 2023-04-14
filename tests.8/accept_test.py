@@ -22,6 +22,16 @@ def metricmethod(func):
     return wrap
 
 
+def skip_protest(func):
+
+    def wrap(self, *args, **kwargs):
+        if self.is_trial():
+            self.skipTest('pro case')
+        func(self, *args, **kwargs)
+
+    return wrap
+
+
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -58,7 +68,8 @@ class BaseTestCase(unittest.TestCase):
             script = 'dist/foo.py'
         assert_python_ok = metricmethod(self.assert_python_ok)
         rc, stdout, stderr = assert_python_ok(script)
-        self.assertEqual(stdout, b'hello world\npass: abcxyz\n2 + 6 = 8\n')
+        self.assertEqual(stdout.replace(b'\r\n', b'\n'),
+                         b'hello world\npass: abcxyz\n2 + 6 = 8\n')
 
     def verify_dist_foo_fail(self, script=None, errmsg=None):
         if script is None:
@@ -78,7 +89,7 @@ class BaseTestCase(unittest.TestCase):
                 )
                 f.write('\n'.join(lines))
         rc, stdout, stderr = self.assert_python_ok(script)
-        self.assertEqual(stdout, b'0 1 1 \n')
+        self.assertEqual(stdout.strip(), b'0 1 1')
 
     def verify_dist_joker_fail(self, script=None):
         if script is None:
@@ -122,34 +133,26 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
+    @skip_protest
     def test_mix_str(self):
-        if self.is_trial():
-            self.skipTest('trial')
-
         args = ['g', '--mix-str', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
+    @skip_protest
     def test_enable_bcc(self):
-        if self.is_trial():
-            self.skipTest('trial')
-
         args = ['g', '--enable-bcc', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
+    @skip_protest
     def test_enable_rft(self):
-        if self.is_trial():
-            self.skipTest('trial')
-
         args = ['g', '--enable-rft', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
+    @skip_protest
     def test_enable_rft_bcc(self):
-        if self.is_trial():
-            self.skipTest('trial')
-
         args = ['g', '--enable-rft', '--enable-bcc', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
