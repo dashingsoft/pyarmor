@@ -8,10 +8,10 @@
    topic/obfuscation
    topic/obfuscated-script
    topic/differences
-   topic/localization
    topic/repack
    topic/rftmode
    topic/bccmode
    topic/performance
+   topic/localization
 
 .. include:: _common_definitions.txt

@@ -20,6 +20,14 @@
     A zip file generated after initial registration is successful. It's used to
     register :term:`Pyarmor License` excpet initial registration.
 
+  Plugin
+
+    A python script or function will be called in building stage to do some customization work.
+
+  Hook
+
+    A python script is embedded into obfuscated script or runtime files to do some extra work
+
   Pyarmor
 
     Pyarmor is product domain, the goal is to provide functions

@@ -4,10 +4,12 @@
 
 .. highlight:: none
 
-Building Device
-===============
+Building Device for pyarmor
+===========================
 
 Building device is to run :command:`pyarmor` to geneate obfuscated scripts and all the other required files.
+
+Here list anything related to :command:`pyarmor`. :command:`pyarmor` only run in the `supported platforms`_ by `supported Python versions`_. `Command line options`_, `configuration options`_, `plugin and hook`_ control how to generate obfuscated scripts and runtime files. A few environment variables changes :command:`pyarmor` behaviours.
 
 Supported Python versions
 -------------------------
@@ -65,12 +67,19 @@ There are 3 kinds of configuration files
 
 Use command :ref:`pyarmor cfg` to change options in configuration files.
 
-Target Device
-=============
+Plugin and hook
+---------------
+
+Target Device for obfuscated scripts
+====================================
 
 Target device is to run the obfuscated scripts.
 
-Support platforms, arches and Python versions are same as `Building device`_
+Do not install package pyarmor in the target device.
+
+Support platforms, arches and Python versions are same as `Building device for pyarmor`_
+
+The obfuscated scripts may use a few :mod:`sys` attributes, and a few environment variables.
 
 :attr:`sys._MEIPASS`
 
@@ -95,5 +104,81 @@ Support platforms, arches and Python versions are same as `Building device`_
 .. envvar:: PYARMOR_RKEY
 
       Set search path for :term:`outer key`
+
+Specialized builtin functions
+-----------------------------
+
+.. versionadded:: 8.x
+                  This feature is still not implemented
+
+There are 2 specialized builtin functions, both of them could be called without import in the obfuscated scripts.
+
+Generally they're used with inline marker or in the hook scripts.
+
+.. function:: __pyarmor__(arg, kwarg, name, flag)
+
+   `name` must be byte string ``b'hdinfo'`` or ``b'keyinfo'``
+
+   `flag` must be ``1``
+
+   When `name` is ``b'hdinfo'``, call it to get hardware information.
+
+   `arg` could be
+
+   - 0: get the serial number of first harddisk
+   - 1: get mac address of first network card
+   - 2: get ipv4 address of first network card
+   - 3: get target machine name
+
+   For example,
+
+   .. code-block:: python
+
+         __pyarmor__(0, None, b'hdinfo', 1)
+         __pyarmor__(1, None, b'hdinfo', 1)
+
+   In Linux, `kwarg` is used to get named network card or named harddisk. For example:
+
+   .. code-block:: python
+
+         __pyarmor__(0, name="/dev/vda2", b'hdinfo', 1)
+         __pyarmor__(1, name="eth2", b'hdinfo', 1)
+
+   In Windows, `kwarg` is used to get all network cards and harddisks. For example:
+
+   .. code-block:: python
+
+         __pyarmor__(0, name="/0", b'hdinfo', 1)    # First disk
+         __pyarmor__(0, name="/1", b'hdinfo', 1)    # Second disk
+
+         __pyarmor__(1, name="*", b'hdinfo', 1)
+         __pyarmor__(1, name="*", b'hdinfo', 1)
+
+
+   When `name` is ``b'keyinfo'``, call it to query user data in the runtime key.
+
+   For example,
+
+   .. code-block:: python
+
+         __pyarmor__(1, None, b'keyinfo', 1)    # return expired date
+         __pyarmor__(2, None, b'keyinfo', 1)    # return user data
+
+   Raise :exc:`RuntimeError` if something is wrong.
+
+.. function:: __assert_armored__(arg)
+
+   `arg` is a module or callable object, if `arg` is obfuscated, it return `arg` self, otherwise, raise protection exception. For example
+
+.. code-block:: python
+
+    m = __import__('abc')
+    __assert_armored__(m)
+
+    def hello(msg):
+        print(msg)
+
+    __assert_armored__(hello)
+    hello('abc')
 
 .. include:: ../_common_definitions.txt

@@ -15,6 +15,8 @@ Before ask question, please try these solutions:
 
 - Check :doc:`reference/errors`
 
+- If you have trouble in pack, check :doc:`topic/repack` first
+
 - If you have trouble in :term:`RFT Mode`, check :ref:`using rftmode` first
 
 - If you have trouble in :term:`BCC Mode`, check :ref:`using bccmode` first
@@ -39,9 +41,9 @@ Before ask question, please try these solutions:
 
 Please report bug in `issues`_ and ask questions in `discussions`_
 
-When report :ref:`pyarmor gen` bug, please also copy the first 4 lines in the console to issue report::
+When report bug in `issues`_, please copy the whole command line :command:`pyarmor gen` and first 4 lines in the console, do not mask anything, and do not paste snapshot image here::
 
-    $ pyarmor gen foo.py
+    $ pyarmor gen -O dist --assert-call foo.py
     INFO     Python 3.10.0
     INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
