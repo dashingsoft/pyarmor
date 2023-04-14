@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Report a bug of pyarmor
-title: "[BUG]"
+title: "[BUG] `Error message`"
 labels: bug
 assignees: ''
 
@@ -10,7 +10,7 @@ assignees: ''
 Please read this first before report any issue
 https://pyarmor.readthedocs.io/en/latest/questions.html
 
-Please copy the whole command line `pyarmor gen` and first 4 lines in the console, do not mask anything, and do not paste snapshot image here
+Please copy the whole command line `pyarmor gen` and first 4 lines in the console, do not mask anything, and do not paste snapshot image
 
 ```
 $ pyarmor gen -O dist --assert-call foo.py
