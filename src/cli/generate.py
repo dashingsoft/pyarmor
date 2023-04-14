@@ -94,7 +94,7 @@ class Builder(object):
         shutil.rmtree(build)
 
     def _obfuscate_scripts(self):
-        rev = self.ctx.version_info(verbose=2)
+        rev = self.ctx.version_info()
         template = self.ctx.bootstrap_template
         relative = self.ctx.import_prefix
         pkgname = self.ctx.runtime_package + self.ctx.runtime_suffix
