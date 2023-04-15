@@ -317,9 +317,6 @@ class Context(object):
         return self._check_logpath(
             self.cfg['logging'].get('trace_logfile', 'pyarmor.trace.log'))
 
-    def trace_rftfile(self, name):
-        return self._check_logpath(os.path.join(self.local_path, 'rft', name))
-
     def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
 
@@ -524,3 +521,22 @@ class Context(object):
             cfg = self._named_config(name, encoding=encoding)
             if cfg.has_section('runtime.message'):
                 return cfg
+    #
+    # RFT settings
+    #
+
+    def rft_output_script(self, name):
+        return self._check_logpath(os.path.join(self.local_path, 'rft', name))
+
+    def rft_set_exclude_table(self, encoding=None):
+        filename = os.path.join(self.local_path, 'rft', 'exclude_table')
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w', encoding=encoding) as f:
+            f.write(' '.join(self.rft_auto_excludes))
+
+    def rft_get_exclude_table(self, encoding=None):
+        filename = os.path.join(self.local_path, 'rft', 'exclude_table')
+        if os.path.exists(filename):
+            with open(filename, encoding=encoding) as f:
+                return f.read().split()
+        return []
