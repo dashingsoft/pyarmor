@@ -3,7 +3,6 @@ import logging
 __VERSION__ = '8.1'
 
 logger = logging.getLogger('cli')
-devlog = logging.getLogger('trace.dev')
 
 
 def resoptions(meth):
