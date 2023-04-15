@@ -39,8 +39,8 @@ def str_opt(k, v, n=30):
 
 class Configer(object):
 
-    SECTIONS = 'pyarmor', 'logging', 'finder', 'builder', \
-        'pack', 'bcc', 'rft', 'mix.str', 'assert.call', 'assert.import'
+    SECTIONS = 'pyarmor', 'logging', 'finder', 'builder', 'runtime', \
+        'pack', 'bcc', 'mix.str', 'assert.call', 'assert.import'
 
     def __init__(self, ctx, encoding=None):
         self.ctx = ctx
@@ -261,7 +261,7 @@ class Configer(object):
             prev, op = None, ''
             for opt in options:
                 i = opt.find('=')
-                if i > -1:
+                if i > 0:
                     pairs.append([opt[:i], opt[i+1:]])
                 elif opt in ('+', '=', '-', '^'):
                     op = opt
