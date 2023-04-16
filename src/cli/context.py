@@ -529,13 +529,13 @@ class Context(object):
         return self._check_logpath(os.path.join(self.local_path, 'rft', name))
 
     def rft_set_exclude_table(self, encoding=None):
-        filename = os.path.join(self.local_path, 'rft', 'exclude_table')
+        filename = os.path.join(self.local_path, 'rft_exclude_table')
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, 'w', encoding=encoding) as f:
             f.write(' '.join(self.rft_auto_excludes))
 
     def rft_get_exclude_table(self, encoding=None):
-        filename = os.path.join(self.local_path, 'rft', 'exclude_table')
+        filename = os.path.join(self.local_path, 'rft_exclude_table')
         if os.path.exists(filename):
             with open(filename, encoding=encoding) as f:
                 return f.read().split()
