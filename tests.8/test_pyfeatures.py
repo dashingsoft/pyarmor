@@ -55,7 +55,7 @@ class UnitTestCases(BaseTestCase):
             f.write('pi = 3.1415926')
 
     def test_simple_issues(self):
-        prefix = 'samples/pyfeatures/ts-'
+        prefix = 'samples/pyfeatures/is_'
         scripts = glob.glob(prefix + '*.py')
 
         for script in scripts:
@@ -65,7 +65,7 @@ class UnitTestCases(BaseTestCase):
                 self.verify_script_pass(script)
 
     def test_rft_issues(self):
-        prefix = 'samples/pyfeatures/rft-'
+        prefix = 'samples/pyfeatures/rft_'
         scripts = glob.glob(prefix + '*.py')
 
         for script in scripts:
