@@ -57,12 +57,12 @@ class UnitTestCases(BaseTestCase):
     def test_simple_issues(self):
         prefix = 'samples/pyfeatures/is_'
         scripts = glob.glob(prefix + '*.py')
-
+        expected = 'All test passed'
         for script in scripts:
             args = ['g', script]
             self.pyarmor_gen(args)
             with self.subTest(issue=script[len(prefix):-3]):
-                self.verify_script_pass(script)
+                self.verify_script_pass(script, expected)
 
     def test_rft_issues(self):
         prefix = 'samples/pyfeatures/rft_'
