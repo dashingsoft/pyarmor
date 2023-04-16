@@ -547,4 +547,6 @@ class Context(object):
 
     @property
     def bcc_build_path(self):
-        return self._check_logpath(os.path.join(self.local_path, 'bcc'))
+        path = os.path.join(self.local_path, 'bcc')
+        os.makedirs(path, exist_ok=True)
+        return path
