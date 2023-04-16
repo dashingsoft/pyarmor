@@ -540,3 +540,11 @@ class Context(object):
             with open(filename, encoding=encoding) as f:
                 return f.read().split()
         return []
+
+    #
+    # BCC settings
+    #
+
+    @property
+    def bcc_build_path(self):
+        return self._check_logpath(os.path.join(self.local_path, 'bcc'))
