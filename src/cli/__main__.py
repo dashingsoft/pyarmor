@@ -30,7 +30,7 @@ from .register import Register, WebRegister
 from .config import Configer
 from .shell import PyarmorShell
 
-logger = logging.getLogger('Pyarmor')
+logger = logging.getLogger('cli')
 
 
 def _cmd_gen_key(builder, options):
