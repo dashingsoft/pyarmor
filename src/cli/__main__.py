@@ -112,11 +112,18 @@ def format_gen_args(ctx, args):
 
 
 def check_cross_platform(ctx, platforms):
+    rtver = ctx.cfg.get('pyarmor', 'cli.runtime')
+    cmd = 'pip install pyarmor.cli.runtime~=%s.0' % rtver
     try:
         from pyarmor.cli import runtime
-    except ModuleNotFoundError:
-        raise CliError('cross platform need pyarmor.cli.runtime, please run '
-                       '"pip install pyarmor.cli.runtime==2.1.6" first')
+    except (ImportError, ModuleNotFoundError):
+        logger.info('cross platform need pyarmor.cli.runtime')
+        logger.info('please run "%s" to fix it', cmd)
+        raise CliError('no package pyarmor.cli.runtime found')
+
+    if runtime.__VERSION__ != rtver:
+        logger.info('please run "%s" to fix it', cmd)
+        raise CliError('unexpected pyarmor.cli.runtime version')
 
     platnames = []
     for path in runtime.__path__:
