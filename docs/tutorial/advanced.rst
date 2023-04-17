@@ -94,56 +94,28 @@ transform to
 
     make_scanner = pyarmor__1
 
-For a simple script, Pyarmor may transform the script automatically. In most of cases, it need add some rulers manually to make refactor works.
-
-When something is wrong, first enable trace mode::
-
-    $ pyarmor cfg enable_trace=1 trace_rft=1
-
-Then run::
-
-    $ pyarmor gen --enable-rft foo.py
-
-Trace mdoe could generate the result script in the path ``.pyarmor/rft``::
-
-    $ cat .pyarmor/rft/foo.py
-
-And also generate trace log ``.pyarmor/pyarmor.trace.log``::
-
-    $ cat .pyarmor/pyarmor.trace.log
-
-There are 2 kinds of rft log::
-
-    $ grep trace.rft .pyarmor/pyarmor.trace.log
-
-    trace.rft            alec.t1090:32 (! self.dwFlags)
-    trace.rft            alec.t1090:80 (self.width->self.pyarmor__21)
-
-The first log says in the ``alec/t1090.py``, at line 32 ``self.dwFlags`` isn't changed.
-
-The second log says at line 80 ``self.width`` transforms to ``self.pyarmor__21``
-
-Now run the obfuscated script again::
+Now run the obfuscated script::
 
     $ python dist/foo.py
 
-If RFT script complains of name not found error, just exclude this name. For example, if no found name ``mouse_keybd``, exclude this name by this command::
+If want to know what're refacted exactly, enable trace rft to generate transformed script [#]_::
 
-    $ pyarmor cfg rft_excludes "mouse_keybd"
+    $ pyarmor cfg trace_rft=1
+    $ pyarmor gen --enable-rft foo.py
 
-If no found name like ``pyarmor__22``, find the original name in the trace log::
+The transformed script will be stored in the path ``.pyarmor/rft``::
 
-    $ grep pyarmor__22 .pyarmor/pyarmor.trace.log
+    $ cat .pyarmor/rft/foo.py
 
-    trace.rft            alec.t1090:65 (self.height->self.pyarmor__22)
-    trace.rft            alec.t1090:81 (self.height->self.pyarmor__22)
+For a simple script, Pyarmor could transform the script automatically. But for a complex script, it may raise exception about name binding. For example::
 
-From search result, we know ``height`` is the source of ``pyarmor__22``, let's append it to exclude table::
+    $ python dist/foo.py
 
-    $ pyarmor cfg rft_excludes +"height"
+    AttributeError: module 'xml.etree.ElementTree' has no attribute 'register_namespace'
 
-Test it again::
+Try to exclude this name, that is, do not transform it::
 
+    $ pyarmor cfg rft_excludes + "register_namespace"
     $ pyarmor gen --enable-rft foo.py
     $ python dist/foo.py
 
@@ -152,6 +124,7 @@ Repeat these steps to exclude all the problem names, until it works.
 If it still doesn't work, or you need transform more names, refer to :doc:`../topic/rftmode` to learn more usage.
 
 .. [#] This feature is only available for :term:`Pyarmor Pro`.
+.. [#] This feature only works for Python 3.9+
 
 .. _using bccmode:
 
@@ -239,7 +212,7 @@ After the option is changed, obfuscating the script again to make it effects.
 
 .. note::
 
-   This only works for execute the obfusated scripts by Python interpreter directly. If :option:`--pack` is used, the script is loaded by `PyInstaller`_ loader, it may not work as expected.
+   This only works for execute the obfuscated scripts by Python interpreter directly. If :option:`--pack` is used, the script is loaded by `PyInstaller`_ loader, it may not work as expected.
 
 Filter mix string
 =================

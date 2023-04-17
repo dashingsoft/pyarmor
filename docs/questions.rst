@@ -41,7 +41,7 @@ Before ask question, please try these solutions:
 
 Please report bug in `issues`_ and ask questions in `discussions`_
 
-When report bug in `issues`_, please copy the whole command line :command:`pyarmor gen` and first 4 lines in the console, do not mask anything, and do not paste snapshot image here::
+When report bug in `issues`_, please copy the whole command line :command:`pyarmor gen` and first 4 lines in the console, do not mask anything, and do not paste snapshot image::
 
     $ pyarmor gen -O dist --assert-call foo.py
     INFO     Python 3.10.0

@@ -9,7 +9,13 @@ Building Device for pyarmor
 
 Building device is to run :command:`pyarmor` to geneate obfuscated scripts and all the other required files.
 
-Here list anything related to :command:`pyarmor`. :command:`pyarmor` only run in the `supported platforms`_ by `supported Python versions`_. `Command line options`_, `configuration options`_, `plugin and hook`_ control how to generate obfuscated scripts and runtime files. A few environment variables changes :command:`pyarmor` behaviours.
+Here list everything related to :command:`pyarmor`.
+
+:command:`pyarmor` only run in the `supported platforms`_ by `supported Python versions`_.
+
+Command line options, `configuration options`_, `plugin and hook`_  and a few environment variables control how to generate obfuscated scripts and runtime files.
+
+All the command line options and environment variables are described in :doc:`man`
 
 Supported Python versions
 -------------------------
@@ -20,10 +26,10 @@ Supported Python versions
    ===================  =====  =========  =========  ==========  ======  =======  ==============
    Python Version        2.7    3.0~3.4    3.5~3.6    3.7~3.10    3.11    3.12+   Remark
    ===================  =====  =========  =========  ==========  ======  =======  ==============
-   pyarmor 8 RFT Mode     N        N          N          Y         Y        Nx    [#]_
-   pyarmor 8 BCC Mode     N        N          N          Y         Y        Nx
-   pyarmor 8 others       N        N          N          Y         Y        Nx
-   pyarmor-7              Y        Y          Y          Y         N        N
+   pyarmor 8 RFT Mode    No       No         No          Y         Y       N/y      [#]_
+   pyarmor 8 BCC Mode    No       No         No          Y         Y       N/y
+   pyarmor 8 others      No       No         No          Y         Y       N/y
+   pyarmor-7             Y        Y          Y           Y         No      No
    ===================  =====  =========  =========  ==========  ======  =======  ==============
 
 Supported platforms
@@ -37,24 +43,23 @@ Supported platforms
    -------------------  ------------  -----------------  -----------------------------------------
    Arch                  x86/x86_64    x86_64    arm64    x86/x86_64    aarch64    armv7    armv6
    ===================  ============  ========  =======  ============  =========  =======  =======
-   Themida Protection        Y           N         N          N           N        N        N
-   pyarmor 8 RFT Mode        Y           Y         Y          Y           Y        Y        Nx
-   pyarmor 8 BCC Mode        Y           Y         Y          Y           Y        Nx       Nx
-   pyarmor 8 others          Y           Y         Y          Y           Y        Y        Y
-   pyarmor-7 [#]_            Y           Y         Y          Y           Y        Y        Y
+   Themida Protection        Y           No        No         No          No       No        No
+   pyarmor 8 RFT Mode        Y           Y         Y          Y           Y        Y         N/y
+   pyarmor 8 BCC Mode        Y           Y         Y          Y           Y        N/y       No
+   pyarmor 8 others          Y           Y         Y          Y           Y        Y         Y
+   pyarmor-7 [#]_            Y           Y         Y          Y           Y        Y         Y
    ===================  ============  ========  =======  ============  =========  =======  =======
 
 .. rubric:: notes
 
-.. [#] ``Nx`` means supported in futer
-.. [#] need purchasing old license in order to use pyarmor-7 in most of platforms, and it also supports more linux arches, refer to `Pyarmor 7.x platforms`__
+.. [#] ``N/y`` means not yet now, but will be supported in futer
+.. [#] pyarmor-7 also supports more linux arches, refer to `Pyarmor 7.x platforms`__.
+
+.. important::
+
+   pyarmor-7 is bug fixed Pyarmor 7.x version, it's same as Pyarmor 7.x, and only works with old license. Do not use it with new license, it may report ``HTTP 401 error``.
 
 __ https://pyarmor.readthedocs.io/en/v7.7/platforms.html
-
-Command line options
---------------------
-
-Command line options and environment variables are described in :doc:`man`
 
 Configuration options
 ---------------------
@@ -70,12 +75,16 @@ Use command :ref:`pyarmor cfg` to change options in configuration files.
 Plugin and hook
 ---------------
 
+.. versionadded:: 8.x
+                  This feature is still not implemented
+
+
 Target Device for obfuscated scripts
 ====================================
 
 Target device is to run the obfuscated scripts.
 
-Do not install package pyarmor in the target device.
+Do not install pyarmor in the target device.
 
 Support platforms, arches and Python versions are same as `Building device for pyarmor`_
 
@@ -161,14 +170,13 @@ Generally they're used with inline marker or in the hook scripts.
 
    .. code-block:: python
 
-         __pyarmor__(1, None, b'keyinfo', 1)    # return expired date
-         __pyarmor__(2, None, b'keyinfo', 1)    # return user data
+         __pyarmor__(None, None, b'keyinfo', 1)   # return user data
 
    Raise :exc:`RuntimeError` if something is wrong.
 
 .. function:: __assert_armored__(arg)
 
-   `arg` is a module or callable object, if `arg` is obfuscated, it return `arg` self, otherwise, raise protection exception. For example
+   `arg` is a module or callable object, if `arg` is obfuscated, it return `arg` self, otherwise, raise protection error. For example
 
 .. code-block:: python
 

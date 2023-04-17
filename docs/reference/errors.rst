@@ -4,6 +4,8 @@
 
 .. highlight:: none
 
+.. program:: pyarmor gen
+
 Here list all the errors when running :command:`pyarmor` or obfuscated scripts.
 
 If something is wrong, search error message here to find the reason.
@@ -36,6 +38,11 @@ Here list all the errors when run :command:`pyarmor` in building machine
        Pyarmor need query harddisk serial number, mac address etc.
 
        If it could not get hardware information, it complains of this.
+
+   * - relative import "%s" overflow
+     - Obfuscating `.py` script which uses relative import
+
+       Solution: obfuscating the whole package (path), instead of one module (file) separately
 
 The following errors may occur when registering Pyarmor
 
@@ -71,6 +78,8 @@ The following errors may occur when registering Pyarmor
 Runtime Errors
 ==============
 
+Here list error messages reported by pyarmor
+
 .. list-table:: Table-2. Runtime Errors of Obfuscated Scripts
    :name: runtime errors
    :widths: 10 20
@@ -97,6 +106,23 @@ Runtime Errors
        2. can not get runtime package path
    * - the format of obfuscated function is incorrect
      -
+
+Here list error messages reported by Python interpreter, generelly they are not pyarmor issues. Please consult Python documentation or google error message to fix them.
+
+.. list-table:: Table-2.1 Other Errors of Obfuscated Scripts
+   :name: other runtime errors
+   :widths: 10 20
+   :header-rows: 1
+
+   * - Error Message
+     - Reasons
+   * - ImportError: attempted relative import with no known parent package
+     - 1. ``from .pyarmor_runtime_000000 import __pyarmor__``
+
+           Do not use :option:`-i` or :option:`--prefix` if you don't know what they're doing.
+
+       For all the other relative import issue, please check Pythont documentation to learn about relative import knowledge, then check Pyarmor :doc:`man` to understand how to generate runtime packages in different locations.
+
 
 Outer Errors
 ============
