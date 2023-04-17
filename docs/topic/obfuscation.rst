@@ -2,9 +2,12 @@
 Insight Into Obfuscation
 ========================
 
-.. highlight:: console
+.. highlight:: bash
 
-Filter scripts by finder::
+TODO:
+
+..
+  Filter scripts by finder
 
   # Script ext is not .py, list it in command line
   pyarmor gen main.py my.config
@@ -19,8 +22,6 @@ Filter scripts by finder::
   # If don't want to obfuscate .py, but need copy it to output, list it here
   pyarmor cfg finder:data_files="a.py lib/readme.txt"
 
-It following :mod:`fnmatch` ruler to match pattern.
-
-
+  It following :mod:`fnmatch` ruler to match pattern.
 
 .. include:: ../_common_definitions.txt

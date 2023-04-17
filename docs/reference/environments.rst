@@ -1,17 +1,14 @@
-==============
- Environments
-==============
-
 .. highlight:: none
 
-Building Device for pyarmor
-===========================
+=======================
+ Building Environments
+=======================
 
-Building device is to run :command:`pyarmor` to geneate obfuscated scripts and all the other required files.
+Command :command:`pyarmor` runs in :term:`build machine` to geneate obfuscated scripts and all the other required files.
 
 Here list everything related to :command:`pyarmor`.
 
-:command:`pyarmor` only run in the `supported platforms`_ by `supported Python versions`_.
+Above all it only runs in the `supported platforms`_ by `supported Python versions`_.
 
 Command line options, `configuration options`_, `plugin and hook`_  and a few environment variables control how to generate obfuscated scripts and runtime files.
 
@@ -79,16 +76,13 @@ Plugin and hook
                   This feature is still not implemented
 
 
-Target Device for obfuscated scripts
-====================================
+=================================
+ Obfuscated Scripts Environments
+=================================
 
-Target device is to run the obfuscated scripts.
+Obfuscated scripts run in :term:`target device`, support platforms, arches and Python versions are same as `Building Environments`_
 
-Do not install pyarmor in the target device.
-
-Support platforms, arches and Python versions are same as `Building device for pyarmor`_
-
-The obfuscated scripts may use a few :mod:`sys` attributes, and a few environment variables.
+A few :mod:`sys` attributes and environment variables may change behaviours of obfuscated scripts.
 
 :attr:`sys._MEIPASS`
 
@@ -96,17 +90,17 @@ The obfuscated scripts may use a few :mod:`sys` attributes, and a few environmen
 
 :attr:`sys._PARLANG`
 
-      It's used to set language for runtime error message.
+      It's used to set runtime error language.
 
       If it's set, :envvar:`LANG` is ignored.
 
 .. envvar:: LANG
 
-      OS environment variable, used to select language for runtime error message.
+      OS environment variable, used to select runtime error language.
 
 .. envvar:: PYARMOR_LANG
 
-      It's used to set language for runtime error message.
+      It's used to set language runtime error language.
 
       If it's set, both :envvar:`LANG` and :attr:`sys._PARLANG` are ignored.
 
@@ -120,7 +114,7 @@ Specialized builtin functions
 .. versionadded:: 8.x
                   This feature is still not implemented
 
-There are 2 specialized builtin functions, both of them could be called without import in the obfuscated scripts.
+There are 2 specialized builtin functions, both of them could be used without import in the obfuscated scripts.
 
 Generally they're used with inline marker or in the hook scripts.
 
@@ -170,7 +164,7 @@ Generally they're used with inline marker or in the hook scripts.
 
    .. code-block:: python
 
-         __pyarmor__(None, None, b'keyinfo', 1)   # return user data
+         __pyarmor__(None, None, b'keyinfo', 1)   # return user data (bytes)
 
    Raise :exc:`RuntimeError` if something is wrong.
 

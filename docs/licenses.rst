@@ -154,7 +154,7 @@ If activation file isn't used, and purchasing date is in 30 days, refund is acce
 1. Email to Ordersupport@mycommerce.com with order information and ask for refund.
 2. Or click `FindMyOrder page`_ to submit refund request
 
-Out of 3 monthes, or activation file has been used, refund request will be rejected.
+Out of 30 days, or activation file has been used, refund request will be rejected.
 
 .. _FindMyOrder page: https://www.findmyorder.com/store?Action=DisplayEmailCustomerServicePage&Env=BASE&Locale=en_US&SiteID=findmyor
 

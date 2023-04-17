@@ -1,21 +1,22 @@
 .. highlight:: console
 
-.. contents:: Contents
-   :depth: 2
-   :local:
-   :backlinks: top
-
 ========================
  Obfuscating django app
 ========================
+
+TODO:
 
 ===========================
  Building obfuscated wheel
 ===========================
 
+TODO:
+
 ========================
  Packing with outer key
 ========================
+
+TODO:
 
 ============================
  Protecting system packages
@@ -27,6 +28,6 @@
 When packing the scripts, Pyarmor could also obfuscate system packages in the
 bundle.
 
-TODO
+TODO:
 
 .. include:: ../_common_definitions.txt

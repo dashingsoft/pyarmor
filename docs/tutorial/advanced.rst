@@ -94,10 +94,6 @@ transform to
 
     make_scanner = pyarmor__1
 
-Now run the obfuscated script::
-
-    $ python dist/foo.py
-
 If want to know what're refacted exactly, enable trace rft to generate transformed script [#]_::
 
     $ pyarmor cfg trace_rft=1
@@ -107,19 +103,14 @@ The transformed script will be stored in the path ``.pyarmor/rft``::
 
     $ cat .pyarmor/rft/foo.py
 
-For a simple script, Pyarmor could transform the script automatically. But for a complex script, it may raise exception about name binding. For example::
+Now run the obfuscated script::
 
     $ python dist/foo.py
 
-    AttributeError: module 'xml.etree.ElementTree' has no attribute 'register_namespace'
+If something is wrong, try to obfuscate it again, it may make senses::
 
-Try to exclude this name, that is, do not transform it::
-
-    $ pyarmor cfg rft_excludes + "register_namespace"
     $ pyarmor gen --enable-rft foo.py
     $ python dist/foo.py
-
-Repeat these steps to exclude all the problem names, until it works.
 
 If it still doesn't work, or you need transform more names, refer to :doc:`../topic/rftmode` to learn more usage.
 
@@ -168,13 +159,13 @@ When something is wrong, enable debug mode by common option ``-d``::
 
 Check console log and trace log, most of cases there is modname and lineno in console or trace log. Assume the problem funtion is ``sum2``, then tell BCC mode does not deal with it by this way::
 
-    $ pyarmor cfg -p foo bcc:excludes="sum2"
+    $ pyarmor cfg -p foo bcc:excludes "sum2"
 
 Use ``-p`` to specify modname, and option ``bcc:excludes`` for function name.
 
-In order to exclude more functions, list all of them in the excludes::
+Append more functions to exclude by this way::
 
-    $ pyarmor cfg -p foo bcc:excludes="sum2 hello"
+    $ pyarmor cfg -p foo bcc:excludes + "hello"
 
 When obfuscating package, it also could exclude one script seperataly. For example, the following commands tell BCC mode doesn't handle ``joker/card.py``, but all the other scripts in package ``joker`` are still handled by BCC mode::
 
@@ -190,15 +181,35 @@ If it still doesn't work, or you want to know more about BCC mode, goto :doc:`..
 Customization error handler
 ===========================
 
-By default when something is wrong with obfuscated scripts, a RuntimeError with error message is raised.
+By default when something is wrong with obfuscated scripts, RuntimeError with traceback is printed::
+
+    $ pyarmor gen -e 2020-05-05 foo.py
+    $ python dist/foo.py
+
+    Traceback (most recent call last):
+      File "dist/foo.py", line 2, in <module>
+        from pyarmor_runtime_000000 import __pyarmor__
+      File "dist/pyarmor_runtime_000000/__init__.py", line 2, in <module>
+        from .pyarmor_runtime import __pyarmor__
+    RuntimeError: this license key is expired (1:10937)
 
 If prefer to show error message only::
 
     $ pyarmor cfg on_error=1
 
+    $ pyarmor gen -e 2020-05-05 foo.py
+    $ python dist/foo.py
+
+    this license key is expired (1:10937)
+
 If prefer to quit directly without any message::
 
     $ pyarmor cfg on_error=2
+
+    $ pyarmor gen -e 2020-05-05 foo.py
+    $ python dist/foo.py
+
+    $
 
 Restore the default handler::
 
@@ -207,8 +218,6 @@ Restore the default handler::
 Or reset this option::
 
     $ pyarmor cfg --reset on_error
-
-After the option is changed, obfuscating the script again to make it effects.
 
 .. note::
 
@@ -426,7 +435,7 @@ In order to generate scripts for other platform, use :option:`--platform` specif
 
     $ pyarmor gen --platform windows.x86_64 foo.py
 
-:mod:`pyarmor.cli.runtime` provides prebuilt binaries for these platforms. If it's not installed, pyarmor may complain of ``cross platform need pyarmor.cli.runtime, please run "pip install pyarmor.cli.runtime==2.1" first``. Following the hint to install pyarmor.cli.runtime with the right version.
+:mod:`pyarmor.cli.runtime` provides prebuilt binaries for these platforms. If it's not installed, pyarmor may complain of ``cross platform need pyarmor.cli.runtime, please run "pip install pyarmor.cli.runtime~=2.1.0" first``. Following the hint to install pyarmor.cli.runtime with the right version.
 
 
 Using :option:`--platform` multiple times to support multiple platforms. For example, generate the scripts to run in most of x86_64 platforms::

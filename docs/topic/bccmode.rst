@@ -8,8 +8,6 @@ Insight Into BCC Mode
 
 BCC mode could convert most of functions and methods in the scripts to equivalent C functions, those c functions will be comipled to machine instructions directly, then called by obfuscated scripts.
 
-When BCC scripts reports errors, a quick workaround is to ignore these problem functions. In many cases, this kind of problem can't be fixed. Because BCC mode converts some functions to C code, these funtions are not compatiable with Python function object. So they may not work when called by outer Python scripts.
-
 It requires ``c`` compiler. In Linux and Darwin, ``gcc`` and ``clang`` is OK. In Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 
 * If there is any ``clang.exe``, it's OK if it could be run in other path.
@@ -48,26 +46,33 @@ The second log means ``foo.py`` line 9 function ``sum2`` is protected by bcc.
 Ignore module or function
 =========================
 
-When something is wrong, enable debug mode by common option ``-d``::
+When BCC scripts reports errors, a quick workaround is to ignore these problem modules or functions. Because BCC mode converts some functions to C code, these funtions are not compatiable with Python function object. They may not be called by outer Python scripts, and can't be fixed in Pyarmor side. In this case use configuration option ``bcc:excludes`` and ``bcc:disabled`` to ignore function or module, and make all the others work.
+
+First enable debug mode by common option ``-d``::
 
     $ pyarmor -d gen --enable-bcc foo.py
 
-Check console log and trace log, most of cases there is modname and lineno in console or trace log. Assume the problem funtion is ``sum2``, then tell BCC mode does not deal with it by this way::
+Check trace log to find which functions are converted to c function. If there are problem functions, then tell BCC mode does not deal with it. For example, ignore function ``sum2`` in the module ``foo.py`` by this command::
 
     $ pyarmor cfg -p foo bcc:excludes="sum2"
 
-Use ``-p`` to specify modname, and option ``bcc:excludes`` for function name.
+Use ``-p`` to specify module name and option ``bcc:excludes`` for function name. No ``-p``, same name function in the other scripts will be ignored too.
 
-In order to exclude more functions, list all of them in the excludes::
+Append more functions to exclude by this way::
 
-    $ pyarmor cfg -p foo bcc:excludes="sum2 hello"
+    $ pyarmor cfg -p foo bcc:excludes + "hello foo2"
 
-When obfuscating package, it also could exclude one script seperataly. For example, the following commands tell BCC mode doesn't handle ``joker/card.py``, but all the other scripts in package ``joker`` are still handled by BCC mode::
+Then obfuscate the script again::
+
+    $ pyarmor gen --enable-bcc /path/to/pkg/joker
+    $ python dist/foo.py
+
+When obfuscating package, it also could exclude one module separately. For example, in the following commands BCC mode ignores ``joker/card.py``, but handle all the other scripts in package ``joker``::
 
     $ pyarmor cfg -p joker.card bcc:disabled=1
     $ pyarmor gen --enable-bcc /path/to/pkg/joker
 
-It's possible that BCC mode could not support some Python features, in this case, use ``bcc:excludes`` and ``bcc:disabled`` to ignore them, and make all the others work.
+By both of ``bcc:excludes`` and ``bcc:disable``, make all the problem code fallback to default obfuscation mode, and let others could be converted to c function and work fine.
 
 Changed features
 ================
@@ -113,7 +118,7 @@ Here list unsupport features for BCC mode:
 
 And unsupport functions:
 
-* exec,
+* exec
 * eval
 * super
 * locals

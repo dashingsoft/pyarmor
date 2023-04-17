@@ -13,7 +13,7 @@
 
 There are countless big packages in Python world, many packages I never use and even don't know at all. It's also not easy for me to research a complex package to find which line conflicts with pyarmor, and it's difficult for me to run all of these complex packages in my local machine.
 
-Pyarmor provides rich options to meet various needs, for complex application, please spend some time to check :doc:`../reference/man` to understand all of these options, one of them may be just for your problem. **I won't learn your application and tell you use which option**
+Pyarmor provides rich options to meet various needs, for complex application, please spend some time to check :doc:`../reference/man` to understand all of these options, one of them may be just for your problem. **I won't learn your application and tell you should use which options**
 
 I'll improve pyamor make it works with other libraries as far as possible, but some
 issues can't be fixed from Pyarmor side.
@@ -24,7 +24,7 @@ Generally most of problems for these third party libraries are
 * they try to visit code object directly to get something which is just pyarmor protected. The common case is using :mod:`inspect` to get source code.
 * they pickle the obfuscated code object and pass it to other processes or threads.
 
-Also check :doc:`../topic/differences`, if third party library use any feature changed by obfuscated scripts, it will not work with pyarmor. Especially for BCC mode, it changes more.
+Also check :ref:`the differences of obfuscated scripts`, if third party library use any feature changed by obfuscated scripts, it will not work with pyarmor. Especially for :term:`BCC mode`, it changes more.
 
 The common solutions to fix third-party libraries issue
 
@@ -46,14 +46,14 @@ The common solutions to fix third-party libraries issue
     $ pyarmor cfg -p myapp.config obf_code=0
     $ pyarmor gen [other options] /path/to/myapp
 
-  Another way is to copy plain script to overwite the obfsucated one roughly::
+  Another way is to copy plain script to overwrite the obfsucated one roughly::
 
     $ pyarmor gen [other options] /path/to/myapp
     $ cp /path/to/myapp/config.py dist/myapp/config.py
 
 - Patch third-party library
 
-  Here are an example
+  Here is an example
 
   .. code-block:: python
 
@@ -97,14 +97,17 @@ Here are list problem libraries and possible solutions. Welcome create pull requ
      - Status
      - Remark
    * - cherrypy
-     - [#patch]_
-     -
+     - patch work [#patch]_
+     - use sys._getframe
    * - `pandas`_
-     - [#patch]_
+     - patch work [#patch]_
      - use sys._getframe
    * - playwright
-     - [#RFT]_
-     -
+     - patch should work [#RFT]_
+     - Not verify yet
+   * - `nuitka`_
+     - Should work
+     - Not verify yet
 
 .. rubric:: Footnotes
 
@@ -141,5 +144,20 @@ After obfuscated, it raises::
     pandas.core.computation.ops.UndefinedVariableError: local variable 'val' is not defined
 
 It could be fixed by changing ``sys._getframe(self.level)`` to ``sys._getframe(self.level+1)``, ``sys._getframe(self.level+2)`` or ``sys._getframe(self.level+3)`` in ``scope.py`` of pandas.
+
+nuitka
+------
+
+Because the obfuscated scripts could be taken as normal scripts with an extra runtime package, they also could be translated to C program by Nuitka.
+
+I haven't tested it, but it's easy to verify it.
+
+First use default options to obfuscate the scripts::
+
+    $ pyarmor gen foo.py
+
+Then nuitka the obfuscated scripts, check it works or not.
+
+Try more options, but I think any restrict options :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
 
 .. include:: ../_common_definitions.txt
