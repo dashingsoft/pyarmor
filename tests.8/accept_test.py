@@ -6,6 +6,7 @@ import shutil
 import time
 import unittest
 
+from struct import calcsize
 from test.support import script_helper
 
 
@@ -139,6 +140,7 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
+    @unittest.skipIf(calcsize('P'.encode()) * 8 == 32, 'bcc not work in x86')
     @skip_protest
     def test_enable_bcc(self):
         args = ['g', '--enable-bcc', 'samples/foo.py']

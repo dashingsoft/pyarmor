@@ -59,7 +59,7 @@ else
     PYTHON ?= $(subst XY,${PYVER},${PYTHONBIN})
 endif
 
-$(info test python is ${PYTHON})
+$(info python is ${PYTHON})
 ifneq ($(findstring ${PYVER},$(shell ${PYTHON} --version)),${PYVER})
     $(error invalid ${PYTHON})
 endif
