@@ -502,6 +502,25 @@ class Context(object):
         return self._optb('runtime', 'simple_extension_name')
 
     @property
+    def runtime_user_data(self):
+        data = b''
+        filename = self.cmd_options.get('user_data')
+        if filename:
+            if filename[0] == '@':
+                with open(filename[1:], 'rb') as f:
+                    data = f.read()
+            else:
+                data = filename.encode()
+
+        hook = b''
+        filename = os.path.join(self.local_path, 'hooks', 'pyarmor_runtime.py')
+        if os.path.exists(filename):
+            with open(filename, 'rb') as f:
+                hook = f.read()
+
+        return hook, data
+
+    @property
     def runtime_hooks(self):
         value = self._rt_opt('hooks')
         if value:

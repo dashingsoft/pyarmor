@@ -123,6 +123,9 @@ def format_gen_args(ctx, args):
     if args.excludes:
         options['excludes'] = ' '.join(args.excludes)
 
+    if args.bind_data:
+        options['user_data'] = args.bind_data
+
     return options
 
 
@@ -452,6 +455,10 @@ generate runtime package only
     group.add_argument(
         '-b', '--bind-device', dest='devices', metavar='DEV', action='append',
         help='bind obfuscated scripts to device'
+    )
+    group.add_argument(
+        '--bind-data', metavar='FILE',
+        help=argparse.SUPPRESS
     )
     group.add_argument(
         '--bind-interp', metavar='INTERP',
