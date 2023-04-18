@@ -36,7 +36,9 @@ logger = logging.getLogger('cli')
 def _cmd_gen_key(builder, options):
     n = len(options['inputs'])
     if n > 1:
-        raise CliError('too many args %s' % options['inputs'][1:])
+        logger.error('please check online documentation to learn')
+        logger.error('how to use command "pyarmor gen key"')
+        raise CliError('invalid arguments: %s' % options['inputs'][1:])
     keyname = builder.ctx.outer_keyname
 
     logger.info('start to generate outer runtime key "%s"', keyname)
@@ -53,7 +55,9 @@ def _cmd_gen_key(builder, options):
 
 def _cmd_gen_runtime(builder, options):
     if len(options['inputs']) > 1:
-        raise CliError('too many args %s' % options['inputs'][1:])
+        logger.error('please check online documentation to learn')
+        logger.error('how to use command "pyarmor gen runtime"')
+        raise CliError('invalid arguments: %s' % options['inputs'][1:])
 
     output = options.get('output', 'dist')
 
@@ -77,6 +81,17 @@ def format_gen_args(ctx, args):
         v = getattr(args, x)
         if v is not None:
             options[x] = v
+
+    if options.get('platforms'):
+        platforms = []
+        for item in options['platforms']:
+            platforms.extend([x.strip() for x in item.split(',')])
+        options['platforms'] = platforms
+    elif ctx.runtime_platforms:
+        options['platforms'] = ctx.runtime_platforms.split()
+        logger.info('get runtime platforms from configuration file')
+    if options.get('platforms'):
+        logger.info('use runtime platforms: %s', options['platforms'])
 
     if args.inputs:
         options['inputs'] = [os.path.normpath(x) for x in args.inputs]
@@ -117,22 +132,24 @@ def check_cross_platform(ctx, platforms):
     try:
         from pyarmor.cli import runtime
     except (ImportError, ModuleNotFoundError):
-        logger.info('cross platform need pyarmor.cli.runtime')
-        logger.info('please run "%s" to fix it', cmd)
-        raise CliError('no package pyarmor.cli.runtime found')
+        logger.error('cross platform need package "pyarmor.cli.runtime"')
+        logger.error('please run "%s" to fix it', cmd)
+        raise CliError('no package "pyarmor.cli.runtime" found')
 
     if runtime.__VERSION__ != rtver:
-        logger.info('please run "%s" to fix it', cmd)
-        raise CliError('unexpected pyarmor.cli.runtime version')
+        logger.error('please run "%s" to fix it', cmd)
+        raise CliError('unexpected "pyarmor.cli.runtime" version')
 
     platnames = []
     for path in runtime.__path__:
+        logger.debug('search runtime platforms at: %s', path)
         platnames.extend(os.listdir(os.path.join(path, 'libs')))
 
     map_platform = runtime.map_platform
     unknown = set([map_platform(x) for x in platforms]) - set(platnames)
 
     if unknown:
+        logger.error('please check documentation "References/Environments"')
         raise CliError('unsupported platforms "%s"' % ', '.join(unknown))
 
 
@@ -151,7 +168,7 @@ def check_gen_context(ctx, args):
             raise CliError('bcc mode still not support arch "%s"' % arch)
 
     if ctx.cmd_options['no_runtime'] and not ctx.runtime_outer:
-        raise CliError('--no_runtime need pass outer key by --outer')
+        raise CliError('--no_runtime must be used with --outer')
 
     if ctx.use_runtime and not ctx.runtime_outer:
         if os.path.exists(ctx.use_runtime):
@@ -163,9 +180,13 @@ def check_gen_context(ctx, args):
             [ctx.runtime_devices, ctx.runtime_period, ctx.runtime_expired]):
         raise CliError('--outer conflicts with any -e, --period, -b')
 
-    if args.pack and (args.no_runtime or ctx.import_prefix):
-        raise CliError('--pack conficts with --no-runtime, --use-runtime, '
-                       '-i, --prefix')
+    if args.pack:
+        if not os.path.isfile(args.pack):
+            raise CliError('--pack must be an executable file')
+        if args.no_runtime:
+            raise CliError('--pack conficts with --no-runtime, --use-runtime')
+        if ctx.import_prefix:
+            raise CliError('--pack conficts with -i, --prefix')
 
 
 def cmd_gen(ctx, args):
@@ -215,7 +236,7 @@ def cmd_reg(ctx, args):
                "It's different from previous Pyarmor totally",
                "Please read this import notes first:",
                url,
-               "Do not upgrade to Pyarmor 8 if you don't known what's changed",
+               "Do not upgrade to Pyarmor 8 if don't know what are changed",
                "", "")
         prompt = 'I have known the changes of Pyarmor 8? (yes/no/help) '
         choice = input('\n'.join(msg) + prompt).lower()[:1]
@@ -567,11 +588,11 @@ def log_settings(ctx, args):
 
 
 def log_exception(e):
-    logger.critical('unknown error, please check pyarmor.error.log')
+    logger.debug('unknown error, please check pyarmor.error.log')
     handler = logging.FileHandler('pyarmor.error.log', mode='w')
     fmt = '%(process)d %(processName)s %(asctime)s'
     handler.setFormatter(logging.Formatter(fmt))
-    log = logging.getLogger('Pyarmor.Error')
+    log = logging.getLogger('error')
     log.propagate = False
     log.addHandler(logging.NullHandler())
     log.addHandler(handler)
@@ -632,10 +653,9 @@ def main():
 
     try:
         main_entry(sys.argv[1:])
-    # # TBD: comment for debug
-    # except (CliError, RuntimeError) as e:
-    #     logger.error(e)
-    #     sys.exit(1)
+    except CliError as e:
+        logger.error(e)
+        sys.exit(1)
     except Exception as e:
         log_exception(e)
         logger.error(e)
