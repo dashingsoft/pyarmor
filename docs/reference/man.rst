@@ -156,6 +156,7 @@ Generate obfuscated scripts and all the required runtime files.
 
 -e DATE, --expired DATE         set expired date :option:`... <-e>`
 -b DEV, --bind-device DEV       bind obfuscated scripts to device :option:`... <-b>`
+--bind-DATA DATA                store private to runtime key :option:`... <--bind-data>`
 --period N                      check runtime key periodically :option:`... <--period>`
 --outer                         enable outer runtime key :option:`... <--outer>`
 
@@ -304,6 +305,16 @@ If there are many harddisks. In Windows, binding anyone by sequence no::
 In Linux, binding to specify name::
 
       $ pyarmor gen -b "/dev/vda2:KDX3298FS6P5AX380" foo.py
+
+.. option:: --bind-data DATA
+
+            DATA may be ``@FILENAME`` or string
+
+Store any private data to runtime key, then check it in the obfuscated scripts by yourself. It's mainly used with the hook script to extend runtime key verification method.
+
+If DATA has a leading ``@``, then the rest is a filename. Pyarmor reads the binary data from file, and store into runtime key.
+
+For any other case, DATA is converted to bytes as private data.
 
 .. option:: --period N
 
