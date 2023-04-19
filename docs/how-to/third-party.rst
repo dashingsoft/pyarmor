@@ -106,7 +106,7 @@ Here are list problem libraries and possible solutions. Welcome create pull requ
      - patch should work [#RFT]_
      - Not verify yet
    * - `nuitka`_
-     - Should work
+     - Should work with restrict_module = 0
      - Not verify yet
 
 .. rubric:: Footnotes
@@ -152,12 +152,17 @@ Because the obfuscated scripts could be taken as normal scripts with an extra ru
 
 I haven't tested it, but it's easy to verify it.
 
-First use default options to obfuscate the scripts::
+First disable restrict mode, and use default options to obfuscate the scripts::
 
+    $ pyarmor cfg restrict_module=0
     $ pyarmor gen foo.py
 
 Then nuitka the obfuscated scripts, check it works or not.
 
-Try more options, but I think any restrict options :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
+Try more options, but I think restrict options such as :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
+
+No disable restrict_module, run the nuitka script may raise error::
+
+    RuntimeError: unauthorized use of script (1:871)
 
 .. include:: ../_common_definitions.txt
