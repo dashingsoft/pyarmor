@@ -42,6 +42,8 @@ On Windows, you should open Command Prompt (:kbd:`Win-r` and type :command:`cmd`
 
 After installation, type :command:`pyarmor --version` on the command prompt. If everything worked fine, you will see the version number for the Pyarmor_ package you just installed.
 
+Not all the platforms are supported, more information check :doc:`../reference/environments`
+
 Obfuscating one script
 ======================
 
@@ -82,7 +84,7 @@ Why? It's clear after checking the content of :file:`dist/foo.py`:
 
 Actually the obfuscaetd script can be taken as normal Python script with dependent package :mod:`pyarmor_runtime_000000`, use it as it's not obfuscated.
 
-Because :mod:`pyarmor_runtime_000000` has an :term:`extension module`, so this obfuscated script can only be run with same Python version and same platform.
+Because :mod:`pyarmor_runtime_000000` has an :term:`extension module`, please run this obfuscated in the machine with same Python version and same platform. Otherwise it doesn't work.
 
 .. note::
 
