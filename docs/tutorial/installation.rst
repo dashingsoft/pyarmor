@@ -32,9 +32,11 @@ Installation from PyPI_ also allows you to install the latest development releas
 
     $ pip install -U --pre pyarmor
 
-If you need generate obfuscated scripts to run in other platforms, install :mod:`pyarmor.runtime`::
+If you need generate obfuscated scripts to run in other platforms, install :mod:`pyarmor.cli.runtime`::
 
-    $ pip install pyarmor.runtime
+    $ pip install pyarmor.cli.runtime
+
+Not all the platforms are supported, more information check :doc:`../reference/environments`
 
 Installed command
 -----------------
