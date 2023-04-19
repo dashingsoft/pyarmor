@@ -152,17 +152,18 @@ Because the obfuscated scripts could be taken as normal scripts with an extra ru
 
 I haven't tested it, but it's easy to verify it.
 
-First disable restrict mode, and use default options to obfuscate the scripts::
+First disable restrict mode::
 
     $ pyarmor cfg restrict_module=0
+
+No disable restrict_module, run the nuitka script may raise ``RuntimeError: unauthorized use of script``
+
+Next use default options to obfuscate the scripts::
+
     $ pyarmor gen foo.py
 
-Then nuitka the obfuscated scripts, check it works or not.
+Finally nuitka the obfuscated script ``dist/foo.py``, check it works or not.
 
 Try more options, but I think restrict options such as :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
-
-No disable restrict_module, run the nuitka script may raise error::
-
-    RuntimeError: unauthorized use of script (1:871)
 
 .. include:: ../_common_definitions.txt
