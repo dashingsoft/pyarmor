@@ -80,7 +80,9 @@ Why? It's clear after checking the content of :file:`dist/foo.py`:
     from pyarmor_runtime_000000 import __pyarmor__
     __pyarmor__(__name__, __file__, ...)
 
-Actually the obfuscaetd script can be taken as normal Python script with dependent package :mod:`pyarmor_runtime`, use it as it's not obfuscated.
+Actually the obfuscaetd script can be taken as normal Python script with dependent package :mod:`pyarmor_runtime_000000`, use it as it's not obfuscated.
+
+Because :mod:`pyarmor_runtime_000000` has an :term:`extension module`, so this obfuscated script can only be run with same Python version and same platform.
 
 .. note::
 
