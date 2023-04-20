@@ -111,6 +111,8 @@ def format_gen_args(ctx, args):
     if args.enables:
         for x in args.enables:
             options['enable_' + x] = True
+    if options.get('enable_themida'):
+        raise NotImplementedError('--enable_themida is still not implemented')
 
     if args.prefix:
         options['import_prefix'] = args.prefix
