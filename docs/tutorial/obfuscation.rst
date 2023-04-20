@@ -1,5 +1,3 @@
-.. highlight:: console
-
 ===================
  Basic Tutorial
 ===================
@@ -8,6 +6,8 @@
    :depth: 2
    :local:
    :backlinks: top
+
+.. highlight:: console
 
 .. program:: pyarmor
 

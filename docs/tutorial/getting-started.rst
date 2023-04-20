@@ -1,15 +1,15 @@
-.. highlight:: console
-
 =================
  Getting Started
 =================
 
-New to |Pyarmor|? Well, you came to the right place: read this material to quickly get up and running.
+.. highlight:: console
 
 .. contents:: Content
    :depth: 2
    :local:
    :backlinks: top
+
+New to |Pyarmor|? Well, you came to the right place: read this material to quickly get up and running.
 
 What's Pyarmor
 ==============

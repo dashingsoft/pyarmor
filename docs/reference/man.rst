@@ -1,5 +1,3 @@
-.. highlight:: console
-
 ==========
  Man Page
 ==========
@@ -9,8 +7,9 @@
    :local:
    :backlinks: top
 
-Pyarmor is a powerful tool to obfuscate Python scripts with rich option set that
-provides both high-level operations and full access to internals.
+.. highlight:: console
+
+Pyarmor is a powerful tool to obfuscate Python scripts with rich option set that provides both high-level operations and full access to internals.
 
 pyarmor
 =======
@@ -29,8 +28,7 @@ pyarmor
 -d, --debug           show more information in the console :option:`... <-d>`
 --home PATH           set Pyarmor HOME path :option:`... <--home>`
 
-These options can be used after :program:`pyarmor` but before command, here are
-available commands:
+These options can be used after :program:`pyarmor` but before command, here are available commands:
 
 ================================  ====================================
 :ref:`gen <pyarmor gen>`          Obfuscate scripts
@@ -55,8 +53,7 @@ For example::
 
             Show more information in the console
 
-When something is wrong, print more debug informations in the console. For
-example::
+When something is wrong, print more debug informations in the console. For example::
 
     pyarmor -d gen foo.py
 
@@ -76,8 +73,7 @@ The default paths
 
 * :term:`Registration File Path` is same as :term:`Home Path`
 
-All of them could be changed by this option. For example, change home path to
-:file:`~/.pyarmor2`::
+All of them could be changed by this option. For example, change home path to :file:`~/.pyarmor2`::
 
     $ pyarmor --home ~/.pyarmor2 ...
 
@@ -103,12 +99,9 @@ Another example, set :term:`Registration File Path` to :file:`/opt/pyarmor/`::
 
     $ pyarmor --home ,,,/opt/pyarmor ...
 
-It's useful when may use :command:`sudo` to run :command:`pyarmor`
-occassionally. This makes sure the registration file could be found even switch
-to another user.
+It's useful when may use :command:`sudo` to run :command:`pyarmor` occassionally. This makes sure the registration file could be found even switch to another user.
 
-When there are many Pyarmor Licenses registerred in one machine, set each
-license to different :term:`Registration File Path`
+When there are many Pyarmor Licenses registerred in one machine, set each license to different :term:`Registration File Path`
 
 There are 2 solutions
 
@@ -128,8 +121,7 @@ The second solution, same home, one license one path::
     $ pyarmor --home ,,,pyarmor2 reg pyarmor-regfile-2052.zip
     $ pyarmor --home ,,,pyarmor2 gen project2/foo.py
 
-Start pyarmor with clean configuration by setting :term:`Global Configuration
-Path` and :term:`Local Configuration Path` to any non-exists path ``x``::
+Start pyarmor with clean configuration by setting :term:`Global Configuration Path` and :term:`Local Configuration Path` to any non-exists path ``x``::
 
     $ pyarmor --home ,x,x, gen foo.py
 
@@ -415,11 +407,9 @@ Then obfuscate the package again.
 
             Disable wrap mode
 
-If wrap mode is enabled, when enter a function, it's restored. but when exit,
-this function will be obfuscated again.
+If wrap mode is enabled, when enter a function, it's restored. but when exit, this function will be obfuscated again.
 
-If wrap mode is disabled, once the function is restored, it's never be
-obfuscated again.
+If wrap mode is disabled, once the function is restored, it's never be obfuscated again.
 
 If :option:`--obf-code` is ``0``, this option is meaningless.
 
@@ -453,9 +443,7 @@ Use :term:`JIT` to process some sentensive data to improve security.
 
             Assert function is obfuscated
 
-If this option is enabled, Pyarmor scans each function call in the scripts. If
-the called function is in the obfuscated scripts, protect it as below, and leave
-others as it is. For example,
+If this option is enabled, Pyarmor scans each function call in the scripts. If the called function is in the obfuscated scripts, protect it as below, and leave others as it is. For example,
 
 .. code-block:: python
     :emphasize-lines: 4
@@ -478,9 +466,7 @@ will be changed to
     print('hello')
     __assert_armored__(fib)(n)
 
-The function ``__assert_armored__`` is a builtin function in obfuscated script.
-It checks the argument, if it's an obfuscated function, then returns this
-function, otherwise raises protection exception.
+The function ``__assert_armored__`` is a builtin function in obfuscated script. It checks the argument, if it's an obfuscated function, then returns this function, otherwise raises protection exception.
 
 In this example, ``fib`` is protected, ``print`` is not.
 
@@ -488,9 +474,7 @@ In this example, ``fib`` is protected, ``print`` is not.
 
             Assert module is obfuscated
 
-If this option is enabled, Pyarmor scans each ``import`` statement in the
-scripts. If the imported module is obfuscated, protect it as below, and leave
-others as it is. For example,
+If this option is enabled, Pyarmor scans each ``import`` statement in the scripts. If the imported module is obfuscated, protect it as below, and leave others as it is. For example,
 
 .. code-block:: python
     :emphasize-lines: 2
@@ -507,12 +491,9 @@ will be changed to
     import foo
     __assert_armored__(foo)
 
-The function ``__assert_armored__`` is a builtin function in obfuscated script.
-It checks the argument, if it's an obfuscated module, then return this module,
-otherwise raises protection exception.
+The function ``__assert_armored__`` is a builtin function in obfuscated script. It checks the argument, if it's an obfuscated module, then return this module, otherwise raises protection exception.
 
-This option neither touchs statement ``from import``, nor the module imported by
-function ``__import__``.
+This option neither touchs statement ``from import``, nor the module imported by function ``__import__``.
 
 .. option:: --pack BUNDLE
 
@@ -524,8 +505,7 @@ Pyarmor just obfuscates the script first.
 
 Then unpack the bundle.
 
-Next replace all the ``.pyc`` in the bundle with obfuscated scripts, and append
-all the :term:`runtime files` to the bundle.
+Next replace all the ``.pyc`` in the bundle with obfuscated scripts, and append all the :term:`runtime files` to the bundle.
 
 Finally repack the bundle and overwrite the original ``BUNDLE``.
 
@@ -551,13 +531,11 @@ Generate :term:`outer key` for obfuscated scripts.
 
 .. describe:: Description
 
-This command is used to generate :term:`outer key`, the options in this command
-have same meaning as in the :ref:`pyarmor gen`.
+This command is used to generate :term:`outer key`, the options in this command have same meaning as in the :ref:`pyarmor gen`.
 
 There must be at least one of option ``-e`` or ``-b`` for :term:`outer key`.
 
-It's invalid that outer key is neither expired nor binding to a device. For this
-case, don't use outer key.
+It's invalid that outer key is neither expired nor binding to a device. For this case, don't use outer key.
 
 By default the outer key is saved to ``dist/pyarmor.rkey``. For example::
 
@@ -569,8 +547,7 @@ Save outer key to other path by this way::
     $ pyarmor gen key -O dist/mykey2 -e 10
     $ ls dist/mykey2/pyarmor.rkey
 
-By default the outer key name is ``pyarmor.rkey``, use the following command to
-change outer key name to any others. For example, ``sky.lic``::
+By default the outer key name is ``pyarmor.rkey``, use the following command to change outer key name to any others. For example, ``sky.lic``::
 
     $ pyarmor cfg outer_keyname=sky.lic
     $ pyarmor gen key -e 30
@@ -593,8 +570,7 @@ Configure or show Pyarmor environments
 
 -h, --help           show this help message and exit
 -p NAME              private settings for special module or package
--g, --global         do everything in global settings, otherwise local
-                     settings
+-g, --global         do everything in global settings, otherwise local settings
 -r, --reset          reset option to default value
 --encoding ENCODING  specify encoding to read configuration file
 
@@ -665,8 +641,7 @@ If no prefix ``finder``, for example::
 
     $ pyarmor cfg excludes "ast"
 
-Not only option ``excludes`` in section ``finder``, but also in other sections
-``assert.call``, ``mix.str`` etc. are changed.
+Not only option ``excludes`` in section ``finder``, but also in other sections ``assert.call``, ``mix.str`` etc. are changed.
 
 .. describe:: Sections
 
@@ -692,10 +667,7 @@ All the settings is only used for specified module `NAME`.
 
             Do everything in global settings
 
-Without this option, all the changed settings are soted in :term:`Local
-Configuration Path`, generally it's ``.pyarmor`` in the current path. By this
-option, everything is stored in :term:`Global Configuration Path`, generally
-it's ``~/.pyarmor/config/global``
+Without this option, all the changed settings are soted in :term:`Local Configuration Path`, generally it's ``.pyarmor`` in the current path. By this option, everything is stored in :term:`Global Configuration Path`, generally it's ``~/.pyarmor/config/global``
 
 .. option:: -r, --reset
 
@@ -749,8 +721,7 @@ If no this option, the product name is set to ``non-profits``.
 
 It's meanless to use this option after initial registration.
 
-``TBD`` is a special product name. If product name is ``TBD`` at initial
-registration, the product name can be changed later.
+``TBD`` is a special product name. If product name is ``TBD`` at initial registration, the product name can be changed later.
 
 For any other product name, it can't be changed any more.
 
@@ -764,15 +735,11 @@ For any other product name, it can't be changed any more.
 
 .. important::
 
-   Once initial registration successfully, :file:`pyarmor-regcode-xxxx.txt` may
-   not work again. Using registration file :file:`pyarmor-regfile-xxxx.zip` for
-   next registration instead.
+   Once initial registration successfully, :file:`pyarmor-regcode-xxxx.txt` may not work again. Using registration file :file:`pyarmor-regfile-xxxx.zip` for next registration instead.
 
-   PLEASE BACKUP registration file :file:`pyarmor-regfile-xxxx.zip` carefully,
-   Pyarmor doesn't provide lost-found service
+   PLEASE BACKUP registration file :file:`pyarmor-regfile-xxxx.zip` carefully, Pyarmor doesn't provide lost-found service
 
-Using registration file :file:`pyarmor-regfile-xxxx.zip` to register Pyarmor in
-other machine.
+Using registration file :file:`pyarmor-regfile-xxxx.zip` to register Pyarmor in other machine.
 
 Copy it to target device, then run this command::
 
@@ -781,15 +748,13 @@ Copy it to target device, then run this command::
 Environment Variables
 =====================
 
-The following environment variables only used in :term:`Build Machine` when
-generating the obfuscated scripts, not in :term:`Target Device`.
+The following environment variables only used in :term:`Build Machine` when generating the obfuscated scripts, not in :term:`Target Device`.
 
 .. envvar:: PYARMOR_HOME
 
             Same as :option:`pyarmor --home`
 
-It mainly used in the shell scrits to change Pyarmor settings. If
-:option:`pyarmor --home` is set, this environment var is ignored.
+It mainly used in the shell scrits to change Pyarmor settings. If :option:`pyarmor --home` is set, this environment var is ignored.
 
 .. envvar:: PYARMOR_PLATFORM
 
@@ -803,11 +768,9 @@ It's mainly used in some platforms Pyarmor could not tell right but still works.
 
 .. envvar:: PYARMOR_CLI
 
-            Only for compatible with old Pyarmor, ignore this if you don't use
-            old command prior to 8.0
+            Only for compatible with old Pyarmor, ignore this if you don't use old command prior to 8.0
 
-If you do not use new commands in Pyarmor 8.0, and prefer to only use old
-commands, set it to ``7``, for example::
+If you do not use new commands in Pyarmor 8.0, and prefer to only use old commands, set it to ``7``, for example::
 
     # In Linux
     export PYARMOR_CLI=7
@@ -822,8 +785,7 @@ commands, set it to ``7``, for example::
 
 It forces command :command:`pyarmor` to use old cli directly.
 
-Without it, :command:`pyarmor` first try new cli, if the command line couldn't
-be parsed by new cli, fallback to old cli.
+Without it, :command:`pyarmor` first try new cli, if the command line couldn't be parsed by new cli, fallback to old cli.
 
 This only works for command :command:`pyarmor`.
 

@@ -25,8 +25,7 @@ TODO:
 .. versionadded:: 8.x
                   This feature is still not implemented
 
-When packing the scripts, Pyarmor could also obfuscate system packages in the
-bundle.
+When packing the scripts, Pyarmor could also obfuscate system packages in the bundle.
 
 TODO:
 

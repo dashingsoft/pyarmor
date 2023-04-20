@@ -2,12 +2,12 @@
  Highest security and performace
 =================================
 
-.. highlight:: console
-
 .. contents:: Contents
    :depth: 2
    :local:
    :backlinks: top
+
+.. highlight:: console
 
 .. program:: pyarmor gen
 
