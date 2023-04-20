@@ -27,7 +27,7 @@ from json import loads as json_loads
 from string import Template
 
 
-logger = logging.getLogger('Pyarmor')
+logger = logging.getLogger('cli')
 
 
 def parse_token(data):
@@ -210,7 +210,20 @@ The upgraded license information will be''')
 
 class WebRegister(Register):
 
+    def _request(self, url):
+        from http.client import HTTPSConnection
+        n = len('https://')
+        k = url.find('/', n)
+        conn = HTTPSConnection(url[n:k])
+        conn.request("GET", url[k:])
+        return conn.getresponse()
+
     def _send_request(self, url, timeout=6.0):
+        try:
+            return self._request(url)
+        except Exception as e:
+            logger.debug('direct request failed "%s"', str(e))
+
         from urllib.request import urlopen
         from ssl import _create_unverified_context
         context = _create_unverified_context()
@@ -230,14 +243,15 @@ class WebRegister(Register):
         logger.debug('url: %s', url)
 
         logger.info('query key file from server')
-        res = self._send_request(url)
-        if not res:
-            logger.error('please try it later')
-            raise RuntimeError('no response from license server')
-        if res.code != 200:
-            raise RuntimeError(res.read().decode('utf-8'))
+        with self._send_request(url) as res:
+            if not res:
+                logger.error('please try it later')
+                raise RuntimeError('no response from license server')
+            if res.code != 200:
+                logger.error('HTTP Error %s', res.code)
+                raise RuntimeError(res.read().decode('utf-8'))
+            info = json_loads(res.read())
 
-        info = json_loads(res.read())
         pname = info['product']
         if pname not in ('', 'TBD') and product and product != info['product']:
             logger.error('this license has been bind to product "%s"', pname)
