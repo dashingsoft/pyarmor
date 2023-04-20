@@ -24,7 +24,7 @@ For more information, check out the [Pyarmor Environments][encironments].
 [^1]: Some features may be exclusive to Python 3.
 [^2]: Some features may be exclusive to specific architectures.
 
-[encironments]: https://pyarmor.readthedocs.io/en/latest/reference/environments.html
+[encironments]: https://pyarmor.readthedocs.io/en/stable/reference/environments.html
 
 ## Quick start
 
