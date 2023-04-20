@@ -90,7 +90,7 @@ Actually the obfuscaetd script can be taken as normal Python script with depende
 
 .. note::
 
-   The obfuscated scripts could be run by Python interpreter without Pyarmor, DO NOT install Pyarmor in the :term:`Target Device`
+   DO NOT install Pyarmor in the :term:`Target Device`, Python interpreter could run the obfuscated scripts without Pyarmor.
 
 Obfuscating one package
 =======================
