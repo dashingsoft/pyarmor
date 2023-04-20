@@ -24,7 +24,7 @@ import logging
 import os
 import sys
 
-from .errors import CliError
+from . import CliError
 from .context import Context
 from .register import Register, WebRegister
 from .config import Configer

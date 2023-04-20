@@ -5,6 +5,10 @@ __VERSION__ = '8.1'
 logger = logging.getLogger('cli')
 
 
+class CliError(Exception):
+    pass
+
+
 def resoptions(meth):
 
     def process(self, res, *args, **kwargs):

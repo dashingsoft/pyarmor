@@ -26,8 +26,7 @@ from base64 import b64decode, urlsafe_b64encode
 from json import loads as json_loads
 from string import Template
 
-
-logger = logging.getLogger('cli')
+from . import logger, CliError
 
 
 def parse_token(data):
@@ -78,7 +77,7 @@ class Register(object):
 
     def check_args(self, args):
         if args.upgrade and args.keyfile.endswith('.zip'):
-            raise RuntimeError('use .txt file to upgrade, not .zip file')
+            raise CliError('use .txt file to upgrade, not .zip file')
 
     def _get_old_rcode(self):
         old_license = self.ctx.read_license()
@@ -92,7 +91,7 @@ class Register(object):
         data = b64decode(old_license)
         i = data.find(b'pyarmor-vax-')
         if i == -1:
-            raise RuntimeError('no valid old license')
+            raise CliError('no valid old license')
         return data[i:i+18].decode()
 
     def regurl(self, ucode, product=None, rcode=None, prepare=False):
@@ -141,7 +140,7 @@ class Register(object):
                 if len(line) == 192 and line.find(' ') == -1:
                     return regname, line
 
-        raise RuntimeError('no registration code found in %s' % filename)
+        raise CliError('no registration code found in %s' % filename)
 
     def register_regfile(self, regfile, clean=True):
         from zipfile import ZipFile
@@ -246,17 +245,17 @@ class WebRegister(Register):
         with self._send_request(url) as res:
             if not res:
                 logger.error('please try it later')
-                raise RuntimeError('no response from license server')
+                raise CliError('no response from license server')
             if res.code != 200:
                 logger.error('HTTP Error %s', res.code)
-                raise RuntimeError(res.read().decode('utf-8'))
+                raise CliError(res.read().decode('utf-8'))
             info = json_loads(res.read())
 
         pname = info['product']
         if pname not in ('', 'TBD') and product and product != info['product']:
             logger.error('this license has been bind to product "%s"', pname)
             logger.error('please run command `reg` without option `-p`')
-            raise RuntimeError('can not change license product name')
+            raise CliError('can not change license product name')
         if pname in ('', 'TBD'):
             info['product'] = 'TBD'
 
@@ -264,7 +263,7 @@ class WebRegister(Register):
         if upgrade:
             if not (rcode and rcode.startswith('pyarmor-vax-')):
                 logger.error('please check Pyarmor 8.0 EULA')
-                raise RuntimeError('old code "%s" can not be upgraded' % rcode)
+                raise CliError('old code "%s" can not be upgraded' % rcode)
             if info['upgrade']:
                 lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
             else:
@@ -273,7 +272,7 @@ class WebRegister(Register):
             if info['lictype'] not in ('BASIC', 'PRO', 'GROUP'):
                 logger.error('this license does not work in Pyarmor 8')
                 logger.error('please check Pyarmor 8.0 EULA')
-                raise RuntimeError('unknown license type %s' % info['lictype'])
+                raise CliError('unknown license type %s' % info['lictype'])
             lines.append('This license registration information will be')
 
         fmt = '%-16s: %s'
@@ -356,6 +355,6 @@ class WebRegister(Register):
             return filename
 
         elif res:
-            raise RuntimeError(res.read().decode('utf-8'))
+            raise CliError(res.read().decode('utf-8'))
 
-        raise RuntimeError('no response from license server')
+        raise CliError('no response from license server')

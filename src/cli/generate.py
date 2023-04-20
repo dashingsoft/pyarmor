@@ -23,7 +23,7 @@ import logging
 import os
 import shutil
 
-from .errors import CliError
+from . import CliError
 from .core import Pytransform3
 from .resource import FileResource, PathResource
 
