@@ -232,21 +232,24 @@ class WebRegister(Register):
         logger.info('query key file from server')
         res = self._send_request(url)
         if not res:
+            logger.error('please try it later')
             raise RuntimeError('no response from license server')
         if res.code != 200:
             raise RuntimeError(res.read().decode('utf-8'))
 
         info = json_loads(res.read())
-        if info['product'] not in ('', 'TBD') and \
-           product and product != info['product']:
-            raise RuntimeError(
-                'product name has been set to "%s"' % info['product'])
-        if info['product'] in ('', 'TBD'):
-            info['product'] = product if product else 'TBD'
+        pname = info['product']
+        if pname not in ('', 'TBD') and product and product != info['product']:
+            logger.error('this license has been bind to product "%s"', pname)
+            logger.error('please run command `reg` without option `-p`')
+            raise RuntimeError('can not change license product name')
+        if pname in ('', 'TBD'):
+            info['product'] = 'TBD'
 
         lines = []
         if upgrade:
             if not (rcode and rcode.startswith('pyarmor-vax-')):
+                logger.error('please check Pyarmor 8.0 EULA')
                 raise RuntimeError('old code "%s" can not be upgraded' % rcode)
             if info['upgrade']:
                 lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
@@ -254,6 +257,8 @@ class WebRegister(Register):
                 lines.append(upgrade_to_basic_info.substitute())
         else:
             if info['lictype'] not in ('BASIC', 'PRO', 'GROUP'):
+                logger.error('this license does not work in Pyarmor 8')
+                logger.error('please check Pyarmor 8.0 EULA')
                 raise RuntimeError('unknown license type %s' % info['lictype'])
             lines.append('This license registration information will be')
 
