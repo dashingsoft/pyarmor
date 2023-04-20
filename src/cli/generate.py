@@ -19,15 +19,12 @@
 #
 #  @Create Date: 2022-12-06
 #
-import logging
 import os
 import shutil
 
-from . import CliError
+from . import logger, CliError
 from .core import Pytransform3
 from .resource import FileResource, PathResource
-
-logger = logging.getLogger('Builder')
 
 
 class Finder(object):

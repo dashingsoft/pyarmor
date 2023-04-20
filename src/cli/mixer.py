@@ -20,11 +20,8 @@
 #  @Create Date: 2022-12-06
 #
 import ast
-import logging
 
 from random import randint
-
-logger = logging.getLogger('Mixer')
 
 
 class StrNodeTransformer(ast.NodeTransformer):

@@ -19,7 +19,7 @@ except ModuleNotFoundError:
 from PyInstaller.compat import is_darwin, is_linux, is_win
 
 
-logger = logging.getLogger('Packer')
+logger = logging.getLogger('repack')
 
 
 class ZlibArchive(ZlibArchiveReader):

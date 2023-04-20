@@ -21,10 +21,9 @@
 #
 import configparser
 import fnmatch
-import logging
 import os
 
-logger = logging.getLogger('Pyarmor')
+from . import logger, CliError
 
 
 def indent(lines, n=2):
@@ -271,7 +270,7 @@ class Configer(object):
                 else:
                     prev = opt
             if prev:
-                raise RuntimeError('no value for option "%s"' % prev)
+                raise CliError('no value for option "%s"' % prev)
 
             for pat, value in pairs:
                 sect_opts = self._parse_opt(pat)

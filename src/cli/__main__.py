@@ -24,13 +24,11 @@ import logging
 import os
 import sys
 
-from . import CliError
+from . import logger, CliError
 from .context import Context
 from .register import Register, WebRegister
 from .config import Configer
 from .shell import PyarmorShell
-
-logger = logging.getLogger('cli')
 
 
 def _cmd_gen_key(builder, options):
