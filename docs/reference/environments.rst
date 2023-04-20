@@ -76,9 +76,9 @@ Plugin and hook
                   This feature is still not implemented
 
 
-=================================
- Obfuscated Scripts Environments
-=================================
+===================
+Target Environments
+===================
 
 Obfuscated scripts run in :term:`target device`, support platforms, arches and Python versions are same as `Building Environments`_
 

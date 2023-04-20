@@ -4,26 +4,288 @@ Performance and Security
 
 .. highlight:: console
 
-Pyarmor goal is prevent restore Python source and string constant
+.. program:: pyarmor gen
 
-It's not for block reverse engineer to skip license, dump memory
+Pyarmor focus on protecting Python scripts, not good at memory protection and anti-debug.
+
+Generally even using debugger to trace binary extension ``pyarmor_runtime`` could not help to restore obfuscated scripts, but it may by pass runtime key verification.
+
+Pyarmor provides runtime hook feature to help users to block this risk, users could write C functions or python scripts to detect the debugger or any attack behaviours. Pyarmor embedded these hooks into the obfuscated scripts, and called by the obfuscated scripts on required. It could improve security significantly, but user need be expert at Python and anti-debug.
+
+In Windows, using :option:`--enable-themida` could prevent from this leak, it could protect extension module ``pyarmor_runtime.pyd`` very well. But in the other platforms, it need extra tools to protect binary extension ``pyarmor_runtime.so``.
+
+Pyarmor provides rich options to obfuscate scripts to balance security and performance.
+
+If anyone announces he could broken pyarmor, please try a simple script with different security options, refer to :doc:`../how-to/security`. If any irreversible obfusation could be broken, report this security issue to |Contact|. Do not paste any hack link in pyarmor project.
+
+Though the highest security could protect Python scripts from any hack method, but it may reduce performance. In most of cases, we need pick the right options to balance security and performance.
+
+Here we test some options to understand their impace on performace. All the following tests use 2 scripts ``benchmark.py`` and ``testben.py``. Note that the test data is different even run same test script in same machine twice, not speak of different test script in different machine. So the elapse time in the result table is only guideline, not exact value.
+
+The content of ``benchmark.py``
 
 .. code-block:: python
 
-    def fib(n):
-        a, b = 0, 1
-        while a < n:
-            print(a, end=' ')
-            a, b = b, a+b
-        print()
+    import sys
 
-    print('this is fib(10)', fib(10))
 
-Please replace string constant, function name `fib`, var name `a` and `b`, the obfuscate it::
+    class BenTest(object):
 
-    $ pyarmor cfg mix_argnames=1
-    $ pyarmor gen --enable-rft --enable-bcc --mix-str --assert-call --private foo.py
+        def __init__(self):
+            self.a = 1
+            self.b = "b"
+            self.c = []
+            self.d = {}
 
-Then verify this tool. If it couldn't restore this script
+
+    def foo():
+        ret = []
+        for i in range(100000):
+            ret.extend(sys.version_info[:2])
+            ret.append(BenTest())
+        return len(ret)
+
+
+The content of ``testben.py``
+
+.. code-block:: python
+
+    import benchmark
+    import sys
+    import time
+
+
+    def metric(func):
+        if not hasattr(time, 'process_time'):
+            time.process_time = time.clock
+
+        def wrap(*args, **kwargs):
+            t1 = time.process_time()
+            result = func(*args, **kwargs)
+            t2 = time.process_time()
+            print('%-16s: %10.3f ms' % (func.__name__, ((t2 - t1) * 1000)))
+            return result
+        return wrap
+
+
+    @metric
+    def test_import():
+        import benchmark2 as m2
+        return m2
+
+
+    @metric
+    def test_foo():
+        benchmark.foo()
+
+
+    if __name__ == '__main__':
+        print('Python %s.%s' % sys.version_info[:2])
+        test_import()
+        test_foo()
+
+**Different Python Version Performance**
+
+Frist obfuscate the scripts with default options, run it in different Python version, compare the elapase time with original scripts.
+
+In order to test the difference without and with ``__pycache__``, run scripts twice.
+
+There are 3 check points:
+
+1. ``Import fresh module`` without ``__pycache__``
+2. ``Import module 2nd`` with ``__pycache__``
+3. ``Run function "foo"``, an obfuscated class is called 10,000 times
+
+Here are test steps::
+
+    $ rm -rf dist __pycache__
+
+    $ cp benchmark.py benchmark2.py
+    $ python testben.py
+
+    Python 3.7
+    test_import     :   1.303 ms
+    test_foo        : 250.360 ms
+
+    $ python testben.py
+
+    Python 3.7
+    test_import     :   0.290 ms
+    test_foo        : 252.273 ms
+
+    $ pyarmor gen testben.py benchmark.py benchmark2.py
+    $ python dist/testben.py
+
+    Python 3.7
+    test_import     :   0.907 ms
+    test_foo        : 311.076 ms
+
+    $ python dist/testben.py
+
+    Python 3.7
+    test_import     :   0.454 ms
+    test_foo        : 359.138 ms
+
+.. table:: Table-1. Pyarmor Permormace with Python Version
+   :widths: auto
+
+   ==============  =========  =========  =========  =========  =========  =========
+   Time (ms)       Import fresh module   Import module 2nd     Run function "foo"
+   --------------  --------------------  --------------------  --------------------
+   Python          Origin     Pyarmor    Origin     Pyarmor    Origin     Pyarmor
+   ==============  =========  =========  =========  =========  =========  =========
+   3.7             1.303      0.907      0.290      0.454      252.2      311.0
+   3.8             1.305      0.790      0.286      0.338      272.232    295.973
+   3.9             1.198      1.681      0.265      0.449      267.561    331.668
+   3.10            1.070      1.026      0.408      0.300      281.603    322.608
+   3.11            1.510      0.832      0.464      0.616      164.104    289.866
+   ==============  =========  =========  =========  =========  =========  =========
+
+**RFT Mode Performance**
+
+RFT mode should be same fast as original scripts.
+
+Here we compare RFT mode with default options, the test data is got by this way.
+
+First obfuscate scripts with default options, then run it.
+
+Then obfuscate scritps with RFT mode, and run it again::
+
+    $ rm -rf dist
+    $ pyarmor gen testben.py benchmark.py benchmark2.py
+    $ python dist/testben.py
+
+    $ rm -rf dist
+    $ pyarmor gen --enable-rft testben.py benchmark.py benchmark2.py
+    $ python dist/testben.py
+
+.. table:: Table-2. Performace of RFT Mode
+   :widths: auto
+
+   ==============  =========  =========  =========  =========  ==================
+   Time (ms)       Import fresh module   Run function "foo"    Remark
+   --------------  --------------------  --------------------  ------------------
+   Python          Pyarmor    RFT Mode   Pyarmor    RFT Mode
+   ==============  =========  =========  =========  =========  ==================
+   3.7             1.083      1.317      334.313    324.023
+   3.8             0.774      1.109      239.217    241.697
+   3.9             0.775      0.809      304.838    301.789
+   3.10            2.182      1.049      310.046    339.414
+   3.11            0.882      0.984      258.309    264.070
+   ==============  =========  =========  =========  =========  ==================
+
+Next, we compare RFT mode and :option:`--obf-code` ``0`` with original scritps by this way::
+
+    $ rm -rf dist __pycache__
+    $ python testben.py
+    ...
+
+    $ pyarmor gen --enable-rft --obf-code=0 testben.py benchmark.py benchmark2.py
+    $ python testben.py
+    ...
+
+.. table:: Table-2.1 Performance of RFT Mode and obf-code 0
+   :widths: auto
+
+   ==============  =========  =========  =========  =========  ==================
+   Time (ms)       Import fresh module   Run function "foo"    Remark
+   --------------  --------------------  --------------------  ------------------
+   Python          Pyarmor    RFT Mode   Pyarmor    RFT Mode
+   ==============  =========  =========  =========  =========  ==================
+   3.7             0.757      1.844      307.325    272.672
+   3.8             0.791      0.747      276.865    243.436
+   3.9             1.276      0.986      246.407    236.138
+   3.10            2.563      1.142      256.583    260.196
+   3.11            0.952      0.938      185.435    154.390
+   ==============  =========  =========  =========  =========  ==================
+
+They're almost same.
+
+**BCC Mode Performance**
+
+BCC mode is special. It takes a long time to load modules, because it need handle binary code, actually it's a simplified version of ``dyld``.
+
+The following test data got by this way::
+
+    $ rm -rf dist __pycache__
+    $ python testben.py
+    ...
+
+    $ python testben.py
+    ...
+
+    $ pyarmor gen --enable-bcc testben.py benchmark.py benchmark2.py
+    $ python dist/testben.py
+    ...
+
+    $ python dist/testben.py
+    ...
+
+.. table:: Table-3. Performance of BCC Mode with Python Version
+   :widths: auto
+
+   ==============  =========  =========  =========  =========  =========  =========
+   Time (ms)       Import fresh module   Import module 2nd     Run function "foo"
+   --------------  --------------------  --------------------  --------------------
+   Python          Origin     BCC Mode   Origin     BCC Mode   Origin     BCC Mode
+   ==============  =========  =========  =========  =========  =========  =========
+   3.7             1.130      327.906    1.000      283.469    325.828    283.972
+   3.8             1.358      269.592    0.277      287.710    249.187    264.473
+   3.9             1.383      297.131    0.781      254.888    278.289    264.585
+   3.10            1.261      285.891    0.325      277.887    230.421    272.073
+   3.11            1.248      212.937    0.219      251.810    148.020    176.307
+   ==============  =========  =========  =========  =========  =========  =========
+
+**Impact of Different Options**
+
+In order to facilitate comparison, each option is used separately. For example, test :option:`--no-wrap` by this way::
+
+    $ rm -rf dist __pycache__
+    $ pyarmor testben.py
+    ...
+
+    $ pyarmor gen --no-wrap testben.py benchmark.py benchmark2.py
+    $ pyarmor dist/testben.py
+
+    Python 3.7
+    test_import     :      0.971 ms
+    test_foo        :    306.261 ms
+
+.. list-table:: Table-4. Impact of Different Options
+   :header-rows: 1
+
+   * - Option
+     - Performance
+     - Security
+   * - :option:`--no-wrap`
+     - Increase
+     - Reduce
+   * - :option:`--obf-module` ``0``
+     - Slightly increase
+     - Slightly reduce
+   * - :option:`--obf-code` ``0``
+     - Remarkable increase
+     - Remarkable reduce
+   * - :option:`--enable-rft`
+     - Almost same
+     - Remarkable increase
+   * - :option:`--enable-themida`
+     - Remarkable reduce
+     - Remarkable increase
+   * - :option:`--mix-str`
+     - Reduce
+     - Increase
+   * - :option:`--assert-call`
+     - Reduce
+     - Increase
+   * - :option:`--assert-import`
+     - Slightly reduce
+     - Increase
+   * - :option:`--private`
+     - Reduce
+     - Increase
+   * - :option:`--restrict`
+     - Reduce
+     - Increase
 
 .. include:: ../_common_definitions.txt

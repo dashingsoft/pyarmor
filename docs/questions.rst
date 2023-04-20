@@ -11,17 +11,21 @@ Asking questions in Github
 
 Before ask question, please try these solutions:
 
-- If you have not read :doc:`tutorial/getting-started`, read it first
+- If using :command:`pyarmor-7` or Pyarmor < 8.0, please check `Pyarmor 7.x Doc`_
+
+- If you have not read :doc:`tutorial/getting-started`, read it
 
 - Check :doc:`reference/errors`
 
-- If you have trouble in pack, check :doc:`topic/repack` first
+- If you have trouble in pack, check :doc:`topic/repack`
 
-- If you have trouble in :term:`RFT Mode`, check :ref:`using rftmode` first
+- If you have trouble in :term:`RFT Mode`, check :ref:`using rftmode`
 
-- If you have trouble in :term:`BCC Mode`, check :ref:`using bccmode` first
+- If you have trouble in :term:`BCC Mode`, check :ref:`using bccmode`
 
-- If you have trouble with third-party libraries check :doc:`how-to/third-party`
+- If you have trouble with third-party libraries, check :doc:`how-to/third-party`
+
+- If it's related to security and performance, check :doc:`topic/performance`
 
 - Look through this page
 
@@ -33,15 +37,13 @@ Before ask question, please try these solutions:
 
 - If not using latest Pyarmor version, try to upgrade Pyarmor to latest version.
 
-- If using Pyarmor < 8.0, please check Pyarmor 7.x documentation.
-
 - Search in the Pyarmor `issues`_
 
 - Search in the Pyarmor `discussions`_
 
 Please report bug in `issues`_ and ask questions in `discussions`_
 
-When report bug in `issues`_, please copy the whole command line :command:`pyarmor gen` and first 4 lines in the console, do not mask anything, and do not paste snapshot image::
+When report bug in `issues`_, please copy the whole command line :command:`pyarmor gen` and first 4 lines in the console, do not mask version and platform information, and do not paste snapshot image::
 
     $ pyarmor gen -O dist --assert-call foo.py
     INFO     Python 3.10.0
