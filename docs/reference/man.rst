@@ -59,53 +59,43 @@ When something is wrong, print more debug informations in the console. For examp
 
 .. option:: --home PATH[,GLOBAL[,LOCAL[,REG]]]
 
-            Set Pyarmor :term:`Home Path`, :term:`Global Configuration Path`,
-            :term:`Local Configuration Path` and :term:`Registration File Path`
+            Set Pyarmor :term:`Home Path`, :term:`Global Path`, :term:`Local Path` and registration file path
 
 The default paths
 
-* :term:`Home Path` is :file:`~/.pyarmor`
+* :term:`Home Path` is :file:`~/.pyarmor/`
 
-* :term:`Global Configuration Path` is :file:`~/.pyarmor/config`, it's always
-  relative to :term:`Home Path`
+* :term:`Global Path` is :file:`~/.pyarmor/config/`
 
-* :term:`Local Configuration Path` is :file:`.pyarmor`
+* :term:`Local Path` is :file:`./.pyarmor/`
 
-* :term:`Registration File Path` is same as :term:`Home Path`
+* registration file path is same as :term:`Home Path`
 
-All of them could be changed by this option. For example, change home path to :file:`~/.pyarmor2`::
+All of them could be changed by this option. For example, change home path to :file:`~/.pyarmor2/`::
 
     $ pyarmor --home ~/.pyarmor2 ...
 
 Then
 
-* :term:`Global Configuration Path` is :file:`~/.pyarmor2/config`
-* :term:`Registration File Path` is :file:`~/.pyarmor2`
-* :term:`Local Configuration Path` still is :file:`.pyarmor`
+* :term:`Global Path` is :file:`~/.pyarmor2/config/`
+* Registration files are stored in the :file:`~/.pyarmor2/`
+* :term:`Local Path` still is :file:`./.pyarmor/`
 
-Another example, keep all others but change global path only::
+Another example, keep all others but only change global path to :file:`~/.pyarmor/config2/`::
 
     $ pyarmor --home ,config2 ...
 
-This command sets :term:`Global Configuration Path` to :file:`~/.pyarmor/config2`
-
-Another example, keep all others but change local path only::
+Another, keep all others but only change local path to :file:`/var/myproject`::
 
     $ pyarmor --home ,,/var/myproject/ ...
 
-This command sets :term:`Local Configuration Path` to :file:`/var/myproject`
-
-Another example, set :term:`Registration File Path` to :file:`/opt/pyarmor/`::
+Another, set registration file path to :file:`/opt/pyarmor/`::
 
     $ pyarmor --home ,,,/opt/pyarmor ...
 
 It's useful when may use :command:`sudo` to run :command:`pyarmor` occassionally. This makes sure the registration file could be found even switch to another user.
 
-When there are many Pyarmor Licenses registerred in one machine, set each license to different :term:`Registration File Path`
-
-There are 2 solutions
-
-The first solution, one license one home::
+When there are many Pyarmor Licenses registerred in one machine, set each license to different registration file path. For example::
 
     $ pyarmor --home ~/.pyarmor1 reg pyarmor-regfile-2051.zip
     $ pyarmor --home ~/.pyarmor1 gen project1/foo.py
@@ -113,15 +103,7 @@ The first solution, one license one home::
     $ pyarmor --home ~/.pyarmor2 reg pyarmor-regfile-2052.zip
     $ pyarmor --home ~/.pyarmor2 gen project2/foo.py
 
-The second solution, same home, one license one path::
-
-    $ pyarmor --home ,,,pyarmor1 reg pyarmor-regfile-2051.zip
-    $ pyarmor --home ,,,pyarmor1 gen project1/foo.py
-
-    $ pyarmor --home ,,,pyarmor2 reg pyarmor-regfile-2052.zip
-    $ pyarmor --home ,,,pyarmor2 gen project2/foo.py
-
-Start pyarmor with clean configuration by setting :term:`Global Configuration Path` and :term:`Local Configuration Path` to any non-exists path ``x``::
+Start pyarmor with clean configuration by setting :term:`Global Path` and :term:`Local Path` to any non-exists path ``x``::
 
     $ pyarmor --home ,x,x, gen foo.py
 
@@ -667,7 +649,7 @@ All the settings is only used for specified module `NAME`.
 
             Do everything in global settings
 
-Without this option, all the changed settings are soted in :term:`Local Configuration Path`, generally it's ``.pyarmor`` in the current path. By this option, everything is stored in :term:`Global Configuration Path`, generally it's ``~/.pyarmor/config/global``
+Without this option, all the changed settings are stored in :term:`Local Path`, generally it's ``./.pyarmor/config``. By this option, everything is stored in :term:`Global Path`, generally it's ``~/.pyarmor/config/global``
 
 .. option:: -r, --reset
 

@@ -64,8 +64,8 @@ Configuration options
 There are 3 kinds of configuration files
 
 * global: an ini file :file:`~/.pyarmor/config/global`
-* local: an ini file :file:`.pyarmor/config`
-* private: each module may has one ini file in :term:`Local Configuration Path`. For example, :file:`.pyarmor/foo.rules` is private configuration of module ``foo``
+* local: an ini file :file:`./.pyarmor/config`
+* private: each module may has one ini file in :term:`Local Path`. For example, :file:`./.pyarmor/foo.rules` is private configuration of module ``foo``
 
 Use command :ref:`pyarmor cfg` to change options in configuration files.
 
