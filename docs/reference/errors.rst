@@ -106,6 +106,14 @@ Here list error messages reported by pyarmor
        2. can not get runtime package path
    * - the format of obfuscated function is incorrect
      -
+   * - RuntimeError: Resource temporarily unavailable
+     - When using option ``-e`` to obfusate the script, the obfuscated script need connect to `NTP`_ server to check expire date. If network is not available, or something is wrong with network, it raises this error.
+
+       Solutions:
+
+       1. use local time if device is not connected to internet.
+
+       2. try it again it may works.
 
 Here list error messages reported by Python interpreter, generelly they are not pyarmor issues. Please consult Python documentation or google error message to fix them.
 
