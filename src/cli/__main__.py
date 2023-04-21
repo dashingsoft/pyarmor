@@ -260,7 +260,8 @@ def cmd_reg(ctx, args):
         if (not args.confirm) or upgrade:
             info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
             prompt = 'Are you sure to continue? (yes/no) '
-            if input(msg + prompt) != 'yes':
+            if input(msg + prompt) not in ('y', 'yes'):
+                logger.info('registration abort')
                 return
             if info['upgrade'] and info['product'] in ('TBD', 'non-profits'):
                 msg = '\n'.join([
@@ -269,7 +270,8 @@ def cmd_reg(ctx, args):
                     'it can not be changed.' % info['product'],
                     ''
                 ])
-                if input(msg + prompt) != 'yes':
+                if input(msg + prompt) not in ('y', 'yes'):
+                    logger.info('upgrade abort')
                     return
             # Free upgrade to Pyarmor Basic
             if upgrade and not info['upgrade']:
@@ -562,7 +564,7 @@ first time, it can be changed once later.
     )
     cparser.add_argument(
         '-y', '--confirm', action='store_true',
-        help='register Pyarmor without asking for confirmation'
+        help=argparse.SUPPRESS
     )
 
     cparser.add_argument(
