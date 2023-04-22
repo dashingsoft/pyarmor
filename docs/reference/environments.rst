@@ -290,7 +290,7 @@ Generally they're used with inline marker or in the hook scripts.
          __pyarmor__(0, None, b'keyinfo', 1)   # return user data (bytes)
          __pyarmor__(1, None, b'keyinfo', 1)   # return expire date (epoch)
 
-   Raise :exc:`RuntimeError` if something is wrong.
+   Return None if something is wrong.
 
 .. function:: __assert_armored__(arg)
 
