@@ -59,59 +59,6 @@ Enable this plugin and generate the obfusated script again::
 
 .. seealso:: :ref:`plugins`
 
-Using hook to check network time by other service
-=================================================
-
-.. versionadded:: 8.2
-
-Create hook script in the ``.pyarmor/hooks/foo.py``
-
-.. code-block:: python
-
-    from http.client import HTTPSConnection
-    expired = __pyarmor__(1, None, b'keyinfo', 1)
-    host = 'worldtimeapi.org'
-    path = '/api/timezone/Europe/Paris'
-    conn = HTTPSConnection(host)
-    conn.request("GET", path)
-    res = conn.getresponse()
-    if res.code == 200:
-        data = res.read()
-        s = data.find(b'"unixtime":')
-        n = data.find(b',', s)
-        current = int(data[s+11:n])
-        if current > expire:
-            raise RuntimeError('license is expired')
-     else:
-         raise RuntimeError('got network time failed')
-
-Then generate script with local expired date::
-
-    $ pyarmor gen -e .30 foo.py
-
-Because ``.pyarmor/hooks/foo.py`` will be inserted into ``foo.py``, in order to avoid name confilcts, refine it as this:
-
-.. code-block:: python
-
-    def _pyarmor_check_worldtime(host, path):
-        from http.client import HTTPSConnection
-        expired = __pyarmor__(1, None, b'keyinfo', 1)
-        conn = HTTPSConnection(host)
-        conn.request("GET", path)
-        res = conn.getresponse()
-        if res.code == 200:
-            data = res.read()
-            s = data.find(b'"unixtime":')
-            n = data.find(b',', s)
-            current = int(data[s+11:n])
-            if current > expire:
-                raise RuntimeError('license is expired')
-         else:
-             raise RuntimeError('got network time failed')
-    _pyarmor_check_worldtime('worldtimeapi.org', '/api/timezone/Europe/Paris')
-
-.. seealso:: :ref:`hooks` :func:`__pyarmor__`
-
 Using hook to bind script to docker id
 ======================================
 
@@ -140,6 +87,46 @@ First create hook script ``.pyarmor/hooks/app.py``
 Then generate the obfuscated script, store docker ids to :term:`runtime key` as private data at the same time::
 
     $ pyarmor gen --bind-data "docker-a1,docker-b2" app.py
+
+Run the obfuscated script to check it, please add print statements in the hook script to debug it.
+
+.. seealso:: :ref:`hooks` :func:`__pyarmor__`
+
+Using hook to check network time by other service
+=================================================
+
+.. versionadded:: 8.2
+
+If NTP is not available in the :term:`target device` and the obfuscated scripts has expired date, it may raise ``RuntimeError: Resource temporarily unavailable``.
+
+In this case, using hook script to verify expired data by other time service.
+
+First create hook script in the ``.pyarmor/hooks/foo.py``:
+
+.. code-block:: python
+
+    def _pyarmor_check_worldtime(host, path):
+        from http.client import HTTPSConnection
+        expired = __pyarmor__(1, None, b'keyinfo', 1)
+        conn = HTTPSConnection(host)
+        conn.request("GET", path)
+        res = conn.getresponse()
+        if res.code == 200:
+            data = res.read()
+            s = data.find(b'"unixtime":')
+            n = data.find(b',', s)
+            current = int(data[s+11:n])
+            if current > expire:
+                raise RuntimeError('license is expired')
+         else:
+             raise RuntimeError('got network time failed')
+    _pyarmor_check_worldtime('worldtimeapi.org', '/api/timezone/Europe/Paris')
+
+Then generate script with local expired date::
+
+    $ pyarmor gen -e .30 foo.py
+
+Thus the obfuscated script could verify network time by itself.
 
 .. seealso:: :ref:`hooks` :func:`__pyarmor__`
 
