@@ -86,9 +86,9 @@ class Builder(object):
 
     def _pack_script(self, bundle, output, entry=None, codesign=None):
         from .repack import repacker
-        build = os.path.join('.pyarmor', 'build')
-        repacker(bundle, output, build, entry=entry, codesign=codesign)
-        shutil.rmtree(build)
+        buildpath = os.path.join('.pyarmor', 'pack')
+        repacker(bundle, output, buildpath, entry=entry, codesign=codesign)
+        shutil.rmtree(buildpath)
 
     def _obfuscate_scripts(self):
         rev = self.ctx.version_info()
