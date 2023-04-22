@@ -572,6 +572,6 @@ class Context(object):
                     return f.read()
 
     def runtime_plugin(self, source, target, platforms):
-        for plugin in self.ctx.plugins:
+        for plugin in self.plugins:
             if hasattr(plugin, 'post_runtime'):
                 plugin.post_runtime(self, source, target, platforms)
