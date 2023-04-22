@@ -98,9 +98,21 @@ If following this example, please
 * Replacing all the ``/path/to/src`` with actual path
 * Replacing all the ``pyarmor_runtime_000000`` with actual name
 
+**how to verify obfuscated scripts have been packed**
+
+Inserting some print statements in the ``foo.spec`` to print which script is replaced, or add some code only works in the obfuscated script.
+
+For example, add one line in main script ``foo.py``
+
+.. code-block:: python
+
+    print('this is __pyarmor__', __pyarmor__)
+
+If it's not obfuscated, the final bundle will raise error.
+
 .. rubric:: notes
 
-.. [#] Do not use ``-i`` and ``--prefix`` to obfuscate the scripts
+.. [#] Do not use :option:`-i` and :option:`--prefix` to obfuscate the scripts
 .. [#] Just let PyInstaller could find runtime package without extra pypath
 .. [#] Most of other PyInstaller options could be used here
 
