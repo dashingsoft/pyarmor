@@ -36,9 +36,11 @@
 
     Store Pyarmor local configuration file, default is :file:`./.pyarmor/`
 
-  Hook
+  Hook script
 
-    A python script is embedded into obfuscated script or runtime files to do some extra work
+    Hook script is a python script which locates in sub-path ``hooks`` of :term:`local path` or :term:`global path`.
+
+    When obfuscating the scripts, if there is any same name script exists, it's called module hook script.
 
   JIT
 
@@ -73,7 +75,7 @@
           - darwin.x86_64
           - darwin.aarch64 or darwin.arm64
 
-  Plugin
+  Plugin script
 
     A python script or function will be called in building stage to do some customization work.
 

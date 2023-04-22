@@ -49,7 +49,7 @@ The runtime key generally is embedded into extension module ``pyarmor_runtime``,
 
 Extension module ``pyarmor_runtime`` will not load the obfuscated script unless the runtime key exists and is valid.
 
-User also could store any private data in the runtime key, then use hook script to check private data in the obfuscated scripts.
+User also could store any private data in the runtime key, then use :term:`hook script` to check private data in the obfuscated scripts.
 
 If runtime key is stored in an outer file, any readable text in the header will be ignored. User can add comment at the header of runtime key file, the rest part are bytes data, only in the obfuscaed scripts they could be read.
 

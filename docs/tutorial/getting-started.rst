@@ -285,7 +285,6 @@ And then :doc:`advanced`, some of them are not available in trial pyarmor
 
 * 2 irreversible obfuscation: RFT mode, BCC mode :sup:`pyarmor-pro`
 * Customization error handler
-* plugin and hooks
 * runtime error internationalization
 * cross platform, multiple platforms and multiple Python version
 

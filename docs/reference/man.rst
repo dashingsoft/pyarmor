@@ -284,7 +284,7 @@ In Linux, binding to specify name::
 
             DATA may be ``@FILENAME`` or string
 
-Store any private data to runtime key, then check it in the obfuscated scripts by yourself. It's mainly used with the hook script to extend runtime key verification method.
+Store any private data to runtime key, then check it in the obfuscated scripts by yourself. It's mainly used with the :term:`hook script` to extend runtime key verification method.
 
 If DATA has a leading ``@``, then the rest is a filename. Pyarmor reads the binary data from file, and store into runtime key.
 
