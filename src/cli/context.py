@@ -135,6 +135,7 @@ class Context(object):
         self.runtime_key = None
 
         self.cmd_options = {}
+        self.plugins = []
 
     def _read_config(self, filelist, encoding=None):
         cfg = configparser.ConfigParser(
@@ -521,18 +522,6 @@ class Context(object):
         return hook, data
 
     @property
-    def runtime_hooks(self):
-        value = self._rt_opt('hooks')
-        if value:
-            from ast import literal_eval
-            name, encoding = (value + ':utf-8').split(':')[:2]
-            for x in self.local_path, self.global_path:
-                filename = os.path.join(x, name)
-                if os.path.exists(filename):
-                    with open(filename, encoding=encoding) as f:
-                        return literal_eval(f.read())
-
-    @property
     def runtime_messages(self):
         value = self.cfg['runtime'].get('messages', '')
         if value:
@@ -540,6 +529,7 @@ class Context(object):
             cfg = self._named_config(name, encoding=encoding)
             if cfg.has_section('runtime.message'):
                 return cfg
+
     #
     # RFT settings
     #
@@ -569,3 +559,19 @@ class Context(object):
         path = os.path.join(self.local_path, 'bcc')
         os.makedirs(path, exist_ok=True)
         return path
+
+    #
+    # Plugin and hook
+    #
+    def runtime_hook(self, modname):
+        for path in self.local_path, self.global_path:
+            filename = os.path.join(path, 'hooks', modname + '.py')
+            if os.path.exists(filename):
+                encoding = self.cfg['builder'].get('encoding', 'utf-8')
+                with open(filename, encoding=encoding) as f:
+                    return f.read()
+
+    def runtime_plugin(self, source, target, platforms):
+        for plugin in self.ctx.plugins:
+            if hasattr(plugin, 'post_runtime'):
+                plugin.post_runtime(self, source, target, platforms)

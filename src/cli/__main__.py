@@ -29,6 +29,7 @@ from .context import Context
 from .register import Register, WebRegister
 from .config import Configer
 from .shell import PyarmorShell
+from .plugin import Plugin
 
 
 def _cmd_gen_key(builder, options):
@@ -48,6 +49,8 @@ def _cmd_gen_key(builder, options):
     logger.info('write %s', target)
     with open(target, 'wb') as f:
         f.write(data)
+
+    Plugin.post_key(builder.ctx, target)
     logger.info('generate outer runtime key OK')
 
 
@@ -202,12 +205,14 @@ def cmd_gen(ctx, args):
 
     builder = Builder(ctx)
 
+    Plugin.install(ctx)
     if args.inputs[0].lower() in ('key', 'k'):
         _cmd_gen_key(builder, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
     else:
         builder.process(options, pack=args.pack)
+        Plugin.post_build(ctx, pack=args.pack)
 
 
 def cmd_cfg(ctx, args):
