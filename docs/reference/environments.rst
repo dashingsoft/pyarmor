@@ -239,20 +239,21 @@ Generally they're used with inline marker or in the hook scripts.
 
 .. function:: __pyarmor__(arg, kwarg, name, flag)
 
-   `name` must be byte string ``b'hdinfo'`` or ``b'keyinfo'``
-
-   `flag` must be ``1``
+   :param bytes name: must be ``b'hdinfo'`` or ``b'keyinfo'``
+   :param int flag: must be ``1``
 
    **get hdinfo**
 
-   When `name` is ``b'hdinfo'``, call it to get hardware information.
+   When ``name`` is ``b'hdinfo'``, call it to get hardware information.
 
-   `arg` could be
-
-   - 0: get the serial number of first harddisk
-   - 1: get mac address of first network card
-   - 2: get ipv4 address of first network card
-   - 3: get target machine name
+   :param int arg: query which kind of device
+   :param str kwarg: None or device name
+   :return: arg == 0 return the serial number of first harddisk
+   :return: arg == 1 return mac address of first network card
+   :return: arg == 2 return ipv4 address of first network card
+   :return: arg == 3 return device name
+   :rtype: str
+   :raises RuntimeError: when something is wrong
 
    For example,
 
@@ -261,50 +262,59 @@ Generally they're used with inline marker or in the hook scripts.
          __pyarmor__(0, None, b'hdinfo', 1)
          __pyarmor__(1, None, b'hdinfo', 1)
 
-   In Linux, `kwarg` is used to get named network card or named harddisk. For example:
+   In Linux, ``kwarg`` is used to get named network card or named harddisk. For example:
 
    .. code-block:: python
 
-         __pyarmor__(0, name="/dev/vda2", b'hdinfo', 1)
-         __pyarmor__(1, name="eth2", b'hdinfo', 1)
+         __pyarmor__(0, "/dev/vda2", b'hdinfo', 1)
+         __pyarmor__(1, "eth2", b'hdinfo', 1)
 
-   In Windows, `kwarg` is used to get all network cards and harddisks. For example:
+   In Windows, ``kwarg`` is used to get all network cards and harddisks. For example:
 
    .. code-block:: python
 
-         __pyarmor__(0, name="/0", b'hdinfo', 1)    # First disk
-         __pyarmor__(0, name="/1", b'hdinfo', 1)    # Second disk
+         __pyarmor__(0, "/0", b'hdinfo', 1)    # First disk
+         __pyarmor__(0, "/1", b'hdinfo', 1)    # Second disk
 
-         __pyarmor__(1, name="*", b'hdinfo', 1)
-         __pyarmor__(1, name="*", b'hdinfo', 1)
+         __pyarmor__(1, "*", b'hdinfo', 1)
+         __pyarmor__(1, "*", b'hdinfo', 1)
 
 
    **get keyinfo**
 
-   When `name` is ``b'keyinfo'``, call it to query user data in the runtime key.
+   When ``name`` is ``b'keyinfo'``, call it to query user data in the runtime key.
 
-   For example,
+   :param int arg: what information to get from runtime key
+   :param kwarg: always None
+   :return: arg == 0 return bind data, no bind data return empty bytes
+   :rtype: Bytes
+   :return: arg == 1 return expired epoch, -1 if there is no expired date
+   :rtype: Long
+   :return: None if something is wrong
+
+   For example:
 
    .. code-block:: python
 
-         __pyarmor__(0, None, b'keyinfo', 1)   # return user data (bytes)
-         __pyarmor__(1, None, b'keyinfo', 1)   # return expire date (epoch)
-
-   Return None if something is wrong.
+         print('bind data is', __pyarmor__(0, None, b'keyinfo', 1))
+         print('expired epoch is' __pyarmor__(1, None, b'keyinfo', 1))
 
 .. function:: __assert_armored__(arg)
 
-   `arg` is a module or callable object, if `arg` is obfuscated, it return `arg` self, otherwise, raise protection error. For example
+   :param object arg:  arg is a module or callable object
+   :returns: return ``arg`` self if ``arg`` is obfuscated, otherwise, raise protection error.
 
-.. code-block:: python
+   For example
 
-    m = __import__('abc')
-    __assert_armored__(m)
+   .. code-block:: python
 
-    def hello(msg):
-        print(msg)
+       m = __import__('abc')
+       __assert_armored__(m)
 
-    __assert_armored__(hello)
-    hello('abc')
+       def hello(msg):
+           print(msg)
+
+       __assert_armored__(hello)
+       hello('abc')
 
 .. include:: ../_common_definitions.txt
