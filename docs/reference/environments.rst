@@ -124,6 +124,8 @@ Generally they're used with inline marker or in the hook scripts.
 
    `flag` must be ``1``
 
+   **get hdinfo**
+
    When `name` is ``b'hdinfo'``, call it to get hardware information.
 
    `arg` could be
@@ -158,13 +160,16 @@ Generally they're used with inline marker or in the hook scripts.
          __pyarmor__(1, name="*", b'hdinfo', 1)
 
 
+   **get keyinfo**
+
    When `name` is ``b'keyinfo'``, call it to query user data in the runtime key.
 
    For example,
 
    .. code-block:: python
 
-         __pyarmor__(None, None, b'keyinfo', 1)   # return user data (bytes)
+         __pyarmor__(0, None, b'keyinfo', 1)   # return user data (bytes)
+         __pyarmor__(1, None, b'keyinfo', 1)   # return expire date (epoch)
 
    Raise :exc:`RuntimeError` if something is wrong.
 

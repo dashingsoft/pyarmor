@@ -9,5 +9,6 @@
    tutorial/installation
    tutorial/obfuscation
    tutorial/advanced
+   tutorial/plugin
 
 .. include:: _common_definitions.txt

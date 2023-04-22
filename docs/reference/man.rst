@@ -130,7 +130,7 @@ Generate obfuscated scripts and all the required runtime files.
 
 -e DATE, --expired DATE         set expired date :option:`... <-e>`
 -b DEV, --bind-device DEV       bind obfuscated scripts to device :option:`... <-b>`
---bind-DATA DATA                store private to runtime key :option:`... <--bind-data>`
+--bind-data DATA                store private data to runtime key :option:`... <--bind-data>`
 --period N                      check runtime key periodically :option:`... <--period>`
 --outer                         enable outer runtime key :option:`... <--outer>`
 
@@ -510,6 +510,7 @@ Generate :term:`outer key` for obfuscated scripts.
 -e DATE, --expired DATE     set expired date
 --period N                  check runtime key periodically
 -b DEV, --bind-device DEV   bind obfuscated scripts to device
+--bind-data                 store private data to runtime key
 
 .. describe:: Description
 
@@ -599,7 +600,7 @@ Remove word from option::
     $ pyarmor cfg pyexts - ".pym"
 
     Current settings
-        pyexts = .py .pyw .pym
+        pyexts = .py .pyw
 
 Append new line to option::
 
@@ -674,7 +675,6 @@ Register Pyarmor or upgrade Pyarmor license
 -p NAME, --product NAME
                       license to this product
 -u, --upgrade         upgrade Pyarmor license
--y, --confirm         register Pyarmor without asking for confirmation
 
 .. describe:: Arguments
 
@@ -706,10 +706,6 @@ It's meanless to use this option after initial registration.
 ``TBD`` is a special product name. If product name is ``TBD`` at initial registration, the product name can be changed later.
 
 For any other product name, it can't be changed any more.
-
-.. option:: -y, --confirm
-
-            In initial registration, without asking for confirmation
 
 .. option:: -u, --upgrade
 
