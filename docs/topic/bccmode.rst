@@ -48,31 +48,32 @@ Ignore module or function
 
 When BCC scripts reports errors, a quick workaround is to ignore these problem modules or functions. Because BCC mode converts some functions to C code, these funtions are not compatiable with Python function object. They may not be called by outer Python scripts, and can't be fixed in Pyarmor side. In this case use configuration option ``bcc:excludes`` and ``bcc:disabled`` to ignore function or module, and make all the others work.
 
-First enable debug mode by common option ``-d``::
+To ignore one module ``pkgname.modname`` by this command::
 
-    $ pyarmor -d gen --enable-bcc foo.py
+    $ pyarmor cfg -p pkgname.modname bcc:disabled=1
 
-Check trace log to find which functions are converted to c function. If there are problem functions, then tell BCC mode does not deal with it. For example, ignore function ``sum2`` in the module ``foo.py`` by this command::
+To ignore one function in one module by this command::
 
-    $ pyarmor cfg -p foo bcc:excludes="sum2"
+    $ pyarmor cfg -p pkgname.modname bcc:excludes + "function name"
 
 Use ``-p`` to specify module name and option ``bcc:excludes`` for function name. No ``-p``, same name function in the other scripts will be ignored too.
 
-Append more functions to exclude by this way::
+Exclude more functions by this way::
 
     $ pyarmor cfg -p foo bcc:excludes + "hello foo2"
 
-Then obfuscate the script again::
+Let's enable trace mode to check these functions are ignored::
 
-    $ pyarmor gen --enable-bcc /path/to/pkg/joker
-    $ python dist/foo.py
+    $ pyarmor cfg enable_trace 1
+    $ pyarmor gen --enable-bcc foo.py
+    $ grep trace.bcc .pyarmor/pyarmor.trace.log
 
-When obfuscating package, it also could exclude one module separately. For example, in the following commands BCC mode ignores ``joker/card.py``, but handle all the other scripts in package ``joker``::
+Another example, in the following commands BCC mode ignores ``joker/card.py``, but handle all the other scripts in package ``joker``::
 
     $ pyarmor cfg -p joker.card bcc:disabled=1
     $ pyarmor gen --enable-bcc /path/to/pkg/joker
 
-By both of ``bcc:excludes`` and ``bcc:disable``, make all the problem code fallback to default obfuscation mode, and let others could be converted to c function and work fine.
+By both of ``bcc:excludes`` and ``bcc:disabled``, make all the problem code fallback to default obfuscation mode, and let others could be converted to c function and work fine.
 
 Changed features
 ================
