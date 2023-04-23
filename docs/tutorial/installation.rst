@@ -100,6 +100,8 @@ Clean uninstallation
 Run the following commands to make a clean uninstallation::
 
     $ pip uninstall pyarmor
+    $ pip uninstall pyarmor.cli.core
+    $ pip uninstall pyarmor.cli.runtime
     $ rm -rf ~/.pyarmor
     $ rm -rf ./.pyarmor
 
