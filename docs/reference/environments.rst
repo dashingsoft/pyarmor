@@ -82,7 +82,8 @@ Plugin is a Python script used to do some post-build work in generating obfuscat
 
 Plugin use cases:
 
-- Copy data files to output path
+- Additional processing in the output path
+- Fix import statement in the obfuscated script for special cases
 - Add comment to :term:`outer key` file
 - Rename binary extension :mod:`pyarmor_runtime` suffix to avoid name confilcts
 - In Darwin use `install_name_tool` to fix :term:`extension module` :mod:`pyarmor_runtime` couldn't be loaded if Python is not installed in the stardard path
