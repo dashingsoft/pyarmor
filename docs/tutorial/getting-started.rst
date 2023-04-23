@@ -257,11 +257,9 @@ There is binary `extension module`_ :mod:`pyarmor_runtime` in extra sub-package 
 
 Generally using binary extensions means the obfuscated scripts require :mod:`pyarmor_runtime` be created for different platforms, so they
 
-* only works for platforms which provides pre-built binaries
-* may not be compatible with different builds of CPython interpreter
+* only works for platforms which provides pre-built binaries, refer to :doc:`../reference/environments`
+* may not be compatible with different builds of CPython interpreter. For example, when obfuscating scripts by Python 3.8, they can't be run by Python 3.7, 3.9 etc.
 * often will not work correctly with alternative interpreters such as PyPy, IronPython or Jython
-
-For example, when obfuscating scripts by Python 3.8, they can't be run by Python 3.7, 3.9 etc.
 
 Another disadvantage of relying on binary extensions is that alternative import mechanisms (such as the ability to import modules directly from zipfiles) often won't work for extension modules (as the dynamic loading mechanisms on most platforms can only load libraries from disk).
 
@@ -283,7 +281,7 @@ Next is :doc:`obfuscation`. It covers
 
 And then :doc:`advanced`, some of them are not available in trial pyarmor
 
-* 2 irreversible obfuscation: RFT mode, BCC mode :sup:`pyarmor-pro`
+* 2 irreversible obfuscation: RFT mode, BCC mode :sup:`pro`
 * Customization error handler
 * runtime error internationalization
 * cross platform, multiple platforms and multiple Python version
