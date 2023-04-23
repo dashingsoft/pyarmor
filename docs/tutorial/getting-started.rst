@@ -178,7 +178,7 @@ Suppose got target machine hardware informations::
     Enternet Addr:               00:16:3e:35:19:3d
     Hard Disk Serial Number:     HXS2000CN2A
 
-Using :option:`-e` to bind hardware information to obfuscated scripts. For example, bind :file:`dist5/foo.py` to enternet address::
+Using :option:`-b` to bind hardware information to obfuscated scripts. For example, bind :file:`dist5/foo.py` to enternet address::
 
     $ pyarmor gen -O dist5 -b 00:16:3e:35:19:3d foo.py
 
