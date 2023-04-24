@@ -49,7 +49,7 @@ Supported platforms
 
 .. rubric:: notes
 
-.. [#] ``N/y`` means not yet now, but will be supported in futer
+.. [#] ``N/y`` means not yet now, but will be supported in future.
 .. [#] pyarmor-7 also supports more linux arches, refer to `Pyarmor 7.x platforms`__.
 
 .. important::
