@@ -41,9 +41,9 @@ Supported platforms
    Arch                  x86/x86_64    x86_64    arm64    x86/x86_64    aarch64    armv7    armv6
    ===================  ============  ========  =======  ============  =========  =======  =======
    Themida Protection        Y           No        No         No          No       No        No
-   pyarmor 8 RFT Mode        Y           Y         Y          Y           Y        Y         N/y
+   pyarmor 8 RFT Mode        Y           Y         Y          Y           Y        Y         No
    pyarmor 8 BCC Mode        Y           Y         Y          Y           Y        N/y       No
-   pyarmor 8 others          Y           Y         Y          Y           Y        Y         Y
+   pyarmor 8 others          Y           Y         Y          Y           Y        Y         No
    pyarmor-7 [#]_            Y           Y         Y          Y           Y        Y         Y
    ===================  ============  ========  =======  ============  =========  =======  =======
 
