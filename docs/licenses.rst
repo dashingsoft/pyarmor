@@ -73,6 +73,16 @@ In 24 hours only less than 100 devices can use one same Pyarmor License. Pyarmor
 
 In details read `EULA of Pyarmor`_
 
+**What's one product**
+
+First of all, if not for sale, all the Python scripts are belong to one product.
+
+Pyarmor is one product, it includes Pyarmor basic, Pyarmor pro, and Pyarmor group. It also include pyarmor-webui which provides graphics interface for pyarmor. Besides, the order system of Pyarmor is a django app running in cloud-server. This django app also belongs to one product Pyarmor. The laptop used to develop Pyarmor, the PCs used to test Pyarmor, the cloud-server to serve order system of Pyarmor, all of them belong to one product Pyarmor.
+
+Microsoft Office is not one product, because each product in Microsoft Office is functional independence. For example, Microsoft Word and Microsoft Excel belong to Microsoft Office, but they're totally different.
+
+Microsoft Word is one product, and Micorsoft Word 2003，Word 2007 etc. are belong to one product Microsoft word.
+
 License features
 ----------------
 
