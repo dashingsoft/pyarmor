@@ -234,9 +234,9 @@ Exclude short strings by length < 10::
 
     $ pyarmor cfg mix.str:threshold 10
 
-Exclude any string by regular expression with format ``/pattern/``, the pattern syntax is same as module :mod:`re`. For example, exclude all strings length > 2000::
+Exclude any string by regular expression with format ``/pattern/``, the pattern syntax is same as module :mod:`re`. For example, exclude all strings length > 1000::
 
-    $ pyarmor cfg mix.str:excludes "/.{,2000}/"
+    $ pyarmor cfg mix.str:excludes "/.{1000,}/"
 
 Append new ruler to exclude 2 words ``__main__`` and ``xyz``::
 
@@ -306,7 +306,7 @@ For example,
 
     m = __import__('abc')
 
-In obfuscated script, there is a builtin function ``__assert_armored__`` could be used to check ``m`` is obfuscated. In order to make sure ``m`` could not be replaced by others, check it manually:
+In obfuscated script, there is a builtin function :func:`__assert_armored__` could be used to check ``m`` is obfuscated. In order to make sure ``m`` could not be replaced by others, check it manually:
 
 .. code-block:: python
 

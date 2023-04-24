@@ -75,7 +75,7 @@ For scripts, use these options to get more security::
 
 Using :option:`--enable-jit` tells Pyarmor processes some sentensive data by ``c`` function generated in runtime.
 
-Using :option:`--mix-str` [#]_ could mix the string constant (length > 4) in the scripts.
+Using :option:`--mix-str` [#]_ could mix the string constant (length > 8) in the scripts.
 
 Using :option:`--assert-call` makes sure function is obfuscated, to prevent called function from being replaced by special ways
 
@@ -86,7 +86,7 @@ For example,
 .. code-block:: python
     :emphasize-lines: 1,10
 
-    data = "abcxyz"
+    data = "abcefgxyz"
 
     def fib(n):
         a, b = 0, 1
@@ -97,7 +97,7 @@ For example,
     if __name__ == '__main__':
         fib(n)
 
-String constant ``abcxyz`` and function ``fib`` will be protected like this
+String constant ``abcefgxyz`` and function ``fib`` will be protected like this
 
 .. code-block:: python
     :emphasize-lines: 1,10
@@ -156,7 +156,7 @@ Then run it::
     ... import joker OK
     ... RuntimeError: unauthorized use of script
 
-In order to export ``joker.queens``, config this module is not restrict::
+In order to export ``joker.queens``, either removing option :option:`--restrict``, or config only this module is not restrict like this::
 
     $ pyarmor cfg -p joker.queens restrict_module=0
 
