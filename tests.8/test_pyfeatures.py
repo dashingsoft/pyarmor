@@ -37,6 +37,10 @@ class BaseTestCase(unittest.TestCase):
         rc, stdout, stderr = self.assert_python_ok(*args)
         self.assertIn(b'obfuscate scripts OK', stderr)
 
+    def pyarmor_cfg(self, options):
+        args = ['-m', 'pyarmor.cli'] + options
+        rc, stdout, stderr = self.assert_python_ok(*args)
+
     def verify_script_pass(self, script, expected=None):
         rc, stdout, stderr = self.assert_python_ok(script)
         if expected:
@@ -67,9 +71,9 @@ class UnitTestCases(BaseTestCase):
     def test_wrapmode_2(self):
         script = 'samples/pyfeatures/wrap2.py'
         expected = b'All test passed'
-        self.pyarmor_cmd(['cfg', 'wrap_mode', '2'])
+        self.pyarmor_cfg(['cfg', 'wrap_mode', '2'])
         self.pyarmor_cmd(['g', script])
-        self.pyarmor_cmd(['cfg', 'wrap_mode', '1'])
+        self.pyarmor_cfg(['cfg', 'wrap_mode', '1'])
         self.verify_script_pass(script, expected)
 
     def test_rft_issues(self):
