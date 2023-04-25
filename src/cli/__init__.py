@@ -44,7 +44,10 @@ class Component(object):
         elif opt.startswith('ob_'):
             v = self._options.get(opt[3:], '')
             if isinstance(v, str):
+                if v.isdigit():
+                    return bool(int(v))
                 return v.lower() in ('1', 'true', 'on', 'yes')
+
             return v
         return AttributeError(opt)
 
