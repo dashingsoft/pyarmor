@@ -117,6 +117,7 @@ class Register(object):
     def _license_type(self, info):
         return 'basic' if info['features'] == 1 else \
             'pro' if info['features'] == 7 else \
+            'group' if info['features'] == 15 else \
             'trial' if info['token'] == 0 else 'unknown'
 
     def _license_to(self, info):
@@ -170,7 +171,6 @@ class Register(object):
         '''$advanced
 
 Notes
-* Internet connection is required to verify Pyarmor license
 $notes
 '''
 
@@ -195,6 +195,10 @@ $notes
             self.notes.append(
                 '* Trial license can\'t obfuscate big script and mix str'
             )
+        if lictype != 'group':
+            self.notes.append(
+                '* Internet connection is required to verify Pyarmor license'
+            )
 
         lines.append(Template(self.__str__.__doc__).substitute(
             advanced='\n'.join(advanced),
@@ -217,6 +221,11 @@ License for Pyarmor 8.0+
 The original license no: $rcode
 
 The upgraded license information will be''')
+
+group_license_info = Template('''
+In order to register offline device, please check
+https://pyarmor.readthedocs.io/en/stable/how-to/register.html#using-group-license
+''')
 
 
 class WebRegister(Register):
@@ -343,17 +352,20 @@ class WebRegister(Register):
         logger.info('send request to server')
         res = self._send_request(url)
         regfile = self._handle_response(res)
-
-        logger.info('register "%s"', regfile)
-        self.register_regfile(regfile)
-
-        logger.info('This license has been %s successfully',
-                    'upgraded' if upgrade else 'registered')
+        if isinstance(regfile, (list, tuple)):
+            regfile, group = regfile
+            logger.info('This group license has been activated sucessfully')
+            logger.info('%s', group_license_info.substitute())
+        else:
+            logger.info('register "%s"', regfile)
+            self.register_regfile(regfile)
+            logger.info('This license code has been %s successfully',
+                        'upgraded' if upgrade else 'activated')
 
         notes = (
             '* Please backup regfile "%s" carefully, and '
             'use this file for next registration' % regfile,
-            '* "%s" can be used only 10 times' % os.path.basename(keyfile),
+            '* "%s" is invalid now, do not use it' % os.path.basename(keyfile),
         )
         logger.info('Import Notes:\n\n%s', '\n'.join(notes))
 
@@ -368,6 +380,7 @@ class WebRegister(Register):
                 with open(filename, 'wb') as f:
                     f.write(data[n:])
                 self._write_group_info(filename, data[:n])
+                return filename, data[:n]
             else:
                 with open(filename, 'wb') as f:
                     f.write(data)
