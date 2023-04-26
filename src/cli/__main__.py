@@ -228,10 +228,10 @@ def cmd_reg(ctx, args):
         open_new_tab(ctx.cfg['pyarmor']['buyurl'])
         return
 
-    if args.group and not args.regfile:
+    if args.device and not args.regfile:
         reg = Register(ctx)
-        filename = reg.generate_group_file(args.group)
-        logger.info('group file "%s" is generated', filename)
+        filename = reg.generate_group_device(args.device)
+        logger.info('device file "%s" is generated', filename)
         return
 
     regfile = args.regfile
@@ -266,13 +266,13 @@ def cmd_reg(ctx, args):
         if not choice == 'y':
             return
 
-    if args.group:
+    if args.device:
         if not regfile.endswith('.zip'):
-            logger.error('invalid group register file "%s"', regfile)
-            raise CliError('please use ".zip" file to register group license')
+            logger.error('invalid registeration file "%s"', regfile)
+            raise CliError('please use ".zip" file to register group device')
         regsvr = WebRegister(ctx)
-        regsvr.register_group_file(regfile, args.group)
-        logger.info('The group regfile has been generated successfully')
+        regsvr.register_group_device(regfile, args.device)
+        logger.info('The device regfile has been generated successfully')
 
     elif regfile.endswith('.zip'):
         reg = Register(ctx)
@@ -291,8 +291,11 @@ def cmd_reg(ctx, args):
         if upgrade and not info['upgrade']:
             return regsvr.register(regfile, args.product, upgrade=True)
 
-        meth = 'upgrade_to_pro' if upgrade else 'register'
-        getattr(regsvr, meth)(regfile, args.product)
+        if upgrade:
+            regsvr.upgrade_to_pro(regfile, args.product)
+        else:
+            group = info['lictype'] == 'GROUP'
+            regsvr.register(regfile, args.product, group=group)
 
 
 def main_parser():
@@ -338,7 +341,11 @@ generate runtime key only
     pyarmor gen key <options>
 
 generate runtime package only
-    pyarmor gen runtime <options>'''
+    pyarmor gen runtime <options>
+
+Refer to
+https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
+'''
     cparser = subparsers.add_parser(
         'gen',
         aliases=['generate', 'g'],
@@ -502,6 +509,9 @@ show option `OPT` value:
 
 change option value:
     pyarmor cfg OPT=VALUE
+
+Refer to
+https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-cfg
     '''
 
     cparser = subparsers.add_parser(
@@ -543,14 +553,11 @@ def reg_parser(subparsers):
     '''register Pyarmor or upgrade Pyarmor license
 
 At the first time to register Pyarmor, `-p` (product name) should be
-set. If not set, this Pyarmor license is bind to "non-profits", and
-could not be used for commercial product.
+set. For non-commercial use, set it to "non-profits". The product name
+can't be changed after initial registration.
 
-Once register successfully, product name can't be changed.
-
-There is only one exception, if product name is set to "TBD" at the
-first time, it can be changed once later.
-
+Refer to
+https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-reg
     '''
     cparser = subparsers.add_parser(
         'reg',
@@ -566,15 +573,15 @@ first time, it can be changed once later.
     )
     cparser.add_argument(
         '-p', '--product', metavar='NAME',
-        help='license to this product'
+        help='bind license to this product'
     )
     cparser.add_argument(
         '-u', '--upgrade', action='store_true',
-        help='upgrade Pyarmor license'
+        help='upgrade old Pyarmor license'
     )
     cparser.add_argument(
-        '-g', '--group', metavar='ID', type=int, choices=range(1, 101),
-        help='token id (1-100) in a group license'
+        '-g', '--device', metavar='ID', type=int, choices=range(1, 101),
+        help='device id (1-100) in group license'
     )
     cparser.add_argument(
         '--buy', action='store_true',

@@ -155,14 +155,17 @@ class Register(object):
                 logger.debug('extracting %s', token_name)
                 f.extract(token_name, path=path)
                 return
+            if 'group.info' in f.namelist():
+                raise CliError('wrong usage for group license, please '
+                               'check `pyarmor reg` in Man page')
 
         logger.info('update license token')
         self.update_token()
 
-    def generate_group_file(self, tid):
+    def generate_group_device(self, devid):
         from .core import Pytransform3
         machine = Pytransform3.get_hd_info(10)
-        filename = os.path.basename(self.ctx.group_info_file(tid))
+        filename = os.path.basename(self.ctx.group_info_file(devid))
         with open(filename, "wb") as f:
             f.write(b'machine: ' + machine)
         return filename
@@ -222,11 +225,6 @@ The original license no: $rcode
 
 The upgraded license information will be''')
 
-group_license_info = Template('''
-In order to register offline device, please check
-https://pyarmor.readthedocs.io/en/stable/how-to/register.html#using-group-license
-''')
-
 
 class WebRegister(Register):
 
@@ -275,15 +273,15 @@ class WebRegister(Register):
         pname = info['product']
         if pname in ('', 'TBD'):
             info['product'] = product
+        elif pname != product:
+            logger.warning('old license is bind to product "%s"', pname)
+            logger.warning('it can not be changed to "%s"', product)
 
         lines = []
         if upgrade:
             if not (rcode and rcode.startswith('pyarmor-vax-')):
                 logger.error('please check Pyarmor 8.0 EULA')
                 raise CliError('old code "%s" can not be upgraded' % rcode)
-            if pname not in ('', 'TBD') and pname != product:
-                logger.warning('old license is bind to product "%s"', pname)
-                logger.warning('it can not be changed to "%s"', product)
             if info['upgrade']:
                 lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
             else:
@@ -330,14 +328,11 @@ class WebRegister(Register):
         self.update_token()
         logger.info('This license has been upgraded successfully')
 
-        notes = (
-            '* Please backup regfile "%s" carefully, and '
-            'use this file for next registration' % regfile,
-            '* Please do not upgrade this code again'
-        )
-        logger.info('Import Notes:\n\n%s', '\n'.join(notes))
+        notes = '* Please backup regfile "%s" carefully, and ' \
+            'use this file for subsequent registration' % regfile,
+        logger.info('Import Notes:\n\n%s\n', notes)
 
-    def register(self, keyfile, product, upgrade=False):
+    def register(self, keyfile, product, upgrade=False, group=False):
         if keyfile.endswith('.zip'):
             logger.info('register "%s"', keyfile)
             self.register_regfile(keyfile)
@@ -354,22 +349,24 @@ class WebRegister(Register):
         logger.info('send request to server')
         res = self._send_request(url)
         regfile = self._handle_response(res)
-        if isinstance(regfile, (list, tuple)):
-            regfile, group = regfile
+
+        notes = [
+            '* Please backup regfile "%s" carefully, and '
+            'use this file for subsequent registration' % regfile,
+            '* Do not use "%s" again' % os.path.basename(keyfile),
+        ]
+
+        if group:
             logger.info('This group license has been activated sucessfully')
-            logger.info('%s', group_license_info.substitute())
+            notes.append('* Please check `pyarmor reg` in Man page for '
+                         'how to register Pyarmor in group device')
         else:
             logger.info('register "%s"', regfile)
             self.register_regfile(regfile)
             logger.info('This license code has been %s successfully',
                         'upgraded' if upgrade else 'activated')
 
-        notes = (
-            '* Please backup regfile "%s" carefully, and '
-            'use this file for next registration' % regfile,
-            '* "%s" is invalid now, do not use it' % os.path.basename(keyfile),
-        )
-        logger.info('Import Notes:\n\n%s', '\n'.join(notes))
+        logger.info('Import Notes:\n\n%s\n', '\n'.join(notes))
 
     def _handle_response(self, res):
         if res and res.code == 200:
@@ -378,11 +375,10 @@ class WebRegister(Register):
             logger.info('write registration file "%s"', filename)
             data = res.read()
             if data.startswith(b'{"group":'):
-                n = data.find(b'}')
+                n = data.find(b'}') + 1
                 with open(filename, 'wb') as f:
                     f.write(data[n:])
                 self._write_group_info(filename, data[:n])
-                return filename, data[:n]
             else:
                 with open(filename, 'wb') as f:
                     f.write(data)
@@ -393,35 +389,35 @@ class WebRegister(Register):
 
         raise CliError('no response from license server')
 
-    def _write_group_info(self, filename, info):
+    def _write_group_info(self, filename, data):
         from zipfile import ZipFile
         logger.info('write group information')
         with ZipFile(filename, 'a') as f:
-            f.writestr(info, 'group.info')
+            f.writestr('group.info', data)
 
-    def register_group_file(self, regfile, tid):
+    def register_group_device(self, regfile, devid):
         from zipfile import ZipFile
-        info = self.ctx.group_info_file(tid)
-        logger.info('register group file "%s" by "%s"', info, regfile)
-        if not os.path.exists(info):
-            logger.error('please generate group file in build machine by')
-            logger.error('    pyarmor reg -g %s', tid)
-            logger.error('then copy generated file to this machine "%s"', info)
-            raise CliError('no found group file')
+        devinfo = self.ctx.group_device_file(devid)
+        logger.info('register device file "%s" by "%s"', devinfo, regfile)
+        if not os.path.exists(devinfo):
+            logger.error('please generate device file in offline machine by')
+            logger.error('    pyarmor reg -g %s', devid)
+            logger.error('and copy it to this machine')
+            raise CliError('no group device file "%s"', devinfo)
 
-        with open(info) as f:
+        with open(devinfo) as f:
             prefix = 'machine:'
             for line in f:
                 if line.startswith(prefix):
                     machine = line[len(prefix):].strip()
                     break
             else:
-                logger.error('no found machine information in group file')
-                raise CliError('invalid group file "%s"' % info)
+                logger.error('no machine information in device file')
+                raise CliError('invalid device file "%s"' % devinfo)
 
         with ZipFile(regfile, 'r') as f:
             if 'group.info' not in f.namelist():
-                logger.error('no found group information in group regfile')
+                logger.error('no group information in group regfile')
                 raise CliError('invalid group regfile "%s"' % regfile)
             group = json_loads(f.read('group.info'))
             licdata = f.read('license.lic')
@@ -429,7 +425,8 @@ class WebRegister(Register):
 
         logger.info('send request to server')
         url = self.regurl('/'.join(['group', group['ucode']]))
-        paras = ('rev', '1'), ('group', group['group']), ('source', machine)
+        paras = ('rev', '1'), ('group', str(group['group'])), \
+            ('source', machine), ('devid', str(devid))
         url += '&'.join(['='.join(x) for x in paras])
         logger.debug('url: %s', url)
 
@@ -445,5 +442,5 @@ class WebRegister(Register):
             f.writestr(capsule, '.pyarmor_capsule.zip')
             f.writestr(token_name, tokendata)
 
-        logger.info('please copy group regfile to build machine and run')
+        logger.info('please copy deivce regfile to offline machine and run')
         logger.info('    pyarmor reg %s', filename)

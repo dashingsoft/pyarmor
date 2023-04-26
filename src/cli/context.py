@@ -164,8 +164,8 @@ class Context(object):
             with open(self.license_token, 'wb') as f:
                 f.close()
 
-    def group_info_file(self, tid):
-        filename = 'pyarmor-group-file.%s' % tid
+    def group_device_file(self, devid):
+        filename = 'pyarmor-group-device.%s' % devid
         return os.path.join(self.local_path, 'group', filename)
 
     def read_license(self):
