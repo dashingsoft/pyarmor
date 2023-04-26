@@ -234,7 +234,7 @@ A few :mod:`sys` attributes and environment variables may change behaviours of o
 Supported Third-Party Interpreter
 =================================
 
-About third-party interperter, for example Jython, and any embeded Python C/C++ code, only they could work with CPython :term:`entension module`, they could work with Pyarmor. Check third-parth interperter documentation to make sure this.
+About third-party interperter, for example Jython, and any embeded Python C/C++ code, only they could work with CPython :term:`extension module`, they could work with Pyarmor. Check third-parth interperter documentation to make sure this.
 
 A few known issues
 
