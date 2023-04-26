@@ -55,8 +55,8 @@ It can be changed once later, before product starts selling, the real name must 
 
     $ pyarmor reg -p "Robot Studio" pyarmor-regcode-xxxx.txt
 
-Registeration in other machines
-===============================
+Registering in other machines
+=============================
 
 Once initial registeration successfully, it generates registration file named :file:`pyarmor-regfile-xxxx.zip` at the same time.
 
@@ -68,8 +68,8 @@ Check the registration information::
 
     $ pyarmor -v
 
-Registeration in Docker or CI pipeline
---------------------------------------
+Registering in Docker or CI pipeline
+------------------------------------
 
 It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. But It's not allowed to distribute pakcage pyarmor and any Pyarmor License to customer.
 
@@ -90,32 +90,30 @@ Initial registration need internet and Pyarmor 8.2+. Product name is required fo
 
 If initial registration is successful, a regfile ``pyarmor-regfile-xxxx.zip`` will be generated.
 
-**Offline device group info**
+**Group device file**
 
-Each :term:`Pyarmor Group` could have 100 offline devices, each device has its ID, for 1 to 100.
+Each :term:`Pyarmor Group` could have 100 offline devices, each device has its own number, from 1 to 100.
 
-In each offline device, install Pyarmor 8.2+, and generate group info file. For example, for device no. 1, run this command::
+In each offline device, install Pyarmor 8.2+, and generate group device file. For example, for device no. 1, run this command::
 
     $ pyarmor reg -g 1
 
-It will generate group info file ``pyarmor-group-file.1``.
+It will generate group info file ``pyarmor-group-device.1``.
 
-**Generate regfile for offline device**
+**Offline device regfile**
 
-Generating offline regfile need internet connection, Pyarmor 8.2+, group info file  ``pyarmor-group-file.1`` and :term:`registration file` ``pyarmor-regfile-xxxx.zip``.
+Generating offline device regfile need internet connection, Pyarmor 8.2+, group device file  ``pyarmor-group-device.1`` and group license :term:`registration file` ``pyarmor-regfile-xxxx.zip``.
 
-Copying group info file ``pyarmor-group-file.1`` to initial registration device which has internet connection, this file must be saved in the current path ``.pyarmor/group/``, then run this command to generate regfile for offline device no. 1::
+Copying group device file ``pyarmor-group-device.1`` to initial registration device which has internet connection, this file must be saved in the path ``.pyarmor/group/``, then run this command to generate device regfile ``pyarmor-group-regfile-xxxx.1.zip``::
 
     $ mkdir -p .pyarmor/group
-    $ cp pyarmor-group-file.1 .pyarmor/group/
+    $ cp pyarmor-group-device.1 .pyarmor/group/
 
     $ pyarmor reg -g 1 /path/to/pyarmor-regfile-xxxx.zip
 
-It will generate offline regfile ``pyarmor-group-regfile-xxxx.1.zip``
-
 **Register Pyarmor in offline device**
 
-Once offline regfile is generated, copy it to corresponding device, then run this command to register Pyarmor::
+Once device regfile is generated, copy it to corresponding device, then run this command to register Pyarmor::
 
     $ pyarmor reg pyarmor-group-regfile-xxxx.1.zip
 

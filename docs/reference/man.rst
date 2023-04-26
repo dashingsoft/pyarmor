@@ -675,7 +675,7 @@ Register Pyarmor or upgrade Pyarmor license
 -p NAME, --product NAME
                       license to this product
 -u, --upgrade         upgrade Pyarmor license
--g ID, --group ID     specify device no. in one group license
+-g ID, --device ID    device no. in group license
 
 .. describe:: Arguments
 
@@ -714,22 +714,22 @@ A :term:`registration file` ``pyarmor-regfile-xxxx.zip`` will be generated after
 
 :term:`Pyarmor group` also need internet connect to initial registration, and generate the corresponding :term:`registration file`.
 
-One group license could have 100 offlice devices, each device has its number, from 1 to 100.
+One group license could have 100 offline devices, each device has its own number, from 1 to 100.
 
-For each offline device, first install Pyarmor 8.2+, and generate one group info file. For example, run this command in device no. 1 to generate group info file ``pyarmor-group-file.1``::
+For each device, first install Pyarmor 8.2+, and generate one device file. For example, run this command in device no. 1 to generate group device file ``pyarmor-group-device.1``::
 
     $ pyarmor reg -g 1
 
-Next prepare to generate group regfile ``pyarmor-group-regfile-xxxx.1.zip`` for this device. It requires internet connection, group info file ``pyarmor-group-file.1``, group license :term:`registration file`.
+Next prepare to generate device regfile ``pyarmor-group-regfile-xxxx.1.zip`` for this device. It requires internet connection, group device file ``pyarmor-group-device.1``, group license :term:`registration file`.
 
-For example, copy group info file to initial registration machine, save it to path ``.pyarmor/group/``, run the following command to generate ``pyarmor-group-regfile-xxxx.1.zip``::
+For example, copy group device file to initial registration machine, save it to path ``.pyarmor/group/``, run the following command to generate ``pyarmor-group-regfile-xxxx.1.zip``::
 
     $ mkdir -p .pyarmor/group
-    $ cp pyarmor-group-file.1 .pyarmor/group/
+    $ cp pyarmor-group-device.1 .pyarmor/group/
 
     $ pyarmor reg -g 1 pyarmor-regfile-xxxx.zip
 
-Copy group regfile to device no. 1, then run the following command::
+Copy device regfile to device no. 1, then run the following command::
 
     $ pyarmor reg pyarmor-group-regfile-xxxx.1.zip
 
@@ -757,9 +757,9 @@ Only :term:`Pyarmor basic` and :term:`Pyarmor pro` could set product name to ``T
 
 Not all the old license could be upgrade to new license, check :doc:`../licenses`
 
-.. option:: -g ID, --group ID
+.. option:: -g ID, --device ID
 
-            specify device no. in one group license
+            specify device no. in group license
 
             Valid value is from 1 to 100
 
