@@ -212,14 +212,12 @@ $notes
 
 
 upgrade_to_basic_info = Template('''
-You are about to upgrade old Pyarmor license to Pyarmor Basic
-License for Pyarmor 8.0+
+You are about to upgrade old Pyarmor license to Pyarmor Basic License
 
 The upgraded license information will be''')
 
 upgrade_to_pro_info = Template('''
-You are about to upgrade old Pyarmor license to Pyarmor Pro
-License for Pyarmor 8.0+
+You are about to upgrade old Pyarmor license to Pyarmor Pro License
 
 The original license no: $rcode
 
