@@ -206,19 +206,11 @@ Upgrading to Pyarmor-Basic
 
 First find the activation file ``pyarmor-regcode-xxxx.txt``, which is sent to registration email when purchasing the license.
 
-First upgrade to Pyarmor 8.0+, according to new `EULA of Pyarmor`_, each license is only for one product.
+Next upgrade to Pyarmor 8.0+, according to new `EULA of Pyarmor`_, each license is only for one product.
 
 Assume this license will be used to obfuscate product ``Robot Studio``, run this command::
 
     $ pyarmor reg -u -p "Robot Studio" pyarmor-regcode-xxxx.txt
-
-If product name has been set when purchasing old license, run this command::
-
-    $ pyarmor reg -u pyarmor-regcode-xxxx.txt
-
-If this license is only for non-profits use, run this command, in this case product name will be set to ``TBD``::
-
-    $ pyarmor reg -u pyarmor-regcode-xxxx.txt
 
 Check the upgraded license information::
 
@@ -239,8 +231,8 @@ If you have Pyarmor 8.0+ installed, this command also could open shopping cart::
 
 In the shopping cart, select ``Pyarmor-upgrade`` and complete the payment online.
 
-An activation file named ``pyarmor-regcode-to-pro.txt`` will be sent by email immediately after payment is completed successfully.
+A file named ``pyarmor-regcode-to-pro.txt`` will be sent by email immediately after payment is completed successfully.
 
-Following the guide in activation file to take the purchased license effects.
+Following the guide in this file to take the purchased license effects.
 
 .. include:: _common_definitions.txt

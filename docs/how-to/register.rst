@@ -18,16 +18,14 @@ First read :doc:`Pyarmor License <../licenses>` to purchase one Pyarmor License.
 
 An activation file like :file:`pyarmor-regcode-xxxx.txt` will be sent to you by email. This file is used to initial registration.
 
-At the first time to register Pyarmor, :option:`-p` (product name) should be set. If not set, this Pyarmor license is bind to ``TBD``, and could not be used for commercial product.
-
 It need internet connection for intial registration.
 
 For non-profits usage
 ---------------------
 
-For internal use or any non-profits use, run this command::
+For any non-profits use, run this command::
 
-    $ pyarmor reg pyarmor-regcode-xxxx.txt
+    $ pyarmor reg -p non-profits pyarmor-regcode-xxxx.txt
 
 For commercial usage
 --------------------
@@ -38,13 +36,13 @@ Assume this license is used to protect your product ``Robot Studio``, initial re
 
 Pyarmor will show registration information and ask your confirmation. If everything is fine, type :kbd:`yes` and :kbd:`Enter` to continue.
 
-If initial registration is successful, it prints final license information in the console. And a registration file named :file:`pyarmor-regfile-xxxx.zip` for this license is generated in the current path at the sametime. This file is used for next registration in other machines.
+If initial registration is successful, it prints final license information in the console. And a registration file named :file:`pyarmor-regfile-xxxx.zip` for this license is generated in the current path at the same time. This file is used for subsequent registration in other machines.
 
-Activation file :file:`pyarmor-keycode-xxxx.txt` can be uses only 10 times, after that it doesn't work. So once initial registration is successful, using registration file :file:`pyarmor-regfile-xxxx.zip` for next registration.
+Once initial registration completed, activation file :file:`pyarmor-keycode-xxxx.txt` is invalid and can't be used.
 
-Please keep this registration file carefully. If lost, Pyarmor is not responsible for keeping this license. In this case, if continue to use Pyarmor, needs purchase new one.
+Once initial registration completed, product name can't be changed.
 
-Once register successfully, product name can't be changed.
+Please keep registration file :file:`pyarmor-regfile-xxxx.zip` carefully. If lost, Pyarmor is not responsible for keeping this license. In this case, if continue to use Pyarmor, needs purchase new one.
 
 Product name is not decided
 ---------------------------
@@ -73,7 +71,9 @@ Check the registration information::
 Registeration in Docker or CI pipeline
 --------------------------------------
 
-It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. But It's not allowed to distribute pakcage pyarmor and any Pyarmor License to customer. And don't run too many build dockers.
+It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. But It's not allowed to distribute pakcage pyarmor and any Pyarmor License to customer.
+
+And don't run too many build dockers.
 
 Using group license
 ===================
@@ -84,7 +84,7 @@ Using group license
 
 After purchasing :term:`Pyarmor Group`, an activate file :file:`pyarmor-regcode-xxxx.txt` is sent to registration email.
 
-Initial registration need internet and Pyarmor 8.2+. And product name is required for :term:`Pyarmor Group`, and ``TBD`` is not valid. Suppose product name is ``Robot``, then run this command::
+Initial registration need internet and Pyarmor 8.2+. Product name is required for :term:`Pyarmor Group`, and ``TBD`` is not valid. Suppose product name is ``Robot``, then run this command::
 
     $ pyarmor reg -p Robot pyarmor-regcode-xxxx.txt
 
@@ -92,9 +92,9 @@ If initial registration is successful, a regfile ``pyarmor-regfile-xxxx.zip`` wi
 
 **Offline device group info**
 
-Each :term:`Pyarmor Group` could have 100 offline device, each device has its ID, for 1 to 100.
+Each :term:`Pyarmor Group` could have 100 offline devices, each device has its ID, for 1 to 100.
 
-In each offline device, install Pyarmor 8.2+, and generate group info file. For example, for device 1, run this command::
+In each offline device, install Pyarmor 8.2+, and generate group info file. For example, for device no. 1, run this command::
 
     $ pyarmor reg -g 1
 
@@ -102,19 +102,28 @@ It will generate group info file ``pyarmor-group-file.1``.
 
 **Generate regfile for offline device**
 
-Copy group info file ``pyarmor-group-file.1`` to initial registration device which has internet connection, this file must be saved in the certain path ``.pyarmor/group/``. In initial registration device, run this command to generate regfile for offline device no. 1::
+Generating offline regfile need internet connection, Pyarmor 8.2+, group info file  ``pyarmor-group-file.1`` and :term:`registration file` ``pyarmor-regfile-xxxx.zip``.
+
+Copying group info file ``pyarmor-group-file.1`` to initial registration device which has internet connection, this file must be saved in the current path ``.pyarmor/group/``, then run this command to generate regfile for offline device no. 1::
+
+    $ mkdir -p .pyarmor/group
+    $ cp pyarmor-group-file.1 .pyarmor/group/
 
     $ pyarmor reg -g 1 /path/to/pyarmor-regfile-xxxx.zip
 
-It will generate file ``pyarmor-group-regfile-xxxx.1.zip``
+It will generate offline regfile ``pyarmor-group-regfile-xxxx.1.zip``
 
 **Register Pyarmor in offline device**
 
-Once group regfile is generated, copy it to corresponding offline device, then run this command to register Pyarmor::
+Once offline regfile is generated, copy it to corresponding device, then run this command to register Pyarmor::
 
     $ pyarmor reg pyarmor-group-regfile-xxxx.1.zip
 
-For offline device 2, 3, ... repeat above steps.
+Check registration information::
+
+    $ pyarmor -v
+
+For offline device no. 2, no. 3, ... repeat above steps.
 
 Upgrading old Pyarmor license
 =============================
