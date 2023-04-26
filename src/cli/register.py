@@ -273,18 +273,17 @@ class WebRegister(Register):
             info = json_loads(res.read())
 
         pname = info['product']
-        if pname not in ('', 'TBD') and product and product != info['product']:
-            logger.error('this license has been bind to product "%s"', pname)
-            logger.error('please run command `reg` without option `-p`')
-            raise CliError('can not change license product name')
         if pname in ('', 'TBD'):
-            info['product'] = 'TBD'
+            info['product'] = product
 
         lines = []
         if upgrade:
             if not (rcode and rcode.startswith('pyarmor-vax-')):
                 logger.error('please check Pyarmor 8.0 EULA')
                 raise CliError('old code "%s" can not be upgraded' % rcode)
+            if pname not in ('', 'TBD') and pname != product:
+                logger.warning('old license is bind to product "%s"', pname)
+                logger.warning('it can not be changed to "%s"', product)
             if info['upgrade']:
                 lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
             else:
@@ -295,6 +294,9 @@ class WebRegister(Register):
                 logger.error('please check Pyarmor 8.0 EULA')
                 raise CliError('unknown license type %s' % info['lictype'])
             lines.append('This license registration information will be')
+
+        if info['product'] in ('', 'TBD') and info['lictype'] == 'GROUP':
+            raise CliError('"TBD" is invalid product name for group license')
 
         fmt = '%-16s: %s'
         lines.extend([

@@ -240,6 +240,12 @@ def cmd_reg(ctx, args):
         logger.info('Current license information:\n\n%s', reg)
         return
 
+    if regfile.endswith('.txt') and not args.product:
+        raise CliError('missing product name')
+
+    if regfile.endswith('.zip') and args.product:
+        raise CliError('unwanted product name')
+
     upgrade = args.upgrade
     if upgrade:
         if not regfile.endswith('.txt'):
@@ -276,25 +282,14 @@ def cmd_reg(ctx, args):
 
     else:
         regsvr = WebRegister(ctx)
-        if (not args.confirm) or upgrade:
-            info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
-            prompt = 'Are you sure to continue? (yes/no) '
-            if input(msg + prompt) not in ('y', 'yes'):
-                logger.info('registration abort')
-                return
-            if info['upgrade'] and info['product'] in ('TBD', 'non-profits'):
-                msg = '\n'.join([
-                    '',
-                    'The product name is set to "%s", once upgrade, '
-                    'it can not be changed.' % info['product'],
-                    ''
-                ])
-                if input(msg + prompt) not in ('y', 'yes'):
-                    logger.info('upgrade abort')
-                    return
-            # Free upgrade to Pyarmor Basic
-            if upgrade and not info['upgrade']:
-                return regsvr.register(regfile, args.product, upgrade=True)
+        info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
+        prompt = 'Are you sure to continue? (yes/no) '
+        if input(msg + prompt) not in ('y', 'yes'):
+            logger.info('registration abort')
+            return
+        # Free upgrade to Pyarmor Basic
+        if upgrade and not info['upgrade']:
+            return regsvr.register(regfile, args.product, upgrade=True)
 
         meth = 'upgrade_to_pro' if upgrade else 'register'
         getattr(regsvr, meth)(regfile, args.product)
