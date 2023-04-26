@@ -197,6 +197,8 @@ Note that all the source lines in the hook script are inserted into module level
 
 .. seealso:: :func:`__pyarmor__`  :func:`__assert_armorred__`
 
+.. _target environments:
+
 =====================
  Target Environments
 =====================
@@ -228,6 +230,19 @@ A few :mod:`sys` attributes and environment variables may change behaviours of o
 .. envvar:: PYARMOR_RKEY
 
       Set search path for :term:`outer key`
+
+Supported Third-Party Interpreter
+=================================
+
+About third-party interperter, for example Jython, and any embeded Python C/C++ code, only they could work with CPython :term:`entension module`, they could work with Pyarmor. Check third-parth interperter documentation to make sure this.
+
+A few known issues
+
+* On Linux, `RTLD_GLOBAL` must be set as loading `libpythonXY.so` by `dlopen`, otherwise obfuscated scripts couldn't work.
+
+* Boost::python does not load `libpythonXY.so` with `RTLD_GLOBAL` by default, so it will raise error "No PyCode_Type found" as running obfuscated scripts. To solve this problem, try to call the method `sys.setdlopenflags(os.RTLD_GLOBAL)` as initializing.
+
+* `PyPy` could not work with pyarmor, it's total different from `CPython`
 
 Specialized builtin functions
 =============================
