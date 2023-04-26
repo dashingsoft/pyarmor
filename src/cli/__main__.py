@@ -228,6 +228,12 @@ def cmd_reg(ctx, args):
         open_new_tab(ctx.cfg['pyarmor']['buyurl'])
         return
 
+    if args.group and not args.regfile:
+        reg = Register(ctx)
+        filename = reg.generate_group_file(args.group)
+        logger.info('group file "%s" is generated', filename)
+        return
+
     regfile = args.regfile
     if not regfile:
         reg = Register(ctx)
@@ -254,7 +260,15 @@ def cmd_reg(ctx, args):
         if not choice == 'y':
             return
 
-    if regfile.endswith('.zip'):
+    if args.group:
+        if not regfile.endswith('.zip'):
+            logger.error('invalid group register file "%s"', regfile)
+            raise CliError('please use ".zip" file to register group license')
+        regsvr = WebRegister(ctx)
+        regsvr.register_group_file(regfile, args.group)
+        logger.info('The group regfile has been generated successfully')
+
+    elif regfile.endswith('.zip'):
         reg = Register(ctx)
         logger.info('register "%s"', regfile)
         reg.register_regfile(regfile)
@@ -562,6 +576,10 @@ first time, it can be changed once later.
     cparser.add_argument(
         '-u', '--upgrade', action='store_true',
         help='upgrade Pyarmor license'
+    )
+    cparser.add_argument(
+        '-g', '--group', metavar='ID', type=int, choices=range(1, 101),
+        help='token id (1-100) in a group license'
     )
     cparser.add_argument(
         '--buy', action='store_true',

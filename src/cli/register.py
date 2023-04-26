@@ -19,7 +19,6 @@
 #
 #  @Create Date: Mon Jan  2 15:39:08 CST 2023
 #
-import logging
 import os
 
 from base64 import b64decode, urlsafe_b64encode
@@ -145,14 +144,27 @@ class Register(object):
     def register_regfile(self, regfile, clean=True):
         from zipfile import ZipFile
 
-        path = self.ctx.home_path
+        path = self.ctx.reg_path
         with ZipFile(regfile, 'r') as f:
             for item in ('license.lic', '.pyarmor_capsule.zip'):
-                logger.debug('extracting %s' % item)
+                logger.debug('extracting %s', item)
                 f.extract(item, path=path)
+            token_name = os.path.basename(self.ctx.license_token)
+            if token_name in f.namelist():
+                logger.debug('extracting %s', token_name)
+                f.extract(token_name, path=path)
+                return
 
         logger.info('update license token')
         self.update_token()
+
+    def generate_group_file(self, tid):
+        from .core import Pytransform3
+        machine = Pytransform3.get_hd_info(10)
+        filename = os.path.basename(self.ctx.group_info_file(tid))
+        with open(filename, "wb") as f:
+            f.write(b'machine: ' + machine)
+        return filename
 
     def __str__(self):
         '''$advanced
@@ -350,11 +362,73 @@ class WebRegister(Register):
             dis = res.headers.get('Content-Disposition')
             filename = dis.split('"')[1] if dis else 'pyarmor-regfile.zip'
             logger.info('write registration file "%s"', filename)
-            with open(filename, 'wb') as f:
-                f.write(res.read())
+            data = res.read()
+            if data.startswith(b'{"group":'):
+                n = data.find(b'}')
+                with open(filename, 'wb') as f:
+                    f.write(data[n:])
+                self._write_group_info(filename, data[:n])
+            else:
+                with open(filename, 'wb') as f:
+                    f.write(data)
             return filename
 
         elif res:
             raise CliError(res.read().decode('utf-8'))
 
         raise CliError('no response from license server')
+
+    def _write_group_info(self, filename, info):
+        from zipfile import ZipFile
+        logger.info('write group information')
+        with ZipFile(filename, 'a') as f:
+            f.writestr(info, 'group.info')
+
+    def register_group_file(self, regfile, tid):
+        from zipfile import ZipFile
+        info = self.ctx.group_info_file(tid)
+        logger.info('register group file "%s" by "%s"', info, regfile)
+        if not os.path.exists(info):
+            logger.error('please generate group file in build machine by')
+            logger.error('    pyarmor reg -g %s', tid)
+            logger.error('then copy generated file to this machine "%s"', info)
+            raise CliError('no found group file')
+
+        with open(info) as f:
+            prefix = 'machine:'
+            for line in f:
+                if line.startswith(prefix):
+                    machine = line[len(prefix):].strip()
+                    break
+            else:
+                logger.error('no found machine information in group file')
+                raise CliError('invalid group file "%s"' % info)
+
+        with ZipFile(regfile, 'r') as f:
+            if 'group.info' not in f.namelist():
+                logger.error('no found group information in group regfile')
+                raise CliError('invalid group regfile "%s"' % regfile)
+            group = json_loads(f.read('group.info'))
+            licdata = f.read('license.lic')
+            capsule = f.read('.pyarmor_capsule.zip')
+
+        logger.info('send request to server')
+        url = self.regurl('/'.join(['group', group['ucode']]))
+        paras = ('rev', '1'), ('group', group['group']), ('source', machine)
+        url += '&'.join(['='.join(x) for x in paras])
+        logger.debug('url: %s', url)
+
+        res = self._send_request(url)
+        filename = self._handle_response(res)
+        logger.info('write server response to %s', filename)
+        with open(filename, 'rb') as f:
+            tokendata = f.read()
+
+        token_name = os.path.basename(self.ctx.license_token)
+        with ZipFile(filename, 'w') as f:
+            f.writestr(licdata, 'license.lic')
+            f.writestr(capsule, '.pyarmor_capsule.zip')
+            f.writestr(token_name, tokendata)
+
+        logger.info('please copy group regfile to build machine and run')
+        logger.info('    pyarmor reg %s', filename)
