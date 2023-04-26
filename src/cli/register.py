@@ -165,7 +165,7 @@ class Register(object):
     def generate_group_device(self, devid):
         from .core import Pytransform3
         machine = Pytransform3.get_hd_info(10)
-        filename = os.path.basename(self.ctx.group_info_file(devid))
+        filename = os.path.basename(self.ctx.group_device_file(devid))
         with open(filename, "wb") as f:
             f.write(b'machine: ' + machine)
         return filename
@@ -359,7 +359,7 @@ class WebRegister(Register):
         if group:
             logger.info('This group license has been activated sucessfully')
             notes.append('* Please check `pyarmor reg` in Man page for '
-                         'how to register Pyarmor in group device')
+                         'how to register Pyarmor on offline device')
         else:
             logger.info('register "%s"', regfile)
             self.register_regfile(regfile)
@@ -398,12 +398,13 @@ class WebRegister(Register):
     def register_group_device(self, regfile, devid):
         from zipfile import ZipFile
         devinfo = self.ctx.group_device_file(devid)
-        logger.info('register device file "%s" by "%s"', devinfo, regfile)
+        logger.info('register device file "%s"', devinfo)
+        logger.info('use group license "%s"', regfile)
         if not os.path.exists(devinfo):
-            logger.error('please generate device file in offline machine by')
+            logger.error('please generate device file in offline device by')
             logger.error('    pyarmor reg -g %s', devid)
-            logger.error('and copy it to this machine')
-            raise CliError('no group device file "%s"', devinfo)
+            logger.error('and copy generated device file to this machine')
+            raise CliError('no group device file "%s"' % devinfo)
 
         with open(devinfo) as f:
             prefix = 'machine:'
@@ -417,8 +418,8 @@ class WebRegister(Register):
 
         with ZipFile(regfile, 'r') as f:
             if 'group.info' not in f.namelist():
-                logger.error('no group information in group regfile')
-                raise CliError('invalid group regfile "%s"' % regfile)
+                logger.error('no group information in group license file')
+                raise CliError('invalid group license file "%s"' % regfile)
             group = json_loads(f.read('group.info'))
             licdata = f.read('license.lic')
             capsule = f.read('.pyarmor_capsule.zip')
@@ -432,15 +433,14 @@ class WebRegister(Register):
 
         res = self._send_request(url)
         filename = self._handle_response(res)
-        logger.info('write server response to %s', filename)
         with open(filename, 'rb') as f:
             tokendata = f.read()
 
         token_name = os.path.basename(self.ctx.license_token)
         with ZipFile(filename, 'w') as f:
-            f.writestr(licdata, 'license.lic')
-            f.writestr(capsule, '.pyarmor_capsule.zip')
+            f.writestr('license.lic', licdata)
+            f.writestr('.pyarmor_capsule.zip', capsule)
             f.writestr(token_name, tokendata)
 
-        logger.info('please copy deivce regfile to offline machine and run')
+        logger.info('please copy deivce regfile to offline device and run')
         logger.info('    pyarmor reg %s', filename)

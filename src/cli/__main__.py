@@ -231,7 +231,7 @@ def cmd_reg(ctx, args):
     if args.device and not args.regfile:
         reg = Register(ctx)
         filename = reg.generate_group_device(args.device)
-        logger.info('device file "%s" is generated', filename)
+        logger.info('device file "%s" has been generated', filename)
         return
 
     regfile = args.regfile
