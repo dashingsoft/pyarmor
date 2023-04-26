@@ -104,7 +104,7 @@ It will generate group info file ``pyarmor-group-device.1``.
 
 Generating offline device regfile need internet connection, Pyarmor 8.2+, group device file  ``pyarmor-group-device.1`` and group license :term:`registration file` ``pyarmor-regfile-xxxx.zip``.
 
-Copying group device file ``pyarmor-group-device.1`` to initial registration device which has internet connection, this file must be saved in the path ``.pyarmor/group/``, then run this command to generate device regfile ``pyarmor-group-regfile-xxxx.1.zip``::
+Copying group device file ``pyarmor-group-device.1`` to initial registration device which has internet connection, this file must be saved in the path ``.pyarmor/group/``, then run this command to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip``::
 
     $ mkdir -p .pyarmor/group
     $ cp pyarmor-group-device.1 .pyarmor/group/
@@ -115,7 +115,7 @@ Copying group device file ``pyarmor-group-device.1`` to initial registration dev
 
 Once device regfile is generated, copy it to corresponding device, then run this command to register Pyarmor::
 
-    $ pyarmor reg pyarmor-group-regfile-xxxx.1.zip
+    $ pyarmor reg pyarmor-device-regfile-xxxx.1.zip
 
 Check registration information::
 

@@ -720,9 +720,9 @@ For each device, first install Pyarmor 8.2+, and generate one device file. For e
 
     $ pyarmor reg -g 1
 
-Next prepare to generate device regfile ``pyarmor-group-regfile-xxxx.1.zip`` for this device. It requires internet connection, group device file ``pyarmor-group-device.1``, group license :term:`registration file`.
+Next prepare to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip`` for this device. It requires internet connection, group device file ``pyarmor-group-device.1``, group license :term:`registration file`.
 
-For example, copy group device file to initial registration machine, save it to path ``.pyarmor/group/``, run the following command to generate ``pyarmor-group-regfile-xxxx.1.zip``::
+For example, copy group device file to initial registration machine, save it to path ``.pyarmor/group/``, run the following command to generate ``pyarmor-device-regfile-xxxx.1.zip``::
 
     $ mkdir -p .pyarmor/group
     $ cp pyarmor-group-device.1 .pyarmor/group/
@@ -731,7 +731,7 @@ For example, copy group device file to initial registration machine, save it to 
 
 Copy device regfile to device no. 1, then run the following command::
 
-    $ pyarmor reg pyarmor-group-regfile-xxxx.1.zip
+    $ pyarmor reg pyarmor-device-regfile-xxxx.1.zip
 
 Repeat above steps for the rest device no. 2, no. 3 ...
 
