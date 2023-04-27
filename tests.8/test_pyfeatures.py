@@ -90,7 +90,7 @@ class UnitTestCases(BaseTestCase):
 if __name__ == '__main__':
     logging.getLogger().addHandler(logging.NullHandler())
 
-    verbosity = 0
+    verbosity = 1
 
     loader = unittest.TestLoader()
     # loader.testMethodPrefix = 'test_mix_str'
