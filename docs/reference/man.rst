@@ -745,7 +745,7 @@ When initial registration, use this option to set proudct name for this license.
 
 It's meanless to use this option after initial registration.
 
-``TBD`` is a special product name. If product name is ``TBD`` at initial registration, the product name can be changed later.
+``TBD`` is a special product name. If product name is ``TBD`` at initial registration, the product name can be changed once in 6 months. If it's still not set after 6 months, the product name will be set to ``non-profits`` automatically.
 
 For any other product name, it can't be changed any more.
 

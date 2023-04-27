@@ -47,13 +47,15 @@ Please keep registration file :file:`pyarmor-regfile-xxxx.zip` carefully. If los
 Product name is not decided
 ---------------------------
 
-When product is in developing, and product name is not decide. Initial registration with product ``TBD``. For example::
+When product is in developing, and product name is not decided. Initial registration with product ``TBD``. For example::
 
     $ pyarmor reg -p "TBD" pyarmor-regcode-xxxx.txt
 
-It can be changed once later, before product starts selling, the real name must be set by this command::
+In 6 months real product name must be set by this command::
 
     $ pyarmor reg -p "Robot Studio" pyarmor-regcode-xxxx.txt
+
+If it's not changed after 6 months, the product name will be set to ``non-profits`` and can't be changed again.
 
 Registering in other machines
 =============================
