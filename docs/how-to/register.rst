@@ -11,6 +11,10 @@
 
 .. program:: pyarmor reg
 
+Intial registration need internet connection, even for :term:`Pyarmor Group`.
+
+When generating obfuscated scripts, it's also need internet connection to verify license except :term:`Pyarmor Group`.
+
 Initial Registration
 ====================
 
@@ -86,7 +90,7 @@ Using group license
 
 After purchasing :term:`Pyarmor Group`, an activate file :file:`pyarmor-regcode-xxxx.txt` is sent to registration email.
 
-Initial registration need internet and Pyarmor 8.2+. Product name is required for :term:`Pyarmor Group`, and ``TBD`` is not valid. Suppose product name is ``Robot``, then run this command::
+Initial registration need internet and Pyarmor 8.2+. Suppose product name is ``Robot``, then run this command::
 
     $ pyarmor reg -p Robot pyarmor-regcode-xxxx.txt
 

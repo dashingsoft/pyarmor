@@ -35,7 +35,7 @@ Pyarmor has 3 kind of licenses:
 
         Basic license could unlock big script [1]_ and mix-str [2]_ feature.
 
-        It requires internet connection to verify license
+        It requires internet connection to verify license when obfuscating the scripts.
 
     Pyarmor Pro
 
@@ -43,13 +43,15 @@ Pyarmor has 3 kind of licenses:
 
         Pro license also unlocks BCC Mode [4]_ and RFT Mode [3]_
 
-        It requires internet connection to verify license
+        It requires internet connection to verify license when obfuscating the scripts.
 
     Pyarmor Group
 
-        Group license unlocks all limitions and doesn't require internet.
+        Group license unlocks all limitions.
 
-Internet connection is only used to verify Pyarmor License in the build machine to generate the obfuscated scripts.
+        Group license need not internet connection when obfuscating the scripts.
+
+Intial registration need internet connection for any kind of license. Refer to :doc:`how-to/register`
 
 For the obfuscated scripts run in the customer's device, Pyarmor has no any limitions, it's totally controlled by users. Pyarmor only cares about build machine.
 
