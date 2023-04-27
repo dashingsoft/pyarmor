@@ -68,9 +68,11 @@ The content of ``testben.py``
         return wrap
 
 
-    @metric
     def test_import():
+        t1 = time.process_time()
         import benchmark2 as m2
+        t2 = time.process_time()
+        print('%-16s: %10.3f ms' % ('test_import', ((t2 - t1) * 1000)))
         return m2
 
 
@@ -203,9 +205,7 @@ They're almost same.
 
 **BCC Mode Performance**
 
-BCC mode is special. It takes a long time to load modules, because it need handle binary code, actually it's a simplified version of ``dyld``.
-
-The following test data got by this way::
+BCC mode converts some code to C function, it need extra time to load binary code, but function may be faster. The following test data got by this way::
 
     $ rm -rf dist __pycache__
     $ python testben.py
@@ -229,11 +229,11 @@ The following test data got by this way::
    --------------  --------------------  --------------------  --------------------
    Python          Origin     BCC Mode   Origin     BCC Mode   Origin     BCC Mode
    ==============  =========  =========  =========  =========  =========  =========
-   3.7             1.130      327.906    1.000      283.469    325.828    283.972
-   3.8             1.358      269.592    0.277      287.710    249.187    264.473
-   3.9             1.383      297.131    0.781      254.888    278.289    264.585
-   3.10            1.261      285.891    0.325      277.887    230.421    272.073
-   3.11            1.248      212.937    0.219      251.810    148.020    176.307
+   3.7             1.086      1.177      0.342      0.391      344.640    271.426
+   3.8             1.099      1.397      0.351      0.400      291.244    251.520
+   3.9             1.229      1.076      0.538      0.362      306.594    254.458
+   3.10            1.267      0.999      0.255      0.796      302.398    247.154
+   3.11            1.146      1.056      0.273      0.536      206.311    189.582
    ==============  =========  =========  =========  =========  =========  =========
 
 **Impact of Different Options**

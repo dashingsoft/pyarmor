@@ -17,7 +17,7 @@ What's the most security pyarmor could do?
 The following options could improve security
 
 * :option:`--enable-rft` almost doesn't impact performace
-* :option:`--enable-bcc` imports module need more times, for example, importing a plain script about 1 ms, but bcc module about 200 ms
+* :option:`--enable-bcc` even a little faster than plain script, but consume more memory to load binary code
 * :option:`--enable-jit` prevents from static decompilation
 * :option:`--enable-themida` prevents from most of debuggers, only available in Windows, and reduce permormance remarkable
 * :option:`--mix-str` protects string constant in the script
