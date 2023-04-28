@@ -112,11 +112,11 @@ After initial registration completed, a :term:`registration file` ``pyarmor-regf
 Group device file
 -----------------
 
-In each offline device, install Pyarmor 8.2+, and generate group device file. For example, for device no. 1, run this command::
+On each offline device, install Pyarmor 8.2+, and generate group device file. For example, on device no. 1, run this command::
 
     $ pyarmor reg -g 1
 
-It will generate group info file ``pyarmor-group-device.1``.
+It will generate group device file ``pyarmor-group-device.1``.
 
 Generating offline device regfile
 ---------------------------------
