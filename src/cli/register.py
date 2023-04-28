@@ -150,25 +150,33 @@ class Register(object):
             for item in ('license.lic', '.pyarmor_capsule.zip'):
                 logger.debug('extracting %s', item)
                 f.extract(item, path=path)
-            token_name = os.path.basename(self.ctx.license_token)
-            if token_name in f.namelist():
-                logger.debug('extracting %s', token_name)
-                f.extract(token_name, path=path)
+            namelist = f.namelist()
+            if 'tokens' in namelist:
+                machid = self._get_machine_id()
+                name = '/'.join(['tokens', machid.decode('utf-8')])
+                if name not in namelist:
+                    logger.debug('no found "%s" in offline regfile', name)
+                    raise CliError('this regfile is not for this device')
+                logger.debug('extracting %s', name)
+                self.ctx.save_token(f.read(name))
                 return
-            if 'group.info' in f.namelist():
+            if 'group.info' in namelist:
                 raise CliError('wrong usage for group license, please '
                                'check `pyarmor reg` in Man page')
 
         logger.info('update license token')
         self.update_token()
 
-    def generate_group_device(self, devid):
+    def _get_machine_id(self):
         from .core import Pytransform3
-        machine = Pytransform3.get_hd_info(10)
-        filename = os.path.basename(self.ctx.group_device_file(devid))
-        with open(filename, "wb") as f:
-            f.write(b'machine: ' + machine)
-        return filename
+        return Pytransform3.get_hd_info(10)
+
+    def generate_group_device(self, devid):
+        path = self.ctx.group_device_file(devid)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(b'machine: ' + self._get_machine_id())
+        return path
 
     def __str__(self):
         '''$advanced
@@ -393,26 +401,26 @@ class WebRegister(Register):
         with ZipFile(filename, 'a') as f:
             f.writestr('group.info', data)
 
-    def register_group_device(self, regfile, devid):
+    def register_group_device(self, regfile, devid, rev=1):
         from zipfile import ZipFile
-        devinfo = self.ctx.group_device_file(devid)
-        logger.info('register device file "%s"', devinfo)
+        devfile = self.ctx.group_device_file(devid)
+        logger.info('register device file "%s"', devfile)
         logger.info('use group license "%s"', regfile)
-        if not os.path.exists(devinfo):
+        if not os.path.exists(devfile):
             logger.error('please generate device file in offline device by')
             logger.error('    pyarmor reg -g %s', devid)
             logger.error('and copy generated device file to this machine')
-            raise CliError('no group device file "%s"' % devinfo)
+            raise CliError('no group device file "%s"' % devfile)
 
-        with open(devinfo) as f:
+        with open(devfile) as f:
             prefix = 'machine:'
             for line in f:
                 if line.startswith(prefix):
-                    machine = line[len(prefix):].strip()
+                    machid = line[len(prefix):].strip()
                     break
             else:
-                logger.error('no machine information in device file')
-                raise CliError('invalid device file "%s"' % devinfo)
+                logger.error('no machid information in device file')
+                raise CliError('invalid device file "%s"' % devfile)
 
         with ZipFile(regfile, 'r') as f:
             if 'group.info' not in f.namelist():
@@ -422,23 +430,32 @@ class WebRegister(Register):
             licdata = f.read('license.lic')
             capsule = f.read('.pyarmor_capsule.zip')
 
-        logger.info('send request to server')
-        url = self.regurl('/'.join(['group', group['ucode']]))
-        paras = ('rev', '1'), ('group', str(group['group'])), \
-            ('source', machine), ('devid', str(devid))
-        url += '&'.join(['='.join(x) for x in paras])
-        logger.debug('url: %s', url)
+        cached = os.path.join(os.path.dirname(devfile), 'tokens', machid)
+        if os.path.exists(cached):
+            logger.info('read cached "%s"', cached)
+            with open(cached, 'rb') as f:
+                data = f.read()
+            filename = regfile.replace('pyarmor-', 'pyarmor-group-').replace(
+                '.zip', '.%s.zip' % devid)
+        else:
+            logger.info('send request to server')
+            url = self.regurl('/'.join(['group', group['ucode']]))
+            paras = ('rev', str(rev)), ('group', str(group['group'])), \
+                ('source', machid), ('devid', str(devid))
+            url += '&'.join(['='.join(x) for x in paras])
+            logger.debug('url: %s', url)
 
-        res = self._send_request(url)
-        filename = self._handle_response(res)
-        with open(filename, 'rb') as f:
-            tokendata = f.read()
+            res = self._send_request(url)
+            filename = self._handle_response(res)
+            with open(filename, 'rb') as f:
+                data = f.read()
+            with open(cached, 'wb') as f:
+                f.write(data)
 
-        token_name = os.path.basename(self.ctx.license_token)
         with ZipFile(filename, 'w') as f:
             f.writestr('license.lic', licdata)
             f.writestr('.pyarmor_capsule.zip', capsule)
-            f.writestr(token_name, tokendata)
+            f.writestr('tokens/' + machid, data)
 
         logger.info('please copy deivce regfile to offline device and run')
         logger.info('    pyarmor reg %s', filename)
