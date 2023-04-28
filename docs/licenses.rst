@@ -253,6 +253,18 @@ If old license is used by many products (mainly old personal license), only one 
 
   This file includes the guide  to upgrade old license to Pyarmor Pro.
 
+  Internect connection and Pyarmor 8.2+ are required to upgrade old license, check Pyarmor version by this command
+
+      pyarmor -v
+
+  Check old license
+
+      pyarmor-7 -v
+
+  If no old license found, register old license first
+
+      pyarmor-7 register pyarmor-regcode-xxxx.txt
+
   Assume this license will be used to obfuscate product ``XXX``, run this command::
 
       $ pyarmor reg -u -p "XXX" pyarmor-regcode-xxxx.txt
@@ -261,7 +273,7 @@ If old license is used by many products (mainly old personal license), only one 
 
       $ pyarmor -v
 
-  After upgrade successfully, do not use file ``pyarmor-regcode-to-pro.txt`` again, it's invalid now. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
+  After upgrade successfully, the file ``pyarmor-regcode-to-pro.txt`` is invalid. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
 
   In other devices using this new :term:`registration file` to register Pyarmor by this command::
 
