@@ -254,7 +254,7 @@ def cmd_reg(ctx, args):
             raise CliError('upgrade need text file "pyarmor-keycode-xxxx.txt"')
         url = 'https://github.com/dashingsoft/pyarmor/issues/980'
         msg = ("",
-               "Pyarmor 8.0 changes EULA and uses new commands",
+               "Pyarmor 8 changes EULA and uses new commands",
                "It's different from previous Pyarmor totally",
                "Please read this import notes first:",
                url,

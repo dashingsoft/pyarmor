@@ -263,6 +263,10 @@ class WebRegister(Register):
         logger.info('prepare "%s"', keyfile)
 
         rcode = self._get_old_rcode() if upgrade else None
+        if upgrade and keyfile.endswith('regcode-to-pro.txt'):
+            logger.error('please use `pyarmor-7 -v` to check old license')
+            logger.error('this code is used to upgrade old license')
+            raise CliError('no found old license in this machine')
         url = self.regurl(reginfo[1], rcode=rcode, prepare=True)
         logger.debug('url: %s', url)
 
