@@ -190,23 +190,7 @@ The old license could be upgraded to Pyarmor Basic freely only if it matchs thes
 
 If failed to upgrade the old license, please purchase new license to use Pyarmor latest version.
 
-Upgrading old license to Pyarmor Pro needs extra fees.
-
-.. list-table:: Table-3. Upgrade fee from old license
-   :header-rows: 1
-
-   * - License Type
-     - Upgrading fee($)
-     - Remark
-   * - Basic
-     - 0
-     - following new EULA and match some conditions
-   * - Pro
-     - 50
-     -
-   * - Group
-     - N/A
-     -
+The old license can't upgrade to Pyarmor Pro and Group.
 
 Upgrading old license to Pyarmor Basic
 --------------------------------------
@@ -233,39 +217,58 @@ After successful registration, all obfuscations will automatically apply this li
 
 If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
 
-Upgrading old license to Pyarmor Pro
-------------------------------------
+..
+  Upgrading old license to Pyarmor Pro
+  ------------------------------------
 
-Open shopping cart in any web browser:
+  Upgrading old license to Pyarmor Pro needs extra fees.
 
-    https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
+  .. list-table:: Table-3. Upgrade fee from old license
+     :header-rows: 1
 
-If you have Pyarmor 8.2+ installed, this command also could open shopping cart::
+     * - License Type
+       - Upgrading fee($)
+       - Remark
+     * - Basic
+       - 0
+       - following new EULA and match some conditions
+     * - Pro
+       - 50
+       -
+     * - Group
+       - N/A
+       -
 
-    $ pyarmor reg --buy
+  Open shopping cart in any web browser:
 
-In the shopping cart, select ``Pyarmor-upgrade`` and complete the payment online.
+      https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
 
-A file named ``pyarmor-regcode-to-pro.txt`` will be sent by email immediately after payment is completed successfully.
+  If you have Pyarmor 8.2+ installed, this command also could open shopping cart::
 
-This file includes the guide  to upgrade old license to Pyarmor Pro.
+      $ pyarmor reg --buy
 
-Assume this license will be used to obfuscate product ``XXX``, run this command::
+  In the shopping cart, select ``Pyarmor-upgrade`` and complete the payment online.
 
-    $ pyarmor reg -u -p "XXX" pyarmor-regcode-xxxx.txt
+  A file named ``pyarmor-regcode-to-pro.txt`` will be sent by email immediately after payment is completed successfully.
 
-Check the upgraded license information::
+  This file includes the guide  to upgrade old license to Pyarmor Pro.
 
-    $ pyarmor -v
+  Assume this license will be used to obfuscate product ``XXX``, run this command::
 
-After upgrade successfully, do not use file ``pyarmor-regcode-to-pro.txt`` again, it's invalid now. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
+      $ pyarmor reg -u -p "XXX" pyarmor-regcode-xxxx.txt
 
-In other devices using this new :term:`registration file` to register Pyarmor by this command::
+  Check the upgraded license information::
 
-    $ pyarmor reg pyarmor-regfile-xxxx.zip
+      $ pyarmor -v
 
-After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
+  After upgrade successfully, do not use file ``pyarmor-regcode-to-pro.txt`` again, it's invalid now. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
 
-If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
+  In other devices using this new :term:`registration file` to register Pyarmor by this command::
+
+      $ pyarmor reg pyarmor-regfile-xxxx.zip
+
+  After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
+
+  If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
 
 .. include:: _common_definitions.txt
