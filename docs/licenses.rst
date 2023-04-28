@@ -210,9 +210,9 @@ First find the activation file ``pyarmor-regcode-xxxx.txt``, which is sent to re
 
 Next upgrade to Pyarmor 8.0+, according to new `EULA of Pyarmor`_, each license is only for one product.
 
-Assume this license will be used to obfuscate product ``Robot Studio``, run this command::
+Assume this license will be used to obfuscate product ``XXX``, run this command::
 
-    $ pyarmor reg -u -p "Robot Studio" pyarmor-regcode-xxxx.txt
+    $ pyarmor reg -u -p "XXX" pyarmor-regcode-xxxx.txt
 
 Check the upgraded license information::
 

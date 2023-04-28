@@ -34,9 +34,9 @@ For any non-profits use, run this command::
 For commercial usage
 --------------------
 
-Assume this license is used to protect your product ``Robot Studio``, initial registration by this command::
+Assume this license is used to protect your product ``XXX``, initial registration by this command::
 
-    $ pyarmor reg -p "Robot Studio" pyarmor-regcode-xxxx.txt
+    $ pyarmor reg -p "XXX" pyarmor-regcode-xxxx.txt
 
 Pyarmor will show registration information and ask your confirmation. If everything is fine, type :kbd:`yes` and :kbd:`Enter` to continue.
 
@@ -57,7 +57,7 @@ When product is in developing, and product name is not decided. Initial registra
 
 In 6 months real product name must be set by this command::
 
-    $ pyarmor reg -p "Robot Studio" pyarmor-regcode-xxxx.txt
+    $ pyarmor reg -p "XXX" pyarmor-regcode-xxxx.txt
 
 If it's not changed after 6 months, the product name will be set to ``non-profits`` and can't be changed again.
 
@@ -90,9 +90,9 @@ Using group license
 
 After purchasing :term:`Pyarmor Group`, an activate file :file:`pyarmor-regcode-xxxx.txt` is sent to registration email.
 
-Initial registration need internet and Pyarmor 8.2+. Suppose product name is ``Robot``, then run this command::
+Initial registration need internet and Pyarmor 8.2+. Suppose product name is ``XXX``, then run this command::
 
-    $ pyarmor reg -p Robot pyarmor-regcode-xxxx.txt
+    $ pyarmor reg -p XXX pyarmor-regcode-xxxx.txt
 
 If initial registration is successful, a regfile ``pyarmor-regfile-xxxx.zip`` will be generated.
 
