@@ -241,9 +241,11 @@ def cmd_reg(ctx, args):
         return
 
     if regfile.endswith('.txt') and not args.product:
+        logger.error('please use -p to specify product name for this license')
         raise CliError('missing product name')
 
     if regfile.endswith('.zip') and args.product:
+        logger.error('please do not use -p for non initial registration')
         raise CliError('unwanted product name')
 
     upgrade = args.upgrade
