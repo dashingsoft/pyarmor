@@ -51,7 +51,7 @@ Pyarmor has 3 kind of licenses:
 
         Group license need not internet connection when obfuscating the scripts.
 
-Intial registration need internet connection for any kind of license. Refer to :doc:`how-to/register`
+Refer to :doc:`use Pyarmor License <how-to/register>`
 
 For the obfuscated scripts run in the customer's device, Pyarmor has no any limitions, it's totally controlled by users. Pyarmor only cares about build machine.
 
@@ -79,7 +79,13 @@ In details read `EULA of Pyarmor`_
 
 First of all, if not for sale, all the Python scripts are belong to one product.
 
-Pyarmor is one product, it includes Pyarmor basic, Pyarmor pro, and Pyarmor group. It also include pyarmor-webui which provides graphics interface for pyarmor. Besides, the order system of Pyarmor is a django app running in cloud-server. This django app also belongs to one product Pyarmor. The laptop used to develop Pyarmor, the PCs used to test Pyarmor, the cloud-server to serve order system of Pyarmor, all of them belong to one product Pyarmor.
+Pyarmor is one product, it includes:
+
+* Pyarmor basic, Pyarmor pro, and Pyarmor group
+* pyarmor-webui which provides graphics interface for pyarmor.
+* the order system of Pyarmor is a django app running in cloud-server. This django app also belongs to one product Pyarmor.
+* the laptop used to develop Pyarmor, the PCs used to test Pyarmor, the cloud-server to serve order system of Pyarmor, all of them belong to one product Pyarmor.
+* Pyarmor 7.x, Pyarmor 8.x and Pyarmor 9.x
 
 Microsoft Office is not one product, because each product in Microsoft Office is functional independence. For example, Microsoft Word and Microsoft Excel belong to Microsoft Office, but they're totally different.
 
@@ -159,7 +165,7 @@ There are no additional license fees, apart from the cost of the license. And it
 Refund policy
 -------------
 
-If activation file isn't used, and purchasing date is in 30 days, refund is accepted. Please
+If activation file isn't used, and purchasing date is in 30 days, refund is acceptable. Please
 
 1. Email to Ordersupport@mycommerce.com with order information and ask for refund.
 2. Or click `FindMyOrder page`_ to submit refund request
@@ -180,12 +186,11 @@ The old license could be upgraded to Pyarmor Basic freely only if it matchs thes
 
 * Following new `EULA of Pyarmor`_
 * The license no. starts with ``pyarmor-vax-``
-* The original activation file ``pyarmor-regcode-xxxx.txt`` is used not more than 100 times
-* No error returns by license server
+* The original activation file ``pyarmor-regcode-xxxx.txt`` is used not more than 100 times and exists
 
 If failed to upgrade the old license, please purchase new license to use Pyarmor latest version.
 
-Upgrading to Pyarmor Pro needs extra fees.
+Upgrading old license to Pyarmor Pro needs extra fees.
 
 .. list-table:: Table-3. Upgrade fee from old license
    :header-rows: 1
@@ -203,12 +208,12 @@ Upgrading to Pyarmor Pro needs extra fees.
      - N/A
      -
 
-Upgrading to Pyarmor-Basic
---------------------------
+Upgrading old license to Pyarmor Basic
+--------------------------------------
 
 First find the activation file ``pyarmor-regcode-xxxx.txt``, which is sent to registration email when purchasing the license.
 
-Next upgrade to Pyarmor 8.0+, according to new `EULA of Pyarmor`_, each license is only for one product.
+Next install Pyarmor 8.2+, according to new `EULA of Pyarmor`_, each license is only for one product.
 
 Assume this license will be used to obfuscate product ``XXX``, run this command::
 
@@ -218,16 +223,24 @@ Check the upgraded license information::
 
     $ pyarmor -v
 
+After upgrade successfully, do not use activation file ``pyarmor-regcode-xxxx.txt`` again, it's invalid now. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
+
+In other devices using this new :term:`registration file` to register Pyarmor by this command::
+
+    $ pyarmor reg pyarmor-regfile-xxxx.zip
+
+After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
+
 If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
 
-Upgrading to Pyarmor-Pro
-------------------------
+Upgrading old license to Pyarmor Pro
+------------------------------------
 
 Open shopping cart in any web browser:
 
     https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
 
-If you have Pyarmor 8.0+ installed, this command also could open shopping cart::
+If you have Pyarmor 8.2+ installed, this command also could open shopping cart::
 
     $ pyarmor reg --buy
 
@@ -235,6 +248,24 @@ In the shopping cart, select ``Pyarmor-upgrade`` and complete the payment online
 
 A file named ``pyarmor-regcode-to-pro.txt`` will be sent by email immediately after payment is completed successfully.
 
-Following the guide in this file to take the purchased license effects.
+This file includes the guide  to upgrade old license to Pyarmor Pro.
+
+Assume this license will be used to obfuscate product ``XXX``, run this command::
+
+    $ pyarmor reg -u -p "XXX" pyarmor-regcode-xxxx.txt
+
+Check the upgraded license information::
+
+    $ pyarmor -v
+
+After upgrade successfully, do not use file ``pyarmor-regcode-to-pro.txt`` again, it's invalid now. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
+
+In other devices using this new :term:`registration file` to register Pyarmor by this command::
+
+    $ pyarmor reg pyarmor-regfile-xxxx.zip
+
+After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
+
+If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
 
 .. include:: _common_definitions.txt
