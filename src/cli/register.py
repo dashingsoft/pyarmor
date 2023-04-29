@@ -206,13 +206,11 @@ $notes
             fmt % ('RFT Mode', 'Yes' if rftmode else 'No'),
         ]
         if lictype == 'trial':
-            self.notes.append(
-                '* Trial license can\'t obfuscate big script and mix str'
-            )
-        if lictype in ('bacic', 'pro'):
-            self.notes.append(
-                '* Each obfuscation need verify license online'
-            )
+            self.notes.append('* Can\'t obfuscate big script and mix str')
+        elif lictype in ('bacic', 'pro'):
+            self.notes.append('* Each obfuscation need verify license online')
+        elif lictype == 'group':
+            self.notes.append('* Offline obfuscation')
 
         lines.append(Template(self.__str__.__doc__).substitute(
             advanced='\n'.join(advanced),
@@ -450,7 +448,7 @@ class WebRegister(Register):
             logger.info('read cached "%s"', tokencache)
             with open(tokencache, 'rb') as f:
                 data = f.read()
-            filename = regfile.replace('pyarmor-', 'pyarmor-group-').replace(
+            filename = regfile.replace('pyarmor-', 'pyarmor-device-').replace(
                 '.zip', '.%s.zip' % devid)
             logger.info('write registeration file "%s"', filename)
         else:
