@@ -339,13 +339,11 @@ It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other
 
 When private mode is enabled, the function name is empty in traceback. And the obfuscated scripts could not be imported by plain script or Python interpreter.
 
-It can't be used with :option:`--restrict`, the latter enables private mode implicitly.
-
 .. option:: --restrict
 
             Enable restirct mode for package, do not use it to obfuscate scripts.
 
-            It enables :option:`--private` implicitly, and has all the features of private mode.
+            This option implies :option:`--private`.
 
 When restrict mode is enabled, all the modules excpet ``__init__.py`` in the package could not be imported by plain scripts.
 
