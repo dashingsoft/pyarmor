@@ -106,9 +106,6 @@ def format_gen_args(ctx, args):
             logger.debug('implicitly set restrict_module = 2')
             options['restrict_module'] = 2
 
-    if options.get('restrict_module', 0) > 1:
-        options['mix_coname'] = 1
-
     if args.enables:
         for x in args.enables:
             options['enable_' + x] = True
