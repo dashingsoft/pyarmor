@@ -230,8 +230,8 @@ def cmd_reg(ctx, args):
 
     if args.device and not args.regfile:
         reg = Register(ctx)
-        filename = reg.generate_group_device(args.device)
-        logger.info('device file "%s" has been generated', filename)
+        reg.generate_group_device(args.device)
+        logger.info('device file has been generated successfully')
         return
 
     regfile = args.regfile
@@ -287,7 +287,7 @@ def cmd_reg(ctx, args):
         info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
         prompt = 'Are you sure to continue? (yes/no) '
         if input(msg + prompt) not in ('y', 'yes'):
-            logger.info('registration abort')
+            logger.info('abort registration')
             return
         # Free upgrade to Pyarmor Basic
         if upgrade and not info['upgrade']:

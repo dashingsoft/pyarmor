@@ -38,7 +38,7 @@ def parse_token(data):
             'features': 0,
             'licno': 'pyarmor-vax-000000',
             'regname': '',
-            'product': '',
+            'product': 'non-profits',
             'note': 'This is trial license'
         }
 
@@ -56,6 +56,7 @@ def parse_token(data):
         pstr.append(buf[i:i+n].decode('utf-8') if n else '')
         i += n
 
+    product = 'non-profits(TBD)' if pstr[2] in ('', 'TBD') else pstr[2]
     return {
         'token': token,
         'rev': rev,
@@ -63,7 +64,7 @@ def parse_token(data):
         'licno': licno,
         'machine': pstr[0],
         'regname': pstr[1],
-        'product': pstr[2],
+        'product': product,
         'note': pstr[3],
     }
 
@@ -124,7 +125,7 @@ class Register(object):
         name = info['regname']
         product = info['product']
         return '%s (%s)' % (product, name) if name and product else \
-            '' if not name else 'non-profits (%s)' % name
+            'non-profits' if not name else 'non-profits (%s)' % name
 
     def parse_keyfile(self, filename):
         with open(filename, 'r', encoding='utf-8') as f:
@@ -151,7 +152,7 @@ class Register(object):
                 logger.debug('extracting %s', item)
                 f.extract(item, path=path)
             namelist = f.namelist()
-            if 'tokens' in namelist:
+            if 'group.tokens' in namelist:
                 machid = self._get_machine_id()
                 name = '/'.join(['tokens', machid.decode('utf-8')])
                 if name not in namelist:
@@ -173,6 +174,7 @@ class Register(object):
 
     def generate_group_device(self, devid):
         path = self.ctx.group_device_file(devid)
+        logger.info('generating device file "%s"', path)
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "wb") as f:
             f.write(b'machine: ' + self._get_machine_id())
@@ -192,7 +194,8 @@ $notes
         lines = [
             fmt % ('License Type', 'pyarmor-' + lictype),
             fmt % ('License No.', info['licno']),
-            fmt % ('License To', self._license_to(info)),
+            fmt % ('License To', info['regname']),
+            fmt % ('License Product', info['product']),
             '',
         ]
 
@@ -206,9 +209,9 @@ $notes
             self.notes.append(
                 '* Trial license can\'t obfuscate big script and mix str'
             )
-        if lictype != 'group':
+        if lictype in ('bacic', 'pro'):
             self.notes.append(
-                '* Internet connection is required to verify Pyarmor license'
+                '* Each obfuscation need verify license online'
             )
 
         lines.append(Template(self.__str__.__doc__).substitute(
@@ -284,7 +287,7 @@ class WebRegister(Register):
         if pname in ('', 'TBD'):
             info['product'] = product
         elif pname != product:
-            logger.warning('old license is bind to product "%s"', pname)
+            logger.warning('this license is bind to product "%s"', pname)
             logger.warning('it can not be changed to "%s"', product)
 
         lines = []
@@ -310,12 +313,20 @@ class WebRegister(Register):
         lines.extend([
             '',
             fmt % ('License Type', 'pyarmor-' + info['lictype'].lower()),
-            fmt % ('License Owner', info['regname']),
-            fmt % ('Bind Product', info['product']),
+            fmt % ('License To', info['regname']),
+            fmt % ('License Product', info['product']),
             '',
         ])
-        if info['product'] in ('', 'TBD'):
+        if info['product'] == 'non-profits':
             lines.append('This license is about to be used for non-profits')
+        elif info['product'] in ('', 'TBD'):
+            lines.append('This license is bind to non-profits(TBD) '
+                         'for the time being')
+            lines.append('If not change "TBD" to product name in 6 months, '
+                         'it will be set to "non-profits" automatically')
+        else:
+            lines.append('This license is about to be used for product "%s"'
+                         % info['product'])
 
         lines.extend(['', ''])
         return info, '\n'.join(lines)
@@ -434,13 +445,14 @@ class WebRegister(Register):
             licdata = f.read('license.lic')
             capsule = f.read('.pyarmor_capsule.zip')
 
-        cached = os.path.join(os.path.dirname(devfile), 'tokens', machid)
-        if os.path.exists(cached):
-            logger.info('read cached "%s"', cached)
-            with open(cached, 'rb') as f:
+        tokencache = os.path.join(os.path.dirname(devfile), 'tokens', machid)
+        if os.path.exists(tokencache):
+            logger.info('read cached "%s"', tokencache)
+            with open(tokencache, 'rb') as f:
                 data = f.read()
             filename = regfile.replace('pyarmor-', 'pyarmor-group-').replace(
                 '.zip', '.%s.zip' % devid)
+            logger.info('write registeration file "%s"', filename)
         else:
             logger.info('send request to server')
             url = self.regurl('/'.join(['group', group['ucode']]))
@@ -453,12 +465,14 @@ class WebRegister(Register):
             filename = self._handle_response(res)
             with open(filename, 'rb') as f:
                 data = f.read()
-            with open(cached, 'wb') as f:
+            os.makedirs(os.path.dirname(tokencache), exist_ok=True)
+            with open(tokencache, 'wb') as f:
                 f.write(data)
 
         with ZipFile(filename, 'w') as f:
             f.writestr('license.lic', licdata)
             f.writestr('.pyarmor_capsule.zip', capsule)
+            f.writestr('group.tokens', b'')
             f.writestr('tokens/' + machid, data)
 
         logger.info('please copy deivce regfile to offline device and run')
