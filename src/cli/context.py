@@ -222,6 +222,7 @@ class Context(object):
         licinfo = self.license_info
         lictype = 'basic' if licinfo['features'] == 1 else \
             'pro' if licinfo['features'] == 7 else \
+            'group' if licinfo['features'] == 15 else \
             'trial' if licinfo['token'] == 0 else 'unknown'
         verinfo = ['%s (%s)' % (rev, lictype)]
 
