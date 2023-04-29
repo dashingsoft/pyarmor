@@ -170,7 +170,7 @@ def check_gen_context(ctx, args):
 
     if enable_bcc:
         plat, arch = ctx.pyarmor_platform.split('.')
-        if arch not in ('x86_64', 'aarch64'):
+        if arch not in ('x86_64', 'aarch64', 'x86', 'armv7'):
             raise CliError('bcc mode still not support arch "%s"' % arch)
 
     if ctx.cmd_options['no_runtime'] and not ctx.runtime_outer:
