@@ -111,7 +111,7 @@ Each Pyarmor License only need pay once, not periodically.
 
 2.3.1 Each Pyarmor License can only be used to register One Product. Each
       Licensed Product has an unique License No. in global. If user has many
-      products, each product need purchase one Pyarmor License.
+      products, each product need purchase one Pyarmor License. Except 2.6.1
 
 2.3.2 Pyarmor License could be installed in many machines and devices which
       used to develop, build, debug, test and support Licensed Product. But
@@ -156,6 +156,12 @@ distributed to others.
 
 This License is not intended to limit any rights users have under applicable
 copyright doctrines of fair use, fair dealing, or other equivalents.
+
+2.6.1 If user has many products, and has purchased one license for the first
+      product. The second product could use first product license only if sale
+      income of the second product less than 10x license fees. Once greater than
+      10x license fees, the second product need purchase its own license. It's
+      same to user's other products.
 
 3. Responsibilities and Commitments
 -----------------------------------
