@@ -16,11 +16,12 @@ This documentation is only apply to Pyarmor_ 8.0 plus.
 
 Pyarmor is published as shareware, free trial version never expires, but there are some limitations:
 
-a. Can not obfuscate big scritps [1]_
-b. Can not use feature mix-str [2]_ to obfuscate string constant in scripts
-c. Can not use RFT Mode [3]_, BCC Mode [4]_
-d. Can not be used for any commercial product without permission
-e. Can not be used to provide obfuscation service in any form
+(1) Can not obfuscate big scritps [1]_
+(2) Can not use feature mix-str [2]_ to obfuscate string constant in scripts
+(3) Can not use RFT Mode [3]_, BCC Mode [4]_
+(4) Can not be used for any commercial product without permission
+(5) Can not change runtime package name "pyarmor_runtime_000000"
+(6) Can not be used to provide obfuscation service in any form
 
 These limitations can be unlocked by different License Types except last one.
 
@@ -33,23 +34,21 @@ Pyarmor has 3 kind of licenses:
 
     Pyarmor Basic
 
-        Basic license could unlock big script [1]_ and mix-str [2]_ feature.
+        Basic license could unlock limitions (1) (2) (5).
 
-        It requires internet connection to verify license when obfuscating the scripts.
+        Each obfuscation need online verify license.
 
     Pyarmor Pro
 
-        Pro license could unlock big script [1]_ and mix-str [2]_ feature.
+        Pro license could unlock limitions (1) (2) (3) (4) (5).
 
-        Pro license also unlocks BCC Mode [4]_ and RFT Mode [3]_
-
-        It requires internet connection to verify license when obfuscating the scripts.
+        Each obfuscation need online verify license.
 
     Pyarmor Group
 
-        Group license unlocks all limitions.
+        Group license could unlock limitions (1) (2) (3) (4) (5).
 
-        Group license need not internet connection when obfuscating the scripts.
+        Offline obfuscation.
 
 Refer to :doc:`use Pyarmor License <how-to/register>`
 
@@ -77,7 +76,7 @@ In details read `EULA of Pyarmor`_
 
 **What's one product**
 
-First of all, if not for sale, all the Python scripts are belong to one product.
+First of all, if not for sale, all the Python scripts are belong to one product "non-profits".
 
 Pyarmor is one product, it includes:
 
