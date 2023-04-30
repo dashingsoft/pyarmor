@@ -94,7 +94,7 @@ class Builder(object):
         rev = self.ctx.version_info()
         template = self.ctx.bootstrap_template
         relative = self.ctx.import_prefix
-        pkgname = self.ctx.runtime_package + self.ctx.runtime_suffix
+        pkgname = self.ctx.runtime_package_name
         bootpath = self.ctx.cfg.get('builder', 'bootstrap_file')
 
         namelist = []

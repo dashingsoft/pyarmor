@@ -101,7 +101,7 @@ class Context(object):
         self.cfg = self._read_config(cfglist, encoding=encoding)
 
         self.inline_plugin_marker = '# pyarmor: '
-        self.runtime_package = 'pyarmor_runtime'
+        # self.runtime_package = 'pyarmor_runtime'
         # self.runtime_suffix = '_000000'
         # default inner key filename within runtime package
         self.runtime_keyfile = '.pyarmor.ikey'
@@ -289,10 +289,6 @@ class Context(object):
         return parse_token(self.read_token())
 
     @property
-    def runtime_suffix(self):
-        return '_' + self.license_info['licno'][-6:]
-
-    @property
     def native_platform(self):
         from platform import system, machine
         return '.'.join([system().lower(), machine().lower()])
@@ -447,6 +443,15 @@ class Context(object):
     #
     def _rt_opt(self, opt):
         return self.cmd_options.get(opt, self.cfg['runtime'].get(opt))
+
+    @property
+    def runtime_suffix(self):
+        return self.license_info['licno'][-6:]
+
+    @property
+    def runtime_package_name(self):
+        fmt = self.cfg['runtime', 'package_name_format']
+        return fmt.format(suffix=self.runtime_suffix)
 
     @property
     def runtime_platforms(self):
