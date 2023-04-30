@@ -11,7 +11,24 @@
 
 .. program:: pyarmor gen
 
-Users could write any :term:`plugin script` or :term:`hook script` to extend Pyarmor features.
+Pyarmor provides the following ways to extend:
+
+- Using :ref:`pyarmor cfg` to change default configurations
+- Using :term:`plugin script` to customize all generated files
+- Using :term:`hook script` to extend features in obfuscated scripts
+
+Changing runtime package name
+=============================
+
+.. versionadded:: 8.2 [#]_
+
+By default the runtime package name is ``pyarmor_runtime_xxxxxx``
+
+This name is variable with any valid package name. For example, set it to ``my_runtime``::
+
+    pyarmor cfg package_name_format "my_runtime"
+
+.. [#] Pyarmor trial version could not change runtime package name
 
 Using plugin to fix loading issue in darwin
 ===========================================
