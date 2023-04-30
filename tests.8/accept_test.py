@@ -23,6 +23,10 @@ def metricmethod(func):
     return wrap
 
 
+def is_x86():
+    return calcsize('P'.encode()) * 8 == 32
+
+
 def skip_protest(func):
 
     def wrap(self, *args, **kwargs):
@@ -140,7 +144,6 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @unittest.skipIf(calcsize('P'.encode()) * 8 == 32, 'bcc not work in x86')
     @skip_protest
     def test_enable_bcc(self):
         args = ['g', '--enable-bcc', 'samples/foo.py']
@@ -153,7 +156,6 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @unittest.skipIf(calcsize('P'.encode()) * 8 == 32, 'bcc not work in x86')
     @skip_protest
     def test_enable_rft_bcc(self):
         args = ['g', '--enable-rft', '--enable-bcc', 'samples/foo.py']
