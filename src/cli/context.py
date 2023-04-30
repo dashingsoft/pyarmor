@@ -450,7 +450,7 @@ class Context(object):
 
     @property
     def runtime_package_name(self):
-        fmt = self.cfg['runtime', 'package_name_format']
+        fmt = self.cfg.get('runtime', 'package_name_format')
         return fmt.format(suffix=self.runtime_suffix)
 
     @property
