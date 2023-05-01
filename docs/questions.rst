@@ -50,6 +50,16 @@ When report bug in `issues`_, please copy the whole command line :command:`pyarm
     INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
 
+Packing
+=======
+
+**In the old pyarmor 7, I'm using "pyarmor pack ...", I could not find any relate information for this in the pyarmor 8.2. How to solve this?**
+
+  There is no identical pack in Pyarmor 8, Pyarmor 8+ only provide repack function to handle bundle of PyInstaller. Refer to basic tutorial, topic `insight into pack`__ and this solved issue `Pyarmor pack missing in pyarmor 8.0`__
+
+__ https://pyarmor.readthedocs.io/en/stable/topic/repack.html
+__ https://github.com/dashingsoft/pyarmor/discussions/1107
+
 License
 =======
 
