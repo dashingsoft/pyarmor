@@ -110,8 +110,7 @@ Pyarmor 8.0 introduces significant changes. It has been rewritten and new featur
 
 Users of versions prior to 8.0 should read the [Import Notes][important-notes] section to decide whether to upgrade Pyarmor.
 
-Each major version comes with a separate changelog file, detailing fixed issues, new features, and compatibility
-issues between different versions.
+Each major version comes with a separate changelog file, detailing fixed issues, new features, and compatibility issues between different versions.
 
 Make sure to read the changelog carefully before upgrading Pyarmor:
 - [Pyarmor 8.x Changelog](docs/ChangeLogs.8)
