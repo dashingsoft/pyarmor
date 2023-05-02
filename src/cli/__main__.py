@@ -394,7 +394,7 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
         help='obfuscate whole module (default is 1)'
     )
     group.add_argument(
-        '--obf-code', type=int, default=None, choices=(0, 1),
+        '--obf-code', type=int, default=None, choices=(0, 1, 2),
         help='obfuscate each function (default is 1)'
     )
     group.add_argument(
