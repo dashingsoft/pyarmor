@@ -95,4 +95,13 @@ Recommened options for different applications
 
    If it's not perfomace sensitive, using :option:`--enable-themida` prevent from debuggers
 
+Reforming scripts to improve security
+=====================================
+
+**Move main script module level code to other module**
+
+Pyarmor will clear the module level code after the module is imported, the injected code could not get any module level code because it's gone.
+
+But the main script module level code is never cleared, so moving un-necessary code here to other module could improve security.
+
 .. include:: ../_common_definitions.txt
