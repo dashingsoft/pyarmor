@@ -139,7 +139,7 @@ Generate obfuscated scripts and all the required runtime files.
 --prefix PREFIX                 import runtime package with PREFIX :option:`... <--prefix>`
 
 --obf-module <0,1>              obfuscate whole module (default is 1) :option:`... <--obf-module>`
---obf-code <0,1>                obfuscate each function (default is 1) :option:`... <--obf-code>`
+--obf-code <0,1,2>              obfuscate each function (default is 1) :option:`... <--obf-code>`
 --no-wrap                       disable wrap mode :option:`... <--no-wrap>`
 --enable <jit,rft,bcc,themida>  enable different obfuscation features :option:`... <--enable>`
 --mix-str                       protect string constant :option:`... <--mix-str>`
@@ -377,11 +377,13 @@ Then obfuscate the package again.
 
 .. option:: --obf-module <0,1>
 
-            Enable the whole module (default is 1)
+            Enable the whole module obfuscation (default is 1)
 
-.. option:: --obf-code <0,1>
+.. option:: --obf-code <0,1,2>
 
-            Enable each function in module (default is 1)
+            Enable each function obfuscation (default is 1)
+
+Mode ``2`` is new in Pyarmor 8.2, more security than ``1``.
 
 .. option:: --no-wrap
 

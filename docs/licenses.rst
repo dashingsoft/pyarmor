@@ -22,6 +22,7 @@ Pyarmor is published as shareware, free trial version never expires, but there a
 (4) Can not be used for any commercial product without permission
 (5) Can not change runtime package name "pyarmor_runtime_000000"
 (6) Can not be used to provide obfuscation service in any form
+(7) Can not use obf-code > 1
 
 These limitations can be unlocked by different License Types except last one.
 
@@ -34,19 +35,19 @@ Pyarmor has 3 kind of licenses:
 
     Pyarmor Basic
 
-        Basic license could unlock limitions (1) (2) (5).
+        Basic license could unlock limitions (1) (2) (5) (7).
 
         Each obfuscation need online verify license.
 
     Pyarmor Pro
 
-        Pro license could unlock limitions (1) (2) (3) (4) (5).
+        Pro license could unlock limitions (1) (2) (3) (4) (5) (7).
 
         Each obfuscation need online verify license.
 
     Pyarmor Group
 
-        Group license could unlock limitions (1) (2) (3) (4) (5).
+        Group license could unlock limitions (1) (2) (3) (4) (5) (7).
 
         Offline obfuscation.
 
@@ -107,6 +108,7 @@ License features
    Themedia Protection     Y          Y          Y           Y       [10]_
    Big Script              No         Y          Y           Y
    Mix Str                 No         Y          Y           Y
+   obf-code > 1            No         Y          Y           Y       [11]_
    RFT MODE                No         No         Y           Y
    BCC MODE                No         No         Y           Y
    ===================  ========   ========   =========   ========  ==============
@@ -123,6 +125,7 @@ License features
 .. [8] JIT Protection: processing some sentensive data by runtime generated binary code
 .. [9] Assert Protection: preventing others from hacking obfuscated scripts
 .. [10] Themedia Protection: using Themedia to protect Widnows dlls
+.. [11] ``--obf-code=2`` is new in Pyarmor 8.2
 
 Purchasing license
 ==================

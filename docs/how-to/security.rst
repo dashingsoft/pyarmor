@@ -22,6 +22,7 @@ The following options could improve security
 * :option:`--enable-themida` prevents from most of debuggers, only available in Windows, and reduce permormance remarkable
 * :option:`--mix-str` protects string constant in the script
 * `pyarmor cfg mix_argnames=1` may broken annotations
+* :option:`--obf-code` ``2`` could make more difficult to reverse bytecode
 
 The following options hide module attributes
 
@@ -57,7 +58,7 @@ Without filter, all of string constants in the scripts are encrypte, it may redu
 Recommened options for different applications
 =============================================
 
-**1. For django application or serving web request**
+**For django application or serving web request**
 
    If RFT mode is safe enough, you can check the transformed scripts to make decision, using these options
 
@@ -72,7 +73,7 @@ Recommened options for different applications
    * :option:`--no-wrap`
    * :option:`--mix-str` with filter
 
-2. For most of applications and packages
+**For most of applications and packages**
 
    If RFT mode and BCC mode are available
 
