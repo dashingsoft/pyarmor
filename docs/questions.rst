@@ -102,11 +102,25 @@ License
 Upgrading
 ---------
 
-**Can we obfuscate our codebase with the same level as current? (we are obfuscating our code using super plus mode ("--advanced 5"). Is that available on PyArmor Basic? If we upgrade the old license, will the current license expire? (no more available in terms of PyArmor v7? How long is the current license valid? Is there a published end-of-support schedule?**
+**Can we obfuscate our codebase with the same level as current? (we are obfuscating our code using super plus mode ("--advanced 5"). Is that available on PyArmor Basic?**
 
   The old license is valid for ever. In this case need not upgrade old license to Pyarmor Basic licnse, just install Pyarmor 8.x, and using :command:`pyarmor-7` with old license.
 
   Check :doc:`licenses` for more information about upgrading
+
+**If we upgrade the old license, will the current license expire? (no more available in terms of PyArmor v7?**
+
+  If upgrade old license to any Pyarmor 8 license, the current license is no more available in the terms of Pyarmor 7.
+
+**How long is the current license valid? Is there a published end-of-support schedule?**
+
+  The license is valid for ever with Pyarmor version when purchasing this license, but may not work for future Pyarmor, there is no schedule about in which version current license doesn't work.
+
+  Since the first release Pyarmor changed its license 3 times
+
+  - the intial license issued around year 2010 (I forget the exact date)
+  - the second license issued on 2019-10-10
+  - this is the third license, issued on 2023-03-10.
 
 Purchasing
 ==========
