@@ -93,7 +93,7 @@ Another, set registration file path to :file:`/opt/pyarmor/`::
 
     $ pyarmor --home ,,,/opt/pyarmor ...
 
-It's useful when may use :command:`sudo` to run :command:`pyarmor` occassionally. This makes sure the registration file could be found even switch to another user.
+It's useful when using :command:`sudo` to run :command:`pyarmor` occassionally. This makes sure the registration file could be found even switch to another user.
 
 When there are many Pyarmor Licenses registerred in one machine, set each license to different registration file path. For example::
 
@@ -337,7 +337,7 @@ It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other
 
             Enable private mode for scripts.
 
-When private mode is enabled, the function name is empty in traceback. And the obfuscated scripts could not be imported by plain script or Python interpreter.
+When private mode is enabled, the obfuscated scripts could not be imported by plain script or Python interpreter.
 
 .. option:: --restrict
 
@@ -369,9 +369,9 @@ Run it to verify::
     ... import joker should be OK
     ... RuntimeError: unauthorized use of script
 
-If there are extra modules need to be exported, list all the modules in this command::
+If there are extra modules need to be exported, no restrict this module by private settings. For example, no restirct ``joker/queens.py`` by this command::
 
-    $ pyarmor cfg exclude_restrict_modules="__init__ queens"
+    $ pyarmor cfg -p "joker.queens" restrict_module=0
 
 Then obfuscate the package again.
 
@@ -444,11 +444,12 @@ will be changed to
 
     def fib(n):
         a, b = 0, 1
+        return a, b
 
     print('hello')
     __assert_armored__(fib)(n)
 
-The function ``__assert_armored__`` is a builtin function in obfuscated script. It checks the argument, if it's an obfuscated function, then returns this function, otherwise raises protection exception.
+The function :func:`__assert_armored__` is a builtin function in obfuscated script. It checks the argument, if it's an obfuscated function, then returns this function, otherwise raises protection exception.
 
 In this example, ``fib`` is protected, ``print`` is not.
 
@@ -473,7 +474,7 @@ will be changed to
     import foo
     __assert_armored__(foo)
 
-The function ``__assert_armored__`` is a builtin function in obfuscated script. It checks the argument, if it's an obfuscated module, then return this module, otherwise raises protection exception.
+The function :func:`__assert_armored__` is a builtin function in obfuscated script. It checks the argument, if it's an obfuscated module, then return this module, otherwise raises protection exception.
 
 This option neither touchs statement ``from import``, nor the module imported by function ``__import__``.
 
@@ -630,15 +631,16 @@ Not only option ``excludes`` in section ``finder``, but also in other sections `
 
 Section is group name of options, here are popular sections
 
-* finder: how to search scripts
-* builder: how to obfuscate scripts, main section
-* runtime: how to generate runtime package and runtime key
+- finder: how to search scripts
+- builder: how to obfuscate scripts, main section
+- runtime: how to generate runtime package and runtime key
 
 These are not popular sections
-* mix.str: how to filter mix string
-* assert.call: how to filter assert function
-* assert.import: how to filter assert module
-* bcc: how to convert function to C code
+
+- mix.str: how to filter mix string
+- assert.call: how to filter assert function
+- assert.import: how to filter assert module
+- bcc: how to convert function to C code
 
 .. option:: -p NAME
 
@@ -720,9 +722,9 @@ For each device, first install Pyarmor 8.2+, and generate one device file. For e
 
     $ pyarmor reg -g 1
 
-Next prepare to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip`` for this device. It requires internet connection, group device file ``pyarmor-group-device.1``, group license :term:`registration file`.
+Next prepare to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip`` for this device.
 
-For example, copy group device file to initial registration machine, save it to path ``.pyarmor/group/``, run the following command to generate ``pyarmor-device-regfile-xxxx.1.zip``::
+It requires internet connection, group device file ``pyarmor-group-device.1``, group license :term:`registration file`. For example, copy group device file to initial registration machine, save it to path ``.pyarmor/group/``, run the following command to generate ``pyarmor-device-regfile-xxxx.1.zip``::
 
     $ mkdir -p .pyarmor/group
     $ cp pyarmor-group-device.1 .pyarmor/group/
@@ -778,15 +780,15 @@ It mainly used in the shell scrits to change Pyarmor settings. If :option:`pyarm
 
             Set the right :term:`Platform` to run :command:`pyarmor`
 
-It's mainly used in some platforms Pyarmor could not tell right but still works.
+It's mainly used in some platforms Pyarmor could not tell but still works.
 
 .. envvar:: PYARMOR_CC
 
-            Specify C compiler for bccmode
+            Specify C compiler for :term:`BCC mode`
 
 .. envvar:: PYARMOR_CLI
 
-            Only for compatible with old Pyarmor, ignore this if you don't use old command prior to 8.0
+            Only for compatible with Pyarmor 7.x, ignore this if you don't use old command prior to 8.0
 
 If you do not use new commands in Pyarmor 8.0, and prefer to only use old commands, set it to ``7``, for example::
 
@@ -803,7 +805,7 @@ If you do not use new commands in Pyarmor 8.0, and prefer to only use old comman
 
 It forces command :command:`pyarmor` to use old cli directly.
 
-Without it, :command:`pyarmor` first try new cli, if the command line couldn't be parsed by new cli, fallback to old cli.
+Without it, :command:`pyarmor` only recognizes new Pyarmor 8 commands.
 
 This only works for command :command:`pyarmor`.
 
