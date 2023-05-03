@@ -127,7 +127,7 @@ Purchasing
 
 **How to refund my order?**
 
-  If this order isn't activated, you can refund the order by one of ways
+  If this order isn't activated and in 30 days since purchasing, you can refund the order by one of ways
 
   1. Email to Ordersupport@mycommerce.com with order information and ask for refund.
   2. Or click `FindMyOrder page`_ to submit refund request
