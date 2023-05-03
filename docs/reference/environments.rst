@@ -168,7 +168,7 @@ Check it, this plugin information should be printed in the console::
 
 Disable this plugin::
 
-    $ pyarmor cfg plgins - "fooplugin"
+    $ pyarmor cfg plugins - "fooplugin"
 
 .. _hooks:
 
