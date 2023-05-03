@@ -290,7 +290,7 @@ class WebRegister(Register):
 
         lines = []
         if upgrade:
-            if not (rcode and rcode.startswith('pyarmor-vax-')):
+            if rcode and not rcode.startswith('pyarmor-vax-'):
                 logger.error('please check Pyarmor 8 EULA')
                 raise CliError('old license "%s" can not be upgraded' % rcode)
             if info['upgrade']:
