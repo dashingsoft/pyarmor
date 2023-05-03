@@ -65,17 +65,17 @@ __ https://github.com/dashingsoft/pyarmor/discussions/1107
 License
 =======
 
-- **we use Docker to build/obfuscate the code locally then publish the Dockerfile to the client. After the build stage, the whole environment (and the license) is gone. I wonder how the workflow would be? Can I add the license file to the pipeline and register everytime and build?**
+**we use Docker to build/obfuscate the code locally then publish the Dockerfile to the client. After the build stage, the whole environment (and the license) is gone. I wonder how the workflow would be? Can I add the license file to the pipeline and register everytime and build?**
 
   It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate application. Each build registering pyarmor with :file:`pyarmor-regfile-xxxx.zip` which is generated in initial registration. But It's not allowed to distribute pakcage pyarmor and :term:`Pyarmor Basic`, :term:`Pyarmor Pro`, :term:`Pyarmor Group` License to customer, and don't run too many build dockers.
 
-- **We are currently using a trial license for testing, but unfortunately our scripts are big and we are not able to statistically test the operation of Pyarmor. Do you have a commercial trial license for a certain trial period so that we can test the operation of Pyarmor for our scripts?**
+**We are currently using a trial license for testing, but unfortunately our scripts are big and we are not able to statistically test the operation of Pyarmor. Do you have a commercial trial license for a certain trial period so that we can test the operation of Pyarmor for our scripts?**
 
   Sorry, Pyarmor is a small tool and only cost small money, there is no demo license plan.
 
   Most of features could be verified in trial version, other advanced features, for example, mix-str, bcc mode and rft mode, could be configured to ignore one function or one script so that all the others could work with these advanced features.
 
-- **Is the Internet connection only required to generate the obfuscated script? No internet connection is required on the target device that uses such script?**
+**Is the Internet connection only required to generate the obfuscated script? No internet connection is required on the target device that uses such script?**
 
   No internet connection is required on target device.
 
@@ -83,15 +83,15 @@ License
 
   Please check Pyarmor EULA 3.4.1
 
-- **I am interested to know if the users are entitled to updates to ensure compatibility with future versions of Python.**
+**I am interested to know if the users are entitled to updates to ensure compatibility with future versions of Python.**
 
   No. Pyarmor license works with current Pyarmor version forever, but may not work with future Pyarmor version. I can't make sure current Pyarmor version could support all the future versions of Python, so the answer is no.
 
-- **If we buy version 8 license, is it compatible with earlier versions like 6.7.2?**
+**If we buy version 8 license, is it compatible with earlier versions like 6.7.2?**
 
   No. Pyarmor 8 license can't be used with earlier versions, it may report HTTP 401 error or some unknown errors.
 
-- **Our company has a suite of products that we offer together or separately to our clients. Do we need a different license for each of them?**
+**Our company has a suite of products that we offer together or separately to our clients. Do we need a different license for each of them?**
 
   For a suite of products, if each product is different totally, for example, a suite "Microsoft Office” includes “Microsoft Excel”, “Microsoft Word”, each product need one license.
 
@@ -102,7 +102,7 @@ License
 Upgrading
 ---------
 
-- **Can we obfuscate our codebase with the same level as current? (we are obfuscating our code using super plus mode ("--advanced 5"). Is that available on PyArmor Basic? If we upgrade the old license, will the current license expire? (no more available in terms of PyArmor v7? How long is the current license valid? Is there a published end-of-support schedule?**
+**Can we obfuscate our codebase with the same level as current? (we are obfuscating our code using super plus mode ("--advanced 5"). Is that available on PyArmor Basic? If we upgrade the old license, will the current license expire? (no more available in terms of PyArmor v7? How long is the current license valid? Is there a published end-of-support schedule?**
 
   The old license is valid for ever. In this case need not upgrade old license to Pyarmor Basic licnse, just install Pyarmor 8.x, and using :command:`pyarmor-7` with old license.
 
@@ -111,9 +111,9 @@ Upgrading
 Purchasing
 ==========
 
-- **How to refund my order?**
+**How to refund my order?**
 
-  If this key of this order isn't activated, you can refund the order by one of ways
+  If this order isn't activated, you can refund the order by one of ways
 
   1. Email to Ordersupport@mycommerce.com with order information and ask for refund.
   2. Or click `FindMyOrder page`_ to submit refund request
