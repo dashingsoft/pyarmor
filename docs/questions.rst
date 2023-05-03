@@ -13,6 +13,8 @@ Before ask question, please try these solutions:
 
 - If using :command:`pyarmor-7` or Pyarmor < 8.0, please check `Pyarmor 7.x Doc`_
 
+- Check :ref:`the detailed table of contents <mastertoc>`
+
 - If you have not read :doc:`tutorial/getting-started`, read it
 
 - Check :doc:`reference/errors`
@@ -95,7 +97,7 @@ License
 
   If a suite of products share most of Python scripts, as long as the proportion of the variable part of each product is far less than that of the common part, they’re considered as "one product".
 
-  If each product in a suite of products is functionally complementary, for example, product “Editor” for editing the file, product “Viewer” for view the file, they’re considered as “one product"
+  If each product in a suite of products is functionally complementary, for example, product "Editor" for editing the file, product "Viewer" for view the file, they’re considered as "one product"
 
 Upgrading
 ---------
