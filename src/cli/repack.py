@@ -12,12 +12,11 @@ from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
 try:
     from PyInstaller.loader.pyimod02_archive import ZlibArchiveReader
-    from PyInstaller.loader.pyimod02_archive import PYZ_TYPE_PKG
 except ModuleNotFoundError:
     from PyInstaller.loader.pyimod01_archive import ZlibArchiveReader
-    from PyInstaller.loader.pyimod01_archive import PYZ_TYPE_PKG
 from PyInstaller.compat import is_darwin, is_linux, is_win
 
+PYZ_TYPE_PKG = 1
 
 logger = logging.getLogger('repack')
 
