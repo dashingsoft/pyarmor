@@ -23,6 +23,7 @@ Status: released
 **8.2**
 
 Status: developing
+
 Release schedule: 2023-05-10
 
 - Full documentation
@@ -39,6 +40,7 @@ Release schedule: 2023-05-10
 **8.3**
 
 Status: not start
+
 Release schedule: 2023-07-01
 
 - Support `--enable-themida`
@@ -48,6 +50,7 @@ Release schedule: 2023-07-01
 **8.x**
 
 Status: not start
+
 Release schedule: 2023-11-01 (about one month after Python 3.12.0 released)
 
 - Support Python 3.12
