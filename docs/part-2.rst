@@ -6,6 +6,7 @@
    :maxdepth: 3
 
    how-to/security
+   how-to/protection
    how-to/obfuscation
    how-to/advanced
    how-to/third-party

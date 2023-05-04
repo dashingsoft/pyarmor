@@ -156,7 +156,7 @@ Then run it::
     ... import joker OK
     ... RuntimeError: unauthorized use of script
 
-In order to export ``joker.queens``, either removing option :option:`--restrict``, or config only this module is not restrict like this::
+In order to export ``joker.queens``, either removing option :option:`--restrict`, or config only this module is not restrict like this::
 
     $ pyarmor cfg -p joker.queens restrict_module=0
 

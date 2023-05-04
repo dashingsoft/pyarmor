@@ -15,10 +15,10 @@ If no exact error message found, most likely it's not caused by Pyarmor, search 
 Building Errors
 ===============
 
-Here list all the errors when run :command:`pyarmor` in building machine
+**Obfuscating Errors**
 
 .. list-table:: Table-1. Build Errors
-   :name: pyarmor errors
+   :name: building errors
    :widths: 10 20
    :header-rows: 1
 
@@ -44,7 +44,7 @@ Here list all the errors when run :command:`pyarmor` in building machine
 
        Solution: obfuscating the whole package (path), instead of one module (file) separately
 
-The following errors may occur when registering Pyarmor
+**Registering Errors**
 
 .. list-table:: Table-1.1 Register Errors
    :name: register errors
@@ -54,10 +54,7 @@ The following errors may occur when registering Pyarmor
    * - Error
      - Reasons
    * - HTTP Error 400: Bad Request
-     - 1. Running upgrading command `pyarmor -u` more than once
-
-          Try to register Pyarmor again with zip, for example::
-             pyarmor reg pyarmor-regfile-xxxxxx.zip
+     - Please upgrade Pyarmor to 8.2+ to get the exact error message
    * - HTTP Error 401: Unauthorized
      - Using old pyarmor commands with new license
 
@@ -73,40 +70,53 @@ The following errors may occur when registering Pyarmor
 
        Please use ``pyarmor-7`` or downgrade pyarmor to 7.7.4
    * - This code has been used too many times
-     -
+     - If this code is used in CI/Docker pipeline, please send **order information** by registration email of this code to pyarmor@163.com to unlock it. Do not send this code only, it doesn't make sense.
 
 Runtime Errors
 ==============
 
-Here list error messages reported by pyarmor
+**Error messages reported by pyarmor**
+
+If it has an error code, it could be customized.
 
 .. list-table:: Table-2. Runtime Errors of Obfuscated Scripts
    :name: runtime errors
-   :widths: 10 20
+   :widths: 10 10 20
    :header-rows: 1
 
-   * - Error Message
+   * - Error Code
+     - Error Message
      - Reasons
-   * - error code out of range
+   * -
+     - error code out of range
+     - Internal error
+   * - error_1
+     - this license key is expired
      -
-   * - this license key is expired
+   * - error_2
+     - this license key is not for this machine
      -
-   * - this license key is not for this machine
+   * - error_3
+     - missing license key to run the script
      -
-   * - missing license key to run the script
+   * - error_4
+     - unauthorized use of script
      -
-   * - unauthorized use of script
+   * - error_5
+     - this Python version is not supported
      -
-   * - this Python version is not supported
+   * - error_6
+     - the script doesn't work in this system
      -
-   * - the script doesn't work in this system
-     -
-   * - the format of obfuscated script is incorrect
+   * - error_7
+     - the format of obfuscated script is incorrect
      - 1. the obfuscated script is made by other Pyarmor version
        2. can not get runtime package path
-   * - the format of obfuscated function is incorrect
+   * - error_8
+     - the format of obfuscated function is incorrect
      -
-   * - RuntimeError: Resource temporarily unavailable
+   * -
+     - RuntimeError: Resource temporarily unavailable
      - When using option ``-e`` to obfusate the script, the obfuscated script need connect to `NTP`_ server to check expire date. If network is not available, or something is wrong with network, it raises this error.
 
        Solutions:
@@ -115,7 +125,9 @@ Here list error messages reported by pyarmor
 
        2. try it again it may works.
 
-Here list error messages reported by Python interpreter, generelly they are not pyarmor issues. Please consult Python documentation or google error message to fix them.
+**Error messages reported by Python interpreter**
+
+Generelly they are not pyarmor issues. Please consult Python documentation or google error message to fix them.
 
 .. list-table:: Table-2.1 Other Errors of Obfuscated Scripts
    :name: other runtime errors

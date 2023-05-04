@@ -1,26 +1,26 @@
 ========================
-Performance and Security
+Security and Performance
 ========================
 
 .. highlight:: console
 
 .. program:: pyarmor gen
 
-Pyarmor focus on protecting Python scripts, not good at memory protection and anti-debug.
+**About Security**
 
-Generally even using debugger to trace binary extension ``pyarmor_runtime`` could not help to restore obfuscated scripts, but it may by pass runtime key verification.
+Pyarmor focus on protecting Python scripts, by serval irreversible obfuscation methods, now Pyarmor make sure the obfuscated scripts can't be restored by any way.
 
-Pyarmor provides runtime hook feature to help users to block this risk, users could write C functions or python scripts to detect the debugger or any attack behaviours. Pyarmor embedded these hooks into the obfuscated scripts, and called by the obfuscated scripts on required. It could improve security significantly, but user need be expert at Python and anti-debug.
+Pyarmor provides rich options to obfuscate scripts to balance security and performance. If anyone announces he could broken pyarmor, please try a simple script with different security options, refer to :doc:`../how-to/security`. If any irreversible obfusation could be broken, report this security issue to |Contact|. Do not paste any hack link in pyarmor project.
 
-In Windows, using :option:`--enable-themida` could prevent from this leak, it could protect extension module ``pyarmor_runtime.pyd`` very well. But in the other platforms, it need extra tools to protect binary extension ``pyarmor_runtime.so``.
+However Pyarmor isn't good at memory protection and anti-debug. Generally even debugger tracing binary extension ``pyarmor_runtime`` could not help to restore obfuscated scripts, but it may bypass runtime key verification.
 
-Pyarmor provides rich options to obfuscate scripts to balance security and performance.
+If you care about runtime memory data protection and anti-debug, check :doc:`../how-to/protection`
 
-If anyone announces he could broken pyarmor, please try a simple script with different security options, refer to :doc:`../how-to/security`. If any irreversible obfusation could be broken, report this security issue to |Contact|. Do not paste any hack link in pyarmor project.
+**About Performance**
 
 Though the highest security could protect Python scripts from any hack method, but it may reduce performance. In most of cases, we need pick the right options to balance security and performance.
 
-Here we test some options to understand their impace on performace. All the following tests use 2 scripts ``benchmark.py`` and ``testben.py``. Note that the test data is different even run same test script in same machine twice, not speak of different test script in different machine. So the elapse time in the result table is only guideline, not exact value.
+Here we test some options to understand their impact on performace. All the following tests use 2 scripts ``benchmark.py`` and ``testben.py``. Note that the test results are different even run same test script in same machine twice, not speak of different test script in different machine. So the test data in these tables are only guideline, not exact.
 
 The content of ``benchmark.py``
 
@@ -266,6 +266,9 @@ In order to facilitate comparison, each option is used separately. For example, 
    * - :option:`--obf-code` ``0``
      - Remarkable increase
      - Remarkable reduce
+   * - :option:`--obf-code` ``2``
+     - Reduce
+     - Increase
    * - :option:`--enable-rft`
      - Almost same
      - Remarkable increase

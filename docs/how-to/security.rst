@@ -21,14 +21,14 @@ The following options could improve security
 * :option:`--enable-jit` prevents from static decompilation
 * :option:`--enable-themida` prevents from most of debuggers, only available in Windows, and reduce permormance remarkable
 * :option:`--mix-str` protects string constant in the script
-* `pyarmor cfg mix_argnames=1` may broken annotations
+* ``pyarmor cfg mix_argnames=1`` may broken annotations
 * :option:`--obf-code` ``2`` could make more difficult to reverse bytecode
 
 The following options hide module attributes
 
 * :option:`--private` for script or :option:`--restrict` for package
 
-The following options prevent from injecting functions into obfusated modules
+The following options prevent functions or modules from replaced by hack code
 
 * :option:`--assert-call`
 * :option:`--assert-import`
@@ -40,7 +40,7 @@ Using default options and the following settings
 
 * :option:`--obf-code` ``0``
 * :option:`--obf-module` ``0``
-* `pyarmor cfg restrict_module=0`
+* ``pyarmor cfg restrict_module=0``
 
 By these options, the security is almost same as `.pyc`
 
@@ -50,7 +50,7 @@ In order to improve security, and doesn't reduce performace, also enable RFT mod
 
 If there are sensitive string, enable mix-str with filter
 
-* `pyarmor cfg mix.str:includes "/regular expression/"`
+* ``pyarmor cfg mix.str:includes "/regular expression/"``
 * :option:`--mix-str`
 
 Without filter, all of string constants in the scripts are encrypte, it may reduce performance. Using filter only encrypt the sensitive string may balace security and performance.
@@ -80,16 +80,17 @@ Recommened options for different applications
    * :option:`--enable-rft`
    * :option:`--enable-bcc`
    * :option:`--mix-str` with filter
-   * :option:`assert-import`
+   * :option:`--assert-import`
 
-   If not
+   If RFT mode and BCC mode are not available
 
    * :option:`--enable-jit`
    * :option:`--private` for scripts, or :option:`--restrict` for packages
    * :option:`--mix-str` with filter
    * :option:`--assert-import`
+   * :option:`--obf-code` ``2``
 
-   If care about injecting track, also
+   If care about monkey trick, also
 
    * :option:`--assert-call` with inline marker to make sure all the key functions are protected
 

@@ -91,8 +91,7 @@ Here are major changed features:
 
 A few options may also change something:
 
-* ``pyarmor cfg mix_argname=1`` hides annotations.
-* :option:`--private`, :option:`--restrict` hide function names in trace back
+- ``pyarmor cfg mix_argname=1`` hides annotations.
 
 .. seealso:: :doc:`../how-to/third-party`
 

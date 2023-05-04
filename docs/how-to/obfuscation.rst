@@ -1,32 +1,38 @@
 .. highlight:: console
 
-========================
- Obfuscating django app
-========================
+..
+  ========================
+   Obfuscating django app
+  ========================
 
-TODO:
+  TODO:
 
-===========================
- Building obfuscated wheel
-===========================
+  ===========================
+   Building obfuscated wheel
+  ===========================
 
-TODO:
+  TODO:
 
-========================
- Packing with outer key
-========================
+  ========================
+   Packing with outer key
+  ========================
 
-TODO:
+  TODO:
 
 ============================
  Protecting system packages
 ============================
 
-.. versionadded:: 8.x
-                  This feature is still not implemented
+.. versionadded:: 8.2
 
-When packing the scripts, Pyarmor could also obfuscate system packages in the bundle.
+When packing the scripts, Pyarmor could also protect system packages in the bundle. These are necessary options to prevent system packages from be replaced by plain scripts::
 
-TODO:
+    $ pyarmor cfg assert.call:auto_mode="or" assert.call:includes = "*"
+    $ pyarmor cfg assert.import:auto_mode="or" assert.import:includes = "*"
+
+    $ pyinstall foo.py
+    $ pyarmor gen --assert-call --assert-import --restrict --pack dist/foo/foo foo.py
+
+.. seealso:: :doc:`protection`
 
 .. include:: ../_common_definitions.txt

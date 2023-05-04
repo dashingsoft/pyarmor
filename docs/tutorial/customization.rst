@@ -30,6 +30,27 @@ This name is variable with any valid package name. For example, set it to ``my_r
 
 .. [#] Pyarmor trial version could not change runtime package name
 
+Appending assert functions and modules
+======================================
+
+.. versionadded:: 8.2
+
+Pyarmor 8.2 introduces configuration item ``auto_mode`` to protect more functions and modules. The default value is ``and``,  :option:`--assert-call` and :option:`--assert-import` only protect modules and functions which Pyarmor make sure they're obfuscated.
+
+If set its value to ``or``, then all the names in the configuration item ``includes`` are also protected. For example, appending function ``foo`` 和 ``koo`` to assert list::
+
+    $ pyarmor cfg ast.call:auto_mode "or"
+    $ pyarmor cfg ast.call:includes "foo koo"
+
+    $ pyarmor gen --assert-call foo.py
+
+For example, also protect hidden imported module ``joker.card``::
+
+    $ pyarmor cfg ast.import:auto_mode "or"
+    $ pyarmor cfg ast.import:includes "joker.card"
+
+    $ pyarmor gen --assert-import joker/
+
 Using plugin to fix loading issue in darwin
 ===========================================
 
