@@ -10,8 +10,8 @@ For example::
 
     pyarmor gen foo.py
 
-Pyarmor first searchs file :file:`messages.cfg` in the :term:`local path`,
-then searchs in the :term:`global path`
+Pyarmor first searches file :file:`messages.cfg` in the :term:`local path`,
+then searches in the :term:`global path`
 
 If :file:`messages.cfg` exists, then read this file and save customized message to :term:`runtime key`
 

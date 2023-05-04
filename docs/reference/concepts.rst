@@ -68,7 +68,7 @@
       * Windows
           - windows.x86_64
           - windows.x86
-      * Many Linuxs
+      * Many Linuxes
           - linux.x86_64
           - linux.x86
           - linux.aarch64
@@ -100,7 +100,7 @@
 
   Pyarmor Home
 
-    Host in github: |Home|
+    Host in GitHub: |Home|
 
     It serves open source part of Pyarmor, `issues`_ and documentations.
 
@@ -157,7 +157,7 @@
 
   Runtime Key
 
-    The settings of obfuscated scripts. It may include the expired date, device information of bind to obfuscated scripts. Also include all the flags to control the behaviours of obfuscated scripts.
+    The settings of obfuscated scripts. It may include the expired date, device information of bind to obfuscated scripts. Also include all the flags to control the behaviors of obfuscated scripts.
 
     Generally it's embedded into :term:`Runtime Package`, but it also could be stored to an independent file :term:`outer key`
 

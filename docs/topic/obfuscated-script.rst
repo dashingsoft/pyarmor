@@ -39,7 +39,7 @@ For example, in Android pure `.py` script can be run in any location, but binary
 
 The runtime package ``pyarmor_runtime_000000`` could be in any path, it can be taken as a third-party package, save it in any location, and import it following Python import system.
 
-pyarmor provides serveral options :option:`-i`, :option:`--prefix` to help generating right code to import it.
+pyarmor provides several options :option:`-i`, :option:`--prefix` to help generating right code to import it.
 
 .. If obfuscated scripts could not import this package, failures in this step may indicate either that this runtime package could not be located, or that an error occurred while initializing runtime package.
 
@@ -51,7 +51,7 @@ Extension module ``pyarmor_runtime`` will not load the obfuscated script unless 
 
 User also could store any private data in the runtime key, then use :term:`hook script` to check private data in the obfuscated scripts.
 
-If runtime key is stored in an outer file, any readable text in the header will be ignored. User can add comment at the header of runtime key file, the rest part are bytes data, only in the obfuscaed scripts they could be read.
+If runtime key is stored in an outer file, any readable text in the header will be ignored. User can add comment at the header of runtime key file, the rest part are bytes data, only in the obfuscated scripts they could be read.
 
 .. _the differences of obfuscated scripts:
 
@@ -62,7 +62,7 @@ Although **use obfuscated scripts as they're normal Python scripts**, but the ob
 
 Here are major changed features:
 
-* The obfsucated scripts are bind to Python major/minor version. For example, if it's obfuscated by Python 3.6, it must run by Python 3.6. It doesn't work for Python 3.5
+* The obfuscated scripts are bind to Python major/minor version. For example, if it's obfuscated by Python 3.6, it must run by Python 3.6. It doesn't work for Python 3.5
 
 * The obfuscated scripts are platform-dependent, supported platforms and Python versions refer to :doc:`../reference/environments`
 
@@ -98,7 +98,7 @@ A few options may also change something:
 Supported Third-Party Interpreter
 =================================
 
-About third-party interperter, for example Jython, and any embeded Python C/C++ code, only they could work with CPython :term:`extension module`, they could work with Pyarmor. Check third-parth interperter documentation to make sure this.
+About third-party interpreter, for example Jython, and any embedded Python C/C++ code, only they could work with CPython :term:`extension module`, they could work with Pyarmor. Check third-party interpreter documentation to make sure this.
 
 A few known issues
 

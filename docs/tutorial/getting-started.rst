@@ -82,7 +82,7 @@ Why? It's clear after checking the content of :file:`dist/foo.py`:
     from pyarmor_runtime_000000 import __pyarmor__
     __pyarmor__(__name__, __file__, ...)
 
-Actually the obfuscaetd script can be taken as normal Python script with dependent package :mod:`pyarmor_runtime_000000`, use it as it's not obfuscated.
+Actually the obfuscated script can be taken as normal Python script with dependent package :mod:`pyarmor_runtime_000000`, use it as it's not obfuscated.
 
 .. important::
 
@@ -120,7 +120,7 @@ If there are sub-packages, using :option:`-r` to enable recursive mode::
 Distributing the obfuscated package
 -----------------------------------
 
-Also it works to copy the whole path :file:`dist2` to another machine. But it's not convience, the better way is using :option:`-i` to generate all the required files inside package path::
+Also it works to copy the whole path :file:`dist2` to another machine. But it's not convenience, the better way is using :option:`-i` to generate all the required files inside package path::
 
     $ pyarmor gen -O dist3 -r -i src/mypkg
 
@@ -172,13 +172,13 @@ Distributing the expired script is same as above, copy the whole directory :file
 Binding obfuscated scripts to device
 ====================================
 
-Suppose got target machine hardware informations::
+Suppose got target machine hardware information::
 
     IPv4:                        128.16.4.10
-    Enternet Addr:               00:16:3e:35:19:3d
+    Ethernet Addr:               00:16:3e:35:19:3d
     Hard Disk Serial Number:     HXS2000CN2A
 
-Using :option:`-b` to bind hardware information to obfuscated scripts. For example, bind :file:`dist5/foo.py` to enternet address::
+Using :option:`-b` to bind hardware information to obfuscated scripts. For example, bind :file:`dist5/foo.py` to Ethernet address::
 
     $ pyarmor gen -O dist5 -b 00:16:3e:35:19:3d foo.py
 
@@ -193,14 +193,14 @@ It's possible to combine some of them. For example::
 
     $ pyarmor gen -O dist5 -b "00:16:3e:35:19:3d HXS2000CN2A" foo.py
 
-Only both enternet address and hard disk are matched machine could run this obfuscated script.
+Only both Ethernet address and hard disk are matched machine could run this obfuscated script.
 
 Distributing scripts bind to device is same as above, copy the whole directory :file:`dist5/` to target machine.
 
 Packaging obfuscated scripts
 ============================
 
-Remeber again, the obfuscated script is normal Python script, use it as it's not obfuscated.
+Remember again, the obfuscated script is normal Python script, use it as it's not obfuscated.
 
 Suppose package ``mypkg`` structure like this::
 
@@ -286,7 +286,7 @@ And then :doc:`advanced`, some of them are not available in trial pyarmor
 * runtime error internationalization
 * cross platform, multiple platforms and multiple Python version
 
-Also you may be instersting in this guide :doc:`../how-to/security`
+Also you may be interesting in this guide :doc:`../how-to/security`
 
 How the documentation is organized
 ==================================
@@ -301,7 +301,7 @@ How the documentation is organized
 
 * :doc:`Part 4: Topics <../part-4>` guides insight into key topics and provide useful background information and explanation. They describe how it works and how to use it but assume that you have a basic understanding of key concepts.
 
-* :doc:`Part 5: Licneses <../licenses>` describes EULA of |Pyarmor|, the different |Pyarmor| licenses and how to purchase |Pyarmor| license.
+* :doc:`Part 5: Licenses <../licenses>` describes EULA of |Pyarmor|, the different |Pyarmor| licenses and how to purchase |Pyarmor| license.
 
 Looking for specific information? Try the :ref:`genindex`, or :ref:`the detailed table of contents <mastertoc>`.
 

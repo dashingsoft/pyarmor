@@ -13,7 +13,7 @@ TODO:
   pyarmor gen main.py my.config
 
   # Exclude "test" and all the path "test"
-  pyarmor cfg finder:exludes="test */test lib/a.py"
+  pyarmor cfg finder:excludes="test */test lib/a.py"
 
   # Include special script in package, for example, ext is not .py
   pyarmor cfg finder:includes="lib/extra.pyi"

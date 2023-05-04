@@ -36,11 +36,11 @@ Here only introduces common options in a short, using any combination of them as
 Debug mode and trace log
 ========================
 
-When someting is wrong, check console log to find what Pyarmor does, and use :option:`-d` to enable debug mode to print more information::
+When something is wrong, check console log to find what Pyarmor does, and use :option:`-d` to enable debug mode to print more information::
 
     $ pyarmor -d gen foo.py
 
-Trace log is useful to check what're protected by Pyarmor, enable it by this command::
+Trace log is useful to check whatever protected by Pyarmor, enable it by this command::
 
     $ pyarmor cfg enable_trace=1
 
@@ -73,7 +73,7 @@ For scripts, use these options to get more security::
 
     $ pyarmor gen --enable-jit --mix-str --assert-call --private foo.py
 
-Using :option:`--enable-jit` tells Pyarmor processes some sentensive data by ``c`` function generated in runtime.
+Using :option:`--enable-jit` tells Pyarmor processes some sensitive data by ``c`` function generated in runtime.
 
 Using :option:`--mix-str` [#]_ could mix the string constant (length > 8) in the scripts.
 
@@ -136,7 +136,7 @@ For package, remove :option:`--private` and append 2 extra options::
 
     $ pyarmor gen --enable-jit --mix-str --assert-call --assert-import --restrict joker/
 
-Using :option:`--assert-import` prevents obfsucated modules from being replaced with plain script. It checks each import statement to make sure the modules are obfuscated.
+Using :option:`--assert-import` prevents obfuscated modules from being replaced with plain script. It checks each import statement to make sure the modules are obfuscated.
 
 Using :option:`--restrict` makes sure the obfuscated module is only available inside package. It couldn't be imported from any plain script, also not be run by Python interpreter.
 
@@ -178,7 +178,7 @@ Many packages have data files, but they're not copied to output path.
 
 There are 2 ways to solve this problem:
 
-1. Before generating the obfuscated scripts, copy the whole package to output path, then run :ref:`pyarmor gen` to overwite all the ``.py`` files::
+1. Before generating the obfuscated scripts, copy the whole package to output path, then run :ref:`pyarmor gen` to overwrite all the ``.py`` files::
 
      $ mkdir dist/joker
      $ cp -a joker/* dist/joker
@@ -311,7 +311,7 @@ The final output is still ``dist/foo``::
 Packing to one folder
 ---------------------
 
-First packing script to one foler by PyInstaller::
+First packing script to one folder by PyInstaller::
 
     $ pyinstaller foo.py
 

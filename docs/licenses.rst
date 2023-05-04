@@ -16,7 +16,7 @@ This documentation is only apply to Pyarmor_ 8.0 plus.
 
 Pyarmor is published as shareware, free trial version never expires, but there are some limitations:
 
-(1) Can not obfuscate big scritps [1]_
+(1) Can not obfuscate big scripts [1]_
 (2) Can not use feature mix-str [2]_ to obfuscate string constant in scripts
 (3) Can not use RFT Mode [3]_, BCC Mode [4]_
 (4) Can not be used for any commercial product without permission
@@ -35,25 +35,25 @@ Pyarmor has 3 kind of licenses:
 
     Pyarmor Basic
 
-        Basic license could unlock limitions (1) (2) (5) (7).
+        Basic license could unlock limitations (1) (2) (5) (7).
 
         Each obfuscation need online verify license.
 
     Pyarmor Pro
 
-        Pro license could unlock limitions (1) (2) (3) (4) (5) (7).
+        Pro license could unlock limitations (1) (2) (3) (4) (5) (7).
 
         Each obfuscation need online verify license.
 
     Pyarmor Group
 
-        Group license could unlock limitions (1) (2) (3) (4) (5) (7).
+        Group license could unlock limitations (1) (2) (3) (4) (5) (7).
 
         Offline obfuscation.
 
 Refer to :doc:`use Pyarmor License <how-to/register>`
 
-For the obfuscated scripts run in the customer's device, Pyarmor has no any limitions, it's totally controlled by users. Pyarmor only cares about build machine.
+For the obfuscated scripts run in the customer's device, Pyarmor has no any limitations, it's totally controlled by users. Pyarmor only cares about build machine.
 
 Each license has an unique number, the format is ``pyarmor-vax-xxxxxx``, which x stands for a digital.
 
@@ -83,13 +83,13 @@ Pyarmor is one product, it includes:
 
 * Pyarmor basic, Pyarmor pro, and Pyarmor group
 * pyarmor-webui which provides graphics interface for pyarmor.
-* the order system of Pyarmor is a django app running in cloud-server. This django app also belongs to one product Pyarmor.
+* the order system of Pyarmor is a Django's app running in cloud-server. This Django's app also belongs to one product Pyarmor.
 * the laptop used to develop Pyarmor, the PCs used to test Pyarmor, the cloud-server to serve order system of Pyarmor, all of them belong to one product Pyarmor.
 * Pyarmor 7.x, Pyarmor 8.x and Pyarmor 9.x
 
 Microsoft Office is not one product, because each product in Microsoft Office is functional independence. For example, Microsoft Word and Microsoft Excel belong to Microsoft Office, but they're totally different.
 
-Microsoft Word is one product, and Micorsoft Word 2003，Word 2007 etc. are belong to one product Microsoft word.
+Microsoft Word is one product, and Microsoft Word 2003，Word 2007 etc. are belong to one product Microsoft word.
 
 License features
 ----------------
@@ -115,16 +115,16 @@ License features
 
 .. rubric:: notes
 
-.. [1] Big Script means file size exceeds a cerntain value.
-.. [2] Mix Str: obfscating string constant in script
+.. [1] Big Script means file size exceeds a certain value.
+.. [2] Mix Str: obfuscating string constant in script
 .. [3] RFT Mode: renaming function/class/method/variable in Python scripts
 .. [4] BCC Mode: Transforming some Python functions in scripts to c functions, compile them to machine instructions directly
 .. [5] Basic Obfuscation: obfuscating the scripts by default options
 .. [6] Expired Script: obfuscated scripts has expired date
 .. [7] Bind Device: obfuscated scripts only run in specified devices
-.. [8] JIT Protection: processing some sentensive data by runtime generated binary code
+.. [8] JIT Protection: processing some sensitive data by runtime generated binary code
 .. [9] Assert Protection: preventing others from hacking obfuscated scripts
-.. [10] Themedia Protection: using Themedia to protect Widnows dlls
+.. [10] Themedia Protection: using Themedia to protect Windows dlls
 .. [11] ``--obf-code=2`` is new in Pyarmor 8.2
 
 Purchasing license
@@ -140,7 +140,7 @@ If you have Pyarmor 8.0+ installed, this command also could open shopping cart::
 
 In the shopping cart, select License Type and complete the payment online.
 
-Please fill regname with personal or company name when placing order.
+Please fill reg-name with personal or company name when placing order.
 
 .. list-table:: Table-2. License Prices
    :header-rows: 1
@@ -184,7 +184,7 @@ Upgrading old license
 
 Not all the old license could be upgraded to latest version.
 
-The old license could be upgraded to Pyarmor Basic freely only if it matchs these conditions:
+The old license could be upgraded to Pyarmor Basic freely only if it matches these conditions:
 
 * Following new `EULA of Pyarmor`_
 * The license no. starts with ``pyarmor-vax-``
@@ -255,7 +255,7 @@ If old license is used by many products (mainly old personal license), only one 
 
   This file includes the guide  to upgrade old license to Pyarmor Pro.
 
-  Internect connection and Pyarmor 8.2+ are required to upgrade old license, check Pyarmor version by this command
+  Internet connection and Pyarmor 8.2+ are required to upgrade old license, check Pyarmor version by this command
 
       pyarmor -v
 

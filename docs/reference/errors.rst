@@ -35,7 +35,7 @@ Building Errors
    * - query machine id failed
      - Could not get hardware information in this machine
 
-       Pyarmor need query harddisk serial number, mac address etc.
+       Pyarmor need query hard disk serial number, mac address etc.
 
        If it could not get hardware information, it complains of this.
 
@@ -117,7 +117,7 @@ If it has an error code, it could be customized.
      -
    * -
      - RuntimeError: Resource temporarily unavailable
-     - When using option ``-e`` to obfusate the script, the obfuscated script need connect to `NTP`_ server to check expire date. If network is not available, or something is wrong with network, it raises this error.
+     - When using option ``-e`` to obfuscate the script, the obfuscated script need connect to `NTP`_ server to check expire date. If network is not available, or something is wrong with network, it raises this error.
 
        Solutions:
 
@@ -127,7 +127,7 @@ If it has an error code, it could be customized.
 
 **Error messages reported by Python interpreter**
 
-Generelly they are not pyarmor issues. Please consult Python documentation or google error message to fix them.
+Generally they are not pyarmor issues. Please consult Python documentation or google error message to fix them.
 
 .. list-table:: Table-2.1 Other Errors of Obfuscated Scripts
    :name: other runtime errors
@@ -141,7 +141,7 @@ Generelly they are not pyarmor issues. Please consult Python documentation or go
 
            Do not use :option:`-i` or :option:`--prefix` if you don't know what they're doing.
 
-       For all the other relative import issue, please check Pythont documentation to learn about relative import knowledge, then check Pyarmor :doc:`man` to understand how to generate runtime packages in different locations.
+       For all the other relative import issue, please check Python documentation to learn about relative import knowledge, then check Pyarmor :doc:`man` to understand how to generate runtime packages in different locations.
 
 
 Outer Errors
@@ -153,7 +153,7 @@ By searching error message in google or any other search engine to find the solu
 
 - **Operation did not complete successfully because the file contains a virus or is potentially unwanted software question**
 
-  It's caused by Windows Defender, not Pyarmor. I'm sure Pyarmor is safe, but it uses some technics which let anti-virtus tools make wrong decision. The solutions what I thought of
+  It's caused by Windows Defender, not Pyarmor. I'm sure Pyarmor is safe, but it uses some techniques which let anti-virus tools make wrong decision. The solutions what I thought of
 
   1. Check documentation of Windows Defender
   2. Ask question in MSDN

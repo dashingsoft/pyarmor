@@ -90,7 +90,7 @@ We can create a plugin script :file:`.pyarmor/conda.py` to fix this problem
                 print('using install_name_tool to fix %s' % target)
                 self._fixup(target)
 
-Enable this plugin and generate the obfusated script again::
+Enable this plugin and generate the obfuscated script again::
 
     $ pyarmor cfg plugins + "conda"
     $ pyarmor gen foo.py

@@ -21,7 +21,7 @@ First of all
 3. Internet connection
 4. Product name bind to this license, for non-commercial use, product name is ``non-profits``
 
-Using Pyarmor Baisc or Pro
+Using Pyarmor Basic or Pro
 ==========================
 
 Basic use steps:

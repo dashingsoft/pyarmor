@@ -6,7 +6,7 @@ Insight Into BCC Mode
 
 .. program:: pyarmor gen
 
-BCC mode could convert most of functions and methods in the scripts to equivalent C functions, those c functions will be comipled to machine instructions directly, then called by obfuscated scripts.
+BCC mode could convert most of functions and methods in the scripts to equivalent C functions, those c functions will be compiled to machine instructions directly, then called by obfuscated scripts.
 
 It requires ``c`` compiler. In Linux and Darwin, ``gcc`` and ``clang`` is OK. In Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 
@@ -46,7 +46,7 @@ The second log means ``foo.py`` line 9 function ``sum2`` is protected by bcc.
 Ignore module or function
 =========================
 
-When BCC scripts reports errors, a quick workaround is to ignore these problem modules or functions. Because BCC mode converts some functions to C code, these funtions are not compatiable with Python function object. They may not be called by outer Python scripts, and can't be fixed in Pyarmor side. In this case use configuration option ``bcc:excludes`` and ``bcc:disabled`` to ignore function or module, and make all the others work.
+When BCC scripts reports errors, a quick workaround is to ignore these problem modules or functions. Because BCC mode converts some functions to C code, these functions are not compatible with Python function object. They may not be called by outer Python scripts, and can't be fixed in Pyarmor side. In this case use configuration option ``bcc:excludes`` and ``bcc:disabled`` to ignore function or module, and make all the others work.
 
 To ignore one module ``pkgname.modname`` by this command::
 
@@ -85,7 +85,7 @@ Here are some changed features in the BCC mode:
 .. code-block:: python
 
     >>> raise
-    RuntimeError: No active exception to reraise
+    RuntimeError: No active exception to re-raise
 
     # In BCC mode
     >>> raise
@@ -95,12 +95,12 @@ Here are some changed features in the BCC mode:
 
 * Most of function attributes which starts with ``__`` doesn't exists, or the value is different from the original.
 
-Unsupport features
-==================
+Unsupported features
+====================
 
-If a function uses any unsupoported features, it could not be converted into C code.
+If a function uses any unsupported features, it could not be converted into C code.
 
-Here list unsupport features for BCC mode:
+Here list unsupported features for BCC mode:
 
 .. code-block:: python
 
@@ -117,7 +117,7 @@ Here list unsupport features for BCC mode:
         ast.MatchAs, ast.MatchOr
     )
 
-And unsupport functions:
+And unsupported functions:
 
 * exec
 * eval

@@ -17,8 +17,8 @@ If this option is set, pyarmor first obfuscates the scripts, then does extra wor
 
 * Unpacking this executable to a temporary folder
 * Replacing the scripts in bundle with obfuscated ones
-* Appedning runtime files to the bundle in this temporary folder
-* Repacking this temporary folder to an executable file and overwite the old
+* Appending runtime files to the bundle in this temporary folder
+* Repacking this temporary folder to an executable file and overwrite the old
 
 Packing obfuscated scripts manually
 ===================================
@@ -63,7 +63,7 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
         ...
     )
 
-    # Patched by PyArmor
+    # Patched by Pyarmor
     _src = r'/path/to/src'
     _obf = r'/path/to/src/obfdist'
 

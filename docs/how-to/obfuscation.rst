@@ -2,7 +2,7 @@
 
 ..
   ========================
-   Obfuscating django app
+   Obfuscating Django app
   ========================
 
   TODO:
@@ -30,7 +30,7 @@ When packing the scripts, Pyarmor could also protect system packages in the bund
     $ pyarmor cfg assert.call:auto_mode="or" assert.call:includes = "*"
     $ pyarmor cfg assert.import:auto_mode="or" assert.import:includes = "*"
 
-    $ pyinstall foo.py
+    $ pyinstaller foo.py
     $ pyarmor gen --assert-call --assert-import --restrict --pack dist/foo/foo foo.py
 
 .. seealso:: :doc:`protection`

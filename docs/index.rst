@@ -21,7 +21,7 @@ How the documentation is organized
 
 * :doc:`Part 4: Topics <part-4>` guides insight into key topics and provide useful background information and explanation. They describe how it works and how to use it but assume that you have a basic understanding of key concepts.
 
-* :doc:`Part 5: Licneses <licenses>` describes EULA of |Pyarmor|, the different |Pyarmor| licenses and how to purchase |Pyarmor| license.
+* :doc:`Part 5: Licenses <licenses>` describes EULA of |Pyarmor|, the different |Pyarmor| licenses and how to purchase |Pyarmor| license.
 
 Getting help
 ============

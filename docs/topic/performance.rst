@@ -8,9 +8,9 @@ Security and Performance
 
 **About Security**
 
-Pyarmor focus on protecting Python scripts, by serval irreversible obfuscation methods, now Pyarmor make sure the obfuscated scripts can't be restored by any way.
+Pyarmor focus on protecting Python scripts, by several irreversible obfuscation methods, now Pyarmor make sure the obfuscated scripts can't be restored by any way.
 
-Pyarmor provides rich options to obfuscate scripts to balance security and performance. If anyone announces he could broken pyarmor, please try a simple script with different security options, refer to :doc:`../how-to/security`. If any irreversible obfusation could be broken, report this security issue to |Contact|. Do not paste any hack link in pyarmor project.
+Pyarmor provides rich options to obfuscate scripts to balance security and performance. If anyone announces he could broken pyarmor, please try a simple script with different security options, refer to :doc:`../how-to/security`. If any irreversible obfuscation could be broken, report this security issue to |Contact|. Do not paste any hack link in pyarmor project.
 
 However Pyarmor isn't good at memory protection and anti-debug. Generally even debugger tracing binary extension ``pyarmor_runtime`` could not help to restore obfuscated scripts, but it may bypass runtime key verification.
 
@@ -20,7 +20,7 @@ If you care about runtime memory data protection and anti-debug, check :doc:`../
 
 Though the highest security could protect Python scripts from any hack method, but it may reduce performance. In most of cases, we need pick the right options to balance security and performance.
 
-Here we test some options to understand their impact on performace. All the following tests use 2 scripts ``benchmark.py`` and ``testben.py``. Note that the test results are different even run same test script in same machine twice, not speak of different test script in different machine. So the test data in these tables are only guideline, not exact.
+Here we test some options to understand their impact on performance. All the following tests use 2 scripts ``benchmark.py`` and ``testben.py``. Note that the test results are different even run same test script in same machine twice, not speak of different test script in different machine. So the test data in these tables are only guideline, not exact.
 
 The content of ``benchmark.py``
 
@@ -88,7 +88,7 @@ The content of ``testben.py``
 
 **Different Python Version Performance**
 
-Frist obfuscate the scripts with default options, run it in different Python version, compare the elapase time with original scripts.
+First obfuscate the scripts with default options, run it in different Python version, compare the elapsed time with original scripts.
 
 In order to test the difference without and with ``__pycache__``, run scripts twice.
 
@@ -128,7 +128,7 @@ Here are test steps::
     test_import     :   0.454 ms
     test_foo        : 359.138 ms
 
-.. table:: Table-1. Pyarmor Permormace with Python Version
+.. table:: Table-1. Pyarmor Performance with Python Version
    :widths: auto
 
    ==============  =========  =========  =========  =========  =========  =========
@@ -151,7 +151,7 @@ Here we compare RFT mode with default options, the test data is got by this way.
 
 First obfuscate scripts with default options, then run it.
 
-Then obfuscate scritps with RFT mode, and run it again::
+Then obfuscate scripts with RFT mode, and run it again::
 
     $ rm -rf dist
     $ pyarmor gen testben.py benchmark.py benchmark2.py
@@ -161,7 +161,7 @@ Then obfuscate scritps with RFT mode, and run it again::
     $ pyarmor gen --enable-rft testben.py benchmark.py benchmark2.py
     $ python dist/testben.py
 
-.. table:: Table-2. Performace of RFT Mode
+.. table:: Table-2. Performance of RFT Mode
    :widths: auto
 
    ==============  =========  =========  =========  =========  ==================
@@ -176,7 +176,7 @@ Then obfuscate scritps with RFT mode, and run it again::
    3.11            0.882      0.984      258.309    264.070
    ==============  =========  =========  =========  =========  ==================
 
-Next, we compare RFT mode and :option:`--obf-code` ``0`` with original scritps by this way::
+Next, we compare RFT mode and :option:`--obf-code` ``0`` with original scripts by this way::
 
     $ rm -rf dist __pycache__
     $ python testben.py

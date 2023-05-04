@@ -15,8 +15,7 @@ There are countless big packages in Python world, many packages I never use and 
 
 Pyarmor provides rich options to meet various needs, for complex application, please spend some time to check :doc:`../reference/man` to understand all of these options, one of them may be just for your problem. **I won't learn your application and tell you should use which options**
 
-I'll improve pyamor make it works with other libraries as far as possible, but some
-issues can't be fixed from Pyarmor side.
+I'll improve pyarmor make it works with other libraries as far as possible, but some issues can't be fixed from Pyarmor side.
 
 Generally most of problems for these third party libraries are
 
@@ -30,7 +29,7 @@ The common solutions to fix third-party libraries issue
 
 - Use RFT mode with ``--obf-code=0``
 
-  RFT mode almost doesn't change internal structure of code object, it transforms the script in source level. :option:`--obf-code` is also required to disable code object obfuscation. The recommened options are like this::
+  RFT mode almost doesn't change internal structure of code object, it transforms the script in source level. :option:`--obf-code` is also required to disable code object obfuscation. The recommended options are like this::
 
     $ pyarmor gen --enable-rft --obf-code 0 /path/to/myapp
 
@@ -46,7 +45,7 @@ The common solutions to fix third-party libraries issue
     $ pyarmor cfg -p myapp.config obf_code=0
     $ pyarmor gen [other options] /path/to/myapp
 
-  Another way is to copy plain script to overwrite the obfsucated one roughly::
+  Another way is to copy plain script to overwrite the obfuscated one roughly::
 
     $ pyarmor gen [other options] /path/to/myapp
     $ cp /path/to/myapp/config.py dist/myapp/config.py
@@ -88,7 +87,7 @@ The common solutions to fix third-party libraries issue
 Third party libraries
 =====================
 
-Here are list problem libraries and possible solutions. Welcome create pull request to append new libraries sort alphabetically case insentensive.
+Here are list problem libraries and possible solutions. Welcome create pull request to append new libraries sort alphabetically case insensitivity.
 
 .. list-table:: Table-1. Third party libraries
    :header-rows: 1
@@ -111,7 +110,7 @@ Here are list problem libraries and possible solutions. Welcome create pull requ
 
 .. rubric:: Footnotes
 
-.. [#patch] the patched packge could work with Pyarmor
+.. [#patch] the patched package could work with Pyarmor
 .. [#RFT] this package work with Pyarmor RFT mode
 .. [#obfcode0] this package only work with ``--obf-code 0``
 .. [#not] this package not work with Pyarmor any mode

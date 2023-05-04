@@ -8,7 +8,7 @@ For a simple script, pyarmor may reform the scripts automatically. In most of ca
 
 This chapter describes how RFT mode work, it's helpful to solve RFT mode issues of complex package and scripts.
 
-What're RFT mode changed?
+What's RFT mode changed?
 
 * function
 * class
@@ -18,12 +18,12 @@ What're RFT mode changed?
 * builtin name
 * import name
 
-What're RFT mode not changed?
+What's RFT mode not changed?
 
 * argument in function definition
 * keyword argument name in call
 * all the strings defined in the module attribute ``__all__``
-* all the name startswith ``__``
+* all the name starts with ``__``
 
 It's simple to decide whether or not transform a single name, but it's difficult for each name in attribute chains. For example,
 
@@ -46,7 +46,7 @@ There are 2 methods for RFT mode to handle name in the attribute chains which do
 
   When pyarmor rft mode first run, exclude table is empty. It scans each script and append unknown names to exclude table. After all the scripts are obfuscated, it stores all the names in the exclude table to the file ``.pyarmor/rft_exclude_table``.
 
-  RFT mode doesn't remove this file, only append new names to it repeatly, please delete it manually when needed.
+  RFT mode doesn't remove this file, only append new names to it repeatedly, please delete it manually when needed.
 
   When second run rft mode, it loads exclude table from ``.pyarmor/rft_exclude_table``. Comparing with the first time exclude table is empty, obviously the second time more names are kept, it may fix some name errors.
 
@@ -62,7 +62,7 @@ There are 2 methods for RFT mode to handle name in the attribute chains which do
 
     AttributeError: module 'foo' has no attribute 'register_namespace'
 
-  In order to fix this proble, exclude the problem name, leave it as it is by this way::
+  In order to fix this problem, exclude the problem name, leave it as it is by this way::
 
     $ pyarmor cfg rft_excludes + "register_namespace"
     $ pyarmor gen --enable-rft foo.py
@@ -146,16 +146,16 @@ From search result, we know ``height`` is the source of ``pyarmor__22``, let's a
     $ pyarmor gen --enable-rft foo.py
     $ python dist/foo.py
 
-Repleat these step until all the problem names are excluded.
+Repeat these step until all the problem names are excluded.
 
 Handle wild card form of import
 ===============================
 
 The wild card form of import — `from module import *` — is a special case.
 
-If this module is in the obfuscated pakcage, RFT mode will parse the source and check the module’s namespace for a variable named ``__all__``
+If this module is in the obfuscated package, RFT mode will parse the source and check the module’s namespace for a variable named ``__all__``
 
-If this module is outer package, RFT mode could not get the source. So RFT mode will import it and query module attribute ``__all__``. If this module could not be imported, it may raise ``ModuleNotFoundError``, please set :envvar:`PYTHONPATH` or any otherway let Python could import this module.
+If this module is outer package, RFT mode could not get the source. So RFT mode will import it and query module attribute ``__all__``. If this module could not be imported, it may raise ``ModuleNotFoundError``, please set :envvar:`PYTHONPATH` or any other way let Python could import this module.
 
 If ``__all__`` is not defined, the set of public names includes all names found in the module’s namespace which do not begin with an underscore character ('_').
 

@@ -16,7 +16,7 @@
 Using rftmode :sup:`pro`
 ========================
 
-RFT mode could rename most of builints, functions, classes, local variables. It equals rewritting scripts in source level.
+RFT mode could rename most of builtins, functions, classes, local variables. It equals rewriting scripts in source level.
 
 Using :option:`--enable-rft` to enable RTF mode [#]_::
 
@@ -94,7 +94,7 @@ transform to
 
     make_scanner = pyarmor__1
 
-If want to know what're refacted exactly, enable trace rft to generate transformed script [#]_::
+If want to know what're refactored exactly, enable trace rft to generate transformed script [#]_::
 
     $ pyarmor cfg trace_rft=1
     $ pyarmor gen --enable-rft foo.py
@@ -122,7 +122,7 @@ If it still doesn't work, or you need transform more names, refer to :doc:`../to
 Using bccmode :sup:`pro`
 ========================
 
-BCC mode could convert most of functions and methods in the scripts to equivalent C functions, those c functions will be comipled to machine instructions directly, then called by obfuscated scripts.
+BCC mode could convert most of functions and methods in the scripts to equivalent C functions, those c functions will be compiled to machine instructions directly, then called by obfuscated scripts.
 
 It requires ``c`` compiler. In Linux and Darwin, ``gcc`` and ``clang`` is OK. In Windows, only ``clang.exe`` works. It could be configured by one of these ways:
 
@@ -157,17 +157,17 @@ When something is wrong, enable debug mode by common option ``-d``::
 
     $ pyarmor -d gen --enable-bcc foo.py
 
-Check console log and trace log, most of cases there is modname and lineno in console or trace log. Assume the problem funtion is ``sum2``, then tell BCC mode does not deal with it by this way::
+Check console log and trace log, most of cases there is modname and line no in console or trace log. Assume the problem function is ``sum2``, then tell BCC mode does not deal with it by this way::
 
     $ pyarmor cfg -p foo bcc:excludes "sum2"
 
-Use ``-p`` to specify modname, and option ``bcc:excludes`` for function name.
+Use ``-p`` to specify mod-name, and option ``bcc:excludes`` for function name.
 
 Append more functions to exclude by this way::
 
     $ pyarmor cfg -p foo bcc:excludes + "hello"
 
-When obfuscating package, it also could exclude one script seperataly. For example, the following commands tell BCC mode doesn't handle ``joker/card.py``, but all the other scripts in package ``joker`` are still handled by BCC mode::
+When obfuscating package, it also could exclude one script separately. For example, the following commands tell BCC mode doesn't handle ``joker/card.py``, but all the other scripts in package ``joker`` are still handled by BCC mode::
 
     $ pyarmor cfg -p joker.card bcc:disabled=1
     $ pyarmor gen --enable-bcc /path/to/pkg/joker
@@ -263,7 +263,7 @@ Adding an assert rule to fix this problem. For example, tell :option:`--assert-i
 
     $ pyarmor cfg assert.import:excludes = "json inspect"
 
-Tell :option:`--assert-call` ignore all the function startswith ``wintype_`` by regular expression::
+Tell :option:`--assert-call` ignore all the function starts with ``wintype_`` by regular expression::
 
     $ pyarmor cfg assert.call:excludes "/wintype_.*/"
 
@@ -272,7 +272,7 @@ The other case is that some functions or modules are obfuscated, but pyarmor doe
 Patching source by inline marker
 ================================
 
-Before obfuscating a script, Pyarmor scans each line, remove inline marker plus the following one whitespace, leave the rest as it is.
+Before obfuscating a script, Pyarmor scans each line, remove inline marker plus the following one white space, leave the rest as it is.
 
 The default inline marker is ``# pyarmor:``, any comment line with this prefix will be as a inline marker.
 
@@ -324,7 +324,7 @@ The inline marker is right solution for this case. Let's make a little change
     m = __import__('abc')
     # pyarmor: __assert_armored__(m)
 
-By inline marker, both the plain script and the obfsucated script work as expected.
+By inline marker, both the plain script and the obfuscated script work as expected.
 
 Sometimes :option:`--assert-call` may miss some functions, in this case, using inline marker to protect them. Here is an example to protect extra function ``self.foo.meth``:
 

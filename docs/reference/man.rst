@@ -53,7 +53,7 @@ For example::
 
             Show more information in the console
 
-When something is wrong, print more debug informations in the console. For example::
+When something is wrong, print more debug information in the console. For example::
 
     pyarmor -d gen foo.py
 
@@ -93,9 +93,9 @@ Another, set registration file path to :file:`/opt/pyarmor/`::
 
     $ pyarmor --home ,,,/opt/pyarmor ...
 
-It's useful when using :command:`sudo` to run :command:`pyarmor` occassionally. This makes sure the registration file could be found even switch to another user.
+It's useful when using :command:`sudo` to run :command:`pyarmor` occasionally. This makes sure the registration file could be found even switch to another user.
 
-When there are many Pyarmor Licenses registerred in one machine, set each license to different registration file path. For example::
+When there are many Pyarmor Licenses registered in one machine, set each license to different registration file path. For example::
 
     $ pyarmor --home ~/.pyarmor1 reg pyarmor-regfile-2051.zip
     $ pyarmor --home ~/.pyarmor1 gen project1/foo.py
@@ -163,7 +163,7 @@ This command is designed to obfuscate all the scripts and packages in the comman
 
 All the files in the command line will be taken as Python script, because a few scripts has unknown extension but it's still Python script.
 
-All the paths in the command line will be taken as Python Package, package name is set to path's basename, all the ``.py`` files in this path are package modules. If this package has any sub-pacakge, use  :option:`-r` to search recursively.
+All the paths in the command line will be taken as Python Package, package name is set to path's basename, all the ``.py`` files in this path are package modules. If this package has any sub-package, use  :option:`-r` to search recursively.
 
 Do not use ``pyarmor gen src/*`` to obfuscate a package, it will obfuscate any file in the ``src``, even they're not python scripts.
 
@@ -222,7 +222,7 @@ And check ``.py`` files in the path ``dist2``.
 It supports 4 forms:
 
 * A number stands for valid days
-* A date with iso format ``YYYY-MM-DD``
+* A date with ISO format ``YYYY-MM-DD``
 * A leading ``.`` with above 2 forms
 
 Without leading dot, the obfuscated scripts checks NTP server time. For example::
@@ -239,7 +239,7 @@ With leading dot, it checks local time. For example::
 
             Use this option multiple times to bind multiple machines
 
-Bind obfuscated script to specified device. Now only harddisk serial number, ethernet address and IPv4 address are available.
+Bind obfuscated script to specified device. Now only hard disk serial number, Ethernet address and IPv4 address are available.
 
 For example::
 
@@ -251,11 +251,11 @@ Also set 30 valid days for this device::
 
     $ pyarmor gen -e 30 -b 128.16.4.10 foo.py
 
-Check all of hardware informations in this device::
+Check all of hardware information in this device::
 
     $ pyarmor gen -b "128.16.4.10 52:38:6a:f2:c2:ff HXS2000CN2A" foo.py
 
-Using this options multiple times means binding many machines. For example, the following command makes the obfuscated scripts could run 2 machiens::
+Using this options multiple times means binding many machines. For example, the following command makes the obfuscated scripts could run 2 machines::
 
     $ pyarmor gen -b "52:38:6a:f2:c2:ff" -b "f8:ff:c2:27:00:7f" foo.py
 
@@ -267,11 +267,11 @@ Bind all network cards by this form::
 
     $ pyarmor gen -b "<2a:33:50:46:8f,f0:28:69:c0:24:3a>" foo.py
 
-In Linux, it's possible to bind named ethernet card::
+In Linux, it's possible to bind named Ethernet card::
 
     $ pyarmor gen -b "eth1/fa:33:50:46:8f:3d" foo.py
 
-If there are many harddisks. In Windows, binding anyone by sequence no::
+If there are many hard disks. In Windows, binding anyone by sequence no::
 
       $ pyarmor gen -b "/0:FV994730S6LLF07AY" foo.py
       $ pyarmor gen -b "/1:KDX3298FS6P5AX380" foo.py
@@ -341,11 +341,11 @@ When private mode is enabled, the obfuscated scripts could not be imported by pl
 
 .. option:: --restrict
 
-            Enable restirct mode for package, do not use it to obfuscate scripts.
+            Enable restrict mode for package, do not use it to obfuscate scripts.
 
             This option implies :option:`--private`.
 
-When restrict mode is enabled, all the modules excpet ``__init__.py`` in the package could not be imported by plain scripts.
+When restrict mode is enabled, all the modules except ``__init__.py`` in the package could not be imported by plain scripts.
 
 For example, obfuscate a restrict package to ``dist/joker``::
 
@@ -369,7 +369,7 @@ Run it to verify::
     ... import joker should be OK
     ... RuntimeError: unauthorized use of script
 
-If there are extra modules need to be exported, no restrict this module by private settings. For example, no restirct ``joker/queens.py`` by this command::
+If there are extra modules need to be exported, no restrict this module by private settings. For example, no restrict ``joker/queens.py`` by this command::
 
     $ pyarmor cfg -p "joker.queens" restrict_module=0
 
@@ -401,7 +401,7 @@ If :option:`--obf-code` is ``0``, this option is meaningless.
 
 .. option:: --enable-jit
 
-Use :term:`JIT` to process some sentensive data to improve security.
+Use :term:`JIT` to process some sensitive data to improve security.
 
 .. option:: --enable-rft
 
@@ -476,7 +476,7 @@ will be changed to
 
 The function :func:`__assert_armored__` is a builtin function in obfuscated script. It checks the argument, if it's an obfuscated module, then return this module, otherwise raises protection exception.
 
-This option neither touchs statement ``from import``, nor the module imported by function ``__import__``.
+This option neither touches statement ``from import``, nor the module imported by function ``__import__``.
 
 .. option:: --pack BUNDLE
 
@@ -743,9 +743,9 @@ Repeat above steps for the rest device no. 2, no. 3 ...
 
             For non-commercial use, set product name to ``non-profits``
 
-When initial registration, use this option to set proudct name for this license.
+When initial registration, use this option to set product name for this license.
 
-It's meanless to use this option after initial registration.
+It's meaningless to use this option after initial registration.
 
 ``TBD`` is a special product name. If product name is ``TBD`` at initial registration, the product name can be changed once in 6 months. If it's still not set after 6 months, the product name will be set to ``non-profits`` automatically.
 
@@ -755,7 +755,7 @@ Only :term:`Pyarmor basic` and :term:`Pyarmor pro` could set product name to ``T
 
 .. option:: -u, --upgrade
 
-            Upgrade old license to Pyarmor 8.0 Licese
+            Upgrade old license to Pyarmor 8.0 License
 
 Not all the old license could be upgrade to new license, check :doc:`../licenses`
 
@@ -774,7 +774,7 @@ The following environment variables only used in :term:`Build Machine` when gene
 
             Same as :option:`pyarmor --home`
 
-It mainly used in the shell scrits to change Pyarmor settings. If :option:`pyarmor --home` is set, this environment var is ignored.
+It mainly used in the shell scripts to change Pyarmor settings. If :option:`pyarmor --home` is set, this environment var is ignored.
 
 .. envvar:: PYARMOR_PLATFORM
 
