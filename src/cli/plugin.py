@@ -26,7 +26,7 @@ from importlib.util import spec_from_file_location, module_from_spec
 from . import logger
 
 
-__all__ = []
+__all__ = ['PycPlugin']
 
 
 class Plugin(object):
@@ -82,3 +82,14 @@ class Plugin(object):
     def post_runtime(ctx, source, dest, platform):
         for plugin in [x for x in ctx.plugins if hasattr(x, 'post_runtime')]:
             plugin.post_runtime(ctx, source, dest, platform)
+
+
+class PycPlugin:
+
+    @staticmethod
+    def post_build(ctx, inputs, outputs, pack):
+        for path, dirnames, filenames in os.walk(outputs[0]):
+            for x in filenames:
+                if x.endswith('.pyc'):
+                    pycname = os.path.join(path, x)
+                    os.rename(pycname, pycname[:-1])
