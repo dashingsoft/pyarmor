@@ -58,7 +58,7 @@ class Finder(object):
         extra_paths = []
         for pyz in extract_modules(pack, self.ctx.repack_path):
             extra_paths.extend([os.path.join(pyz, x) for x in os.listdir(pyz)])
-        resnames = [x.pkgname for x in self.resources]
+        resnames = [x.pkgname for x in self.ctx.resources]
         for res in self._build_resource(extra_paths):
             if res.pkgname not in resnames:
                 self.ctx.obfuscated_modules.add(res.pkgname)

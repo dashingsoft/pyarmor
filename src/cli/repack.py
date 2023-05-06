@@ -6,6 +6,7 @@ import struct
 import zlib
 
 from importlib.util import MAGIC_NUMBER
+from importlib._bootstrap_external import _code_to_timestamp_pyc
 from subprocess import check_call
 
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
@@ -185,7 +186,11 @@ def repack_pyz(pyz, obfpath, rtname, cipher=None, clean=False):
     logic_toc = []
     for name in arch.toc:
         logger.debug('extract %s', name)
-        typ, obj = arch.extract(name)
+        item = arch.extract(name)
+        if isinstance(item, tuple):
+            typ, obj = item
+        else:
+            obj = item
         if name in obflist:
             logger.info('replace item "%s" with obfsucated one', name)
             obflist.remove(name)
@@ -358,13 +363,6 @@ def list_modules(executable):
 def extract_modules(executable, libpath=None):
     arch = CArchiveReader(executable)
 
-    def write_pyc(filename, data):
-        with open(filename, 'wb') as f:
-            f.write(MAGIC_NUMBER)
-            f.write(b'\0' * 4)
-            f.write(b'\0' * 8)
-            f.write(data)
-
     def extract_pyz(nm, dlen):
         dirname = os.path.join(libpath, nm + '_extracted')
         os.makedirs(dirname, exist_ok=True)
@@ -372,46 +370,26 @@ def extract_modules(executable, libpath=None):
         with open(pyzname, 'wb') as f:
             f.write(arch.lib.read(dlen))
 
-        logger.info('extracting "%s"', nm)
+        logger.info('extracting PYZ "%s"', nm)
+        pyzarch = ZlibArchive(pyzname)
 
-        with open(pyzname, 'rb') as f:
-            pyzmagic = f.read(4)
-            assert pyzmagic == b'PYZ\0'
+        for name in pyzarch.toc:
+            item = pyzarch.extract(name)
+            if isinstance(item, tuple):
+                obj = item[1]
+            else:
+                obj = item
 
-            (tocposition, ) = struct.unpack('!i', f.read(4))
-            f.seek(tocposition, os.SEEK_SET)
-            toc = marshal.load(f)
-
-            logger.info('found {0} files in PYZ archive'.format(len(toc)))
-
-            # From pyinstaller 3.1+ toc is a list of tuples
-            if type(toc) == list:
-                toc = dict(toc)
-
-            for key in toc.keys():
-                (ispkg, pos, length) = toc[key]
-                f.seek(pos, os.SEEK_SET)
-                filename = key
-                if hasattr(filename, 'decode'):
-                    filename = filename.decode('utf-8')
-
-                # Prevent writing outside dirName
-                filename = filename.replace('..', '__').replace('.', os.path.sep)
-
-                if ispkg == 1:
-                    filepath = os.path.join(dirname, filename, '__init__.pyc')
-                else:
-                    filepath = os.path.join(dirname, filename + '.pyc')
-
-                os.makedirs(os.path.dirname(filepath), exist_ok=True)
-
-                try:
-                    data = f.read(length)
-                    data = zlib.decompress(data)
-                except Exception:
-                    open(filepath + '.encrypted', 'wb').write(data)
-                else:
-                    write_pyc(filepath, data)
+            # Prevent writing outside dirName
+            filename = name.replace('..', '__').replace('.', os.path.sep)
+            if pyzarch.is_package(name):
+                filepath = os.path.join(dirname, filename, '__init__.pyc')
+            else:
+                filepath = os.path.join(dirname, filename + '.pyc')
+            os.makedirs(os.path.dirname(filepath), exist_ok=True)
+            logger.debug('extract %s', filepath)
+            with open(filepath, 'wb') as f:
+                f.write(_code_to_timestamp_pyc(obj))
 
         return dirname
 

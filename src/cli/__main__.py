@@ -126,7 +126,7 @@ def format_gen_args(ctx, args):
     if args.bind_data:
         options['user_data'] = args.bind_data
 
-    if args.pack and args.restrict:
+    if args.pack and options.get('restrict_module', 0) > 2:
         options['self_contained'] = 1
         sect = ctx.cfg['assert.call']
         if sect.get('includes'):
