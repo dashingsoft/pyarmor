@@ -5,8 +5,8 @@ import shutil
 import struct
 import zlib
 
+from importlib.util import MAGIC_NUMBER
 from subprocess import check_call
-from tempfile import TemporaryDirectory
 
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
@@ -22,6 +22,12 @@ logger = logging.getLogger('repack')
 
 
 class ZlibArchive(ZlibArchiveReader):
+
+    def __init__(self, filename):
+        super(ZlibArchive, self).__init__(filename)
+        if not hasattr(self, 'lib'):
+            # TODO: not closed
+            self.lib = open(filename, 'rb')
 
     def checkmagic(self):
         """ Overridable.
@@ -67,6 +73,10 @@ class CArchiveWriter2(CArchiveWriter):
 
         dlen = self.lib.tell() - where
         self.toc.add(where, dlen, ulen, flag, typcd, nm)
+
+    def _write_entry(self, fp, entry):
+        '''For PyInstaller 5.10'''
+        return super()._write_entry(fp, entry)
 
 
 def makedirs(path, exist_ok=False):
@@ -251,11 +261,12 @@ def repack_exe(path, obfname, logic_toc, obfentry, codesign=None):
     logger.info('generate patched bundle "%s" successfully', obfname)
 
 
-def repacker(executable, obfpath, buildpath='', entry=None, codesign=None):
+def repacker(executable, obfpath, rtname=None, entry=None, codesign=None):
     logger.info('repack bundle "%s"', executable)
 
     obfpath = os.path.normpath(obfpath)
     logger.info('obfuscated scripts at "%s"', obfpath)
+    buildpath = os.path.dirname(obfpath)
 
     name, ext = os.path.splitext(os.path.basename(executable))
     entry = name if entry is None else entry
@@ -268,13 +279,14 @@ def repacker(executable, obfpath, buildpath='', entry=None, codesign=None):
     if not os.path.exists(obfentry):
         raise RuntimeError('no obfuscated entry "%s" found', obfentry)
 
-    for item in os.listdir(obfpath):
-        if item.startswith('pyarmor_runtime_'):
-            logger.info('runtime package is "%s"', item)
-            rtname = item
-            break
-    else:
-        raise RuntimeError('no runtime package found')
+    if not rtname:
+        for item in os.listdir(obfpath):
+            if item.startswith('pyarmor_runtime_'):
+                logger.info('runtime package is "%s"', item)
+                rtname = item
+                break
+        else:
+            raise RuntimeError('no runtime package found')
 
     path = os.path.join(buildpath, name + '_extracted')
     logger.info('extracted bundle files to "%s"', path)
@@ -320,6 +332,8 @@ def repacker(executable, obfpath, buildpath='', entry=None, codesign=None):
 
 
 def list_modules(executable):
+    from tempfile import TemporaryDirectory
+
     modules = []
     arch = CArchiveReader(executable)
 
@@ -339,3 +353,76 @@ def list_modules(executable):
                 modules.extend(read_toc(nm, dlen))
 
     return modules
+
+
+def extract_modules(executable, libpath=None):
+    arch = CArchiveReader(executable)
+
+    def write_pyc(filename, data):
+        with open(filename, 'wb') as f:
+            f.write(MAGIC_NUMBER)
+            f.write(b'\0' * 4)
+            f.write(b'\0' * 8)
+            f.write(data)
+
+    def extract_pyz(nm, dlen):
+        dirname = os.path.join(libpath, nm + '_extracted')
+        os.makedirs(dirname, exist_ok=True)
+        pyzname = os.path.join(libpath, nm)
+        with open(pyzname, 'wb') as f:
+            f.write(arch.lib.read(dlen))
+
+        logger.info('extracting "%s"', nm)
+
+        with open(pyzname, 'rb') as f:
+            pyzmagic = f.read(4)
+            assert pyzmagic == b'PYZ\0'
+
+            (tocposition, ) = struct.unpack('!i', f.read(4))
+            f.seek(tocposition, os.SEEK_SET)
+            toc = marshal.load(f)
+
+            logger.info('found {0} files in PYZ archive'.format(len(toc)))
+
+            # From pyinstaller 3.1+ toc is a list of tuples
+            if type(toc) == list:
+                toc = dict(toc)
+
+            for key in toc.keys():
+                (ispkg, pos, length) = toc[key]
+                f.seek(pos, os.SEEK_SET)
+                filename = key
+                if hasattr(filename, 'decode'):
+                    filename = filename.decode('utf-8')
+
+                # Prevent writing outside dirName
+                filename = filename.replace('..', '__').replace('.', os.path.sep)
+
+                if ispkg == 1:
+                    filepath = os.path.join(dirname, filename, '__init__.pyc')
+                else:
+                    filepath = os.path.join(dirname, filename + '.pyc')
+
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
+                try:
+                    data = f.read(length)
+                    data = zlib.decompress(data)
+                except Exception:
+                    open(filepath + '.encrypted', 'wb').write(data)
+                else:
+                    write_pyc(filepath, data)
+
+        return dirname
+
+    pyz_list = []
+
+    for item in arch.toc:
+        logger.debug('toc: %s', item)
+        dpos, dlen, ulen, flag, typcd, nm = item
+        with arch.lib:
+            arch.lib.seek(arch.pkg_start + dpos)
+            if nm.endswith('.pyz') and typcd in ('z', 'Z'):
+                pyz_list.append(extract_pyz(nm, dlen))
+
+    return pyz_list

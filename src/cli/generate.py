@@ -32,9 +32,9 @@ class Finder(object):
     def __init__(self, ctx):
         self.ctx = ctx
 
-    def prepare(self, input_paths):
+    def _build_resource(self, pathlist):
         resources = []
-        for path in input_paths:
+        for path in pathlist:
             if not os.path.exists(path):
                 raise CliError('argument "%s" doesn\'t exists' % path)
             if os.path.isfile(path):
@@ -47,7 +47,22 @@ class Finder(object):
                 resources.append(res)
                 options = self.ctx.get_res_options(res.fullname)
                 res.rebuild(**options)
-        self.ctx.resources = resources
+        return resources
+
+    def prepare(self, input_paths):
+        self.ctx.resources = self._build_resource(input_paths)
+
+    def prepare_pack(self, pack):
+        from .repack import extract_modules
+        logger.debug('append system modules (packed)')
+        extra_paths = []
+        for pyz in extract_modules(pack, self.ctx.repack_path):
+            extra_paths.extend([os.path.join(pyz, x) for x in os.listdir(pyz)])
+        resnames = [x.pkgname for x in self.resources]
+        for res in self._build_resource(extra_paths):
+            if res.pkgname not in resnames:
+                self.ctx.obfuscated_modules.add(res.pkgname)
+                self.ctx.extra_resources.append(res)
 
     def process(self, pack=None):
         logger.info('search inputs ...')
@@ -58,10 +73,8 @@ class Finder(object):
                    if x.is_script()]
         self.ctx.obfuscated_modules.update(modules)
 
-        # TBD: implement it in next Release
-        # if pack:
-        #     from .repack import list_modules
-        #     self.ctx.obfuscated_modules.update(list_modules(pack))
+        if pack:
+            self.prepare_pack(pack)
 
 
 class Builder(object):
@@ -86,9 +99,8 @@ class Builder(object):
 
     def _pack_script(self, bundle, output, entry=None, codesign=None):
         from .repack import repacker
-        buildpath = os.path.join('.pyarmor', 'pack')
-        repacker(bundle, output, buildpath, entry=entry, codesign=codesign)
-        shutil.rmtree(buildpath)
+        rtname = self.ctx.runtime_package_name
+        repacker(bundle, output, rtname, entry=entry, codesign=codesign)
 
     def _obfuscate_scripts(self):
         rev = self.ctx.version_info()
@@ -98,7 +110,7 @@ class Builder(object):
         bootpath = self.ctx.cfg.get('builder', 'bootstrap_file')
 
         namelist = []
-        for res in self.ctx.resources:
+        for res in self.ctx.resources + self.ctx.extra_resources:
             logger.info('process resource "%s"', res.fullname)
             name = res.name
             path = self.format_output(self.ctx.outputs, namelist.count(name))
@@ -134,6 +146,12 @@ class Builder(object):
         self.ctx.input_paths = options['inputs']
 
         output = options.get('output', 'dist')
+        if pack:
+            repack_path = self.ctx.repack_path
+            if os.path.exists(repack_path):
+                shutil.rmtree(repack_path)
+            output = os.path.join(repack_path, 'dist')
+            logger.info('implicitly set output to "%s"', output)
         self.ctx.outputs = output.split(',')
 
         finder = Finder(self.ctx)

@@ -126,6 +126,16 @@ def format_gen_args(ctx, args):
     if args.bind_data:
         options['user_data'] = args.bind_data
 
+    if args.pack and args.restrict:
+        options['self_contained'] = 1
+        sect = ctx.cfg['assert.call']
+        if sect.get('includes'):
+            logger.warning('ignore assert.call:includes by restrict pack')
+        logger.debug('implicitly set ast.call:auto_mode to "or"')
+        logger.debug('implicitly set ast.call:includes to "*"')
+        sect['auto_mode'] = 'or'
+        sect['includes'] = '*'
+
     return options
 
 
@@ -480,14 +490,6 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
     )
     group.add_argument(
         '--bind-data', metavar='FILE',
-        help=argparse.SUPPRESS
-    )
-    group.add_argument(
-        '--bind-interp', metavar='INTERP',
-        help=argparse.SUPPRESS
-    )
-    group.add_argument(
-        '--hook', metavar='HOOK',
         help=argparse.SUPPRESS
     )
 

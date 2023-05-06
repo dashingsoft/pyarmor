@@ -20,6 +20,7 @@
 #  @Create Date: 2022-12-06
 #
 import ast
+import marshal
 import os
 
 from datetime import datetime
@@ -44,7 +45,7 @@ class Resource(object):
         return self.parent is None
 
     def is_script(self):
-        return isinstance(self, FileResource)
+        return isinstance(self, (FileResource, PycResource))
 
     @property
     def fullname(self):
@@ -100,6 +101,10 @@ class FileResource(Resource):
         n = self.fullname.find('.__init__')
         return '<frozen %s>' % self.fullname[:None if n == -1 else n]
 
+    @property
+    def is_pyc(self):
+        return self.pyext.lower == '.pyc'
+
     def readlines(self, encoding=None):
         if not os.path.exists(self.fullpath):
             raise RuntimeError('file "%s" doesn\'t exists' % self.fullpath)
@@ -114,6 +119,10 @@ class FileResource(Resource):
         self.mtree = ast.parse(''.join(lines), self.frozenname, 'exec')
 
     def recompile(self, mtree=None, optimize=1):
+        if self.is_pyc:
+            self.mco = marshal.load(self.fullpath)
+            return
+
         if mtree is None:
             mtree = self.mtree
         assert mtree is not None
@@ -146,6 +155,12 @@ class FileResource(Resource):
             path=bootpath,
             code=repr(code),
             rev=rev)
+
+
+class PycResource(FileResource):
+
+    def recompile(self, mtree=None, optimize=1):
+        self.mco = marshal.load(self.fullpath)
 
 
 class PathResource(Resource):

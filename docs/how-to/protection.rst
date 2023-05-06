@@ -37,7 +37,7 @@ First pack the script by `PyInstaller`_::
 
 Next configure and repack the bundle, the following options are necessary::
 
-    $ pyarmor cfg check_debugger=1
+    $ pyarmor cfg check_debugger=1 check_interp=1
     $ pyarmor gen --mix-str --assert-call --assert-import --restrict --pack dist/foo/foo foo.py
 
 Then protect all the binary files in the output path :file:`dist/foo/` by other tools, make sure these binary files could not be replaced or modified in runtime.

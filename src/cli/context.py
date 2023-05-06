@@ -319,6 +319,10 @@ class Context(object):
         return self._check_logpath(
             self.cfg['logging'].get('trace_logfile', 'pyarmor.trace.log'))
 
+    @property
+    def repack_path(self):
+        return os.path.join(self.local_path, 'pack')
+
     def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
 
@@ -502,7 +506,14 @@ class Context(object):
 
     @property
     def runtime_interps(self):
-        return self._rt_opt('interps')
+        interps = self._rt_opt('interps')
+        rules = interps.splitlines() if interps else []
+        cfg = self.cfg['builder']
+        if cfg.getboolean('check_debugger', False):
+            rules.append('check-debugger')
+        if cfg.getboolean('check_interp', False):
+            rules.append('check-interp')
+        return '\n'.join(rules)
 
     @property
     def runtime_timer(self):
