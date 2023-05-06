@@ -103,7 +103,7 @@ class FileResource(Resource):
 
     @property
     def is_pyc(self):
-        return self.pyext.lower == '.pyc'
+        return self.pyext.lower() == '.pyc'
 
     def readlines(self, encoding=None):
         if not os.path.exists(self.fullpath):
@@ -118,10 +118,14 @@ class FileResource(Resource):
             lines = self.readlines(encoding=encoding)
         self.mtree = ast.parse(''.join(lines), self.frozenname, 'exec')
 
+    def _recompile_pyc(self):
+        from importlib._bootstrap_external import SourcelessFileLoader
+        path, name = self.fullpath, self.pkgname
+        self.mco = SourcelessFileLoader(name, path).get_code(name)
+
     def recompile(self, mtree=None, optimize=1):
         if self.is_pyc:
-            self.mco = marshal.load(self.fullpath)
-            return
+            return self._recompile_pyc()
 
         if mtree is None:
             mtree = self.mtree
@@ -160,7 +164,9 @@ class FileResource(Resource):
 class PycResource(FileResource):
 
     def recompile(self, mtree=None, optimize=1):
-        self.mco = marshal.load(self.fullpath)
+        from importlib._bootstrap_external import SourcelessFileLoader
+        path, name = self.fullpath, self.pkgname
+        self.mco = SourcelessFileLoader(name, path).get_code(name)
 
 
 class PathResource(Resource):
