@@ -97,8 +97,6 @@ Please read the [Pyarmor EULA](LICENSE).
 Pyarmor 8.0 introduces significant changes. It has been rewritten and new features are implemented through the new commands:
 `gen`, `reg`, `cfg`. These commands only work for Python 3.7 and above.
 
-[Pyarmor 8.x Release Plan](ReleasePlan.md)
-
 Users of versions prior to 8.0 should read the [Import Notes][important-notes] section to decide whether to upgrade Pyarmor.
 
 Each major version comes with a separate changelog file, detailing fixed issues, new features, and compatibility issues between different versions.
@@ -106,7 +104,9 @@ Each major version comes with a separate changelog file, detailing fixed issues,
 Make sure to read the changelog carefully before upgrading Pyarmor:
 - [Pyarmor 8.x Changelog](docs/ChangeLogs.8)
 
-Full changelogs check [releases](releases)
+**Full changelogs** at [releases](releases)
+
+**Upcoming features** at [Pyarmor 8.x Release Plan](ReleasePlan.md)
 
 [releases]: https://github.com/dashingsoft/pyarmor/releases
 
