@@ -60,7 +60,7 @@ The content of ``setup.cfg`` is:
 
     VERSION = '0.0.1'
 
-Firt obfuscate the package::
+First obfuscate the package::
 
     $ cd test-project
     $ pyarmor gen --recursive -i src/parent
@@ -84,7 +84,7 @@ Next, build the wheel package::
 
     $ python -m build --skip-dependency-check --no-isolation
 
-Unfortunatley it raises exception:
+Unfortunately it raises exception:
 
 .. code-block:: python
 
@@ -101,7 +101,7 @@ Unfortunatley it raises exception:
       File "/usr/lib/python3/dist-packages/setuptools/config/expand.py", line 191, in read_attr
         return getattr(StaticModule(module_name, spec), attr_name)
 
-From traceback we found it uses ``StaticModule``, then check the source of ``setuptools`` by the filename and line no to find ``StaticModule`` definition. From the source code we know it uses ``ast.parse`` to get locals from the script. It's impossible for obfuscated scripts, in order to fix this problem, we need insert a line in the ``dist/parent/child/__init__.py`` like this:
+From traceback we found it uses ``StaticModule``, then check the source of ``setuptools`` by the filename and line no. to find ``StaticModule`` definition. From the source code we know it uses ``ast.parse`` to get locals from the script. It's impossible for obfuscated scripts, in order to fix this problem, we need insert a line in the ``dist/parent/child/__init__.py`` like this:
 
 .. code-block:: python
 
