@@ -20,12 +20,12 @@ To exclude "test" and all the path "test"::
 
   pyarmor cfg finder:excludes + "*/test"
 
-Include data files, these data file will be copied to output::
+To include data files, these data file will be copied to output::
 
   pyarmor cfg finder:data_files="lib/readme.txt"
   pyamor gen -r lib
 
-It uses :mod:`fnmatch` to match pattern. For example, the test-project hierarchy is as follows::
+For example, the test-project hierarchy is as follows::
 
     $ tree test-project
 
@@ -39,13 +39,13 @@ It uses :mod:`fnmatch` to match pattern. For example, the test-project hierarchy
             │   └── __init__.py
             └── __init__.py
 
-Include data files, these data file will be copied to output::
+There are 2 exclude rules ``*__pycache__`` and ``*/test.py`` to filter scripts::
 
     $ cd test-project
     $ pyarmor cfg finder:exclude + "*__pycache__ */test.py"
     $ pyamor gen -r src/parent
 
-The following tests are executed:
+It uses :mod:`fnmatch` to match pattern, the matched item is excluded. Here are check list:
 
 .. code-block:: python
 
