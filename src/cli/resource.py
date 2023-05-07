@@ -20,7 +20,6 @@
 #  @Create Date: 2022-12-06
 #
 import ast
-import marshal
 import os
 
 from datetime import datetime
@@ -152,6 +151,8 @@ class FileResource(Resource):
             prefix = relative + '.'
             if self.fullname.startswith(prefix):
                 prefix = '.' * self.fullname.count('.')
+            elif prefix.startswith(self.pkgname + '.'):
+                prefix = prefix[len(self.pkgname):]
 
         return Template(tpl).safe_substitute(
             timestamp=datetime.now().isoformat(),
