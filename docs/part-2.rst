@@ -7,8 +7,9 @@
 
    how-to/security
    how-to/protection
+   how-to/packing
+   how-to/wheel
    how-to/obfuscation
-   how-to/advanced
    how-to/third-party
    how-to/register
 
