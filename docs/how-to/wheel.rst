@@ -114,7 +114,7 @@ But pyarmor doesn't allow to change obfuscated scripts by default, it need disab
     $ pyarmor cfg -p parent.child.__init__ restrict_module = 0
     $ pyarmor gen --recursive -i src/parent
 
-The option :option:`pyarmor cfg -p` ``parent.child.__init__`` lets pyarmor disable this restriction for  ``parent/child/__init__.py``.
+The option :option:`pyarmor cfg -p` ``parent.child.__init__`` lets pyarmor disable this restriction only for  ``parent/child/__init__.py``.
 
 Now patch ``dist/parent/child/__init__.py`` and rebuild wheel::
 

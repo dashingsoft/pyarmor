@@ -53,6 +53,25 @@ User also could store any private data in the runtime key, then use :term:`hook 
 
 If runtime key is stored in an outer file, any readable text in the header will be ignored. User can add comment at the header of runtime key file, the rest part are bytes data, only in the obfuscated scripts they could be read.
 
+.. _restrict modes:
+
+Restrict modes
+==============
+
+By default the obfuscated scripts can't be changed.
+
+After using :option:`--private`, the obfuscated scripts could not be imported by plain script or Python interpreter.
+
+After using :option:`--restrict`, other plain scripts could not call any method in the obfuscated modules.
+
+Disable all the restrictions by this command::
+
+    $ pyarmor cfg restrict_module 0
+
+Generally only disable all the restrictions for specified module. For example, only no restrictions for module ``NAME``::
+
+    $ pyarmor cfg -p NAME restrict_module 0
+
 .. _the differences of obfuscated scripts:
 
 The differences of obfuscated scripts
