@@ -654,9 +654,17 @@ These are not popular sections
 
 .. option:: -p NAME
 
-            Private settings for special module or package
+            Private settings for special modules in the package
 
-All the settings is only used for specified module `NAME`.
+            These modules need different obfuscation options.
+
+All the settings is only applied to specified module `NAME`.
+
+For example, only no restrict modules ``joker/__init__.py`` and ``joker/card.py``::
+
+    $ pyarmor cfg -p joker.__init__ restrict_module = 0
+    $ pyarmor cfg -p joker.card restrict_module = 0
+    $ pyarmor gen -r --restrict joker
 
 .. option:: -g, --global
 
