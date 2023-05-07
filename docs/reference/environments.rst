@@ -215,17 +215,7 @@ Supported platforms, arches and Python versions are same as `Building Environmen
 Environment variables
 =====================
 
-A few :mod:`sys` attributes and environment variables may change behaviors of obfuscated scripts.
-
-:attr:`sys._MEIPASS`
-
-      Borrowed from PyInstaller_, set search path for :term:`outer key`.
-
-:attr:`sys._PARLANG`
-
-      It's used to set runtime error language.
-
-      If it's set, :envvar:`LANG` is ignored.
+A few environment variables are used by obfuscated scripts.
 
 .. envvar:: LANG
 
@@ -235,7 +225,7 @@ A few :mod:`sys` attributes and environment variables may change behaviors of ob
 
       It's used to set language runtime error language.
 
-      If it's set, both :envvar:`LANG` and :attr:`sys._PARLANG` are ignored.
+      If it's set, :envvar:`LANG` is ignored.
 
 .. envvar:: PYARMOR_RKEY
 
@@ -253,6 +243,8 @@ A few known issues
 * Boost::python does not load `libpythonXY.so` with `RTLD_GLOBAL` by default, so it will raise error "No PyCode_Type found" as running obfuscated scripts. To solve this problem, try to call the method `sys.setdlopenflags(os.RTLD_GLOBAL)` as initializing.
 
 * `PyPy` could not work with pyarmor, it's total different from `CPython`
+
+* WASM is not supported.
 
 Specialized builtin functions
 =============================

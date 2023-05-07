@@ -19,7 +19,7 @@ Pyarmor could make sure hacker can't get runtime data by valid Python C API and 
 
 - Signing the binary file to make sure they're not changed by others
 - Using third-party binary protection tools to protect Python interpreter and extension module ``pyarmor_runtime``
-- Pyarmor provides some configuration item to check interps and debugger.
+- Pyarmor provides some configuration item to check interps and debuggers.
 - Pyarmor provides runtime patch feature to let expert users to write C functions or python scripts to improve security.
 
 ..
@@ -31,11 +31,11 @@ Above all, Python interpreter to run the obfuscated scripts can't be replaced, i
 
 At this time Pyarmor need combine :option:`--pack` and restrict mode options to implement this.
 
-First pack the script by `PyInstaller`_::
+First pack the script by `PyInstaller`_ [#]_::
 
     $ pyinstaller foo.py
 
-Next configure and repack the bundle, the following options are necessary::
+Next configure and repack the bundle, the following options are necessary [#]_::
 
     $ pyarmor cfg check_debugger=1 check_interp=1
     $ pyarmor gen --mix-str --assert-call --assert-import --restrict --pack dist/foo/foo foo.py
@@ -46,7 +46,9 @@ Available external tools: codesign, VMProtect
 
 .. rubric:: Note
 
-If pack to one file by PyInstaller, it's not enough to protect this file alone. You must make sure all the binary files extracted from this file are protected too.
+.. [#] If pack to one file by PyInstaller, it's not enough to protect this file alone. You must make sure all the binary files extracted from this file are protected too.
+
+.. [#] Do not use ``check_interp`` in 32-bit x86 platforms, it doesn't work
 
 **Runtime Patch**
 

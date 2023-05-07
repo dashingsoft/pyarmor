@@ -55,9 +55,10 @@
     The outer key file must be located in one of path
 
       - :term:`Runtime package`
-      - :envvar:`PYARMOR_RKEY`
-      - :attr:`sys._MEIPASS`
+      - :envvar:`PYARMOR_RKEY`, no trailing slash or backslash, and no ``..`` in the path. Generally it's an absolute path, for example, ``/var/data``
       - Current path
+
+    Or a file ``sys.executable`` + ``.pyarmor.rkey``. For example, ``dist/myapp.exe.pyarmor.rkey``
 
   Platform
 

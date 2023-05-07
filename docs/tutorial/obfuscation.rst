@@ -238,14 +238,7 @@ Copy it to runtime package to replace the original one::
 
     $ cp dist/key2/pyarmor.rkey dist/pyarmor_runtime_000000/
 
-The outer runtime key file also could be saved to other paths, but the file name must be ``pyarmor.rkey``, here list the search order:
-
-1. First search runtime package
-2. Next search path :envvar:`PYARMOR_RKEY`
-3. Next search path :attr:`sys._MEIPASS`
-4. Next search current path
-
-If no found in these paths, raise runtime error and exits.
+The outer runtime key file also could be saved to other paths, refer to :term:`outer key`.
 
 Localization runtime error
 ==========================

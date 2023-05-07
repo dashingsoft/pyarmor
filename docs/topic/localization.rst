@@ -32,7 +32,6 @@ When something is wrong, the obfuscated script need report error which has an er
 First decide default language by checking the following items in turn
 
 * :envvar:`PYARMOR_LANG`
-* :attr:`sys._PARLANG`
 * First part of :envvar:`LANG`. For example, ``en_US`` or ``zh_CN``
 
 Then search error message table in the :term:`runtime key`, if there is an error message both of language code and error code are matched, then return it.

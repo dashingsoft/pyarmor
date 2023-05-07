@@ -108,6 +108,8 @@ A few known issues
 
 * `PyPy` could not work with pyarmor, it's total different from `CPython`
 
+* WASM is not supported.
+
 .. seealso:: :ref:`target environments`
 
 .. include:: ../_common_definitions.txt

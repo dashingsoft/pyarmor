@@ -537,6 +537,16 @@ By default the outer key name is ``pyarmor.rkey``, use the following command to 
     $ pyarmor gen key -e 30
     $ ls dist/sky.lic
 
+The outer key must be stored in one of the following paths, the obfuscated script will search it in turn:
+
+1. First search runtime package
+2. Next search path :envvar:`PYARMOR_RKEY`, no trailing slash or backslash, and no ``..`` in the path. Generally it's an absolute path, for example, ``/var/data``
+3. Next search current path
+
+If no found in these paths, check file ``sys.executable`` + ``.pyarmor.rkey``. For example, ``dist/myapp.exe.pyarmor.rkey``
+
+Still not found raise runtime error and exits.
+
 .. _pyarmor cfg:
 
 pyarmor cfg
