@@ -4,24 +4,58 @@ Insight Into Obfuscation
 
 .. highlight:: bash
 
-TODO:
+Filter scripts by finder
+========================
 
-..
-  Filter scripts by finder
+Script ext is not .py, list it in command line. For example, ``my.config`` is a python script but not standard extension name::
 
-  # Script ext is not .py, list it in command line
   pyarmor gen main.py my.config
 
-  # Exclude "test" and all the path "test"
-  pyarmor cfg finder:excludes="test */test lib/a.py"
+To include special script in package. For example::
 
-  # Include special script in package, for example, ext is not .py
-  pyarmor cfg finder:includes="lib/extra.pyi"
+  pyarmor cfg finder:includes="lib/my.config"
+  pyamor gen -r lib
 
-  # Include data files, these data file will be copied to output
-  # If don't want to obfuscate .py, but need copy it to output, list it here
-  pyarmor cfg finder:data_files="a.py lib/readme.txt"
+To exclude "test" and all the path "test"::
 
-  It following :mod:`fnmatch` ruler to match pattern.
+  pyarmor cfg finder:excludes + "*/test"
+
+Include data files, these data file will be copied to output::
+
+  pyarmor cfg finder:data_files="lib/readme.txt"
+  pyamor gen -r lib
+
+It uses :mod:`fnmatch` to match pattern. For example, the test-project hierarchy is as follows::
+
+    $ tree test-project
+
+    test-project
+    ├── MANIFEST.in
+    ├── pyproject.toml
+    ├── setup.cfg
+    └── src
+        └── parent
+            ├── child
+            │   └── __init__.py
+            └── __init__.py
+
+Include data files, these data file will be copied to output::
+
+    $ cd test-project
+    $ pyarmor cfg finder:exclude + "*__pycache__ */test.py"
+    $ pyamor gen -r src/parent
+
+The following tests are executed:
+
+.. code-block:: python
+
+    fnmatch("src/parent/__init__.py", "*__pycache__")
+    fnmatch("src/parent/__init__.py", "*/test.py")
+
+    fnmatch("src/parent/child", "*__pycache__")
+    fnmatch("src/parent/child", "*/test.py")
+
+    fnmatch("src/parent/child/__init__.py", "*__pycache__")
+    fnmatch("src/parent/child/__init__.py", "*/test.py")
 
 .. include:: ../_common_definitions.txt
