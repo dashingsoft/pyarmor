@@ -122,17 +122,22 @@ class CArchiveReader2(CArchiveReader):
         (dpos, dlen, ulen, flag, typcd, nm) = self.toc.get(ndx)
         return ZlibArchiveReader(self.path, self.pkg_start + dpos)
 
-    def get_logical_toc(self, path):
+    def get_logical_toc(self, buildpath, obfpath):
         logical_toc = []
+
         for name, entry in self.get_toc().items():
             *_, flag, typecode = entry
-            if typecode in (PKG_ITEM_PYMODULE, PKG_ITEM_PYSOURCE):
-                source = os.path.join(path, name + '.pyc')
+            if typecode == PKG_ITEM_PYMODULE:
+                source = os.path.join(obfpath, name + '.py')
+            elif typecode == PKG_ITEM_PYSOURCE:
+                source = os.path.join(obfpath, name + '.py')
             elif typecode == PKG_ITEM_PYPACKAGE:
-                source = os.path.join(path, name, '__init__.pyc')
+                source = os.path.join(obfpath, name, '__init__.py')
             elif typecode == PKG_ITEM_PYZ:
-                source = os.path.join(path, name)
+                source = os.path.join(buildpath, name)
             else:
+                source = None
+            if source and not os.path.exists(source):
                 source = None
             item = name, source, flag, typecode
             logical_toc.append(item)
@@ -147,28 +152,39 @@ class CArchiveWriter2(CArchiveWriter):
         super().__init__(archive_path, logical_toc, pylib_name)
 
     def _write_rawdata(self, name, typecode, compress):
-        rawdata = self._carch.extract(name)
+        rawdata = fix_extract(self._carch.extract(name))
         if hasattr(self, '_write_blob'):
             # Since 5.0
-            return self._write_blob(rawdata, name, typecode, compress)
+            self._write_blob(rawdata, name, typecode, compress)
+            return
+
         with tempfile.NamedTemporaryFile() as f:
             f.write(rawdata)
             f.flush()
-            return self.add((name, f.name, typecode, compress))
+            if typecode in (PKG_ITEM_PYSOURCE, PKG_ITEM_PYMODULE,
+                            PKG_ITEM_PYPACKAGE):
+                super().add((name, f.name, compress, PKG_ITEM_DATA))
+                tc = self.toc.data[-1]
+                self.toc.data[-1] = tc[:-2] + (typecode, tc[-1])
+            else:
+                super().add((name, f.name, compress, typecode))
 
     def add(self, entry):
         name, source, compress, typecode = entry[:4]
         if source is None:
-            return self._write_rawdata(name, typecode, compress)
-        return super().add(entry)
+            self._write_rawdata(name, typecode, compress)
+        else:
+            logger.info('replace entry "%s"', name)
+            super().add(entry)
 
     def _write_entry(self, fp, entry):
         '''For PyInstaller 5.10+'''
         name, source, compress, typecode = entry[:4]
         if source is None:
             rawdata = self._carch.extract(name)
-            return self._write_blob(fp, rawdata, name, typecode, compress)
-        return super()._write_entry(fp, entry)
+            self._write_blob(fp, rawdata, name, typecode, compress)
+        else:
+            super()._write_entry(fp, entry)
 
 
 def fix_extract(data):
@@ -179,7 +195,7 @@ def extract_pyzarchive(name, pyzarch, output):
     dirname = os.path.join(output, name + EXTRACT_SUFFIX)
     os.makedirs(dirname, exist_ok=True)
 
-    for name, (typecode, offset, length) in pyzarch.toc.items:
+    for name, (typecode, offset, length) in pyzarch.toc.items():
         # Prevent writing outside dirName
         filename = name.replace('..', '__').replace('.', os.path.sep)
         if typecode == PYZ_ITEM_PKG:
@@ -204,17 +220,28 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtpath, cipher=None):
     #   `typecode` is the Analysis-level TOC typecode (`PYMODULE` or `DATA`)
     logical_toc = []
     code_dict = {}
+    extra_path = pyzpath + EXTRACT_SUFFIX
+    prefix = len(obfpath) + 1
 
     def compile_item(name, fullpath):
-        with open(fullpath, 'r') as f:
-            return compile(f.read(), '<frozen %s>' % name, 'exec')
+        if not os.path.exists(fullpath):
+            fullpath = fullpath + 'c'
+        if os.path.exists(fullpath):
+            logger.info('replace item "%s"', name)
+            with open(fullpath, 'r') as f:
+                return compile(f.read(), '<frozen %s>' % name, 'exec')
+        else:
+            fullpath = os.path.join(extra_path, fullpath[prefix:])
+            with open(fullpath, 'rb') as f:
+                data = f.read()
+                code_dict[name] = marshal.loads(data[16:])
 
     rtname = os.path.basename(rtpath)
     filepath = os.path.join(rtpath, '__init__.py')
     logical_toc.append((rtname, filepath, 'PYMODULE'))
     code_dict[rtname] = compile_item(rtname, filepath)
 
-    for name, (typecode, offset, length) in pyztoc.items:
+    for name, (typecode, offset, length) in pyztoc.items():
         filename = name.replace('..', '__').replace('.', os.path.sep)
         if typecode == PYZ_ITEM_PKG:
             filepath = os.path.join(obfpath, filename, '__init__.py')
@@ -223,7 +250,7 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtpath, cipher=None):
             filepath = os.path.join(obfpath, filename + '.py')
             code_dict[name] = compile_item(name, filepath)
         elif typecode == PYZ_ITEM_DATA:
-            filepath = os.path.join(obfpath, filename)
+            filepath = os.path.join(extra_path, filename)
         elif typecode == PYZ_ITEM_NSPKG:
             filepath = '-'
         else:
@@ -234,15 +261,18 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtpath, cipher=None):
     ZlibArchiveWriter(pyzpath, logical_toc, code_dict, cipher=cipher)
 
 
-def repack_carchive(executable, buildpath, logical_toc, pkgname):
-    destfile = os.path.join(buildpath, pkgname)
+def repack_carchive(executable, pkgname, buildpath, obfpath):
     pkgarch = CArchiveReader2(executable)
-    *_, pylib_name = pkgarch.get_cookie_info()
-    CArchiveWriter2(destfile, logical_toc, pylib_name.decode('utf-8'))
+    with open(executable, 'rb') as fp:
+        *_, pylib_name = pkgarch.get_cookie_info(fp)
+    logical_toc = pkgarch.get_logical_toc(buildpath, obfpath)
+    pkgfile = os.path.join(buildpath, pkgname)
+    CArchiveWriter2(pkgfile, logical_toc, pylib_name.decode('utf-8'), pkgarch)
 
 
-def repack_executable(executable, pkgname, codesign=None):
+def repack_executable(executable, buildpath, pkgname, codesign=None):
     logger.info('repacking EXE "%s"', executable)
+    pkgfile = os.path.join(buildpath, pkgname)
 
     if is_darwin:
         import PyInstaller.utils.osx as osxutils
@@ -252,7 +282,7 @@ def repack_executable(executable, pkgname, codesign=None):
 
     if is_linux:
         logger.info('replace section "pydata" with "%s"', pkgname)
-        check_call(['objcopy', '--update-section', 'pydata=%s' % pkgname,
+        check_call(['objcopy', '--update-section', 'pydata=%s' % pkgfile,
                     executable])
     else:
         reader = CArchiveReader2(executable)
@@ -264,7 +294,7 @@ def repack_executable(executable, pkgname, codesign=None):
             outf.seek(offset, os.SEEK_SET)
 
             # Write the patched archive
-            with open(pkgname, 'rb') as infh:
+            with open(pkgfile, 'rb') as infh:
                 shutil.copyfileobj(infh, outf, length=64*1024)
 
             outf.truncate()
@@ -303,18 +333,9 @@ class Repacker:
         contents = []
         pyz_tocs = {}
         pkgarch = CArchiveReader2(executable)
+        pkgtoc = pkgarch.get_toc()
 
-        def write_raw_pyc(filename):
-            data = fix_extract(pkgarch.extract(name))
-            try:
-                data = _code_to_timestamp_pyc(marshal.loads(data))
-            except Exception:
-                pass
-            with open(filename, 'wb') as f:
-                f.write(data)
-            contents.append(filename)
-
-        for name, toc_entry in pkgarch.get_toc().items():
+        for name, toc_entry in pkgtoc.items():
             logger.debug('extract %s', name)
             *_, typecode = toc_entry
 
@@ -323,17 +344,9 @@ class Repacker:
                 pyz_tocs[name] = pyzarch.toc
                 contents.append(extract_pyzarchive(name, pyzarch, buildpath))
 
-            elif typecode == PKG_ITEM_PYPACKAGE:
-                filename = os.path.join(buildpath, name, '__init__.pyc')
-                write_raw_pyc(filename)
-
-            elif typecode in (PKG_ITEM_PYMODULE, PKG_ITEM_PYSOURCE):
-                filename = os.path.join(buildpath, name + '.pyc')
-                write_raw_pyc(filename)
-
         self.contents = contents
-        self.logical_toc = pkgarch.get_logical_toc(buildpath)
         self.pyz_tocs = pyz_tocs
+        self.one_file_mode = len(pkgtoc) > 10
 
     def repack(self, obfpath, rtname, entry=None):
         executable = self.executable
@@ -360,18 +373,19 @@ class Repacker:
                 rtbinary = os.path.join(rtpath, x)
                 rtbinname = '.'.join([rtname, x])
                 break
+        else:
+            raise RuntimeError('no pyarmor runtime files found')
 
-        if len(self.logical_toc) > 10:
+        if self.one_file_mode:
             self.logical_toc.append((rtbinname, rtbinary, 1, PKG_ITEM_BINARY))
         else:
             dest = os.path.join(os.path.dirname(executable), rtname)
             os.makedirs(dest, exist_ok=True)
-            shutil.copyfile(rtbinary, dest)
+            shutil.copy2(rtbinary, dest)
 
         pkgname = 'PKG-patched'
-        repack_carchive(executable, self.buildpath, self.logical_toc, pkgname)
-
-        repack_executable(executable, pkgname)
+        repack_carchive(executable, pkgname, self.buildpath, obfpath)
+        repack_executable(executable, self.buildpath, pkgname)
 
 
 if __name__ == '__main__':

@@ -54,7 +54,7 @@ class Finder(object):
 
     def process_extra(self, contents):
         extra_paths = [x for x in contents if x.endswith('.pyc')]
-        for pyz in [x for x in contents if x.endswith('.pyz')]:
+        for pyz in [x for x in contents if x.endswith('.pyz_extracted')]:
             extra_paths.extend([os.path.join(pyz, x) for x in os.listdir(pyz)])
         resnames = [x.pkgname for x in self.ctx.resources]
         for res in self._build_resource(extra_paths):
