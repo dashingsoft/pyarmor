@@ -31,7 +31,6 @@ from .config import Configer
 from .shell import PyarmorShell
 from .plugin import Plugin
 from .generate import Builder
-from .repack import Repacker
 
 
 def _cmd_gen_key(builder, options):
@@ -222,10 +221,14 @@ def cmd_gen(ctx, args):
         _cmd_gen_key(builder, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
-    else:
-        packer = Repacker(args.pack, ctx.repack_path) if args.pack else None
+    elif args.pack:
+        from .repack import Repacker
+        packer = Repacker(args.pack, ctx.repack_path)
         builder.process(options, packer=packer)
         Plugin.post_build(ctx, pack=args.pack)
+    else:
+        builder.process(options)
+        Plugin.post_build(ctx)
 
 
 def cmd_cfg(ctx, args):

@@ -367,12 +367,3 @@ class Repacker:
             shutil.copy2(rtbinary, dest)
 
         repack_executable(executable, buildpath, obfpath, rtentry)
-
-
-if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(message)s',
-    )
-    dest = '.pyarmor/pack'
-    os.makedirs(dest, exist_ok=True)
