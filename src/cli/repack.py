@@ -45,33 +45,6 @@ logger = logging.getLogger('repack')
 
 class CArchiveReader2(CArchiveReader):
 
-    # Cookie - holds some information for the bootloader.
-    #
-    #   typedef struct _cookie {
-    #       char magic[8]; /* 'MEI\014\013\012\013\016' */
-    #       uint32_t len;  /* len of entire package */
-    #       uint32_t TOC;  /* pos (rel to start) of TableOfContents */
-    #       int  TOClen;   /* length of TableOfContents */
-    #       int  pyvers;   /* new in v4 */
-    #       char pylibname[64];    /* Filename of Python dynamic library. */
-    #   } COOKIE;
-    #
-
-    # TOC entry:
-    #
-    #   typedef struct _toc {
-    #       int  structlen;  /* len of this one - including full len of name */
-    #       uint32_t pos;    /* pos rel to start of concatenation */
-    #       uint32_t len;    /* len of the data (compressed) */
-    #       uint32_t ulen;   /* len of data (uncompressed) */
-    #       char cflag;      /* is it compressed (really a byte) */
-    #       char typcd;      /* type code -'b' binary, 'z' zlib, 'm' module,
-    #                         * 's' script (v3),'x' data, 'o' runtime option  */
-    #       char name[1];    /* the name to save it as */
-    #                        /* starting in v5, we stretch this out to a mult of 16 */
-    #   } TOC;
-    #
-
     def find_magic_pattern(self, fp, magic_pattern):
         # Start at the end of file, and scan back-to-start
         fp.seek(0, os.SEEK_END)
@@ -142,20 +115,19 @@ class CArchiveReader2(CArchiveReader):
                 source = None
             if source and not os.path.exists(source):
                 source = None
-            item = name, source, flag, typecode
-            logical_toc.append(item)
+            logical_toc.append((name, source, flag, typecode))
 
         return logical_toc
 
 
 class CArchiveWriter2(CArchiveWriter):
 
-    def __init__(self, archive_path, logical_toc, pylib_name, src_arch):
-        self._carch = src_arch
+    def __init__(self, pkg_arch, archive_path, logical_toc, pylib_name):
+        self._orgarch = pkg_arch
         super().__init__(archive_path, logical_toc, pylib_name)
 
     def _write_rawdata(self, name, typecode, compress):
-        rawdata = fix_extract(self._carch.extract(name))
+        rawdata = fix_extract(self._orgarch.extract(name))
         if hasattr(self, '_write_blob'):
             # Since 5.0
             self._write_blob(rawdata, name, typecode, compress)
@@ -178,14 +150,13 @@ class CArchiveWriter2(CArchiveWriter):
             self._write_rawdata(name, typecode, compress)
         else:
             logger.info('replace entry "%s"', name)
-            print(entry)
             super().add(entry)
 
     def _write_entry(self, fp, entry):
         '''For PyInstaller 5.10+'''
         name, source, compress, typecode = entry[:4]
         if source is None:
-            rawdata = self._carch.extract(name)
+            rawdata = self._orgarch.extract(name)
             self._write_blob(fp, rawdata, name, typecode, compress)
         else:
             super()._write_entry(fp, entry)
@@ -233,10 +204,11 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtpath, cipher=None):
         if os.path.exists(fullpath):
             logger.info('replace item "%s"', name)
             with open(fullpath, 'r') as f:
-                code_dict[name] = compile(f.read(), '<frozen %s>' % name, 'exec')
+                co = compile(f.read(), '<frozen %s>' % name, 'exec')
+                code_dict[name] = co
         else:
-            fullpath = os.path.join(extra_path, fullpath[prefix:])
-            with open(fullpath, 'rb') as f:
+            origpath = os.path.join(extra_path, fullpath[prefix:])
+            with open(origpath, 'rb') as f:
                 f.seek(16)
                 code_dict[name] = marshal.load(f)
 
@@ -273,7 +245,7 @@ def repack_carchive(executable, pkgname, buildpath, obfpath, rtentry):
     if rtentry is not None:
         logical_toc.append(rtentry)
     pkgfile = os.path.join(buildpath, pkgname)
-    CArchiveWriter2(pkgfile, logical_toc, pylib_name.decode('utf-8'), pkgarch)
+    CArchiveWriter2(pkgarch, pkgfile, logical_toc, pylib_name.decode('utf-8'))
 
 
 def repack_executable(executable, buildpath, pkgname, codesign=None):
