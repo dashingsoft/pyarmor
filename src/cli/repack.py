@@ -188,17 +188,17 @@ def extract_pyzarchive(name, pyzarch, output):
     return dirname
 
 
-def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtpath, cipher=None):
+def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtname, cipher=None):
     # logic_toc tuples: (name, src_path, typecode)
     #   `name` is the name without suffix)
     #   `src_path` is name of the file from which the resource is read
     #   `typecode` is the Analysis-level TOC typecode (`PYMODULE` or `DATA`)
     logical_toc = []
     code_dict = {}
-    extra_path = pyzpath + EXTRACT_SUFFIX
-    prefix = len(obfpath) + 1
+    extract_path = pyzpath + EXTRACT_SUFFIX
 
-    def compile_item(name, fullpath):
+    def compile_item(name, filename):
+        fullpath = os.path.join(obfpath, filename)
         if not os.path.exists(fullpath):
             fullpath = fullpath + 'c'
         if os.path.exists(fullpath):
@@ -207,55 +207,58 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtpath, cipher=None):
                 co = compile(f.read(), '<frozen %s>' % name, 'exec')
                 code_dict[name] = co
         else:
-            origpath = os.path.join(extra_path, fullpath[prefix:])
-            with open(origpath, 'rb') as f:
+            fullpath = os.path.join(extract_path, filename + 'c')
+            with open(fullpath, 'rb') as f:
                 f.seek(16)
                 code_dict[name] = marshal.load(f)
+        return fullpath
 
-    rtname = os.path.basename(rtpath)
-    filepath = os.path.join(rtpath, '__init__.py')
-    logical_toc.append((rtname, filepath, 'PYMODULE'))
-    compile_item(rtname, filepath)
+    fullpath = os.path.join(obfpath, rtname, '__init__.py')
+    logical_toc.append((rtname, fullpath, 'PYMODULE'))
+    compile_item(rtname, os.path.join(rtname, '__init__.py'))
 
     for name, (typecode, offset, length) in pyztoc.items():
-        filename = name.replace('..', '__').replace('.', os.path.sep)
+        ptname = name.replace('..', '__').replace('.', os.path.sep)
+        pytype = 'PYMODULE'
         if typecode == PYZ_ITEM_PKG:
-            filepath = os.path.join(obfpath, filename, '__init__.py')
-            compile_item(name, filepath)
+            fullpath = compile_item(name, os.path.join(ptname, '__init__.py'))
         elif typecode == PYZ_ITEM_MODULE:
-            filepath = os.path.join(obfpath, filename + '.py')
-            compile_item(name, filepath)
+            fullpath = compile_item(name, ptname + '.py')
         elif typecode == PYZ_ITEM_DATA:
-            filepath = os.path.join(extra_path, filename)
+            fullpath = os.path.join(extract_path, ptname)
+            pytype = 'DATA'
         elif typecode == PYZ_ITEM_NSPKG:
-            filepath = '-'
+            fullpath = '-'
         else:
             raise ValueError('unknown PYZ item type "%s"' % typecode)
-        logical_toc.append((name, filepath, 'DATA'
-                            if typecode == PYZ_ITEM_DATA else 'PYMODULE'))
+        logical_toc.append((name, fullpath, pytype))
 
     ZlibArchiveWriter(pyzpath, logical_toc, code_dict, cipher=cipher)
 
 
-def repack_carchive(executable, pkgname, buildpath, obfpath, rtentry):
+def repack_carchive(executable, pkgfile, buildpath, obfpath, rtentry):
     pkgarch = CArchiveReader2(executable)
     with open(executable, 'rb') as fp:
         *_, pylib_name = pkgarch.get_cookie_info(fp)
     logical_toc = pkgarch.get_logical_toc(buildpath, obfpath)
     if rtentry is not None:
         logical_toc.append(rtentry)
-    pkgfile = os.path.join(buildpath, pkgname)
     CArchiveWriter2(pkgarch, pkgfile, logical_toc, pylib_name.decode('utf-8'))
 
 
-def repack_executable(executable, buildpath, pkgname, codesign=None):
-    logger.info('repacking EXE "%s"', executable)
+def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
+    pkgname = 'PKG-patched'
+
+    logger.info('repacking PKG "%s"', pkgname)
     pkgfile = os.path.join(buildpath, pkgname)
+    repack_carchive(executable, pkgfile, buildpath, obfpath, rtentry)
+
+    logger.info('repacking EXE "%s"', executable)
 
     if is_darwin:
         import PyInstaller.utils.osx as osxutils
         if hasattr(osxutils, 'remove_signature_from_binary'):
-            logger.info("removing signature(s) from EXE")
+            logger.info("remove signature(s) from EXE")
             osxutils.remove_signature_from_binary(executable)
 
     if is_linux:
@@ -309,7 +312,6 @@ class Repacker:
         os.makedirs(self.buildpath)
 
         contents = []
-        pyz_tocs = {}
         pkgarch = CArchiveReader2(executable)
         pkgtoc = pkgarch.get_toc()
 
@@ -319,17 +321,14 @@ class Repacker:
 
             if typecode == PKG_ITEM_PYZ:
                 pyzarch = pkgarch.open_pyzarchive(name)
-                pyz_tocs[name] = pyzarch.toc
+                self.pyztoc = pyzarch.toc
                 contents.append(extract_pyzarchive(name, pyzarch, buildpath))
-                # pyzdata = fix_extract(pkgarch.extract(name))
-                # with open(os.path.join(buildpath, name), 'wb') as f:
-                #     f.write(pyzdata)
 
         self.contents = contents
-        self.pyz_tocs = pyz_tocs
         self.one_file_mode = len(pkgtoc) > 10
 
     def repack(self, obfpath, rtname, entry=None):
+        buildpath = self.buildpath
         executable = self.executable
         logger.info('repack bundle "%s"', executable)
 
@@ -344,9 +343,8 @@ class Repacker:
         for item in self.contents:
             if item.endswith(EXTRACT_SUFFIX):
                 pyzpath = item[:-len(EXTRACT_SUFFIX)]
-                pyztoc = self.pyz_tocs[os.path.basename(pyzpath)]
                 logger.info('repack "%s"', os.path.basename(pyzpath))
-                repack_pyzarchive(pyzpath, pyztoc, obfpath, rtpath)
+                repack_pyzarchive(pyzpath, self.pyztoc, obfpath, rtname)
 
         for x in os.listdir(rtpath):
             ext = os.path.splitext(x)[-1]
@@ -362,17 +360,13 @@ class Repacker:
             logger.debug('mac_set_relative_dylib_deps "%s"', rtbinname)
             dylib.mac_set_relative_dylib_deps(rtbinary, rtbinname)
 
-        if self.one_file_mode:
-            rtentry = rtbinname, rtbinary, 1, 'b'
-        else:
+        rtentry = (rtbinname, rtbinary, 1, 'b') if self.one_file_mode else None
+        if not self.one_file_mode:
             dest = os.path.join(os.path.dirname(executable), rtname)
             os.makedirs(dest, exist_ok=True)
             shutil.copy2(rtbinary, dest)
-            rtentry = None
 
-        pkgname = 'PKG-patched'
-        repack_carchive(executable, pkgname, self.buildpath, obfpath, rtentry)
-        repack_executable(executable, self.buildpath, pkgname)
+        repack_executable(executable, buildpath, obfpath, rtentry)
 
 
 if __name__ == '__main__':
