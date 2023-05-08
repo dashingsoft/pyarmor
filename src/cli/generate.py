@@ -52,7 +52,7 @@ class Finder(object):
     def prepare(self, input_paths):
         self.ctx.resources = self._build_resource(input_paths)
 
-    def extra_prepare(self, contents):
+    def process_extra(self, contents):
         extra_paths = [x for x in contents if x.endswith('.pyc')]
         for pyz in [x for x in contents if x.endswith('.pyz')]:
             extra_paths.extend([os.path.join(pyz, x) for x in os.listdir(pyz)])
@@ -62,7 +62,7 @@ class Finder(object):
                 self.ctx.obfuscated_modules.add(res.pkgname)
                 self.ctx.extra_resources.append(res)
 
-    def process(self, packer=None):
+    def process(self):
         logger.info('search inputs ...')
         self.prepare(self.ctx.input_paths)
         logger.info('find %d top resources', len(self.ctx.resources))
@@ -70,9 +70,6 @@ class Finder(object):
         modules = [x.fullname for res in self.ctx.resources for x in res
                    if x.is_script()]
         self.ctx.obfuscated_modules.update(modules)
-
-        if packer:
-            self.extra_prepare(packer.contents)
 
 
 class Builder(object):
@@ -142,12 +139,14 @@ class Builder(object):
         self.ctx.outputs = output.split(',')
 
         finder = Finder(self.ctx)
-        finder.process(packer=packer)
+        finder.process()
+
+        if packer and options.get('self_contained'):
+            finder.process_extra(packer.contents)
 
         Pytransform3.pre_build(self.ctx)
 
         self.ctx.runtime_key = self.generate_runtime_key()
-
         if not options.get('no_runtime'):
             logger.info('start to generate runtime files')
             self.generate_runtime_package(self.ctx.outputs[0])
