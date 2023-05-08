@@ -52,11 +52,9 @@ class Finder(object):
     def prepare(self, input_paths):
         self.ctx.resources = self._build_resource(input_paths)
 
-    def prepare_pack(self, pack):
-        from .repack import extract_modules
-        logger.debug('append system modules (packed)')
-        extra_paths = []
-        for pyz in extract_modules(pack, self.ctx.repack_path):
+    def extra_prepare(self, contents):
+        extra_paths = [x for x in contents if x.endswith('.pyc')]
+        for pyz in [x for x in contents if x.endswith('.pyz')]:
             extra_paths.extend([os.path.join(pyz, x) for x in os.listdir(pyz)])
         resnames = [x.pkgname for x in self.ctx.resources]
         for res in self._build_resource(extra_paths):
@@ -64,7 +62,7 @@ class Finder(object):
                 self.ctx.obfuscated_modules.add(res.pkgname)
                 self.ctx.extra_resources.append(res)
 
-    def process(self, pack=None):
+    def process(self, packer=None):
         logger.info('search inputs ...')
         self.prepare(self.ctx.input_paths)
         logger.info('find %d top resources', len(self.ctx.resources))
@@ -73,8 +71,8 @@ class Finder(object):
                    if x.is_script()]
         self.ctx.obfuscated_modules.update(modules)
 
-        if pack:
-            self.prepare_pack(pack)
+        if packer:
+            self.extra_prepare(packer.contents)
 
 
 class Builder(object):
@@ -96,11 +94,6 @@ class Builder(object):
         if self.ctx.runtime_key is None:
             self.ctx.runtime_key = self.generate_runtime_key()
         Pytransform3.generate_runtime_package(self.ctx, output)
-
-    def _pack_script(self, bundle, output, entry=None, codesign=None):
-        from .repack import repacker
-        rtname = self.ctx.runtime_package_name
-        repacker(bundle, output, rtname, entry=entry, codesign=codesign)
 
     def _obfuscate_scripts(self):
         rev = self.ctx.version_info()
@@ -139,23 +132,17 @@ class Builder(object):
                 with open(fullpath, 'w') as f:
                     f.write(source)
 
-    def process(self, options, pack=None):
+    def process(self, options, packer=None):
         for opt in options['inputs']:
             if not os.path.exists(opt):
                 raise CliError('no found input "%s"' % opt)
         self.ctx.input_paths = options['inputs']
 
         output = options.get('output', 'dist')
-        if pack:
-            repack_path = self.ctx.repack_path
-            if os.path.exists(repack_path):
-                shutil.rmtree(repack_path)
-            output = os.path.join(repack_path, 'dist')
-            logger.info('implicitly set output to "%s"', output)
         self.ctx.outputs = output.split(',')
 
         finder = Finder(self.ctx)
-        finder.process(pack=pack)
+        finder.process(packer=packer)
 
         Pytransform3.pre_build(self.ctx)
 
@@ -172,5 +159,5 @@ class Builder(object):
 
         Pytransform3.post_build(self.ctx)
 
-        if pack:
-            self._pack_script(pack, output)
+        if packer:
+            packer.repack(output, self.ctx.runtime_package_name)

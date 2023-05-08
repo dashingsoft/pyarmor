@@ -30,6 +30,8 @@ from .register import Register, WebRegister
 from .config import Configer
 from .shell import PyarmorShell
 from .plugin import Plugin
+from .generate import Builder
+from .repack import Repacker
 
 
 def _cmd_gen_key(builder, options):
@@ -136,6 +138,11 @@ def format_gen_args(ctx, args):
         sect['auto_mode'] = 'or'
         sect['includes'] = '*'
 
+    if args.pack:
+        dist_path = os.path.join(ctx.repack_path, 'dist')
+        logger.info('implicitly set output to "%s"', dist_path)
+        options['output'] = dist_path
+
     return options
 
 
@@ -203,8 +210,6 @@ def check_gen_context(ctx, args):
 
 
 def cmd_gen(ctx, args):
-    from .generate import Builder
-
     options = format_gen_args(ctx, args)
     logger.debug('command options: %s', options)
     ctx.push(options)
@@ -218,7 +223,8 @@ def cmd_gen(ctx, args):
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
     else:
-        builder.process(options, pack=args.pack)
+        packer = Repacker(args.pack, ctx.repack_path) if args.pack else None
+        builder.process(options, packer=packer)
         Plugin.post_build(ctx, pack=args.pack)
 
 
