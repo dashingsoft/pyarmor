@@ -3,9 +3,7 @@ import marshal
 import os
 import shutil
 import struct
-import sys
 import tempfile
-import zlib
 
 from importlib._bootstrap_external import _code_to_timestamp_pyc
 from subprocess import check_call
@@ -17,8 +15,7 @@ try:
 except ModuleNotFoundError:
     # Since 5.3
     from PyInstaller.loader.pyimod01_archive import ZlibArchiveReader
-from PyInstaller.compat import BYTECODE_MAGIC, is_darwin, is_linux, is_win
-from PyInstaller.building.utils import get_code_object, strip_paths_in_code
+from PyInstaller.compat import is_darwin, is_linux, is_win
 
 
 # Type codes for PYZ PYZ entries
@@ -404,179 +401,6 @@ class Repacker:
         pkgname = 'PKG-patched'
         repack_carchive(executable, pkgname, self.buildpath, obfpath, rtentry)
         repack_executable(executable, self.buildpath, pkgname)
-
-
-class CArchiveWriterLocal:
-    """
-    Writer for PyInstaller's CArchive (PKG) archive.
-    This archive contains all files that are bundled within an executable; a PYZ (ZlibArchive), DLLs, Python C
-    extensions, and other data files that are bundled in onefile mode.
-    The archive can be read from either C (bootloader code at application's run-time) or Python (for debug purposes).
-    """
-    _COOKIE_MAGIC_PATTERN = b'MEI\014\013\012\013\016'
-
-    # For cookie and TOC entry structure, see `PyInstaller.archive.readers.CArchiveReader`.
-    _COOKIE_FORMAT = '!8sIIii64s'
-    _COOKIE_LENGTH = struct.calcsize(_COOKIE_FORMAT)
-
-    _TOC_ENTRY_FORMAT = '!iIIIBB'
-    _TOC_ENTRY_LENGTH = struct.calcsize(_TOC_ENTRY_FORMAT)
-
-    _COMPRESSION_LEVEL = 9  # zlib compression level
-
-    def __init__(self, filename, entries, pylib_name, pkgarch):
-        """
-        filename
-            Target filename of the archive.
-        entries
-            An iterable containing entries in the form of tuples: (dest_name, src_name, compress, typecode), where
-            `dest_name` is the name under which the resource is stored in the archive (and name under which it is
-            extracted at runtime), `src_name` is name of the file from which the resouce is read, `compress` is a
-            boolean compression flag, and `typecode` is the Analysis-level TOC typecode.
-        pylib_name
-            Name of the python shared library.
-        """
-        self.pkgarch = pkgarch
-
-        with open(filename, "wb") as fp:
-            # Write entries' data and collect TOC entries
-            toc = []
-            for entry in entries:
-                name, source, compress, typecode = entry[:4]
-                if source is None:
-                    rawdata = fix_extract(self.pkgarch.extract(name))
-                    toc_entry = self._write_blob(fp, rawdata, name, typecode, compress)
-                else:
-                    toc_entry = self._write_entry(fp, entry)
-                toc.append(toc_entry)
-
-            # Write TOC
-            toc_offset = fp.tell()
-            toc_data = self._serialize_toc(toc)
-            toc_length = len(toc_data)
-
-            fp.write(toc_data)
-
-            # Write cookie
-            archive_length = toc_offset + toc_length + self._COOKIE_LENGTH
-            pyvers = sys.version_info[0] * 100 + sys.version_info[1]
-            cookie_data = struct.pack(
-                self._COOKIE_FORMAT,
-                self._COOKIE_MAGIC_PATTERN,
-                archive_length,
-                toc_offset,
-                toc_length,
-                pyvers,
-                pylib_name.encode('ascii'),
-            )
-
-            fp.write(cookie_data)
-
-    def _write_entry(self, fp, entry):
-        dest_name, src_name, compress, typecode = entry
-
-        # Ensure forward slashes in paths are on Windows converted to back slashes '\\', as on Windows the bootloader
-        # works only with back slashes.
-        dest_name = os.path.normpath(dest_name)
-        if is_win and os.path.sep == '/':
-            # When building under MSYS, the above path normalization uses Unix-style separators, so replace them
-            # manually.
-            dest_name = dest_name.replace(os.path.sep, '\\')
-
-        if typecode == 'o':
-            return self._write_blob(fp, b"", dest_name, typecode)
-        elif typecode == 'd':
-            # Dependency; merge src_name (= reference path prefix) and dest_name (= name) into single-string format that
-            # is parsed by bootloader.
-            return self._write_blob(fp, b"", f"{src_name}:{dest_name}", typecode)
-        elif typecode == 's':
-            # If it is a source code file, compile it to a code object and marshal the object, so it can be unmarshalled
-            # by the bootloader.
-            code = get_code_object(dest_name, src_name)
-            code = strip_paths_in_code(code)
-            return self._write_blob(fp, marshal.dumps(code), dest_name, typecode, compress=compress)
-        elif typecode in ('m', 'M'):
-            # Read the PYC file
-            with open(src_name, "rb") as in_fp:
-                data = in_fp.read()
-            assert data[:4] == BYTECODE_MAGIC
-            # Skip the PYC header, load the code object.
-            code = marshal.loads(data[16:])
-            code = strip_paths_in_code(code)
-            # These module entries are loaded and executed within the bootloader, which requires only the code
-            # object, without the PYC header.
-            return self._write_blob(fp, marshal.dumps(code), dest_name, typecode, compress=compress)
-        else:
-            return self._write_file(fp, src_name, dest_name, typecode, compress=compress)
-
-    def _write_blob(self, out_fp, blob: bytes, dest_name, typecode, compress=False):
-        """
-        Write the binary contents (**blob**) of a small file to the archive and return the corresponding CArchive TOC
-        entry.
-        """
-        data_offset = out_fp.tell()
-        data_length = len(blob)
-        if compress:
-            blob = zlib.compress(blob, level=self._COMPRESSION_LEVEL)
-        out_fp.write(blob)
-
-        return (data_offset, len(blob), data_length, int(compress), typecode, dest_name)
-
-    def _write_file(self, out_fp, src_name, dest_name, typecode, compress=False):
-        """
-        Stream copy a large file into the archive and return the corresponding CArchive TOC entry.
-        """
-        data_offset = out_fp.tell()
-        data_length = os.stat(src_name).st_size
-        with open(src_name, 'rb') as in_fp:
-            if compress:
-                tmp_buffer = bytearray(16 * 1024)
-                compressor = zlib.compressobj(self._COMPRESSION_LEVEL)
-                while True:
-                    num_read = in_fp.readinto(tmp_buffer)
-                    if not num_read:
-                        break
-                    out_fp.write(compressor.compress(tmp_buffer[:num_read]))
-                out_fp.write(compressor.flush())
-            else:
-                shutil.copyfileobj(in_fp, out_fp)
-
-        return (data_offset, out_fp.tell() - data_offset, data_length, int(compress), typecode, dest_name)
-
-    @classmethod
-    def _serialize_toc(cls, toc):
-        serialized_toc = []
-        for toc_entry in toc:
-            data_offset, compressed_length, data_length, compress, typecode, name = toc_entry
-
-            # Encode names as UTF-8. This should be safe as standard python modules only contain ASCII-characters (and
-            # standard shared libraries should have the same), and thus the C-code still can handle this correctly.
-            name = name.encode('utf-8')
-            name_length = len(name) + 1  # add 1 for a '\0'
-
-            # Align to 16-byte boundary so xplatform C can read
-            entry_length = cls._TOC_ENTRY_LENGTH + name_length
-            if entry_length % 16 == 0:
-                name_padding = b'\0'
-            else:
-                padding_length = 16 - (entry_length % 16)
-                name_padding = b'\0' * padding_length
-            name_length += padding_length
-
-            # Serialize
-            serialized_entry = struct.pack(
-                cls._TOC_ENTRY_FORMAT + f"{name_length}s",
-                cls._TOC_ENTRY_LENGTH + name_length,
-                data_offset,
-                compressed_length,
-                data_length,
-                compress,
-                ord(typecode),
-                name + name_padding,
-            )
-            serialized_toc.append(serialized_entry)
-
-        return b''.join(serialized_toc)
 
 
 if __name__ == '__main__':
