@@ -232,7 +232,7 @@ Comments within outer key
 
 The :term:`outer key` ignores all the printable text at the header, so it's possible to insert some readable text in the :term:`outer key` as comments.
 
-Post-key plugin is designed to do this.
+Post-key plugin is designed to do this. The following example plugin will print all the key information in the console, and write expired date to outer key file:
 
 .. code-block:: python
 
