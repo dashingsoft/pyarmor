@@ -22,7 +22,7 @@ Status: released
 
 **8.2**
 
-Status: developing
+Status: released
 
 Release schedule: 2023-05-10
 
@@ -39,7 +39,7 @@ Release schedule: 2023-05-10
 
 **8.3**
 
-Status: not start
+Status: developing
 
 Release schedule: 2023-07-01
 
