@@ -19,7 +19,7 @@ Pyarmor could prevent hacker from querying runtime data by valid Python C API an
 
 - Signing the binary file to make sure they're not changed by others
 - Using third-party binary protection tools to protect Python interpreter and extension module ``pyarmor_runtime``
-- Pyarmor provides some configuration item to check interps and debuggers.
+- Pyarmor provides some configuration options to check interps and debuggers.
 - Pyarmor provides runtime patch feature to let expert users to write C functions or python scripts to improve security.
 
 ..
@@ -40,7 +40,7 @@ Next configure and repack the bundle, the following options are necessary [#]_::
     $ pyarmor cfg check_debugger=1 check_interp=1
     $ pyarmor gen --mix-str --assert-call --assert-import --restrict --pack dist/foo/foo foo.py
 
-Then protect all the binary files in the output path :file:`dist/foo/` by other tools, make sure these binary files could not be replaced or modified in runtime.
+Then protect all the binary files in the output path :file:`dist/foo/` by external tools, make sure these binary files could not be replaced or modified in runtime.
 
 Available external tools: codesign, VMProtect
 

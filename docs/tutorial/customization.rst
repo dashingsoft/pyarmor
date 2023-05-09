@@ -193,7 +193,7 @@ Line 7 ``EXCEPTED_VALUE`` need to be replaced with real value, but it doesn't wo
 
 .. code-block:: python
 
-    # Plugin sript: .pyarmor/myplugin.py
+    # Plugin script: .pyarmor/myplugin.py
 
     __all__ = ['CondaPlugin', 'RuntimePlugin']
 
