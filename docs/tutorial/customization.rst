@@ -168,8 +168,8 @@ Thus the obfuscated script could verify network time by itself.
 
 .. seealso:: :ref:`hooks` :func:`__pyarmor__`
 
-Using hook and plugin to protect module pyarmor_runtime
-=======================================================
+Protecting extension module pyarmor_runtime
+===========================================
 
 .. versionadded:: 8.2
 
@@ -197,9 +197,6 @@ Line 7 ``EXCEPTED_VALUE`` need to be replaced with real value, but it doesn't wo
 
     __all__ = ['CondaPlugin', 'RuntimePlugin']
 
-    class CondaPlugin:
-        pass
-
     class RuntimePlugin:
 
         @staticmethod
@@ -211,6 +208,9 @@ Line 7 ``EXCEPTED_VALUE`` need to be replaced with real value, but it doesn't wo
             source = source.replace('EXPECTED_VALUE', str(value))
             with open('.pyarmor/hooks/foo.py', 'r') as f:
                 f.write(source)
+
+    class CondaPlugin:
+        ...
 
 Then enable this plugin::
 
