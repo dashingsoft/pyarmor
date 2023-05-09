@@ -101,7 +101,7 @@ Unfortunately it raises exception:
       File "/usr/lib/python3/dist-packages/setuptools/config/expand.py", line 191, in read_attr
         return getattr(StaticModule(module_name, spec), attr_name)
 
-From traceback we found it uses ``StaticModule``, then check the source of ``setuptools`` by the filename and line no. to find ``StaticModule`` definition. From the source code we know it uses ``ast.parse`` to get locals from the script. It's impossible for obfuscated scripts, in order to fix this problem, we need insert a line in the ``dist/parent/child/__init__.py`` like this:
+From traceback we found it uses ``StaticModule``, then check the source ``/usr/lib/python3/dist-packages/setuptools/config/expand.py`` at line 191 to find class ``StaticModule`` definition. By the source code we know it uses ``ast.parse`` to parse source code directly to get locals. It's impossible for obfuscated scripts, in order to fix this problem, we need insert a line in the ``dist/parent/child/__init__.py`` like this:
 
 .. code-block:: python
 
