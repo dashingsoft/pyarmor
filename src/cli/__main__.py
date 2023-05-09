@@ -127,20 +127,20 @@ def format_gen_args(ctx, args):
     if args.bind_data:
         options['user_data'] = args.bind_data
 
-    if args.pack and options.get('restrict_module', 0) > 2:
-        options['self_contained'] = 1
-        sect = ctx.cfg['assert.call']
-        if sect.get('includes'):
-            logger.warning('ignore assert.call:includes by restrict pack')
-        logger.debug('implicitly set ast.call:auto_mode to "or"')
-        logger.debug('implicitly set ast.call:includes to "*"')
-        sect['auto_mode'] = 'or'
-        sect['includes'] = '*'
-
     if args.pack:
         dist_path = os.path.join(ctx.repack_path, 'dist')
         logger.info('implicitly set output to "%s"', dist_path)
         options['output'] = dist_path
+
+        if options.get('restrict_module', 0) > 2:
+            options['self_contained'] = 1
+            sect = ctx.cfg['assert.call']
+            if sect.get('includes'):
+                logger.warning('ignore assert.call:includes')
+            logger.debug('implicitly set ast.call:auto_mode to "or"')
+            logger.debug('implicitly set ast.call:includes to "*"')
+            sect['auto_mode'] = 'or'
+            sect['includes'] = '*'
 
     return options
 
