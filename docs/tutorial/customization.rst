@@ -223,6 +223,53 @@ Finally generate the obfuscated script, and verify it::
 
 This example is only guide how to do, it's not safe enough to use it directly. There is always a way to bypass open source check points, please write your private check code. There are many other methods to prevent binary file from hacking, please learn and search these methods by yourself.
 
-.. seealso:: :ref:`hooks` :func:`__pyarmor__`
+.. seealso:: :ref:`hooks`
+
+Comments within outer key
+=========================
+
+.. versionadded:: 8.2
+
+The :term:`outer key` ignores all the printable text at the header, so it's possible to insert some readable text in the :term:`outer key` as comments.
+
+Post-key plugin is designed to do this.
+
+.. code-block:: python
+
+    # Plugin script: .pyarmor/myplugin.py
+
+    from datetime import datetime
+
+    __all__ = ['CommentPlugin']
+
+    class CommentPlugin:
+
+        @staticmethod
+        def post_key(ctx, keyfile, **keyinfo):
+            expired = None
+            for name, value in keyinfo.items():
+                print(name, value)
+                if name == 'expired':
+                   expired = datetime.fromtimestamp(value).isoformat()
+
+            if expired:
+                print('patching runtime key')
+                comment = '# expired date: %s\n' % expired
+                with open(keyfile, 'rb') as f:
+                    keydata = f.read()
+                with open(keyfile, 'wb') as f:
+                    f.write(comment.encode())
+                    f.write(keydata)
+
+Enable this plugin and generate an outer key::
+
+    $ pyarmor cfg plugins + "myplugin"
+    $ pyarmor gen key -e 2023-05-06
+
+Check comment::
+
+    $ head -n 1 dist/pyarmor.rkey
+
+.. seealso:: :ref:`plugins`
 
 .. include:: ../_common_definitions.txt

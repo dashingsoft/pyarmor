@@ -108,7 +108,7 @@ Plugin script could define one or more plugin classes:
        :param list outputs: all the output paths
        :param str pack: if not None, it's an executable file specified by :option:`--pack`
 
-    .. py:staticmethod:: post_key(ctx, keyfile, expired=None, devices=None, data=None, period=None)
+    .. py:staticmethod:: post_key(ctx, keyfile, **keyinfo)
 
        This method is optional.
 
@@ -116,10 +116,14 @@ Plugin script could define one or more plugin classes:
 
        :param Context ctx: building context
        :param str keyfile: path of generated key file
-       :param long expired: expired epoch or None
-       :param list devices: binding device hardware information or None
-       :param str data: binding data or None
-       :param int period: period in seconds or None
+       :param dict keyinfo: runtime key information
+
+       The possible items in the ``keyinfo``:
+
+       :key expired: expired epoch or None
+       :key devices: a list for binding device hardware information or None
+       :key data: binding data (bytes) or None
+       :key period: period in seconds or None
 
     .. py:staticmethod:: post_runtime(ctx, source, dest, platform)
 
