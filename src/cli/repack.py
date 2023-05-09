@@ -90,7 +90,7 @@ class CArchiveReader2(CArchiveReader):
 
     def open_pyzarchive(self, name):
         if hasattr(self, 'open_embedded_archive'):
-            return self.open_embedded_archive(self, name)
+            return self.open_embedded_archive(name)
 
         ndx = self.toc.find(name)
         (dpos, dlen, ulen, flag, typcd, nm) = self.toc.get(ndx)
@@ -157,9 +157,8 @@ class CArchiveWriter2(CArchiveWriter):
         name, source, compress, typecode = entry[:4]
         if source is None:
             rawdata = self._orgarch.extract(name)
-            self._write_blob(fp, rawdata, name, typecode, compress)
-        else:
-            super()._write_entry(fp, entry)
+            return self._write_blob(fp, rawdata, name, typecode, compress)
+        return super()._write_entry(fp, entry)
 
 
 def fix_extract(data):
@@ -308,7 +307,8 @@ class Repacker:
 
     def extract_carchive(self, executable, buildpath, clean=True):
         logger.info('extracting bundle "%s"', executable)
-        shutil.rmtree(self.buildpath)
+        if os.path.exists(self.buildpath):
+            shutil.rmtree(self.buildpath)
         os.makedirs(self.buildpath)
 
         contents = []
@@ -330,7 +330,7 @@ class Repacker:
     def repack(self, obfpath, rtname, entry=None):
         buildpath = self.buildpath
         executable = self.executable
-        logger.info('repack bundle "%s"', executable)
+        logger.info('repacking bundle "%s"', executable)
 
         obfpath = os.path.normpath(obfpath)
         logger.info('obfuscated scripts at "%s"', obfpath)
@@ -343,7 +343,7 @@ class Repacker:
         for item in self.contents:
             if item.endswith(EXTRACT_SUFFIX):
                 pyzpath = item[:-len(EXTRACT_SUFFIX)]
-                logger.info('repack "%s"', os.path.basename(pyzpath))
+                logger.info('repacking "%s"', os.path.basename(pyzpath))
                 repack_pyzarchive(pyzpath, self.pyztoc, obfpath, rtname)
 
         for x in os.listdir(rtpath):
