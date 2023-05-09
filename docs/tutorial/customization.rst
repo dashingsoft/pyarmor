@@ -71,7 +71,7 @@ Let's check the dependencies of ``pyarmor_runtime.so``::
 
 Suppose :term:`target device` has no ``@rpath/lib/libpython3.9.dylib``, but ``@rpath/lib/libpython3.9.so``, in this case ``pyarmor_runtime.so`` could not be loaded.
 
-We can create a plugin script :file:`.pyarmor/conda.py` to fix this problem
+We can create a plugin script :file:`.pyarmor/myplugin.py` to fix this problem
 
 .. code-block:: python
 
@@ -92,7 +92,7 @@ We can create a plugin script :file:`.pyarmor/conda.py` to fix this problem
 
 Enable this plugin and generate the obfuscated script again::
 
-    $ pyarmor cfg plugins + "conda"
+    $ pyarmor cfg plugins + "myplugin"
     $ pyarmor gen foo.py
 
 .. seealso:: :ref:`plugins`
@@ -168,8 +168,8 @@ Thus the obfuscated script could verify network time by itself.
 
 .. seealso:: :ref:`hooks` :func:`__pyarmor__`
 
-Using hook to protect extension module pyarmor_runtime
-======================================================
+Using hook and plugin to protect module pyarmor_runtime
+=======================================================
 
 .. versionadded:: 8.2
 
@@ -179,33 +179,49 @@ First create a hook script :file:`.pyarmor/hooks/foo.py`:
 
 .. code-block:: python
     :linenos:
+    :emphasize-lines: 7
 
-    # hook script for foo.py
-    def check_pyarmor_runtime(excepted):
+    def check_pyarmor_runtime(value):
         from pyarmor_runtime_000000 import pyarmor_runtime
-        filename = pyarmor_runtime.__file__
-        with open(filename, 'rb') as f:
-            buf = bytearray(f.read())
-        value = sum(buf)
-        # print('expected value:', value)
-        if value != excepted:
-            raise RuntimeError('unexpected %s' % filename)
+        with open(pyarmor_runtime.__file__, 'rb') as f:
+            if sum(bytearray(f.read())) != value:
+                raise RuntimeError('unexpected %s' % filename)
 
-    check_pyarmor_runtime(1000)
+    check_pyarmor_runtime(EXCEPTED_VALUE)
 
-You need uncomment line 8 to get the real value::
+Line 7 ``EXCEPTED_VALUE`` need to be replaced with real value, but it doesn't work to get the sum value of ``pyarmor_runtime.so`` after building, because each build the sum value is different. We need use a post-runtime plugin to get the expected value and update the hook script automatically
+
+.. code-block:: python
+
+    # Plugin sript: .pyarmor/myplugin.py
+
+    __all__ = ['CondaPlugin', 'RuntimePlugin']
+
+    class CondaPlugin:
+        pass
+
+    class RuntimePlugin:
+
+        @staticmethod
+        def post_runtime(ctx, source, target, platform):
+            with open(target, 'rb') as f:
+                value = sum(bytearray(f.read()))
+            with open('.pyarmor/hooks/foo.py', 'r') as f:
+                source = f.read()
+            source = source.replace('EXPECTED_VALUE', str(value))
+            with open('.pyarmor/hooks/foo.py', 'r') as f:
+                f.write(source)
+
+Then enable this plugin::
+
+    $ pyarmor cfg plugins + "myplugin"
+
+Finally generate the obfuscated script, and verify it::
 
     $ pyarmor gen foo.py
     $ python dist/foo.py
 
-Replace line 12 ``1000`` with real value, and comment line 8 again.
-
-Then generate the final script, and verify it::
-
-    $ pyarmor gen foo.py
-    $ python dist/foo.py
-
-This example only shows how to do, it's not safe enough to use it directly. There is always a way to bypass open source check points, please write your private check code. There are many other methods to prevent binary file from hacking, please learn and search these methods by yourself.
+This example is only guide how to do, it's not safe enough to use it directly. There is always a way to bypass open source check points, please write your private check code. There are many other methods to prevent binary file from hacking, please learn and search these methods by yourself.
 
 .. seealso:: :ref:`hooks` :func:`__pyarmor__`
 
