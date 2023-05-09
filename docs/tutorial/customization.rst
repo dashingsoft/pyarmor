@@ -168,4 +168,45 @@ Thus the obfuscated script could verify network time by itself.
 
 .. seealso:: :ref:`hooks` :func:`__pyarmor__`
 
+Using hook to protect extension module pyarmor_runtime
+======================================================
+
+.. versionadded:: 8.2
+
+This example shows how to check the file content of an extension module to make sure it's not changed by others.
+
+First create a hook script :file:`.pyarmor/hooks/foo.py`:
+
+.. code-block:: python
+    :linenos:
+
+    # hook script for foo.py
+    def check_pyarmor_runtime(excepted):
+        from pyarmor_runtime_000000 import pyarmor_runtime
+        filename = pyarmor_runtime.__file__
+        with open(filename, 'rb') as f:
+            buf = bytearray(f.read())
+        value = sum(buf)
+        # print('expected value:', value)
+        if value != excepted:
+            raise RuntimeError('unexpected %s' % filename)
+
+    check_pyarmor_runtime(1000)
+
+You need uncomment line 8 to get the real value::
+
+    $ pyarmor gen foo.py
+    $ python dist/foo.py
+
+Replace line 12 ``1000`` with real value, and comment line 8 again.
+
+Then generate the final script, and verify it::
+
+    $ pyarmor gen foo.py
+    $ python dist/foo.py
+
+This example only shows how to do, it's not safe enough to use it directly. There is always a way to bypass open source check points, please write your private check code. There are many other methods to prevent binary file from hacking, please learn and search these methods by yourself.
+
+.. seealso:: :ref:`hooks` :func:`__pyarmor__`
+
 .. include:: ../_common_definitions.txt
