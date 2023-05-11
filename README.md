@@ -62,7 +62,7 @@ Refer to [Pyarmor licenses][licenses] for information on license types, features
 
 Please read the [Pyarmor EULA](LICENSE).
 
-[licenses]: https://pyarmor.readthedocs.io/en/stable/licenses.html
+[licenses]: https://pyarmor.readthedocs.io/en/latest/licenses.html
 
 ## Getting Help
 
@@ -78,7 +78,7 @@ Please read the [Pyarmor EULA](LICENSE).
 [genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
 [mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
 [asking]: https://pyarmor.readthedocs.io/en/stable/questions.html#asking-questions-in-github
-[doc]: https://pyarmor.readthedocs.io/en/stable/
+[doc]: https://pyarmor.readthedocs.io/
 
 ## Resources
 
