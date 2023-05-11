@@ -35,7 +35,7 @@ Pyarmor has 3 kind of licenses:
 
     Pyarmor Basic
 
-        Basic license could unlock limitations (1) (2) (5) (7).
+        Basic license could unlock limitations (1) (2) (4) (5) (7).
 
         Each obfuscation need online verify license.
 
