@@ -32,6 +32,44 @@ runtime_package_template = '''# Pyarmor $rev, $timestamp
 from .pyarmor_runtime import __pyarmor__
 '''
 
+multi_runtime_package_template = '''# Pyarmor $rev, $timestamp
+def __pyarmor__()
+    from platform import system, machine
+    from struct import calcsize
+
+    def format_system():
+        plat = system().lower()
+        return 'windows' if plat.startswith('cygwin') else \
+        'linux' if plat.startswith('linux') else plat
+
+    def format_machine(plat):
+        mach = machine().lower()
+        arch_table = (
+            ('x86', ('i386', 'i486', 'i586', 'i686')),
+            ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
+            ('arm', ('armv5',)),
+            ('armv6', ('armv6l',)),
+            ('armv7', ('armv7l',)),
+            ('aarch32', ('aarch32',)),
+            ('aarch64', ('aarch64', 'arm64'))
+        )
+        for alias, archlist in arch_table:
+            if x in archlist:
+                mach = alias
+                break
+        return mach
+
+    plat, mach = format_system(), format_machine()
+    if plat == 'windows' and mach == 'x86_64':
+        bitness = calcsize('P'.encode()) * 8
+        if bitness == 32:
+            mach = 'x86'
+
+    name = '.'.join(['', '_'.join([plat, mach]), 'pyarmor_runtime'])
+    return __import__(name, globals(), locals(), ['__pyarmor__'])
+__pyarmor__ = __pyarmor__().__pyarmor__
+'''
+
 runtime_package_template2 = '''# Pyarmor $rev, $timestamp
 for suffix in '', '_a1', '_a2', '_a3':
     try:
@@ -115,10 +153,6 @@ class Context(object):
         self.runtime_keyfile = '.pyarmor.ikey'
 
         self.bootstrap_template = bootstrap_template
-        self.runtime_package_templates = (
-            runtime_package_template,
-            runtime_package_template2,
-        )
 
         # Alias format for duplicated input names
         self.alias_suffix = '{0}-{1}'
@@ -558,6 +592,10 @@ class Context(object):
             cfg = self._named_config(name, encoding=encoding)
             if cfg.has_section('runtime.message'):
                 return cfg
+
+    def runtime_package_template(self, platforms):
+        return runtime_package_template if len(platforms) == 1 else \
+            multi_runtime_package_template
 
     #
     # RFT settings
