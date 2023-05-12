@@ -57,11 +57,7 @@ def query_keyinfo(key):
     name = data['name']
     email = data['email']
     if name and email:
-        return 'This code is authorized to "%s <%s>"\n\n' \
-            'Note: the registration name and email got from ' \
-            'remote server is shown here only, they will not be used ' \
-            'anywhere else. But the code "%s" will be distributed ' \
-            'with obfusated scripts.' % (name, email, key)
+        return 'License to: "%s <%s>"' % (name, email)
 
     if 'error' in data:
         return '\nError: %s' % data['error']
