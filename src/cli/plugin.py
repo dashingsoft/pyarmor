@@ -104,7 +104,7 @@ class CodesignPlugin:
             identity = '-'
             cmdlist = ['codesign', '-s', identity, '--force',
                        '--all-architectures', '--timestamp', dest]
-            p = Popen(cmdlist, stdout=PIPE, stderr=PIPE)
+            p = Popen(cmdlist, stdout=PIPE, stderr=PIPE, shell=True)
             stdout, stderr = p.communicate()
             if p.returncode != 0:
                 logger.warning(
