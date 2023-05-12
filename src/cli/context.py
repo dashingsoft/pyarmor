@@ -35,7 +35,7 @@ from .pyarmor_runtime import __pyarmor__
 runtime_package_template2 = '''# Pyarmor $rev, $timestamp
 for suffix in '', '_a1', '_a2', '_a3':
     try:
-        __pyarmor__ = __import__('pyarmor_runtime' + suffix,
+        __pyarmor__ = __import__('.pyarmor_runtime' + suffix,
                                  globals(), locals(),
                                  ('__pyarmor__',),
                                  0).__pyarmor__
