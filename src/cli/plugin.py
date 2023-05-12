@@ -93,3 +93,22 @@ class PycPlugin:
                 if x.endswith('.pyc'):
                     pycname = os.path.join(path, x)
                     os.rename(pycname, pycname[:-1])
+
+
+class CodesignPlugin:
+
+    @staticmethod
+    def post_runtime(ctx, source, dest, platform):
+        if platform.startswith('darwin'):
+            from subprocess import Popen, PIPE
+            identity = '-'
+            cmdlist = ['codesign', '-s', identity, '--force',
+                       '--all-architectures', '--timestamp', dest]
+            p = Popen(cmdlist, stdout=PIPE, stderr=PIPE)
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                logger.warning(
+                    'codesign command (%r) failed with error code %d!\n'
+                    'stdout: %r\n'
+                    'stderr: %r',
+                    cmdlist, p.returncode, stdout, stderr)

@@ -46,6 +46,14 @@ else:
     raise ModuleNotFoundError('no pyarmor_runtime extension found')
 '''
 
+runtime_package_template3 = '''# Pyarmor $rev, $timestamp
+from importlib.machinery import ExtensionFileLoader
+from sysconfig import get_platform
+__pyarmor__ = ExtensionFileLoader(
+    '.pyarmor_runtime', __file__.replace('__init__.py', 'pyarmor_runtime.so')
+).load_module().__pyarmor__
+'''
+
 
 def format_platform(plat, arch):
     from struct import calcsize
