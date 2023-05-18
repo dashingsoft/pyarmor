@@ -104,6 +104,7 @@ class CodesignPlugin:
             identity = '-'
             cmdlist = ['codesign', '-s', identity, '--force',
                        '--all-architectures', '--timestamp', dest]
+            logger.info('%s', ' '.join(cmdlist))
             p = Popen(cmdlist, stdout=PIPE, stderr=PIPE, shell=True)
             stdout, stderr = p.communicate()
             if p.returncode != 0:
@@ -112,3 +113,45 @@ class CodesignPlugin:
                     'stdout: %r\n'
                     'stderr: %r',
                     cmdlist, p.returncode, stdout, stderr)
+
+
+class DylibPlugin:
+
+    @staticmethod
+    def post_runtime(ctx, source, dest, platform):
+        if platform.startswith('darwin'):
+            from subprocess import Popen, PIPE, check_output
+            from sys import version_info
+
+            output = check_output(['otool', '-L', dest])
+            for line in output.splitlines():
+                if line.find(b'@rpath/Python'):
+                    logger.debug('"%s" has been patched by DylibPlugin', dest)
+                    return
+
+            pyver = '%s.%s' % version_info[:2]
+            cmdlist = ['install_name_tool', '-change',
+                       '@rpath/lib/libpython%s.so' % pyver, '@rpath/Python',
+                       dest]
+            logger.info('%s', ' '.join(cmdlist))
+            p = Popen(cmdlist, stdout=PIPE, stderr=PIPE, shell=True)
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                logger.warning(
+                    'install_name_tool command failed with error code %d!\n'
+                    'stdout: %r\n'
+                    'stderr: %r',
+                    p.returncode, stdout, stderr)
+
+            identity = '-'
+            cmdlist = ['codesign', '-s', identity, '--force',
+                       '--all-architectures', '--timestamp', dest]
+            logger.info('%s', ' '.join(cmdlist))
+            p = Popen(cmdlist, stdout=PIPE, stderr=PIPE, shell=True)
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                logger.warning(
+                    'codesign command failed with error code %d!\n'
+                    'stdout: %r\n'
+                    'stderr: %r',
+                    p.returncode, stdout, stderr)

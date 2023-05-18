@@ -141,8 +141,15 @@ class Builder(object):
         finder = Finder(self.ctx)
         finder.process()
 
-        if packer and options.get('self_contained'):
-            finder.process_extra(packer.contents)
+        if packer:
+            if options.get('self_contained'):
+                finder.process_extra(packer.contents)
+            if getattr(packer, 'is_darwin_python', None):
+                sect = self.ctx.cfg['builder']
+                plugins = sect.get('plugins', '').split()
+                if 'DylibPlugin' not in plugins:
+                    logger.info('implicitly enable plugin "DylibPlugin"')
+                    sect.set('plugins', ' '.join(plugins + ['DylibPlugin']))
 
         Pytransform3.pre_build(self.ctx)
 

@@ -324,6 +324,10 @@ class Repacker:
                 self.pyztoc = pyzarch.toc
                 contents.append(extract_pyzarchive(name, pyzarch, buildpath))
 
+            elif (is_darwin and typecode == PKG_ITEM_BINARY and
+                  name.strip('.') == 'Python'):
+                self.is_darwin_python = True
+
         self.contents = contents
         self.one_file_mode = len(pkgtoc) > 10
 
