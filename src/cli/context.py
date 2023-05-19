@@ -33,7 +33,7 @@ from .pyarmor_runtime import __pyarmor__
 '''
 
 multi_runtime_package_template = '''# Pyarmor $rev, $timestamp
-def __pyarmor__()
+def __pyarmor__():
     from platform import system, machine
     from struct import calcsize
 
@@ -42,7 +42,7 @@ def __pyarmor__()
         return 'windows' if plat.startswith('cygwin') else \
         'linux' if plat.startswith('linux') else plat
 
-    def format_machine(plat):
+    def format_machine():
         mach = machine().lower()
         arch_table = (
             ('x86', ('i386', 'i486', 'i586', 'i686')),
@@ -54,7 +54,7 @@ def __pyarmor__()
             ('aarch64', ('aarch64', 'arm64'))
         )
         for alias, archlist in arch_table:
-            if x in archlist:
+            if mach in archlist:
                 mach = alias
                 break
         return mach
@@ -65,8 +65,8 @@ def __pyarmor__()
         if bitness == 32:
             mach = 'x86'
 
-    name = '.'.join(['', '_'.join([plat, mach]), 'pyarmor_runtime'])
-    return __import__(name, globals(), locals(), ['__pyarmor__'])
+    name = '.'.join(['_'.join([plat, mach]), 'pyarmor_runtime'])
+    return __import__(name, globals(), locals(), ['__pyarmor__'], level=1)
 __pyarmor__ = __pyarmor__().__pyarmor__
 '''
 
