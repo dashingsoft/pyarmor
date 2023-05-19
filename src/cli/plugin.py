@@ -92,7 +92,7 @@ class PycPlugin:
             for x in filenames:
                 if x.endswith('.pyc'):
                     pycname = os.path.join(path, x)
-                    os.rename(pycname, pycname[:-1])
+                    os.replace(pycname, pycname[:-1])
 
 
 class CodesignPlugin:
