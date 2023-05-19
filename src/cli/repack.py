@@ -178,6 +178,8 @@ def extract_pyzarchive(name, pyzarch, output):
             filepath = os.path.join(dirname, filename + '.pyc')
         elif typecode == PYZ_ITEM_DATA:
             filepath = os.path.join(dirname, filename)
+        elif typecode == PYZ_ITEM_NSPKG:
+            filepath = os.path.join(dirname, filename, '__init__.pyc')
         else:
             continue
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
@@ -227,6 +229,7 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtname, cipher=None):
             fullpath = os.path.join(extract_path, ptname)
             pytype = 'DATA'
         elif typecode == PYZ_ITEM_NSPKG:
+            fullpath = compile_item(name, os.path.join(ptname, '__init__.py'))
             fullpath = '-'
         else:
             raise ValueError('unknown PYZ item type "%s"' % typecode)
