@@ -582,7 +582,7 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-reg
         aliases=['register', 'r'],
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=reg_parser.__doc__,
-        help='register Pyarmor or upgrade Pyarmor license'
+        help='register Pyarmor or upgrade old Pyarmor license'
     )
 
     cparser.add_argument(
