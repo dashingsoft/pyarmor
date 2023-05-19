@@ -134,4 +134,23 @@ Purchasing
 
 .. _FindMyOrder page: https://www.findmyorder.com/store?Action=DisplayEmailCustomerServicePage&Env=BASE&Locale=en_US&SiteID=findmyor
 
+Misc.
+=====
+
+**What is the ECCN or rating of Pyarmor (EAR99,5D99S,5D002 or other type ECCN)?**
+
+  EAR99
+
+**Does Pyarmor contain any encryption capabilities?**
+
+  Pyarmor uses AES/RSA etc., but it hasn’t its own encryption algorithms.
+
+**What is the country of origin of this package?**
+
+  China
+
+**Where is the final built for Pyarmor?**
+
+  https://pypi.org/project/pyarmor/
+
 .. include:: _common_definitions.txt
