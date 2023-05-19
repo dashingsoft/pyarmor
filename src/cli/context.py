@@ -39,8 +39,8 @@ def __pyarmor__():
 
     def format_system():
         plat = system().lower()
-        return 'windows' if plat.startswith('cygwin') else \
-        'linux' if plat.startswith('linux') else plat
+        return ('windows' if plat.startswith('cygwin') else
+                'linux' if plat.startswith('linux') else plat)
 
     def format_machine():
         mach = machine().lower()
