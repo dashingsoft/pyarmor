@@ -184,7 +184,7 @@ def check_gen_context(ctx, args):
     if ctx.runtime_platforms:
         if ctx.enable_themida and not ctx.pyarmor_platform.startswith('win'):
             raise CliError('--enable_themida only works for Windows')
-        if not set(ctx.runtime_platforms) == set([ctx.pyarmor_runtime]):
+        if not set(ctx.runtime_platforms) == set([ctx.pyarmor_platform]):
             if enable_bcc:
                 raise CliError('bcc mode does not support cross platform')
             check_cross_platform(ctx, ctx.runtime_platforms)
