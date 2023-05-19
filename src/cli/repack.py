@@ -6,7 +6,7 @@ import struct
 import tempfile
 
 from importlib._bootstrap_external import _code_to_timestamp_pyc
-from subprocess import check_call
+from subprocess import check_call, check_output, DEVNULL
 
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
@@ -242,7 +242,8 @@ def repack_carchive(executable, pkgfile, buildpath, obfpath, rtentry):
     logical_toc = pkgarch.get_logical_toc(buildpath, obfpath)
     if rtentry is not None:
         logical_toc.append(rtentry)
-    CArchiveWriter2(pkgarch, pkgfile, logical_toc, pylib_name.decode('utf-8'))
+    pylib_name = pylib_name.strip(b'\x00').decode('utf-8')
+    CArchiveWriter2(pkgarch, pkgfile, logical_toc, pylib_name)
 
 
 def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
@@ -315,6 +316,10 @@ class Repacker:
         pkgarch = CArchiveReader2(executable)
         pkgtoc = pkgarch.get_toc()
 
+        with open(executable, 'rb') as fp:
+            *_, pylib_name = pkgarch.get_cookie_info(fp)
+        self.pylib_name = pylib_name.strip(b'\x00').decode('utf-8')
+
         for name, toc_entry in pkgtoc.items():
             logger.debug('extract %s', name)
             *_, typecode = toc_entry
@@ -323,10 +328,6 @@ class Repacker:
                 pyzarch = pkgarch.open_pyzarchive(name)
                 self.pyztoc = pyzarch.toc
                 contents.append(extract_pyzarchive(name, pyzarch, buildpath))
-
-            elif (is_darwin and typecode == PKG_ITEM_BINARY and
-                  name.strip('.') == 'Python'):
-                self.is_darwin_python = True
 
         self.contents = contents
         self.one_file_mode = len(pkgtoc) > 10
@@ -361,6 +362,8 @@ class Repacker:
 
         if is_darwin:
             from PyInstaller.depend import dylib
+            if self.pylib_name == 'Python':
+                self._fixup_darwin_dylib(rtbinary)
             logger.debug('mac_set_relative_dylib_deps "%s"', rtbinname)
             dylib.mac_set_relative_dylib_deps(rtbinary, rtbinname)
 
@@ -371,3 +374,24 @@ class Repacker:
             shutil.copy2(rtbinary, dest)
 
         repack_executable(executable, buildpath, obfpath, rtentry)
+
+    def _fixup_darwin_dylib(self, rtbinary):
+        from sys import version_info
+        pyver = '%s.%s' % version_info[:2]
+        output = check_output(['otool', '-L', rtbinary])
+        for line in output.splitlines():
+            if line.find(b'libpython%s.dylib' % pyver.encode()) > 0:
+                reflib = line.split()[0].decode('utf-8')
+                break
+            elif line.find(b'@rpath/Python') > 0:
+                return
+        else:
+            raise RuntimeError('fixup dylib failed, no CPython library found')
+
+        cmdlist = ['install_name_tool', '-change', reflib, '@rpath/Python',
+                   rtbinary]
+        logger.info('%s', ' '.join(cmdlist))
+        try:
+            check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
+        except Exception as e:
+            logger.warning('install_name_tool command failed with:\n%s', e)
