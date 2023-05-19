@@ -91,17 +91,18 @@ Each :term:`Pyarmor Group` could have 100 offline devices, each device has its o
 
 Basic use steps:
 
-1. Using activate file :file:`pyarmor-regcode-xxxx.txt` to initial registration, set product name bind to this license, and generate :term:`registration file`
+1. Using activation file :file:`pyarmor-regcode-xxxx.txt` to initial registration, set product name bind to this license, and generate :term:`registration file` [#]_
 2. Generating group device file separately on each offline device
 3. Using :term:`registration file` and group device file to generate device registration file.
 4. Using device registration file to register Pyarmor on offline device [#]_
 
+.. [#] Pyarmor will review group license manually and enable it in 24 hours since activation file is sent.
 .. [#] The device registration file is bind to specified device, each device has its own device regfile
 
 Initial registration
 --------------------
 
-After purchasing :term:`Pyarmor Group`, an activate file :file:`pyarmor-regcode-xxxx.txt` is sent to registration email.
+After purchasing :term:`Pyarmor Group`, an activation file :file:`pyarmor-regcode-xxxx.txt` is sent to registration email.
 
 Initial registration need internet connection and Pyarmor 8.2+. Suppose product name is ``XXX``, then run this command::
 
