@@ -64,7 +64,7 @@ def _cmd_gen_runtime(builder, options):
     output = options.get('output', 'dist')
 
     logger.info('start to generate runtime package')
-    builder.generate_runtime(output)
+    builder.generate_runtime_package(output)
 
     keyname = os.path.join(output, builder.ctx.runtime_keyfile)
     logger.info('write "%s"', keyname)
