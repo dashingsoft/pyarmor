@@ -379,20 +379,19 @@ class Repacker:
         repack_executable(executable, buildpath, obfpath, rtentry)
 
     def _fixup_darwin_dylib(self, rtbinary):
-        from sys import version_info
-        pyver = '%s.%s' % version_info[:2]
+        from sys import version_info as pyver
+        pylib = '@rpath/Python'
         output = check_output(['otool', '-L', rtbinary])
         for line in output.splitlines():
-            if line.find(b'libpython%s.dylib' % pyver.encode()) > 0:
-                reflib = line.split()[0].decode('utf-8')
+            if line.find(b'libpython%d.%d.dylib' % pyver[:2]) > 0:
+                reflib = line.split()[0].decode()
                 break
-            elif line.find(b'@rpath/Python') > 0:
+            elif line.find(pylib.encode()) > 0:
                 return
         else:
             raise RuntimeError('fixup dylib failed, no CPython library found')
 
-        cmdlist = ['install_name_tool', '-change', reflib, '@rpath/Python',
-                   rtbinary]
+        cmdlist = ['install_name_tool', '-change', reflib, pylib, rtbinary]
         logger.info('%s', ' '.join(cmdlist))
         try:
             check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
