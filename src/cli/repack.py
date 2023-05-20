@@ -397,3 +397,8 @@ class Repacker:
             check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
         except Exception as e:
             logger.warning('install_name_tool command failed with:\n%s', e)
+
+        import PyInstaller.utils.osx as osxutils
+        if hasattr(osxutils, 'sign_binary'):
+            logger.info("re-signing extension pyarmor_runtime")
+            osxutils.sign_binary(rtbinary)
