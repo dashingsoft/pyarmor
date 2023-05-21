@@ -70,20 +70,6 @@ def __pyarmor__():
 __pyarmor__ = __pyarmor__().__pyarmor__
 '''
 
-runtime_package_template2 = '''# Pyarmor $rev, $timestamp
-for suffix in '', '_a1', '_a2', '_a3':
-    try:
-        __pyarmor__ = __import__('.pyarmor_runtime' + suffix,
-                                 globals(), locals(),
-                                 ('__pyarmor__',),
-                                 0).__pyarmor__
-        break
-    except ModuleNotFoundError:
-        pass
-else:
-    raise ModuleNotFoundError('no pyarmor_runtime extension found')
-'''
-
 runtime_package_template3 = '''# Pyarmor $rev, $timestamp
 from importlib.machinery import ExtensionFileLoader
 from sysconfig import get_platform
