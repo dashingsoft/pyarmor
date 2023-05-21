@@ -310,7 +310,10 @@ def cmd_reg(ctx, args):
         regsvr = WebRegister(ctx)
         info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
         prompt = 'Are you sure to continue? (yes/no) '
-        if input(msg + prompt) not in ('y', 'yes'):
+        if args.confirm:
+            from time import sleep
+            sleep(1.0)
+        elif input(msg + prompt) not in ('y', 'yes'):
             logger.info('abort registration')
             return
         # Free upgrade to Pyarmor Basic
