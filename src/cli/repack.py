@@ -304,9 +304,10 @@ def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
 
 class Repacker:
 
-    def __init__(self, executable, buildpath):
+    def __init__(self, executable, buildpath, codesign=None):
         self.executable = executable
         self.buildpath = buildpath
+        self.codesign = codesign
         self.extract_carchive(executable, buildpath)
 
     def extract_carchive(self, executable, buildpath, clean=True):
@@ -338,6 +339,7 @@ class Repacker:
     def repack(self, obfpath, rtname, entry=None):
         buildpath = self.buildpath
         executable = self.executable
+        codesign = self.codesign
         logger.info('repacking bundle "%s"', executable)
 
         obfpath = os.path.normpath(obfpath)
@@ -366,7 +368,7 @@ class Repacker:
         if is_darwin:
             from PyInstaller.depend import dylib
             if self.pylib_name == 'Python':
-                self._fixup_darwin_dylib(rtbinary)
+                self._fixup_darwin_rtbinary(rtbinary)
             logger.debug('mac_set_relative_dylib_deps "%s"', rtbinname)
             dylib.mac_set_relative_dylib_deps(rtbinary, rtbinname)
 
@@ -376,9 +378,9 @@ class Repacker:
             os.makedirs(dest, exist_ok=True)
             shutil.copy2(rtbinary, dest)
 
-        repack_executable(executable, buildpath, obfpath, rtentry)
+        repack_executable(executable, buildpath, obfpath, rtentry, codesign)
 
-    def _fixup_darwin_dylib(self, rtbinary):
+    def _fixup_darwin_rtbinary(self, rtbinary):
         from sys import version_info as pyver
         pylib = '@rpath/Python'
         output = check_output(['otool', '-L', rtbinary])
@@ -401,4 +403,4 @@ class Repacker:
         import PyInstaller.utils.osx as osxutils
         if hasattr(osxutils, 'sign_binary'):
             logger.info("re-signing extension pyarmor_runtime")
-            osxutils.sign_binary(rtbinary)
+            osxutils.sign_binary(rtbinary, codesign=self.codesign)
