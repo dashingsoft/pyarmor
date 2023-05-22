@@ -77,7 +77,7 @@ def _fixup_darwin(path, filename, pyver):
     if not os.access(path, os.W_OK):
         logging.error('please run Python with super user or anyone who has'
                       'write permission on path "%s"', path)
-        raise RuntimeError('current user has no permission')
+        raise RuntimeError('current user has no write permission')
 
     backup = fullpath + '.bak'
     if os.path.exists(backup):
@@ -116,11 +116,7 @@ def _fixup_windows(path, filename, pyver):
     logging.info('nothing to do in this platform')
 
 
-def main(path):
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(levelname)-8s %(message)s',
-    )
+def auto_fix(path):
     pyver = '%s.%s' % sys.version_info[:2]
     plat = sys.platform.lower()
 
@@ -137,5 +133,17 @@ def main(path):
         logging.info('nothing to fixup in this platform "%s"', plat)
 
 
+def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(levelname)-8s %(message)s',
+    )
+
+    logging.info('Python: %d.%d', *sys.version_info[:2])
+    pkgpath = os.path.join(os.path.dirname(__file__), 'core')
+    logging.info('pyarmor.cli.core: %s', pkgpath)
+    auto_fix(pkgpath)
+
+
 if __name__ == '__main__':
-    main(os.path.abspath(os.path.dirname(__file__)))
+    main()
