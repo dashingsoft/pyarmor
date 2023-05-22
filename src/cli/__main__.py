@@ -231,7 +231,7 @@ def cmd_gen(ctx, args):
         _cmd_gen_runtime(builder, options)
     elif args.pack:
         from .repack import Repacker
-        codesign = ctx.cfg['builder'].get('codesign', '-')
+        codesign = ctx.cfg['pack'].get('codesign', '-')
         packer = Repacker(args.pack, ctx.repack_path, codesign=codesign)
         builder.process(options, packer=packer)
         Plugin.post_build(ctx, pack=args.pack)
@@ -291,6 +291,7 @@ def cmd_reg(ctx, args):
             import webbrowser
             webbrowser.open(url)
         if not choice == 'y':
+            logger.info('abort upgrade')
             return
 
     if args.device:

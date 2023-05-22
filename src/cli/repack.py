@@ -288,10 +288,10 @@ def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
             logger.info('fixing EXE for code signing')
             import PyInstaller.utils.osx as osxutils
             osxutils.fix_exe_for_code_signing(executable)
-
+            # Since PyInstaller 4.4
             if hasattr(osxutils, 'sign_binary'):
                 logger.info("re-signing the EXE")
-                osxutils.sign_binary(executable, identity=codesign)
+                osxutils.sign_binary(executable, identify=codesign)
 
         elif is_win:
             # Set checksum to appease antiviral software.
@@ -368,7 +368,7 @@ class Repacker:
         if is_darwin:
             from PyInstaller.depend import dylib
             if self.pylib_name == 'Python':
-                self._fixup_darwin_rtbinary(rtbinary)
+                self._fixup_darwin_rtbinary(rtbinary, codesign=codesign)
             logger.debug('mac_set_relative_dylib_deps "%s"', rtbinname)
             dylib.mac_set_relative_dylib_deps(rtbinary, rtbinname)
 
@@ -380,7 +380,7 @@ class Repacker:
 
         repack_executable(executable, buildpath, obfpath, rtentry, codesign)
 
-    def _fixup_darwin_rtbinary(self, rtbinary):
+    def _fixup_darwin_rtbinary(self, rtbinary, codesign=None):
         from sys import version_info as pyver
         pylib = '@rpath/Python'
         output = check_output(['otool', '-L', rtbinary])
@@ -401,6 +401,7 @@ class Repacker:
             logger.warning('install_name_tool command failed with:\n%s', e)
 
         import PyInstaller.utils.osx as osxutils
+        # Since PyInstaller 4.4
         if hasattr(osxutils, 'sign_binary'):
-            logger.info("re-signing extension pyarmor_runtime")
-            osxutils.sign_binary(rtbinary, codesign=self.codesign)
+            logger.info('re-signing "%s"', os.path.basename(rtbinary))
+            osxutils.sign_binary(rtbinary, identify=codesign)
