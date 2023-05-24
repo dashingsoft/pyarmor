@@ -116,4 +116,25 @@ If it's not obfuscated, the final bundle will raise error.
 .. [#] Just let PyInstaller could find runtime package without extra pypath
 .. [#] Most of other PyInstaller options could be used here
 
+Segment fault in Apple M1
+=========================
+
+In Apple M1 if the final executable segment fault, please check codesign of runtime package::
+
+    $ codesign -v dist/foo/pyarmor_runtime_000000/pyarmor_runtime.so
+
+And re-sign it if code sign is invalid::
+
+    $ codesign -f -s dist/foo/pyarmor_runtime_000000/pyarmor_runtime.so
+
+If you use :option:`--enable-bcc` or :option:`--enable-jit` to obfuscate the scripts, you need enable `Allow Execution of JIT-compiled Code Entitlement`__
+
+If your app doesn’t have the new signature format, or is missing the DER entitlements in the signature, you’ll need to re-sign the app on a Mac running macOS 11 or later, which includes the DER encoding by default.
+
+If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign it from the command-line in macOS 10.14 and later. To do so, use the following command to re-sign the MyApp.app app bundle with DER entitlements by using a signing identity named "Your Codesign Identity" stored in the keychain::
+
+    $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
+
+__ https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
+
 .. include:: ../_common_definitions.txt

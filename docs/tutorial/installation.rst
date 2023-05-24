@@ -9,6 +9,30 @@
 
 .. highlight:: console
 
+Prerequisite
+============
+
+Pyarmor_ requires shared Python runtime library and C library.
+
+In Linux, please install shared Python runtime library when needed. For example, install Python 3.10 shared runtime library::
+
+    $ apt install libpython3.10
+
+In Darwin, make sure the file ``@rpath/lib/libpythonX.Y.dylib`` exists. ``X.Y`` stands for  Python major and minor version.
+
+For example::
+
+    @rpath/lib/libpython3.10.dylib
+
+``@rpath`` is one of:
+
+- @executable_path/..
+- @loader_path/..
+- /System/Library/Frameworks/Python.framework/Versions/3.10
+- /Library/Frameworks/Python.framework/Versions/3.10
+
+If there is no this file, please install necessary packages or re-build Python with enable shared option.
+
 .. _install-pypi:
 
 Installation from PyPI

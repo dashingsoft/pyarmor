@@ -52,6 +52,27 @@ When report bug in `issues`_, please copy the whole command line :command:`pyarm
     INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
 
+Segment fault in Apple
+======================
+
+Generally it's code sign issue.
+
+If segment fault when obfuscating scripts or registering Pyarmor, try to re-sign extension ``pytransform3.so``::
+
+    $ codesign -s - -f /path/to/lib/pythonX.Y/site-packages/pyarmor/cli/core/pytransform3.so
+
+If segment fault when launching obfuscated scripts, try to re-sign extension ``pyarmor_runtime.so``::
+
+    $ codesign -s - -f dist/pyarmor_runtime_000000/pyarmor_runtime.so
+
+If your app doesn’t have the new signature format, or is missing the DER entitlements in the signature, you’ll need to re-sign the app on a Mac running macOS 11 or later, which includes the DER encoding by default.
+
+If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign it from the command-line in macOS 10.14 and later. To do so, use the following command to re-sign the MyApp.app app bundle with DER entitlements by using a signing identity named "Your Codesign Identity" stored in the keychain::
+
+    $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
+
+Refer to https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format/
+
 Packing
 =======
 

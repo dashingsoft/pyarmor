@@ -151,7 +151,7 @@ Here list some outer errors. Most of them are caused by missing some system libr
 
 By searching error message in google or any other search engine to find the solution.
 
-- **Operation did not complete successfully because the file contains a virus or is potentially unwanted software question**
+**Operation did not complete successfully because the file contains a virus or is potentially unwanted software question**
 
   It's caused by Windows Defender, not Pyarmor. I'm sure Pyarmor is safe, but it uses some techniques which let anti-virus tools make wrong decision. The solutions what I thought of
 
@@ -159,7 +159,7 @@ By searching error message in google or any other search engine to find the solu
   2. Ask question in MSDN
   3. Google this error message
 
-- **Library not loaded: '@rpath/Frameworks/Python.framework/Versions/3.9/Python'**
+**Library not loaded: '@rpath/Frameworks/Python.framework/Versions/3.9/Python'**
 
   When Python is not installed in the standard path, or this Python is not Framework, pyarmor reports this error. The solution is using ``install_name_tool`` to change ``pytransform3.so``. For example, in `anaconda3` with Python 3.9, first search which CPython library is installed::
 
