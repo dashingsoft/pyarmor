@@ -52,8 +52,8 @@ When report bug in `issues`_, please copy the whole command line :command:`pyarm
     INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
 
-Segment fault in Apple
-======================
+Segment fault in Apple M1
+=========================
 
 Generally it's code sign issue.
 
@@ -71,7 +71,9 @@ If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign
 
     $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
 
-Refer to https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format/
+Refer to `Using the latest code signature format`__
+
+__ https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format/
 
 Packing
 =======

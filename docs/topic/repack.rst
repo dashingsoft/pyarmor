@@ -135,6 +135,9 @@ If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign
 
     $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
 
+.. seealso:: `Using the latest code signature format`__
+
 __ https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
+__ https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format/
 
 .. include:: ../_common_definitions.txt
