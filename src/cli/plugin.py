@@ -112,3 +112,30 @@ class CodesignPlugin:
                                e.returncode)
             except Exception as e:
                 logger.warning('codesign command failed with:\n%s', e)
+
+
+class PlatformTagPlugin:
+    '''Rename runtime extension "pyarmor_runtime" with platform tag.'''
+
+    @staticmethod
+    def post_runtime(ctx, source, dest, platform):
+        from sys import version_info
+        pyver = '%s%s' % version_info[:2]
+        if platform.startswith('windows.'):
+            tag = 'cp%s' % pyver
+            tagname = '.'.join(['pyarmor_runtime', tag, 'pyd'])
+            logger.info('rename "%s" to "%s"', dest, tagname)
+            os.rename(dest, dest.replace('pyarmor_runtime.pyd', tagname))
+        elif platform.startswith('darwin.'):
+            tag = 'cpython-%s-darwin' % pyver
+            tagname = '.'.join(['pyarmor_runtime', tag, 'so'])
+            logger.info('rename "%s" to "%s"', dest, tagname)
+            os.rename(dest, dest.replace('pyarmor_runtime.so', tagname))
+        elif platform.startswith('linux.'):
+            arch = platform.split('.')[1]
+            tag = 'cpython-%s-%s-linux-gnu' % (pyver, arch)
+            tagname = '.'.join(['pyarmor_runtime', tag, 'so'])
+            logger.info('rename "%s" to "%s"', dest, tagname)
+            os.rename(dest, dest.replace('pyarmor_runtime.so', tagname))
+        else:
+            raise RuntimeError('PlatformTagPlugin unknown "%s"' % platform)
