@@ -1,4 +1,5 @@
 .. highlight:: console
+.. program:: pyarmor gen
 
 ============================
  Protecting system packages
@@ -6,14 +7,49 @@
 
 .. versionadded:: 8.2
 .. versionchanged:: 8.2.2
-                    Do not use option ``--restrict``, it doesn't work.
+                    Do not use :option:`--restrict` with :option:`--pack`, it doesn't work.
 
-When packing the scripts, Pyarmor could also protect system packages in the bundle. These are necessary options to prevent system packages from be replaced by plain scripts::
+When packing the scripts, Pyarmor could also protect system packages in the bundle. The idea is to list all the dependent modules and packages and obfuscate them too.
+
+Here it's an example to protect system packages for script ``foo.py``.
+
+First generate a file ``file.list`` list all the dependent modules and packages of ``foo.py``::
+
+    $ pyi-makespec foo.py
+
+Then patch ``foo.spec``:
+
+.. code-block:: python
+
+    a = Analysis(
+        ...
+    )
+
+    # Patched by Pyarmor to generate file.list
+    _filelist = []
+    _package = None
+    for _src in sort([_src for _name, _src, _type in a.pure]):
+        if _src.endswith('__init__.py'):
+            _package = _src.replace('__init__.py', '')
+            _filelist.append(_package)
+        elif _package is None:
+            _filelist.append(_src)
+        elif not _src.startswith(_package):
+            _package = None
+            _filelist.append(_src)
+    with open('file.list', 'w') as _file:
+        _file.write('\n'.join(_filelist))
+    # End of patch
+
+Next pack ``foo.py`` by PyInstaller and generate :file:`file.list` at the same time::
 
     $ pyinstaller foo.py
-    $ pyarmor gen --assert-call --assert-import --pack dist/foo/foo foo.py
 
-.. seealso:: :doc:`protection`
+Finally repack the script with the following options::
+
+    $ pyarmor gen --assert-call --assert-import --pack dist/foo/foo foo.py @file.list
+
+This example only guides how to do, please write your own patch script and use other necessary options to obfuscate scripts. For example, you could manually edit :file:`file.list` to meet needs.
 
 ====================
  Fix encoding error

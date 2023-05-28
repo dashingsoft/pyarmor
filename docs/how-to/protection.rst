@@ -29,7 +29,7 @@ Pyarmor could prevent hacker from querying runtime data by valid Python C API an
 
 Above all, Python interpreter to run the obfuscated scripts can't be replaced, if the obfuscated scripts could be executed by patched Python interpreter, it's impossible to prevent others to read any Python runtime data.
 
-At this time Pyarmor need combine :option:`--pack` and restrict mode options to implement this.
+At this time Pyarmor need :option:`--pack` to implement this.
 
 First pack the script by `PyInstaller`_ [#]_::
 
@@ -38,7 +38,7 @@ First pack the script by `PyInstaller`_ [#]_::
 Next configure and repack the bundle, the following options are necessary [#]_::
 
     $ pyarmor cfg check_debugger=1 check_interp=1
-    $ pyarmor gen --mix-str --assert-call --assert-import --pack dist/foo/foo foo.py
+    $ pyarmor gen --mix-str --assert-call --assert-import --private --pack dist/foo/foo foo.py
 
 Then protect all the binary files in the output path :file:`dist/foo/` by external tools, make sure these binary files could not be replaced or modified in runtime.
 
