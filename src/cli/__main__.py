@@ -315,6 +315,7 @@ def cmd_reg(ctx, args):
 def main_parser():
     parser = argparse.ArgumentParser(
         prog='pyarmor',
+        fromfile_prefix_chars='@',
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(

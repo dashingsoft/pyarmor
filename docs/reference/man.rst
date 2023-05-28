@@ -167,6 +167,17 @@ All the paths in the command line will be taken as Python Package, package name 
 
 Do not use ``pyarmor gen src/*`` to obfuscate a package, it will obfuscate any file in the ``src``, even they're not python scripts.
 
+Since 8.2.2, it also supports list all the scripts and packages in one file, and pass it with prefix ``@``. For example::
+
+    pyarmor gen -r @filelist
+
+The content of :file:`filelist` includes 2 scripts and 2 packages::
+
+    src/foo.py
+    src/utils.py
+    libs/dbpkg
+    libs/config
+
 .. option:: -O PATH, --output PATH
 
 Set the output path for all the generated files, default is ``dist``
