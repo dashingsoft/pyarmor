@@ -390,6 +390,8 @@ class Repacker:
                 break
             elif line.find(pylib.encode()) > 0:
                 return
+            elif line.find(b'/Python ') > 0:
+                return
         else:
             raise RuntimeError('fixup dylib failed, no CPython library found')
 

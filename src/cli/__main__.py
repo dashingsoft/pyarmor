@@ -132,23 +132,6 @@ def format_gen_args(ctx, args):
         logger.info('implicitly set output to "%s"', dist_path)
         options['output'] = dist_path
 
-        if options.get('restrict_module', 0) > 2:
-            options['self_contained'] = 1
-            sect = ctx.cfg['assert.call']
-            if sect.get('includes'):
-                logger.warning('ignore assert.call:includes')
-            logger.debug('implicitly set ast.call:auto_mode to "or"')
-            logger.debug('implicitly set ast.call:includes to "*"')
-            sect['auto_mode'] = 'or'
-            sect['includes'] = '*'
-
-            sect = ctx.cfg['finder']
-            pyexts = sect['pyexts'].split()
-            if '.pyc' not in pyexts:
-                logger.debug('implicitly add ".pyc" to pyexts')
-                pyexts.append('.pyc')
-                sect['pyexts'] = ' '.join(pyexts)
-
     return options
 
 
