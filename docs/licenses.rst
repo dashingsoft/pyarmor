@@ -193,7 +193,7 @@ The old license could be upgraded to Pyarmor Basic freely only if it matches the
 
 If failed to upgrade the old license, please purchase new license to use Pyarmor latest version.
 
-The old license can't upgrade to Pyarmor Pro and Group.
+The old license can't be upgraded to Pyarmor Pro and Group.
 
 Upgrading old license to Pyarmor Basic
 --------------------------------------
