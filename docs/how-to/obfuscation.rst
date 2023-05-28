@@ -13,7 +13,9 @@ When packing the scripts, Pyarmor could also protect system packages in the bund
 
 Here it's an example to protect system packages for script ``foo.py``.
 
-First generate a file ``file.list`` list all the dependent modules and packages of ``foo.py``::
+We need generate a file ``file.list`` list all the dependent modules and packages of ``foo.py`` by using PyInstaller features.
+
+First generate ``foo.spec``::
 
     $ pyi-makespec foo.py
 
