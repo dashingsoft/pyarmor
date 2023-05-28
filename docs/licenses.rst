@@ -49,7 +49,7 @@ Pyarmor has 3 kind of licenses:
 
         Group license could unlock limitations (1) (2) (3) (4) (5) (7).
 
-        Offline obfuscation.
+        Offline obfuscation, it need not internet connection when obfuscating the scripts. At this time, this is the only difference between Pyarmor Group and Pyarmor Pro.
 
 Refer to :doc:`use Pyarmor License <how-to/register>`
 
@@ -189,6 +189,7 @@ The old license could be upgraded to Pyarmor Basic freely only if it matches the
 * Following new `EULA of Pyarmor`_
 * The license no. starts with ``pyarmor-vax-``
 * The original activation file ``pyarmor-regcode-xxxx.txt`` is used not more than 100 times and exists
+* The old license is purchased before June 1, 2023. In principle, the old license purchased after Pyarmor 8 is available could not be upgraded to new license.
 
 If failed to upgrade the old license, please purchase new license to use Pyarmor latest version.
 
