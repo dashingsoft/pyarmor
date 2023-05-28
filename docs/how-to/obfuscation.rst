@@ -5,11 +5,13 @@
 ============================
 
 .. versionadded:: 8.2
+.. versionchanged:: 8.2.2
+                    Do not use option ``--restrict``, it doesn't work.
 
 When packing the scripts, Pyarmor could also protect system packages in the bundle. These are necessary options to prevent system packages from be replaced by plain scripts::
 
     $ pyinstaller foo.py
-    $ pyarmor gen --assert-call --assert-import --restrict --pack dist/foo/foo foo.py
+    $ pyarmor gen --assert-call --assert-import --pack dist/foo/foo foo.py
 
 .. seealso:: :doc:`protection`
 
