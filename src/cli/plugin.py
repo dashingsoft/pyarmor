@@ -85,6 +85,7 @@ class Plugin(object):
 
 
 class PycPlugin:
+    '''Change all obfuscated scripts name entension from ".pyc" to ".py"'''
 
     @staticmethod
     def post_build(ctx, inputs, outputs, pack):
@@ -96,6 +97,7 @@ class PycPlugin:
 
 
 class CodesignPlugin:
+    '''codesign darwin runtime extension "pyarmor_runtime"'''
 
     @staticmethod
     def post_runtime(ctx, source, dest, platform):
@@ -138,3 +140,54 @@ class PlatformTagPlugin:
             os.rename(dest, dest.replace('pyarmor_runtime.so', tagname))
         else:
             raise RuntimeError('PlatformTagPlugin unknown "%s"' % platform)
+
+
+class MultiPythonPlugin:
+    '''Refine runtime package to support multiple python versions'''
+
+    RUNTIME_PATH = None
+    RUNTIME_FILES = []
+
+    @staticmethod
+    def post_runtime(ctx, source, dest, platform):
+        MultiPythonPlugin.RUNTIME_PATH = os.path.dirname(dest)
+        MultiPythonPlugin.RUNTIME_FILES.append(dest)
+
+    @staticmethod
+    def post_build(ctx, inputs, outputs, pack):
+        '''Rewrite runtime package __init__.py'''
+        from shutil import move
+        pyver = '%s%s' % ctx.python_version[:2]
+        platforms = ctx.target_platforms
+
+        native = len(platforms) == 1 and platforms[0] == ctx.native_platform
+        pkgpath = MultiPythonPlugin.RUNTIME_PATH if native else \
+            os.path.dirname(MultiPythonPlugin.RUNTIME_PATH)
+        verpath = os.path.join(pkgpath, pyver)
+        if not os.path.exists(verpath):
+            os.makedirs(verpath)
+
+        pkgscript = os.path.join(pkgpath, '__init__.py')
+        with open(pkgscript) as f:
+            lines = f.readlines()
+        start = 1 if lines[0].startswith('#') else 0
+
+        if native:
+            lines[start:] = '\n'.join([
+                'from sys import version_info',
+                '{0} = __import__("py%d%d.pyarmor_runtime" % version_info[:2],'
+                'globals(), locals(), ["$0"], 1).{0}'.format('__pyamor__')
+            ])
+            with open(pkgscript, 'w') as f:
+                f.write(''.join(lines))
+            for x in MultiPythonPlugin.RUNTIME_FILES:
+                move(x, verpath)
+        else:
+            lines[1:1] = 'from sys import version_info'
+            with open(pkgscript, 'w') as f:
+                f.write(''.join(lines).replace(
+                    "join(['_'", "join(['py%d%d' % version_info[:2], '_'"))
+            for x in MultiPythonPlugin.RUNTIME_FILES:
+                move(os.path.dirname(x), verpath)
+
+        MultiPythonPlugin.clear()
