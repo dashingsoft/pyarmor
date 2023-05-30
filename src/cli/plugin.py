@@ -185,7 +185,7 @@ class MultiPythonPlugin:
             for x in MultiPythonPlugin.RUNTIME_FILES:
                 move(x, verpath)
         else:
-            lines[1:1] = 'from sys import version_info'
+            lines[start:start] = 'from sys import version_info\n'
             with open(pkgscript, 'w') as f:
                 f.write(''.join(lines).replace(
                     "join(['_'", "join(['py%d%d' % version_info[:2], '_'"))
