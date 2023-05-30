@@ -52,10 +52,10 @@ When report bug in `issues`_, please copy the whole command line :command:`pyarm
     INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
 
-Segment fault in Apple M1
-=========================
+Segment fault in Apple
+======================
 
-Generally it's code sign issue.
+**Generally it's code sign issue**
 
 If segment fault when obfuscating scripts or registering Pyarmor, try to re-sign extension ``pytransform3.so``::
 
@@ -71,9 +71,55 @@ If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign
 
     $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
 
-Refer to `Using the latest code signature format`__
+Refer to Apple offical documentation `Using the latest code signature format`__
+
+**Using otool and install_name_tool to fix Python library issue**
+
+The prebuilt ``pytrnasform.so`` and ``pyarmor_runtime.so`` need Python shared library, if there is no found Python shared library, it may crash. To display the names and version numbers of the shared libraries that the object file uses::
+
+    $ otool -L /path/to/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
+
+    /path/to/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so:
+	pytransform3.so (compatibility version 0.0.0, current version 1.0.0)
+	@rpath/lib/libpython3.9.dylib (compatibility version 3.9.0, current version 3.9.0)
+        ...
+
+And ``rpath`` is configured by::
+
+    $ install_name_tool -id pytrnsform3.so \
+            -change $deplib @rpath/lib/libpython$ver.dylib \
+            -add_rpath @executable_path/.. \
+            -add_rpath @loader_path/.. \
+            -add_rpath /System/Library/Frameworks/Python.framework/Versions/$ver \
+            -add_rpath /Library/Frameworks/Python.framework/Versions/$ver \
+            build/$host/libs/cp$ver/$name.so
+
+So check there is ``@rpath/lib/libpython3.9.dylib``. If it doesn't exists, please adapt to current Python by using ``install_name_tool``. Suppose current Python shared library is ``/usr/local/Python.framework/Versions/3.9/Python``::
+
+    $ install_name_tool -change @rpath/lib/libpython3.9.dylib /usr/local/Python.framework/Versions/3.9/Python \
+            /path/to/lib/pythonX.Y/site-packages/pyarmor/cli/core/pytransform3.so
+
+How to find current Python shared library, please search network to find answer. Note that some Python may not built with shared library, it can't work with Pyarmor, please rebuild Python with shared library to fix this kind of issue.
+
+It's same for ``dist/pyarmor_runtime_000000/pyarmor_runtime.so``.
+
+Refer to Apple offical documentation `Run-Path Dependent Libraries`__
+
+**If there are many same version Python installed, make sure pytransform3.so or pyarmor_runtime.so links to the right one**
+
+**Application settings**
+
+Pyarmor uses JIT to improve security, In Apple M1, it need extra entitlements. Check Python entitlements::
+
+    $ codesign -d --entitlements - $(which python)
+
+Refer to Apple offical documentation `Allow Execution of JIT-compiled Code Entitlement`__
+
+**Check system segment fault log, and search solution by error message**
 
 __ https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format/
+__ https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/RunpathDependentLibraries.html
+__ https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
 
 Packing
 =======
