@@ -26,7 +26,8 @@ from importlib.util import spec_from_file_location, module_from_spec
 from . import logger
 
 
-__all__ = ['PycPlugin', 'CodesignPlugin']
+__all__ = ['CodesignPlugin', 'MultiPythonPlugin', 'PlatformTagPlugin',
+           'PycPlugin']
 
 
 class Plugin(object):
@@ -156,16 +157,17 @@ class MultiPythonPlugin:
     @staticmethod
     def post_build(ctx, inputs, outputs, pack):
         '''Rewrite runtime package __init__.py'''
-        from shutil import move
-        pyver = '%s%s' % ctx.python_version[:2]
+        from shutil import move, rmtree
+        pyver = 'py%s%s' % ctx.python_version[:2]
         platforms = ctx.target_platforms
 
         native = len(platforms) == 1 and platforms[0] == ctx.native_platform
         pkgpath = MultiPythonPlugin.RUNTIME_PATH if native else \
             os.path.dirname(MultiPythonPlugin.RUNTIME_PATH)
         verpath = os.path.join(pkgpath, pyver)
-        if not os.path.exists(verpath):
-            os.makedirs(verpath)
+        if os.path.exists(verpath):
+            rmtree(verpath)
+        os.makedirs(verpath)
 
         pkgscript = os.path.join(pkgpath, '__init__.py')
         with open(pkgscript) as f:
@@ -176,7 +178,7 @@ class MultiPythonPlugin:
             lines[start:] = '\n'.join([
                 'from sys import version_info',
                 '{0} = __import__("py%d%d.pyarmor_runtime" % version_info[:2],'
-                'globals(), locals(), ["$0"], 1).{0}'.format('__pyamor__')
+                ' globals(), locals(), ["{0}"], 1).{0}'.format('__pyarmor__')
             ])
             with open(pkgscript, 'w') as f:
                 f.write(''.join(lines))
@@ -190,4 +192,4 @@ class MultiPythonPlugin:
             for x in MultiPythonPlugin.RUNTIME_FILES:
                 move(os.path.dirname(x), verpath)
 
-        MultiPythonPlugin.clear()
+        MultiPythonPlugin.RUNTIME_FILES.clear()
