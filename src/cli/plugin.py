@@ -176,8 +176,8 @@ class MultiPythonPlugin:
 
         if native:
             lines[start:] = '\n'.join([
-                'from sys import version_info',
-                '{0} = __import__("py%d%d.pyarmor_runtime" % version_info[:2],'
+                'from sys import version_info as py_version',
+                '{0} = __import__("py%d%d.pyarmor_runtime" % py_version[:2],'
                 ' globals(), locals(), ["{0}"], 1).{0}'.format('__pyarmor__')
             ])
             with open(pkgscript, 'w') as f:
@@ -185,10 +185,10 @@ class MultiPythonPlugin:
             for x in MultiPythonPlugin.RUNTIME_FILES:
                 move(x, verpath)
         else:
-            lines[start:start] = 'from sys import version_info\n'
+            lines[start:start] = 'from sys import version_info as py_version\n'
             with open(pkgscript, 'w') as f:
                 f.write(''.join(lines).replace(
-                    "join(['_'", "join(['py%d%d' % version_info[:2], '_'"))
+                    "join(['_'", "join(['py%d%d' % py_version[:2], '_'"))
             for x in MultiPythonPlugin.RUNTIME_FILES:
                 move(os.path.dirname(x), verpath)
 

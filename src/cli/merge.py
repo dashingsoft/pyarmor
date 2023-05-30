@@ -139,11 +139,14 @@ def merge_runtimes(paths, rname, output):
                 shutil.copytree(x.path, dest)
 
 
-def scan_runtime(paths):
+def scan_runtime(paths, marker=None):
+    if marker is None:
+        marker = 'from sys import version_info as py_version'
     refpath = os.path.normpath(paths[-1])
     logger.info('scan runtime package in the path: %s', refpath)
 
     n = len(refpath) + 1
+
     for root, dirs, files in os.walk(refpath):
         for x in files:
             if x == '__init__.py':
@@ -152,7 +155,7 @@ def scan_runtime(paths):
                     for line in f:
                         if line.startswith('#'):
                             continue
-                        if line.startswith('from sys import version_info'):
+                        if line.startswith(marker):
                             return filename[n:-12]
                         break
 
