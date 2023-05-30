@@ -412,9 +412,32 @@ Using :option:`--platform` multiple times to support multiple platforms. For exa
 Obfuscating scripts for multiple Pythons
 ========================================
 
-.. versionadded:: 8.x
-                  This feature is still not implemented
+.. versionadded:: 8.3
 
-.. Use helper script `merge.py`
+This guide how to obfuscate the script `foo.py` which could be run by Python 3.8 and 3.9.
+
+First install Pyarmor for each Python version::
+
+    $ python3.8 -m pip install pyarmor
+    $ python3.9 -m pip install pyarmor
+
+If you have Pyarmor license, register Pyarmor by any Python version::
+
+    $ python3.8 -m pyarmor.cli reg pyarmor-regfile-xxxx.zip
+
+Enable builtin plugin ``MultiPythonPlugin`` by any Python version::
+
+    $ python3.8 -m pyarmor.cli cfg plugins + "MultiPythonPlugin"
+
+Obfuscate the script by each Python version, each Python version has its own output path::
+
+    $ python3.8 -m pyarmor.cli gen -O dist1 foo.py
+    $ python3.9 -m pyarmor.cli gen -O dist2 foo.py
+
+Then merge 2 output paths by any Python version::
+
+    $ python3.8 -m pyarmor.cli.merge -O dist dist1 dist2
+
+The final output path is ``dist``
 
 .. include:: ../_common_definitions.txt
