@@ -33,12 +33,6 @@ def is_pyscript(filename):
     return os.path.splitext(filename)[-1].lower() in ('.py', '.pyw')
 
 
-def makedirs(path, exist_ok=False):
-    if not (exist_ok and os.path.exists(path)):
-        if path:
-            os.makedirs(path)
-
-
 def parse_script(filename):
     with open(filename) as f:
         for line in f:
@@ -70,11 +64,11 @@ def parse_header(code):
     return infos
 
 
-def merge_script(name, paths, dest):
+def merge_scripts(name, paths, dest):
     scripts = [os.path.join(p, name) for p in paths]
 
     refscript = scripts.pop(0)
-    refitem = parse_script(refscript, reflines)
+    refitem = parse_script(refscript)
 
     if refitem is None:
         logger.info('copy script, it is not obfuscated')
@@ -82,11 +76,10 @@ def merge_script(name, paths, dest):
         return
 
     refmark = 'xxxxxx'
-    refcode = eval(refcode[-1])
+    refcode = eval(refitem[-1])
     with open(refscript) as f:
         refdata = f.read().replace(refitem[-1], refmark)
 
-    merged_vers = set()
     pieces = []
 
     for script in reversed(scripts):
@@ -101,10 +94,10 @@ def merge_script(name, paths, dest):
         pieces.append(refcode[offset:offset+size])
 
     with open(dest, 'w') as f:
-        f.write(refdata.replace(refmark, repr(b''.join(pieces)))
+        f.write(refdata.replace(refmark, repr(b''.join(pieces))))
 
 
-def merge_scripts(paths, output, runtime_name=None):
+def merge_paths(paths, output, runtime_name=None):
     refpath = os.path.normpath(paths[-1])
     rpath = os.path.join(refpath, runtime_name) if runtime_name else None
 
@@ -122,7 +115,7 @@ def merge_scripts(paths, output, runtime_name=None):
             dest = os.path.join(destpath, x)
             logger.info('handle "%s"', dest)
             if is_pyscript(x):
-                merge_script(os.path.join(name, x), paths, dest)
+                merge_scripts(os.path.join(name, x), paths, dest)
             else:
                 shutil.copy2(os.path.join(root, x), dest)
 
@@ -157,8 +150,11 @@ def scan_runtime(paths):
                 filename = os.path.join(root, x)
                 with open(filename) as f:
                     for line in f:
+                        if line.startswith('#'):
+                            continue
                         if line.startswith('from sys import version_info'):
                             return filename[n:-12]
+                        break
 
     raise RuntimeError('no runtime package found')
 
@@ -214,7 +210,7 @@ def main():
         logging.info('merging runtime files OK')
 
     logging.info('merging obfuscated scripts...')
-    merge_scripts(args.path, runtime_name, output)
+    merge_paths(args.path, runtime_name, output)
     logging.info('merging obfuscated scripts OK')
 
     logger.info('merge all the scripts to %s successfully', output)
