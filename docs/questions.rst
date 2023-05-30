@@ -71,7 +71,7 @@ If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign
 
     $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
 
-Refer to Apple offical documentation `Using the latest code signature format`__
+Refer to Apple official documentation `Using the latest code signature format`__
 
 **Using otool and install_name_tool to fix Python library issue**
 
@@ -103,7 +103,7 @@ How to find current Python shared library, please search network to find answer.
 
 It's same for ``dist/pyarmor_runtime_000000/pyarmor_runtime.so``.
 
-Refer to Apple offical documentation `Run-Path Dependent Libraries`__
+Refer to Apple official documentation `Run-Path Dependent Libraries`__
 
 **If there are many same version Python installed, make sure pytransform3.so or pyarmor_runtime.so links to the right one**
 
@@ -113,7 +113,7 @@ Pyarmor uses JIT to improve security, In Apple M1, it need extra entitlements. C
 
     $ codesign -d --entitlements - $(which python)
 
-Refer to Apple offical documentation `Allow Execution of JIT-compiled Code Entitlement`__
+Refer to Apple official documentation `Allow Execution of JIT-compiled Code Entitlement`__
 
 **Check system segment fault log, and search solution by error message**
 
