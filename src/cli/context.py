@@ -580,7 +580,7 @@ class Context(object):
                 return cfg
 
     def runtime_package_template(self, platforms):
-        return runtime_package_template if len(platforms) == 1 else \
+        return runtime_package_template if len(platforms) < 2 else \
             multi_runtime_package_template
 
     #

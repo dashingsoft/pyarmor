@@ -119,8 +119,7 @@ class PlatformTagPlugin:
 
     @staticmethod
     def post_runtime(ctx, source, dest, platform):
-        from sys import version_info
-        pyver = '%s%s' % version_info[:2]
+        pyver = '%s%s' % ctx.python_version[:2]
         if platform.startswith('windows.'):
             tag = 'cp%s' % pyver
             tagname = '.'.join(['pyarmor_runtime', tag, 'pyd'])
