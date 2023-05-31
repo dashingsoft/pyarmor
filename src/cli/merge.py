@@ -75,7 +75,7 @@ def merge_scripts(name, paths, dest):
         shutil.copy2(refscript, dest)
         return
 
-    refmark = 'xxxxxx'
+    refmark = '--xxxxxx--'
     refcode = eval(refitem[-1])
     with open(refscript) as f:
         refdata = f.read().replace(refitem[-1], refmark)
@@ -87,11 +87,14 @@ def merge_scripts(name, paths, dest):
         if not item:
             raise RuntimeError('"%s" is not an obfuscated script' % script)
         code = eval(item[-1])
-        pieces.extend([code[:56], struct.pack("i", len(code)), code[60:]])
+        infos = parse_header(code)
+        off, size, pyver = infos[-1]
+        logger.debug('merge py%s.%s at %d (%d)', *pyver, off, size)
+        pieces.extend([code[:off+56], struct.pack("i", size), code[off+60:]])
 
-    refinfos = parse_header(refcode)
-    for offset, size, ver in refinfos:
-        pieces.append(refcode[offset:offset+size])
+    for off, size, pyver in parse_header(refcode):
+        logger.debug('merge py%s.%s at %d (%d)', *pyver, off, size)
+        pieces.append(refcode[off:off+size])
 
     with open(dest, 'w') as f:
         f.write(refdata.replace(refmark, repr(b''.join(pieces))))
