@@ -88,7 +88,10 @@ class Plugin(object):
     @staticmethod
     def post_bcc(ctx, res, csource):
         for plugin in [x for x in ctx.plugins if hasattr(x, 'post_bcc')]:
-            plugin.post_bcc(ctx, res, csource)
+            patched_csource = plugin.post_bcc(ctx, res, csource)
+            if patched_csource:
+                csource = patched_csource
+        return csource
 
 
 class PycPlugin:
