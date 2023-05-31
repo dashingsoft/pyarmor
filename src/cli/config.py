@@ -151,7 +151,9 @@ class Configer(object):
                 self._clear(sect, optname, local, name)
             return
 
-        old = cfg[sect].get(optname, '') if cfg.has_section(sect) else ''
+        ctxcfg = ctx.cfg
+        old = ctxcfg[sect].get(optname, '') if ctxcfg.has_section(sect) else ''
+
         if op == '+':
             if (optvalue + ' ').find(old + ' ') == -1:
                 optvalue = ('%s %s' % (old, optvalue)).strip()
