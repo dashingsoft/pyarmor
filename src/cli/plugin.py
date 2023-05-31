@@ -37,6 +37,7 @@ class Plugin(object):
 
     @staticmethod
     def install(ctx, pkg='pyarmor.cli.plugin'):
+        ctx.Plugin = Plugin
 
         for pname in ctx.cfg['builder'].get('plugins', '').split():
             if pname in __all__:
@@ -83,6 +84,11 @@ class Plugin(object):
     def post_runtime(ctx, source, dest, platform):
         for plugin in [x for x in ctx.plugins if hasattr(x, 'post_runtime')]:
             plugin.post_runtime(ctx, source, dest, platform)
+
+    @staticmethod
+    def post_bcc(ctx, res, csource):
+        for plugin in [x for x in ctx.plugins if hasattr(x, 'post_bcc')]:
+            plugin.post_bcc(ctx, res, csource)
 
 
 class PycPlugin:
