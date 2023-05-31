@@ -291,7 +291,7 @@ def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
             # Since PyInstaller 4.4
             if hasattr(osxutils, 'sign_binary'):
                 logger.info("re-signing the EXE")
-                osxutils.sign_binary(executable, identify=codesign)
+                osxutils.sign_binary(executable, identity=codesign)
 
         elif is_win:
             # Set checksum to appease antiviral software.
@@ -406,4 +406,4 @@ class Repacker:
         # Since PyInstaller 4.4
         if hasattr(osxutils, 'sign_binary'):
             logger.info('re-signing "%s"', os.path.basename(rtbinary))
-            osxutils.sign_binary(rtbinary, identify=codesign)
+            osxutils.sign_binary(rtbinary, identity=codesign)
