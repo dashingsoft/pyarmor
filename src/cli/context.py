@@ -541,6 +541,8 @@ class Context(object):
             rules.append('check-debugger')
         if cfg.getboolean('check_interp', False):
             rules.append('check-interp')
+        if self.runtime_hook('pyarmor_runtime'):
+            rules.append('py:bootstrap')
         return '\n'.join(rules)
 
     @property
@@ -562,13 +564,7 @@ class Context(object):
             else:
                 data = filename.encode()
 
-        hook = b''
-        filename = os.path.join(self.local_path, 'hooks', 'pyarmor_runtime.py')
-        if os.path.exists(filename):
-            with open(filename, 'rb') as f:
-                hook = f.read()
-
-        return hook, data
+        return data
 
     @property
     def runtime_messages(self):
