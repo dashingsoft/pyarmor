@@ -38,8 +38,7 @@ def parse_script(filename):
         for line in f:
             if line.startswith('__pyarmor__('):
                 i = line.find('(')
-                j = line.find(')')
-                return line[i+1:j].split(',')
+                return line.strip()[i+1:-1].split(', ')
 
 
 def parse_header(code):
@@ -96,13 +95,14 @@ def merge_scripts(name, paths, dest):
         logger.debug('merge py%s.%s at %d (%d)', *pyver, off, size)
         pieces.append(refcode[off:off+size])
 
+    logger.info('write "%s"', dest)
     with open(dest, 'w') as f:
         f.write(refdata.replace(refmark, repr(b''.join(pieces))))
 
 
-def merge_paths(paths, output, runtime_name=None):
+def merge_paths(paths, rname, output):
     refpath = os.path.normpath(paths[-1])
-    rpath = os.path.join(refpath, runtime_name) if runtime_name else None
+    rpath = os.path.join(refpath, rname) if rname else None
 
     n = len(refpath) + 1
     for root, dirs, files in os.walk(refpath):
@@ -138,15 +138,15 @@ def merge_runtimes(paths, rname, output):
             raise RuntimeError('no runtime package found')
         for x in os.scandir(rpath):
             if x.is_dir():
-                logger.info('copy runtime files "%s"', x.name)
-                shutil.copytree(x.path, dest)
+                logger.info('copy runtime files "%s" to "%s"', x.name, dest)
+                shutil.copytree(x.path, os.path.join(dest, x.name))
 
 
 def scan_runtime(paths, marker=None):
     if marker is None:
         marker = 'from sys import version_info as py_version'
     refpath = os.path.normpath(paths[-1])
-    logger.info('scan runtime package in the path: %s', refpath)
+    logger.info('scan runtime package in the path "%s"', refpath)
 
     n = len(refpath) + 1
 
@@ -181,7 +181,7 @@ def main():
         epilog='merge Pyarmor 8 obfuscated scripts')
 
     parser.add_argument('-O', '--output',
-                        default='merged_dist',
+                        default='dist',
                         help='Default output path: %(default)s)')
     parser.add_argument('-d', '--debug',
                         default=False,
@@ -219,7 +219,7 @@ def main():
     merge_paths(args.path, runtime_name, output)
     logging.info('merging obfuscated scripts OK')
 
-    logger.info('merge all the scripts to %s successfully', output)
+    logger.info('merge all the scripts to "%s" successfully', output)
 
 
 if __name__ == '__main__':
