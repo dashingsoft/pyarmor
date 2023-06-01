@@ -32,11 +32,11 @@ Supported Python versions
 Supported platforms
 ===================
 
-.. table:: Table-2. Supported Platforms
+.. table:: Table-2. Supported Platforms (1)
    :widths: auto
 
    ===================  ============  ========  =======  ============  =========  =======  =======
-   OS                     Windows           Apple                    Linux
+   OS                     Windows           Apple                    Linux [#]_
    -------------------  ------------  -----------------  -----------------------------------------
    Arch                  x86/x86_64    x86_64    arm64    x86/x86_64    aarch64    armv7    armv6
    ===================  ============  ========  =======  ============  =========  =======  =======
@@ -47,10 +47,26 @@ Supported platforms
    pyarmor-7 [#]_            Y           Y         Y          Y           Y        Y         Y
    ===================  ============  ========  =======  ============  =========  =======  =======
 
+.. table:: Table-3. Supported Platforms (2) [#]_
+   :widths: auto
+
+   ===================  ============  ============  =========
+   OS                     FreeBSD          Alpine Linux
+   -------------------  ------------  -----------------------
+   Arch                    x86_64        x86_64      aarch64
+   ===================  ============  ============  =========
+   pyarmor 8 RFT Mode        Y             Y           Y
+   pyarmor 8 BCC Mode        Y             Y           Y
+   pyarmor 8 others          Y             Y           Y
+   pyarmor-7                 Y             Y           Y
+   ===================  ============  ============  =========
+
 .. rubric:: notes
 
 .. [#] ``N/y`` means not yet now, but will be supported in future.
+.. [#] This Linux is built with glibc
 .. [#] pyarmor-7 also supports more linux arches, refer to `Pyarmor 7.x platforms`__.
+.. [#] These platforms are introduced in Pyarmor 8.3
 
 .. important::
 
