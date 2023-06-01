@@ -329,7 +329,12 @@ class Context(object):
     @property
     def target_platforms(self):
         platforms = self.cmd_options.get('platforms')
-        return platforms if platforms else [self.native_platform]
+        if not platforms:
+            return [self.native_platform]
+
+        if self._optb('builder', 'enable_themida'):
+            platforms = [x.replace('windows', 'winthemida') for x in platforms]
+        return platforms
 
     def _check_logpath(self, logfile):
         path = os.path.dirname(logfile)
