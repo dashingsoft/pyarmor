@@ -47,7 +47,7 @@ Release schedule: 2023-07-01
 - Support `--enable-themida`
 - pyarmor-webui for 8.0
 - Support multiple Python versions
-- Support platforms: Android, Arch Linux (musl-c), FreeBSD
+- Support platforms: Android, Alpine Linux (musl-c/docker), FreeBSD
 
 **8.x**
 
