@@ -199,9 +199,61 @@ A hook script is a normal Python script, it could do everything Python could do.
 
 Note that all the source lines in the hook script are inserted into module level of original script, be careful to avoid name conflicts.
 
-.. There is a special hook script ``.pyarmor/hooks/pyarmor_runtime.py`` will be embedded into extension `pyarmor_runtime` init function.
-
 .. seealso:: :func:`__pyarmor__`  :func:`__assert_armored__`
+
+Special hook script
+-------------------
+
+.. versionadded:: 8.3
+
+If want to do something before obfuscated scripts are executed, it need use a special hook script ``.pyarmor/hooks/pyarmor_runtime.py``, it will be called when initializing Python extension `pyarmor_runtime`.
+
+First create script ``.pyarmor/hooks/pyarmor_runtime.py`` and define all in the hook function :func:`bootstrap`, only this function will be called.
+
+.. function:: bootstrap(user_data)
+
+   :param bytes user_data: user data in runtime key
+   :return: False, quit and raise protection exception
+   :raises SystemExit: quit without traceback
+   :raises ohter Exception: quit with traceback
+
+An example script:
+
+.. code-block:: python
+
+    def bootstrap(user_data):
+        # Import everything in the function, not in the module level
+        import sys
+        import time
+        from struct import calcsize
+
+        print('user data is', user_data)
+
+        # Check platform
+        if sys.platform == 'win32' and calcsize('P'.encode()) * 8 == 32:
+            raise SystemExit('no support for 32-bit windows')
+
+        # Check debugger in Windows
+        if sys.platform == 'win32':
+            from ctypes import windll
+            if windll.kernel32.IsDebuggerPresent():
+                print('found debugger')
+                return False
+
+        # In this example, user_data is timestamp
+        if time.time() > int(user_data.decode()):
+            return False
+
+Check it, first copy this script to ``.pyarmor/hooks/pyarmor_runtime.py``::
+
+    $ pyarmor gen --bind-data 12345 foo.py
+    $ python dist/foo.py
+
+    user data is b'12345'
+    Traceback (most recent call last):
+      File "dist/foo.py", line 2, in <module>
+      ...
+    RuntimeError: unauthorized use of script (1:10325)
 
 .. _target environments:
 

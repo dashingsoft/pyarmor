@@ -114,12 +114,19 @@ Using this real hook script to generate the final bundle::
 
 **Runtime Patch**
 
-.. versionadded:: 8.x
-
-                  It's not implemented.
+.. versionadded:: 8.3
 
 Pyarmor provides runtime patch feature so that users could write one C or python script to do any anti-debug or other checks. It will be embedded into :term:`runtime files`, and called on extension module ``pyarmor_runtime`` initialization.
 
-The idea is to make a file  :file:`.pyarmor/hooks/pyarmor_runtime.py` or :file:`.pyarmor/hooks/pyarmor_runtime.c`, it will be inserted into runtime files when building obfuscated scripts.
+First create script :file:`.pyarmor/hooks/pyarmor_runtime.py`, and do some checks in the function :func:`bootstrap`. For example:
+
+.. code-block:: python
+
+   def bootstrap(user_data):
+       from ctypes import windll
+       if windll.kernel32.IsDebuggerPresent():
+           print('found debugger')
+           return False
+
 
 .. include:: ../_common_definitions.txt
