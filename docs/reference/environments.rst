@@ -50,16 +50,16 @@ Supported platforms
 .. table:: Table-3. Supported Platforms (2) [#]_
    :widths: auto
 
-   ===================  ============  ============  =========
-   OS                     FreeBSD          Alpine Linux
-   -------------------  ------------  -----------------------
-   Arch                    x86_64        x86_64      aarch64
-   ===================  ============  ============  =========
-   pyarmor 8 RFT Mode        Y             Y           Y
-   pyarmor 8 BCC Mode        Y             Y           Y
-   pyarmor 8 others          Y             Y           Y
-   pyarmor-7                 Y             Y           Y
-   ===================  ============  ============  =========
+   ===================  ============  =========  =========  ============  =========  =======  =======
+   OS                     FreeBSD        Alpine Linux                      Android
+   -------------------  ------------  --------------------  -----------------------------------------
+   Arch                    x86_64      x86_64     aarch64    x86/x86_64    aarch64    armv7    armv6
+   ===================  ============  =========  =========  ============  =========  =======  =======
+   pyarmor 8 RFT Mode        Y            Y          Y           Y           Y          Y       No
+   pyarmor 8 BCC Mode        Y            Y          Y           Y           Y          Y       No
+   pyarmor 8 others          Y            Y          Y           Y           Y          Y       No
+   pyarmor-7                 Y            Y          Y           Y           Y          Y       Y
+   ===================  ============  =========  =========  ============  =========  =======  =======
 
 .. rubric:: notes
 

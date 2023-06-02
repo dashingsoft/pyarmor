@@ -77,6 +77,16 @@
       * Apple Intel and Silicon
           - darwin.x86_64
           - darwin.aarch64 or darwin.arm64
+      * FreeBSD
+          - freebsd.x86_64
+      * Alpine Linux (musl-c)
+          - alpine.x86_64
+          - alpine.aarch64
+      * Android
+          - android.x86_64
+          - android.x86
+          - android.aarch64
+          - android.armv7
 
   Plugin script
 
