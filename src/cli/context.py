@@ -34,16 +34,29 @@ from .pyarmor_runtime import __pyarmor__
 
 multi_runtime_package_template = '''# Pyarmor $rev, $timestamp
 def __pyarmor__():
-    from platform import system, machine
+    import platform
+    import sys
     from struct import calcsize
 
     def format_system():
-        plat = system().lower()
-        return ('windows' if plat.startswith('cygwin') else
-                'linux' if plat.startswith('linux') else plat)
+        plat = platform.system().lower()
+        plat = ('windows' if plat.startswith('cygwin') else
+                'linux' if plat.startswith('linux') else
+                'freebsd' if plat.startswith(
+                    ('freebsd', 'openbsd', 'isilon onefs')) else plat)
+        if plat == 'linux':
+            if hasattr(sys, 'getandroidapilevel'):
+                plat = 'android'
+            else:
+                cname, cver = platform.libc_ver()
+                if cname == 'musl':
+                    plat = 'alpine'
+                elif cname == 'libc':
+                    plat = 'android'
+        return plat
 
     def format_machine():
-        mach = machine().lower()
+        mach = platform.machine().lower()
         arch_table = (
             ('x86', ('i386', 'i486', 'i586', 'i686')),
             ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
