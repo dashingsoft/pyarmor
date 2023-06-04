@@ -394,7 +394,12 @@ Then obfuscate the package again.
 
             Enable each function obfuscation (default is 1)
 
-Mode ``2`` is new in Pyarmor 8.2, more security than ``1``.
+Mode ``2`` is new in Pyarmor 8.2, more security than ``1``, it's used to obfuscate attribute name in chains. For example::
+
+    obj.attr          ==> getattr(obj, 'xxxx')
+    obj.attr = value  ==> setattr(obj, 'xxxx', value)
+
+Generally when RFT Mode is available, it need not this option.
 
 .. option:: --no-wrap
 
