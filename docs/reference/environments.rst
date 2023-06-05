@@ -230,6 +230,7 @@ First create script ``.pyarmor/hooks/pyarmor_runtime.py`` and define all in the 
 
    :param bytes user_data: user data in runtime key
    :return: False, quit and raise protection exception
+            Any others, continue to execute the obfuscated scripts.
    :raises SystemExit: quit without traceback
    :raises ohter Exception: quit with traceback
 
