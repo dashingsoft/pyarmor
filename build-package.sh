@@ -47,7 +47,7 @@ $PYTHON setup.py sdist --formats=zip,bztar,gztar
 clear_build
 
 # Build universal wheel
-$PYTHON setup.py bdist_wheel --universal
+$PYTHON setup.py bdist_wheel --python-tag=py3
 clear_build
 
 clear_platform_files
