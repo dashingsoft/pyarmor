@@ -3,6 +3,7 @@
 import logging
 import os
 import shutil
+import sys
 import time
 import unittest
 
@@ -216,6 +217,18 @@ class UnitTestCases(BaseTestCase):
     def test_bind_device(self):
         hdinfo = 'FV994730S6LLF07AY', 'f8:ff:c2:27:00:7f', '192.168.121.100'
         args = ['g', '-b', ' '.join(hdinfo), 'samples/foo.py']
+        self.pyarmor_gen(args)
+        self.verify_dist_foo()
+
+    @unittest.skipUnless(sys.platform.startswith('win'), 'only for windows')
+    def test_themida_script(self):
+        args = ['g', '--enable-themida', 'samples/foo.py']
+        self.pyarmor_gen(args)
+        self.verify_dist_foo()
+
+    @unittest.skipUnless(sys.platform.startswith('win'), 'only for windows')
+    def test_themida_bcc(self):
+        args = ['g', '--enable-themida', '--enable-bcc', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
