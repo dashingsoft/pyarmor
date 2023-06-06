@@ -31,7 +31,7 @@ from .config import Configer
 from .shell import PyarmorShell
 from .plugin import Plugin
 from .generate import Builder
-from .bootstrap import check_runtime_package
+from .bootstrap import check_prebuilt_runtime_library
 
 
 def _cmd_gen_key(builder, options):
@@ -166,12 +166,12 @@ def check_gen_context(ctx, args):
     if platforms and set(platforms) != set([ctx.pyarmor_platform]):
         if ctx.enable_bcc:
             raise CliError('bcc mode does not support cross platform')
-        rtver = ctx.cfg['pyarmor'].get('cli.runtime', None)
-        check_runtime_package(platforms, ctx.enable_themida, rtver)
+        rtver = ctx.cfg['pyarmor'].get('cli.runtime', '')
+        check_prebuilt_runtime_library(platforms, ctx.enable_themida, rtver)
 
     elif ctx.enable_themida:
-        rtver = ctx.cfg['pyarmor'].get('cli.runtime', None)
-        check_runtime_package([], ['themida'], rtver)
+        rtver = ctx.cfg['pyarmor'].get('cli.runtime', '')
+        check_prebuilt_runtime_library([], ['themida'], rtver)
 
     if ctx.enable_bcc:
         plat, arch = ctx.pyarmor_platform.split('.')

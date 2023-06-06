@@ -27,7 +27,7 @@ import sys
 from subprocess import check_output, check_call, Popen, PIPE
 
 
-def check_runtime_package(platnames, extra=None, rtver=None):
+def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
     pkgpath = os.path.normpath(os.path.dirname(__file__))
     corepath = os.path.join(pkgpath, 'core')
     if not os.path.exists(corepath):
@@ -35,7 +35,9 @@ def check_runtime_package(platnames, extra=None, rtver=None):
                            'install it'.format('pyarmor.cli.core'))
 
     # Before Pyarmor 8.3, prefer to "pyarmor.cli.runtime"
-    if rtver:
+    # It could be disabled by
+    #     pyarmor cfg pyarmor:cli.runtime = false
+    if rtver.find('.') == -1:
         runtime_pkgpath = os.path.join(pkgpath, 'runtime')
         if os.path.exists(runtime_pkgpath):
             from pyarmor.cli.runtime import __VERSION__ as current_rtver
@@ -52,6 +54,7 @@ def check_runtime_package(platnames, extra=None, rtver=None):
         except Exception:
             logging.warning('failed to install "%s"' % pkgver)
 
+    # From Pyarmor 8.3, prefer to "pyarmor.cli.core.PLATFORM"
     from pyarmor.cli.core import __VERSION__ as corever
 
     pkgnames = set(extra if isinstance(extra, list) else
