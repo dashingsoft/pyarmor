@@ -24,18 +24,38 @@ import os
 import shutil
 import sys
 
-from subprocess import check_output, Popen, PIPE
+from subprocess import check_output, check_call, Popen, PIPE
 
 
-def check_runtime_package(platnames, extra=None):
-    corepath = os.path.join(os.path.dirname(__file__), 'core')
+def check_runtime_package(platnames, rtver, extra=None):
+    pkgpath = os.path.normpath(os.path.dirname(__file__))
+    corepath = os.path.join(pkgpath, 'core')
     if not os.path.exists(corepath):
         raise RuntimeError('no found "{0}", please run "pip install {0}" to '
                            'install it'.format('pyarmor.cli.core'))
 
+    runtime_pkgpath = os.path.join(pkgpath, 'runtime')
+    if os.path.exists(runtime_pkgpath):
+        from pyarmor.cli.runtime import __VERSION__ as current_rtver
+        if current_rtver == rtver:
+            return
+
+    pipcmd = [sys.executable, '-m', 'pip', 'install',
+              '--disable-pip-version-check']
+
+    vername = 'pyarmor.cli.runtime==%s' % rtver
+    logging.info('install runtime package "%s" for cross platforms', vername)
+    try:
+        return check_call(pipcmd + [vername])
+    except Exception:
+        logging.warning('failed to install "%s"' % vername)
+
     from pyarmor.cli.core import __VERSION__ as corever
 
-    pkgnames = set(['themida'] if extra is True else extra if extra else [])
+    pkgnames = set(['themida'] if extra is True else
+                   [extra] if isinstance(extra, str) else
+                   extra if isinstance(extra, list) else [])
+
     for plat in platnames:
         pkgnames.add(plat.split('.')[0])
 
@@ -46,15 +66,16 @@ def check_runtime_package(platnames, extra=None):
                     if line.startswith('__VERSION__'):
                         rtver = line.strip().split()[-1].strip("'")
                         if rtver == corever:
-                            pkgnames.pop(entry.name)
+                            pkgnames.remove(entry.name)
 
     if pkgnames:
         pkgvers = ['pyarmor.cli.core.%s==%s' % (x, corever) for x in pkgnames]
-        cmdlist = [sys.executable, '-m', 'pip', 'install'] + pkgvers
-        logging.info('install runtime packages for cross platforms')
-        rc, err = _shell_cmd(cmdlist)
-        if rc:
-            logging.error('%s', err)
+        logging.info('install runtime packages "%s" for cross platforms',
+                     ', '.join(pkgvers))
+        try:
+            check_call(pipcmd + pkgvers)
+        except Exception as e:
+            logging.error('%s', e)
             raise RuntimeError('failed to install runtime packages')
 
 

@@ -166,10 +166,12 @@ def check_gen_context(ctx, args):
     if platforms and set(platforms) != set([ctx.pyarmor_platform]):
         if ctx.enable_bcc:
             raise CliError('bcc mode does not support cross platform')
-        check_runtime_package(ctx, platforms, extra=bool(ctx.enable_themida))
+        rtver = ctx.cfg.get('pyarmor', 'cli.runtime')
+        check_runtime_package(platforms, rtver, extra=bool(ctx.enable_themida))
 
     elif ctx.enable_themida:
-        check_runtime_package(ctx, [], ['themida'])
+        rtver = ctx.cfg.get('pyarmor', 'cli.runtime')
+        check_runtime_package([], rtver, extra=['themida'])
 
     if ctx.enable_bcc:
         plat, arch = ctx.pyarmor_platform.split('.')
