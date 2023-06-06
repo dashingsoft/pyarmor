@@ -27,6 +27,37 @@ import sys
 from subprocess import check_output, Popen, PIPE
 
 
+def check_runtime_package(platnames, extra=None):
+    corepath = os.path.join(os.path.dirname(__file__), 'core')
+    if not os.path.exists(corepath):
+        raise RuntimeError('no found "{0}", please run "pip install {0}" to '
+                           'install it'.format('pyarmor.cli.core'))
+
+    from pyarmor.cli.core import __VERSION__ as corever
+
+    pkgnames = set(['themida'] if extra is True else extra if extra else [])
+    for plat in platnames:
+        pkgnames.add(plat.split('.')[0])
+
+    for entry in os.scandir(corepath):
+        if entry.name in pkgnames:
+            with open(os.path.join(entry.path, '__init__.py')) as f:
+                for line in f:
+                    if line.startswith('__VERSION__'):
+                        rtver = line.strip().split()[-1].strip("'")
+                        if rtver == corever:
+                            pkgnames.pop(entry.name)
+
+    if pkgnames:
+        pkgvers = ['pyarmor.cli.core.%s==%s' % (x, corever) for x in pkgnames]
+        cmdlist = [sys.executable, '-m', 'pip', 'install'] + pkgvers
+        logging.info('install runtime packages for cross platforms')
+        rc, err = _shell_cmd(cmdlist)
+        if rc:
+            logging.error('%s', err)
+            raise RuntimeError('failed to install runtime packages')
+
+
 def _shell_cmd(cmdlist):
     logging.info('run: %s', ' '.join(cmdlist))
     p = Popen(cmdlist, stdout=PIPE, stderr=PIPE, shell=True)
@@ -140,9 +171,9 @@ def main():
     )
 
     logging.info('Python: %d.%d', *sys.version_info[:2])
-    pkgpath = os.path.join(os.path.dirname(__file__), 'core')
-    logging.info('pyarmor.cli.core: %s', pkgpath)
-    auto_fix(pkgpath)
+    corepath = os.path.join(os.path.dirname(__file__), 'core')
+    logging.info('pyarmor.cli.core: %s', corepath)
+    auto_fix(corepath)
 
 
 if __name__ == '__main__':

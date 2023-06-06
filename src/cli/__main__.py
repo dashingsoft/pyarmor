@@ -31,6 +31,7 @@ from .config import Configer
 from .shell import PyarmorShell
 from .plugin import Plugin
 from .generate import Builder
+from .bootstrap import check_runtime_package
 
 
 def _cmd_gen_key(builder, options):
@@ -161,22 +162,22 @@ def check_cross_platform(ctx, platforms):
 
 
 def check_gen_context(ctx, args):
-    enable_bcc = args.enable_bcc or (args.enables and 'bcc' in args.enables)
-    if ctx.runtime_platforms:
-        if ctx.enable_themida and not ctx.pyarmor_platform.startswith('win'):
-            raise CliError('--enable_themida only works for Windows')
-        if not set(ctx.runtime_platforms) == set([ctx.pyarmor_platform]):
-            if enable_bcc:
-                raise CliError('bcc mode does not support cross platform')
-            check_cross_platform(ctx, ctx.runtime_platforms)
+    platforms = ctx.runtime_platforms
+    if platforms and set(platforms) != set([ctx.pyarmor_platform]):
+        if ctx.enable_bcc:
+            raise CliError('bcc mode does not support cross platform')
+        check_runtime_package(ctx, platforms, extra=bool(ctx.enable_themida))
 
-    if enable_bcc:
+    elif ctx.enable_themida:
+        check_runtime_package(ctx, [], ['themida'])
+
+    if ctx.enable_bcc:
         plat, arch = ctx.pyarmor_platform.split('.')
         if arch not in ('x86_64', 'aarch64', 'x86', 'armv7'):
             raise CliError('bcc mode still not support arch "%s"' % arch)
 
-    if ctx.cmd_options['no_runtime'] and not ctx.runtime_outer:
-        raise CliError('--no_runtime must be used with --outer')
+    if ctx.cmd_options.get('no_runtime') and not ctx.runtime_outer:
+        raise CliError('--outer is required if using --no_runtime')
 
     if ctx.use_runtime and not ctx.runtime_outer:
         if os.path.exists(ctx.use_runtime):
