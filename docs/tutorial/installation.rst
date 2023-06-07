@@ -110,19 +110,34 @@ First install :mod:`pyarmor.cli.core`
 
 Next install :mod:`pyarmor`
 
-If need cross platform obfuscation, also install :mod:`pyarmor.cli.runtime`.
+For example, install offline Pyarmor 8.2.5 in Linux for Python 3.10::
 
-For example::
+    $ pip install pyarmor.cli.core-3.2.5-cp310-none-manylinux1_x86_64.whl
+    $ pip install pyarmor-8.2.5.zip
 
-    $ pip install pyarmor.cli.core-3.2.4-cp310-none-manylinux1_x86_64.whl
-    $ pip install pyarmor-8.2.4.zip
-    $ pip install pyarmor.cli.runtime-3.2.5-cp310-none-any.whl
+In Android or FreeBSD, there is no wheel in :mod:`pyarmor.cli.core`, it should install source distribution and extra package :mod:`pyarmor.cli.core.android` or :mod:`pyarmor.cli.core.freebsd`. For example, install offline Pyarmor in Android for Python 3.10::
 
-In Android or FreeBSD, there is no wheel in :mod:`pyarmor.cli.core`, it should install source distribution and extra package :mod:`pyarmor.cli.core.android` or :mod:`pyarmor.cli.core.freebsd`. For example, in Android install Pyarmor offline by this way::
+    $ pip install pyarmor.cli.core-3.2.5.zip
+    $ pip install pyarmor.cli.core.android-3.2.5-cp310-none-any.whl
+    $ pip install pyarmor-8.2.5.zip
 
-    $ pip install pyarmor.cli.core-3.2.4.zip
-    $ pip install pyarmor.cli.core.android-3.2.4-cp310-none-any.whl
-    $ pip install pyarmor-8.2.4.zip
+If need cross platform obfuscation, also install the corresponding `pyarmor.cli.core.NAME`
+
+- :mod:`pyarmor.cli.core.freebsd`
+- :mod:`pyarmor.cli.core.android`
+- :mod:`pyarmor.cli.core.windows`
+- :mod:`pyarmor.cli.core.themida`
+- :mod:`pyarmor.cli.core.linux`
+- :mod:`pyarmor.cli.core.alpine`
+- :mod:`pyarmor.cli.core.darwin`
+
+For example, if need Themida protection, then install themida package::
+
+    $ pip install pyarmor.cli.themida-3.2.5-cp310-none-any.whl
+
+In Linux to generate for Windows, install windows package::
+
+    $ pip install pyarmor.cli.windows-3.2.5-cp310-none-any.whl
 
 Run Pyarmor from Python script
 ==============================
