@@ -125,6 +125,10 @@ If it has an error code, it could be customized.
 
        2. try it again it may works.
 
+   * -
+     - Protection Exception
+     - If using :option:`--assert-call` or :option:`assert-import`, check section `Filter assert function and import` in the :doc:`../tutorial/advanced`, ignore those problem functions and modules by the traceback.
+
 **Error messages reported by Python interpreter**
 
 Generally they are not pyarmor issues. Please consult Python documentation or google error message to fix them.
