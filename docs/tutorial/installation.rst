@@ -118,7 +118,7 @@ For example::
     $ pip install pyarmor-8.2.4.zip
     $ pip install pyarmor.cli.runtime-3.2.5-cp310-none-any.whl
 
-In Android or FreeBSD, there is no wheel in :mod:`pyarmor.cli.core`, it should install source distribution and :mod:`pyarmor.cli.core.android` or :mod:`pyarmor.cli.core.freebsd`. For example, in Android::
+In Android or FreeBSD, there is no wheel in :mod:`pyarmor.cli.core`, it should install source distribution and extra package :mod:`pyarmor.cli.core.android` or :mod:`pyarmor.cli.core.freebsd`. For example, in Android install Pyarmor offline by this way::
 
     $ pip install pyarmor.cli.core-3.2.4.zip
     $ pip install pyarmor.cli.core.android-3.2.4-cp310-none-any.whl

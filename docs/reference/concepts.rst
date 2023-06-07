@@ -197,13 +197,36 @@
     In which run the obfuscated scripts distributed by :term:`Pyarmor Users`, generally it's in customer side
 
 .. module:: pyarmor
-    :synopsis: A command line tool used to obfuscate Python scripts
+    :synopsis: A command line tool used to obfuscate Python scripts. This package provides cli command for both Pyarmor 7 and Pyarmor 8
 
 .. module:: pyarmor.cli
+    :synopsis: A command line tool used to obfuscate Python scripts. This package provides only Pyarmor 8 cli
+
 .. module:: pyarmor.cli.core
-    :synopsis: A binary wheel to provide extension modules to pyarmor
+    :synopsis: A binary wheel to provide prebulit extension modules `pytransform3` which is required to run Pyarmor
 
 .. module:: pyarmor.cli.runtime
-    :synopsis: An universal wheel is used for cross-platform obfuscation
+    :synopsis: An universal wheel is used for cross-platform obfuscation, it provides prebuilt extension modules `pyarmor_runtime` which is required to run the obfuscated scripts in all supported platforms
+
+.. module:: pyarmor.cli.core.android
+    :synopsis: It's required in Android for Pyarmor, it provides prebuilt extension modules both `pytransform3` and `pyarmor_runtime` for Android
+
+.. module:: pyarmor.cli.core.freebsd
+    :synopsis: It's required in FreeBSD for Pyarmor, it provides prebuilt extension modules both `pytransform3` and `pyarmor_runtime` for FreeBSD
+
+.. module:: pyarmor.cli.core.windows
+    :synopsis: It's used for cross-platform obfuscation, only provides all prebuilt extensions `pyarmor_runtime` in Windows
+
+.. module:: pyarmor.cli.core.themida
+    :synopsis: It's used for cross-platform obfuscation, only provides all prebuilt extensions `pyarmor_runtime` in Windows and protected by Themida
+
+.. module:: pyarmor.cli.core.linux
+    :synopsis: It's used for cross-platform obfuscation, only provides all prebuilt extensions `pyarmor_runtime` in Linux with glibc
+
+.. module:: pyarmor.cli.core.alpine
+    :synopsis: It's used for cross-platform obfuscation, only provides all prebuilt extensions `pyarmor_runtime` in Alpine Linux (musl-c)
+
+.. module:: pyarmor.cli.core.darwin
+    :synopsis: It's used for cross-platform obfuscation, only provides all prebuilt extensions `pyarmor_runtime` in Darwin
 
 .. include:: ../_common_definitions.txt
