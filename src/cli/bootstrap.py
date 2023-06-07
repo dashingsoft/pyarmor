@@ -37,7 +37,7 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
     # Before Pyarmor 8.3, prefer to "pyarmor.cli.runtime"
     # It could be disabled by
     #     pyarmor cfg pyarmor:cli.runtime = false
-    if rtver.find('.') == -1:
+    if rtver.find('.') > 0:
         runtime_pkgpath = os.path.join(pkgpath, 'runtime')
         if os.path.exists(runtime_pkgpath):
             from pyarmor.cli.runtime import __VERSION__ as current_rtver
