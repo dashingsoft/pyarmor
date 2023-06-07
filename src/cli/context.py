@@ -145,7 +145,6 @@ class Context(object):
         cfglist = self.default_config, self.global_config, self.local_config
         self.cfg = self._read_config(cfglist, encoding=encoding)
 
-        self.inline_plugin_marker = '# pyarmor: '
         # self.runtime_package = 'pyarmor_runtime'
         # self.runtime_suffix = '_000000'
         # default inner key filename within runtime package
@@ -482,6 +481,12 @@ class Context(object):
     def use_runtime(self):
         return self.cmd_options.get('use_runtime',
                                     self.cfg['builder'].get('use_runtime'))
+
+    @property
+    def inline_plugin_marker(self):
+        marker = self.cfg['builder'].get('inline_plugin_marker', 'false')
+        if marker.lower() not in ('', 'false', '0'):
+            return '# %s: ' % marker
 
     #
     # runtime configuration
