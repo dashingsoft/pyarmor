@@ -125,10 +125,22 @@
 
     A :term:`Python Package`, it includes
 
-      * :mod:`pyarmor`
-      * :mod:`pyarmor.cli`
-      * :mod:`pyarmor.cli.core`
-      * :mod:`pyarmor.cli.runtime`
+      - :mod:`pyarmor`
+      - :mod:`pyarmor.cli`
+      - :mod:`pyarmor.cli.core`
+      - :mod:`pyarmor.cli.runtime`
+
+    Since Pyarmor 8.3, :mod:`pyarmor.cli.runtime` is split into serval packages:
+
+      - :mod:`pyarmor.cli.core.freebsd`
+      - :mod:`pyarmor.cli.core.android`
+      - :mod:`pyarmor.cli.core.windows`
+      - :mod:`pyarmor.cli.core.themida`
+      - :mod:`pyarmor.cli.core.linux`
+      - :mod:`pyarmor.cli.core.alpine`
+      - :mod:`pyarmor.cli.core.darwin`
+
+    All of them are published in the PyPI_
 
   Pyarmor Pro
 

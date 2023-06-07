@@ -101,6 +101,28 @@ __ https://github.com/dashingsoft/pyarmor
 __ https://github.com/dashingsoft/pyarmor/archive/master.tar.gz
 __ https://github.com/dashingsoft/pyarmor/archive/master.zip
 
+Installation in offline device
+==============================
+
+All the Pyarmor pacakges are published in the PyPI_, download them and copy to offlice device.
+
+First install :mod:`pyarmor.cli.core`
+
+Next install :mod:`pyarmor`
+
+If need cross platform obfuscation, also install :mod:`pyarmor.cli.runtime`.
+
+For example::
+
+    $ pip install pyarmor.cli.core-3.2.4-cp310-none-manylinux1_x86_64.whl
+    $ pip install pyarmor-8.2.4.zip
+    $ pip install pyarmor.cli.runtime-3.2.5-cp310-none-any.whl
+
+In Android or FreeBSD, there is no wheel in :mod:`pyarmor.cli.core`, it should install source distribution and :mod:`pyarmor.cli.core.android` or :mod:`pyarmor.cli.core.freebsd`. For example, in Android::
+
+    $ pip install pyarmor.cli.core-3.2.4.zip
+    $ pip install pyarmor.cli.core.android-3.2.4-cp310-none-any.whl
+    $ pip install pyarmor-8.2.4.zip
 
 Run Pyarmor from Python script
 ==============================
