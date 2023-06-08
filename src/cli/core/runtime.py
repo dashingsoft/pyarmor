@@ -52,11 +52,11 @@ class PyarmorRuntime(object):
                     return entry.name, os_path.abspath(entry.path)
 
         dirnames = map_platform(plat).split('.')
-        if not os_path.exists(pkgpath, extra if extra else dirnames[0]):
+        path = os_path.join(pkgpath, extra if extra else '', *dirnames)
+        if not os_path.exists(path):
             from pyarmor.cli.bootstrap import check_prebuilt_runtime_library
             check_prebuilt_runtime_library(dirnames[:1], extra)
 
-        path = os_path.join(pkgpath, extra if extra else '', *dirnames)
         if os_path.exists(path):
             for entry in scandir(path):
                 parts = entry.name.split('.')

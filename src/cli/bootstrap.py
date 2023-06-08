@@ -34,6 +34,9 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
         raise RuntimeError('no found "{0}", please run "pip install {0}" to '
                            'install it'.format('pyarmor.cli.core'))
 
+    instcmd = [sys.executable, '-m', 'pip', 'install',
+              '--disable-pip-version-check']
+
     # Before Pyarmor 8.3, prefer to "pyarmor.cli.runtime"
     # It could be disabled by
     #     pyarmor cfg pyarmor:cli.runtime = false
@@ -44,13 +47,10 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
             if current_rtver == rtver:
                 return
 
-        pipcmd = [sys.executable, '-m', 'pip', 'install',
-                  '--disable-pip-version-check']
-
         pkgver = 'pyarmor.cli.runtime==%s' % rtver
         logging.info('install "%s" for cross platforms', pkgver)
         try:
-            return check_call(pipcmd + [pkgver])
+            return check_call(instcmd + [pkgver])
         except Exception:
             logging.warning('failed to install "%s"' % pkgver)
 
@@ -69,14 +69,14 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
             with open(os.path.join(entry.path, '__init__.py')) as f:
                 for line in f:
                     if line.startswith('__VERSION__'):
-                        if line.strip().split()[-1].strip("'") == corever:
+                        if line.replace('"', "'").split("'")[1] == corever:
                             pkgnames.remove(entry.name)
 
     if pkgnames:
         pkgvers = ['pyarmor.cli.core.%s==%s' % (x, corever) for x in pkgnames]
         logging.info('install packages %s for cross platforms', str(pkgvers))
         try:
-            check_call(pipcmd + pkgvers)
+            check_call(instcmd + pkgvers)
         except Exception as e:
             logging.error('%s', e)
             raise RuntimeError('failed to install runtime packages')
