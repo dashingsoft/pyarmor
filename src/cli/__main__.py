@@ -170,6 +170,8 @@ def check_gen_context(ctx, args):
         check_prebuilt_runtime_library(platforms, ctx.enable_themida, rtver)
 
     elif ctx.enable_themida:
+        if not ctx.pyarmor_platform.startswith('windows'):
+            raise CliError('--enable-themida only works for Windows')
         rtver = ctx.cfg['pyarmor'].get('cli.runtime', '')
         check_prebuilt_runtime_library([], ['themida'], rtver)
 

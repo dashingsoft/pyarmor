@@ -43,6 +43,10 @@ class PyarmorRuntime(object):
         from os import scandir, path as os_path
         prefix = 'pyarmor_runtime'
 
+        # Themida is only available for windows
+        if extra == 'themida' and not plat.startswith('windows'):
+            extra = None
+
         pkgpath = os_path.dirname(__file__)
         if native and not extra:
             path = pkgpath
