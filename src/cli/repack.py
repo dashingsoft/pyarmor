@@ -389,14 +389,14 @@ class Repacker:
 
         repack_executable(executable, buildpath, obfpath, rtentry, codesign)
 
-    def _fixup_darwin_rtbinary(self, rtbinary, pyname):
+    def _fixup_darwin_rtbinary(self, rtbinary, pylib_name):
         from sys import version_info as pyver
-        pylib = os.path.normpath(os.path.join('@rpath', pyname))
+        pylib = os.path.normpath(os.path.join('@rpath', pylib_name))
         output = check_output(['otool', '-L', rtbinary])
         for line in output.splitlines():
             if line.find(b'libpython%d.%d.dylib' % pyver[:2]) > 0:
                 reflib = line.split()[0].decode()
-                if reflib.endswith(pyname):
+                if reflib.endswith(pylib_name):
                     return
                 break
             elif line.find(pylib.encode()) > 0:
