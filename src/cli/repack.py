@@ -323,6 +323,7 @@ class Repacker:
         with open(executable, 'rb') as fp:
             *_, pylib_name = pkgarch.get_cookie_info(fp)
         self.pylib_name = pylib_name.strip(b'\x00').decode('utf-8')
+        logger.debug('pylib_name is "%s"', self.pylib_name)
 
         for name, toc_entry in pkgtoc.items():
             logger.debug('extract %s', name)
@@ -334,7 +335,10 @@ class Repacker:
                 contents.append(extract_pyzarchive(name, pyzarch, buildpath))
 
         self.contents = contents
-        self.one_file_mode = len(pkgtoc) > 10
+        self.one_file_mode = len(pkgtoc) > 10 and not any([
+            x.name == 'base_library.zip'
+            for x in os.scandir(os.path.dirname(executable))])
+        logger.debug('one file mode is %s', bool(self.one_file_mode))
 
     def repack(self, obfpath, rtname, entry=None):
         buildpath = self.buildpath
@@ -367,10 +371,15 @@ class Repacker:
 
         if is_darwin:
             from PyInstaller.depend import dylib
-            if self.pylib_name == 'Python':
-                self._fixup_darwin_rtbinary(rtbinary, codesign=codesign)
+            self._fixup_darwin_rtbinary(rtbinary, self.pylib_name)
             logger.debug('mac_set_relative_dylib_deps "%s"', rtbinname)
             dylib.mac_set_relative_dylib_deps(rtbinary, rtbinname)
+
+            import PyInstaller.utils.osx as osxutils
+            # Since PyInstaller 4.4
+            if hasattr(osxutils, 'sign_binary'):
+                logger.info('re-signing "%s"', os.path.basename(rtbinary))
+                osxutils.sign_binary(rtbinary, identity=codesign)
 
         rtentry = (rtbinname, rtbinary, 1, 'b') if self.one_file_mode else None
         if not self.one_file_mode:
@@ -380,30 +389,27 @@ class Repacker:
 
         repack_executable(executable, buildpath, obfpath, rtentry, codesign)
 
-    def _fixup_darwin_rtbinary(self, rtbinary, codesign=None):
+    def _fixup_darwin_rtbinary(self, rtbinary, pyname):
         from sys import version_info as pyver
-        pylib = '@rpath/Python'
+        pylib = os.path.normpath(os.path.join('@rpath', pyname))
         output = check_output(['otool', '-L', rtbinary])
         for line in output.splitlines():
             if line.find(b'libpython%d.%d.dylib' % pyver[:2]) > 0:
                 reflib = line.split()[0].decode()
+                if reflib.endswith(pyname):
+                    return
                 break
             elif line.find(pylib.encode()) > 0:
                 return
+            # Only for debug
             elif line.find(b'/Python ') > 0:
                 return
         else:
-            raise RuntimeError('fixup dylib failed, no CPython library found')
+            logger.warning('fixup dylib failed, no CPython library found')
 
         cmdlist = ['install_name_tool', '-change', reflib, pylib, rtbinary]
-        logger.info('%s', ' '.join(cmdlist))
         try:
+            logger.info('%s', ' '.join(cmdlist))
             check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
         except Exception as e:
-            logger.warning('install_name_tool command failed with:\n%s', e)
-
-        import PyInstaller.utils.osx as osxutils
-        # Since PyInstaller 4.4
-        if hasattr(osxutils, 'sign_binary'):
-            logger.info('re-signing "%s"', os.path.basename(rtbinary))
-            osxutils.sign_binary(rtbinary, identity=codesign)
+            logger.warning('%s', e)

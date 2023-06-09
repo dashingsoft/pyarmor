@@ -113,7 +113,7 @@ class CodesignPlugin:
     def post_runtime(ctx, source, dest, platform):
         if platform.startswith('darwin'):
             from subprocess import check_call, CalledProcessError, DEVNULL
-            identity = '-'
+            identity = ctx.cfg['pack'].get('codesign_identify', '-')
             cmdlist = ['codesign', '-f', '-s', identity,
                        '--all-architectures', '--timestamp', dest]
             logger.info('%s', ' '.join(cmdlist))
