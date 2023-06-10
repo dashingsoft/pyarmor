@@ -66,11 +66,11 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
 
     for entry in os.scandir(corepath):
         if entry.name in pkgnames:
-            with open(os.path.join(entry.path, '__init__.py')) as f:
-                for line in f:
-                    if line.startswith('__VERSION__'):
-                        if line.replace('"', "'").split("'")[1] == corever:
-                            pkgnames.remove(entry.name)
+            m = __import__('pyarmor.cli.core.' + entry.name,
+                           globals(), locals(),
+                           ['__VERSION__'], 0)
+            if getattr(m, '__VERSION__', None) == corever:
+                pkgnames.remove(entry.name)
 
     if pkgnames:
         pkgvers = ['pyarmor.cli.core.%s==%s' % (x, corever) for x in pkgnames]
