@@ -134,7 +134,7 @@ class CArchiveWriter2(CArchiveWriter):
             return
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            pathname = os.path.join(tmpdir.name, name)
+            pathname = os.path.join(tmpdir, name)
             with open(pathname, 'wb') as f:
                 f.write(rawdata)
             if typecode in (PKG_ITEM_PYSOURCE, PKG_ITEM_PYMODULE,
