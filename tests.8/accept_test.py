@@ -220,6 +220,13 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
+    @unittest.skip("other machine")
+    def test_bind_multiple_devices(self):
+        addrs = 'f9:00:00:00:00:7f', 'f8:ff:c2:27:00:7f'
+        args = ['g', '-b', addrs[0], '-b', addrs[1], 'samples/foo.py']
+        self.pyarmor_gen(args)
+        self.verify_dist_foo()
+
     @unittest.skipUnless(sys.platform.startswith('win'), 'only for windows')
     def test_themida_script(self):
         args = ['g', '--enable-themida', 'samples/foo.py']
