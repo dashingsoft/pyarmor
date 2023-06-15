@@ -164,6 +164,10 @@ License
 
   If each product in a suite of products is functionally complementary, for example, product "Editor" for editing the file, product "Viewer" for view the file, they’re considered as "one product"
 
+**Which PyArmor 8.0 license for CI, more than 100 runs / day**
+
+  In this case, it need Group License. Group License is going to support unlimited dockers in one device, this feature is developing and may released with Pyarmor 8.3.
+
 Upgrading
 ---------
 
