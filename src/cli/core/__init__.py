@@ -20,7 +20,7 @@
 #  @Create Date: Thu Jan 12 17:29:25 CST 2023
 #
 
-__VERSION__ = '3.2.7'
+__VERSION__ = '3.2.8'
 
 
 def format_platform():
