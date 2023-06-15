@@ -133,16 +133,17 @@ class CArchiveWriter2(CArchiveWriter):
             self._write_blob(rawdata, name, typecode, compress)
             return
 
-        with tempfile.NamedTemporaryFile() as f:
-            f.write(rawdata)
-            f.flush()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pathname = os.path.join(tmpdir.name, name)
+            with open(pathname, 'wb') as f:
+                f.write(rawdata)
             if typecode in (PKG_ITEM_PYSOURCE, PKG_ITEM_PYMODULE,
                             PKG_ITEM_PYPACKAGE):
-                super().add((name, f.name, compress, PKG_ITEM_DATA))
+                super().add((name, pathname, compress, PKG_ITEM_DATA))
                 tc = self.toc.data[-1]
                 self.toc.data[-1] = tc[:-2] + (typecode, tc[-1])
             else:
-                super().add((name, f.name, compress, typecode))
+                super().add((name, pathname, compress, typecode))
 
     def add(self, entry):
         name, source, compress, typecode = entry[:4]
