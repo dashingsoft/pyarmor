@@ -107,6 +107,14 @@ Refer to Apple official documentation `Run-Path Dependent Libraries`__
 
 **If there are many same version Python installed, make sure pytransform3.so or pyarmor_runtime.so links to the right one**
 
+For example, there is default Python3.9 in ``/Library/Frameworks/Python.framework/Versions/3.9/`` and anaconda3 Python 3.9 in ``/Users/my_username/anaconda3/bin/python``
+
+When using ``/Users/my_username/anaconda3/bin/python`` to run the obfuscated script, it will load ``dist/pyarmor_runtime_000000/pyarmor_runtime.so``, and this library need Python dynamic library. According to RPATH settings, first search ``/Users/my_username/anaconda3/bin/python/../lib/libpython3.9.dylib``, if it exists, everything is fine. If it doesn't exists, then search ``/Library/Frameworks/Python.framework/Versions/3.9/lib/libpython3.9.dylib``, load this unexpected Python dynamic library, and results in crash issue.
+
+In this canse using `install_name_tool` to modify ``dist/pyarmor_runtime_000000/pyarmor_runtime.so`` so that it could load Python dynamic library in anaconda3.
+
+Note that the obfuscated scripts work with system Python by default, and as possible as work with Python installed in the other locations.
+
 **Application settings**
 
 Pyarmor uses JIT to improve security, In Apple M1, it need extra entitlements. Check Python entitlements::
