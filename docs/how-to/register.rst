@@ -151,9 +151,9 @@ Run unlimited dockers in offline device
 
 Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
 
-First start `pyarmor-docker` to listen the request from docker containers::
+First start `pyarmor-auth` to listen the request from docker containers::
 
-    $ pyarmor-docker pyarmor-device-regfile-xxxx.1.zip
+    $ pyarmor-auth pyarmor-device-regfile-xxxx.1.zip
 
 Then run docker with extra ``--add-host=host.docker.internal:host-gateway`` for Linux container (this option is not required for Windows or Darwin container)::
 
