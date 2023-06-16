@@ -80,7 +80,7 @@ Registering in Docker or CI pipeline
 
 It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. **But It's not allowed to distribute pyarmor self and any Pyarmor License to customer**
 
-Don't run too many build dockers, maximum is 100.
+Don't run too many build dockers, maximum is 100 in 24 hours. If more than 100 runs one day, please use Pyarmor Group License.
 
 Using group license
 ===================
@@ -143,6 +143,29 @@ Check registration information::
     $ pyarmor -v
 
 After successful registration, all obfuscations will automatically apply this group license, and each obfuscation need not online license verification.
+
+Run unlimited dockers in offline device
+---------------------------------------
+
+.. versionadded:: 8.3
+
+Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
+
+First start `pyarmor-docker` to listen the request from docker containers::
+
+    $ pyarmor-docker pyarmor-device-regfile-xxxx.1.zip
+
+Then run docker with extra ``--add-host=host.docker.internal:host-gateway`` for Linux container (this option is not required for Windows or Darwin container)::
+
+    $ docker run --add-host=host.docker.internal:host-gateway ...
+
+In docker container, it still need to register Pyarmor with same device regfile. For example::
+
+    # Install Pyarmor first, then register it
+    RUN pyarmor reg pyarmor-device-regfile-xxxx.1.zip
+    RUN pyarmor gen foo.py
+
+When need to verify license, the docker container will send request to host and verify the response.
 
 Upgrading old Pyarmor license
 =============================

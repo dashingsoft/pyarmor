@@ -49,7 +49,9 @@ Pyarmor has 3 kind of licenses:
 
         Group license could unlock limitations (1) (2) (3) (4) (5) (7).
 
-        Offline obfuscation, it need not internet connection when obfuscating the scripts. At this time, this is the only difference between Pyarmor Group and Pyarmor Pro.
+        Group license supports unlimited dockers which uses default bridge network and not highly customized. For Pyarmor Basic or Pyarmor Pro, up to 100 runs in 24 hours.
+
+        Offline obfuscation, it need not internet connection when obfuscating the scripts.
 
 Refer to :doc:`use Pyarmor License <how-to/register>`
 
@@ -111,6 +113,7 @@ License features
    obf-code > 1            No         Y          Y           Y       [11]_
    RFT MODE                No         No         Y           Y
    BCC MODE                No         No         Y           Y
+   Unlimited dockers       Y          No         No          Y       [12]_
    ===================  ========   ========   =========   ========  ==============
 
 .. rubric:: notes
@@ -126,6 +129,7 @@ License features
 .. [9] Assert Protection: preventing others from hacking obfuscated scripts
 .. [10] Themedia Protection: using Themedia to protect Windows dlls
 .. [11] ``--obf-code=2`` is new in Pyarmor 8.2
+.. [12] This feature is introduced in Pyarmor 8.3, group license supports unlimited dockers, basic and pro licenses only allow 100 runs one day.
 
 Purchasing license
 ==================
