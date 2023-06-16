@@ -48,6 +48,7 @@ Release schedule: 2023-07-01
 - pyarmor-webui for 8.0
 - Support multiple Python versions
 - Support platforms: Android, Alpine Linux (musl-c/docker), FreeBSD
+- Group license supports unlimited dockers which uses default bridge network and not highly customized.
 
 **8.x**
 
