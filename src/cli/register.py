@@ -170,7 +170,7 @@ class Register(object):
 
     def _get_machine_id(self):
         from .core import Pytransform3
-        return Pytransform3.get_hd_info(10)
+        return Pytransform3.get_hd_info(11)
 
     def generate_group_device(self, devid):
         path = self.ctx.group_device_file(devid)
