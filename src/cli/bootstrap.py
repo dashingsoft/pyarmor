@@ -35,7 +35,7 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
                            'install it'.format('pyarmor.cli.core'))
 
     instcmd = [sys.executable, '-m', 'pip', 'install',
-              '--disable-pip-version-check']
+               '--disable-pip-version-check']
 
     # Before Pyarmor 8.3, prefer to "pyarmor.cli.runtime"
     # It could be disabled by
