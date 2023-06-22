@@ -102,7 +102,7 @@ def register_pyarmor(ctx, regfile):
         raise RuntimeError('this feature is only for group license')
 
 
-def main():
+def main_entry():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int, default=PORT)
     parser.add_argument('-s', '--sock', default='/var/run/docker.sock')
@@ -129,9 +129,13 @@ def main():
         server.serve_forever()
 
 
-if __name__ == '__main__':
+def main():
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s: %(message)s',
     )
+    main_entry()
+
+
+if __name__ == '__main__':
     main()
