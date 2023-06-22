@@ -151,21 +151,33 @@ Run unlimited dockers in offline device
 
 Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
 
-First start `pyarmor-auth` to listen the request from docker containers::
+The prerequisite in docker host:
 
-    $ pyarmor-auth pyarmor-device-regfile-xxxx.1.zip
+- offline device regfile ``pyarmor-device-regfile-xxxx.1.zip`` as above
+- Pyarmor 8.2.8+
+- Package ``docker``
 
-Then run docker with extra ``--add-host=host.docker.internal:host-gateway`` for Linux container (this option is not required for Windows or Darwin container)::
+Except Pyarmor, docker host need install package docker too::
+
+    $ pip install docker
+
+Then start ``docker.py`` to listen the request from docker containers::
+
+    $ python -m pyarmor.cli.docker pyarmor-device-regfile-xxxx.1.zip
+
+Do not close this console, open another console to run dockers.
+
+For Linux container run it with extra ``--add-host=host.docker.internal:host-gateway`` (this option is not required for Windows and Darwin container)::
 
     $ docker run --add-host=host.docker.internal:host-gateway ...
 
-In docker container, it still need to register Pyarmor with same device regfile. For example::
+In docker container, register Pyarmor with same device regfile. For example::
 
     # Install Pyarmor first, then register it
     RUN pyarmor reg pyarmor-device-regfile-xxxx.1.zip
     RUN pyarmor gen foo.py
 
-When need to verify license, the docker container will send request to host and verify the response.
+When need to verify license, the docker container will send request to docker host.
 
 Upgrading old Pyarmor license
 =============================
