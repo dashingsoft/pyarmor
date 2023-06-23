@@ -8,7 +8,7 @@ import sys
 import docker
 
 from .context import Context
-from .generate import Builder
+from .generate import Builder, Pytransform3
 from .register import Register
 
 PORT = 29092
@@ -56,9 +56,9 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
             pass
 
     def process(self, packet):
-        container = self.get_container(self.client_request[0])
+        container = self.get_container(self.client_address[0])
         state = container.attrs['State']
-        if state.get('Status') == 'running' and state.get('Running') == 'True':
+        if state.get('Status') == 'running' and state.get('Running'):
             # 2023-06-15T23:51:03.287483366Z
             # state.get('StartedAt')
             # bridge = container.attrs['NetworkSettings']['Networks']['bridge']
@@ -66,7 +66,7 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
             # bridge['Gateway'] and bridge['IPAddress']
             # bridge['IPv6Gateway'] and bridge['GlobalIPv6Address']
             userdata = self.parse_packet(packet)
-            keydata = self.generate_runtime_key(userdata)
+            keydata = self.generate_runtime_key(userdata.decode('utf-8'))
             self.request.send(struct.pack('!HH', 0, len(keydata)) + keydata)
 
     def parse_packet(self, packet):
@@ -101,13 +101,17 @@ def register_pyarmor(ctx, regfile):
     if reg.license_info['features'] < 15:
         raise RuntimeError('this feature is only for group license')
 
+    Pytransform3._update_token(ctx)
+
 
 def main_entry():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int, default=PORT)
-    parser.add_argument('-s', '--sock', default='/var/run/docker.sock')
-    parser.add_argument('--home')
-    parser.add_argument('regfile', required=True)
+    parser.add_argument('-s', '--sock', default='/var/run/docker.sock',
+                        help=argparse.SUPPRESS)
+    parser.add_argument('--home', help=argparse.SUPPRESS)
+    parser.add_argument('regfile', nargs=1,
+                        help='group device registration file for this machine')
     args = parser.parse_args(sys.argv[1:])
 
     home = DockerAuthHandler.WORKPATH
@@ -117,7 +121,7 @@ def main_entry():
     logging.info('work path: %s', home)
 
     ctx = Context(home=os.path.expanduser(home))
-    register_pyarmor(ctx, args.regfile)
+    register_pyarmor(ctx, args.regfile[0])
     DockerAuthHandler.CTX = ctx
 
     client = docker.from_env()
