@@ -56,6 +56,10 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
             pass
 
     def process(self, packet):
+        if packet[:4] == b'PADH':
+            self.request.send(self.MACHID)
+            return
+
         container = self.get_container(self.client_address[0])
         state = container.attrs['State']
         if state.get('Status') == 'running' and state.get('Running'):
@@ -100,6 +104,10 @@ def register_pyarmor(ctx, regfile):
     reg.register_regfile(regfile)
     if reg.license_info['features'] < 15:
         raise RuntimeError('this feature is only for group license')
+
+    machid = reg._get_machine_id()
+    logging.debug('machine id: %s', machid)
+    DockerAuthHandler.MACHID = machid
 
     Pytransform3._update_token(ctx)
 

@@ -153,11 +153,15 @@ class Register(object):
                 f.extract(item, path=path)
             namelist = f.namelist()
             if 'group.tokens' in namelist:
-                machid = self._get_machine_id()
-                name = '/'.join(['tokens', machid.decode('utf-8')])
+                machid = self._get_machine_id().decode('utf-8')
+                name = '/'.join(['tokens', machid])
                 if name not in namelist:
-                    logger.debug('no found "%s" in offline regfile', name)
-                    raise CliError('this regfile is not for this device')
+                    machid = self._get_docker_hostname()
+                    hostname = '/'.join(['tokens', machid])
+                    if hostname not in namelist:
+                        logger.debug('no found "%s" in offline regfile', name)
+                        raise CliError('this regfile is not for this device')
+                    name = hostname
                 logger.debug('extracting %s', name)
                 self.ctx.save_token(f.read(name))
                 return
@@ -167,6 +171,23 @@ class Register(object):
 
         logger.info('update license token')
         self.update_token()
+
+    def _get_docker_hostname(self):
+        try:
+            from socket import socket, AF_INET, SOCK_STREAM
+            host = 'host.docker.internal'
+            port = 29092
+            with socket(AF_INET, SOCK_STREAM) as s:
+                s.connect((host, port))
+                s.sendall(b'PADH' + b'x' * 60)
+                flag = s.recv(1)
+                if flag in (b'a', b'b'):
+                    data = s.recv(32)
+                machid = (flag + data).decode('utf-8')
+                logger.info('got docker host machine id: %s', machid)
+                return machid
+        except Exception:
+            pass
 
     def _get_machine_id(self):
         from .core import Pytransform3
