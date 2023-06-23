@@ -95,7 +95,7 @@ Another, set registration file path to :file:`/opt/pyarmor/`::
 
 It's useful when using :command:`sudo` to run :command:`pyarmor` occasionally. This makes sure the registration file could be found even switch to another user.
 
-When there are many Pyarmor Licenses registered in one machine, set each license to different registration file path. For example::
+When there are many Pyarmor Licenses registered in one machine, set each license to different path. For example::
 
     $ pyarmor --home ~/.pyarmor1 reg pyarmor-regfile-2051.zip
     $ pyarmor --home ~/.pyarmor1 gen project1/foo.py
