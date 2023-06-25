@@ -119,6 +119,7 @@ setup(
     entry_points={
         'console_scripts': [
             'pyarmor=pyarmor.pyarmor:main_entry_8',
+            'pyarmor-auth=pyarmor.cli.docker:main',
             'pyarmor-7=pyarmor.pyarmor:main_entry',
             'pyarmor-8=pyarmor.cli.__main__:main',
         ],
