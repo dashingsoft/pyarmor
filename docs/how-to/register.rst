@@ -151,31 +151,64 @@ Run unlimited dockers in offline device
 
 Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
 
+Each docker host is an offlice device.
+
 The prerequisite in docker host:
 
 - offline device regfile ``pyarmor-device-regfile-xxxx.1.zip`` as above
-- Pyarmor 8.2.8+
-- Package ``docker``
+- Pyarmor 8.2.9+
 
-Except Pyarmor, docker host need install package docker too::
+The practice for group license with unlimited docker containers:
 
-    $ pip install docker
+- Docker host, Ubuntu x86_64, Python 3.8
+- Docker container, Ubuntu x86_64, Python 3.11
 
-Then start ``docker.py`` to listen the request from docker containers::
+First copy the following files to docker host:
 
-    $ python -m pyarmor.cli.docker pyarmor-device-regfile-xxxx.1.zip
+- pyarmor-8.2.9.tar.gz
+- pyarmor.cli.core-3.2.9-cp38-none-manylinux1_x86_64.whl
+- pyarmor.cli.core-3.2.9-cp311-none-manylinux1_x86_64.whl
+- pyarmor-device-regfile-6000.1.zip
+
+Then run the following commands in the docker host::
+
+    $ python3 --version
+    Python 3.8.10
+
+    $ pip install pyarmor.cli.core-3.2.9-cp38-none-manylinux1_x86_64.whl
+    $ pip install pyarmor-8.2.9.tar.bgz
+
+Next start ``pyarmor-auth`` to listen the request from docker containers::
+
+    $ pyarmor-auth pyarmor-device-regfile-6000.1.zip
+
+    2023-06-24 09:43:14,939: work path: /root/.pyarmor/docker
+    2023-06-24 09:43:14,940: register "pyarmor-device-regfile-6000.1.zip"
+    2023-06-24 09:43:15,016: listen container auth request on 0.0.0.0:29092
 
 Do not close this console, open another console to run dockers.
 
 For Linux container run it with extra ``--add-host=host.docker.internal:host-gateway`` (this option is not required for Windows and Darwin container)::
 
-    $ docker run --add-host=host.docker.internal:host-gateway ...
+    $ docker run --add-host=host.docker.internal:host-gateway python bash
+
+    root@86b180b28a50:/# python --version
+    Python 3.11.4
+    root@86b180b28a50:/#
+
+In docker host open third console to copy files to container::
+
+    $ docker cp pyarmor-8.2.9.tar.gz 86b180b28a50:/
+    $ docker cp pyarmor.cli.core-3.2.9-cp311-none-manylinux1_x86_64.whl 86b180b28a50:/
+    $ docker cp pyarmor-device-regfile-6000.1.zip 86b180b28a50:/
 
 In docker container, register Pyarmor with same device regfile. For example::
 
-    # Install Pyarmor first, then register it
-    RUN pyarmor reg pyarmor-device-regfile-xxxx.1.zip
-    RUN pyarmor gen foo.py
+    root@86b180b28a50:/# pip install pyarmor.cli.core-3.2.9-cp311-none-manylinux1_x86_64.whl
+    root@86b180b28a50:/# pip install pyarmor-8.2.9.tar.gz
+    root@86b180b28a50:/# pyarmor reg pyarmor-device-regfile-6000.1.zip
+    root@86b180b28a50:/# echo "print('hello world')" > foo.py
+    root@86b180b28a50:/# pyarmor gen --enable-rft foo.py
 
 When need to verify license, the docker container will send request to docker host.
 
