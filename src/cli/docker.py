@@ -29,7 +29,7 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
             logging.info('send auth result to %s', self.client_address)
         except Exception as e:
             logging.error('%s', str(e))
-            msg = 'failed to verify docker, please check host console'.encode()
+            msg = 'verification failed, please check host console'.encode()
             msg += b'\00'
             self.request.send(struct.pack('!HH', 1, len(msg)) + msg)
 
@@ -86,7 +86,7 @@ def main_entry():
 
     host, port = '0.0.0.0', args.port
     with socketserver.TCPServer((host, port), DockerAuthHandler) as server:
-        logging.info('listen docker auth request on %s:%s', host, args.port)
+        logging.info('listen container auth request on %s:%s', host, args.port)
         server.serve_forever()
 
 
