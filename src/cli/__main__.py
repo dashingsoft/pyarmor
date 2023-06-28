@@ -490,7 +490,7 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
         help='set expired date'
     )
     group.add_argument(
-        '--period', type=int, metavar='N', dest='period',
+        '--period', metavar='N', dest='period',
         help='check runtime key periodically'
     )
     group.add_argument(
