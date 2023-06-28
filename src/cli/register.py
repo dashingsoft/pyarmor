@@ -157,6 +157,8 @@ class Register(object):
                 name = '/'.join(['tokens', machid])
                 if name not in namelist:
                     machid = self._get_docker_hostname()
+                    if not machid:
+                        raise CliError('could not get docker host machine id')
                     hostname = '/'.join(['tokens', machid])
                     if hostname not in namelist:
                         logger.debug('no found "%s" in offline regfile', name)
