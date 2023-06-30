@@ -24,9 +24,10 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
         data = self.request.recv(64)
         logging.info('receive request from %s', self.client_address)
         try:
-            logging.debug('data (%d): %s', len(data), data)
-            self.process(data)
+            logging.debug('request data (%d): %s', len(data), data)
+            response = self.process(data)
             logging.info('send auth result to %s', self.client_address)
+            logging.debug('response data (%d): %s', len(response), response)
         except Exception as e:
             logging.error('%s', str(e))
             msg = 'verification failed, please check host console'.encode()
@@ -35,11 +36,14 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
 
     def process(self, packet):
         if packet[:4] == b'PADH':
-            self.request.send(CONFIG['machid'])
+            response = CONFIG['machid']
+            self.request.send(response)
         else:
             userdata = self.parse_packet(packet)
             keydata = self.generate_runtime_key(userdata.decode('utf-8'))
-            self.request.send(struct.pack('!HH', 0, len(keydata)) + keydata)
+            response = struct.pack('!HH', 0, len(keydata)) + keydata
+            self.request.send(response)
+        return response
 
     def parse_packet(self, packet):
         if len(packet) == 32 and packet[:4] == b'PADK':
@@ -63,6 +67,8 @@ def register_pyarmor(ctx, regfile):
 
 def main_entry():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable debug mode')
     parser.add_argument('-p', '--port', type=int, default=CONFIG['port'],
                         help=argparse.SUPPRESS)
     parser.add_argument('-s', '--sock', default='/var/run/docker.sock',
@@ -71,6 +77,9 @@ def main_entry():
     parser.add_argument('regfile', nargs=1,
                         help='group device registration file for this machine')
     args = parser.parse_args(sys.argv[1:])
+
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
 
     if args.home:
         CONFIG['home'] = os.path.expandvars(os.path.expanduser(args.home))
