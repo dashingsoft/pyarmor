@@ -189,7 +189,7 @@ class Register(object):
                 logger.info('got docker host machine id: %s', machid)
                 return machid
         except Exception:
-            pass
+            logger.exception('could not get docker host machine id')
 
     def _get_machine_id(self):
         from .core import Pytransform3
