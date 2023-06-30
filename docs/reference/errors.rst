@@ -71,6 +71,8 @@ Building Errors
        Please use ``pyarmor-7`` or downgrade pyarmor to 7.7.4
    * - This code has been used too many times
      - If this code is used in CI/Docker pipeline, please send **order information** by registration email of this code to pyarmor@163.com to unlock it. Do not send this code only, it doesn't make sense.
+   * - update license token failed
+     - Please make sure fireware doesn't block the response of license server. If possible, verify it in non-fireware device.
 
 Runtime Errors
 ==============
