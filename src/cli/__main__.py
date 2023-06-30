@@ -405,7 +405,7 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
     )
     group.add_argument(
         '--exclude', dest='excludes', metavar='PATTERN', action='append',
-        help=argparse.SUPPRESS
+        help='Exclude scripts and paths'
     )
 
     group.add_argument(

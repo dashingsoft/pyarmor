@@ -127,6 +127,7 @@ Generate obfuscated scripts and all the required runtime files.
 -h, --help                      show option list and help information then quit
 -O PATH, --output PATH          output path :option:`... <-O>`
 -r, --recursive                 search scripts in recursive mode :option:`... <-r>`
+--exclude PATTERN               exclude scripts or paths :option:`... <--exclude>`
 
 -e DATE, --expired DATE         set expired date :option:`... <-e>`
 -b DEV, --bind-device DEV       bind obfuscated scripts to device :option:`... <-b>`
@@ -185,6 +186,30 @@ Set the output path for all the generated files, default is ``dist``
 .. option:: -r, --recursive
 
 When obfuscating package, search all scripts recursively. No this option, only the scripts in package path are obfuscated.
+
+.. option:: --exclude PATTERN
+
+            Exclude scripts or paths, use this option many times to exclude more
+
+The pattern is same as the Python standard library `fnmatch`__
+
+Exclude one exact script::
+
+    $ pyarmor gen --exclude "src/test.py" src
+
+Exclude one exact path::
+
+    $ pyarmor gen -r --exclude "./test" .
+
+Exclude ``test.py`` in any path::
+
+    $ pyarmor gen -r --exclude "*/test.py" src
+
+Exclude any ``test`` path::
+
+    $ pyarmor gen -r --exclude "*/test" src
+
+__ https://docs.python.org/3.11/library/fnmatch.html
 
 .. option:: -i
 
