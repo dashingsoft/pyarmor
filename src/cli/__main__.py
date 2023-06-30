@@ -503,8 +503,7 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
     )
 
     cparser.add_argument(
-        'inputs', metavar='ARG', nargs='+',
-        help='script, package or keyword "key", "runtime"'
+        'inputs', metavar='ARG', nargs='+', help='scripts or packages'
     )
 
     cparser.set_defaults(func=cmd_gen)
