@@ -103,7 +103,6 @@ test-%:
 install-%:
 	@rm -rf ./pyarmor
 	@tar xzf ${pkgpath}/pyarmor-${testver}.tar.gz
-	@mv pyarmor-${testver}/src pyarmor
 	@rm -rf pyarmor-${testver}
 	@unzip ${whlpath}/pyarmor.cli.core-${corever}-cp$(subst .,,$(subst install-,,$@))-none-${platform}.whl > /dev/null
 	@(themida=${whlpath}/../pyarmor.cli.core.themida-${corever}-cp$(subst .,,$(subst install-,,$@))-none-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
