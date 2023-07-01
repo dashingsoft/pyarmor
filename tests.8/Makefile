@@ -101,11 +101,12 @@ test-%:
 	PYVER=$(subst test-,,$@) make install-$(subst test-,,$@) atest ptest
 
 install-%:
-	@rm -rf ./pyarmor
+	@rm -rf ./pyarmor ./pyarmor.cli.core.themida*
 	@tar xzf ${pkgpath}/pyarmor-${testver}.tar.gz
+	@mv pyarmor-${testver}/pyarmor .
 	@rm -rf pyarmor-${testver}
 	@unzip ${whlpath}/pyarmor.cli.core-${corever}-cp$(subst .,,$(subst install-,,$@))-none-${platform}.whl > /dev/null
-	@(themida=${whlpath}/../pyarmor.cli.core.themida-${corever}-cp$(subst .,,$(subst install-,,$@))-none-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
+	@(themida=../pyarmor.cli.core.themida-${corever}-cp$(subst .,,$(subst install-,,$@))-none-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
 	@rm -rf pyarmor.cli.core-${corever}.dist-info
 
 atest:
