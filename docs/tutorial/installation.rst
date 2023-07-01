@@ -31,7 +31,7 @@ For example::
 - /System/Library/Frameworks/Python.framework/Versions/3.10
 - /Library/Frameworks/Python.framework/Versions/3.10
 
-If there is no this file, please install necessary packages or re-build Python with enable shared option.
+If there is no this file, please install necessary packages or re-build Python with enable shared option, or using `install_name_tool` to adapt current Python installation, refer to :doc:`../question`.
 
 .. _install-pypi:
 
@@ -42,31 +42,39 @@ Pyarmor_ packages are published on the PyPI_. The preferred tool for installing 
 
 On Linux or MacOS, you should open your terminal and run the following command::
 
-    $ pip install -U pyarmor
+    $ pip install pyarmor
 
 On Windows, you should open Command Prompt (:kbd:`Win-r` and type :command:`cmd`) and run the same command:
 
 .. code-block:: doscon
 
-    C:\> pip install -U pyarmor
+    C:\> pip install pyarmor
 
 After installation, type :command:`pyarmor --version` on the command prompt. If everything worked fine, you will see the version number for the Pyarmor_ package you just installed.
 
-Installation from PyPI_ also allows you to install the latest development release.  You will not generally need (or want) to do this, but it can be useful if you see a possible bug in the latest stable release.  To do this, use the ``--pre`` flag::
+If you need generate obfuscated scripts to run in other platforms, install the corresponding packages::
 
-    $ pip install -U --pre pyarmor
-
-If you need generate obfuscated scripts to run in other platforms, install :mod:`pyarmor.cli.runtime`::
-
-    $ pip install pyarmor.cli.runtime
+    $ pip install pyarmor.cli.core.windows
+    $ pip install pyarmor.cli.core.themida
+    $ pip install pyarmor.cli.core.linux
+    $ pip install pyarmor.cli.core.darwin
+    $ pip install pyarmor.cli.core.freebsd
+    $ pip install pyarmor.cli.core.android
 
 Not all the platforms are supported, more information check :doc:`../reference/environments`
+
+.. note::
+
+    If only using Pyarmor 8+ features, installing :mod:`pyarmor.cli` instead :mod:`pyarmor`, could significantly decrease downloaded file size. For example::
+
+        $ pip install pyarmor.cli
 
 Installed command
 -----------------
 
 * :program:`pyarmor` is the main command to do everything. See :doc:`../reference/man`.
 * :program:`pyarmor-7` is used to call old commands, it equals bug fixed Pyarmor 7.x
+* :program:`pyarmor-auth` used by Group License to support unlimited docker containers
 
 Start Pyarmor by Python interpreter
 -----------------------------------
@@ -89,6 +97,8 @@ You can read more about them in the `Python Packaging User Guide`_.
 Installation from source
 ========================
 
+.. deprecated:: 8.2.9
+
 You can install Pyarmor_ directly from a clone of the `Git repository`__.  This can be done either by cloning the repo and installing from the local clone, on simply installing directly via :command:`git`::
 
     $ git clone https://github.com/dashingsoft/pyarmor
@@ -96,6 +106,10 @@ You can install Pyarmor_ directly from a clone of the `Git repository`__.  This 
     $ pip install .
 
 You can also download a snapshot of the Git repo in either `tar.gz`__ or `zip`__ format.  Once downloaded and extracted, these can be installed with :command:`pip` as above.
+
+.. note::
+
+   Do not use this method, it may not work since v8.2.9
 
 __ https://github.com/dashingsoft/pyarmor
 __ https://github.com/dashingsoft/pyarmor/archive/master.tar.gz
@@ -108,7 +122,7 @@ All the Pyarmor pacakges are published in the PyPI_, download them and copy to o
 
 First install :mod:`pyarmor.cli.core`
 
-Next install :mod:`pyarmor`
+Next install :mod:`pyarmor` or :mod:`pyarmor.cli`
 
 For example, install offline Pyarmor 8.2.5 in Linux for Python 3.10::
 
@@ -121,7 +135,7 @@ In Android or FreeBSD, there is no wheel in :mod:`pyarmor.cli.core`, it should i
     $ pip install pyarmor.cli.core.android-3.2.5-cp310-none-any.whl
     $ pip install pyarmor-8.2.5.zip
 
-If need cross platform obfuscation, also install the corresponding `pyarmor.cli.core.NAME`
+If need cross platform obfuscation, also install the corresponding platform package
 
 - :mod:`pyarmor.cli.core.freebsd`
 - :mod:`pyarmor.cli.core.android`
@@ -138,6 +152,10 @@ For example, if need Themida protection, then install themida package::
 In Linux to generate for Windows, install windows package::
 
     $ pip install pyarmor.cli.windows-3.2.5-cp310-none-any.whl
+
+If only using Pyarmor 8+ features, it's recommend to install :mod:`pyarmor.cli` instead :mod:`pyarmor`, the former file size is significantly less than the latter. For example::
+
+    $ pip install pyarmor.cli-8.2.5-py3-none-any.whl
 
 Run Pyarmor from Python script
 ==============================
@@ -162,7 +180,15 @@ Run the following commands to make a clean uninstallation::
 
     $ pip uninstall pyarmor
     $ pip uninstall pyarmor.cli.core
+
     $ pip uninstall pyarmor.cli.runtime
+    $ pip uninstall pyarmor.cli.core.windows
+    $ pip uninstall pyarmor.cli.core.themida
+    $ pip uninstall pyarmor.cli.core.linux
+    $ pip uninstall pyarmor.cli.core.darwin
+    $ pip uninstall pyarmor.cli.core.freebsd
+    $ pip uninstall pyarmor.cli.core.android
+
     $ rm -rf ~/.pyarmor
     $ rm -rf ./.pyarmor
 
