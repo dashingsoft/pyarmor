@@ -124,7 +124,7 @@ class UnitTestCases(BaseTestCase):
         for i in range(100):
             self.verify_dist_foo()
 
-    def test_sciprt(self):
+    def test_script(self):
         args = ['g', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
@@ -239,11 +239,35 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
+    def test_exclude_script(self):
+        args = ['g', '--exclude', 'samples/testben.py', 'samples']
+        self.pyarmor_gen(args)
+        self.assertTrue(os.path.exists('dist/samples/foo.py'))
+        self.assertFalse(os.path.exists('dist/samples/testben.py'))
+
+    def test_exclude_star_script(self):
+        args = ['g', '-r', '--exclude', '*/card.py', 'samples']
+        self.pyarmor_gen(args)
+        self.assertTrue(os.path.exists('dist/samples/joker/__init__.py'))
+        self.assertFalse(os.path.exists('dist/samples/joker/card.py'))
+
+    def test_exclude_path(self):
+        args = ['g', '-r', '--exclude', 'samples/joker', 'samples']
+        self.pyarmor_gen(args)
+        self.assertTrue(os.path.exists('dist/samples/pyfeatures'))
+        self.assertFalse(os.path.exists('dist/samples/joker'))
+
+    def test_exclude_star_path(self):
+        args = ['g', '-r', '--exclude', '*/joker', 'samples']
+        self.pyarmor_gen(args)
+        self.assertTrue(os.path.exists('dist/samples/pyfeatures'))
+        self.assertFalse(os.path.exists('dist/samples/joker'))
+
 
 if __name__ == '__main__':
     logging.getLogger().addHandler(logging.NullHandler())
 
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_mix_str'
+    # loader.testMethodPrefix = 'test_exclude_'
     suite = loader.loadTestsFromTestCase(UnitTestCases)
     result = unittest.TextTestRunner().run(suite)
