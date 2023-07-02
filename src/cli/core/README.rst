@@ -21,12 +21,12 @@ It includes prebuilt extensions support the following platforms for Python 3.7+:
    FreeBSD    Y        No       No       No        No       No
    ======== ======== ======== ======== ======== ======== ======== ==========
 
-* Y: avaiable
+* Y: already available
 * No: no support plan
 * (?): not available now, maybe work in future
 
 .. [#] Apple Silicon only for Python 3.9+
-.. [#] This Linux is built with glibc
+.. [#] This is built with glibc
 .. [#] Themedia protection extensions are introduced in v3.2.3
 .. [#] All below platforms are introduced in v3.2.3
 
