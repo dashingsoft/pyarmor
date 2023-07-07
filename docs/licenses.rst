@@ -61,7 +61,7 @@ Each license has an unique number, the format is ``pyarmor-vax-xxxxxx``, which x
 
 Each product requires one License No. So any product in global also has an unique number in Pyarmor world.
 
-If user has many products, and has purchased one license for the first product. The second product could use first product license only if sale income of the second product less than 10x license fees. Once greater than 10x license fees, the second product need purchase its own license. It's same to user's other products.
+If user has many products, and has purchased one license for the first product. The second product could use first product license only if sale income of the second product less than 30x license fees. Once greater than 30x license fees, the second product need purchase its own license. It's same to user's other products.
 
 One product in Pyarmor world means a product name and everything that makes up this name.
 
