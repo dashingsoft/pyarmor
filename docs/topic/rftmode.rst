@@ -4,11 +4,11 @@ Insight Into RFT Mode
 
 .. highlight:: console
 
-For a simple script, pyarmor may reform the scripts automatically. In most of cases, it need extra work to make it works.
+For a simple script, pyarmor may reform the scripts automatically. In most of cases, it need extra work to make it work.
 
 This chapter describes how RFT mode work, it's helpful to solve RFT mode issues of complex package and scripts.
 
-What's RFT mode changed?
+What does RFT mode change?
 
 * function
 * class
@@ -18,7 +18,7 @@ What's RFT mode changed?
 * builtin name
 * import name
 
-What's RFT mode not changed?
+What does RFT mode not change?
 
 * argument in function definition
 * keyword argument name in call
@@ -32,7 +32,7 @@ It's simple to decide whether or not transform a single name, but it's difficult
     foo().stack[2].count = 3
     (a+b).tostr().get()
 
-So how to handle attribute ``stack``, ``count``, ``tostr`` and ``get``? The problem is that it's impossible to confirm function return type or expression result type.In some cases, it may be valid to return different types with different arguments.
+So how to handle attribute ``stack``, ``count``, ``tostr`` and ``get``? The problem is that it's impossible to confirm function return type or expression result type. In some cases, it may be valid to return different types with different arguments.
 
 There are 2 methods for RFT mode to handle name in the attribute chains which don't know parent type.
 
