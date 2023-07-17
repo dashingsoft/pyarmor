@@ -11,11 +11,11 @@
 
 .. program:: pyarmor gen
 
-Pyarmor focus on protecting Python scripts, by several irreversible obfuscation methods, now Pyarmor makes sure the obfuscated scripts can't be restored by any way.
+Pyarmor focuses on protecting Python scripts, through several irreversible obfuscation methods, Pyarmor makes sure the obfuscated scripts can't be restored by any way.
 
 But it isn't good at memory protection and anti-debug. If you care about runtime memory data, or runtime key verification, generally it need extra methods to prevent debugger from hacking dynamic libraries.
 
-Pyarmor could prevent hacker from querying runtime data by valid Python C API and other Python ways, only if Python interpreter and extension module ``pyarmor_runtime`` are not hacked. This is what extra tools need to protect, the common methods include
+Pyarmor could prevent hacker from querying runtime data by valid Python C API and other Python ways, only if the Python interpreter and extension module ``pyarmor_runtime`` are not hacked. This is what extra tools need to protect, the common methods include
 
 - Signing the binary file to make sure they're not changed by others
 - Using third-party binary protection tools to protect Python interpreter and extension module ``pyarmor_runtime``
@@ -40,7 +40,7 @@ Next configure and repack the bundle, the following options are necessary [#]_::
     $ pyarmor cfg check_debugger=1 check_interp=1
     $ pyarmor gen --mix-str --assert-call --assert-import --private --pack dist/foo/foo foo.py
 
-Then protect all the binary files in the output path :file:`dist/foo/` by external tools, make sure these binary files could not be replaced or modified in runtime.
+Then protect all the binary files in the output path :file:`dist/foo/` through external tools, make sure these binary files can not be replaced or modified in runtime.
 
 Available external tools: codesign, VMProtect
 
