@@ -8,9 +8,9 @@ Security and Performance
 
 **About Security**
 
-Pyarmor focus on protecting Python scripts, by several irreversible obfuscation methods, now Pyarmor make sure the obfuscated scripts can't be restored by any way.
+Pyarmor focuses on protecting Python scripts, through several irreversible obfuscation methods, Pyarmor makes sure the obfuscated scripts can't be restored in any way.
 
-Pyarmor provides rich options to obfuscate scripts to balance security and performance. If anyone announces he could broken pyarmor, please try a simple script with different security options, refer to :doc:`../how-to/security`. If any irreversible obfuscation could be broken, report this security issue to |Contact|. Do not paste any hack link in pyarmor project.
+Pyarmor provides rich options to obfuscate scripts to balance security and performance. If anyone announces they have broken pyarmor, please try a simple script with different security options, refer to :doc:`../how-to/security`. If any irreversible obfuscation has been broken, report this security issue to |Contact|. Do not paste any hack link in pyarmor project.
 
 However Pyarmor isn't good at memory protection and anti-debug. Generally even debugger tracing binary extension ``pyarmor_runtime`` could not help to restore obfuscated scripts, but it may bypass runtime key verification.
 
@@ -18,9 +18,9 @@ If you care about runtime memory data protection and anti-debug, check :doc:`../
 
 **About Performance**
 
-Though the highest security could protect Python scripts from any hack method, but it may reduce performance. In most of cases, we need pick the right options to balance security and performance.
+Though the highest security could protect Python scripts from any hack method, it may reduce performance. In most cases, we need to pick the right options to balance security and performance.
 
-Here we test some options to understand their impact on performance. All the following tests use 2 scripts ``benchmark.py`` and ``testben.py``. Note that the test results are different even run same test script in same machine twice, not speak of different test script in different machine. So the test data in these tables are only guideline, not exact.
+Here we test some options to understand their impact on performance. All the following tests use 2 scripts ``benchmark.py`` and ``testben.py``. Note that the test results are different even run the same test script in the same machine twice, not speak of different test scripts in different machines. So the test data in these tables are only guidelines, not exact.
 
 The content of ``benchmark.py``
 
@@ -88,7 +88,7 @@ The content of ``testben.py``
 
 **Different Python Version Performance**
 
-First obfuscate the scripts with default options, run it in different Python version, compare the elapsed time with original scripts.
+First obfuscate the scripts with default options, run it in different Python version, and compare the elapsed time with original scripts.
 
 In order to test the difference without and with ``__pycache__``, run scripts twice.
 
@@ -201,11 +201,11 @@ Next, we compare RFT mode and :option:`--obf-code` ``0`` with original scripts b
    3.11            0.952      0.938      185.435    154.390
    ==============  =========  =========  =========  =========  ==================
 
-They're almost same.
+They're almost the same.
 
 **BCC Mode Performance**
 
-BCC mode converts some code to C function, it need extra time to load binary code, but function may be faster. The following test data got by this way::
+BCC mode converts some code to C function, it needs extra time to load binary code, but the function may be faster. The following test data got by this way::
 
     $ rm -rf dist __pycache__
     $ python testben.py
