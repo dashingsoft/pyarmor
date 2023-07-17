@@ -11,11 +11,11 @@
 
 .. program:: pyarmor gen
 
-There are countless big packages in Python world, many packages I never use and even don't know at all. It's also not easy for me to research a complex package to find which line conflicts with pyarmor, and it's difficult for me to run all of these complex packages in my local machine.
+There are countless big packages in the Python world, many packages I never use and which I don't know at all. It's also not easy for me to research a complex package to find which line conflicts with pyarmor, and it's difficult for me to run all of these complex packages on my local machine.
 
-Pyarmor provides rich options to meet various needs, for complex application, please spend some time to check :doc:`../reference/man` to understand all of these options, one of them may be just for your problem. **I won't learn your application and tell you should use which options**
+Pyarmor provides rich options to meet various needs, for complex applications, please spend some time checking :doc:`../reference/man` to understand all of these options, one of them may be just for your problem. **I won't learn your application and tell you should use which options**
 
-I'll improve pyarmor make it works with other libraries as far as possible, but some issues can't be fixed from Pyarmor side.
+I'll improve pyarmor and make it work with other libraries as far as possible, but some issues can't be fixed from Pyarmor side.
 
 Generally most of problems for these third party libraries are
 
@@ -23,7 +23,7 @@ Generally most of problems for these third party libraries are
 * they try to visit code object directly to get something which is just pyarmor protected. The common case is using :mod:`inspect` to get source code.
 * they pickle the obfuscated code object and pass it to other processes or threads.
 
-Also check :ref:`the differences of obfuscated scripts`, if third party library use any feature changed by obfuscated scripts, it will not work with pyarmor. Especially for :term:`BCC mode`, it changes more.
+Also check :ref:`the differences of obfuscated scripts`, if third party library uses any feature changed by obfuscated scripts, it will not work with pyarmor. Especially for :term:`BCC mode`, it changes more.
 
 The common solutions to fix third-party libraries issue
 
@@ -40,7 +40,7 @@ The common solutions to fix third-party libraries issue
 
 - Ignore problem scripts
 
-  If only a few scripts are in trouble, try to obfuscate them with ``--obf-code 0``. For example, only module ``config.py`` has problem, all the other are fine, then::
+  If only a few scripts are in trouble, try to obfuscate them with ``--obf-code 0``. For example, if only module ``config.py`` has problem, all the other are fine, then::
 
     $ pyarmor cfg -p myapp.config obf_code=0
     $ pyarmor gen [other options] /path/to/myapp
@@ -87,7 +87,7 @@ The common solutions to fix third-party libraries issue
 Third party libraries
 =====================
 
-Here are list problem libraries and possible solutions. Welcome create pull request to append new libraries sort alphabetically case insensitivity.
+Here are the list of problem libraries and possible solutions. You are welcome to create a pull request to append new libraries (sort alphabetically case insensitivity).
 
 .. list-table:: Table-1. Third party libraries
    :header-rows: 1
@@ -155,13 +155,13 @@ First disable restrict mode::
 
     $ pyarmor cfg restrict_module=0
 
-No disable restrict_module, run the nuitka script may raise ``RuntimeError: unauthorized use of script``
+Now disable restrict_module, run the nuitka script may raise ``RuntimeError: unauthorized use of script``
 
 Next use default options to obfuscate the scripts::
 
     $ pyarmor gen foo.py
 
-Finally nuitka the obfuscated script ``dist/foo.py``, check it works or not.
+Finally nuitka the obfuscated script ``dist/foo.py``, check whether it works or not.
 
 Try more options, but I think restrict options such as :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
 
