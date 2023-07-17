@@ -773,7 +773,7 @@ A :term:`registration file` ``pyarmor-regfile-xxxx.zip`` will be generated after
 
 **Using group license**
 
-:term:`Pyarmor group` also need internet connect to initial registration, and generate the corresponding :term:`registration file`.
+:term:`Pyarmor group` also needs an internet connectection for initial registration, and generate the corresponding :term:`registration file`.
 
 One group license could have 100 offline devices, each device has its own number, from 1 to 100.
 
