@@ -11,7 +11,7 @@ Pyarmor 8.0 has no command pack, but :option:`--pack`. It could specify an execu
   pyinstaller foo.py
   pyarmor gen --pack dist/foo/foo foo.py
 
-If no this option, pyarmor only obfuscates the scripts.
+If no options are set, pyarmor only obfuscates the scripts.
 
 If this option is set, pyarmor first obfuscates the scripts, then does extra work:
 
@@ -25,7 +25,7 @@ Packing obfuscated scripts manually
 
 If something is wrong with :option:`--pack`, or the final bundle doesn't work, try to pack the obfuscated scripts manually.
 
-You need know how to `using PyInstaller`__ and `using spec file`__, if not, learn it by yourself.
+You need to know how to `using PyInstaller`__ and `using spec file`__, if not, learn it by yourself.
 
 __ https://pyinstaller.org/en/stable/usage.html
 __ https://pyinstaller.org/en/stable/spec-files.html
@@ -102,7 +102,7 @@ If following this example, please
 
 Inserting some print statements in the ``foo.spec`` to print which script is replaced, or add some code only works in the obfuscated script.
 
-For example, add one line in main script ``foo.py``
+For example, add one line in the main script ``foo.py``
 
 .. code-block:: python
 
@@ -114,7 +114,7 @@ If it's not obfuscated, the final bundle will raise error.
 
 .. [#] Do not use :option:`-i` and :option:`--prefix` to obfuscate the scripts
 .. [#] Just let PyInstaller could find runtime package without extra pypath
-.. [#] Most of other PyInstaller options could be used here
+.. [#] Most of the other PyInstaller options could be used here
 
 Segment fault in Apple M1
 =========================
@@ -123,7 +123,7 @@ In Apple M1 if the final executable segment fault, please check codesign of runt
 
     $ codesign -v dist/foo/pyarmor_runtime_000000/pyarmor_runtime.so
 
-And re-sign it if code sign is invalid::
+And re-sign it if the code sign is invalid::
 
     $ codesign -f -s dist/foo/pyarmor_runtime_000000/pyarmor_runtime.so
 
