@@ -170,80 +170,81 @@ It's possible to ignore this attribute by this command::
 
 It will transform names in the ``__all__``, but it may not work if it's imported by other scripts.
 
+Manual ruler
+============
+
+This is only for **rft-auto-include**::
+
+    $ pyarmor cfg rft_auto_exclude=0
+
+The rule is used to transform name in chain attributes
+
+One line one rule, the rule format::
+
+    patterns actions
+
+    patterns = pattern1.pattern2.pattern3...
+    actions = X.X.X...
+
+Each pattern is same as pattern in :mod:`fnmatch`, each action ``X`` is either char ``?`` or any word. ``?`` means transform the corresponding attribute automatically, any other word means not transform this word.
+
+For example, a ruler::
+
+    self.task.x self.task.?
+
+apply to this script
+
+.. code-block:: python
+    :linenos:
+    :emphasize-lines: 8,9
+
+    class Sdipmk:
+
+        def __init__(self):
+            self.width = 100
+            self.height = 200
+
+        def move(self, x, y, absolute=False):
+            self.task.x = int(abs(x*65536/self.width)) if absolute else int(x)
+            self.task.y = int(abs(y*65536/self.height)) if absolute else int(y)
+            return Mouse(MS_MOVE, x, y)
+
+First configure this ruler by command::
+
+    $ pyarmor cfg rft_rulers "self.task.x self.task.?"
+
+Then check the result::
+
+    $ pyarmor gen --enable-rft foo.py
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.task.pyarmor__2)
+
+line 8 ``self.task.x`` will be transformed to ``self.task.pyarmor__2``
+
+Let's change action to ``self.?.?``, and check the result::
+
+    $ pyarmor cfg rft_rulers "self.task.x self.?.?"
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
+
+Do not change action to ``?.?.?``, it doesn't work, the first action can't be ``?``
+
+Let's add new ruler to change ``self.task.y``, here need to use ``^`` to append new line to rulers::
+
+    $ pyarmor cfg rft_rulers ^"self.task.y self.?.?"
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
+    trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
+
+Actually, both of rulers can combined to one::
+
+    $ pyarmor cfg rft_rulers = "self.task.* self.?.?"
+    $ grep trace.rft .pyarmor/pyarmor.trace.log
+
+    trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
+    trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
+
 .. include:: ../_common_definitions.txt
-
-..
-    Include name rule
-    =================
-
-    This is only for **rft-auto-include**
-
-    The rule is used to transform name in chain attributes
-
-    One line one rule, the rule format::
-
-        patterns actions
-
-        patterns = pattern1.pattern2.pattern3...
-        actions = [%?].[%?].[%?]...
-
-    Each pattern is same as pattern in :mod:`fnmatch`, each action is char ``?`` or ``%``. ``%`` means no transform, ``?`` means transform the corresponding attribute.
-
-    For example, a ruler::
-
-        self.task.x %.%.?
-
-    apply to this script
-
-    .. code-block:: python
-        :linenos:
-        :emphasize-lines: 8,9
-
-        class Sdipmk:
-
-            def __init__(self):
-                self.width = 100
-                self.height = 200
-
-            def move(self, x, y, absolute=False):
-                self.task.x = int(abs(x*65536/self.width)) if absolute else int(x)
-                self.task.y = int(abs(y*65536/self.height)) if absolute else int(y)
-                return Mouse(MS_MOVE, x, y)
-
-    First configure this ruler by command::
-
-        $ pyarmor cfg rft_rulers "self.task.x %.%.?"
-
-    Then check the result::
-
-        $ pyarmor gen --enable-rft foo.py
-        $ grep trace.rft .pyarmor/pyarmor.trace.log
-
-        trace.rft            foo:8 (self.task.x->self.task.pyarmor__2)
-
-    line 8 ``self.task.x`` will be transformed to ``self.task.pyarmor__2``
-
-    Let's change action to ``%.?.?``, and check the result::
-
-        $ pyarmor cfg rft_rulers "self.task.x %.?.?"
-        $ grep trace.rft .pyarmor/pyarmor.trace.log
-
-        trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
-
-    Do not change action to ``?.?.?``, it doesn't work, the first action can't be ``?``
-
-    Let's add new ruler to change ``self.task.y``, here need to use ``^`` to append new line to rulers::
-
-        $ pyarmor cfg rft_rulers ^"self.task.y %.?.?"
-        $ grep trace.rft .pyarmor/pyarmor.trace.log
-
-        trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
-        trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
-
-    Actually, both of rulers can combined to one::
-
-        $ pyarmor cfg rft_rulers = "self.task.* %.?.?"
-        $ grep trace.rft .pyarmor/pyarmor.trace.log
-
-        trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
-        trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
