@@ -53,6 +53,8 @@ Pyarmor has 3 kind of licenses:
 
         Offline obfuscation, it need not internet connection when obfuscating the scripts.
 
+        **Group license is bind to device hardwares, it may not work in virtual machines or any device which hardwares are volatile**
+
 Refer to :doc:`use Pyarmor License <how-to/register>`
 
 For the obfuscated scripts run in the customer's device, Pyarmor has no any limitations, it's totally controlled by users. Pyarmor only cares about build machine.
