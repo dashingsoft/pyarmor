@@ -55,6 +55,8 @@ When report bug in `issues`_, please copy the whole command line :command:`pyarm
 Segment fault in Apple
 ======================
 
+There are 3 cases
+
 **Generally it's code sign issue**
 
 If segment fault when obfuscating scripts or registering Pyarmor, try to re-sign extension ``pytransform3.so``::
@@ -73,9 +75,13 @@ If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign
 
 Refer to Apple official documentation `Using the latest code signature format`__
 
-**Using otool and install_name_tool to fix Python library issue**
+**Not system Python**
 
-The prebuilt ``pytrnasform.so`` and ``pyarmor_runtime.so`` need Python shared library, if there is no found Python shared library, it may crash. To display the names and version numbers of the shared libraries that the object file uses::
+The prebuilt ``pytrnasform.so`` and ``pyarmor_runtime.so`` need Python shared library, if there is no found Python shared library, it may crash.
+
+Using command line tool ``otool`` and ``install_name_tool`` to fix Python shared library issue.
+
+To display the names and version numbers of the shared libraries that the object file uses::
 
     $ otool -L /path/to/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
 
