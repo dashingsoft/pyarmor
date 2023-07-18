@@ -52,7 +52,7 @@ Please backup registration file :file:`pyarmor-regfile-xxxx.zip` carefully. If l
 Product name is not decided
 ---------------------------
 
-When product is in developing, and product name is not decided. Set product name to ``TBD`` on initial registration. For example::
+When a product is in development, and the product name is not decided. Set product name to ``TBD`` on initial registration. For example::
 
     $ pyarmor reg -p "TBD" pyarmor-regcode-xxxx.txt
 
@@ -122,9 +122,9 @@ It will generate group device file ``pyarmor-group-device.1``.
 Generating offline device regfile
 ---------------------------------
 
-Generating offline device regfile need internet connection, Pyarmor 8.2+, group device file  ``pyarmor-group-device.1`` and group license :term:`registration file` ``pyarmor-regfile-xxxx.zip``.
+Generating offline device regfile needs an internet connection, Pyarmor 8.2+, group device file  ``pyarmor-group-device.1`` and group license :term:`registration file` ``pyarmor-regfile-xxxx.zip``.
 
-Copying group device file ``pyarmor-group-device.1`` to initial registration device  or any computer which has internet connection and registration file, this file must be saved in the path ``.pyarmor/group/``, then run the following command to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip``::
+Copying group device file ``pyarmor-group-device.1`` to initial registration device or any computer which has internet connection and registration file, this file must be saved in the path ``.pyarmor/group/``, then run the following command to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip``::
 
     $ mkdir -p .pyarmor/group
     $ cp pyarmor-group-device.1 .pyarmor/group/

@@ -6,7 +6,7 @@
 
 .. program:: pyarmor gen
 
-Here list all the errors when running :command:`pyarmor` or obfuscated scripts.
+Here are all the list of errors when running :command:`pyarmor` or obfuscated scripts.
 
 If something is wrong, search error message here to find the reason.
 
@@ -62,7 +62,7 @@ Building Errors
    * - HTTP Error 503: Service Temporarily Unavailable
      - Invoking too many register command in 1 minute
 
-       For security reason, the license server only allows 3 register request in 1 minute
+       For security reason, the license server only allows 3 register requests in 1 minute
    * - unknown license type OLD
      - Using old license in Pyarmor 8, the old license only works for Pyarmor 7.x
 
@@ -153,7 +153,7 @@ Generally they are not pyarmor issues. Please consult Python documentation or go
 Outer Errors
 ============
 
-Here list some outer errors. Most of them are caused by missing some system libraries, or unexpected configuration. It need nothing to do by Pyarmor, just install necessary libraries or change system configurations to fix the problem.
+Here is a list of some outer errors. Most of them are caused by missing some system libraries, or unexpected configuration. It has nothing to do with Pyarmor, just install necessary libraries or change system configurations to fix the problem.
 
 By searching error message in google or any other search engine to find the solution.
 

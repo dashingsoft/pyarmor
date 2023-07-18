@@ -17,18 +17,18 @@ What's the most security pyarmor could do?
 The following options could improve security
 
 * :option:`--enable-rft` almost doesn't impact performance
-* :option:`--enable-bcc` even a little faster than plain script, but consume more memory to load binary code
-* :option:`--enable-jit` prevents from static decompilation
-* :option:`--enable-themida` prevents from most of debuggers, only available in Windows, and reduce performance remarkable
-* :option:`--mix-str` protects string constant in the script
+* :option:`--enable-bcc` may be a little faster than a plain script, but it consumes more memory to load binary code
+* :option:`--enable-jit` prevents static decompilation
+* :option:`--enable-themida` prevents most of debuggers, only available in Windows, and reduces performance remarkably
+* :option:`--mix-str` protects string constants in the script
 * ``pyarmor cfg mix_argnames=1`` may broken annotations
-* :option:`--obf-code` ``2`` could make more difficult to reverse byte code
+* :option:`--obf-code` ``2`` could make it more difficult to reverse byte code
 
 The following options hide module attributes
 
 * :option:`--private` for script or :option:`--restrict` for package
 
-The following options prevent functions or modules from replaced by hack code
+The following options prevent functions or modules from being replaced by hack code
 
 * :option:`--assert-call`
 * :option:`--assert-import`
@@ -42,25 +42,25 @@ Using default options and the following settings
 * :option:`--obf-module` ``0``
 * ``pyarmor cfg restrict_module=0``
 
-By these options, the security is almost same as `.pyc`
+With these options, the security is almost the same as `.pyc`
 
 In order to improve security, and doesn't reduce performance, also enable RFT mode
 
 * :option:`--enable-rft`
 
-If there are sensitive string, enable mix-str with filter
+If there are sensitive strings, enable mix-str with filter
 
 * ``pyarmor cfg mix.str:includes "/regular expression/"``
 * :option:`--mix-str`
 
-Without filter, all of string constants in the scripts are encrypted, it may reduce performance. Using filter only encrypt the sensitive string may balance security and performance.
+Without the filter, all of the string constants in the scripts are encrypted, which may reduce performance. Using filter only encrypt the sensitive string may balance security and performance.
 
 Recommended options for different applications
 ==============================================
 
 **For Django application or serving web request**
 
-   If RFT mode is safe enough, you can check the transformed scripts to make decision, using these options
+   If RFT mode is safe enough, you can check the transformed scripts to make a decision, using these options
 
    * :option:`--enable-rft`
    * :option:`--obf-code` ``0``
@@ -73,7 +73,7 @@ Recommended options for different applications
    * :option:`--no-wrap`
    * :option:`--mix-str` with filter
 
-**For most of applications and packages**
+**For most applications and packages**
 
    If RFT mode and BCC mode are available
 
@@ -103,6 +103,6 @@ Reforming scripts to improve security
 
 Pyarmor will clear the module level code after the module is imported, the injected code could not get any module level code because it's gone.
 
-But the main script module level code is never cleared, so moving un-necessary code here to other module could improve security.
+But the main script module level code is never cleared, so moving unnecessary code here to another module could improve security.
 
 .. include:: ../_common_definitions.txt

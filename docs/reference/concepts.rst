@@ -6,7 +6,7 @@
 
   Activation File
 
-    A text file used to initial registration :term:`Pyarmor License`
+    A text file used for initial registration :term:`Pyarmor License`
 
     When purchasing any :term:`Pyarmor License`, an activation file is be sent to registration email after payment is completed.
 
