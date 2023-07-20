@@ -255,7 +255,7 @@ class Context(object):
         #    8.0.1 (basic), 002000
         #    8.0.1 (group), 002002, Product
         #    8.0.1 (group), 002002, Product, Company
-        rev = '.'.join([str(x) for x in self.version])
+        rev = '.'.join(self.version)
         if not verbose:
             return rev
 
@@ -282,8 +282,7 @@ class Context(object):
 
     @property
     def version(self):
-        getint = self.cfg.getint
-        return [getint('pyarmor', x) for x in ('major', 'minor', 'patch')]
+        return [self.cfg.get('pyarmor', x) for x in ('major', 'minor', 'patch')]
 
     @property
     def python_version(self):
