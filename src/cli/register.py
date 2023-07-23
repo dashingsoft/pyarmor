@@ -213,7 +213,7 @@ class Register(object):
             host=uinfo.system,
             version=uinfo.version,
             timestamp=datetime.now().isoformat(),
-            machine=self._get_machine_id(12).decode('utf-8')
+            machine=self._get_machine_id(16).decode('utf-8')
         )
         with open(path, "wb") as f:
             f.write(tpl.encode('utf-8'))
