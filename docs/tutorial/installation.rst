@@ -167,7 +167,7 @@ Create a script :file:`tool.py`, pass arguments by yourself
     from pyarmor.cli.__main__ import main_entry
 
     args = ['gen', 'foo.py']
-    main(args)
+    main_entry(args)
 
 Run it by Python interpreter::
 
