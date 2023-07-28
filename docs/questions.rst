@@ -148,6 +148,20 @@ __ https://github.com/dashingsoft/pyarmor/discussions/1107
 License
 =======
 
+**Which license is right for my project?**
+
+  Hints for all licenses:
+
+  - If using Python 2.7 or Python <= 3.6, then only Pyarmor old license works. All the new licenses only work for Python 3.7+
+  - Each license only need pay once, but it may not work in Pyarmor future versions
+
+  Hints for 3 new licenses (Pyarmor Basic, Pro and Gropu license):
+
+  - If need offline obfuscation, only Pyarmor Group license works
+  - Pyarmor Basic and Pro license need internet connection to verify license when obfuscating the scripts, and in 24 hours only 100 different devices are allowed for each license
+  - In 24 hours, if need more than 100 docker containers to obfuscate your scripts, only Pyarmor Group license works.
+  - Pyarmor Basic, Pro and Group licenses don't work for Pyarmor 7.
+
 **I am interested to know if the users are entitled to updates to ensure compatibility with future versions of Python.**
 
   No. Pyarmor license works with current Pyarmor version forever, but may not work with future Pyarmor version. I can't make sure current Pyarmor version could support all the future versions of Python, so the answer is no.

@@ -95,6 +95,14 @@ Microsoft Office is not one product, because each product in Microsoft Office is
 
 Microsoft Word is one product, and Microsoft Word 2003，Word 2007 etc. are belong to one product Microsoft word.
 
+**Hints for 3 licenses**
+
+- Only works for Python 3.7+ in supported platforms
+- If need offline obfuscation, only Pyarmor Group license works
+- Pyarmor Basic and Pro license need internet connection to verify license when obfuscating the scripts, and in 24 hours only 100 different devices are allowed for each license
+- In 24 hours, if need more than 100 docker containers to obfuscate your scripts, only Pyarmor Group license works.
+- Pyarmor Basic, Pro and Group licenses don't work for Pyarmor 7.
+
 License features
 ----------------
 
