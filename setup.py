@@ -109,7 +109,7 @@ setup(
     package_dir={'pyarmor': 'pyarmor'},
     package_data={
         'pyarmor': pyarmor_data_files + platform_data_files,
-        'pyarmor.cli': ['default.cfg', 'public_capsule.zip'],
+        'pyarmor.cli': ['default.cfg', 'public_capsule.zip', 'core.data.*'],
     },
 
     install_requires=[

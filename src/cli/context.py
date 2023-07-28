@@ -641,3 +641,23 @@ class Context(object):
         for plugin in self.plugins:
             if hasattr(plugin, 'post_runtime'):
                 plugin.post_runtime(self, source, target, platforms)
+
+    #
+    # Core data, new in 8.3
+    #
+    def _core_data(self, name):
+        n = __file__.find('context.py')
+        with open(__file__[:n] + name, 'rb') as f:
+            return f.read()
+
+    @property
+    def core_data_1(self):
+        return self._core_data('core.data.1')
+
+    @property
+    def core_data_2(self):
+        return self._core_data('core.data.2')
+
+    @property
+    def core_data_3(self):
+        return self._core_data('core.data.3')
