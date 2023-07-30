@@ -1,6 +1,6 @@
 from sys import platform
 
-version = '8.3.dev2'
+version = '8.3.dev3'
 
 # The corresponding version of pytransform.so
 core_version = 'r52.6'
