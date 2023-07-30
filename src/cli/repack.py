@@ -372,10 +372,11 @@ class Repacker:
             raise RuntimeError('no pyarmor runtime files found')
 
         if is_darwin:
-            from PyInstaller.depend import dylib
-            self._fixup_darwin_rtbinary(rtbinary, self.pylib_name)
-            logger.debug('mac_set_relative_dylib_deps "%s"', rtbinname)
-            dylib.mac_set_relative_dylib_deps(rtbinary, rtbinname)
+            # Not required since 8.3.0
+            # from PyInstaller.depend import dylib
+            # self._fixup_darwin_rtbinary(rtbinary, self.pylib_name)
+            # logger.debug('mac_set_relative_dylib_deps "%s"', rtbinname)
+            # dylib.mac_set_relative_dylib_deps(rtbinary, rtbinname)
 
             import PyInstaller.utils.osx as osxutils
             # Since PyInstaller 4.4
