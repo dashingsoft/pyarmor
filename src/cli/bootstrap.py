@@ -8,7 +8,7 @@
 #                                                           #
 #      Pyarmor                                              #
 #                                                           #
-#      Version: 8.2.1 -                                     #
+#      Version: 8.2.1 - 8.2.9                               #
 #                                                           #
 #############################################################
 #
@@ -18,6 +18,8 @@
 #  @Author: Jondy Zhao (pyarmor@163.com)
 #
 #  @Create Date: Fri Apr 14 17:43:59 CST 2023
+#
+#  @Deprecated: 8.2.9
 #
 import logging
 import os
