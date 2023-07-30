@@ -20,22 +20,11 @@ def resoptions(meth):
 
 class Component(object):
 
-    trace_loggers = {
-        'StrProtector': 'trace.mix.str',
-        'CallProtector': 'trace.assert.call',
-        'ImportProtector': 'trace.assert.import',
-        'AttrProtector': 'trace.co.attr',
-        'CodeProtector': 'trace.co',
-        'CoPatcher': 'trace.co',
-        'BccPatcher': 'trace.bcc',
-    }
-
     def __init__(self, ctx):
         self.ctx = ctx
         self._options = {}
 
-        clsname = self.__class__.__name__
-        self.logger = logging.getLogger(self.trace_loggers[clsname])
+        self.logger = logging.getLogger(self.LOGNAME)
 
     def __getattr__(self, opt):
         if opt.startswith('o_'):
