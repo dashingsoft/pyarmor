@@ -55,7 +55,14 @@ When report bug in `issues`_, please copy the whole command line :command:`pyarm
 Segment fault in Apple
 ======================
 
-There are 3 cases
+First upgrade Pyarmor to 8.3.0+ which has fixed non-system Python crash issues.
+
+If it has been the latest version, then check both of prebuilt extensions `pytransform3.so` and `pyarmor_runtime.so`
+
+* Make sure code sign is OK by `codesign -v /path/to/xxx.so`
+* Check used shared libraries `otool -L /path/to/xxx.so`, make sure all of them exist.
+
+For Pyarmor prior to 8.3.0, check the following issues
 
 **Generally it's code sign issue**
 
