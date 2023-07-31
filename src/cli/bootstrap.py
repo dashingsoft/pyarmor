@@ -8,7 +8,7 @@
 #                                                           #
 #      Pyarmor                                              #
 #                                                           #
-#      Version: 8.2.1 - 8.2.9                               #
+#      Version: 8.2.1 -                                     #
 #                                                           #
 #############################################################
 #
@@ -18,8 +18,6 @@
 #  @Author: Jondy Zhao (pyarmor@163.com)
 #
 #  @Create Date: Fri Apr 14 17:43:59 CST 2023
-#
-#  @Deprecated: 8.2.9
 #
 import logging
 import os
@@ -174,6 +172,7 @@ def _fixup_windows(path, filename, pyver):
 
 
 def auto_fix(path):
+    '''Deprecated since Pyarmor 8.3.0'''
     pyver = '%s.%s' % sys.version_info[:2]
     plat = sys.platform.lower()
 
@@ -199,7 +198,9 @@ def main():
     logging.info('Python: %d.%d', *sys.version_info[:2])
     corepath = os.path.join(os.path.dirname(__file__), 'core')
     logging.info('pyarmor.cli.core: %s', corepath)
-    auto_fix(corepath)
+    # auto_fix(corepath)
+    logging.warning('this feature has been deprecated since Pyarmor 8.3.0')
+    logging.info('nothing to do')
 
 
 if __name__ == '__main__':
