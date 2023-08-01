@@ -22,9 +22,7 @@ Status: released
 
 **8.2**
 
-Status: released
-
-Release schedule: 2023-05-10
+Status: released (2023-05-10)
 
 - Full documentation
 - Group license available
@@ -39,15 +37,13 @@ Release schedule: 2023-05-10
 
 **8.3**
 
-Status: developing
+Status: relealsed (2023-08-01)
 
-Release schedule: 2023-07-01
-
-- Full test
 - Support `--enable-themida`
 - pyarmor-webui for 8.0
 - Support multiple Python versions
 - Support platforms: Android, Alpine Linux (musl-c/docker), FreeBSD
+- Support new arch `loongarch64` for Linux
 - Group license supports unlimited dockers which uses default bridge network and not highly customized.
 
 **8.x**
@@ -56,6 +52,7 @@ Status: not start
 
 Release schedule: 2023-11-01 (about one month after Python 3.12.0 released)
 
+- Full test
 - Support Python 3.12
 - Expert users could write their own c/python code in pyarmor_runtime initialization
 - Convert current unsupported node types as far as possible for BCC mode
