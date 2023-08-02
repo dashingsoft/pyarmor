@@ -168,8 +168,9 @@ class Register(object):
                 self.ctx.save_token(f.read(name))
                 return
             if 'group.info' in namelist:
-                raise CliError('wrong usage for group license, please '
-                               'check `pyarmor reg` in Man page')
+                logger.info('refer to http://pyarmor.readthedocs.io/en/stable/how-to/register.html'
+                            '#using-group-license')
+                raise CliError('wrong usage for group license')
 
         logger.info('update license token')
         self.update_token()
