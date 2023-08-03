@@ -45,6 +45,9 @@ def _cmd_gen_key(builder, options):
     logger.info('start to generate outer runtime key "%s"', keyname)
     data = builder.generate_runtime_key(outer=True)
     output = options.get('output', 'dist')
+    if output == 'pipe':
+        logger.info('return runtime key by pipe')
+        return data
     os.makedirs(output, exist_ok=True)
 
     target = os.path.join(output, keyname)
@@ -134,6 +137,7 @@ def format_gen_args(ctx, args):
     return options
 
 
+# Unused
 def check_cross_platform(ctx, platforms):
     rtver = ctx.cfg.get('pyarmor', 'cli.runtime')
     cmd = 'pip install pyarmor.cli.runtime~=%s.0' % rtver
@@ -212,7 +216,7 @@ def cmd_gen(ctx, args):
 
     Plugin.install(ctx)
     if args.inputs[0].lower() in ('key', 'k'):
-        _cmd_gen_key(builder, options)
+        return _cmd_gen_key(builder, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
     elif args.pack:
@@ -683,7 +687,7 @@ def main_entry(argv):
     logger.debug('home path: %s', ctx.home_path)
 
     if hasattr(args, 'func'):
-        args.func(ctx, args)
+        return args.func(ctx, args)
     else:
         parser.print_help()
 
