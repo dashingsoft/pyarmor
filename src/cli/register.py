@@ -153,12 +153,12 @@ class Register(object):
                 f.extract(item, path=path)
             namelist = f.namelist()
             if 'group.tokens' in namelist:
-                machid = self._get_machine_id(16).decode('utf-8')
-                name = '/'.join(['tokens', machid])
-                if name not in namelist:
-                    machid = self._get_machine_id(11).decode('utf-8')
+                for idver in (16, 11):
+                    machid = self._get_machine_id(idver).decode('utf-8')
                     name = '/'.join(['tokens', machid])
-                if name not in namelist:
+                    if name in namelist:
+                        break
+                else:
                     machid = self._get_docker_hostname()
                     if not machid:
                         raise CliError('could not get docker host machine id')
