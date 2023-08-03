@@ -588,6 +588,24 @@ If no found in these paths, check file ``sys.executable`` + ``.pyarmor.rkey``. F
 
 Still not found raise runtime error and exits.
 
+.. describe:: Special output **pipe**
+
+If ouptput path is ``pipe``, the generated key is not save to file, but return the key content (bytes) directly.
+
+Generally it's used to generate runtime key by web api and send key to customer by internet.
+
+For example,
+
+.. code-block:: python
+
+    from pyarmor.cli.__main__ import main_entry
+
+    args = ['gen', 'key', '-O', 'pipe', '-e', '2023-10-21']
+    data = main_entry(args)
+
+    with open('pyarmor.rkey', 'wb') as f:
+        f.write(data)
+
 .. _pyarmor cfg:
 
 pyarmor cfg
