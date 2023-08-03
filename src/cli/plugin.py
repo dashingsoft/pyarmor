@@ -27,7 +27,7 @@ from . import logger
 
 
 __all__ = ['CodesignPlugin', 'MultiPythonPlugin', 'PlatformTagPlugin',
-           'PycPlugin']
+           'PycPlugin', 'DarwinUniversalPlugin']
 
 
 class Plugin(object):
@@ -106,24 +106,28 @@ class PycPlugin:
                     os.replace(pycname, pycname[:-1])
 
 
+def osx_sign_binary(dest, identity=None):
+    from subprocess import check_call, CalledProcessError, DEVNULL
+    cmdlist = ['codesign', '-f', '-s', identity,
+               '--all-architectures', '--timestamp', dest]
+    logger.debug('%s', ' '.join(cmdlist))
+    try:
+        check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
+    except CalledProcessError as e:
+        logger.warning('codesign command failed with error code %d',
+                       e.returncode)
+    except Exception as e:
+        logger.warning('codesign command failed with:\n%s', e)
+
+
 class CodesignPlugin:
     '''codesign darwin runtime extension "pyarmor_runtime"'''
 
     @staticmethod
     def post_runtime(ctx, source, dest, platform):
         if platform.startswith('darwin'):
-            from subprocess import check_call, CalledProcessError, DEVNULL
             identity = ctx.cfg['pack'].get('codesign_identify', '-')
-            cmdlist = ['codesign', '-f', '-s', identity,
-                       '--all-architectures', '--timestamp', dest]
-            logger.info('%s', ' '.join(cmdlist))
-            try:
-                check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
-            except CalledProcessError as e:
-                logger.warning('codesign command failed with error code %d',
-                               e.returncode)
-            except Exception as e:
-                logger.warning('codesign command failed with:\n%s', e)
+            osx_sign_binary(dest, identity)
 
 
 class PlatformTagPlugin:
@@ -202,3 +206,64 @@ class MultiPythonPlugin:
                 move(os.path.dirname(x), verpath)
 
         MultiPythonPlugin.RUNTIME_FILES.clear()
+
+
+def osx_merge_binary(target, rtpath, plats):
+    from subprocess import check_call, CalledProcessError, DEVNULL
+    cmdlist = ['lipo', '-create', '-output', target]
+    for plat in plats:
+        filename = os.path.join(rtpath, plat, 'pyarmor_runtime.so')
+        arch = 'x86_64' if plat == 'darwin_x86_64' else 'arm64'
+        cmdlist.extend(['-arch', arch, filename])
+    try:
+        check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
+        return True
+    except CalledProcessError as e:
+        logger.warning('lipo command "%s" failed with error code %d',
+                       ' '.join(cmdlist), e.returncode)
+    except Exception as e:
+        logger.warning('lipo command "%s" failed with:\n%s',
+                       ' '.join(cmdlist), e)
+
+
+class DarwinUniversalPlugin:
+
+    @staticmethod
+    def post_build(ctx, inputs, outputs, pack):
+        from shutil import rmtree
+
+        def rebuild_init(oneplat, init_script):
+            with open(init_script, 'r') as f:
+                lines = f.readlines()
+            if oneplat:
+                lines[1:] = ['from .pyarmor_runtime import __pyarmor__']
+            else:
+                for i in range(1, len(lines)):
+                    if lines[i].strip().startswith("# mach = 'universal'"):
+                        lines[i] = lines[i].replace('# ', '')
+                        break
+            with open(init_script, 'w') as f:
+                f.write(''.join(lines))
+
+        rtpath = os.path.join(outputs[0], ctx.runtime_package_name)
+        dirs = [x.name for x in os.scandir(rtpath) if x.is_dir()]
+        plats = set(['darwin_x86_64', 'darwin_arm64', 'darwin_aarch64'])
+        plats = plats.intersection(set(dirs))
+        if len(plats) > 1:
+            oneplat = all([x.startswith('darwin_') for x in dirs])
+            if oneplat:
+                target = rtpath
+            else:
+                target = os.path.join(rtpath, 'darwin_universal')
+                os.makedirs(target, exist_ok=True)
+            target = os.path.join(target, 'pyarmor_runtime.so')
+
+            if not osx_merge_binary(target, rtpath, plats):
+                return
+
+            rebuild_init(oneplat, os.path.join(rtpath, '__init__.py'))
+            identity = ctx.cfg['pack'].get('codesign_identify', '-')
+            osx_sign_binary(target, identity)
+
+            # Clean old files
+            [rmtree(os.path.join(rtpath, x)) for x in plats]
