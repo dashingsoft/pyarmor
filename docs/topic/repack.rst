@@ -20,6 +20,14 @@ If this option is set, pyarmor first obfuscates the scripts, then does extra wor
 * Appending runtime files to the bundle in this temporary folder
 * Repacking this temporary folder to an executable file and overwrite the old
 
+Note that only list scripts are obfuscated, if need obfuscate more scripts and sub packages, list all of them in command line. For example::
+
+  pyarmor gen --pack dist/foo/foo -r *.py dir1 dir2 ...
+
+In Darwin, let obfuscated scripts work in both intel and Apple Silicon by extra option ``--platform darwin.x86_64,darwin.arm64`::
+
+  pyarmor gen --pack dist/foo/foo --platform darwin.x86_64,darwin.arm64 foo.py
+
 Packing obfuscated scripts manually
 ===================================
 
