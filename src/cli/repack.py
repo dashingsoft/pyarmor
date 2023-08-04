@@ -356,6 +356,7 @@ class Repacker:
         logger.info('entry script name is "%s.py"', entry)
 
         rtpath = os.path.join(obfpath, rtname)
+        logger.debug('runtime package at %s', rtpath)
         for item in self.contents:
             if item.endswith(EXTRACT_SUFFIX):
                 pyzpath = item[:-len(EXTRACT_SUFFIX)]
