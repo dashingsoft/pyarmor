@@ -246,9 +246,6 @@ class DarwinUniversalPlugin:
                 f.write(''.join(lines))
 
         rtpath = os.path.join(outputs[0], ctx.runtime_package_name)
-        # Fix repack issue, it changes output path
-        if not os.path.exists(rtpath):
-            rtpath = os.path.join(ctx.repack_path, ctx.runtime_package_name)
         dirs = [x.name for x in os.scandir(rtpath) if x.is_dir()]
         plats = set(['darwin_x86_64', 'darwin_arm64', 'darwin_aarch64'])
         plats = plats.intersection(set(dirs))
