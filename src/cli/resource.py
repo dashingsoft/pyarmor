@@ -65,7 +65,9 @@ class Resource(object):
 
     @property
     def output_path(self):
-        return self.parent.fullname.replace('.', os.path.sep)
+        return '' if self.is_top() else \
+            self.parent.name if self.parent.is_top() else \
+            os.path.join(self.parent.parent.output_path, self.parent.name)
 
 
 class FileResource(Resource):
@@ -93,7 +95,7 @@ class FileResource(Resource):
 
     @property
     def output_filename(self):
-        return self.fullname.replace('.', os.path.sep) + self.pyext
+        return os.path.join(self.output_path, self.name + self.pyext)
 
     @property
     def frozenname(self):
