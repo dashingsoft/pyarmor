@@ -142,6 +142,15 @@ __ https://developer.apple.com/documentation/xcode/using-the-latest-code-signatu
 __ https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/RunpathDependentLibraries.html
 __ https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
 
+Registering
+===========
+
+**ERROR request license token failed (104)**
+
+  Please make sure firewall doesn't block the response of license server. If possible, turn off the firewall to verify it.
+
+  In Windows make sure ``pytransform3.pyd`` is not blocked, in other platforms make sure ``pytransform3.so`` is not blocked. This binary file need connect to `pyarmor.dashingsoft.com` to request token for online obfuscation.
+
 Packing
 =======
 
