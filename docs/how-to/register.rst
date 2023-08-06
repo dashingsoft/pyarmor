@@ -20,7 +20,10 @@ First of all
 2. Pyarmor 8.2+
 3. Internet connection
 4. Product name bind to this license, for non-commercial use, product name is ``non-profits``
-5. If any firewall turns on, in Windows make sure ``pytransform3.pyd`` is not blocked, in other platforms make sure ``pytransform3.so`` is not blocked. This binary file need connect to `pyarmor.dashingsoft.com` to request token for online obfuscation.
+
+**If any firewall turns on**
+
+In Windows ``pytransform.pyd`` will connect to ``pyarmor.dashingsoft.com`` port ``80`` to request token for online obfuscation, in other platforms it is ``pytransform3.so``. Refer to firewall documentation to allow it to connect ``pyarmor.dashingsoft.com:80``.
 
 Using Pyarmor Basic or Pro
 ==========================

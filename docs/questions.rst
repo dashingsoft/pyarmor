@@ -149,7 +149,7 @@ Registering
 
   Please make sure firewall doesn't block the response of license server. If possible, turn off the firewall to verify it.
 
-  In Windows make sure ``pytransform3.pyd`` is not blocked, in other platforms make sure ``pytransform3.so`` is not blocked. This binary file need connect to `pyarmor.dashingsoft.com` to request token for online obfuscation.
+  In Windows ``pytransform.pyd`` will connect to ``pyarmor.dashingsoft.com`` port ``80`` to request token for online obfuscation, in other platforms it is ``pytransform3.so``. Refer to firewall documentation to allow it to connect ``pyarmor.dashingsoft.com:80``.
 
 Packing
 =======
