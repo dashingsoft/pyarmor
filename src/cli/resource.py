@@ -66,8 +66,7 @@ class Resource(object):
     @property
     def output_path(self):
         return '' if self.is_top() else \
-            self.parent.name if self.parent.is_top() else \
-            os.path.join(self.parent.parent.output_path, self.parent.name)
+            os.path.join(self.parent.output_path, self.parent.name)
 
 
 class FileResource(Resource):
