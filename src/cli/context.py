@@ -638,9 +638,8 @@ class Context(object):
                     return f.read()
 
     def runtime_plugin(self, source, target, platforms):
-        for plugin in self.plugins:
-            if hasattr(plugin, 'post_runtime'):
-                plugin.post_runtime(self, source, target, platforms)
+        from .plugin import Plugin
+        Plugin.post_runtime(self, source, target, platforms)
 
     #
     # Core data, new in 8.3
