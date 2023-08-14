@@ -190,7 +190,7 @@ class Register(object):
                 s.connect((host, port))
                 s.sendall(b'PADH' + b'x' * 60)
                 flag = s.recv(1)
-                if flag in (b'a', b'b'):
+                if flag in (b'a', b'b', b'g'):
                     data = s.recv(32)
                 machid = (flag + data).decode('utf-8')
                 logger.info('got docker host machine id: %s', machid)
