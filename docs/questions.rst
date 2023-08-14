@@ -151,6 +151,23 @@ Registering
 
   In Windows ``pytransform.pyd`` will connect to ``pyarmor.dashingsoft.com`` port ``80`` to request token for online obfuscation, in other platforms it is ``pytransform3.so``. Refer to firewall documentation to allow it to connect ``pyarmor.dashingsoft.com:80``.
 
+**Group license raises "ERROR request license token failed"**
+
+  First upgrade Pyarmor to 8.3.3+
+
+  Then register group license with debug option ``-d`` in offline device. For example::
+
+      $ pyarmor -d reg pyarmor-device-regfile-6000.4.zip
+
+  Check log, make sure current machine id is inclueded by offline regfile. For example::
+
+      DEBUG    group license for machines: ['tokens/gb04eb35da4f5378185c8663522e0a5e3']
+      DEBUG    got machine id: gb04eb35da4f5378185c8663522e0a5e3
+
+  If machine id is mismached, please generate new device file for this device by Pyarmor 8.3.3+
+
+  For virtual machine, make sure machine id is same after reboot.
+
 Packing
 =======
 
