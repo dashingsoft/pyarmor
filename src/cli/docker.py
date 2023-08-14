@@ -90,7 +90,7 @@ def main_entry():
     register_pyarmor(ctx, args.regfile[0])
     CONFIG['ctx'] = ctx
 
-    CONFIG['machid'] = Pytransform3.get_hd_info(11)
+    CONFIG['machid'] = Pytransform3.get_hd_info(16)
     logging.debug('machine id: %s', CONFIG['machid'])
 
     host, port = '0.0.0.0', args.port
