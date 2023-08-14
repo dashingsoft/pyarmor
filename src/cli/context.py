@@ -626,6 +626,10 @@ class Context(object):
         os.makedirs(path, exist_ok=True)
         return path
 
+    @property
+    def bcc_encoding(self):
+        return self.cfg['builder'].get('encoding', 'utf-8')
+
     #
     # Plugin and hook
     #
