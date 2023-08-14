@@ -73,7 +73,7 @@ def main_entry():
                         help=argparse.SUPPRESS)
     parser.add_argument('-s', '--sock', default='/var/run/docker.sock',
                         help=argparse.SUPPRESS)
-    parser.add_argument('--mach', choice=('a', 'b', 'g'), default='g',
+    parser.add_argument('--mach', choices=('a', 'b', 'g'), default='g',
                         help=argparse.SUPPRESS)
     parser.add_argument('--home', help=argparse.SUPPRESS)
     parser.add_argument('regfile', nargs=1,
