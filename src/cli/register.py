@@ -153,8 +153,11 @@ class Register(object):
                 f.extract(item, path=path)
             namelist = f.namelist()
             if 'group.tokens' in namelist:
+                logger.debug('group license for machines: %s',
+                             [x for x in namelist if x.startswith('tokens')])
                 for idver in (16, 11):
                     machid = self._get_machine_id(idver).decode('utf-8')
+                    logger.debug('got machine id: %s', machid)
                     name = '/'.join(['tokens', machid])
                     if name in namelist:
                         break
@@ -164,7 +167,7 @@ class Register(object):
                         raise CliError('could not get docker host machine id')
                     hostname = '/'.join(['tokens', machid])
                     if hostname not in namelist:
-                        logger.debug('no found "%s" in offline regfile', name)
+                        logger.debug('no "%s" in offline regfile', hostname)
                         raise CliError('this regfile is not for this device')
                     name = hostname
                 logger.debug('extracting %s', name)
