@@ -73,7 +73,7 @@ def main_entry():
                         help=argparse.SUPPRESS)
     parser.add_argument('-s', '--sock', default='/var/run/docker.sock',
                         help=argparse.SUPPRESS)
-    parser.add_argument('--mach', choices=('a', 'b', 'g'), default='g',
+    parser.add_argument('--mflag', choices=('a', 'b', 'g'), default='g',
                         help=argparse.SUPPRESS)
     parser.add_argument('--home', help=argparse.SUPPRESS)
     parser.add_argument('regfile', nargs=1,
@@ -92,7 +92,7 @@ def main_entry():
     register_pyarmor(ctx, args.regfile[0])
     CONFIG['ctx'] = ctx
 
-    CONFIG['machid'] = Pytransform3.get_hd_info(10 + ord(args.mach) - 97)
+    CONFIG['machid'] = Pytransform3.get_hd_info(10 + ord(args.mflag) - 97)
     logging.debug('machine id: %s', CONFIG['machid'])
 
     host, port = '0.0.0.0', args.port
