@@ -162,14 +162,17 @@ class Register(object):
                     if name in namelist:
                         break
                 else:
-                    machid = self._get_docker_hostname()
-                    if not machid:
+                    mlist = self._get_docker_hostname()
+                    if not mlist:
                         raise CliError('could not get docker host machine id')
-                    hostname = '/'.join(['tokens', machid])
-                    if hostname not in namelist:
-                        logger.debug('no "%s" in offline regfile', hostname)
+                    for machid in mlist:
+                        hostname = '/'.join(['tokens', machid])
+                        if hostname in namelist:
+                            name = hostname
+                            break
+                    else:
+                        logger.debug('no found %s in offline regfile', mlist)
                         raise CliError('this regfile is not for this device')
-                    name = hostname
                 logger.debug('extracting %s', name)
                 self.ctx.save_token(f.read(name))
                 return
@@ -186,15 +189,20 @@ class Register(object):
             from socket import socket, AF_INET, SOCK_STREAM
             host = 'host.docker.internal'
             port = 29092
+            rlist = []
             with socket(AF_INET, SOCK_STREAM) as s:
                 s.connect((host, port))
                 s.sendall(b'PADH' + b'x' * 60)
-                flag = s.recv(1)
-                if flag in (b'a', b'b', b'g'):
-                    data = s.recv(32)
-                machid = (flag + data).decode('utf-8')
-                logger.info('got docker host machine id: %s', machid)
-                return machid
+                while True:
+                    flag = s.recv(1)
+                    if flag in (b'a', b'b', b'g'):
+                        data = s.recv(32)
+                    machid = (flag + data).decode('utf-8')
+                    logger.info('got docker host machine id: %s', machid)
+                    rlist.append(machid)
+                    if s.recv(1) == b'\x00':
+                        break
+            return rlist
         except Exception:
             logger.exception('could not get docker host machine id')
 

@@ -36,7 +36,7 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
 
     def process(self, packet):
         if packet[:4] == b'PADH':
-            response = CONFIG['machid']
+            response = b'\n'.join(CONFIG['machid']) + b'\x00'
             self.request.send(response)
         else:
             userdata = self.parse_packet(packet)
@@ -73,8 +73,6 @@ def main_entry():
                         help=argparse.SUPPRESS)
     parser.add_argument('-s', '--sock', default='/var/run/docker.sock',
                         help=argparse.SUPPRESS)
-    parser.add_argument('--mflag', choices=('a', 'b', 'g'), default='g',
-                        help=argparse.SUPPRESS)
     parser.add_argument('--home', help=argparse.SUPPRESS)
     parser.add_argument('regfile', nargs=1,
                         help='group device registration file for this machine')
@@ -92,7 +90,7 @@ def main_entry():
     register_pyarmor(ctx, args.regfile[0])
     CONFIG['ctx'] = ctx
 
-    CONFIG['machid'] = Pytransform3.get_hd_info(10 + ord(args.mflag) - 97)
+    CONFIG['machid'] = [Pytransform3.get_hd_info(x) for x in (16, 11, 10)]
     logging.debug('machine id: %s', CONFIG['machid'])
 
     host, port = '0.0.0.0', args.port
