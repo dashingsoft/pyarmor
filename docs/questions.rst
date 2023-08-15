@@ -164,7 +164,7 @@ Registering
       DEBUG    group license for machines: ['tokens/gb04eb35da4f5378185c8663522e0a5e3']
       DEBUG    got machine id: gb04eb35da4f5378185c8663522e0a5e3
 
-  If machine id is mismached, please generate new device file for this device by Pyarmor 8.3.3+
+  If machine id is mismatched, please generate new device file for this device by Pyarmor 8.3.3+
 
   For virtual machine, make sure machine id is same after reboot.
 
