@@ -69,6 +69,10 @@ class BaseTestCase(unittest.TestCase):
         rc, stdout, stderr = self.assert_python_ok(*args)
         self.assertIn(b'obfuscate scripts OK', stderr)
 
+    def pyarmor_cfg(self, options):
+        args = ['-m', 'pyarmor.cli'] + options
+        rc, stdout, stderr = self.assert_python_ok(*args)
+
     def verify_dist_foo(self, script=None):
         if script is None:
             script = 'dist/foo.py'
@@ -262,6 +266,22 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.assertTrue(os.path.exists('dist/samples/pyfeatures'))
         self.assertFalse(os.path.exists('dist/samples/joker'))
+
+    @skip_protest
+    def test_bcc_filter(self):
+        self.pyarmor_cfg([
+            'cfg', 'bcc:includes=Queens.*', 'bcc:excludes=Queens.solve',
+            'enable_trace=1', 'enable_bcc=1'
+        ])
+        args = ['g', '--enable-bcc', 'samples/queens.py']
+        self.pyarmor_gen(args)
+        with open(os.path.join(self.local_path, 'pyarmor.trace.log')) as f:
+            output = f.read()
+        for line in (
+                'trace.bcc            ! queens:30:Queens.solve (excluded)',
+                'trace.bcc            queens:18:Queens.__init__',
+                'trace.bcc            ! queens:72:main (excluded)'):
+            self.assertIn(line, output)
 
 
 if __name__ == '__main__':
