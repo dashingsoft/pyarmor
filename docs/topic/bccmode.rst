@@ -143,7 +143,7 @@ The only solution is to ignore top function ``hello``::
 
 .. versionadded:: 8.3.4
 
-   The option `bcc:include`.
+   The option `bcc:includes`.
 
 .. versionchanged:: 8.3.4
 
