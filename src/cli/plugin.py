@@ -67,7 +67,7 @@ class Plugin(object):
         inputs = ctx.input_paths
         outputs = ctx.outputs
         for plugin in [x for x in ctx.plugins if hasattr(x, 'post_build')]:
-            logger.info('call post build plugin %s', plugin)
+            logger.debug('call post build plugin %s', plugin)
             plugin.post_build(ctx, inputs, outputs, pack=pack)
 
     @staticmethod
@@ -79,13 +79,13 @@ class Plugin(object):
             'data': ctx.cmd_options.get('user_data')
         }
         for plugin in [x for x in ctx.plugins if hasattr(x, 'post_key')]:
-            logger.info('call post key plugin %s', plugin)
+            logger.debug('call post key plugin %s', plugin)
             plugin.post_key(ctx, keyfile, **kwargs)
 
     @staticmethod
     def post_runtime(ctx, source, dest, platform):
         for plugin in [x for x in ctx.plugins if hasattr(x, 'post_runtime')]:
-            logger.info('call post runtime plugin %s', plugin)
+            logger.debug('call post runtime plugin %s', plugin)
             plugin.post_runtime(ctx, source, dest, platform)
 
     @staticmethod
