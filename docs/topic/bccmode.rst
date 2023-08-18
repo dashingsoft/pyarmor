@@ -43,6 +43,10 @@ Then check the trace log::
 The first log means ``foo.py`` line 5 function ``hello`` is protected by bcc.
 The second log means ``foo.py`` line 9 function ``sum2`` is protected by bcc.
 
+If there is ``!`` after ``trace.bcc``, it means this function is ignored by BCC mode. For example::
+
+    trace.bcc ! foo:29:Test.new (unsupported function "super")
+
 Ignore module or function
 =========================
 
