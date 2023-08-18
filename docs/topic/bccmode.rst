@@ -52,15 +52,59 @@ To ignore one module ``pkgname.modname`` by this command::
 
     $ pyarmor cfg -p pkgname.modname bcc:disabled=1
 
-To ignore one function in one module by this command::
+To ignore functions or class methods in one module::
 
-    $ pyarmor cfg -p pkgname.modname bcc:excludes + "function name"
+    $ pyarmor cfg -p pkgname.modname bcc:excludes="name"
+    $ pyarmor cfg -p pkgname.modname bcc:excludes="name1 name2 name3"
 
-Use ``-p`` to specify module name and option ``bcc:excludes`` for function name. No ``-p``, same name function in the other scripts will be ignored too.
+    $ pyarmor cfg -p pkgname.modname bcc:excludes="Class.method_1"
+    $ pyarmor cfg -p pkgname.modname bcc:excludes="Class.*"
 
-Exclude more functions by this way::
+If no option ``-p``, same name function in the other scripts will be ignored too.
 
-    $ pyarmor cfg -p foo bcc:excludes + "hello foo2"
+Here it's an example script :file:`foo.py`
+
+.. code-block:: python
+
+    def hello_a():
+        pass
+
+    def hello_b():
+        pass
+
+    class Test(object):
+
+        def __init__(self):
+            pass
+
+        def hello_a():
+            pass
+
+Exclude functions by one of forms::
+
+    $ pyarmor cfg -p foo bcc:excludes = "hello_a"
+    $ pyarmor cfg -p foo bcc:excludes = "hello_a hello_b"
+    $ pyarmor cfg -p foo bcc:excludes = "hello_*"
+
+    $ pyarmor cfg -p foo bcc:excludes = "Test.hello_a"
+    $ pyarmor cfg -p foo bcc:excludes = "Test.*"
+    $ pyarmor cfg -p foo bcc:excludes = "Test.__*__"
+
+    $ pyarmor cfg -p foo bcc:excludes = "hello_a Test.hello_a"
+
+If want to BCC mode handle specified functions, use option `bcc:includes`::
+
+    # clear excludes
+    $ pyarmor cfg bcc:excludes = ""
+
+    # BCC mode only handles module function "hello_a"
+    $ pyarmor cfg -p foo bcc:includes = "hello_a"
+
+    # Need extra settings let BCC mode handle class method "Test.hello_a"
+    $ pyarmor cfg -p foo bcc:includes + "Test.hello_a"
+
+    # BCC mode handles all methods of class "Test" except method "__init__"
+    $ pyarmor cfg -p foo bcc:includes="Test.*" bcc:excludes="Test.__init__"
 
 Let's enable trace mode to check these functions are ignored::
 
@@ -73,7 +117,51 @@ Another example, in the following commands BCC mode ignores ``joker/card.py``, b
     $ pyarmor cfg -p joker.card bcc:disabled=1
     $ pyarmor gen --enable-bcc /path/to/pkg/joker
 
-By both of ``bcc:excludes`` and ``bcc:disabled``, make all the problem code fallback to default obfuscation mode, and let others could be converted to c function and work fine.
+Both `bcc:includes` and `bcc:excludes` only work on top function and class method, they can't be used to filter nest function and methods of nest class.
+
+For example,
+
+.. code-block:: python
+
+    def hello():
+
+        def wrap():
+            pass
+
+        class Test:
+
+            def __init__(self):
+                pass
+
+The nest function ``wrap`` and nest class ``Test`` can't be ignored by the following commands::
+
+    pyarmor cfg bcc:excludes = "wrap hello.wrap Test.__init__ hello.Test.__init__"
+
+The only solution is to ignore top function ``hello``::
+
+    pyarmor cfg bcc:excludes = hello
+
+.. versionadded:: 8.3.4
+
+   The option `bcc:include`.
+
+.. versionchanged:: 8.3.4
+
+   The option `bcc:excludes`, in previous version::
+
+       # Exclude module function "hello_a" and any method "hello_a"
+       pyarmor cfg bcc:excludes="hello_a"
+
+       # It doesn't work if there is class name in filter
+       pyarmor cfg bcc:excludes="Myclass.hello_a"
+
+   Now::
+
+       # Exclude module function "hello_a" and method "hello_a" in any class
+       pyarmor cfg bcc:excludes="hello_a *.hello_a"
+
+       # It works to ignore one method "Myclass.hello_a"
+       pyarmor cfg bcc:excludes="Myclass.hello_a"
 
 Changed features
 ================
