@@ -271,7 +271,7 @@ class UnitTestCases(BaseTestCase):
     def test_bcc_filter(self):
         self.pyarmor_cfg([
             'cfg', 'bcc:includes=Queens.*', 'bcc:excludes=Queens.solve',
-            'enable_trace=1', 'enable_bcc=1'
+            'enable_trace=1',
         ])
         args = ['g', '--enable-bcc', 'samples/queens.py']
         self.pyarmor_gen(args)
