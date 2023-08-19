@@ -229,6 +229,19 @@ def osx_merge_binary(target, rtpath, plats):
                        ' '.join(cmdlist), e)
 
 
+def find_runtime_package(ctx, output):
+    prefix = ctx.import_prefix
+    rtname = ctx.runtime_package_name
+    if not prefix:
+        return os.path.join(output, rtname)
+    if isinstance(prefix, str):
+        return os.path.join(output, prefix.replace('.', os.path.sep), rtname)
+    for entry in os.scandir(output):
+        if entry.is_dir():
+            if rtname in os.listdir(entry.path):
+                return os.path.join(entry.path, rtname)
+
+
 class DarwinUniversalPlugin:
 
     @staticmethod
@@ -248,7 +261,10 @@ class DarwinUniversalPlugin:
             with open(init_script, 'w') as f:
                 f.write(''.join(lines))
 
-        rtpath = os.path.join(outputs[0], ctx.runtime_package_name)
+        rtpath = find_runtime_package(ctx, outputs[0])
+        if rtpath is None or not os.path.exists(rtpath):
+            logger.debug('no found runtime package "%s"', rtpath)
+            return
         dirs = [x.name for x in os.scandir(rtpath) if x.is_dir()]
         plats = set(['darwin_x86_64', 'darwin_arm64', 'darwin_aarch64'])
         plats = plats.intersection(set(dirs))
