@@ -9,11 +9,11 @@ from codecs import open
 from os import path
 from sys import argv
 
-from src.config import version
+from pyarmor.config import version
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
-with open(path.join(here, 'src', 'README.rst'), encoding='utf-8') as f:
+with open(path.join(here, 'pyarmor', 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 pyarmor_data_files = [
