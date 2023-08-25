@@ -38,8 +38,9 @@ def parse_script(filename):
         for line in f:
             if line.startswith('__pyarmor__('):
                 i = line.find('(')
+                args = line.strip()[i+1:-1].split(', ')
                 co = compile(line, '<str>', 'exec')
-                return line.strip()[i+1:-1].split(', '), co.co_consts[0]
+                return args, co.co_consts[0]
 
 
 def parse_header(code):
