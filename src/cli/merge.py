@@ -38,7 +38,8 @@ def parse_script(filename):
         for line in f:
             if line.startswith('__pyarmor__('):
                 i = line.find('(')
-                return line.strip()[i+1:-1].split(', ')
+                co = compile(line, '<str>', 'exec')
+                return line.strip()[i+1:-1].split(', '), co.co_consts[0]
 
 
 def parse_header(code):
@@ -67,25 +68,25 @@ def merge_scripts(name, paths, dest):
     scripts = [os.path.join(p, name) for p in paths]
 
     refscript = scripts.pop(0)
-    refitem = parse_script(refscript)
+    result = parse_script(refscript)
 
-    if refitem is None:
+    if result is None:
         logger.info('copy script, it is not obfuscated')
         shutil.copy2(refscript, dest)
         return
 
     refmark = '--xxxxxx--'
-    refcode = eval(refitem[-1])
+    refitem, refcode = result
     with open(refscript) as f:
         refdata = f.read().replace(refitem[-1], refmark)
 
     pieces = []
 
     for script in reversed(scripts):
-        item = parse_script(script)
-        if not item:
+        result = parse_script(script)
+        if not result:
             raise RuntimeError('"%s" is not an obfuscated script' % script)
-        code = eval(item[-1])
+        item, code = result
         infos = parse_header(code)
         off, size, pyver = infos[-1]
         logger.debug('merge py%s.%s at %d (%d)', *pyver, off, size)
