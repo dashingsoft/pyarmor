@@ -141,7 +141,7 @@ gh api graphql -f query='
   }'
 ''')
 
-cmd_discussion_comment = 'gh api graphql'
+cmd_discussion_graphql = 'gh api graphql'
 
 query_add_discussion_comment = Template('''
   mutation {
@@ -225,9 +225,9 @@ gh api --method PUT /repos/dashingsoft/pyarmor/notifications \
 
 
 def call_cmd(cmd):
-    # Popen(cmd.strip(), shell=True).wait()
-    args = shlex.split(cmd)
-    Popen(args).wait()
+    Popen(cmd.strip(), shell=True).wait()
+    # args = shlex.split(cmd)
+    # Popen(args).wait()
 
 
 def call_query(cmd, query):
@@ -384,7 +384,7 @@ class Github(cmd.Cmd):
                 query = query_add_discussion_comment.substitute(
                     discussionId=discussionId,
                     body=body.replace('"', r'\"'))
-                call_query(cmd_discussion_comment, query)
+                call_query(cmd_discussion_graphql, query)
 
     def do_dd(self, arg):
         'Delete discussion comment'
@@ -424,11 +424,11 @@ class Github(cmd.Cmd):
             print()
             print(body)
             print()
-            if input('Are you sure (y/n) : ') in ('y', 'Y'):
+            if input('Are you sure (y/n) : ') in ('', 'y', 'Y'):
                 query = query_update_discussion_comment.substitute(
                     commentId=arg,
                     body=body.replace('"', r'\"'))
-                call_query(cmd_discussion_comment, query)
+                call_query(cmd_discussion_graphql, query)
 
     def do_shell(self, arg):
         call_cmd(arg)
