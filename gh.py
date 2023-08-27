@@ -209,6 +209,7 @@ gh issue comment $issueId --edit-last
 cmd_list_notifications = Template('''
 gh api notifications --template '{{range .}}
 {{.id}} {{.reason}} {{.subject.type}} {{.updated_at}}
+{{.subject.url}}
 {{.subject.title}}
 {{end}}
 '
