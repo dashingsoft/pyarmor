@@ -186,6 +186,21 @@ gh api graphql -f query='
   }'
 ''')
 
+cmd_delete_discussion = Template('''
+gh api graphql -f query='
+  mutation {
+    deleteDiscussion(input: {
+      id: "$nodeId"
+    }) {
+      clientMutationId
+      discussion {
+        id
+        title
+      }
+    }
+  }'
+''')
+
 cmd_list_issues = Template('''
 gh issue list --search "sort:updated"
 ''')
