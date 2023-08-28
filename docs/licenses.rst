@@ -103,6 +103,24 @@ Microsoft Word is one product, and Microsoft Word 2003，Word 2007 etc. are belo
 - In 24 hours, if need more than 100 docker containers to obfuscate your scripts, only Pyarmor Group license works.
 - Pyarmor Basic, Pro and Group licenses don't work for Pyarmor 7.
 
+Check device for group license
+------------------------------
+
+Check one device works for group license by this way:
+
+* First install Pyarmor 8.3.5+ trial version in this device
+* Got machine id by the following commands:
+
+  .. code-block:: bash
+      $ pyarmor reg -g 1
+      $ cat .pyarmor/group/pyarmor-group-device.1 | grep ^machine
+      machine: kb04eb35da4f5378185c8663522e0a5e3
+
+* Reboot this device, check machine id is same or not
+* If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
+
+For docker container, only if docker host could work with group license, refer to :doc:`how-to/register` section `run unlimited dockers in offline device`
+
 License features
 ----------------
 
