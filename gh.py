@@ -206,7 +206,7 @@ gh issue list --search "sort:updated"
 ''')
 
 cmd_view_issue = Template('''
-gh issue view $issueId
+gh issue view $issueId $options
 ''')
 
 cmd_close_issue = Template('''
@@ -334,8 +334,11 @@ class Github(cmd.Cmd):
 
     def do_vi(self, arg):
         'View issue'
-        call_cmd(cmd_view_issue.substitute(issueId=arg))
-        self.issueId = arg
+        paras = arg.split(' ', 1)
+        issueId = int(paras[0])
+        options = ' '.join(paras[1:])
+        call_cmd(cmd_view_issue.substitute(issueId=issueId, options=options))
+        self.issueId = issueId
     do_v = do_vi
 
     def do_vd(self, arg):
@@ -447,6 +450,7 @@ class Github(cmd.Cmd):
                 call_query(cmd_discussion_graphql, query)
 
     def do_shell(self, arg):
+        'Execute shell command'
         call_cmd(arg)
 
 
