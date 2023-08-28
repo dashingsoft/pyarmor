@@ -73,11 +73,11 @@ Please read the [Pyarmor EULA](LICENSE).
 5. **[Report bugs][issues] following the issue template.**
 6. **For business and security inquiries, send an email to <pyarmor@163.com>.**
 
-[faq]: https://pyarmor.readthedocs.io/en/stable/questions.html
+[faq]: https://pyarmor.readthedocs.io/en/latest/questions.html
 [issues]: https://github.com/dashingsoft/pyarmor/issues
 [genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
 [mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
-[asking]: https://pyarmor.readthedocs.io/en/stable/questions.html#asking-questions-in-github
+[asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
 [doc]: https://pyarmor.readthedocs.io/
 
 ## Resources
@@ -89,7 +89,7 @@ Please read the [Pyarmor EULA](LICENSE).
 中文资源
 
 * [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
-* [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/stable/)
+* [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/)
 
 ## Changelog
