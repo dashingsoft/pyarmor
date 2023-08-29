@@ -119,7 +119,9 @@ Check one device works for group license by this way:
 * Reboot this device, check machine id is same or not
 * If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
 
-Only if docker host could work with group license, group license could be used in docker container, otherwise group license doesn't work in docker container. Refer to :doc:`how-to/register` section `run unlimited dockers in offline device`
+For docker container, please check docker host as above. Only if docker host could work with group license, unlimited docker containers could be run in this docker host, refer to :doc:`how-to/register` section ``run unlimited dockers in offline device``
+
+**If machine id of docker host is changed after reboot, group license doesn't work in any docker container**
 
 License features
 ----------------
@@ -157,7 +159,7 @@ License features
 .. [9] Assert Protection: preventing others from hacking obfuscated scripts
 .. [10] Themedia Protection: using Themedia to protect Windows dlls
 .. [11] ``--obf-code=2`` is new in Pyarmor 8.2
-.. [12] This feature is introduced in Pyarmor 8.3, group license supports unlimited dockers, basic and pro licenses only allow 100 runs one day.
+.. [12] This feature is introduced in Pyarmor 8.3, group license supports unlimited dockers, basic and pro licenses only allow 100 runs one day. Also check above section ``Check device for group license``
 
 Purchasing license
 ==================
