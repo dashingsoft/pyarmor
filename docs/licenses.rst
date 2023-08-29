@@ -119,7 +119,7 @@ Check one device works for group license by this way:
 * Reboot this device, check machine id is same or not
 * If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
 
-For docker container, only if docker host could work with group license, refer to :doc:`how-to/register` section `run unlimited dockers in offline device`
+Only if docker host could work with group license, group license could be used in docker container, otherwise group license doesn't work in docker container. Refer to :doc:`how-to/register` section `run unlimited dockers in offline device`
 
 License features
 ----------------

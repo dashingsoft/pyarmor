@@ -194,7 +194,7 @@ Do not close this console, open another console to run dockers.
 
 For Linux container run it with extra ``--add-host=host.docker.internal:host-gateway`` (this option is not required for Windows and Darwin container)::
 
-    $ docker run --add-host=host.docker.internal:host-gateway python bash
+    $ docker run -it --add-host=host.docker.internal:host-gateway python bash
 
     root@86b180b28a50:/# python --version
     Python 3.11.4
