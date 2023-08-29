@@ -170,8 +170,8 @@ The practice for group license with unlimited docker containers:
 First copy the following files to docker host:
 
 - pyarmor-8.3.5.tar.gz
-- pyarmor.cli.core-4.3.2-cp38-none-manylinux1_x86_64.whl
-- pyarmor.cli.core-4.3.2-cp311-none-manylinux1_x86_64.whl
+- pyarmor.cli.core-4.3.3-cp38-none-manylinux1_x86_64.whl
+- pyarmor.cli.core-4.3.3-cp311-none-manylinux1_x86_64.whl
 - pyarmor-device-regfile-6000.1.zip
 
 Then run the following commands in the docker host::
@@ -179,7 +179,7 @@ Then run the following commands in the docker host::
     $ python3 --version
     Python 3.8.10
 
-    $ pip install pyarmor.cli.core-4.3.2-cp38-none-manylinux1_x86_64.whl
+    $ pip install pyarmor.cli.core-4.3.3-cp38-none-manylinux1_x86_64.whl
     $ pip install pyarmor-8.3.5.tar.bgz
 
 Next start ``pyarmor-auth`` to listen the request from docker containers::
@@ -203,12 +203,12 @@ For Linux container run it with extra ``--add-host=host.docker.internal:host-gat
 In docker host open third console to copy files to container::
 
     $ docker cp pyarmor-8.3.5.tar.gz 86b180b28a50:/
-    $ docker cp pyarmor.cli.core-4.3.2-cp311-none-manylinux1_x86_64.whl 86b180b28a50:/
+    $ docker cp pyarmor.cli.core-4.3.3-cp311-none-manylinux1_x86_64.whl 86b180b28a50:/
     $ docker cp pyarmor-device-regfile-6000.1.zip 86b180b28a50:/
 
 In docker container, register Pyarmor with same device regfile. For example::
 
-    root@86b180b28a50:/# pip install pyarmor.cli.core-4.3.2-cp311-none-manylinux1_x86_64.whl
+    root@86b180b28a50:/# pip install pyarmor.cli.core-4.3.3-cp311-none-manylinux1_x86_64.whl
     root@86b180b28a50:/# pip install pyarmor-8.3.5.tar.gz
     root@86b180b28a50:/# pyarmor reg pyarmor-device-regfile-6000.1.zip
     root@86b180b28a50:/# echo "print('hello world')" > foo.py
