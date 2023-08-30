@@ -285,6 +285,6 @@ Misc.
 
 **Where is the final built for Pyarmor?**
 
-  All of Pyarmor packages are published in the PyPI_, refer to :term:`Pyarmor Package` and section `Installation in offline device` in the chapter :doc:`<tutorial/installation`
+  All of Pyarmor packages are published in the PyPI_, refer to :term:`Pyarmor Package` and section `Installation in offline device` in the chapter :doc:`tutorial/installation`
 
 .. include:: _common_definitions.txt
