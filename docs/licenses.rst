@@ -53,7 +53,9 @@ Pyarmor has 3 kind of licenses:
 
         Offline obfuscation, it need not internet connection when obfuscating the scripts.
 
-        **Group license is bind to device hardwares, it may not work in virtual machines or any device which hardwares are volatile**
+**For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to remote server for verification. No any user script will be uploaded to remote server**
+
+**Group license is bind to device hardwares, it may not work in virtual machines or any device which hardwares are volatile**
 
 Refer to :doc:`use Pyarmor License <how-to/register>`
 

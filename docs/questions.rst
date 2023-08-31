@@ -195,6 +195,10 @@ License
   - In 24 hours, if need more than 100 docker containers to obfuscate your scripts, only Pyarmor Group license works.
   - Pyarmor Basic, Pro and Group licenses don't work for Pyarmor 7.
 
+**Will Pyarmor Pro license upload my scripts to remote server to verify license?**
+
+No. For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to remote server for verification.
+
 **I am interested to know if the users are entitled to updates to ensure compatibility with future versions of Python.**
 
   No. Pyarmor license works with current Pyarmor version forever, but may not work with future Pyarmor version. I can't make sure current Pyarmor version could support all the future versions of Python, so the answer is no.
