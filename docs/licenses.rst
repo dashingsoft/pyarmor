@@ -113,9 +113,9 @@ Check one device works for group license by this way:
 * First install Pyarmor 8.3.5+ trial version in this device
 * Got machine id by the following commands::
 
-    $ pyarmor reg -g 1
-    $ cat .pyarmor/group/pyarmor-group-device.1 | grep ^machine
-    machine: kb04eb35da4f5378185c8663522e0a5e3
+    $ python -c"from pyarmor.cli.core.pytransform3 import get_hd_info
+      print(get_hd_info(20))"
+    b'kb04eb35da4f5378185c8663522e0a5e3'
 
 * Reboot this device, check machine id is same or not
 * If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
