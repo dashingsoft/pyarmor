@@ -236,7 +236,7 @@ gh api --method PATCH /notifications/threads/$threadId
 
 cmd_mark_all_notification = Template('''
 gh api --method PUT /repos/dashingsoft/pyarmor/notifications \
-  -f last_read_at='2019-01-01T00:00:00Z'
+  -f last_read_at='$timestamp'
 ''')
 
 
@@ -300,7 +300,12 @@ class Github(cmd.Cmd):
 
     def do_rn(self, arg):
         'Mark notification readed'
-        call_cmd(cmd_mark_notification.substitute(threadId=arg))
+        if arg in ('all', '*'):
+            from datetime import datetime
+            now = datetime.now().isoformat()
+            call_cmd(cmd_mark_all_notification.substitute(timestamp=now))
+        else:
+            call_cmd(cmd_mark_notification.substitute(threadId=arg))
 
     def do_li(self, arg):
         '''List issues'''
