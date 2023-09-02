@@ -502,8 +502,8 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
         help='bind obfuscated scripts to device'
     )
     group.add_argument(
-        '--bind-data', metavar='FILE',
-        help=argparse.SUPPRESS
+        '--bind-data', metavar='STRING or @FILENAME',
+        help='store user data to runtime key'
     )
 
     cparser.add_argument(
