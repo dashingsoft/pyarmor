@@ -664,3 +664,28 @@ class Context(object):
     @property
     def core_data_3(self):
         return self._core_data('core.data.3')
+
+    #
+    # Get http proxy of token server
+    #
+    @property
+    def token_http_proxy(self):
+        http_proxy = os.environb.get(b'http_proxy', b'')
+        if not http_proxy:
+            return b''
+        i = http_proxy.find(b'@')
+        if i > 0:
+            from base64 import b64encode
+            header = b'Authorization: Basic %s\r\n' % b64encode(http_proxy[:i])
+        else:
+            header = b''
+        i += 1
+        j = http_proxy.find(b':', i)
+        if j == -1:
+            host = http_proxy[i:]
+            port = b'80'
+        else:
+            host = http_proxy[i:j]
+            port = http_proxy[j+1:]
+        url = b'http://pyarmor.dashingsoft.com'
+        return b'\x00'.join([host, port, url, header, b'\x00'])
