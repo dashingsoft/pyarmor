@@ -498,8 +498,9 @@ class WebRegister(Register):
             licdata = f.read('license.lic')
             capsule = f.read('.pyarmor_capsule.zip')
 
+        # Ignore token cache
         tokencache = os.path.join(os.path.dirname(devfile), 'tokens', machid)
-        if os.path.exists(tokencache):
+        if False and os.path.exists(tokencache):
             logger.info('read cached "%s"', tokencache)
             with open(tokencache, 'rb') as f:
                 data = f.read()
