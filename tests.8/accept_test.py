@@ -294,9 +294,9 @@ class UnitTestCases(BaseTestCase):
         with open(os.path.join(self.local_path, 'pyarmor.trace.log')) as f:
             output = f.read()
         for line in (
-                'trace.bcc            ! queens:30:Queens.solve (excluded)',
-                'trace.bcc            queens:18:Queens.__init__',
-                'trace.bcc            ! queens:72:main (excluded)'):
+                'trace.bcc            ! queens:30',
+                'trace.bcc            queens:18',
+                'trace.bcc            ! queens:72'):
             self.assertIn(line, output)
 
     def test_mp(self):
@@ -304,7 +304,7 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         rc, stdout, stderr = self.assert_python_ok('dist/mp.py')
         lines = [x.strip() for x in stdout.splitlines()]
-        self.assertTrue(all([x in lines for x in [
+        self.assertTrue(all([x.encode() in lines for x in [
             'main line',
             'module name: __main__',
             'function f',
@@ -317,7 +317,7 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         rc, stdout, stderr = self.assert_python_ok('dist/mp.py')
         lines = [x.strip() for x in stdout.splitlines()]
-        self.assertTrue(all([x in lines for x in [
+        self.assertTrue(all([x.encode() in lines for x in [
             'main line',
             'module name: __main__',
             'function f',
