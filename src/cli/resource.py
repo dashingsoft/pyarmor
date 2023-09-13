@@ -105,11 +105,30 @@ class FileResource(Resource):
     def is_pyc(self):
         return self.pyext.lower() == '.pyc'
 
+    def _get_encoding(self, encoding):
+        from codecs import BOM_UTF8
+        from re import search as research
+        with open(self.fullpath, 'rb') as f:
+            line = f.read(80)
+            if line and line[:3] == BOM_UTF8:
+                return 'utf-8'
+            if line and line[0] == 35:
+                n = line.find(b'\n')
+                m = research(r'coding[=:]\s*([-\w.]+)', line[:n].decode())
+                if m:
+                    return m.group(1)
+                if n > -1 and len(line) > (n+1) and line[n+1] == 35:
+                    k = n + 1
+                    n = line.find(b'\n', k)
+                    m = research(r'coding[=:]\s*([-\w.]+)', line[k:n].decode())
+                    return m and m.group(1)
+        return encoding
+
     def readlines(self, encoding=None):
         if not os.path.exists(self.fullpath):
             raise RuntimeError('file "%s" doesn\'t exists' % self.fullpath)
 
-        with open(self.fullpath, encoding=encoding) as f:
+        with open(self.fullpath, encoding=self._get_encoding(encoding)) as f:
             # file.read() can't read the whole data of big files
             return f.readlines()
 
