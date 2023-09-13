@@ -28,7 +28,7 @@ def is_x86():
     return calcsize('P'.encode()) * 8 == 32
 
 
-def skip_protest(func):
+def only_protest(func):
 
     def wrap(self, *args, **kwargs):
         if self.is_trial():
@@ -143,25 +143,25 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @skip_protest
+    @only_protest
     def test_mix_str(self):
         args = ['g', '--mix-str', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @skip_protest
+    @only_protest
     def test_enable_bcc(self):
         args = ['g', '--enable-bcc', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @skip_protest
+    @only_protest
     def test_enable_rft(self):
         args = ['g', '--enable-rft', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @skip_protest
+    @only_protest
     def test_enable_rft_bcc(self):
         args = ['g', '--enable-rft', '--enable-bcc', 'samples/foo.py']
         self.pyarmor_gen(args)
@@ -267,13 +267,29 @@ class UnitTestCases(BaseTestCase):
         self.assertTrue(os.path.exists('dist/samples/pyfeatures'))
         self.assertFalse(os.path.exists('dist/samples/joker'))
 
-    @skip_protest
+    @only_protest
     def test_bcc_filter(self):
         self.pyarmor_cfg([
             'cfg', 'bcc:includes=Queens.*', 'bcc:excludes=Queens.solve',
             'enable_trace=1',
         ])
         args = ['g', '--enable-bcc', 'samples/queens.py']
+        self.pyarmor_gen(args)
+        with open(os.path.join(self.local_path, 'pyarmor.trace.log')) as f:
+            output = f.read()
+        for line in (
+                'trace.bcc            ! queens:30:Queens.solve (excluded)',
+                'trace.bcc            queens:18:Queens.__init__',
+                'trace.bcc            ! queens:72:main (excluded)'):
+            self.assertIn(line, output)
+
+    @only_protest
+    def test_rft_bcc_filter(self):
+        self.pyarmor_cfg([
+            'cfg', 'bcc:includes=Queens.*', 'bcc:excludes=Queens.solve',
+            'enable_trace=1',
+        ])
+        args = ['g', '--enable-bcc', '--enable-rft', 'samples/queens.py']
         self.pyarmor_gen(args)
         with open(os.path.join(self.local_path, 'pyarmor.trace.log')) as f:
             output = f.read()
