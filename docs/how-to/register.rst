@@ -160,7 +160,7 @@ Each docker host is an offlice device.
 The prerequisite in docker host:
 
 - offline device regfile ``pyarmor-device-regfile-xxxx.1.zip`` as above
-- Pyarmor 8.3.5+
+- Pyarmor 8.3.6+
 
 The practice for group license with unlimited docker containers:
 
@@ -169,9 +169,9 @@ The practice for group license with unlimited docker containers:
 
 First copy the following files to docker host:
 
-- pyarmor-8.3.5.tar.gz
-- pyarmor.cli.core-4.3.3-cp38-none-manylinux1_x86_64.whl
-- pyarmor.cli.core-4.3.3-cp311-none-manylinux1_x86_64.whl
+- pyarmor-8.3.6.tar.gz
+- pyarmor.cli.core-4.3.4-cp38-none-manylinux1_x86_64.whl
+- pyarmor.cli.core-4.3.4-cp311-none-manylinux1_x86_64.whl
 - pyarmor-device-regfile-6000.1.zip
 
 Then run the following commands in the docker host::
@@ -179,8 +179,8 @@ Then run the following commands in the docker host::
     $ python3 --version
     Python 3.8.10
 
-    $ pip install pyarmor.cli.core-4.3.3-cp38-none-manylinux1_x86_64.whl
-    $ pip install pyarmor-8.3.5.tar.bgz
+    $ pip install pyarmor.cli.core-4.3.4-cp38-none-manylinux1_x86_64.whl
+    $ pip install pyarmor-8.3.6.tar.bgz
 
 Next start ``pyarmor-auth`` to listen the request from docker containers::
 
@@ -202,19 +202,26 @@ For Linux container run it with extra ``--add-host=host.docker.internal:host-gat
 
 In docker host open third console to copy files to container::
 
-    $ docker cp pyarmor-8.3.5.tar.gz 86b180b28a50:/
-    $ docker cp pyarmor.cli.core-4.3.3-cp311-none-manylinux1_x86_64.whl 86b180b28a50:/
+    $ docker cp pyarmor-8.3.6.tar.gz 86b180b28a50:/
+    $ docker cp pyarmor.cli.core-4.3.4-cp311-none-manylinux1_x86_64.whl 86b180b28a50:/
     $ docker cp pyarmor-device-regfile-6000.1.zip 86b180b28a50:/
 
 In docker container, register Pyarmor with same device regfile. For example::
 
-    root@86b180b28a50:/# pip install pyarmor.cli.core-4.3.3-cp311-none-manylinux1_x86_64.whl
-    root@86b180b28a50:/# pip install pyarmor-8.3.5.tar.gz
+    root@86b180b28a50:/# pip install pyarmor.cli.core-4.3.4-cp311-none-manylinux1_x86_64.whl
+    root@86b180b28a50:/# pip install pyarmor-8.3.6.tar.gz
     root@86b180b28a50:/# pyarmor reg pyarmor-device-regfile-6000.1.zip
     root@86b180b28a50:/# echo "print('hello world')" > foo.py
     root@86b180b28a50:/# pyarmor gen --enable-rft foo.py
 
 When need to verify license, the docker container will send request to docker host.
+
+Using group license in CI pipeline
+----------------------------------
+
+Unfortunately Pyarmor group license could be used in CI pipeline directly, one workaround is that first obfuscating scripts in docker container like above, then create a new branch to store obfuscated scripts in vc server.。
+
+CI pipeline could get obfuscated scripts from this new branch, and start workflow as they're normal Python scripts.
 
 Upgrading old Pyarmor license
 =============================

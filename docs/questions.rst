@@ -254,11 +254,21 @@ Upgrading
 
   The license is valid for ever with Pyarmor version when purchasing this license, but may not work for future Pyarmor, there is no schedule about in which version current license doesn't work.
 
-  Since the first release Pyarmor changed its license 3 times
+  Since the first release Pyarmor changed its license 2 times because the core libraries are rewritten:
 
   - the initial license issued around year 2010 (I forget the exact date)
   - the second license issued on 2019-10-10
-  - this is the third license, issued on 2023-03-10.
+  - this is the third license, issued on 2023-03-10
+
+**Does the license include access to support and software updates? If so, what is the duration of support and how are updates delivered?**
+
+  Generally the license could be used in the next versions, until there are big changes in one major version, but I have no plan in details. Just run `pip install` to upgrade Pyarmor to latest version, the license will keep work.
+
+  But there is no more technical supports about how to use Pyarmor, Pyarmor is a command line tool, and all the options are full documentations. Pyarmor users need spend some time to learn Pyarmor by himself.
+
+**Is there an option for custom licensing arrangements to accommodate specific project or organizational needs?**
+
+  At this time, the answer is no.
 
 Purchasing
 ==========
