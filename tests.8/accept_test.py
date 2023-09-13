@@ -299,6 +299,31 @@ class UnitTestCases(BaseTestCase):
                 'trace.bcc            ! queens:72:main (excluded)'):
             self.assertIn(line, output)
 
+    def test_mp(self):
+        args = ['g', 'samples/mp.py']
+        self.pyarmor_gen(args)
+        rc, stdout, stderr = self.assert_python_ok('dist/mp.py')
+        lines = [x.strip() for x in stdout.splitlines()]
+        self.assertTrue(all([x in lines for x in [
+            'main line',
+            'module name: __main__',
+            'function f',
+            'hello bob',
+        ]]))
+
+    @only_protest
+    def test_mp_with_bcc(self):
+        args = ['g', '--enable-bcc', 'samples/mp.py']
+        self.pyarmor_gen(args)
+        rc, stdout, stderr = self.assert_python_ok('dist/mp.py')
+        lines = [x.strip() for x in stdout.splitlines()]
+        self.assertTrue(all([x in lines for x in [
+            'main line',
+            'module name: __main__',
+            'function f',
+            'hello bob',
+        ]]))
+
 
 if __name__ == '__main__':
     logging.getLogger().addHandler(logging.NullHandler())
