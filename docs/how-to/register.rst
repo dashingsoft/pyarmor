@@ -219,9 +219,13 @@ When need to verify license, the docker container will send request to docker ho
 Using group license in CI pipeline
 ----------------------------------
 
-Unfortunately Pyarmor group license could be used in CI pipeline directly, one workaround is that first obfuscating scripts in docker container like above, then create a new branch to store obfuscated scripts in vc server.。
+Pyarmor group license could not be used in CI pipeline with default runners, but it may work on something like `self-host runner`__, please check CI documentation for more information.
+
+The other workaround is that first obfuscating scripts in docker container like above, then create a new branch to store obfuscated scripts in VC server.。
 
 CI pipeline could get obfuscated scripts from this new branch, and start workflow as they're normal Python scripts.
+
+__ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
 
 Upgrading old Pyarmor license
 =============================

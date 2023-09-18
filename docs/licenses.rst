@@ -124,6 +124,10 @@ For docker container, please check docker host as above. Only if docker host cou
 
 **If machine id of docker host is changed after reboot, group license doesn't work in any docker container**
 
+Most of local machine, cloud server or VM like qemu, virtual box, vmware with same disk image work with Group license. If using group in CI pipeline, the default runner doesn't work, but something like `self-host runner`__ may work.
+
+__ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
+
 License features
 ----------------
 
