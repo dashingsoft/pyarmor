@@ -121,6 +121,8 @@ def format_platform(plat, arch):
         if any([fnmatchcase(arch, x) for x in archlist]):
             mach = alias
             break
+    else:
+        raise RuntimeError('unsupported arch "%s"' % arch)
 
     if plat == 'windows' and mach == 'x86_64':
         bitness = calcsize('P'.encode()) * 8
