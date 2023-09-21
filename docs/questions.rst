@@ -153,7 +153,7 @@ Registering
 
 **Group license raises "ERROR request license token failed"**
 
-  First upgrade Pyarmor to 8.3.7+
+  First upgrade Pyarmor to 8.3.8+
 
   Then register group license with debug option ``-d`` in offline device. For example::
 
@@ -161,10 +161,10 @@ Registering
 
   Check log, make sure current machine id is inclueded by offline regfile. For example::
 
-      DEBUG    group license for machines: ['tokens/ib04eb35da4f5378185c8663522e0a5e3']
-      DEBUG    got machine id: ib04eb35da4f5378185c8663522e0a5e3
+      DEBUG    group license for machines: ['tokens/lb04eb35da4f5378185c8663522e0a5e3']
+      DEBUG    got machine id: lb04eb35da4f5378185c8663522e0a5e3
 
-  If machine id is mismatched, please generate new device file for this device by Pyarmor 8.3.7+
+  If machine id is mismatched, please generate new device file for this device by Pyarmor 8.3.8+
 
   For virtual machine, make sure machine id is same after reboot.
 
