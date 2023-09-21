@@ -155,7 +155,7 @@ class Register(object):
             if 'group.tokens' in namelist:
                 logger.debug('group license for machines: %s',
                              [x for x in namelist if x.startswith('tokens')])
-                for idver in (18, 20, 16, 11):
+                for idver in (21, 18, 20, 16, 11):
                     machid = self._get_machine_id(idver).decode('utf-8')
                     logger.debug('got machine id: %s', machid)
                     name = '/'.join(['tokens', machid])
@@ -217,7 +217,7 @@ class Register(object):
         logger.info('generating device file "%s"', path)
         os.makedirs(os.path.dirname(path), exist_ok=True)
         uinfo = uname()
-        devflag = self.ctx.cfg['builder'].getint('group_device_flag', 18)
+        devflag = self.ctx.cfg['builder'].getint('group_device_flag', 21)
         machid = self._get_machine_id(devflag).decode('utf-8')
         logger.debug('current machine id is "%s"', machid)
         tpl = Template('\n'.join([
