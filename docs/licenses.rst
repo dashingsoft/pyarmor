@@ -55,7 +55,7 @@ Pyarmor has 3 kind of licenses:
 
 **For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to remote server for verification. No any user script will be uploaded to remote server**
 
-**Group license is bind to device hardwares, it may not work in virtual machines or any device which hardwares are volatile**
+**Group license is bind to device hardwares, it may not work in any device which hardwares are volatile**
 
 Refer to :doc:`use Pyarmor License <how-to/register>`
 
@@ -97,12 +97,12 @@ Microsoft Office is not one product, because each product in Microsoft Office is
 
 Microsoft Word is one product, and Microsoft Word 2003，Word 2007 etc. are belong to one product Microsoft word.
 
-**Hints for 3 licenses**
+**Hints for Pyarmor licenses**
 
-- Only works for Python 3.7+ in supported platforms
-- If need offline obfuscation, only Pyarmor Group license works
-- Pyarmor Basic and Pro license need internet connection to verify license when obfuscating the scripts, and in 24 hours only 100 different devices are allowed for each license
-- In 24 hours, if need more than 100 docker containers to obfuscate your scripts, only Pyarmor Group license works.
+- Basic, Pro and Group license Only work for Python 3.7+ in supported platforms. If using Python 2.7 or prior to 3.7, only Pyarmor old license works.
+- If need offline obfuscation, only Pyarmor Group or Pyarmor old license works
+- Pyarmor Basic and Pro license need internet connection to verify license when obfuscating the scripts, and in 24 hours only 100 different devices are allowed to obfuscate the scripts for each license.
+- In 24 hours, if need more than 100 docker containers to obfuscate your scripts, only Pyarmor Group or Pyarmor old license works.
 - Pyarmor Basic, Pro and Group licenses don't work for Pyarmor 7.
 
 Check device for group license
