@@ -7,7 +7,7 @@ import sys
 
 from .context import Context
 from .generate import Builder, Pytransform3
-from .register import Register
+from .register import Register, MACHFLAGS
 
 
 CONFIG = {
@@ -90,8 +90,7 @@ def main_entry():
     register_pyarmor(ctx, args.regfile[0])
     CONFIG['ctx'] = ctx
 
-    mflags = 21, 20, 18, 16, 11, 10
-    CONFIG['machid'] = [Pytransform3.get_hd_info(x) for x in mflags]
+    CONFIG['machid'] = [Pytransform3.get_hd_info(x) for x in MACHFLAGS]
     logging.debug('machine id: %s', CONFIG['machid'])
 
     host, port = '0.0.0.0', args.port

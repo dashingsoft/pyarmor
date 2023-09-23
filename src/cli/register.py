@@ -28,6 +28,10 @@ from string import Template
 from . import logger, CliError
 
 
+# All supported machine flags for group license
+MACHFLAGS = 21, 18, 20, 16, 11
+
+
 def parse_token(data):
     from struct import unpack
 
@@ -155,7 +159,7 @@ class Register(object):
             if 'group.tokens' in namelist:
                 logger.debug('group license for machines: %s',
                              [x for x in namelist if x.startswith('tokens')])
-                for idver in (21, 18, 20, 16, 11):
+                for idver in MACHFLAGS:
                     machid = self._get_machine_id(idver).decode('utf-8')
                     logger.debug('got machine id: %s', machid)
                     name = '/'.join(['tokens', machid])
@@ -195,7 +199,7 @@ class Register(object):
                 s.sendall(b'PADH' + b'x' * 60)
                 while True:
                     flag = s.recv(1)
-                    if flag in (b'a', b'b', b'g', b'i', b'k', b'l'):
+                    if flag in bytes(MACHFLAGS):
                         data = s.recv(32)
                     machid = (flag + data).decode('utf-8')
                     logger.info('got docker host machine id: %s', machid)
