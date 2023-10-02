@@ -62,12 +62,12 @@ def register_pyarmor(ctx, regfile):
     reg.register_regfile(regfile)
     if reg.license_info['features'] < 15:
         raise RuntimeError('this feature is only for group license')
-    Pytransform3._update_token(ctx)
+    Pytransform3.init(ctx)
 
 
 def main_entry():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--debug', action='store_true',
+    parser.add_argument('-d', '--debug', action='store_true',
                         help='Enable debug mode')
     parser.add_argument('-p', '--port', type=int, default=CONFIG['port'],
                         help=argparse.SUPPRESS)
