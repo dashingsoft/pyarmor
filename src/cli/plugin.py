@@ -177,8 +177,8 @@ class MultiPythonPlugin:
         pyver = 'py%s%s' % ctx.python_version[:2]
         platforms = ctx.target_platforms
 
-        native = len(platforms) == 1 and platforms[0] == ctx.native_platform
-        pkgpath = MultiPythonPlugin.RUNTIME_PATH if native else \
+        oneplat = len(platforms) == 1
+        pkgpath = MultiPythonPlugin.RUNTIME_PATH if oneplat else \
             os.path.dirname(MultiPythonPlugin.RUNTIME_PATH)
         verpath = os.path.join(pkgpath, pyver)
         if os.path.exists(verpath):
@@ -190,7 +190,7 @@ class MultiPythonPlugin:
             lines = f.readlines()
         start = 1 if lines[0].startswith('#') else 0
 
-        if native:
+        if oneplat:
             lines[start:] = '\n'.join([
                 'from sys import version_info as py_version',
                 '{0} = __import__("py%d%d.pyarmor_runtime" % py_version[:2],'
