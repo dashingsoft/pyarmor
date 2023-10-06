@@ -233,4 +233,18 @@ For example, the following functions are not obfuscated by BCC mode, because the
       frame = sys._getframe(2)
       print('parent frame is', frame)
 
+Known issues
+============
+
+* When format string has syntax error, BCC mode may raise `SystemError: NULL object passed to Py_BuildValue`, instead `SyntaxError` or `ValueError`.
+
+  Found in test cases `lib/python3.12/test/test_fstring.py`:
+  - test_invalid_syntax_error_message
+  - test_missing_variable
+  - test_syntax_error_for_starred_expressions
+  - test_with_a_commas_and_an_underscore_in_format_specifier
+  - test_with_an_underscore_and_a_comma_in_format_specifier
+  - test_with_two_commas_in_format_specifier
+  - test_with_two_underscore_in_format_specifier
+
 .. include:: ../_common_definitions.txt
