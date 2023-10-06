@@ -28,7 +28,7 @@ from string import Template
 from . import logger, CliError
 
 
-# All supported machine flags for group license
+# All supported machine flags for group license: [11, 26)
 MACHFLAGS = 21, 18, 20, 16, 11
 
 
@@ -157,18 +157,37 @@ class Register(object):
                 f.extract(item, path=path)
             namelist = f.namelist()
             if 'group.tokens' in namelist:
-                logger.debug('group license for machines: %s',
-                             [x for x in namelist if x.startswith('tokens')])
+                logger.info('machine id in group license: %s', ', '.join([
+                    x[7:] for x in namelist if x.startswith('tokens')
+                ]))
                 for idver in MACHFLAGS:
                     machid = self._get_machine_id(idver).decode('utf-8')
-                    logger.debug('got machine id: %s', machid)
+                    logger.info('got machine id: %s', machid)
                     name = '/'.join(['tokens', machid])
                     if name in namelist:
+                        logger.info('this machine id matchs group license')
                         break
                 else:
+                    logger.info('no machine id matchs this group license')
+                    logger.info('take this machine as docker container, and '
+                                'connect to docker host for authentication...')
                     mlist = self._get_docker_hostname()
                     if not mlist:
-                        raise CliError('could not get docker host machine id')
+                        logger.info(
+                            'could not get docker host machine id\n%s',
+                            '\n'.join([
+                                '',
+                                'if this machine is docker container, please '
+                                'run command `pyarmor-auth` in docker host, '
+                                'and try it again', '',
+                                'otherwise please generate new group '
+                                'device license for this machine', '',
+                                'more information please check section '
+                                '"using group license" in documentation '
+                                '"how-to register" guide', ''
+                            ]))
+                        raise CliError('this group device license is not for '
+                                       'this machine')
                     for machid in mlist:
                         hostname = '/'.join(['tokens', machid])
                         if hostname in namelist:
@@ -207,8 +226,8 @@ class Register(object):
                     if s.recv(1) == b'\x00':
                         break
             return rlist
-        except Exception:
-            logger.exception('could not get docker host machine id')
+        except Exception as e:
+            logger.debug('%s:%d:%s', host, port, str(e))
 
     def _get_machine_id(self, devflag=11):
         from .core import Pytransform3
