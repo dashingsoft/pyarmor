@@ -58,6 +58,7 @@ class Resource(object):
 
     @property
     def pkgname(self):
+        # if input path is '.', then pkgname will start with '..'
         suffix = '.__init__'
         if self.fullname.endswith(suffix):
             return self.fullname[:-len(suffix)]
