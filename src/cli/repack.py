@@ -312,6 +312,19 @@ class Repacker:
         self.codesign = codesign
         self.extract_carchive(executable, buildpath)
 
+    def check(self):
+        try:
+            from PyInstaller import __version__ as pyi_version
+            major = int(pyi_version.split('.')[0])
+            if major > 5:
+                logger.info(
+                    'Please check documentation `insight into pack command`'
+                    'to find solutions or downgrade PyInstaller to version 5')
+                raise NotImplementedError(
+                    "PyInstaller %s isn't supported" % pyi_version)
+        except Exception as e:
+            logger.warning("can't get PyInstaller version: %s", str(e))
+
     def extract_carchive(self, executable, buildpath, clean=True):
         logger.info('extracting bundle "%s"', executable)
         if os.path.exists(self.buildpath):

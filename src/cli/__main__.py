@@ -223,6 +223,7 @@ def cmd_gen(ctx, args):
         from .repack import Repacker
         codesign = ctx.cfg['pack'].get('codesign_identify', None)
         packer = Repacker(args.pack, ctx.repack_path, codesign=codesign)
+        packer.check()
         builder.process(options, packer=packer)
         Plugin.post_build(ctx, pack=args.pack)
     else:
