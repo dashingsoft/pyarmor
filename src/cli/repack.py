@@ -237,6 +237,7 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtname, cipher=None):
             raise ValueError('unknown PYZ item type "%s"' % typecode)
         logical_toc.append((name, fullpath, pytype))
 
+    # It seems PyInstaller 6.0+ no keyword parameter: cipher
     ZlibArchiveWriter(pyzpath, logical_toc, code_dict, cipher=cipher)
 
 
@@ -410,6 +411,7 @@ class Repacker:
         repack_executable(executable, buildpath, obfpath, rtentry, codesign)
 
     def _fixup_darwin_rtbinary(self, rtbinary, pylib_name):
+        '''Unused since Pyarmor 8.3.0'''
         from sys import version_info as pyver
         pylib = os.path.normpath(os.path.join('@rpath', pylib_name))
         output = check_output(['otool', '-L', rtbinary])
