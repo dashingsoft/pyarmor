@@ -313,8 +313,14 @@ class Repacker:
         self.extract_carchive(executable, buildpath)
 
     def check(self):
-        from PyInstaller import __version__ as pyi_version
-        major = int(pyi_version.split('.')[0])
+        try:
+            from PyInstaller import __version__ as pyi_version
+            major = int(pyi_version.split('.')[0])
+        except Exception as e:
+            logger.warning("can't get PyInstaller version: %s", str(e))
+            pyi_version = 'unknown'
+            major = 6
+
         if major > 5:
             logger.info(
                 'Please check documentation `insight into pack command`'
