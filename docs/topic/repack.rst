@@ -69,41 +69,46 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
     a = Analysis(
         ...
+        hiddenimports=['pyarmor_runtime_000000'],
+        ...
     )
 
-    # Patched by Pyarmor
-    _src = r'/path/to/src'
-    _obf = r'/path/to/src/obfdist'
+    # Pyarmor patch start:
 
-    _count = 0
-    for i in range(len(a.scripts)):
-        if a.scripts[i][1].startswith(_src):
-            x = a.scripts[i][1].replace(_src, _obf)
-            if os.path.exists(x):
-                a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
-                _count += 1
-    if _count == 0:
-        raise RuntimeError('No obfuscated script found')
+    def pyarmor_patcher(src, obfdist):
+        count = 0
+        for i in range(len(a.scripts)):
+            if a.scripts[i][1].startswith(src):
+                x = a.scripts[i][1].replace(src, obfdist)
+                if os.path.exists(x):
+                    a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
+                    count += 1
+        if count == 0:
+            raise RuntimeError('No obfuscated script found')
 
-    for i in range(len(a.pure)):
-        if a.pure[i][1].startswith(_src):
-            x = a.pure[i][1].replace(_src, _obf)
-            if os.path.exists(x):
-                if hasattr(a.pure, '_code_cache'):
-                    with open(x) as f:
-                        a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')
-                a.pure[i] = a.pure[i][0], x, a.pure[i][2]
-    # Patch end.
+        for i in range(len(a.pure)):
+            if a.pure[i][1].startswith(src):
+                x = a.pure[i][1].replace(src, obfdist)
+                if os.path.exists(x):
+                    if hasattr(a.pure, '_code_cache'):
+                        with open(x) as f:
+                            a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')
+                    a.pure[i] = a.pure[i][0], x, a.pure[i][2]
+
+    pyarmor_patcher(os.path.abspath(r'/path/to/src'),
+                    os.path.abspath(r'/path/to/obfdist'))
+
+    # Pyarmor patch end.
 
     pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-* Generating final bundle by this patched ``foo.spec``::
+* Generating final bundle by this patched ``foo.spec``, also use option `--clean` to to remove all cached files::
 
-    pyinstaller foo.spec
+    pyinstaller --clean foo.spec
 
 If following this example, please
 
-* Replacing all the ``/path/to/src`` with actual path
+* Replacing all the ``/path/to/src`` and ``/path/to/obfdist`` with actual path
 * Replacing all the ``pyarmor_runtime_000000`` with actual name
 
 **how to verify obfuscated scripts have been packed**
