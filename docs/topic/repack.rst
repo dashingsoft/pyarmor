@@ -76,6 +76,10 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
     # Pyarmor patch start:
 
     def pyarmor_patcher(src, obfdist):
+        # Make sure both of them are absolute paths
+        src = os.path.abspath(src)
+        obfdist = os.path.abspath(obfdist)
+
         count = 0
         for i in range(len(a.scripts)):
             if a.scripts[i][1].startswith(src):
@@ -95,8 +99,7 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
                             a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
-    pyarmor_patcher(os.path.abspath(r'/path/to/src'),
-                    os.path.abspath(r'/path/to/obfdist'))
+    pyarmor_patcher(r'/path/to/src', r'/path/to/obfdist')
 
     # Pyarmor patch end.
 
