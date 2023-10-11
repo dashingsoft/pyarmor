@@ -233,6 +233,14 @@ No. For Pyarmor Basic and Pro License, only Pyarmor License file, serial number 
 
   In this case, it need Group License. Group License is going to support unlimited dockers in one device, this feature is developing and may released with Pyarmor 8.3.
 
+**We intend to use PyArmor in CI to build obfuscated Docker images. According to the docs we can't use PyArmor in CI because the machine IDs will be different across each CI run (we verified this is the case), but according to this section in the docs, we can use PyArmor on "all the devices to develop, build, test the product", so we're a bit confused on whether this would work in CI. Could we buy a group license and then activate PyArmor as part of the CI pipeline? All of these different CI machines and developer laptops are building "one product"**
+
+  Unfortunately the answer is **NO**. One license could be used in any device for one product, at the same time, they must be under license limitation.
+
+  For CI with group license, there are 2 workarouds, please check section `using group license in CI pipeline`__
+
+__ https://pyarmor.readthedocs.io/en/latest/how-to/register.html#using-group-license-in-ci-pipeline
+
 Upgrading
 ---------
 
