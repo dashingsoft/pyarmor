@@ -617,7 +617,9 @@ def log_settings(ctx, args):
     if args.debug:
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)
-        handler = logging.FileHandler(ctx.debug_logfile, mode='w')
+        handler = logging.FileHandler(ctx.debug_logfile,
+                                      mode='w',
+                                      encoding='utf-8')
         handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
         handler.setLevel(logging.DEBUG)
         root.addHandler(handler)
@@ -626,7 +628,9 @@ def log_settings(ctx, args):
     tracelog.propagate = False
     tracelog.addHandler(logging.NullHandler())
     if ctx.cfg.getboolean('builder', 'enable_trace'):
-        handler = logging.FileHandler(ctx.trace_logfile, mode='w')
+        handler = logging.FileHandler(ctx.trace_logfile,
+                                      mode='w',
+                                      encoding='utf-8')
         handler.setFormatter(logging.Formatter('%(name)-20s %(message)s'))
         handler.setLevel(logging.DEBUG if args.debug else logging.INFO)
         tracelog.addHandler(handler)
@@ -637,7 +641,9 @@ def log_settings(ctx, args):
 
 def log_exception(e):
     logger.debug('unknown error, please check pyarmor.error.log')
-    handler = logging.FileHandler('pyarmor.error.log', mode='w')
+    handler = logging.FileHandler('pyarmor.error.log',
+                                  mode='w',
+                                  encoding='utf-8')
     fmt = '%(process)d %(processName)s %(asctime)s'
     handler.setFormatter(logging.Formatter(fmt))
     log = logging.getLogger('error')
