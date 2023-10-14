@@ -29,7 +29,7 @@ from . import logger, CliError
 
 
 # All supported machine flags for group license: [11, 26)
-MACHFLAGS = 21, 18, 20, 16, 11
+MACHFLAGS = 22, 21, 18, 20, 16, 11
 
 
 def parse_token(data):
