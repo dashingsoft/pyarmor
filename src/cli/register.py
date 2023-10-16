@@ -261,6 +261,34 @@ class Register(object):
             f.write(tpl.encode('utf-8'))
         return path
 
+    def check_group_license(self, silent=False):
+        licinfo = self.ctx.license_info
+        if licinfo['features'] & 8:
+            licmach = licinfo.get('machine', '')
+            if not licmach:
+                raise RuntimeError('no token machine')
+
+            idver = ord(licmach[0]) - 87
+            # This can't be called in "cmd_gen", otherwise crash
+            machid = self._get_machine_id(idver).decode('utf-8')
+            if machid == licmach:
+                return
+
+            mlist = self._get_docker_hostname()
+            if mlist and licmach in mlist:
+                return
+
+            logger.info('this license is for machine: %s', licmach)
+
+            if mlist:
+                logger.info('but docker host machine ids: %s', mlist)
+                raise RuntimeError(
+                    'this group license is not for this docker host')
+            else:
+                logger.info('but this machine id: %s', machid)
+                raise RuntimeError(
+                    'this group license is not for this machine')
+
     def __str__(self):
         '''$advanced
 

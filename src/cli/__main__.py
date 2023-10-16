@@ -654,8 +654,11 @@ def log_exception(e):
 
 
 def print_version(ctx):
-    info = 'Pyarmor %s' % ctx.version_info(), '', str(Register(ctx))
+    reg = Register(ctx)
+    info = 'Pyarmor %s' % ctx.version_info(), '', str(reg)
     print('\n'.join(info))
+
+    reg.check_group_license()
 
 
 def get_home_paths(args):
