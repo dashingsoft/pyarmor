@@ -281,7 +281,8 @@ class Register(object):
             logger.info('this license is for machine: %s', licmach)
 
             if mlist:
-                logger.info('but docker host machine ids: %s', mlist)
+                logger.info('but docker host machine ids: %s',
+                            ', '.join(mlist))
                 raise RuntimeError(
                     'this group license is not for this docker host')
             else:
