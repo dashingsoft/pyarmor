@@ -194,8 +194,9 @@ class Register(object):
                             name = hostname
                             break
                     else:
-                        logger.debug('no found %s in offline regfile', mlist)
-                        raise CliError('this regfile is not for this device')
+                        logger.debug('docker host machine ids: %s', mlist)
+                        raise CliError('this group device license is not for '
+                                       'this docker host')
                 logger.debug('extracting %s', name)
                 self.ctx.save_token(f.read(name))
                 return
