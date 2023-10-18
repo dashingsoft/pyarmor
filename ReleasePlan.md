@@ -48,15 +48,13 @@ Status: relealsed (2023-08-01)
 
 **8.4**
 
-Status: developing
-
-Release schedule: 2023-11-01 (about one month after Python 3.12.0 released)
+Status: released (2023-10-18)
 
 - Support Python 3.12
 
 **8.5**
 
-Status: not start
+Status: developing
 
 Release schedule: about 2024-01-01
 
