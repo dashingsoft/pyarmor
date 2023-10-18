@@ -219,7 +219,7 @@ class Register(object):
                 s.sendall(b'PADH' + b'x' * 60)
                 while True:
                     flag = s.recv(1)
-                    if flag in bytes([(x - 87) for x in MACHFLAGS]):
+                    if ord(flag) - 87 in MACHFLAGS:
                         data = s.recv(32)
                     machid = (flag + data).decode('utf-8')
                     logger.info('got docker host machine id: %s', machid)
