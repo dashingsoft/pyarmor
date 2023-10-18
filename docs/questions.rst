@@ -52,6 +52,17 @@ When report bug in `issues`_, please copy the whole command line :command:`pyarm
     INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
 
+A good report should have
+
+- A clear title
+- Reproduced steps
+- Actual results
+- Expected results
+
+.. important::
+
+   If a bug report misses necessary information and not clear, it may be marked as invalid and closed immediately.
+
 Segment fault in Apple
 ======================
 

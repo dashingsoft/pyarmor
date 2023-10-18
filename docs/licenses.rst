@@ -203,6 +203,12 @@ Following the guide in activation file to take the purchased license effects. Or
 
 There are no additional license fees, apart from the cost of the license. And it only needs to be paid once, not periodically
 
+.. important::
+
+   License fee is only for unlocking features, not for technical support.
+
+   Refer to :ref:`asking questions` for technical support.
+
 Refund policy
 -------------
 
