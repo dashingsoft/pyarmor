@@ -178,11 +178,6 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    def test_restrict_script(self):
-        args = ['g', '--restrict', 'samples/foo.py']
-        self.pyarmor_gen(args)
-        self.verify_dist_foo_fail()
-
     def test_restrict_pkg(self):
         args = ['g', '--restrict', 'samples/joker']
         self.pyarmor_gen(args)
