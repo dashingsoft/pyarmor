@@ -6,7 +6,7 @@ import struct
 import sys
 
 from .context import Context
-from .generate import Builder, Pytransform3
+from .generate import Pytransform3
 from .register import Register, MACHFLAGS
 
 
@@ -53,7 +53,8 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
     def generate_runtime_key(self, userdata):
         ctx = CONFIG['ctx']
         ctx.cmd_options['user_data'] = userdata
-        return Builder(ctx).generate_runtime_key()
+        Pytransform3._pytransform3.init_ctx(ctx)
+        return Pytransform3.generate_runtime_key(ctx)
 
 
 def register_pyarmor(ctx, regfile):
