@@ -213,6 +213,10 @@ cmd_close_issue = Template('''
 gh issue close $issueId
 ''')
 
+cmd_label_issue = Template('''
+gh issue edit $issueId --add-label $label
+''')
+
 cmd_comment_issue = Template('''
 gh issue comment $issueId -e
 ''')
@@ -453,6 +457,20 @@ class Github(cmd.Cmd):
                     commentId=arg,
                     body=body.replace('"', r'\"'))
                 call_query(cmd_discussion_graphql, query)
+
+    def do_cii(self, arg):
+        'Quickly close issue by marked as documented or invalid'
+        if arg.find(' ') == -1:
+            issueId, label = arg, 'invalid'
+        else:
+            issueId, label = arg.split()
+            if label in ('d', 'doc'):
+                label = 'documented'
+        if label not in ('documented', 'invalid'):
+            print('invalid label "%s"' % label)
+            return
+        call_cmd(cmd_label_issue.substitute(issueId=issueId, label=label))
+        call_cmd(cmd_close_issue.substitute(issueId=issueId))
 
     def do_shell(self, arg):
         'Execute shell command'
