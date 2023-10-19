@@ -310,6 +310,7 @@ class Github(cmd.Cmd):
             call_cmd(cmd_mark_all_notification.substitute(timestamp=now))
         else:
             for tid in arg.split():
+                print('mark thread %s as readed' % tid)
                 call_cmd(cmd_mark_notification.substitute(threadId=tid))
 
     def do_li(self, arg):
