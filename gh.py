@@ -309,7 +309,8 @@ class Github(cmd.Cmd):
             now = datetime.now().isoformat()
             call_cmd(cmd_mark_all_notification.substitute(timestamp=now))
         else:
-            call_cmd(cmd_mark_notification.substitute(threadId=arg))
+            for tid in arg.split():
+                call_cmd(cmd_mark_notification.substitute(threadId=tid))
 
     def do_li(self, arg):
         '''List issues'''
