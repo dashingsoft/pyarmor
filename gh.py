@@ -243,6 +243,12 @@ gh api --method PUT /repos/dashingsoft/pyarmor/notifications \
   -f last_read_at='$timestamp'
 ''')
 
+cmd_view_issue_raw_body = Template('''
+gh issue view $issueId --json title,body --template "
+{{.title}}
+{{.body}}"
+''')
+
 
 def call_cmd(cmd):
     Popen(cmd.strip(), shell=True).wait()
