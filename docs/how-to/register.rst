@@ -121,7 +121,28 @@ On each offline device, install Pyarmor 8.2+, and generate group device file. Fo
 
     $ pyarmor reg -g 1
 
+    INFO     Python 3.12.0
+    INFO     Pyarmor 8.4.2 (group), 006000, btarmor
+    INFO     Platform darwin.x86_64
+    INFO     generating device file ".pyarmor/group/pyarmor-group-device.1"
+    INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
+    INFO     device file has been generated successfully
+
 It will generate group device file ``pyarmor-group-device.1``.
+
+In order to make sure group license works for this device, reboot this device, and run this command again::
+
+    $ pyarmor reg -g 1
+
+    ...
+    INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
+    ...
+
+Make sure this machine id is same after reboot.
+
+Because group license is bind to device, so machine id should keep same after reboot. If it's changed after reboot, group license doesn't work in this device.
+
+For VM machine, WSL(Windows Subsystem Linux) or any other system, please check the documentation to configure the network and harddisk, make sure network mac address and serial number of harddisk are fixed. If they're volatile, group license could not work in this system.
 
 Generating offline device regfile
 ---------------------------------
@@ -135,12 +156,50 @@ Copying group device file ``pyarmor-group-device.1`` to initial registration dev
 
     $ pyarmor reg -g 1 /path/to/pyarmor-regfile-xxxx.zip
 
+The device regfile ``pyarmor-device-regfile-xxxx.1.zip`` is bind to machine id in the device file ``pyarmor-group-device.1``.
+
+.. note::
+
+   If there are new versions which fix any bug that machine id is changed after this device reboot, it need generate new device file ``pyarmor-group-device.2`` for this device by new Pyarmor version, and generate new device regfile ``pyarmor-device-regfile-xxxx.2.zip`` by new Pyarmor version too.
+
+   Because device no. ``1`` has been used, so it need use next device no. ``2``, that is to say, one device may occupy more than one device no. Generally it should not be problem because there are 100 device no. available.
+
 Registering Pyarmor in offline device
 -------------------------------------
 
 Once device regfile is generated, copy it to the corresponding device, run this command to register Pyarmor::
 
-    $ pyarmor reg pyarmor-device-regfile-xxxx.1.zip
+    $ pyarmor reg /path/to/pyarmor-device-regfile-xxxx.1.zip
+
+    INFO     Python 3.12.0
+    INFO     Pyarmor 8.4.2 (group), 006000, btarmor
+    INFO     Platform darwin.x86_64
+    INFO     register "/path/to/pyarmor-device-regfile-xxxx.1.zip"
+    INFO     machine id in group license: mc92c9f22c732b482fb485aad31d789f1
+    INFO     got machine id: mc92c9f22c732b482fb485aad31d789f1
+    INFO     this machine id matchs group license
+    INFO     This license registration information:
+
+    License Type    : pyarmor-group
+    License No.     : pyarmor-vax-006000
+    License To      : Tester
+    License Product : btarmor
+
+    BCC Mode        : Yes
+    RFT Mode        : Yes
+
+    Notes
+    * Offline obfuscation
+
+Note that this log says this device regfile is only for this machine id::
+
+    INFO     machine id in group license: mc92c9f22c732b482fb485aad31d789f1
+
+And this log show machine id of this device::
+
+    INFO     got machine id: mc92c9f22c732b482fb485aad31d789f1
+
+They must be matched, otherwise this device regfile doesn't work, it may need generate new device regfile for this device.
 
 Check registration information::
 
@@ -155,23 +214,31 @@ Run unlimited dockers in offline device
 
 Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
 
-Each docker host is an offlice device.
+**how it works**
 
-The prerequisite in docker host:
+1. Each docker host is taken as an offlice device and must be registered as above.
 
-- offline device regfile ``pyarmor-device-regfile-xxxx.1.zip`` as above
-- Pyarmor 8.4.0+
+2. Then start an auth-server in docker host to listen auth-request from docker container.
+
+3. When run Pyarmor in docker container, it will send auth-request to auth-server in docker host, and verify the result returned from docker host.
+
+**Linux Docker Host**
 
 The practice for group license with unlimited docker containers:
 
 - Docker host, Ubuntu x86_64, Python 3.8
 - Docker container, Ubuntu x86_64, Python 3.11
 
+The prerequisite in docker host:
+
+- offline device regfile ``pyarmor-device-regfile-xxxx.1.zip`` as above
+- Pyarmor 8.4.1+
+
 First copy the following files to docker host:
 
-- pyarmor-8.4.0.tar.gz
-- pyarmor.cli.core-5.4.0-cp38-none-manylinux1_x86_64.whl
-- pyarmor.cli.core-5.4.0-cp311-none-manylinux1_x86_64.whl
+- pyarmor-8.4.2.tar.gz
+- pyarmor.cli.core-5.4.1-cp38-none-manylinux1_x86_64.whl
+- pyarmor.cli.core-5.4.1-cp311-none-manylinux1_x86_64.whl
 - pyarmor-device-regfile-6000.1.zip
 
 Then run the following commands in the docker host::
@@ -179,8 +246,8 @@ Then run the following commands in the docker host::
     $ python3 --version
     Python 3.8.10
 
-    $ pip install pyarmor.cli.core-5.4.0-cp38-none-manylinux1_x86_64.whl
-    $ pip install pyarmor-8.4.0.tar.bgz
+    $ pip install pyarmor.cli.core-5.4.1-cp38-none-manylinux1_x86_64.whl
+    $ pip install pyarmor-8.4.1.tar.bgz
 
 Next start ``pyarmor-auth`` to listen the request from docker containers::
 
@@ -192,7 +259,7 @@ Next start ``pyarmor-auth`` to listen the request from docker containers::
 
 Do not close this console, open another console to run dockers.
 
-For Linux container run it with extra ``--add-host=host.docker.internal:host-gateway`` (this option is not required for Windows and Darwin container)::
+For Linux container run it with extra ``--add-host=host.docker.internal:host-gateway``::
 
     $ docker run -it --add-host=host.docker.internal:host-gateway python bash
 
@@ -202,31 +269,72 @@ For Linux container run it with extra ``--add-host=host.docker.internal:host-gat
 
 In docker host open third console to copy files to container::
 
-    $ docker cp pyarmor-8.4.0.tar.gz 86b180b28a50:/
-    $ docker cp pyarmor.cli.core-5.4.0-cp311-none-manylinux1_x86_64.whl 86b180b28a50:/
+    $ docker cp pyarmor-8.4.1.tar.gz 86b180b28a50:/
+    $ docker cp pyarmor.cli.core-5.4.1-cp311-none-manylinux1_x86_64.whl 86b180b28a50:/
     $ docker cp pyarmor-device-regfile-6000.1.zip 86b180b28a50:/
 
 In docker container, register Pyarmor with same device regfile. For example::
 
-    root@86b180b28a50:/# pip install pyarmor.cli.core-5.4.0-cp311-none-manylinux1_x86_64.whl
-    root@86b180b28a50:/# pip install pyarmor-8.4.0.tar.gz
+    root@86b180b28a50:/# pip install pyarmor.cli.core-5.4.1-cp311-none-manylinux1_x86_64.whl
+    root@86b180b28a50:/# pip install pyarmor-8.4.1.tar.gz
     root@86b180b28a50:/# pyarmor reg pyarmor-device-regfile-6000.1.zip
     root@86b180b28a50:/# pyarmor -v
+
+If everything is fine, it should print group license information. And then test it with simple script::
 
     root@86b180b28a50:/# echo "print('hello world')" > foo.py
     root@86b180b28a50:/# pyarmor gen --enable-rft foo.py
 
-When need to verify license, the docker container will send request to docker host.
+When need to verify license, the docker container will send request to docker host. The `pyarmor-auth` console should print auth request from docker container, if there is no any request, please check docker network configuration, make sure IPv4 addresses of docker host and container are in the same network. For example, in docker container::
 
-.. important::
+   root@86b180b28a50:/# ifconfig -a
 
-   When docker host is MacOS or Windows, it may need extra settings for `host.docker.internal` in docker container to make sure ip address of docker container is in the same network with `host.docker.internal`.
+   eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+         inet 172.17.0.2  netmask 255.255.0.0  broadcast 172.17.255.255
+   ...
 
-   For example, docker container has ip address ``172.17.0.2``, if `host.docker.internal` is not starts with `172.17.x.x`, try to start docker by extra option: `docker run --add-host=host.docker.internal:172.17.0.1`
+In docker host::
 
-   In docker host, also make sure `pyarmor-auth` could listen on `172.17.0.1`, refer to `issue 1542`__
+   $ ifconig -a
+   docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+   ...
+
+**MacOS Docker Host**
+
+There is a little difference when docker host is MacOS, because docker container is running in Linux VM, not in MacOS directly.
+
+So one solution is running `pyarmor-auth` in Linux VM, in this case, it should take this Linux VM as offline device, and generate device regfile for this Linux VM, not for **MacOS**, and start docker container with extra options::
+
+    $ docker run --add-host=host.docker.internal:172.17.0.1 ...
+
+In this case, it may need some extra configuration for Linux VM to make sure the machine id could be fixed.
+
+Refer to `issue 1542`__ for more information.
 
 __ https://github.com/dashingsoft/pyarmor/issues/1542
+
+**Windows Docker Host**
+
+For Windows docker host, first check Windows network configuration::
+
+  C:> ipconfig
+
+  Ethernet adapter vEthernet (WSL):
+
+       Connection-specific DNS Suffix  . :
+       Link-local IPv6 Address . . . . . : fe80::8984:457:2335:588e%28
+       IPv4 Address. . . . . . . . . . . : 172.22.32.1
+       Subnet Mask . . . . . . . . . . . : 255.255.240.0
+       Default Gateway . . . . . . . . . :
+
+If there is IPv4 Address, for example ``172.22.32.1``, which is in the same network as docker container, it's simple. Just take this Windows as offline device, and run `pyarmor-auth` on it, then start docker container with extra options::
+
+    $ docker run --add-host=host.docker.internal:172.22.32.1 ...
+
+Anyway, `pyarmor-auth` must listen on any IPv4 address which is in the same network as docker container.
+
+If there is no available IPv4 address in Windows, the other solution is running `pyarmor-auth` in WSL, in this case, WSL should be taken as offline device.
 
 Using group license in CI pipeline
 ----------------------------------
