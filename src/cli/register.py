@@ -211,7 +211,7 @@ class Register(object):
     def _get_docker_hostname(self):
         try:
             from socket import socket, AF_INET, SOCK_STREAM
-            host = 'host.docker.internal'
+            host = os.getenv('PYARMOR_DOCKER_HOST', 'host.docker.internal')
             port = 29092
             rlist = []
             with socket(AF_INET, SOCK_STREAM) as s:
