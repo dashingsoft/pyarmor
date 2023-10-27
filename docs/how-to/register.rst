@@ -222,11 +222,9 @@ When need to verify license, the docker container will send request to docker ho
 
    When docker host is MacOS or Windows, it may need extra settings for `host.docker.internal` in docker container to make sure ip address of docker container is in the same network with `host.docker.internal`.
 
-   For example, docker container has ip address ``172.17.0.2``, if `host.docker.internal` is not starts with `172.17.x.x`, try to add one extra line in `/etc/hosts` in docker container::
+   For example, docker container has ip address ``172.17.0.2``, if `host.docker.internal` is not starts with `172.17.x.x`, try to start docker by extra option: `docker run --add-host=host.docker.internal:172.17.0.1`
 
-       host.docker.internal 172.17.0.1
-
-    In docker host, also make sure `pyarmor-auth` could listen on `172.17.0.1`, refer to `issue 1542`__
+   In docker host, also make sure `pyarmor-auth` could listen on `172.17.0.1`, refer to `issue 1542`__
 
 __ https://github.com/dashingsoft/pyarmor/issues/1542
 
