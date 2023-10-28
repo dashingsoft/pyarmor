@@ -93,7 +93,7 @@ Using group license
 
 Each :term:`Pyarmor Group` could have 100 offline devices, each device has its own number, from 1 to 100.
 
-Basic use steps:
+Basic steps:
 
 1. Using activation file :file:`pyarmor-regcode-xxxx.txt` to initial registration, set product name bind to this license, and generate :term:`registration file` [#]_
 2. Generating group device file separately on each offline device
@@ -335,6 +335,36 @@ If there is IPv4 Address, for example ``172.22.32.1``, which is in the same netw
 Anyway, `pyarmor-auth` must listen on any IPv4 address which is in the same network as docker container.
 
 If there is no available IPv4 address in Windows, the other solution is running `pyarmor-auth` in WSL, in this case, WSL should be taken as offline device.
+
+**When something is wrong**
+
+1. Check docker container network::
+
+   root@86b180b28a50:/# ifconfig -a
+
+   eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+         inet 172.17.0.2  netmask 255.255.0.0  broadcast 172.17.255.255
+   ...
+
+   root@86b180b28a50:/# ping host.docker.internal
+   PING host.docker.internal (172.17.0.1) 56(84) bytes of data.
+   64 bytes from host.docker.internal (172.17.0.1): icmp_seq=1 ttl=64 time=0.048 ms
+   ...
+
+If `ping` doesn't works, please check docker host network. If docker host is MacOS, it also checks Linux VM network. If docker host is Windows, also check WSL network.
+
+And make sure IPv4 address of `host.docker.internal` is in same network as `eth0` which IPv4 address is `172.17.0.2`. In above example, it's `172.17.0.1`, so it's OK.
+
+If not, also check docker host network. If docker host is MacOS, it may need run `pyarmor-auth` in Linux VM, not MacOS. If docker host is Windows, it may need run `pyarmor-auth` in WSL, not Windows.
+
+Anyway, please configure the docker host/container network so that `pyarmor-auth` could listen in any IPv4 address which is in the same network as docker container.
+
+2. Check docker host to make sure group license works::
+
+   $ pyarmor -d reg pyarmor-device-regfile-6000.1.zip
+   $ pyarmor -v
+
+If run `pyarmor-auth` in Linux VM or WSL, please check group license could work in Linux VM or WSL. It may need generate new device regfile for Linux VM or WSL.
 
 Using group license in CI pipeline
 ----------------------------------
