@@ -443,4 +443,37 @@ The final output path is ``dist``::
     $ python3.8 dist/foo.py
     $ python3.9 dist/foo.py
 
+Using shared runtime package
+============================
+
+It's possible generating runtime package once and use it later.
+
+First generate runtime package::
+
+    $ pyarmor gen runtime -O build/my_runtime1
+
+Then obfuscate scripts with it::
+
+    $ pyarmor gen --use-runtime build/my_runtime1 foo.py
+
+But it need copy shared runtime package to `dist` path::
+
+    # pyarmor_runtime_000000 need to replaced with real name
+    $ ls build/my_runtime1/
+    $ cp -a build/my_runime1/pyarmor_runtime_000000 dist/
+
+The other options could be used to generate shared runtime package, for examples::
+
+    $ pyarmor gen runtime -e .10 -O build/my_runtime2
+    $ pyarmor gen --platform windows.x86_64,linux.x86_64 build/my_runtime3
+
+If using :term:`outer key` with runtime package, it need specify `--outer` both generating runtime package and obfuscating scripts::
+
+    $ pyarmor gen runtime --outer -O build/my_outer_runtime
+    $ pyarmor gen --outer --use-runtime build/my_outer_runtime foo.py
+
+    $ cp -a build/my_outer_runtime/pyarmor_runtime_000000 dist/
+    $ pyarmor gen key -e .10
+    $ mv dist/pyarmor.rkey dist/pyarmor_runtime_000000
+
 .. include:: ../_common_definitions.txt
