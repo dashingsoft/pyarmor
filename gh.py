@@ -249,6 +249,14 @@ gh issue view $issueId --json title,body --template "
 {{.body}}"
 ''')
 
+cmd_view_issue_raw_comments = Template('''
+gh issue view $issueId -c --json title,body,comments --template "
+{{.title}}
+{{.body}}
+{{.comments}}
+"
+''')
+
 
 def call_cmd(cmd):
     Popen(cmd.strip(), shell=True).wait()
