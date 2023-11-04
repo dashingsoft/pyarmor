@@ -263,32 +263,34 @@ class UnitTestCases(BaseTestCase):
         self.assertFalse(os.path.exists('dist/samples/joker'))
 
     def test_shared_runtime_package(self):
-        shared_runtime = 'sr0001'
+        srpath = 'sr0001'
         rtname = 'rtpkg'
-        rtpath = os.path.join(shared_runtime, rtname)
+        rtpath = os.path.join(srpath, rtname)
         self.pyarmor_cmd(['cfg', 'package_name_format', '=', rtname])
 
-        args = ['g', 'runtime', '-O', shared_runtime]
+        args = ['g', 'runtime', '-O', srpath]
         self.pyarmor_cmd(args)
         self.assertTrue(os.path.exists(rtpath))
 
-        args = ['g', '--use-runtime', shared_runtime, 'samples/foo.py']
+        args = ['g', '--use-runtime', srpath, 'samples/foo.py']
         self.pyarmor_gen(args)
 
         shutil.move(rtpath, 'dist')
         self.verify_dist_foo()
 
+        shutil.rmtree(srpath)
+
     def test_shared_runtime_package_with_outer_key(self):
-        shared_runtime = 'sr0002'
+        srpath = 'sr0002'
         rtname = 'rtpkg'
-        rtpath = os.path.join(shared_runtime, rtname)
+        rtpath = os.path.join(srpath, rtname)
         self.pyarmor_cmd(['cfg', 'package_name_format', '=', rtname])
 
-        args = ['g', 'runtime', '--outer', '-O', shared_runtime]
+        args = ['g', 'runtime', '--outer', '-O', srpath]
         self.pyarmor_cmd(args)
         self.assertTrue(os.path.exists(rtpath))
 
-        args = ['g', '--use-runtime', shared_runtime, '--outer', 'samples/foo.py']
+        args = ['g', '--use-runtime', srpath, '--outer', 'samples/foo.py']
         self.pyarmor_gen(args)
 
         args = ['g', 'key', '-e', '.10']
@@ -299,6 +301,8 @@ class UnitTestCases(BaseTestCase):
         shutil.move(keyfile, rtpath)
         shutil.move(rtpath, 'dist')
         self.verify_dist_foo()
+
+        shutil.rmtree(srpath)
 
     @only_protest
     def test_bcc_filter(self):
