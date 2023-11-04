@@ -69,7 +69,7 @@ class BaseTestCase(unittest.TestCase):
         rc, stdout, stderr = self.assert_python_ok(*args)
         self.assertIn(b'obfuscate scripts OK', stderr)
 
-    def pyarmor_cfg(self, options):
+    def pyarmor_cmd(self, options):
         args = ['-m', 'pyarmor.cli'] + options
         rc, stdout, stderr = self.assert_python_ok(*args)
 
@@ -266,13 +266,13 @@ class UnitTestCases(BaseTestCase):
         shared_runtime = 'sr0001'
         rtname = 'rtpkg'
         rtpath = os.path.join(shared_runtime, rtname)
-        self.pyarmor_cfg(['cfg', 'package_name_format', '=', rtname])
+        self.pyarmor_cmd(['cfg', 'package_name_format', '=', rtname])
 
         args = ['g', 'runtime', '-O', shared_runtime]
-        self.pyarmor_gen(args)
+        self.pyarmor_cmd(args)
         self.assertTrue(os.path.exists(rtpath))
 
-        args = ['g', '--use-runtime', shared_runtime, 'foo.py']
+        args = ['g', '--use-runtime', shared_runtime, 'samples/foo.py']
         self.pyarmor_gen(args)
 
         shutil.move(rtpath, 'dist')
@@ -282,17 +282,17 @@ class UnitTestCases(BaseTestCase):
         shared_runtime = 'sr0002'
         rtname = 'rtpkg'
         rtpath = os.path.join(shared_runtime, rtname)
-        self.pyarmor_cfg(['cfg', 'package_name_format', '=', rtname])
+        self.pyarmor_cmd(['cfg', 'package_name_format', '=', rtname])
 
         args = ['g', 'runtime', '--outer', '-O', shared_runtime]
-        self.pyarmor_gen(args)
+        self.pyarmor_cmd(args)
         self.assertTrue(os.path.exists(rtpath))
 
-        args = ['g', '--use-runtime', shared_runtime, '--outer', 'foo.py']
+        args = ['g', '--use-runtime', shared_runtime, '--outer', 'samples/foo.py']
         self.pyarmor_gen(args)
 
         args = ['g', 'key', '-e', '.10']
-        self.pyarmor_gen(args)
+        self.pyarmor_cmd(args)
         keyfile = os.path.join('dist', 'pyarmor.rkey')
         self.assertTrue(os.path.exists(keyfile))
 
@@ -302,7 +302,7 @@ class UnitTestCases(BaseTestCase):
 
     @only_protest
     def test_bcc_filter(self):
-        self.pyarmor_cfg([
+        self.pyarmor_cmd([
             'cfg', 'bcc:includes=Queens.*', 'bcc:excludes=Queens.solve',
             'enable_trace=1',
         ])
@@ -318,7 +318,7 @@ class UnitTestCases(BaseTestCase):
 
     @only_protest
     def test_rft_bcc_filter(self):
-        self.pyarmor_cfg([
+        self.pyarmor_cmd([
             'cfg', 'bcc:includes=Queens.*', 'bcc:excludes=Queens.solve',
             'enable_trace=1',
         ])
