@@ -214,7 +214,7 @@ gh issue close $issueId
 ''')
 
 cmd_label_issue = Template('''
-gh issue edit $issueId --add-label $label
+gh issue edit $issueId --add-label "$label" --remove-label bug
 ''')
 
 cmd_comment_issue = Template('''
@@ -482,7 +482,9 @@ class Github(cmd.Cmd):
             issueId, label = arg.split()
             if label in ('d', 'doc'):
                 label = 'documented'
-        if label not in ('documented', 'invalid'):
+            elif label in ('w', 'wrong'):
+                label = 'wrong usage'
+        if label not in ('documented', 'invalid', 'wrong usage'):
             print('invalid label "%s"' % label)
             return
         call_cmd(cmd_label_issue.substitute(issueId=issueId, label=label))
