@@ -7,6 +7,10 @@
 #
 #  @Create Date: Thu Aug 24 09:45:00 CST 2023
 #
+#  Question:
+#
+#      How to list pin issues? Now #980
+#
 import configparser
 import cmd
 import json
