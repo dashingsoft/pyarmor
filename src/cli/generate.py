@@ -98,6 +98,7 @@ class Builder(object):
         relative = self.ctx.import_prefix
         pkgname = self.ctx.runtime_package_name
         bootpath = self.ctx.cfg.get('builder', 'bootstrap_file')
+        encoding = self.ctx.cfg.get('builder', 'encoding')
 
         namelist = []
         for res in self.ctx.resources + self.ctx.extra_resources:
@@ -126,7 +127,7 @@ class Builder(object):
                 os.makedirs(os.path.dirname(fullpath), exist_ok=True)
 
                 logger.info('write %s', fullpath)
-                with open(fullpath, 'w') as f:
+                with open(fullpath, 'w', encoding=encoding) as f:
                     f.write(source)
 
     def process(self, options, packer=None):
