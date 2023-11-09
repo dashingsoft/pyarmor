@@ -87,7 +87,8 @@ def main_entry():
     home = CONFIG['home']
     logging.info('work path: %s', home)
 
-    ctx = Context(home=home)
+    # lpath should be non-existent or empty
+    ctx = Context(home=home, lpath=os.path.join(home, 'non-existent'))
     register_pyarmor(ctx, args.regfile[0])
     CONFIG['ctx'] = ctx
 
