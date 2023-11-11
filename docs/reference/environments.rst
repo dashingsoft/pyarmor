@@ -392,7 +392,7 @@ Generally they're used with inline marker or in the hook scripts.
 
 .. function:: __assert_armored__(arg)
 
-   :param object arg:  arg is a module or function object
+   :param object arg:  arg is a module, function or method object
    :returns: return ``arg`` if ``arg`` is obfuscated, otherwise, raise protection error.
 
    For example
