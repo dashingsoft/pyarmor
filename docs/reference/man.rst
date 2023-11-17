@@ -598,7 +598,9 @@ If no found in these paths, check file ``sys.executable`` + ``.pyarmor.rkey``. F
 
 Still not found raise runtime error and exits.
 
-.. [#] If runtime package supports multiple Python versions and multiple platforms, it need copy key file to each sub-folder `pyXY` in the runtime package or make a link, for example, `cd py310 && ln -s ../pyarmor.rkey`
+.. [#] If runtime package supports multiple Python versions and multiple platforms, it need copy key file to each sub-folder `pyXY` in the runtime package or configure outer_keyname with prefix `../`, for example, `pyarmor cfg outer_keyname=../pyarmor.rkey`. Refer to `issue 1599`__
+
+__ https://github.com/dashingsoft/pyarmor/issues/1599
 
 .. describe:: Special output **pipe**
 
