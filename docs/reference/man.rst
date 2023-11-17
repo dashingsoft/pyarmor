@@ -590,13 +590,15 @@ By default the outer key name is ``pyarmor.rkey``, use the following command to 
 
 The outer key must be stored in one of the following paths, the obfuscated script will search it in turn:
 
-1. First search runtime package
+1. First search runtime package. [#]_
 2. Next search path :envvar:`PYARMOR_RKEY`, no trailing slash or backslash, and no ``..`` in the path. Generally it's an absolute path, for example, ``/var/data``
 3. Next search current path
 
 If no found in these paths, check file ``sys.executable`` + ``.pyarmor.rkey``. For example, ``dist/myapp.exe.pyarmor.rkey``
 
 Still not found raise runtime error and exits.
+
+.. [#] If runtime package supports multiple Python versions and multiple platforms, it need copy key file to each sub-folder `pyXY` in the runtime package or make a link, for example, `cd py310 && ln -s ../pyarmor.rkey`
 
 .. describe:: Special output **pipe**
 
