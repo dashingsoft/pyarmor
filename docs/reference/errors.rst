@@ -129,6 +129,8 @@ If it has an error code, it could be customized.
 
        2. try it again it may works.
 
+       3. Upgrade to Pyarmor 8.4.4+, then check network time by http server. For example, set time server by this command `pyarmor cfg nts=http://your.http-server.com/api/v2/`
+
    * -
      - Protection Exception
      - If using :option:`--assert-call` or :option:`assert-import`, check section `Filter assert function and import` in the :doc:`../tutorial/advanced`, ignore those problem functions and modules by the traceback.

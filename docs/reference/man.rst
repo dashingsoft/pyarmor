@@ -263,7 +263,7 @@ It supports 4 forms:
 * A date with ISO format ``YYYY-MM-DD``
 * A leading ``.`` with above 2 forms
 
-Without leading dot, the obfuscated scripts checks NTP server time. For example::
+Without leading dot, the obfuscated scripts checks network time. For example::
 
     $ pyarmor gen -e 30 foo.py
     $ pyarmor gen -e 2022-12-31 foo.py
@@ -272,6 +272,26 @@ With leading dot, it checks local time. For example::
 
     $ pyarmor gen -e .30 foo.py
     $ pyarmor gen -e .2022-12-31 foo.py
+
+When checking network time, it need connect to remote server. Check the default server by this command::
+
+    $ pyarmor cfg nts
+
+Before v8.8.4, only supports NTP protocol, but the default server can be changed to any valid NTP server. For example::
+
+    $ pyarmor cfg nts=108.59.2.24
+
+Since v8.8.4, it supports HTTP server, and multiple servers. If the first server doesn't work, then uses the second, and so on. When using HTTP protocol, just provide one valid URL. For example::
+
+    $ pyarmor cfg nts=http://worldtimeapi.org/api
+
+The following example uses multiple servers, both NTP and HTTP::
+
+    $ pyarmor cfg nts=pool.ntp.org,http://worldtimeapi.org/api
+
+And special name `local` could be used to get local time. For exmaple::
+
+    $ pyarmor cfg nts="pool.ntp.org,http://worldtimeapi.org/api,local"
 
 .. option:: -b DEV, --bind-device DEV
 
