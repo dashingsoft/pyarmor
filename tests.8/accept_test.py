@@ -202,6 +202,7 @@ class UnitTestCases(BaseTestCase):
         self.verify_dist_foo()
 
     def test_expired_nts_days(self):
+        self.pyarmor_cmd(['cfg', 'nts', '=', 'http://api.dashingsoft.com'])
         args = ['g', '-e', '30', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
