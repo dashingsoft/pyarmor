@@ -100,6 +100,7 @@ def format_platform(plat, arch):
         ('windows', ('windows', 'cygwin*')),
         ('darwin', ('darwin',)),
         ('linux', ('linux*',)),
+        ('freebsd', ('freebsd*', 'openbsd*', 'isilon onefs')),
     )
 
     arch_table = (
