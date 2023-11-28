@@ -206,7 +206,7 @@
     :synopsis: A binary wheel to provide prebulit extension modules `pytransform3` which is required to run Pyarmor
 
 .. module:: pyarmor.cli.runtime
-    :synopsis: An universal wheel is used for cross-platform obfuscation, it provides prebuilt extension modules `pyarmor_runtime` which is required to run the obfuscated scripts in all supported platforms
+    :synopsis: A universal wheel is used for cross-platform obfuscation, it provides prebuilt extension modules `pyarmor_runtime` which is required to run the obfuscated scripts in all supported platforms
 
 .. module:: pyarmor.cli.core.android
     :synopsis: It's required in Android for Pyarmor, it provides prebuilt extension modules both `pytransform3` and `pyarmor_runtime` for Android
