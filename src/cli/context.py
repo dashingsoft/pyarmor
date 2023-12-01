@@ -125,6 +125,9 @@ def format_platform(plat, arch):
     else:
         raise RuntimeError('unsupported arch "%s"' % arch)
 
+    if plat == 'linux' and hasattr(sys, 'getandroidapilevel'):
+        plat = 'android'
+
     if plat == 'windows' and mach == 'x86_64':
         bitness = calcsize('P'.encode()) * 8
         if bitness == 32:
