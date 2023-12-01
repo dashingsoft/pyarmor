@@ -83,20 +83,6 @@ Start Pyarmor by Python interpreter
 
     $ python -m pyarmor.cli
 
-Termux issues
--------------
-
-In Termux, after installation it need patch extensions. For example::
-
-    $ patchelf --add-needed /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pytransform3.so
-    $ patchelf --add-needed /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pyarmor_runtime.so
-
-Sometimes, it need set runpath too. For example::
-
-    $ patchelf --set-rpath /data/data/com.termux/files/usr/lib /path/to/{pytransform3,pyarmor_runtime}.so
-
-Otherwise it will raise error `dlopen failed: cannot locate symbol "PyFloat_Type"`
-
 Using virtual environments
 ==========================
 
@@ -170,6 +156,20 @@ In Linux to generate for Windows, install windows package::
 If only using Pyarmor 8+ features, it's recommend to install :mod:`pyarmor.cli` instead :mod:`pyarmor`, the former file size is significantly less than the latter. For example::
 
     $ pip install pyarmor.cli-8.2.9.zip
+
+Termux issues
+=============
+
+In Termux, after installation it need patch extensions. For example::
+
+    $ patchelf --add-needed /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pytransform3.so
+    $ patchelf --add-needed /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pyarmor_runtime.so
+
+Sometimes, it need set runpath too. For example::
+
+    $ patchelf --set-rpath /data/data/com.termux/files/usr/lib /path/to/{pytransform3,pyarmor_runtime}.so
+
+Otherwise it will raise error `dlopen failed: cannot locate symbol "PyFloat_Type"`
 
 Run Pyarmor from Python script
 ==============================
