@@ -35,26 +35,45 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
             self.request.send(struct.pack('!HH', 1, len(msg)) + msg)
 
     def process(self, packet):
-        if packet[:4] == b'PADH':
+        cmd = packet[:4]
+        if cmd == b'PADH':
             response = b'\n'.join(CONFIG['machid']) + b'\x00'
             self.request.send(response)
-        else:
-            userdata = self.parse_packet(packet)
-            keydata = self.generate_runtime_key(userdata.decode('utf-8'))
-            response = struct.pack('!HH', 0, len(keydata)) + keydata
+        elif cmd == b'PADI':
+            userdata = packet[4:].decode('utf-8')
+            rtkey = self.generate_outer_key(userdata, outer=False)
+            magic = b'DockerRuntimeKey'
+            response = magic + struct.pack('!HH', 0, len(rtkey)) + rtkey
             self.request.send(response)
+        elif cmd == b'PADK':
+            userdata = self.parse_packet(packet).decode('utf-8')
+            rtkey = self.generate_runtime_key(userdata)
+            response = struct.pack('!HH', 0, len(rtkey)) + rtkey
+            self.request.send(response)
+        else:
+            raise RuntimeError('unknown packet %r' % packet)
         return response
 
     def parse_packet(self, packet):
         if len(packet) == 32 and packet[:4] == b'PADK':
             return packet[12:]
-        raise RuntimeError('invalid auth request')
+        raise RuntimeError('invalid auth request: %r' % packet)
 
     def generate_runtime_key(self, userdata):
         ctx = CONFIG['ctx']
         ctx.cmd_options['user_data'] = userdata
+        ctx.cmd_options['expired'] = '.3'
+        ctx.cmd_options['outer'] = 0
         Pytransform3._pytransform3.init_ctx(ctx)
         return Pytransform3.generate_runtime_key(ctx)
+
+    def generate_outer_key(self, userdata, outer=True):
+        ctx = CONFIG['ctx']
+        ctx.cmd_options['user_data'] = userdata
+        ctx.cmd_options['expired'] = '.3'
+        ctx.cmd_options['outer'] = 1
+        Pytransform3._pytransform3.init_ctx(ctx)
+        return Pytransform3.generate_runtime_key(ctx, outer=outer)
 
 
 def register_pyarmor(ctx, regfile):
