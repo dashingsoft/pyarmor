@@ -78,6 +78,8 @@ class FileResource(Resource):
         self.mtree = None
         self.mco = None
 
+        self.shebang = ''
+
         # Do not touch these nodes in final protector
         self.exclude_nodes = set()
         # Do not touch these code objects in final patcher
@@ -131,7 +133,10 @@ class FileResource(Resource):
 
         with open(self.fullpath, encoding=self._get_encoding(encoding)) as f:
             # file.read() can't read the whole data of big files
-            return f.readlines()
+            lines = f.readlines()
+            if lines and lines[0].startswith('#!'):
+                self.shebang = lines[0]
+            return lines
 
     def reparse(self, lines=None, encoding=None):
         if lines is None:
@@ -149,7 +154,7 @@ class FileResource(Resource):
 
         if mtree is None:
             mtree = self.mtree
-        assert mtree is not None
+        assert (mtree is not None)
         self.mco = compile(mtree, self.frozenname, 'exec', optimize=optimize)
 
     def clean(self):
@@ -168,19 +173,20 @@ class FileResource(Resource):
         elif relative == 1:
             prefix = '.' * self.fullname.count('.')
         else:
-            assert(isinstance(relative, str))
+            assert (isinstance(relative, str))
             prefix = relative + '.'
             if self.fullname.startswith(prefix):
                 prefix = '.' * self.fullname.count('.')
             elif prefix.startswith(self.pkgname + '.'):
                 prefix = prefix[len(self.pkgname):]
 
-        return Template(tpl).safe_substitute(
+        source = Template(tpl).safe_substitute(
             timestamp=datetime.now().isoformat(),
             package=prefix + pkgname,
             path=bootpath,
             code=repr(code),
             rev=rev)
+        return (self.shebang + source) if self.shebang else source
 
 
 class PycResource(FileResource):
