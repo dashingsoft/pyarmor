@@ -369,9 +369,15 @@ class WebRegister(Register):
             logger.debug('remove old token')
             os.remove(self.ctx.license_token)
 
+    def _check_product_name(self, name):
+        if len(name) == 1 or name.count(name[0]) == len(name):
+            raise RuntimeError('invalid product name "%s"' % name)
+
     def prepare(self, keyfile, product, upgrade=False):
         reginfo = self.parse_keyfile(keyfile)
         logger.info('prepare "%s"', keyfile)
+
+        self._check_product_name(product)
 
         rcode = self._get_old_rcode() if upgrade else None
         if upgrade and not rcode and keyfile.endswith('regcode-to-pro.txt'):
