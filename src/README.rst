@@ -1,28 +1,22 @@
 Protect Python Scripts By Pyarmor
 =================================
 
-Pyarmor is a command line tool used to obfuscate python scripts, bind
-obfuscated scripts to fixed machine or expire obfuscated scripts.
+Pyarmor is a command line tool used to obfuscate python scripts, bind obfuscated scripts to fixed machine or expire obfuscated scripts.
 
 Key Features
 ------------
 
-* The obfuscated scritpt is still a normal `.py` script, in most of
-  cases the original python scripts can be replaced with obfuscated
-  scripts seamlessly.
-* Provide many ways to obfuscate the scripts to balance security and
-  performance
-* Rename functions/methods/classes/variables/arguments, irreversible
-  obfuscation
-* Convert part of Python functions to C function, compile to binary by
-  high optimize option, irreversible obfuscation
+* The obfuscated scritpt is still a normal `.py` script, in most of cases the original python scripts can be replaced with obfuscated scripts seamlessly.
+* Provide many ways to obfuscate the scripts to balance security and performance
+* Rename functions/methods/classes/variables/arguments, irreversible obfuscation
+* Convert part of Python functions to C function, compile to binary by high optimize option, irreversible obfuscation
 * Bind obfuscated scripts to fixed machine or expire obfuscted scripts
 * Protect obfuscated scripts by Themida (Only for Windows)
 
 Support Platforms
 -----------------
 
-* Python 3.7~3.11
+* Python 3.7~3.12
 * Windows
 * Many linuxs, include embedded systems
 * Apple Intel and Apple Silicon
