@@ -82,9 +82,11 @@ After successful registration, all obfuscations will automatically apply this li
 Registering in Docker or CI pipeline
 ------------------------------------
 
-It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. **But It's not allowed to distribute pyarmor self and any Pyarmor License to customer**
+It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application by Pyarmor Basic or Pro license. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. **But It's not allowed to distribute pyarmor self and any Pyarmor License to your customers**
 
 Don't run too many build dockers, maximum is 100 in 24 hours. If more than 100 runs one day, please use Pyarmor Group License.
+
+And if need run more than 3 build dockers, it's better to start each docker container or runner every 30 seconds, too many register requests in same time may be rejected by license server.
 
 Using group license
 ===================
