@@ -16,9 +16,9 @@ This documentation is only apply to Pyarmor_ 8.0 plus.
 
 Pyarmor is published as shareware, free trial version never expires, but there are some limitations:
 
-(1) Can not obfuscate big scripts [1]_
-(2) Can not use feature mix-str [2]_ to obfuscate string constant in scripts
-(3) Can not use RFT Mode [3]_, BCC Mode [4]_
+(1) Can not obfuscate big scripts
+(2) Can not use feature mix-str to obfuscate string constant in scripts
+(3) Can not use RFT Mode, BCC Mode
 (4) Can not be used for any commercial product if the total sale income of this product is larger than 30x license fees
 (5) Can not change runtime package name "pyarmor_runtime_000000"
 (6) Can not be used to provide obfuscation service in any form
@@ -143,11 +143,11 @@ License features
    JIT Protection          Y          Y          Y           Y       [8]_
    Assert Protection       Y          Y          Y           Y       [9]_
    Themedia Protection     Y          Y          Y           Y       [10]_
-   Big Script              No         Y          Y           Y
-   Mix Str                 No         Y          Y           Y
+   Big Script              No         Y          Y           Y       [1]_
+   Mix Str                 No         Y          Y           Y       [2]_
    obf-code > 1            No         Y          Y           Y       [11]_
-   RFT MODE                No         No         Y           Y
-   BCC MODE                No         No         Y           Y
+   RFT MODE                No         No         Y           Y       [3]_
+   BCC MODE                No         No         Y           Y       [4]_
    Unlimited dockers       Y          No         No          Y       [12]_
    ===================  ========   ========   =========   ========  ==============
 
