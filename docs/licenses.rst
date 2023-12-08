@@ -55,15 +55,17 @@ Pyarmor has 3 kind of licenses:
 
 **For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to remote server for verification. No any user script will be uploaded to remote server**
 
-**Group license is bind to device hardwares, it may not work in any device which hardwares are volatile**
+**Group license is bind to device hardwares, it may not work in any device which hardwares are volatile (docker container is OK only if group license works in docker host)**
 
 Refer to :doc:`use Pyarmor License <how-to/register>`
 
-For the obfuscated scripts run in the customer's device, Pyarmor has no any limitations, it's totally controlled by users. Pyarmor only cares about build machine.
+Pyarmor has no any control on the obfuscated scripts, Pyarmor License is only applicable to build machines which are used to obfuscate scripts.
 
 Each license has an unique number, the format is ``pyarmor-vax-xxxxxx``, which x stands for a digital.
 
 Each product requires one License No. So any product in global also has an unique number in Pyarmor world.
+
+License No. and product name will be embedded into obfuscated scripts. All the other user information, for example, regname, email are not.
 
 If user has many products, and has purchased one license for the first product. The second product could use first product license only if sale income of the second product less than 30x license fees. Once greater than 30x license fees, the second product need purchase its own license. It's same to user's other products.
 
