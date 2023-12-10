@@ -401,7 +401,7 @@ class WebRegister(Register):
         if pname in ('', 'TBD'):
             info['product'] = product
         elif pname != product:
-            logger.warning('this license is bind to product "%s"', pname)
+            logger.warning('this license has bound to product "%s"', pname)
             logger.warning('it can not be changed to "%s"', product)
 
         lines = []
@@ -433,7 +433,7 @@ class WebRegister(Register):
         ])
         if info['product'] == 'non-profits':
             lines.append('This license is about to be used for non-profits')
-        elif info['product'] in ('', 'TBD'):
+        if info['product'] in ('', 'TBD'):
             lines.append('This license is bind to non-profits(TBD) '
                          'for the time being')
             lines.append('If not change "TBD" to product name in 6 months, '
@@ -441,6 +441,10 @@ class WebRegister(Register):
         else:
             lines.append('This license is about to be used for product "%s"'
                          % info['product'])
+        if info['product'] not in ('', 'TBD'):
+            lines.append('')
+            lines.append('IMPORTANT: PRODUCT NAME CAN NOT BE CHANGED '
+                         'AFTER INITIAL REGISTRATION')
 
         lines.extend(['', ''])
         return info, '\n'.join(lines)
