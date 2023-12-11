@@ -318,7 +318,8 @@ $notes
         if lictype == 'trial':
             self.notes.append('* Can\'t obfuscate big script and mix str')
         elif lictype in ('bacic', 'pro'):
-            self.notes.append('* Each obfuscation need verify license online')
+            self.notes.append('* Need verify license online '
+                              'when obfuscating scripts')
         elif lictype == 'group':
             self.notes.append('* Offline obfuscation')
 
