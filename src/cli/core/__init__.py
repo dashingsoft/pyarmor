@@ -124,7 +124,7 @@ class Pytransform3(object):
 
     @staticmethod
     def _update_token(ctx):
-        m = Pytransform3.init(ctx)
+        m = Pytransform3.init()
         m.init_ctx(ctx)
 
     @staticmethod
