@@ -123,11 +123,6 @@ class Pytransform3(object):
         return m.post_build(ctx)
 
     @staticmethod
-    def _update_token(ctx):
-        m = Pytransform3.init()
-        m.init_ctx(ctx)
-
-    @staticmethod
     def get_hd_info(hdtype, name=None):
         m = Pytransform3.init()
         return m.get_hd_info(hdtype, name) if name \

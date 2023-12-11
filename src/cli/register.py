@@ -111,9 +111,10 @@ class Register(object):
 
     def update_token(self):
         from .core import Pytransform3
+        assert Pytransform3._pytransform3 is None
         with open(self.ctx.license_token, 'wb') as f:
             f.close()
-        Pytransform3._update_token(self.ctx)
+        Pytransform3.init(self.ctx)
 
     @property
     def license_info(self):
