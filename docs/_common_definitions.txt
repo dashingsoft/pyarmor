@@ -3,7 +3,7 @@
 .. _discussions: https://github.com/dashingsoft/pyarmor/discussions/
 .. _Pyarmor Doc: https://pyarmor.readthedocs.io/en/stable/
 .. _Pyarmor 7.x Doc: https://pyarmor.readthedocs.io/en/v7.7/
-.. _EULA of Pyarmor: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
+.. _Pyarmor EULA: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
 
 .. |pyarmor| replace:: :doc:`pyarmor <man>`
 .. |Pyarmor| replace:: :term:`Pyarmor`
