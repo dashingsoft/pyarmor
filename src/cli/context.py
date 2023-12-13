@@ -203,12 +203,9 @@ class Context(object):
 
     def save_token(self, data):
         with open(self.license_token, 'wb') as f:
-            if data.endswith(b'=='):
-                f.write(data)
-            else:
-                n = data.rfind(b'==')
-                assert n > 0
-                f.write(data[:n+2])
+            if not data.endswith(b'=='):
+                raise RuntimeError('got invalid token %r' % data)
+            f.write(data)
 
     def clear_token(self):
         if os.path.exists(self.license_token):
