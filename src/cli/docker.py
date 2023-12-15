@@ -1,3 +1,24 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#############################################################
+#                                                           #
+#      Copyright @ 2023 -  Dashingsoft corp.                #
+#      All rights reserved.                                 #
+#                                                           #
+#      Pyarmor                                              #
+#                                                           #
+#      Version: 8.3.0 -                                     #
+#                                                           #
+#############################################################
+#
+#
+#  @File: cli/docker.py
+#
+#  @Author: Jondy Zhao (pyarmor@163.com)
+#
+#  @Create Date: Tue Aug 1 09:18:12 CST 2023
+#
 import argparse
 import logging
 import os
