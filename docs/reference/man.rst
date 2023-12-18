@@ -295,11 +295,19 @@ And special name `local` could be used to get local time. For exmaple::
 
 .. option:: -b DEV, --bind-device DEV
 
+            Bind obfuscated script to specified device
+
             Use this option multiple times to bind multiple machines
 
-Bind obfuscated script to specified device. Now only hard disk serial number, Ethernet address and IPv4 address are available.
+Since Pyarmor 8.4.6, got target machine hardware informations by `python -m pyarmor.cli.hdinfo`::
 
-For example::
+    Default Harddisk Serial Number: 'HXS2000CN2A'
+    Default Mac address: '00:16:3e:35:19:3d'
+    Default IPv4 address: '128.16.4.10'
+
+Before Pyarmor 8.4.6, using `pyarmor-7 hdinfo` to get hardware information.
+
+Now only hard disk serial number, Ethernet address and IPv4 address are available. For example::
 
     $ pyarmor gen -b 128.16.4.10 foo.py
     $ pyarmor gen -b 52:38:6a:f2:c2:ff foo.py

@@ -172,11 +172,13 @@ Distributing the expired script is same as above, copy the whole directory :file
 Binding obfuscated scripts to device
 ====================================
 
-Suppose got target machine hardware information::
+Since Pyarmor 8.4.6, got target machine hardware informations by `python -m pyarmor.cli.hdinfo`::
 
-    IPv4:                        128.16.4.10
-    Ethernet Addr:               00:16:3e:35:19:3d
-    Hard Disk Serial Number:     HXS2000CN2A
+    Default Harddisk Serial Number: 'HXS2000CN2A'
+    Default Mac address: '00:16:3e:35:19:3d'
+    Default IPv4 address: '128.16.4.10'
+
+Before Pyarmor 8.4.6, using `pyarmor-7 hdinfo` to get hardware information.
 
 Using :option:`-b` to bind hardware information to obfuscated scripts. For example, bind :file:`dist5/foo.py` to Ethernet address::
 
