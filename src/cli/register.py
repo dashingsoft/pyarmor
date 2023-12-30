@@ -372,7 +372,8 @@ class WebRegister(Register):
             os.remove(self.ctx.license_token)
 
     def _check_product_name(self, name):
-        if len(name) == 1 or name.count(name[0]) == len(name):
+        name = name.lower()
+        if name.count(name[0]) == len(name) or name.find('pyarmor') >= 0:
             raise RuntimeError('invalid product name "%s"' % name)
 
     def prepare(self, keyfile, product, upgrade=False):
