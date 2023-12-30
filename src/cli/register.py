@@ -380,7 +380,8 @@ class WebRegister(Register):
         reginfo = self.parse_keyfile(keyfile)
         logger.info('prepare "%s"', keyfile)
 
-        self._check_product_name(product)
+        if product:
+            self._check_product_name(product)
 
         rcode = self._get_old_rcode() if upgrade else None
         if upgrade and not rcode and keyfile.endswith('regcode-to-pro.txt'):
