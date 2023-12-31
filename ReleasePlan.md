@@ -59,7 +59,7 @@ Status: developing
 Release schedule: about 2024-01-01
 
 - Full test
-- Expert users could write their own c/python code in pyarmor_runtime initialization
+- Expert users could write their own python code in pyarmor_runtime initialization
 - Pyarmor.man package with web-ui to help users learning, using Pyarmor, and quickly find solutions when something is wrong
 
 **8.6**
