@@ -466,7 +466,7 @@ class Context(object):
 
     @property
     def exclude_restrict_modules(self):
-        return self._opts('builder', 'exclude_restrict_modules')
+        return self._opts('builder', 'exclude_restrict_modules').split()
 
     @property
     def co_threshold(self):
