@@ -87,9 +87,11 @@ but there are some limitations.
 2.1.1 Can not obfuscate big script
 2.1.2 Can not use feature Mix Str
 2.1.3 Can not use feature RFT Mode, BCC Mode
-2.1.4 Can not be used in any commercial product if the total sale income of
-      this product is larger than 30x license fees
-2.1.5 Can not be used to provide obfuscation service in any form
+2.1.4 Can not be used to obfuscate any commercial product. If the total sale
+      income of this product is less than 30x license fees, this software could
+      be used temporarily.
+2.1.5 Can not be used to provide obfuscation service in any form, in short
+      this software can't be used to obfuscate the scripts of others
 
 2.2. Grants
 

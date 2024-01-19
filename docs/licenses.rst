@@ -19,9 +19,9 @@ Pyarmor is published as shareware, free trial version never expires, but there a
 (1) Can not obfuscate big scripts
 (2) Can not use feature mix-str to obfuscate string constant in scripts
 (3) Can not use RFT Mode, BCC Mode
-(4) Can not be used for any commercial product if the total sale income of this product is larger than 30x license fees
+(4) Can not be used for any commercial product. If the total sale income of this product is less than 30x license fees, this software could be used temporarily.
 (5) Can not change runtime package name "pyarmor_runtime_000000"
-(6) Can not be used to provide obfuscation service in any form
+(6) Can not be used to provide obfuscation service in any form, in short this software can't be used to obfuscate the scripts of others
 (7) Can not use obf-code > 1
 
 These limitations can be unlocked by different License Types except last one.
