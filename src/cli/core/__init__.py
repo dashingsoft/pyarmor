@@ -67,6 +67,9 @@ def format_platform():
         bitness = calcsize('P'.encode()) * 8
         if bitness == 32:
             mach = 'x86'
+    elif plat == 'darwin' and mach == 'aarch64':
+        mach = 'arm64'
+
     return plat, mach
 
 
