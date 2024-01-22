@@ -124,7 +124,7 @@ On each offline device, install Pyarmor 8.2+, and generate group device file. Fo
     $ pyarmor reg -g 1
 
     INFO     Python 3.12.0
-    INFO     Pyarmor 8.4.2 (group), 006000, btarmor
+    INFO     Pyarmor 8.4.7 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
     INFO     generating device file ".pyarmor/group/pyarmor-group-device.1"
     INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
@@ -174,7 +174,7 @@ Once device regfile is generated, copy it to the corresponding device, run this 
     $ pyarmor reg /path/to/pyarmor-device-regfile-xxxx.1.zip
 
     INFO     Python 3.12.0
-    INFO     Pyarmor 8.4.2 (group), 006000, btarmor
+    INFO     Pyarmor 8.4.7 (trial), 000000, non-profits
     INFO     Platform darwin.x86_64
     INFO     register "/path/to/pyarmor-device-regfile-xxxx.1.zip"
     INFO     machine id in group license: mc92c9f22c732b482fb485aad31d789f1

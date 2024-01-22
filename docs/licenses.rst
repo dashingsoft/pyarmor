@@ -113,7 +113,7 @@ Check one device works for group license by this way:
 * First install Pyarmor 8.4.0+ trial version in this device
 * Got machine id by the following command::
 
-    $ pyarmor reg -g 101
+    $ pyarmor reg -g 1
     ...
     INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
     INFO     device file has been generated successfully
