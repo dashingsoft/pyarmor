@@ -49,7 +49,7 @@ def main(argv):
         print('Default Harddisk Serial Number: %s' % get_hd_info(HT_HARDDISK))
         print('Default Mac address: %s' % get_hd_info(HT_IFMAC))
         print('Default IPv4 address: %s' % get_hd_info(HT_IPV4))
-        print('Multiple Mac addresses: %s' % get_hd_info(HT_IPV4, name='*'))
+        print('Multiple Mac addresses: %s' % get_hd_info(HT_IFMAC, name='*'))
 
     for name in args.devname:
         if name.startswith('/'):
