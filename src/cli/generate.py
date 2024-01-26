@@ -100,6 +100,8 @@ class Builder(object):
         bootpath = self.ctx.cfg.get('builder', 'bootstrap_file')
         encoding = self.ctx.cfg.get('builder', 'encoding')
 
+        plugins = [x for x in self.ctx.plugins if hasattr(x, 'post_script')]
+
         namelist = []
         for res in self.ctx.resources + self.ctx.extra_resources:
             logger.info('process resource "%s"', res.fullname)
@@ -126,7 +128,10 @@ class Builder(object):
                 fullpath = os.path.join(path, r.output_filename)
                 os.makedirs(os.path.dirname(fullpath), exist_ok=True)
 
-                Pytransform3.post_script(self.ctx, r, source)
+                for plugin in plugins:
+                    patched_source = plugin.post_script(self.ctx, r, source)
+                    if patched_source:
+                        source = patched_source
 
                 logger.info('write %s', fullpath)
                 with open(fullpath, 'w', encoding=encoding) as f:
