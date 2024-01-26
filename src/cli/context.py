@@ -604,6 +604,10 @@ class Context(object):
         return runtime_package_template if len(platforms) < 2 else \
             multi_runtime_package_template
 
+    @property
+    def runtime_obf_key_mode(self):
+        return self._opti('runtime', 'obf_key_mode')
+
     #
     # RFT settings
     #
