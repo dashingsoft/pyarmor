@@ -150,8 +150,6 @@ Run the obfuscated scripts :file:`dist4/foo.py` to verify it::
 
     $ python dist4/foo.py
 
-It checks network time, make sure your machine is connected to internet.
-
 Let's use another form to set past date ``2020-12-31``::
 
     $ pyarmor gen -O dist4 -e 2020-12-31 foo.py
@@ -160,14 +158,15 @@ Now :file:`dist4/foo.py` should not work::
 
     $ python dist4/foo.py
 
-If expire date has a leading ``.``, it will check local time other than NTP_ server. For examples::
-
-    $ pyarmor gen -O dist4 -e .30 foo.py
-    $ pyarmor gen -O dist4 -e .2020-12-31 foo.py
-
-For this form internet connection is not required in target machine.
-
 Distributing the expired script is same as above, copy the whole directory :file:`dist4/` to target machine.
+
+Since v8.5.0, it checks local time by default. If need to check internet time, configure `nts` to any NTP_ server. For example::
+
+   $ pyarmor cfg nts=pool.ntp.org
+
+Actually this is the default configuration in previous versions. Sometimes NTP_ server may return `RuntimeError: Resource temporarily unavailable`, using HTTP service may solve this. For example::
+
+   $ pyarmor cfg nts=http://worldtimeapi.org/api
 
 Binding obfuscated scripts to device
 ====================================

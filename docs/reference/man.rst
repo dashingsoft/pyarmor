@@ -257,31 +257,33 @@ And check ``.py`` files in the path ``dist2``.
 
             Expired date of obfuscated scripts.
 
-It supports 4 forms:
+It supports 2 forms:
 
 * A number stands for valid days
 * A date with ISO format ``YYYY-MM-DD``
-* A leading ``.`` with above 2 forms
 
-Without leading dot, the obfuscated scripts checks network time. For example::
+For example::
 
     $ pyarmor gen -e 30 foo.py
     $ pyarmor gen -e 2022-12-31 foo.py
 
-With leading dot, it checks local time. For example::
-
-    $ pyarmor gen -e .30 foo.py
-    $ pyarmor gen -e .2022-12-31 foo.py
-
-When checking network time, it need connect to remote server. Check the default server by this command::
+It will check local time by default. Check the default server by this command::
 
     $ pyarmor cfg nts
+    ...
+    Current settings
+      nts = local
+    ...
 
-Before v8.8.4, only supports NTP protocol, but the default server can be changed to any valid NTP server. For example::
+If need to check network time, just configure `nts` to remote server. For example::
+
+    $ pyarmor cfg nts=pool.ntp.org
+
+Before v8.8.4, only supports NTP protocol, the default server can be changed to any valid NTP server. For example::
 
     $ pyarmor cfg nts=108.59.2.24
 
-Since v8.8.4, it supports HTTP server, and multiple servers. If the first server doesn't work, then uses the second, and so on. When using HTTP protocol, just provide one valid URL. For example::
+Since v8.8.4, it also supports HTTP server, and multiple servers. If the first server doesn't work, then uses the second, and so on. When using HTTP protocol, just provide one valid URL. For example::
 
     $ pyarmor cfg nts=http://worldtimeapi.org/api
 
@@ -299,13 +301,13 @@ And special name `local` could be used to get local time. For exmaple::
 
             Use this option multiple times to bind multiple machines
 
-Since Pyarmor 8.4.6, got target machine hardware informations by `python -m pyarmor.cli.hdinfo`::
+Using `pyarmor-7 hdinfo` to get hardware information.
+
+Since Pyarmor 8.4.6, `python -m pyarmor.cli.hdinfo` works too::
 
     Default Harddisk Serial Number: 'HXS2000CN2A'
     Default Mac address: '00:16:3e:35:19:3d'
     Default IPv4 address: '128.16.4.10'
-
-Before Pyarmor 8.4.6, using `pyarmor-7 hdinfo` to get hardware information.
 
 Now only hard disk serial number, Ethernet address and IPv4 address are available. For example::
 
