@@ -113,6 +113,16 @@ Plugin script could define one or more plugin classes:
 
 .. py:class:: PluginName
 
+    .. py:staticmethod:: post_script(ctx, res, source)
+
+       This method is optional.
+
+       This method is called after each script has been obfuscated
+
+       :param Context ctx: building context
+       :param FileResource res: instance of `pyarmor.cli.resource.FileResource`
+       :param str source: the source of obfuscated script
+
     .. py:staticmethod:: post_build(ctx, inputs, outputs, pack=None)
 
        This method is optional.

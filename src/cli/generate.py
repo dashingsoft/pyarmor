@@ -126,6 +126,8 @@ class Builder(object):
                 fullpath = os.path.join(path, r.output_filename)
                 os.makedirs(os.path.dirname(fullpath), exist_ok=True)
 
+                Pytransform3.post_script(self.ctx, r, source)
+
                 logger.info('write %s', fullpath)
                 with open(fullpath, 'w', encoding=encoding) as f:
                     f.write(source)

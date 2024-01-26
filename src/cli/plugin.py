@@ -89,6 +89,14 @@ class Plugin(object):
             plugin.post_runtime(ctx, source, dest, platform)
 
     @staticmethod
+    def post_script(ctx, res, source):
+        for plugin in [x for x in ctx.plugins if hasattr(x, 'post_script')]:
+            patched_source = plugin.post_bcc(ctx, res, source)
+            if patched_source:
+                source = patched_source
+        return source
+
+    @staticmethod
     def post_bcc(ctx, res, csource):
         for plugin in [x for x in ctx.plugins if hasattr(x, 'post_bcc')]:
             patched_csource = plugin.post_bcc(ctx, res, csource)
