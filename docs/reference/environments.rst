@@ -119,6 +119,8 @@ Plugin script could define one or more plugin classes:
 
        This method is called after each script has been obfuscated
 
+       Generally it's used to patch the obfuscated `source`, and return patched `source`
+
        :param Context ctx: building context
        :param FileResource res: instance of `pyarmor.cli.resource.FileResource`
        :param str source: the source of obfuscated script
