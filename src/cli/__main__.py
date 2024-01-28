@@ -326,6 +326,22 @@ def cmd_reg(ctx, args):
             regsvr.register(regfile, args.product, group=group)
 
 
+def cmd_man(ctx, args):
+    pkgpath = os.path.normpath(os.path.dirname(__file__), '..', 'man')
+    if not os.path.exists(pkgpath):
+        from subprocess import check_output
+        check_output([
+            sys.executable, '-m', 'pip', 'install',
+            '--disable-pip-version-check', 'pyarmor.man'
+        ])
+
+    from pyarmor.man.cli import main_entry
+    try:
+        main_entry(args)
+    except KeyboardInterrupt:
+        logging.info('Quit from Pyarmor.Man, Bye-Bye')
+
+
 def main_parser():
     parser = argparse.ArgumentParser(
         prog='pyarmor',
@@ -358,6 +374,8 @@ def main_parser():
     gen_parser(subparsers)
     reg_parser(subparsers)
     cfg_parser(subparsers)
+
+    man_parser(subparsers)
 
     return parser
 
@@ -617,6 +635,26 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-reg
         help='pyarmor-regcode-xxx.txt or pyarmor-regfile-xxxx.zip'
     )
     cparser.set_defaults(func=cmd_reg)
+
+
+def man_parser(subparsers):
+    '''Open Pyarmor.Man in web-browser
+
+    Pyarmor Man is designed to help Pyarmor users to learn and use
+    Pyarmor, to find solution quickly when something is wrong, to
+    report bug and ask question by wizard in order to save both
+    Pyarmor team's and Pyarmor users' time.
+    '''
+
+    cparser = subparsers.add_parser(
+        'man',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=man_parser.__doc__,
+        help='register Pyarmor or upgrade old Pyarmor license'
+    )
+
+    cparser.set_defaults(func=cmd_man)
+    return cparser
 
 
 def log_settings(ctx, args):
