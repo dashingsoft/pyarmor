@@ -40,8 +40,6 @@
 #
 import os
 import time
-from distutils.filelist import FileList
-from distutils.text_file import TextFile
 from glob import glob
 from io import StringIO
 from json import dump as json_dump, load as json_load
@@ -195,6 +193,8 @@ class Project(dict):
 
     @classmethod
     def build_manifest(cls, manifest, path=None):
+        from distutils.filelist import FileList
+        from distutils.text_file import TextFile
         infile = StringIO()
         infile.write('\n'.join(manifest))
         infile.seek(0)
