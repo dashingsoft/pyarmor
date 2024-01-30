@@ -186,4 +186,14 @@ By searching error message in google or any other search engine to find the solu
     $ install_name_tool -change @rpath/Frameworks/Python.framework/Versions/3.9/Python /Users/my_username/anaconda3/lib/libpython3.9.dylib /Users/my_username/anaconda3/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
     $ codesign -f -s - /Users/my_username/anaconda3/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
 
+**ImportError: libdl.so: cannot open shared object file: No such file or directory**
+
+  When running obfuscated scripts in unmatched platform, it may raise this error.
+
+  In this case checking dependencies by `ldd /path/to/pyarmor_runtime.so` to make sure it works. If not, please select right `--platform` to obfuscate the scripts.
+
+  For example, when obfuscating the scripts in Linux with target platform Termux, somethimes it need specify `--platform linux.aarch64`, not `--platform android.aarch64`, more information refer to `issue 1674`__
+
+__ https://github.com/dashingsoft/pyarmor/discussions/1674
+
 .. include:: ../_common_definitions.txt

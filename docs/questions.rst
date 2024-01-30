@@ -196,6 +196,19 @@ Packing
 __ https://pyarmor.readthedocs.io/en/stable/topic/repack.html
 __ https://github.com/dashingsoft/pyarmor/discussions/1107
 
+Running Obfuscated Scripts
+==========================
+
+**ImportError: libdl.so: cannot open shared object file: No such file or directory**
+
+  When running obfuscated scripts in unmatched platform, it may raise this error.
+
+  In this case checking dependencies by `ldd /path/to/pyarmor_runtime.so` to make sure it works. If not, please select right `--platform` to obfuscate the scripts.
+
+  For example, when obfuscating the scripts in Linux with target platform Termux, somethimes it need specify `--platform linux.aarch64`, not `--platform android.aarch64`, more information refer to `issue 1674`__
+
+__ https://github.com/dashingsoft/pyarmor/discussions/1674
+
 License
 =======
 
