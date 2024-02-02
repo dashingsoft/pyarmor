@@ -305,6 +305,7 @@ Using `pyarmor-7 hdinfo` to get hardware information.
 
 Since Pyarmor 8.4.6, `python -m pyarmor.cli.hdinfo` works too::
 
+    Machine ID: 'mc92c9f22c732b482fb485aad31d789f1'
     Default Harddisk Serial Number: 'HXS2000CN2A'
     Default Mac address: '00:16:3e:35:19:3d'
     Default IPv4 address: '128.16.4.10'
@@ -314,6 +315,10 @@ Now only hard disk serial number, Ethernet address and IPv4 address are availabl
     $ pyarmor gen -b 128.16.4.10 foo.py
     $ pyarmor gen -b 52:38:6a:f2:c2:ff foo.py
     $ pyarmor gen -b HXS2000CN2A foo.py
+
+Since Pyarmor 8.5.0, it also supports machine id got by `python -m pyarmor.cli.hdinfo`. For example::
+
+    $ pyarmor gen -b mc92c9f22c732b482fb485aad31d789f1 foo.py
 
 Also set 30 valid days for this device::
 
