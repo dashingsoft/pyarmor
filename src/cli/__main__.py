@@ -746,6 +746,28 @@ def main_entry(argv):
         parser.print_help()
 
 
+def find_solutions(e):
+    # debug = logging.getLogger().getEffectiveLevel()
+    # clierr = isinstance(e, CliError)
+    lines = [
+        'somthing is wrong',
+        '=' * 60,
+        'Please run `pyarmor man` to find solutions quickly',
+        '',
+        "It's recommand to report issue by `pyarmor man` ",
+        "in order to provide necessary information, and ",
+        "avoid dupcliated issues or unclear question",
+        '',
+        "Pyarmor Man is designed to help Pyarmor users ",
+        "to learn and use Pyarmor by web-ui, ",
+        "to find solution quickly when something is wrong, ",
+        "to report bugs and ask questions in standard form ",
+        "in order to save both Pyarmor team's and Pyarmor users' time",
+        '=' * 60,
+    ]
+    logger.error('\n'.join(lines))
+
+
 def main():
     logging.basicConfig(
         level=logging.INFO,
@@ -756,10 +778,12 @@ def main():
         main_entry(sys.argv[1:])
     except CliError as e:
         logger.error(e)
+        find_solutions(e)
         sys.exit(1)
     except Exception as e:
         log_exception(e)
         logger.error(e)
+        find_solutions(e)
         sys.exit(2)
 
 
