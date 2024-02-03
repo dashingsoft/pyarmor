@@ -67,6 +67,37 @@ A good report should have
 
    If a bug report misses necessary information and not clear, it may be marked as invalid and closed immediately.
 
+Hot Questions
+=============
+
+**Is there any tool could broken Pyarmor?**
+
+  Pyarmor team doesn't care about these kind of tools, but focus on researching CPython source to design obfuscation algorithm. Through several irreversible obfuscation methods, Pyarmor makes sure the obfuscated scripts can't be restored by any way.
+
+  Refer to :doc:`how-to/security`, use the highest security options available for you to obfuscate this script
+
+  .. code-block:: python
+
+     import sys
+
+     def fib(n):
+         a, b = 0, 1
+         while a < n:
+             print(a, end=' ')
+             a, b = b, a+b
+         print()
+
+     print('python version:', sys.version_info[:2])
+     print('this is fib(10)', fib(10))
+
+  And then try any tool to broken it.
+
+  If it's broken, please send Python version, Pyarmor version, Platform, Obfuscation options, sample script and broken steps to |Contact|
+
+  **Do not publish any pyarmor hack link in Pyarmor project**
+
+  Pyarmor is good at protecting Python scripts, but not good at memory protection and anti-debug. If you care about runtime memory data, or runtime key verification, generally it need extra methods to prevent debugger from hacking dynamic libraries. More information check :doc:`how-to/protection`
+
 Segment fault in Apple
 ======================
 
