@@ -747,25 +747,33 @@ def main_entry(argv):
 
 
 def find_solutions(e):
+    '''Print quick solutions according to exception
+
+    If not enable debug, tell user try `pyarmor -d cmd...`
+
+    If it raises CliError, print possible solutions
+
+    For unknown error, print FAQ page link and `pyarmor man`
+
+    Pyarmor Man is designed to help Pyarmor users to learn
+    and use Pyarmor by web-ui, to find solution quickly when
+    something is wrong, to report bugs and ask questions in
+    standard form in order to save both Pyarmor team's and
+    Pyarmor users' time.
+    '''
     # debug = logging.getLogger().getEffectiveLevel()
     # clierr = isinstance(e, CliError)
-    lines = [
-        'somthing is wrong',
-        '=' * 60,
-        'Please run `pyarmor man` to find solutions quickly',
-        '',
-        "It's recommand to report issue by `pyarmor man` ",
-        "in order to provide necessary information, and ",
-        "avoid dupcliated issues or unclear question",
-        '',
-        "Pyarmor Man is designed to help Pyarmor users ",
-        "to learn and use Pyarmor by web-ui, ",
-        "to find solution quickly when something is wrong, ",
-        "to report bugs and ask questions in standard form ",
-        "in order to save both Pyarmor team's and Pyarmor users' time",
-        '=' * 60,
-    ]
-    logger.error('\n'.join(lines))
+    logger.error('''somthing is wrong
+*===========================================================*
+*  Please check                                             *
+*    https://pyarmor.readthedocs.io/en/latest/questions.html*
+*  or run `pyarmor man` to find solutions quickly           *
+*                                                           *
+*  It's recommand to report issue by `pyarmor man` in order *
+*  to provide necessary information, and avoid dupcliated   *
+*  issues or unclear question.                              *
+*===========================================================*
+''')
 
 
 def main():
