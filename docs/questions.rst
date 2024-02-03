@@ -9,7 +9,11 @@
 Asking questions in GitHub
 ==========================
 
-Before ask question, please try these solutions:
+Pyarmor provides rich options for different cases, the default option only works for common case. When something is wrong, it may be not bug, but need the right options. Users need spend time learning Pyarmor by documentation or `pyarmor man`, do not ask Pyarmor team to learn your project and tell you use which options.
+
+Suppose you purchase Microsoft Excel, and want to make a complex chart. You should learn Excel and make this chart by yourself, not ask Microsoft to teach you make the complex chart.
+
+Pyarmor is well document, before ask question, please try the following solutions in order to avoid duplicated issues:
 
 - If using :command:`pyarmor-7` or Pyarmor < 8.0, please check `Pyarmor 7.x Doc`_
 
