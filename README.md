@@ -104,7 +104,7 @@ Each major version comes with a separate changelog file, detailing fixed issues,
 Make sure to read the changelog carefully before upgrading Pyarmor:
 - [Pyarmor 8.x Changelog](docs/ChangeLogs.8)
 
-**Full changelogs** at [releases](releases)
+**Full changelogs** at [releases][releases]
 
 **Upcoming features** at [Pyarmor 8.x Release Plan](ReleasePlan.md)
 
