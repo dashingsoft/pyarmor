@@ -26,7 +26,7 @@ from pyarmor.cli.core import Pytransform3
 
 
 GROUP_LICENSE_MACHINE_FLAG = 22
-HT_HARDDISK, HT_IFMAC, HT_IPV4 = range(3)
+HT_HARDDISK, HT_IFMAC, HT_IPV4, HT_IPV6, HT_DOMAIN = range(5)
 
 
 def get_hd_info(hdtype, name=None):
@@ -50,6 +50,7 @@ def main(argv):
         print('Default Mac address: %s' % get_hd_info(HT_IFMAC))
         print('Default IPv4 address: %s' % get_hd_info(HT_IPV4))
         print('Multiple Mac addresses: %s' % get_hd_info(HT_IFMAC, name='*'))
+        print('Domain: %s' % get_hd_info(HT_DOMAIN))
 
     for name in args.devname:
         if name.startswith('/'):
