@@ -340,7 +340,9 @@ If there is no available IPv4 address in Windows, the other solution is running 
 
 **When something is wrong**
 
-1. Check docker container network::
+1. Check docker container network:
+
+.. code-block:: bash
 
    root@86b180b28a50:/# ifconfig -a
 
