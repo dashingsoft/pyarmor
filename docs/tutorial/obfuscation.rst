@@ -189,6 +189,10 @@ There are 2 ways to solve this problem:
      $ pyarmor cfg data_files=*
      $ pyarmor gen -O dist -r joker/
 
+Only copy ``*.yaml`` and ``*.json``::
+
+     $ pyarmor cfg data_files="*.yaml *.json"
+
 Checking runtime key periodically
 =================================
 
