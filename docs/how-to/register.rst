@@ -95,6 +95,10 @@ Using group license
 
 Each :term:`Pyarmor Group` could have 100 offline devices, each device has its own number, from 1 to 100.
 
+Only the machine id of device is not changed after reboot, it could be used as group device. Most of physics machine, cloud server or VM like Qemu, Virtual box, Vmware with same disk image work with Group license. If using group in CI pipeline, the default runner doesn't work, but something like `self-host runner`__ may work.
+
+The allocated device No. is never free, if a device is reinstalled, it need allocate new one.
+
 Basic steps:
 
 1. Using activation file :file:`pyarmor-regcode-xxxx.txt` to initial registration, set product name bind to this license, and generate :term:`registration file` [#]_
@@ -104,6 +108,8 @@ Basic steps:
 
 .. [#] Pyarmor will review group license manually and enable it in 24 hours since activation file is sent.
 .. [#] The device registration file is bind to specified device, each device has its own device regfile
+
+__ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
 
 Initial registration
 --------------------
