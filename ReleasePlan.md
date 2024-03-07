@@ -54,9 +54,7 @@ Status: released (2023-10-18)
 
 **8.5**
 
-Status: developing
-
-Release schedule: about 2024-01-01
+Status: first released at 2024-03-08, unstable, still developing
 
 - Full test
 - Expert users could write their own python code in pyarmor_runtime initialization
