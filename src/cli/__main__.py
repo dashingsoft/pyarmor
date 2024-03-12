@@ -757,12 +757,12 @@ def main():
         main_entry(sys.argv[1:])
     except CliError as e:
         logger.error(e)
-        find_solutions(logger, e)
+        find_solutions(e)
         sys.exit(1)
     except Exception as e:
         log_exception(e)
         logger.error(e)
-        find_solutions(logger, e)
+        find_solutions(e)
         sys.exit(2)
 
 
