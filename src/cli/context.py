@@ -58,7 +58,7 @@ def __pyarmor__():
     def format_machine():
         mach = platform.machine().lower()
         arch_table = (
-            ('x86', ('i386', 'i486', 'i586', 'i686')),
+            ('x86', ('i386', 'i486', 'i586', 'i686', 'x86')),
             ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
             ('arm', ('armv5',)),
             ('armv6', ('armv6l',)),
