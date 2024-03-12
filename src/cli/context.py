@@ -104,7 +104,7 @@ def format_platform(plat, arch):
     )
 
     arch_table = (
-        ('x86', ('i?86', )),
+        ('x86', ('i?86', 'x86')),
         ('x86_64', ('x64', 'x86_64', 'amd64', 'intel')),
         ('arm', ('armv5',)),
         ('armv6', ('armv6l',)),
