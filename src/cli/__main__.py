@@ -32,6 +32,7 @@ from .shell import PyarmorShell
 from .plugin import Plugin
 from .generate import Builder
 from .bootstrap import check_prebuilt_runtime_library
+from .bug import find_solutions
 
 
 def _cmd_gen_key(builder, options):
@@ -746,36 +747,6 @@ def main_entry(argv):
         parser.print_help()
 
 
-def find_solutions(e):
-    '''Print quick solutions according to exception
-
-    If not enable debug, tell user try `pyarmor -d cmd...`
-
-    If it raises CliError, print possible solutions
-
-    For unknown error, print FAQ page link and `pyarmor man`
-
-    Pyarmor Man is designed to help Pyarmor users to learn
-    and use Pyarmor by web-ui, to find solution quickly when
-    something is wrong, to report bugs and ask questions in
-    standard form in order to save both Pyarmor team's and
-    Pyarmor users' time.
-    '''
-    # debug = logging.getLogger().getEffectiveLevel()
-    # clierr = isinstance(e, CliError)
-    logger.error('''somthing is wrong
-*===========================================================*
-*  Please check                                             *
-*    https://pyarmor.readthedocs.io/en/latest/questions.html*
-*  or run `pyarmor man` to find solutions quickly           *
-*                                                           *
-*  It's recommand to report issue by `pyarmor man` in order *
-*  to provide necessary information, and avoid dupcliated   *
-*  issues or unclear question.                              *
-*===========================================================*
-''')
-
-
 def main():
     logging.basicConfig(
         level=logging.INFO,
@@ -786,12 +757,12 @@ def main():
         main_entry(sys.argv[1:])
     except CliError as e:
         logger.error(e)
-        find_solutions(e)
+        find_solutions(logger, e)
         sys.exit(1)
     except Exception as e:
         log_exception(e)
         logger.error(e)
-        find_solutions(e)
+        find_solutions(logger, e)
         sys.exit(2)
 
 
