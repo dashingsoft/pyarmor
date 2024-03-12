@@ -19,10 +19,36 @@
 #
 #  @Create Date: Tue Mar 12 15:19:41 CST 2024
 #
+from string import Template
+
+BUG_TEMPLATE = Template('''
+### Command options and console output
+$cmdline
+
+$tracelog
+
+### Traceback
+$tb
+''')
+
 
 def generate_bug_report(e):
     'Generate file `pyarmor.report.bug` in current path'
-    pass
+    from os.path import exists
+    from sys import argv
+    from traceback import format_exc
+
+    logfile = '.pyarmor/pyarmor.debug.log'
+    if exists(logfile):
+        with open('.pyarmor/pyarmor.debug.log', 'r') as f:
+            tracelog = f.read()
+
+    with open('pyarmor.report.bug', 'w') as f:
+        f.write(BUG_TEMPLATE.substitute(
+            cmdline=' '.join(argv),
+            tracelog=tracelog,
+            tb=format_exc()
+        ))
 
 
 def find_solutions(logger, e):
