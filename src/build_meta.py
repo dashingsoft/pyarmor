@@ -32,11 +32,12 @@ from wheel.wheelfile import WheelFile
 from wheel.cli.pack import pack as wheel_pack
 from pyarmor.pyarmor import main as pyarmor_main
 
-from setuptools.build_meta import build_wheel as setuptools_build_wheel, \
-    get_requires_for_build_wheel, \
-    get_requires_for_build_sdist, \
-    prepare_metadata_for_build_wheel, \
-    build_sdist
+from setuptools.build_meta import build_wheel as setuptools_build_wheel
+
+try:
+    from distutils.util import get_platform
+except ModuleNotFoundError:
+    from polyfills import get_platform
 
 
 def _wheel_unpack(path, dest='.'):
@@ -82,7 +83,6 @@ def _fix_config(config_settings, obf_options):
     config_settings = config_settings or {}
     global_options = config_settings.get('--global-option', [])
 
-    from distutils.util import get_platform
     plat_name = get_platform().replace('-', '_').replace('.', '_')
     global_options.append('--plat-name=%s' % plat_name)
 
