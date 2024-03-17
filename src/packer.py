@@ -44,7 +44,6 @@ import shutil
 import sys
 
 from codecs import open as codecs_open
-from distutils.util import get_platform
 from glob import glob
 from json import load as json_load
 from py_compile import compile as compile_file
@@ -53,6 +52,11 @@ from subprocess import Popen, PIPE, STDOUT
 from zipfile import PyZipFile
 
 import polyfills.argparse as argparse
+
+try:
+    from distutils.util import get_platform
+except ModuleNotFoundError:
+    from polyfills import get_platform
 
 # Default output path, library name, command options for setup script
 DEFAULT_PACKER = {
