@@ -374,4 +374,8 @@ Misc.
 
   All of Pyarmor packages are published in the PyPI_, refer to :term:`Pyarmor Package` and section `Installation in offline device` in the chapter :doc:`tutorial/installation`
 
+**Pyarmor Pro checks the internet, what is the output IP or DNS? I need to release it on my client's firewall, placing an outbound rule for yours IP.**
+
+  Now it's `119.23.58.77` (March 20, 2024)
+
 .. include:: _common_definitions.txt
