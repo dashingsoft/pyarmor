@@ -328,7 +328,7 @@ def cmd_reg(ctx, args):
 
 
 def cmd_man(ctx, args):
-    pkgpath = os.path.normpath(os.path.dirname(__file__), '..', 'man')
+    pkgpath = os.path.join(os.path.dirname(__file__), '..', 'man')
     if not os.path.exists(pkgpath):
         from subprocess import check_output
         check_output([
