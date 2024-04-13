@@ -412,11 +412,11 @@ It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other
 
             Enable private mode for scripts.
 
-When private mode is enabled, the obfuscated scripts could not be imported by plain script or Python interpreter.
+When private mode is enabled, the attributes of the obfuscated scripts could not be seen by plain script or Python interpreter.
 
 .. option:: --restrict
 
-            Enable restrict mode for package, do not use it to obfuscate scripts.
+            Enable restrict mode for package
 
             This option implies :option:`--private`.
 

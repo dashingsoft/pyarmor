@@ -60,9 +60,9 @@ Restrict modes
 
 By default the obfuscated scripts can't be changed.
 
-After using :option:`--private`, the obfuscated scripts could not be imported by plain script or Python interpreter.
+After using :option:`--private`, the attributes of the obfuscated scripts could not be seen by plain script or Python interpreter.
 
-After using :option:`--restrict`, other plain scripts could not call any method in the obfuscated modules.
+After using :option:`--restrict`, the attributes of the obfuscated scripts are protected as :option:`--private`, and the obfuscated scripts could not be imported by plain script or Python interpreter,
 
 Disable all the restrictions by this command::
 

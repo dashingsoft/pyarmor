@@ -26,7 +26,8 @@ The following options could improve security
 
 The following options hide module attributes
 
-* :option:`--private` for script or :option:`--restrict` for package
+* :option:`--private`
+* :option:`--restrict` also not allow plain script import obfuscated module
 
 The following options prevent functions or modules from being replaced by hack code
 
@@ -85,7 +86,7 @@ Recommended options for different applications
    If RFT mode and BCC mode are not available
 
    * :option:`--enable-jit`
-   * :option:`--private` for scripts, or :option:`--restrict` for packages
+   * :option:`--private` or :option:`--restrict`
    * :option:`--mix-str` with filter
    * :option:`--assert-import`
    * :option:`--obf-code` ``2``

@@ -79,7 +79,7 @@ Using :option:`--mix-str` [#]_ could mix the string constant (length > 8) in the
 
 Using :option:`--assert-call` makes sure function is obfuscated, to prevent called function from being replaced by special ways
 
-Using :option:`--private` makes the script could not be imported by plain scripts
+Using :option:`--private` prevents plain scripts visiting module attributes
 
 For example,
 
