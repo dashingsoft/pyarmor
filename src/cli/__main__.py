@@ -107,6 +107,10 @@ def format_gen_args(ctx, args):
         options['no_runtime'] = True
         options['use_runtime'] = args.use_runtime
 
+    if (options.get('restrict_module', 0) == 2
+        and ctx.cfg['builder'].get('private_module_as_restrict', 0)):
+        options['restrict_module'] = 3
+
     if options.get('assert_call') or options.get('assert_import'):
         if options.get('restrict_module', 0) < 2:
             logger.debug('implicitly set restrict_module = 2')
