@@ -414,6 +414,10 @@ It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other
 
 When private mode is enabled, the attributes of the obfuscated scripts could not be seen by plain script or Python interpreter.
 
+.. versionchanged:: 8.5.3
+
+   In previous versions, plain script could not import the module obfuscated by `--private`, now plain script could import the obfuscated module, but can't visit its attributes.
+
 .. option:: --restrict
 
             Enable restrict mode for package
