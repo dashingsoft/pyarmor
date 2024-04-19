@@ -701,3 +701,15 @@ class Context(object):
             port = http_proxy[j+1:]
         url = b'http://pyarmor.dashingsoft.com'
         return b'\x00'.join([host, port, url, header, b'\x00'])
+
+    def request_token(self, url, timeout=6.0):
+        from urllib.request import urlopen
+
+        def get_response(host):
+            from ssl import _create_unverified_context
+            context = _create_unverified_context()
+            req = 'https://%s%s' % (host, url)
+            return urlopen(req, None, timeout, context=context)
+
+        with get_response('pyarmor.dashingsoft.com') as res:
+            return res.read()
