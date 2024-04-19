@@ -706,9 +706,13 @@ class Context(object):
         from urllib.request import urlopen
 
         def get_response(host):
-            from ssl import _create_unverified_context
-            context = _create_unverified_context()
-            req = 'https://%s%s' % (host, url)
+            try:
+                from ssl import _create_unverified_context
+                context = _create_unverified_context()
+                req = 'https://%s%s' % (host, url)
+            except Exception:
+                context = None
+                req = 'http://%s%s' % (host, url)
             return urlopen(req, None, timeout, context=context)
 
         with get_response('pyarmor.dashingsoft.com') as res:
