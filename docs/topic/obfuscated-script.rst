@@ -43,6 +43,8 @@ pyarmor provides several options :option:`-i`, :option:`--prefix` to help genera
 
 .. If obfuscated scripts could not import this package, failures in this step may indicate either that this runtime package could not be located, or that an error occurred while initializing runtime package.
 
+.. seealso:: :ref:`Changing runtime package name`
+
 **Runtime key**
 
 The runtime key generally is embedded into extension module ``pyarmor_runtime``, it also could be an outer file. It stores expire date, bind devices, and user private data etc.
