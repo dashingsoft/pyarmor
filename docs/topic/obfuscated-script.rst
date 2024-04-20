@@ -55,6 +55,8 @@ User also could store any private data in the runtime key, then use :term:`hook 
 
 If runtime key is stored in an outer file, any readable text in the header will be ignored. User can add comment at the header of runtime key file, the rest part are bytes data, only in the obfuscated scripts they could be read.
 
+.. seealso:: :ref:`gen key <pyarmor gen key>`
+
 .. _restrict modes:
 
 Restrict modes
