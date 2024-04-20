@@ -6,7 +6,7 @@ Understanding Obfuscated Script
 
 .. program:: pyarmor gen
 
-**Remain as standard `.py` files**
+**Remain as standard .py files**
 
 The obfuscated scripts are normal Python scripts, it's clear by checking the content of :file:`dist/foo.py`:
 
@@ -43,6 +43,8 @@ pyarmor provides several options :option:`-i`, :option:`--prefix` to help genera
 
 .. If obfuscated scripts could not import this package, failures in this step may indicate either that this runtime package could not be located, or that an error occurred while initializing runtime package.
 
+Refer to option :option:`--use-runtime` and command :ref:`pyarmor gen runtime`
+
 .. seealso:: `Changing runtime package name` in the chapter :doc:`../tutorial/customization`
 
 **Runtime key**
@@ -55,7 +57,7 @@ User also could store any private data in the runtime key, then use :term:`hook 
 
 If runtime key is stored in an outer file, any readable text in the header will be ignored. User can add comment at the header of runtime key file, the rest part are bytes data, only in the obfuscated scripts they could be read.
 
-.. seealso:: :ref:`pyarmor gen key`
+.. seealso:: command :ref:`pyarmor gen key`
 
 .. _restrict modes:
 
