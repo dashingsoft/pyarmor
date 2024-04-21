@@ -39,13 +39,15 @@ For example, in Android pure `.py` script can be run in any location, but binary
 
 The runtime package ``pyarmor_runtime_000000`` could be in any path, it can be taken as a third-party package, save it in any location, and import it following Python import system.
 
-pyarmor provides several options :option:`-i`, :option:`--prefix` to help generating right code to import it.
+pyarmor provides several options :option:`-i`, :option:`--prefix` to help generating right code to import it. Also refer to option :option:`--use-runtime` and command :ref:`pyarmor gen runtime` for using shared runtime package.
 
 .. If obfuscated scripts could not import this package, failures in this step may indicate either that this runtime package could not be located, or that an error occurred while initializing runtime package.
 
-Refer to option :option:`--use-runtime` and command :ref:`pyarmor gen runtime`
+.. seealso::
 
-.. seealso:: `Changing runtime package name` in the chapter :doc:`../tutorial/customization`
+   `Changing runtime package name` in the chapter :doc:`../tutorial/customization`
+
+   `Using shared runtime package` in the chapter :doc:`../tutorial/advanced`
 
 **Runtime key**
 
@@ -118,7 +120,12 @@ A few options may also change something:
 
 - ``pyarmor cfg mix_argname=1`` hides annotations.
 
-.. seealso:: :doc:`../how-to/third-party`
+.. seealso::
+
+   :doc:`../how-to/third-party`
+
+   `Generating cross platform scripts` and `Obfuscating scripts for multiple Python versions` in the chapter :doc:`../tutorial/advanced`
+
 
 Supported Third-Party Interpreter
 =================================
