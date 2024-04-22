@@ -135,7 +135,7 @@ def format_gen_args(ctx, args):
         options['user_data'] = args.bind_data
 
     if args.pack:
-        dist_path = os.path.join(ctx.repack_path, 'dist')
+        dist_path = ctx.pack_obfpath
         logger.info('implicitly save obfuscated scripts to "%s"', dist_path)
         options['output'] = dist_path
 
@@ -235,12 +235,13 @@ def cmd_gen(ctx, args):
     elif args.pack in ('auto', 'onefile', 'onedir'):
         from .repack import Repacker6
         packer = Repacker6(ctx, args.pack, options['inputs'], args.output)
+        packer.check()
         builder.process(options, packer)
         Plugin.post_build(ctx, pack=args.pack)
     elif args.pack:
         from .repack import Repacker
         codesign = ctx.cfg['pack'].get('codesign_identify', None)
-        packer = Repacker(args.pack, ctx.repack_path, codesign=codesign)
+        packer = Repacker(args.pack, ctx.pack_basepath, codesign=codesign)
         packer.check()
         builder.process(options, packer=packer)
         Plugin.post_build(ctx, pack=args.pack)

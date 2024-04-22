@@ -498,9 +498,9 @@ class Repacker6:
         self.output = 'dist' if output is None else os.path.normpath(output)
 
         self.script = self.inputs[0]
-        self.packpath = os.path.normpath(self.ctx.repack_path)
+        self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
+        self.packpath = os.path.normpath(self.ctx.pack_basepath)
         self.workpath = os.path.join(self.packpath, 'build')
-        self.obfpath = os.path.join(self.packpath, 'dist')
         self.pyicmd = [sys.executable, '-m', 'PyInstaller']
         self.pyiopts = self.init_opts(mode)
 
@@ -591,3 +591,10 @@ class Repacker6:
 
         with open(specfile, 'w') as f:
             f.write(''.join(lines))
+
+    def check(self):
+        if os.path.exists(self.output):
+            n = len(os.path.abspath(self.output).split(os.sep))
+            if self.ctx.cfg['pack'].get('clean_output', '') == '1' and n > 2:
+                logger.info('clean output path "%s"', self.output)
+                shutil.rmtree(self.output)

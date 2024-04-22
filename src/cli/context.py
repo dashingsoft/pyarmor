@@ -366,10 +366,6 @@ class Context(object):
         return self._check_logpath(
             self.cfg['logging'].get('trace_logfile', 'pyarmor.trace.log'))
 
-    @property
-    def repack_path(self):
-        return os.path.join(self.local_path, 'pack')
-
     def _optb(self, section, name):
         return self.cfg.getboolean(section, name, vars=self.cmd_options)
 
@@ -736,3 +732,11 @@ class Context(object):
             elif line:
                 pyi_opts.append(line)
         return pyi_opts
+
+    @property
+    def pack_basepath(self):
+        return os.path.join(self.local_path, 'pack')
+
+    @property
+    def pack_obfpath(self):
+        return os.path.join(self.repack_path, 'dist')
