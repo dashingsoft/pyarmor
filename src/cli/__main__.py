@@ -136,7 +136,7 @@ def format_gen_args(ctx, args):
 
     if args.pack:
         dist_path = os.path.join(ctx.repack_path, 'dist')
-        logger.info('implicitly set output to "%s"', dist_path)
+        logger.info('implicitly save obfuscated scripts to "%s"', dist_path)
         options['output'] = dist_path
 
     return options
@@ -209,8 +209,9 @@ def check_gen_context(ctx, args):
         raise CliError('--outer conflicts with any -e, --period, -b')
 
     if args.pack:
-        if not os.path.isfile(args.pack):
-            raise CliError('--pack must be an executable file')
+        choices = 'auto', 'onefile', 'onedir'
+        if args.pack not in choices and not os.path.isfile(args.pack):
+            raise CliError('--pack must be an executable file or "auto"')
         if args.no_runtime:
             raise CliError('--pack conficts with --no-runtime, --use-runtime')
         if ctx.import_prefix:
@@ -230,6 +231,11 @@ def cmd_gen(ctx, args):
         return _cmd_gen_key(builder, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
+    elif args.pack in ('auto', 'onefile', 'onedir'):
+        from .repack import Repacker6
+        packer = Repacker6(ctx, args.pack, options['inputs'], args.output)
+        builder.process(options, packer)
+        Plugin.post_build(ctx, pack=args.pack)
     elif args.pack:
         from .repack import Repacker
         codesign = ctx.cfg['pack'].get('codesign_identify', None)

@@ -62,6 +62,13 @@ class Finder(object):
                 self.ctx.obfuscated_modules.add(res.pkgname)
                 self.ctx.extra_resources.append(res)
 
+    def append(self, resources):
+        resnames = [x.pkgname for x in self.ctx.resources]
+        for res in self._build_resource(resources):
+            if res.pkgname not in resnames:
+                self.ctx.obfuscated_modules.add(res.pkgname)
+                self.ctx.extra_resources.append(res)
+
     def process(self):
         logger.info('search inputs ...')
         self.prepare(self.ctx.input_paths)
@@ -149,8 +156,13 @@ class Builder(object):
         finder = Finder(self.ctx)
         finder.process()
 
-        if packer and options.get('self_contained'):
-            finder.process_extra(packer.contents)
+        if packer:
+            if options.get('self_contained'):
+                finder.process_extra(packer.contents)
+            if hasattr(packer, 'analysis'):
+                auto_resources = packer.analysis()
+                logger.info('find extra resources: %s', auto_resources)
+                finder.append(auto_resources)
 
         Pytransform3.pre_build(self.ctx)
 

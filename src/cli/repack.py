@@ -3,6 +3,7 @@ import marshal
 import os
 import shutil
 import struct
+import sys
 import tempfile
 
 from importlib._bootstrap_external import _code_to_timestamp_pyc
@@ -435,3 +436,129 @@ class Repacker:
             check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
         except Exception as e:
             logger.warning('%s', e)
+
+
+# This patch is used to modify the specfile generate by PyInstaller
+#
+# It has 2 goals:
+#
+# 1. Find all the imported modules and packages
+#
+#    Save them to hook script
+#
+# 2. Search scripts and packages in the path of entry script
+#
+#    All of them will be obfuscated automatically
+#
+spec_patch_code = '''
+from PyInstaller.compat import base_prefix
+import marshal
+import os
+
+hiddenimports = set([])
+plist = set([])
+mlist = []
+src = {src}
+sn = len(src) + 1
+prefix = os.path.relpath(src)
+prefix = '' if prefix == '.' else prefix
+
+for name, path, kind in a.pure:
+    if name.startswith('pyi_rth'):
+        continue
+    if path.startswith(src) and not path.startswith(base_prefix):
+        hiddenimports.add(name)
+        if name.find('.') == -1 and os.path.basename(path) != '__init__.py':
+            mlist.append(os.path.join(prefix, path[sn:]))
+        else:
+            pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
+            plist.add(os.path.join(prefix, pkgname))
+    else:
+        hiddenimports.add(name.split('.')[0])
+
+with open({resfile}, 'wb') as f:
+    marshal.dump(mlist + list(plist), f)
+with open({hookscript}, 'w') as f:
+    f.write("hiddenimports=[%s]" % ", ".join([repr(x) for x in hiddenimports]))
+'''
+
+
+class Repacker6:
+    """New repacker to support PyInstaller 6.0+
+
+    Args:
+        ctx: build context
+        mode: onefile or onefolder
+        inputs: main script to pack
+    """
+
+    def __init__(self, ctx, mode, inputs, output):
+        self.ctx = ctx
+        self.mode = mode
+        self.inputs = inputs
+        self.output = 'dist' if output is None else os.path.normpath(output)
+
+        self.script = self.inputs[0]
+        self.workpath = os.path.normpath(self.ctx.repack_path)
+        self.obfpath = os.path.normpath(os.path.join(self.workpath, 'dist'))
+        self.pyicmd = [sys.executable, '-m', 'PyInstaller']
+        self.pyiopts = ['-F' if mode == 'onefile' else '-D']
+
+    def analysis(self):
+        """Got imported modules and packages by PyInstaller
+
+        Generate hook script
+        Return file/dir list need to be obfuscated
+        """
+        cmdspec = [
+            sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec',
+            '--specpath', self.workpath
+        ]
+        check_call(cmdspec + self.pyiopts + [self.script])
+
+        name = os.path.splitext(os.path.basename(self.script))[0]
+        rtname = self.ctx.runtime_package_name
+        specfile = os.path.join(self.workpath, name + '.spec')
+        resfile = os.path.join(self.workpath, 'resources.list')
+        hookscript = os.path.join(self.workpath, 'hook-%s.py' % rtname)
+        self.patch_specfile(specfile, hookscript, resfile)
+
+        opts = ['--clean', '--workpath', self.workpath, specfile]
+        check_call(self.pyicmd + self.pyiopts + opts)
+
+        with open(resfile, 'rb') as f:
+            return marshal.load(f)
+
+    def build(self):
+        """Generate final bundle to output"""
+        script = os.path.join(self.obfpath, os.path.basename(self.inputs[0]))
+        opts = [
+            '--clean',
+            '--distpath', self.output,
+            '--workpath', self.workpath,
+            '--specpath', self.workpath,
+            '--additional-hooks-dir', self.workpath,
+        ]
+        cmdlist = self.pyicmd + opts + self.pyiopts + [script]
+        check_call(cmdlist)
+
+    def repack(self, *unused):
+        """Only for compatible with Repacker"""
+        self.build()
+
+    def patch_specfile(self, specfile, hookscript, resfile):
+        # TODO: non-ascii need specify encoding to open file
+        lines = []
+        with open(specfile, 'r') as f:
+            for line in f:
+                if line.startswith('pyz = PYZ'):
+                    break
+                lines.append(line)
+
+        lines.append(spec_patch_code.format(
+            src=repr(os.path.abspath(os.path.dirname(self.script))),
+            hookscript=repr(os.path.abspath(hookscript)),
+            resfile=repr(os.path.abspath(resfile))))
+
+        with open(specfile, 'w') as f:
+            f.write(''.join(lines))
