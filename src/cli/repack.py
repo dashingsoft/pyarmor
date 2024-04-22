@@ -6,7 +6,6 @@ import struct
 import sys
 import tempfile
 
-from json import load as json_load
 from importlib._bootstrap_external import _code_to_timestamp_pyc
 from subprocess import check_call, check_output, DEVNULL
 

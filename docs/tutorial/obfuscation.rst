@@ -286,41 +286,45 @@ And then obfuscate the scripts again.
 Packing obfuscated scripts
 ==========================
 
-Pyarmor need PyInstaller to pack scripts first, then replace plain scripts with obfuscated ones in bundle.
+Pyarmor need PyInstaller to pack the obfuscated scripts, so first make sure PyInstaller has been installed. If not, simple install it by this command::
+
+  pip install pyinstaller
 
 Packing to one file
 -------------------
 
-First packing script to one file by PyInstaller with option ``-F``::
+.. versionchanged:: 8.5.4
 
-    $ pyinstaller -F foo.py
+   Before v8.5.4, it need more work, please check old version documentation (v8.5.3).
 
-It generates one bundle file ``dist/foo``, pass this to pyarmor::
+Packing script to one file only need one command::
 
-    $ pyarmor gen -O obfdist --pack dist/foo foo.py
+  pyarmor gen --pack onefile foo.py
 
-This command will obfuscate ``foo.py`` first, then repack ``dist/foo``, replace the original ``foo.py`` with ``obfdist/foo.py``, and append all the runtime files to bundle.
+Run the final bundle::
 
-The final output is still ``dist/foo``::
+  dist/foo
 
-    $ dist/foo
+Pyarmor will automatically obfuscate `foo.py` and all the other used modules and packages in the same path, then pack the obfuscated to one bundle.
+
+.. important::
+
+   Please pass plain script in command line, for example, `foo.py` should not been obfuscated.
 
 Packing to one folder
 ---------------------
 
-First packing script to one folder by PyInstaller::
+.. versionchanged:: 8.5.4
 
-    $ pyinstaller foo.py
+   Before v8.5.4, it need more work, please check old version documentation (v8.5.3).
 
-It generates one bundle folder ``dist/foo``, and an executable file ``dist/foo/foo``, pass this executable to pyarmor::
+Packing script to one folder::
 
-    $ pyarmor gen -O obfdist --pack dist/foo/foo foo.py
+  pyarmor gen --pack onefolder foo.py
 
-Like above section, ``dist/foo/foo`` will be repacked with obfuscated scripts.
+Run the final bundle::
 
-Now run it::
-
-    $ dist/foo/foo
+  dist/foo/foo
 
 More information about pack feature, refer to :doc:`../topic/repack`
 
