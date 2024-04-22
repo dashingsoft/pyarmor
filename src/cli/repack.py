@@ -506,24 +506,26 @@ class Repacker6:
         self.pyiopts = self.init_opts(mode)
 
     def init_opts(self, mode):
-        exlist = '--noconfirm', '-y', '--distpath', '--specpath', '--workpath'
+        opts = []
+        exopts = '--noconfirm', '-y'
         if mode == 'auto':
-            opts = []
-            exlist += ('--onefile', '-F', '--onefolder', '-D')
+            exopts += ('--onefile', '-F', '--onefolder', '-D')
         else:
-            opts = ['-F' if mode == 'onefile' else '-D']
+            opts.append('-F' if mode == 'onefile' else '-D')
         opts.extend(self.ctx.pyi_options)
-        return self.filter_opts(opts, exlist)
 
-    def filter_opts(self, opts, excludes):
+        exvalues = '--distpath', '--specpath', '--workpath'
+        return self.filter_opts(opts, exvalues, exopts)
+
+    def filter_opts(self, opts, exvalues, exopts=None):
         result = []
         isvalue = False
         for x in opts:
-            if x in excludes:
-                isvalue = x.endswith('path')
-            elif isvalue:
+            if isvalue:
                 isvalue = False
-            else:
+            elif x in exvalues:
+                isvalue = True
+            elif exopts is None or x not in exopts:
                 result.append(x)
         return result
 
