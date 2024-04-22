@@ -501,7 +501,7 @@ class Repacker6:
         self.script = self.inputs[0]
         self.packpath = os.path.normpath(self.ctx.repack_path)
         self.workpath = os.path.join(self.packpath, 'build')
-        self.obfpath = os.path.join(self.packpath, 'obfdist')
+        self.obfpath = os.path.join(self.packpath, 'dist')
         self.pyicmd = [sys.executable, '-m', 'PyInstaller']
         self.pyiopts = self.init_opts(mode)
 
