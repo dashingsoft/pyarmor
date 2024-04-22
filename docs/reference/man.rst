@@ -566,13 +566,12 @@ This option neither touches statement ``from import``, nor the module imported b
 
             Obfuscate script first, then pack the obfuscated scripts to bundle
 
+            Before v8.5.4, user need first generate an executable file by PyInstaller_
+            Now everything is done by Pyarmor
+
+            The old method still works, but it's deprecated.
+
 .. versionchanged:: 8.5.4
-
-   Before v8.5.4, user need first generate an executable file by PyInstaller_
-
-   Now everything is done by Pyarmor
-
-   The old method still works, but it's deprecated.
 
 Once this option is used, pyarmor will analysis the source of main script, and find all the imported modules and packages which are in the same path of main script. All of these used modules and packages will be obfuscated automatically
 
