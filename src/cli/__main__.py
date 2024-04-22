@@ -211,7 +211,8 @@ def check_gen_context(ctx, args):
     if args.pack:
         choices = 'auto', 'onefile', 'onedir'
         if args.pack not in choices and not os.path.isfile(args.pack):
-            raise CliError('--pack must be an executable file or "auto"')
+            raise CliError('--pack must be an executable file, '
+                           '"auto", "onefile" or "onedir"')
         if args.no_runtime:
             raise CliError('--pack conficts with --no-runtime, --use-runtime')
         if ctx.import_prefix:

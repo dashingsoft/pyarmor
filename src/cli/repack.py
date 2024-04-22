@@ -6,6 +6,7 @@ import struct
 import sys
 import tempfile
 
+from json import load as json_load
 from importlib._bootstrap_external import _code_to_timestamp_pyc
 from subprocess import check_call, check_output, DEVNULL
 
@@ -494,15 +495,37 @@ class Repacker6:
 
     def __init__(self, ctx, mode, inputs, output):
         self.ctx = ctx
-        self.mode = mode
         self.inputs = inputs
         self.output = 'dist' if output is None else os.path.normpath(output)
 
         self.script = self.inputs[0]
-        self.workpath = os.path.normpath(self.ctx.repack_path)
-        self.obfpath = os.path.normpath(os.path.join(self.workpath, 'dist'))
+        self.packpath = os.path.normpath(self.ctx.repack_path)
+        self.workpath = os.path.join(self.packpath, 'build')
+        self.obfpath = os.path.join(self.packpath, 'obfdist')
         self.pyicmd = [sys.executable, '-m', 'PyInstaller']
-        self.pyiopts = ['-F' if mode == 'onefile' else '-D']
+        self.pyiopts = self.init_opts(mode)
+
+    def init_opts(self, mode):
+        exlist = '--noconfirm', '-y', '--distpath', '--specpath', '--workpath'
+        if mode == 'auto':
+            opts = []
+            exlist += ('--onefile', '-F', '--onefolder', '-D')
+        else:
+            opts = ['-F' if mode == 'onefile' else '-D']
+        opts.extend(self.ctx.pyi_options)
+        return self.filter_opts(opts, exlist)
+
+    def filter_opts(self, opts, excludes):
+        result = []
+        isvalue = False
+        for x in opts:
+            if x in excludes:
+                isvalue = x.endswith('path')
+            elif isvalue:
+                isvalue = False
+            else:
+                result.append(x)
+        return result
 
     def analysis(self):
         """Got imported modules and packages by PyInstaller
@@ -512,19 +535,23 @@ class Repacker6:
         """
         cmdspec = [
             sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec',
-            '--specpath', self.workpath
+            '--specpath', self.packpath
         ]
-        check_call(cmdspec + self.pyiopts + [self.script])
+        cmdspec.extend(self.filter_opts(self.pyiopts, ('--name', '-N')))
+        cmdspec.append(self.script)
+        check_call(cmdspec)
 
         name = os.path.splitext(os.path.basename(self.script))[0]
         rtname = self.ctx.runtime_package_name
-        specfile = os.path.join(self.workpath, name + '.spec')
-        resfile = os.path.join(self.workpath, 'resources.list')
-        hookscript = os.path.join(self.workpath, 'hook-%s.py' % rtname)
+        specfile = os.path.join(self.packpath, name + '.spec')
+        resfile = os.path.join(self.packpath, 'resources.list')
+        hookscript = os.path.join(self.packpath, 'hook-%s.py' % rtname)
         self.patch_specfile(specfile, hookscript, resfile)
 
-        opts = ['--clean', '--workpath', self.workpath, specfile]
-        check_call(self.pyicmd + self.pyiopts + opts)
+        cmdlist = self.pyicmd + ['--clean', '--workpath', self.workpath]
+        cmdlist.extend(self.pyiopts)
+        cmdlist.append(specfile)
+        check_call(cmdlist)
 
         with open(resfile, 'rb') as f:
             return marshal.load(f)
@@ -532,14 +559,15 @@ class Repacker6:
     def build(self):
         """Generate final bundle to output"""
         script = os.path.join(self.obfpath, os.path.basename(self.inputs[0]))
-        opts = [
+        cmdlist = self.pyicmd + [
             '--clean',
             '--distpath', self.output,
             '--workpath', self.workpath,
-            '--specpath', self.workpath,
-            '--additional-hooks-dir', self.workpath,
+            '--specpath', self.packpath,
+            '--additional-hooks-dir', self.packpath,
         ]
-        cmdlist = self.pyicmd + opts + self.pyiopts + [script]
+        cmdlist.extend(self.pyiopts)
+        cmdlist.append(script)
         check_call(cmdlist)
 
     def repack(self, *unused):

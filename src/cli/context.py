@@ -717,3 +717,22 @@ class Context(object):
 
         with get_response('pyarmor.dashingsoft.com') as res:
             return res.read()
+
+    #
+    # Pack options for auto/onefile/onefolder mode
+    #
+    @property
+    def pyi_options(self):
+        from json import loads as json_loads
+        from shlex import split as split_opt
+        pyi_opts = []
+        jsmarker = 'json::'
+        for line in self.cfg['pack'].get('pyi_options', '').splitlines():
+            line = line.strip()
+            if line.startswith(jsmarker):
+                pyi_opts.extend(json_loads(line[len(jsmarker):]))
+            elif line.startswith('-'):
+                pyi_opts.extend(split_opt(line))
+            elif line:
+                pyi_opts.append(line)
+        return pyi_opts
