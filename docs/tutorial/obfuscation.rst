@@ -288,7 +288,7 @@ Packing obfuscated scripts
 
 Pyarmor need PyInstaller to pack the obfuscated scripts, so first make sure PyInstaller has been installed. If not, simple install it by this command::
 
-  pip install pyinstaller
+    $ pip install pyinstaller
 
 Packing to one file
 -------------------
@@ -299,11 +299,11 @@ Packing to one file
 
 Packing script to one file only need one command::
 
-  pyarmor gen --pack onefile foo.py
+    $ pyarmor gen --pack onefile foo.py
 
 Run the final bundle::
 
-  dist/foo
+    $ dist/foo
 
 Pyarmor will automatically obfuscate `foo.py` and all the other used modules and packages in the same path, then pack the obfuscated to one bundle.
 
@@ -320,11 +320,11 @@ Packing to one folder
 
 Packing script to one folder::
 
-  pyarmor gen --pack onefolder foo.py
+    $ pyarmor gen --pack onefolder foo.py
 
 Run the final bundle::
 
-  dist/foo/foo
+    $ dist/foo/foo
 
 More information about pack feature, refer to :doc:`../topic/repack`
 

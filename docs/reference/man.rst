@@ -580,13 +580,12 @@ Then pyarmor will call PyInstaller_ to pack the obfuscated scripts to one file o
 
 For example, generate one file bundle::
 
-  pyarmor gen --pack onefile foo.py
-
-  ls dist/
+    $ pyarmor gen --pack onefile foo.py
+    $ ls dist/
 
 Sometimes it need specify option :option:`-r` to make sure all the child packages are obfuscated. For example::
 
-  pyarmor gen --pack onefolder -r foo.py
+    $ pyarmor gen --pack onefolder -r foo.py
 
 .. seealso:: :doc:`../topic/repack`
 
