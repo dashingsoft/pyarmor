@@ -21,7 +21,7 @@ Supported Python versions
    :widths: auto
 
    ===================  =====  =========  =========  ==========  ======  =======  ==============
-   Python Version        2.7    3.0~3.4    3.5~3.6    3.7~3.10    3.11    3.12+   Remark
+   Python Version        2.7    3.0~3.4    3.5~3.6    3.7~3.11    3.12    3.13+   Remark
    ===================  =====  =========  =========  ==========  ======  =======  ==============
    pyarmor 8 RFT Mode    No       No         No          Y         Y       N/y      [#]_
    pyarmor 8 BCC Mode    No       No         No          Y         Y       N/y
