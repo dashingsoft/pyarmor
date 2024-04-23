@@ -539,7 +539,9 @@ class Repacker6:
             sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec',
             '--specpath', self.packpath
         ]
-        cmdspec.extend(self.filter_opts(self.pyiopts, ('--name', '-N')))
+        exvalues = '--name', '-N'
+        exopts = '-F', '--onefile', '-D', '--onefolder'
+        cmdspec.extend(self.filter_opts(self.pyiopts, exvalues, exopts))
         cmdspec.append(self.script)
         logger.debug('%s', ' '.join(cmdspec))
         logger.info('call PyInstaller to generate specfile')
