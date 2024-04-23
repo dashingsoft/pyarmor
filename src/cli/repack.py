@@ -540,7 +540,9 @@ class Repacker6:
         ]
         cmdspec.extend(self.filter_opts(self.pyiopts, ('--name', '-N')))
         cmdspec.append(self.script)
-        check_call(cmdspec)
+        logger.debug('%s', ' '.join(cmdspec))
+        logger.info('call PyInstaller to generate specfile')
+        check_call(cmdspec, stdout=DEVNULL, stderr=DEVNULL)
 
         name = os.path.splitext(os.path.basename(self.script))[0]
         rtname = self.ctx.runtime_package_name
@@ -552,7 +554,10 @@ class Repacker6:
         cmdlist = self.pyicmd + ['--clean', '--workpath', self.workpath]
         cmdlist.extend(self.pyiopts)
         cmdlist.append(specfile)
-        check_call(cmdlist)
+        logger.debug('%s', ' '.join(cmdlist))
+        logger.info('call PyInstaller to analysis, '
+                    'it may take several minutes ...')
+        check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
 
         with open(resfile, 'rb') as f:
             return marshal.load(f)
@@ -569,7 +574,13 @@ class Repacker6:
         ]
         cmdlist.extend(self.pyiopts)
         cmdlist.append(script)
+
+        logger.debug('%s', ' '.join(cmdlist))
+        logger.info('call PyInstaller to generate final bundle ...\n')
         check_call(cmdlist)
+        logger.info('')
+        logger.info('the final bundle "%s" has been generate successfully',
+                    self.output)
 
     def repack(self, *unused):
         """Only for compatible with Repacker"""

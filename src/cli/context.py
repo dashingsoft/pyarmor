@@ -739,4 +739,4 @@ class Context(object):
 
     @property
     def pack_obfpath(self):
-        return os.path.join(self.repack_path, 'dist')
+        return os.path.join(self.pack_basepath, 'dist')
