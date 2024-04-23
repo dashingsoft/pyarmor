@@ -557,7 +557,7 @@ class Repacker6:
         self.patch_specfile(specfile, hookscript, resfile)
 
         cmdlist = self.pyicmd + ['--clean', '--workpath', self.workpath]
-        cmdlist.extend(self.filter_opts(self.pyiopts, exvalues, exopts))
+        # only --upx-dir need pick from pyi_options
         cmdlist.append(specfile)
         logger.debug('%s', ' '.join(cmdlist))
         logger.info('call PyInstaller to analysis, '
