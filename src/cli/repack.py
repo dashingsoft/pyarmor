@@ -451,30 +451,34 @@ class Repacker:
 #    All of them will be obfuscated automatically
 #
 spec_patch_code = '''
-from PyInstaller.compat import base_prefix
-import marshal
 import os
+import marshal
+
+from PyInstaller.compat import base_prefix
+from sys import exec_prefix, base_exec_prefix
+
+sys_prefixs = set([exec_prefix, base_prefix, base_exec_prefix])
+exlist = [os.path.normpath(x) for x in sys_prefixs]
+
+src = {src}
+sn = len(src) + 1
+sdir = os.path.relpath(src)
+sdir = '' if sdir == '.' else sdir
 
 hiddenimports = set([])
 plist = set([])
 mlist = []
-src = {src}
-sn = len(src) + 1
-prefix = os.path.relpath(src)
-prefix = '' if prefix == '.' else prefix
 
 for name, path, kind in a.pure:
     if name.startswith('pyi_rth'):
         continue
-    if path.startswith(src) and not path.startswith(base_prefix):
-        hiddenimports.add(name)
+    hiddenimports.add(name)
+    if path.startswith(src) and all([not path.startswith(x) for x in exlist]):
         if name.find('.') == -1 and os.path.basename(path) != '__init__.py':
-            mlist.append(os.path.join(prefix, path[sn:]))
+            mlist.append(os.path.join(sdir, path[sn:]))
         else:
             pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
-            plist.add(os.path.join(prefix, pkgname))
-    else:
-        hiddenimports.add(name.split('.')[0])
+            plist.add(os.path.join(sn, pkgname))
 
 with open({resfile}, 'wb') as f:
     marshal.dump(mlist + list(plist), f)
