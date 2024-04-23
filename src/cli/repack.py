@@ -508,7 +508,7 @@ class Repacker6:
         self.workpath = os.path.join(self.packpath, 'build')
         self.pyicmd = [sys.executable, '-m', 'PyInstaller']
         self.autoclean = mode in ('FC', 'DC')
-        self.mode = '-F' if mode in ('onefile', 'F', 'FC') else '-D'
+        self.modeopt = '-F' if mode in ('onefile', 'F', 'FC') else '-D'
         self.init_opts()
 
     def init_opts(self):
@@ -576,7 +576,7 @@ class Repacker6:
             '--distpath', self.output,
             '--workpath', self.workpath,
             '--additional-hooks-dir', self.packpath,
-            self.mode
+            self.modeopt
         ]
         cmdlist.extend(self.pyiopts + self.nameopt)
         cmdlist.append(script)
