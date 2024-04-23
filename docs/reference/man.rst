@@ -149,7 +149,7 @@ Generate obfuscated scripts and all the required runtime files.
 --assert-import                 assert module is obfuscated :option:`... <--assert-import>`
 --assert-call                   assert function is obfuscated  :option:`... <--assert-call>`
 
---pack <onefile|onedir>         Obfuscate scripts then pack :option:`... <--pack>`
+--pack <onefile|onedir|FC|DC>   Obfuscate scripts then pack :option:`... <--pack>`
 
 --use-runtime PATH              use shared runtime package :option:`... <--use-runtime>`
 
@@ -562,7 +562,7 @@ The function :func:`__assert_armored__` is a builtin function in obfuscated scri
 
 This option neither touches statement ``from import``, nor the module imported by function ``__import__``.
 
-.. option:: --pack <onefile,onedir>
+.. option:: --pack <onefile,onedir,FC,DC>
 
             Obfuscate script first, then pack the obfuscated scripts to bundle
 
@@ -585,6 +585,10 @@ For example, generate one file bundle::
 Sometimes it need specify option :option:`-r` to make sure all the child packages are obfuscated. For example::
 
     $ pyarmor gen --pack onefolder -r foo.py
+
+PyInstaller_ will ask for confirm if output path has been exists, if need not confirm, but remove output path siliently, pass mode `FC` or `DC`. Here `F` stands for `onefile`, `D` stands for `onedir`, `C` stands for clean output. For example::
+
+    $ pyarmor gen --pack FC foo.py
 
 .. seealso:: :doc:`../topic/repack`
 

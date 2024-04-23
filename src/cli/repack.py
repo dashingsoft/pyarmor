@@ -503,6 +503,7 @@ class Repacker6:
         self.workpath = os.path.join(self.packpath, 'build')
         self.pyicmd = [sys.executable, '-m', 'PyInstaller']
         self.pyiopts = self.init_opts(mode)
+        self.autoclean = mode in ('FC', 'DC')
 
     def init_opts(self, mode):
         opts = []
@@ -510,7 +511,7 @@ class Repacker6:
         if mode == 'auto':
             exopts += ('--onefile', '-F', '--onefolder', '-D')
         else:
-            opts.append('-F' if mode == 'onefile' else '-D')
+            opts.append('-F' if mode in ('onefile', 'F', 'FC') else '-D')
         opts.extend(self.ctx.pyi_options)
 
         exvalues = '--distpath', '--specpath', '--workpath'
@@ -604,8 +605,12 @@ class Repacker6:
             f.write(''.join(lines))
 
     def check(self):
-        if os.path.exists(self.output):
+        if os.path.exists(self.output) and self.autoclean:
             n = len(os.path.abspath(self.output).split(os.sep))
-            if self.ctx.cfg['pack'].get('clean_output', '') == '1' and n > 2:
-                logger.info('clean output path "%s"', self.output)
-                shutil.rmtree(self.output)
+            if n < 3:
+                prompt = 'Are you sure to remove path "%s" (y/n)? '
+                choice = input(prompt % self.output).lower()[:1]
+                if not choice == 'y':
+                    return
+            logger.info('clean output path "%s"', self.output)
+            shutil.rmtree(self.output)

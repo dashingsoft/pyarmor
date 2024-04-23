@@ -209,7 +209,7 @@ def check_gen_context(ctx, args):
         raise CliError('--outer conflicts with any -e, --period, -b')
 
     if args.pack:
-        choices = 'auto', 'onefile', 'onedir'
+        choices = 'auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'
         if args.pack not in choices and not os.path.isfile(args.pack):
             raise CliError('--pack must be an executable file, '
                            '"auto", "onefile" or "onedir"')
@@ -232,7 +232,7 @@ def cmd_gen(ctx, args):
         return _cmd_gen_key(builder, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
-    elif args.pack in ('auto', 'onefile', 'onedir'):
+    elif args.pack in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
         from .repack import Repacker6
         packer = Repacker6(ctx, args.pack, options['inputs'], args.output)
         packer.check()
@@ -420,8 +420,8 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-gen
         'action arguments'
     ).add_mutually_exclusive_group()
     group.add_argument(
-        '--pack', metavar='BUNDLE',
-        help='repack bundle with obfuscated scripts'
+        '--pack', metavar='MODE',
+        help='specify pack mode, onefile or onedir'
     )
     group.add_argument(
         '--no-runtime', action='store_true', help=argparse.SUPPRESS
