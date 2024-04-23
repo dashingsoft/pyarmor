@@ -478,7 +478,7 @@ for name, path, kind in a.pure:
             mlist.append(os.path.join(sdir, path[sn:]))
         else:
             pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
-            plist.add(os.path.join(sn, pkgname))
+            plist.add(os.path.join(sdir, pkgname))
 
 with open({resfile}, 'wb') as f:
     marshal.dump(mlist + list(plist), f)
