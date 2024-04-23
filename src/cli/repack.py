@@ -540,10 +540,7 @@ class Repacker6:
         Generate hook script
         Return file/dir list need to be obfuscated
         """
-        cmdspec = [
-            sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec',
-            '--specpath', self.packpath
-        ]
+        cmdspec = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
         exvalues = '--name', '-N'
         exopts = '-F', '--onefile', '-D', '--onefolder'
         cmdspec.extend(self.filter_opts(self.pyiopts, exvalues, exopts))
@@ -553,8 +550,8 @@ class Repacker6:
         check_call(cmdspec, stdout=DEVNULL, stderr=DEVNULL)
 
         name = os.path.splitext(os.path.basename(self.script))[0]
+        specfile = name + '.spec'
         rtname = self.ctx.runtime_package_name
-        specfile = os.path.join(self.packpath, name + '.spec')
         resfile = os.path.join(self.packpath, 'resources.list')
         hookscript = os.path.join(self.packpath, 'hook-%s.py' % rtname)
         self.patch_specfile(specfile, hookscript, resfile)
@@ -584,7 +581,6 @@ class Repacker6:
             '--clean',
             '--distpath', self.output,
             '--workpath', self.workpath,
-            '--specpath', self.packpath,
             '--additional-hooks-dir', self.packpath,
         ]
         cmdlist.extend(self.pyiopts)
