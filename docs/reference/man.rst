@@ -586,7 +586,7 @@ Sometimes it need specify option :option:`-r` to make sure all the child package
 
     $ pyarmor gen --pack onefolder -r foo.py
 
-PyInstaller_ will ask for confirm if output path has been exists, if need not confirm, but remove output path siliently, pass mode `FC` or `DC`. Here `F` stands for `onefile`, `D` stands for `onedir`, `C` stands for clean output. For example::
+PyInstaller_ will ask for confirm if output path exists, if need remove output path siliently, use mode `FC` or `DC`. Here `F` stands for `onefile`, `D` stands for `onedir`, `C` stands for clean output. For example::
 
     $ pyarmor gen --pack FC foo.py
 
