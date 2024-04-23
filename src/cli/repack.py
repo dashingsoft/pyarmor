@@ -474,7 +474,7 @@ for name, path, kind in a.pure:
     if name.startswith('pyi_rth'):
         continue
     hiddenimports.add(name)
-    if path.startswith(src) and all([not path.startswith(x) for x in exlist]):
+    if path.startswith(src) and not any([path.startswith(x) for x in exlist]):
         if name.find('.') == -1 and os.path.basename(path) != '__init__.py':
             mlist.append(os.path.join(sdir, path[sn:]))
         else:
