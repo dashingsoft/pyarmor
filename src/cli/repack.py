@@ -515,27 +515,21 @@ class Repacker6:
         opts = self.ctx.pyi_options
         exopts = '--noconfirm', '-y', '--onefile', '-F', '--onedir', '-D'
         exvalues = '--distpath', '--specpath', '--workpath', '--name', '-n'
+
         self.pyiopts = []
-        isvalue = False
-        for x in opts:
-            if isvalue:
-                isvalue = False
+        self.nameopt = []
+
+        n = 0
+        while n < len(opts):
+            x = opts[n]
+            if x in ('--name', '-n'):
+                self.nameopt.extend(opts[n:n+2])
+                n += 1
             elif x in exvalues:
-                isvalue = True
+                n += 1
             elif x not in exopts:
                 self.pyiopts.append(x)
-
-        self.upxopt = []
-        if '--upx-dir' in opts:
-            n = opts.index('--upx-dir')
-            self.upxopt.extend(opts[n:n+2])
-
-        self.nameopt = []
-        for s in ('--name', '-n'):
-            if s in opts:
-                n = opts.index(s)
-                self.nameopt.extend(opts[n:n+2])
-                break
+            n += 1
 
     def analysis(self):
         """Got imported modules and packages by PyInstaller
@@ -558,7 +552,6 @@ class Repacker6:
         self.patch_specfile(specfile, hookscript, resfile)
 
         cmdlist = self.pyicmd + ['--clean', '--workpath', self.workpath]
-        cmdlist.extend(self.upxopt)
         cmdlist.append(specfile)
         logger.debug('%s', ' '.join(cmdlist))
         logger.info('call PyInstaller to analysis, '
@@ -585,7 +578,7 @@ class Repacker6:
             '--additional-hooks-dir', self.packpath,
             self.mode
         ]
-        cmdlist.extend(self.pyiopts + self.upxopt + self.nameopt)
+        cmdlist.extend(self.pyiopts + self.nameopt)
         cmdlist.append(script)
 
         logger.debug('%s', ' '.join(cmdlist))
