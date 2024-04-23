@@ -320,7 +320,7 @@ Packing to one folder
 
 Packing script to one folder::
 
-    $ pyarmor gen --pack onefolder foo.py
+    $ pyarmor gen --pack onedir foo.py
 
 Run the final bundle::
 

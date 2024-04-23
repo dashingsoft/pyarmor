@@ -493,7 +493,7 @@ class Repacker6:
 
     Args:
         ctx: build context
-        mode: onefile or onefolder
+        mode: onefile or onedir
         inputs: main script to pack
     """
 
@@ -513,7 +513,7 @@ class Repacker6:
 
     def init_opts(self):
         opts = self.ctx.pyi_options
-        exopts = '--noconfirm', '-y', '--onefile', '-F', '--onefolder', '-D'
+        exopts = '--noconfirm', '-y', '--onefile', '-F', '--onedir', '-D'
         exvalues = '--distpath', '--specpath', '--workpath', '--name', '-n'
         self.pyiopts = []
         isvalue = False

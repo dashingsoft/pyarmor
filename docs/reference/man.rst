@@ -584,7 +584,7 @@ For example, generate one file bundle::
 
 Sometimes it need specify option :option:`-r` to make sure all the child packages are obfuscated. For example::
 
-    $ pyarmor gen --pack onefolder -r foo.py
+    $ pyarmor gen --pack onedir -r foo.py
 
 PyInstaller_ will ask for confirm if output path exists, if need remove output path siliently, use mode `FC` or `DC`. Here `F` stands for `onefile`, `D` stands for `onedir`, `C` stands for clean output. For example::
 
