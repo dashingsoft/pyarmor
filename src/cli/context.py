@@ -604,6 +604,10 @@ class Context(object):
     def runtime_obf_key_mode(self):
         return self._opti('runtime', 'obf_key_mode')
 
+    @property
+    def runtime_patch_extension(self):
+        return self._opti('runtime', 'patch_extension')
+
     #
     # RFT settings
     #
