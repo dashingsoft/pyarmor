@@ -6,6 +6,7 @@ import struct
 import sys
 import tempfile
 
+from fnmatch import fnmatch
 from importlib._bootstrap_external import _code_to_timestamp_pyc
 from subprocess import check_call, check_output, DEVNULL
 
@@ -567,7 +568,14 @@ class Repacker6:
         check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
 
         with open(resfile, 'rb') as f:
-            return marshal.load(f)
+            reslist = marshal.load(f)
+
+        resoptions = self.ctx.get_res_options('')
+        excludes = resoptions.get('excludes', '').split()
+        if excludes:
+            reslist = [x for x in reslist
+                       if not any([fnmatch(x, pat) for pat in excludes])]
+        return reslist
 
     def build(self):
         """Generate final bundle to output"""
