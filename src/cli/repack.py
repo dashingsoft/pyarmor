@@ -451,14 +451,14 @@ class Repacker:
 #    All of them will be obfuscated automatically
 #
 spec_patch_code = '''
-import os
 import marshal
+import os
 
 from PyInstaller.compat import base_prefix
-from sys import exec_prefix, base_exec_prefix
+from sys import prefix, exec_prefix
 
-sys_prefixs = set([exec_prefix, base_prefix, base_exec_prefix])
-exlist = [os.path.normpath(x) for x in sys_prefixs]
+exlist = set([base_prefix, prefix, exec_prefix])
+exlist = [os.path.normpath(x) for x in exlist]
 
 src = {src}
 sn = len(src) + 1
