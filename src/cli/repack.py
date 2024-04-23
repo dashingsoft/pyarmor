@@ -507,32 +507,35 @@ class Repacker6:
         self.packpath = os.path.normpath(self.ctx.pack_basepath)
         self.workpath = os.path.join(self.packpath, 'build')
         self.pyicmd = [sys.executable, '-m', 'PyInstaller']
-        self.pyiopts = self.init_opts(mode)
         self.autoclean = mode in ('FC', 'DC')
+        self.mode = '-F' if mode in ('onefile', 'F', 'FC') else '-D'
+        self.init_opts()
 
-    def init_opts(self, mode):
-        opts = []
-        exopts = '--noconfirm', '-y'
-        if mode == 'auto':
-            exopts += ('--onefile', '-F', '--onefolder', '-D')
-        else:
-            opts.append('-F' if mode in ('onefile', 'F', 'FC') else '-D')
-        opts.extend(self.ctx.pyi_options)
-
-        exvalues = '--distpath', '--specpath', '--workpath'
-        return self.filter_opts(opts, exvalues, exopts)
-
-    def filter_opts(self, opts, exvalues, exopts=None):
-        result = []
+    def init_opts(self):
+        opts = self.ctx.pyi_options
+        exopts = '--noconfirm', '-y', '--onefile', '-F', '--onefolder', '-D'
+        exvalues = '--distpath', '--specpath', '--workpath', '--name', '-n'
+        self.pyiopts = []
         isvalue = False
         for x in opts:
             if isvalue:
                 isvalue = False
             elif x in exvalues:
                 isvalue = True
-            elif exopts is None or x not in exopts:
-                result.append(x)
-        return result
+            elif x not in exopts:
+                self.pyiopts.append(x)
+
+        self.upxopt = []
+        if '--upx-dir' in opts:
+            n = opts.index('--upx-dir')
+            self.upxopt.extend(opts[n:n+2])
+
+        self.nameopt = []
+        for s in ('--name', '-n'):
+            if s in opts:
+                n = opts.index(s)
+                self.nameopt.extend(opts[n:n+2])
+                break
 
     def analysis(self):
         """Got imported modules and packages by PyInstaller
@@ -541,9 +544,7 @@ class Repacker6:
         Return file/dir list need to be obfuscated
         """
         cmdspec = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
-        exvalues = '--name', '-N'
-        exopts = '-F', '--onefile', '-D', '--onefolder'
-        cmdspec.extend(self.filter_opts(self.pyiopts, exvalues, exopts))
+        cmdspec.extend(self.pyiopts)
         cmdspec.append(self.script)
         logger.debug('%s', ' '.join(cmdspec))
         logger.info('call PyInstaller to generate specfile')
@@ -557,7 +558,7 @@ class Repacker6:
         self.patch_specfile(specfile, hookscript, resfile)
 
         cmdlist = self.pyicmd + ['--clean', '--workpath', self.workpath]
-        # only --upx-dir need pick from pyi_options
+        cmdlist.extend(self.upxopt)
         cmdlist.append(specfile)
         logger.debug('%s', ' '.join(cmdlist))
         logger.info('call PyInstaller to analysis, '
@@ -582,15 +583,16 @@ class Repacker6:
             '--distpath', self.output,
             '--workpath', self.workpath,
             '--additional-hooks-dir', self.packpath,
+            self.mode
         ]
-        cmdlist.extend(self.pyiopts)
+        cmdlist.extend(self.pyiopts + self.upxopt + self.nameopt)
         cmdlist.append(script)
 
         logger.debug('%s', ' '.join(cmdlist))
         logger.info('call PyInstaller to generate final bundle ...\n')
         check_call(cmdlist)
         logger.info('')
-        logger.info('the final bundle "%s" has been generate successfully',
+        logger.info('the final bundle has been generated to "%s" successfully',
                     self.output)
 
     def repack(self, *unused):
