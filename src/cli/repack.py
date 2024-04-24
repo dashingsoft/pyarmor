@@ -653,20 +653,13 @@ def apply_patch(src, obfdist):
                             f.read(), a.pure[i][1], 'exec')
                 a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
-obfpath = {obfpath}
 srcpath = {srcpath}
-drtpath = os.path.join(obfpath, {rtpkg})
+obfpath = {obfpath}
+rtpkg = {rtpkg}
+rtfile = os.path.join(rtpkg, {extension})
 
-a.pure.append((
-    {rtpkg},
-    os.path.join(drtpath, '__init__.py'),
-    'PYMODULE'
-))
-a.binaries.append((
-    os.path.join({rtpkg}, {extension}),
-    os.path.join(drtpath, {extension}),
-    'EXTENSION'
-))
+a.pure.append((rtpkg, os.path.join(obfpath, rtpkg, '__init__.py'), 'PYMODULE'))
+a.binaries.append((rtfile, os.path.join(obfpath, rtfile), 'EXTENSION'))
 apply_patch(srcpath, obfpath)
 
 # Pyarmor patch end.
