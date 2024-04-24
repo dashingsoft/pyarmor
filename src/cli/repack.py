@@ -455,7 +455,7 @@ spec_patch_code = '''
 import marshal
 import os
 
-from PyInstaller.compat import base_prefix
+from PyInstaller.compat import base_prefix, EXTENSION_SUFFIXES
 from sys import prefix, exec_prefix
 
 exlist = set([base_prefix, prefix, exec_prefix])
@@ -480,6 +480,14 @@ for name, path, kind in a.pure:
         else:
             pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
             plist.add(os.path.join(sdir, pkgname))
+
+for name, path, kind in a.binaries:
+    if kind == 'EXTENSION':
+        for x in EXTENSION_SUFFIXES:
+            if name.endswith(x):
+                name = name[:-len(x)]
+                break
+        hiddenimports.add(name.replace(os.sep, '.'))
 
 with open({resfile}, 'wb') as f:
     marshal.dump(mlist + list(plist), f)
