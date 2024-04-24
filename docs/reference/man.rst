@@ -396,7 +396,7 @@ Once this option is specified, :ref:`pyarmor gen key` must be used to generate a
 
 The default name of outer key is ``pyarmor.rkey``, it can be changed by this command::
 
-    $ pyarmor cfg outer_keyname=".pyarmor.key"
+    $ pyarmor cfg outer_keyname = ".pyarmor.key"
 
 By this command the name of outer key is set to ``.pyarmor.key``.
 
@@ -802,10 +802,14 @@ Append new line to option::
         rft_excludes = super
             /win.*/
 
+Note that in Windows Command Box, it may need quota join char. For example::
+
+    $ pyarmor cfg rft_excludes "^" "/win.*/"
+
 Reset option to default::
 
     $ pyarmor cfg rft_excludes ""
-    $ pyarmor cfg rft_excludes=""
+    $ pyarmor cfg rft_excludes = ""
     $ pyarmor cfg -r rft_excludes
 
 Change option ``excludes`` in the section ``finder`` by this form::
