@@ -570,7 +570,7 @@ class Repacker6:
 
     def build(self):
         """Generate final bundle to output"""
-        script = os.path.join(self.obfpath, os.path.basename(self.inputs[0]))
+        obfscript = os.path.join(self.obfpath, os.path.basename(self.script))
         cmdlist = self.pyicmd + [
             '--clean',
             '--distpath', self.output,
@@ -579,7 +579,7 @@ class Repacker6:
             self.modeopt
         ]
         cmdlist.extend(self.pyiopts)
-        cmdlist.append(script)
+        cmdlist.append(obfscript)
 
         logger.debug('%s', ' '.join(cmdlist))
         logger.info('call PyInstaller to generate final bundle ...\n')
