@@ -495,14 +495,16 @@ class Repacker6:
         ctx: build context
         mode: onefile or onedir
         inputs: main script to pack
+        output: path to store final bundle, default is `dist`
     """
 
     def __init__(self, ctx, mode, inputs, output):
         self.ctx = ctx
         self.inputs = inputs
-        self.output = 'dist' if output is None else os.path.normpath(output)
+        self.output = os.path.normpath(output) if output else 'dist'
 
         self.script = self.inputs[0]
+        self.name = os.path.splitext(os.path.basename(self.script))[0]
         self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
         self.packpath = os.path.normpath(self.ctx.pack_basepath)
         self.workpath = os.path.join(self.packpath, 'build')
@@ -514,18 +516,17 @@ class Repacker6:
     def init_opts(self):
         opts = self.ctx.pyi_options
         exopts = '--noconfirm', '-y', '--onefile', '-F', '--onedir', '-D'
-        exvalues = '--distpath', '--specpath', '--workpath', '--name', '-n'
+        exvalues = '--distpath', '--specpath', '--workpath'
 
         self.pyiopts = []
-        self.nameopt = []
 
         n = 0
         while n < len(opts):
             x = opts[n]
             if x in ('--name', '-n'):
-                self.nameopt.extend(opts[n:n+2])
-                n += 1
-            elif x in exvalues:
+                self.name = opts[n+1]
+
+            if x in exvalues:
                 n += 1
             elif x not in exopts:
                 self.pyiopts.append(x)
@@ -544,8 +545,7 @@ class Repacker6:
         logger.info('call PyInstaller to generate specfile')
         check_call(cmdspec, stdout=DEVNULL, stderr=DEVNULL)
 
-        name = os.path.splitext(os.path.basename(self.script))[0]
-        specfile = name + '.spec'
+        specfile = self.name + '.spec'
         rtname = self.ctx.runtime_package_name
         resfile = os.path.join(self.packpath, 'resources.list')
         hookscript = os.path.join(self.packpath, 'hook-%s.py' % rtname)
@@ -578,7 +578,7 @@ class Repacker6:
             '--additional-hooks-dir', self.packpath,
             self.modeopt
         ]
-        cmdlist.extend(self.pyiopts + self.nameopt)
+        cmdlist.extend(self.pyiopts)
         cmdlist.append(script)
 
         logger.debug('%s', ' '.join(cmdlist))
