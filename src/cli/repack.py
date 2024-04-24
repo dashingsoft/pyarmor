@@ -627,3 +627,107 @@ class Repacker6:
                     return
             logger.info('clean output path "%s"', self.output)
             shutil.rmtree(self.output)
+
+
+manual_spec_patch = '''
+# Pyarmor patch start:
+
+def apply_patch(src, obfdist):
+    count = 0
+    for i in range(len(a.scripts)):
+        if a.scripts[i][1].startswith(src):
+            x = a.scripts[i][1].replace(src, obfdist)
+            if os.path.exists(x):
+                a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
+                count += 1
+    if count == 0:
+        raise RuntimeError('No obfuscated script found')
+
+    for i in range(len(a.pure)):
+        if a.pure[i][1].startswith(src):
+            x = a.pure[i][1].replace(src, obfdist)
+            if os.path.exists(x):
+                if hasattr(a.pure, '_code_cache'):
+                    with open(x) as f:
+                        a.pure._code_cache[a.pure[i][0]] = compile(
+                            f.read(), a.pure[i][1], 'exec')
+                a.pure[i] = a.pure[i][0], x, a.pure[i][2]
+
+obfpath = {obfpath}
+srcpath = {srcpath}
+drtpath = os.path.join(obfpath, {rtpkg})
+
+a.pure.append((
+    {rtpkg},
+    os.path.join(drtpath, '__init__.py'),
+    'PYMODULE'
+))
+a.binaries.append((
+    os.path.join({rtpkg}, {extension}),
+    os.path.join(drtpath, {extension}),
+    'EXTENSION'
+))
+apply_patch(srcpath, obfpath)
+
+# Pyarmor patch end.
+'''
+
+
+class Patcher:
+    """Patch specfile so that it could be used to pack obfuscated scripts
+
+    Args:
+        ctx: build context
+        specfile: specfile need to be patched
+    """
+
+    def __init__(self, ctx, specfile, inputs):
+        self.ctx = ctx
+        self.specfile = specfile
+        self.script = inputs[0]
+        self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
+
+    def build(self):
+        """Generate patched specfile"""
+        output = self.specfile[:-5] + '.patched.spec'
+        logger.info('generate patched specfile "%s"', output)
+
+        rtpkg = self.ctx.runtime_package_name
+        for x in os.listdir(os.path.join(self.obfpath, rtpkg)):
+            if x.startswith('pyarmor_runtime'):
+                extension = x
+                break
+        else:
+            raise RuntimeError('no found extension `pyarmor_runtime`')
+
+        patch = manual_spec_patch.format(
+            srcpath=repr(os.path.abspath(os.path.dirname(self.script))),
+            obfpath=repr(os.path.abspath(self.obfpath)),
+            rtpkg=repr(self.ctx.runtime_package_name),
+            extension=repr(extension))
+
+        # TODO: non-ascii need specify encoding to open file
+        with open(self.specfile, 'r') as f:
+            lines = f.readlines()
+
+        n = 0
+        for line in lines:
+            if line.startswith('pyz = PYZ'):
+                lines[n:n] = [patch]
+                break
+            n += 1
+        else:
+            logger.error('no found line starts with "pyz = PYZ"')
+            raise RuntimeError('unsupported specfile "%s"' % self.specfile)
+
+        with open(output, 'w') as f:
+            f.write(''.join(lines))
+        logger.info('now run this command to pack the obfuscated scripts:\n'
+                    '\tpyinstaller --clean %s', output)
+
+    def repack(self, *unused):
+        """Only for compatible with Repacker"""
+        self.build()
+
+    def check(self):
+        pass

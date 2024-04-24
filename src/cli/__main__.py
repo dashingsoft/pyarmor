@@ -211,8 +211,8 @@ def check_gen_context(ctx, args):
     if args.pack:
         choices = 'auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'
         if args.pack not in choices and not os.path.isfile(args.pack):
-            raise CliError('--pack must be an executable file, '
-                           '"auto", "onefile" or "onedir"')
+            raise CliError('--pack must be an executable file, specfile, '
+                           '"onefile" or "onedir"')
         if args.no_runtime:
             raise CliError('--pack conficts with --no-runtime, --use-runtime')
         if ctx.import_prefix:
@@ -235,6 +235,12 @@ def cmd_gen(ctx, args):
     elif args.pack in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
         from .repack import Repacker6
         packer = Repacker6(ctx, args.pack, options['inputs'], args.output)
+        packer.check()
+        builder.process(options, packer)
+        Plugin.post_build(ctx, pack=args.pack)
+    elif isinstance(args.pack, str) and args.pack.endswith('.spec'):
+        from .repack import Patcher
+        packer = Patcher(ctx, args.pack, args.inputs)
         packer.check()
         builder.process(options, packer)
         Plugin.post_build(ctx, pack=args.pack)
