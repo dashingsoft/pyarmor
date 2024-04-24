@@ -76,6 +76,12 @@ Append another option::
 
     $ pyarmor cfg pack:pyi_options ^ "--add-data joker/config.json:joker"
 
+.. note::
+
+    In Windows, it may need quote ``^``. For example::
+
+        C:\Projects\build> pyarmor cfg pack:pyi_options "^" "-i favion.ico"
+
 .. seealso:: :ref:`pyarmor cfg`
 
 Using More Obfuscation Options
