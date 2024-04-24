@@ -71,10 +71,22 @@ Building Errors
        Please use ``pyarmor-7`` or downgrade pyarmor to 7.7.4
    * - This code has been used too many times
      - If this code is used in CI/Docker pipeline, please send **order information** by registration email of this code to pyarmor@163.com to unlock it. Do not send this code only, it doesn't make sense.
-   * - update license token failed (104)
-     - Please make sure firewall doesn't block the response of license server. If possible, turn off the firewall to verify it.
+   * - update license token failed
+     - If run register command more than 3 times in 1 minute, wait for 5 minutes, and try again.
 
-       In Windows ``pytransform.pyd`` will connect to ``pyarmor.dashingsoft.com`` port ``80`` to request token for online obfuscation, in other platforms it is ``pytransform3.so``. Refer to firewall documentation to allow it to connect ``pyarmor.dashingsoft.com:80``.
+       If not, try to open `http://pyarmor.dashingsoft.com//api/auth2/` in web browser
+
+       If the page says `NO:missing parameters`, it means network is fine, and license server is fine.
+
+       If Pyarmor is prior to v8.5.3, upgrade Pyarmor to v8.5.3+, then check Python interpreter by the following commands::
+
+         $ python
+         >>> from urllib.request import urlopen
+         >>> res = urlopen('http://pyarmor.dashingsoft.com//api/auth2/')
+         >>> print(res.read())
+         b'NO:missing parameter'
+
+       If not return this, but raises exception, it's firewall problem, please configure it to allow Python interpreter to visit `pyarmor.dashingsoft.com:80`
 
 Runtime Errors
 ==============
