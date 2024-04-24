@@ -715,8 +715,13 @@ class Patcher:
 
         with open(output, 'w') as f:
             f.write(''.join(lines))
-        logger.info('now run this command to pack the obfuscated scripts:\n'
-                    '\tpyinstaller --clean %s', output)
+
+        cmdlist = [sys.executable, '-m', 'PyInstaller', '--clean', output]
+        logger.info('call PyInstaller to generate final bundle ...'
+                    '\n\n%s\n', ' '.join(cmdlist))
+        check_call(cmdlist)
+        logger.info('')
+        logger.info('the final bundle has been generated successfully')
 
     def repack(self, *unused):
         """Only for compatible with Repacker"""
