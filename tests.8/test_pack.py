@@ -36,6 +36,10 @@ class BaseTestCase(unittest.TestCase):
         args = ['-m', 'pyarmor.cli'] + options
         rc, stdout, stderr = self.assert_python_ok(*args)
 
+    def pyispec_cmd(self, options):
+        args = ['-m', 'PyInstaller.utils.cliutils.makespec'] + options
+        self.assert_python_ok(*args)
+
     def verify_bundle(self, myapp):
         expected = ['this is fib:  __pyarmor__',
                     'hello world',
@@ -58,6 +62,13 @@ class UnitTestCases(BaseTestCase):
         args = ['gen', '--pack', 'onedir', 'samples/pack/myapp.py']
         self.pyarmor_cmd(args)
         self.verify_bundle('dist/myapp/myapp')
+
+    def test_specfile(self):
+        self.pyispec_cmd(['-F', 'samples/pack/myapp.py'])
+        args = ['gen', '--pack', 'myapp.spec', '-r',
+                'samples/pack/myapp.py', 'samples/pack/mypkg/']
+        self.pyarmor_cmd(args)
+        self.verify_bundle('dist/myapp')
 
     def test_onefile_with_name(self):
         args = ['cfg', 'pack:pyi_options', '=', '-n myapp2']

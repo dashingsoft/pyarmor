@@ -632,6 +632,12 @@ class Repacker6:
 manual_spec_patch = '''
 # Pyarmor patch start:
 
+if hasattr(a.pure, '_code_cache'):
+    _code_cache = a.pure._code_cache
+else:
+    from PyInstaller.config import CONF
+    _code_cache = CONF['code_cache'].get(id(a.pure))
+
 def apply_patch(src, obfdist):
     count = 0
     for i in range(len(a.scripts)):
@@ -647,10 +653,7 @@ def apply_patch(src, obfdist):
         if a.pure[i][1].startswith(src):
             x = a.pure[i][1].replace(src, obfdist)
             if os.path.exists(x):
-                if hasattr(a.pure, '_code_cache'):
-                    with open(x) as f:
-                        a.pure._code_cache[a.pure[i][0]] = compile(
-                            f.read(), a.pure[i][1], 'exec')
+                _code_cache.pop(a.pure[i][0])
                 a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
 srcpath = {srcpath}
