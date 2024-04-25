@@ -652,7 +652,7 @@ def apply_patch(src, obfdist):
         if a.pure[i][1].startswith(src):
             x = a.pure[i][1].replace(src, obfdist)
             if os.path.exists(x):
-                _code_cache.pop(a.pure[i][0])
+                _code_cache.pop(a.pure[i][0], None)
                 a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
 srcpath = {srcpath}
@@ -660,9 +660,9 @@ obfpath = {obfpath}
 rtpkg = {rtpkg}
 rtext = os.path.join(rtpkg, {extension})
 
+apply_patch(srcpath, obfpath)
 a.pure.append((rtpkg, os.path.join(obfpath, rtpkg, '__init__.py'), 'PYMODULE'))
 a.binaries.append((rtext, os.path.join(obfpath, rtext), 'EXTENSION'))
-apply_patch(srcpath, obfpath)
 
 # Pyarmor patch end.
 '''

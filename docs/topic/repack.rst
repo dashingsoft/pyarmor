@@ -149,10 +149,6 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
 .. code-block:: python
 
-    a = Analysis(
-        ...
-    )
-
     # Pyarmor patch start:
 
     obfpath = r'/path/to/obfdist'
@@ -166,7 +162,7 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
         from PyInstaller.config import CONF
         _code_cache = CONF['code_cache'].get(id(a.pure))
 
-    def pyarmor_patcher(src, obfdist):
+    def apply_patch(src, obfdist):
 
         # Make sure both of them are absolute paths
         src = os.path.abspath(src)
@@ -186,16 +182,17 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
             if a.pure[i][1].startswith(src):
                 x = a.pure[i][1].replace(src, obfdist)
                 if os.path.exists(x):
-                    _code_cache.pop(a.pure[i][0])
+                    _code_cache.pop(a.pure[i][0], None)
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
+    apply_patch(srcpath, obfpath)
     a.pure.append((rtpkg, os.path.join(obfpath, rtpkg, '__init__.py'), 'PYMODULE'))
     a.binaries.append((os.path.join(rtpkg, rtext), os.path.join(obfpath, rtpkg, rtext), 'EXTENSION'))
-    pyarmor_patcher(srcpath, obfpath)
 
     # Pyarmor patch end.
 
-    pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+    # Before this line
+    # pyz = PYZ(...)
 
 * Finally generate bundle by this patched ``foo.spec``, use option `--clean` to to remove all cached files::
 
