@@ -601,9 +601,8 @@ class Repacker6:
         self.build()
 
     def patch_specfile(self, specfile, hookscript, resfile):
-        # TODO: non-ascii need specify encoding to open file
         lines = []
-        with open(specfile, 'r') as f:
+        with open(specfile, 'r', encoding='utf-8') as f:
             for line in f:
                 if line.startswith('pyz = PYZ'):
                     break
@@ -702,8 +701,7 @@ class Patcher:
             rtpkg=repr(self.ctx.runtime_package_name),
             extension=repr(extension))
 
-        # TODO: non-ascii need specify encoding to open file
-        with open(self.specfile, 'r') as f:
+        with open(self.specfile, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
         n = 0
@@ -716,7 +714,7 @@ class Patcher:
             logger.error('no found line starts with "pyz = PYZ"')
             raise RuntimeError('unsupported specfile "%s"' % self.specfile)
 
-        with open(output, 'w') as f:
+        with open(output, 'w', encoding='utf-8') as f:
             f.write(''.join(lines))
 
         cmdlist = [sys.executable, '-m', 'PyInstaller', '--clean', output]
