@@ -87,20 +87,20 @@ class UnitTestCases(BaseTestCase):
         self.verify_bundle('dist/myapp2/myapp2')
 
     def test_onefile_with_options(self):
-        args = ['cfg', 'pack:pyi_options', '=', '-i samples/pack/mypkg/logo.png']
-        self.pyarmor_cmd(args)
-        args = ['cfg', 'pack:pyi_options', '^',
+        args = ['cfg', 'pack:pyi_options', '=',
+                '-i samples/pack/mypkg/logo.png '
                 '--add-data samples/pack/mypkg/data.json:mypkg']
+        self.pyarmor_cmd(args)
 
         args = ['gen', '--pack', 'onefile', 'samples/pack/myapp.py']
         self.pyarmor_cmd(args)
         self.verify_bundle('dist/myapp')
 
     def test_onedir_with_options(self):
-        args = ['cfg', 'pack:pyi_options', '=', '-i samples/pack/mypkg/logo.png']
-        self.pyarmor_cmd(args)
-        args = ['cfg', 'pack:pyi_options', '^',
+        args = ['cfg', 'pack:pyi_options', '=',
+                '-i samples/pack/mypkg/logo.png '
                 '--add-data samples/pack/mypkg/data.json:mypkg']
+        self.pyarmor_cmd(args)
 
         args = ['gen', '--pack', 'onedir', 'samples/pack/myapp.py']
         self.pyarmor_cmd(args)
