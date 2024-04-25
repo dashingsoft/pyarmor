@@ -96,21 +96,15 @@ Using More PyInstaller Options
 
 If need extra PyInstaller options, using configuration item ``pack:pyi_options``. For example, reset it with one PyInstaller option ``-w``::
 
-    $ pyarmor cfg pack:pyi_options = "-w"
+    $ pyarmor cfg pack:pyi_options = " -w"
 
 Let's append another option ``-i``, note that it must be one whitespace between option ``-i`` and its value, do not use ``=``. For example::
 
-    $ pyarmor cfg pack:pyi_options ^ "-i favion.ico"
+    $ pyarmor cfg pack:pyi_options + " -i favion.ico"
 
 Append another option::
 
-    $ pyarmor cfg pack:pyi_options ^ "--add-data joker/config.json:joker"
-
-.. note::
-
-    In Windows, it may need quote ``^``. For example::
-
-        C:\Projects\build> pyarmor cfg pack:pyi_options "^" "-i favion.ico"
+    $ pyarmor cfg pack:pyi_options + "--add-data joker/config.json:joker"
 
 .. seealso:: :ref:`pyarmor cfg`
 
