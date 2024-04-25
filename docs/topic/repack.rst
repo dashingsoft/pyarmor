@@ -28,6 +28,7 @@ Suppose our project tree like this::
     project/
         ├── foo.py
         ├── queens.py
+        ├── foo.spec
         └── joker/
             ├── __init__.py
             ├── queens.py
@@ -64,7 +65,7 @@ In this project, there already has one ``foo.spec`` which could be used to pack 
     $ pyinstaller foo.spec
     $ dist/foo
 
-In this case, pass it ``foo.spec``  to :option:`--pack` directly. For example::
+In this case, pass it to :option:`--pack` directly. For example::
 
     $ pyarmor gen --pack foo.spec -r foo.py joker/
 
@@ -207,7 +208,8 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
 If following this example, please
 
-* Replace all the ``/path/to/src`` and ``/path/to/obfdist`` with actual path
+* Replace ``/path/to/src`` to real path, set to empty string for current path
+* Replace ``/path/to/obfdist`` with real path, relative path is OK
 * Replace all the ``pyarmor_runtime_000000`` with actual name
 * In Windows, replace ``pyarmor_runtime.so`` with ``pyarmor_runtime.pyd``
 
