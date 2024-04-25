@@ -18,7 +18,7 @@ Pyarmor provides option :option:`--pack` to fix this problem, it supports the fo
 - `onedir`: pack the obfuscated script to onedir
 - specfile: one ``.spec`` file used by PyInstaller to generate bundle
 
-Once it's set, pyarmor will first obfuscate the scripts, then automatically pack them to one bundle
+Once it's set, pyarmor will not only obfuscate the scripts, but also pack them to one bundle
 
 Packing Scripts Automatically
 =============================
@@ -40,10 +40,10 @@ Let's check what happens when the following commands are executed::
     $ cd project
     $ pyarmor gen --pack onefile foo.py
 
-1. Pyarmor first call PyInstaller_ to anylysis plain script `foo.py` to find all the imported moduels and packages
-2. Pyarmor find `util.py` and package `joker` are in the same path of `foo.py`, then obfuscate all of them to one temporary path `.pyarmor/pack/dist` by command line obfuscation options
-3. For the other imported modules and packages, save to hidden imports table
-4. Finally pyarmor call PyInstaller again, pack all obfuscated scripts in `.pyarmor/pack/dist` and all modules and packages in the hidden imports table to final bundle.
+1. Pyarmor first call PyInstaller_ to analysis plain script `foo.py` to find all the imported moduels and packages
+2. The imported module `util` and package `joker` are in the same path of `foo.py`, so Pyarmor will obfuscate `foo.py`, `util.py` and package `joker` by obfuscation options, and save them to path `.pyarmor/pack/dist`
+3. For the other imported modules and packages, save them to hidden imports table
+4. Finally pyarmor call PyInstaller again, pack all obfuscated scripts in `.pyarmor/pack/dist` and all the modules and packages in hidden imports table to one bundle.
 
 Now let's run the final bundle, it's `dist/foo` or `dist/foo.exe`::
 
@@ -138,14 +138,12 @@ You need to know how to `using PyInstaller`__ and `using spec file`__, if not, l
 __ https://pyinstaller.org/en/stable/usage.html
 __ https://pyinstaller.org/en/stable/spec-files.html
 
-Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
-
 * First obfuscate the script by Pyarmor [#]_::
 
-    $ cd /path/to/src
+    $ cd project/
     $ pyarmor gen -O obfdist -r foo.py joker/
 
-* Then generate ``foo.spec`` by PyInstaller [#]_::
+* Then generate ``foo.spec`` by PyInstaller_ [#]_::
 
     $ pyi-makespec --onefile foo.py
 
@@ -179,12 +177,12 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
         # Make sure both of them are absolute paths
         src = os.path.abspath(srcpath)
-        dest = os.path.abspath(obfpath)
+        obf = os.path.abspath(obfpath)
 
         count = 0
         for i in range(len(a.scripts)):
             if a.scripts[i][1].startswith(src):
-                x = a.scripts[i][1].replace(src, dest)
+                x = a.scripts[i][1].replace(src, obf)
                 if os.path.exists(x):
                     a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
                     count += 1
@@ -193,13 +191,13 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
         for i in range(len(a.pure)):
             if a.pure[i][1].startswith(src):
-                x = a.pure[i][1].replace(src, dest)
+                x = a.pure[i][1].replace(src, obf)
                 if os.path.exists(x):
                     code_cache.pop(a.pure[i][0], None)
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
-        a.pure.append((rtpkg, os.path.join(dest, rtpkg, '__init__.py'), 'PYMODULE'))
-        a.binaries.append((extpath, os.path.join(dest, extpath), 'EXTENSION'))
+        a.pure.append((rtpkg, os.path.join(obf, rtpkg, '__init__.py'), 'PYMODULE'))
+        a.binaries.append((extpath, os.path.join(obf, extpath), 'EXTENSION'))
 
     apply_pyarmor_patch(srcpath, obfpath)
 
