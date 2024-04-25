@@ -572,6 +572,7 @@ This option neither touches statement ``from import``, nor the module imported b
             Obfuscate script first, then pack the obfuscated scripts to bundle
 
             Before v8.5.4, user need first generate an executable file by PyInstaller_
+
             Now everything is done by Pyarmor
 
             The old method still works, but it's deprecated.
@@ -579,7 +580,7 @@ This option neither touches statement ``from import``, nor the module imported b
 .. versionchanged:: 8.5.4 supports `onefile` and `onedir`
 .. versionchanged:: 8.5.8 supports specfile
 
-Once this option is used, pyarmor will analysis the source of main script, and find all the imported modules and packages which are in the same path of main script. All of these used modules and packages will be obfuscated automatically
+Once this option is set to `onefile` or `onedir`, pyarmor will analysis the source of main script, and find all the imported modules and packages which are in the same path of main script. All of these used modules and packages will be obfuscated automatically
 
 Then pyarmor will call PyInstaller_ to pack the obfuscated scripts to one file or one folder bundle.
 
@@ -592,13 +593,13 @@ Sometimes it need specify option :option:`-r` to make sure all the child package
 
     $ pyarmor gen --pack onedir -r foo.py
 
-PyInstaller_ will ask for confirm if output path exists, if need remove output path siliently, use mode `FC` or `DC`. Here `F` stands for `onefile`, `D` stands for `onedir`, `C` stands for clean output. For example::
+PyInstaller_ will ask for confirm if output path exists, if need remove output path siliently, use mode `FC` or `DC`. Here `F` stands for `onefile`, `D` stands for `onedir`, `C` stands for clean output siliently. For example::
 
     $ pyarmor gen --pack FC foo.py
 
-If plain script could be packed by one `.spec` file, pass it to `--pack` to pack the obfuscated script. For example::
+If plain script has been packed by one `.spec` file, it could be used by :option:`--pack` to pack the obfuscated script. For example::
 
-    $ pyarmor gen --pack foo.spec -r foo.py joker/
+    $ pyarmor gen --pack foo.spec -r foo.py util.py joker/
 
 Note that by this way Pyarmor only obfuscates the scripts in the command line, so specify all the scripts and packages need to be obfuscated.
 
