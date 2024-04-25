@@ -149,7 +149,8 @@ Generate obfuscated scripts and all the required runtime files.
 --assert-import                 assert module is obfuscated :option:`... <--assert-import>`
 --assert-call                   assert function is obfuscated  :option:`... <--assert-call>`
 
---pack <onefile|onedir|FC|DC>   Obfuscate scripts then pack :option:`... <--pack>`
+--pack <onefile|onedir|FC|DC|NAME.spec>
+                                Obfuscate scripts then pack :option:`... <--pack>`
 
 --use-runtime PATH              use shared runtime package :option:`... <--use-runtime>`
 
@@ -566,7 +567,7 @@ The function :func:`__assert_armored__` is a builtin function in obfuscated scri
 
 This option neither touches statement ``from import``, nor the module imported by function ``__import__``.
 
-.. option:: --pack <onefile,onedir,FC,DC,FILENAME.spec>
+.. option:: --pack <onefile,onedir,FC,DC,NAME.spec>
 
             Obfuscate script first, then pack the obfuscated scripts to bundle
 

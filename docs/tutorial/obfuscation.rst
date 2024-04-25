@@ -293,7 +293,7 @@ Pyarmor need PyInstaller to pack the obfuscated scripts, so first make sure PyIn
 Packing to one file
 -------------------
 
-.. versionchanged:: 8.5.4
+.. versionadded:: 8.5.4
 
 Packing script to one file only need one command::
 
@@ -312,7 +312,7 @@ Pyarmor will automatically obfuscate `foo.py` and all the other used modules and
 Packing to one folder
 ---------------------
 
-.. versionchanged:: 8.5.4
+.. versionadded:: 8.5.4
 
 Packing script to one folder::
 
@@ -325,7 +325,7 @@ Run the final bundle::
 Using .spec file
 ----------------
 
-.. versionchanged:: 8.5.8
+.. versionadded:: 8.5.8
 
 If the plain script has been packed by one spec file. For example::
 
