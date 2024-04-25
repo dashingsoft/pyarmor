@@ -98,13 +98,19 @@ If need extra PyInstaller options, using configuration item ``pack:pyi_options``
 
     $ pyarmor cfg pack:pyi_options = " -w"
 
-Let's append another option ``-i``, note that it must be one whitespace between option ``-i`` and its value, do not use ``=``. For example::
+Note that there need one leading whitespace in the ``" -w"``, otherwise shell may complain of syntax error.
+
+Let's append another option ``-i``, it must be one whitespace between option ``-i`` and its value, do not use ``=``. For example::
 
     $ pyarmor cfg pack:pyi_options + " -i favion.ico"
 
 Append another option::
 
-    $ pyarmor cfg pack:pyi_options + "--add-data joker/config.json:joker"
+    $ pyarmor cfg pack:pyi_options + " --add-data joker/config.json:joker"
+
+All of them could be done by one command::
+
+    $ pyarmor cfg pack:pyi_options = " -w  -i favion.ico --add-data joker/config.json:joker"
 
 .. seealso:: :ref:`pyarmor cfg`
 
