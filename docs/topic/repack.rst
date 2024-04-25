@@ -27,10 +27,11 @@ Suppose our project tree like this::
 
     project/
         ├── foo.py
-        ├── queens.py
         ├── foo.spec
+        ├── util.py
         └── joker/
             ├── __init__.py
+            ├── card.py
             ├── queens.py
             └── config.json
 
@@ -40,7 +41,7 @@ Let's check what happens when the following commands are executed::
     $ pyarmor gen --pack onefile foo.py
 
 1. Pyarmor first call PyInstaller_ to anylysis plain script `foo.py` to find all the imported moduels and packages
-2. Pyarmor find `queens.py` and package `joker` are in the same path of `foo.py`, then obfuscate all of them to one temporary path `.pyarmor/pack/dist` by command line obfuscation options
+2. Pyarmor find `util.py` and package `joker` are in the same path of `foo.py`, then obfuscate all of them to one temporary path `.pyarmor/pack/dist` by command line obfuscation options
 3. For the other imported modules and packages, save to hidden imports table
 4. Finally pyarmor call PyInstaller again, pack all obfuscated scripts in `.pyarmor/pack/dist` and all modules and packages in the hidden imports table to final bundle.
 
@@ -65,11 +66,15 @@ In this project, there already has one ``foo.spec`` which could be used to pack 
 
 In this case, pass it to :option:`--pack` directly. For example::
 
-    $ pyarmor gen --pack foo.spec -r foo.py joker/
+    $ pyarmor gen --pack foo.spec -r foo.py util.py joker/
 
-1. Pyarmor obfuscates the scripts list in the command line, save them to `.pyarmor/pack/dist`
-2. Next generates ``foo.patched.spec`` by ``foo.spec``, this patch could replace plain scripts with obfuscated ones in the bundle
-3. Finally call PyInstaller_ to pack bundle by ``foo.patched.spec``
+What will Pyarmor do?
+
+1. Pyarmor first obfuscates the scripts list in the command line, save them to `.pyarmor/pack/dist`
+2. Next generates ``foo.patched.spec`` by ``foo.spec``
+3. Finally call PyInstaller_ to pack the bundle by ``foo.patched.spec``
+
+This patched specfile could replace plain scripts with obfuscated ones in `.pyarmor/pack/dist` when generating the bundle
 
 .. note::
 
@@ -112,13 +117,14 @@ Append another option::
 Using More Obfuscation Options
 ------------------------------
 
-In Darwin, let obfuscated scripts work in both intel and Apple Silicon by extra option ``--platform darwin.x86_64,darwin.arm64``::
-
-    $ pyarmor gen --pack onefile --platform darwin.x86_64,darwin.arm64 foo.py
-
 You can use any other obfuscation options to improve security. For example::
 
     $ pyarmor gen --pack onefile --private foo.py
+
+Anoter example, in Darwin, let obfuscated scripts work in both intel and Apple Silicon by extra option ``--platform darwin.x86_64,darwin.arm64``::
+
+    $ pyarmor cfg pack:pyi_options = "--target-architecture universal2"
+    $ pyarmor gen --pack onefile --platform darwin.x86_64,darwin.arm64 foo.py
 
 Note that some of them may not work. For example, :option:`--restrict` can't be used with :option:`--pack`.
 
@@ -149,27 +155,29 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
     # Pyarmor patch start:
 
-    obfpath = r'/path/to/obfdist'
-    srcpath = r'/path/to/src'
-    rtpkg = 'pyarmor_runtime_000000'
-    rtext = 'pyarmor_runtime.so'
+    srcpath = ''
+    obfpath = 'obfdist'
 
-    if hasattr(a.pure, '_code_cache'):
-        _code_cache = a.pure._code_cache
-    else:
-        from PyInstaller.config import CONF
-        _code_cache = CONF['code_cache'].get(id(a.pure))
+    def apply_pyarmor_patch(rtpkg='pyarmor_runtime_000000'):
 
-    def apply_patch(src, obfdist):
+        from PyInstaller.compat import is_win, is_cygwin
+        ext = '.pyd' if is_win or is_cygwin else '.so'
+        extpath = os.path.join(rtpkg, 'pyarmor_runtime' + ext)
+
+        if hasattr(a.pure, '_code_cache'):
+            code_cache = a.pure._code_cache
+        else:
+            from PyInstaller.config import CONF
+            code_cache = CONF['code_cache'].get(id(a.pure))
 
         # Make sure both of them are absolute paths
-        src = os.path.abspath(src)
-        obfdist = os.path.abspath(obfdist)
+        src = os.path.abspath(srcpath)
+        dest = os.path.abspath(obfpath)
 
         count = 0
         for i in range(len(a.scripts)):
             if a.scripts[i][1].startswith(src):
-                x = a.scripts[i][1].replace(src, obfdist)
+                x = a.scripts[i][1].replace(src, dest)
                 if os.path.exists(x):
                     a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
                     count += 1
@@ -178,14 +186,15 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
         for i in range(len(a.pure)):
             if a.pure[i][1].startswith(src):
-                x = a.pure[i][1].replace(src, obfdist)
+                x = a.pure[i][1].replace(src, dest)
                 if os.path.exists(x):
-                    _code_cache.pop(a.pure[i][0], None)
+                    code_cache.pop(a.pure[i][0], None)
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
-    apply_patch(srcpath, obfpath)
-    a.pure.append((rtpkg, os.path.join(obfpath, rtpkg, '__init__.py'), 'PYMODULE'))
-    a.binaries.append((os.path.join(rtpkg, rtext), os.path.join(obfpath, rtpkg, rtext), 'EXTENSION'))
+        a.pure.append((rtpkg, os.path.join(dest, rtpkg, '__init__.py'), 'PYMODULE'))
+        a.binaries.append((extpath, os.path.join(dest, extpath), 'EXTENSION'))
+
+    apply_pyarmor_patch()
 
     # Pyarmor patch end.
 
@@ -198,10 +207,9 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
 If following this example, please
 
-* Replace ``/path/to/src`` to real path, set to empty string for current path
-* Replace ``/path/to/obfdist`` with real path, relative path is OK
-* Replace all the ``pyarmor_runtime_000000`` with actual name
-* In Windows, replace ``pyarmor_runtime.so`` with ``pyarmor_runtime.pyd``
+* Set ``srcpath`` to relative path, in this example, it's current path
+* Set ``obfpath`` to your real path, in this example, it's ``obfdist``
+* Replace ``pyarmor_runtime_000000`` with actual name
 
 **how to verify obfuscated scripts have been packed**
 

@@ -631,13 +631,20 @@ class Repacker6:
 manual_spec_patch = '''
 # Pyarmor patch start:
 
-if hasattr(a.pure, '_code_cache'):
-    _code_cache = a.pure._code_cache
-else:
-    from PyInstaller.config import CONF
-    _code_cache = CONF['code_cache'].get(id(a.pure))
+def apply_pyarmor_patch():
 
-def apply_patch(src, obfdist):
+    src = {srcpath}
+    obfdist = {obfpath}
+    pkgname = {rtname}
+    pkgpath = os.path.join(obfdist, pkgname)
+    extpath = os.path.join(pkgname, {extname})
+
+    if hasattr(a.pure, '_code_cache'):
+        code_cache = a.pure._code_cache
+    else:
+        from PyInstaller.config import CONF
+        code_cache = CONF['code_cache'].get(id(a.pure))
+
     count = 0
     for i in range(len(a.scripts)):
         if a.scripts[i][1].startswith(src):
@@ -652,17 +659,13 @@ def apply_patch(src, obfdist):
         if a.pure[i][1].startswith(src):
             x = a.pure[i][1].replace(src, obfdist)
             if os.path.exists(x):
-                _code_cache.pop(a.pure[i][0], None)
+                code_cache.pop(a.pure[i][0], None)
                 a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
-srcpath = {srcpath}
-obfpath = {obfpath}
-rtpkg = {rtpkg}
-rtext = os.path.join(rtpkg, {extension})
+    a.pure.append((pkgname, os.path.join(pkgpath, '__init__.py'), 'PYMODULE'))
+    a.binaries.append((extpath, os.path.join(obfdist, extpath), 'EXTENSION'))
 
-apply_patch(srcpath, obfpath)
-a.pure.append((rtpkg, os.path.join(obfpath, rtpkg, '__init__.py'), 'PYMODULE'))
-a.binaries.append((rtext, os.path.join(obfpath, rtext), 'EXTENSION'))
+apply_pyarmor_patch()
 
 # Pyarmor patch end.
 '''
@@ -684,13 +687,13 @@ class Patcher:
 
     def build(self):
         """Generate patched specfile"""
-        output = self.specfile[:-5] + '.patched.spec'
-        logger.info('generate patched specfile "%s"', output)
+        specfile = self.specfile[:-5] + '.patched.spec'
+        logger.info('generate patched specfile "%s"', specfile)
 
         rtpkg = self.ctx.runtime_package_name
         for x in os.listdir(os.path.join(self.obfpath, rtpkg)):
             if x.startswith('pyarmor_runtime'):
-                extension = x
+                extname = x
                 break
         else:
             raise RuntimeError('no found extension `pyarmor_runtime`')
@@ -698,8 +701,8 @@ class Patcher:
         patch = manual_spec_patch.format(
             srcpath=repr(os.path.abspath(os.path.dirname(self.script))),
             obfpath=repr(os.path.abspath(self.obfpath)),
-            rtpkg=repr(self.ctx.runtime_package_name),
-            extension=repr(extension))
+            rtname=repr(self.ctx.runtime_package_name),
+            extname=repr(extname))
 
         with open(self.specfile, 'r', encoding='utf-8') as f:
             lines = f.readlines()
@@ -714,10 +717,12 @@ class Patcher:
             logger.error('no found line starts with "pyz = PYZ"')
             raise RuntimeError('unsupported specfile "%s"' % self.specfile)
 
-        with open(output, 'w', encoding='utf-8') as f:
+        with open(specfile, 'w', encoding='utf-8') as f:
             f.write(''.join(lines))
 
-        cmdlist = [sys.executable, '-m', 'PyInstaller', '--clean', output]
+        workpath = os.path.join(self.ctx.pack_basepath, 'build')
+        cmdlist = [sys.executable, '-m', 'PyInstaller', '--clean',
+                   '--workpath', workpath, specfile]
         logger.info('call PyInstaller to generate final bundle ...'
                     '\n\n%s\n', ' '.join(cmdlist))
         check_call(cmdlist)
