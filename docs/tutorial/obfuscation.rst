@@ -295,8 +295,6 @@ Packing to one file
 
 .. versionchanged:: 8.5.4
 
-   Before v8.5.4, it need more work, please check old version documentation (v8.5.3).
-
 Packing script to one file only need one command::
 
     $ pyarmor gen --pack onefile foo.py
@@ -316,8 +314,6 @@ Packing to one folder
 
 .. versionchanged:: 8.5.4
 
-   Before v8.5.4, it need more work, please check old version documentation (v8.5.3).
-
 Packing script to one folder::
 
     $ pyarmor gen --pack onedir foo.py
@@ -325,6 +321,23 @@ Packing script to one folder::
 Run the final bundle::
 
     $ dist/foo/foo
+
+Using .spec file
+----------------
+
+.. versionchanged:: 8.5.8
+
+If the plain script has been packed by one spec file. For example::
+
+    $ pyinstaller foo.spec
+    $ dist/foo
+
+Then pass this specfile to :option:`--pack` to let Pyarmor pack the obfuscated scripts. For example::
+
+    $ pyarmor gen --pack foo.spec -r foo.py joker/
+    $ dist/foo
+
+Note that all the other scripts or packages must be list after main script, otherwise they won't be obfuscated by this way.
 
 More information about pack feature, refer to :doc:`../topic/repack`
 

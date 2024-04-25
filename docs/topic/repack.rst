@@ -6,18 +6,22 @@ Insight Into Pack Command
 
 .. program:: pyarmor gen
 
-Pyarmor 8.0 has no command pack, but option :option:`--pack`, once it's set, pyarmor will automatically pack the scripts into one bundle.
+Pyarmor has no pack feature, it need call PyInstaller_ to pack the obfuscated script to final bundle, so first install PyInstaller_::
+
+    $ pip install pyinstaller
+
+PyInstaller_ will analysis script to find imported modules and packages, once the script is obfuscated, nothing could be found, the final bundle complains of missing module.
+
+Pyarmor provides option :option:`--pack` to fix this problem, it supports the following values
+
+- `onefile`: pack the obfuscated script to onefile
+- `onedir`: pack the obfuscated script to onedir
+- specfile: one ``.spec`` file used by PyInstaller to generate bundle
+
+Once it's set, pyarmor will first obfuscate the scripts, then automatically pack them to one bundle
 
 Packing Scripts Automatically
 =============================
-
-.. versionadded:: 8.5.4
-
-It accept 2 values: ``onefile`` and ``onedir``, just as PyInstaller_
-
-Actually Pyarmor need call PyInstaller_ to generate final bundle, so first install PyInstaller_::
-
-    $ pip install pyinstaller
 
 Suppose our project tree like this::
 
@@ -36,7 +40,7 @@ Let's check what happens when the following commands are executed::
 
 1. Pyarmor first open `foo.py`, then find it need `queens.py` and package `joker`
 2. Then obfuscate all of them to one temporary path `.pyarmor/pack/dist`
-3. Next pyarmor call PyInstaller with plain script `foo.py`, to get all the system packages used by `foo.py`, and save all of them to hiddenimports table.
+3. Next pyarmor call PyInstaller with plain script `foo.py`, to get all the system packages [#]_ used by `foo.py`, and save all of them to hiddenimports table.
 4. Finally pyarmor call PyInstaller again but with obfuscated scripts and all of hidden imports to generate final bundle.
 
 Now let's run the final bundle, it's `dist/foo` or `dist/foo.exe`::
@@ -49,6 +53,28 @@ If need one folder bundle, just pass `onedir` to pack::
     $ pyarmor gen --pack onedir foo.py
     $ ls dist/foo
     $ dist/foo/foo
+
+.. [#] Python system modules and packages aren't obfuscated
+
+Using specfile
+--------------
+
+In this project, there already has one ``foo.spec`` which could be used to pack plain script to onefile. For example::
+
+    $ pyinstaller foo.spec
+    $ dist/foo
+
+In this case, pass it ``foo.spec``  to :option:`--pack` directly. For example::
+
+    $ pyarmor gen --pack foo.spec -r foo.py joker/
+
+1. Pyarmor obfuscates the scripts list in the command line, save them to `.pyarmor/pack/dist`
+2. Then generates ``foo.patched.spec`` by ``foo.spec``, this patch could replace plain scripts with obfuscated ones in the bundle
+3. Finally call PyInstaller_ to pack bundle by ``foo.patched.spec``
+
+.. note::
+
+   By specfile, only listed scripts are obfuscated. If need obfuscate other used modules and packages, list all of them in command line.
 
 Checking Obfuscated Scripts Have Been Packed
 --------------------------------------------
@@ -91,7 +117,11 @@ In Darwin, let obfuscated scripts work in both intel and Apple Silicon by extra 
 
     $ pyarmor gen --pack onefile --platform darwin.x86_64,darwin.arm64 foo.py
 
-You can use any other obfuscation options to improve security, but some of them may not work. For example, :option:`--restrict` can't be used with :option:`--pack`.
+You can use any other obfuscation options to improve security. For example::
+
+    $ pyarmor gen --pack onefile --private foo.py
+
+Note that some of them may not work. For example, :option:`--restrict` can't be used with :option:`--pack`.
 
 Packing obfuscated scripts manually
 ===================================
@@ -105,42 +135,32 @@ __ https://pyinstaller.org/en/stable/spec-files.html
 
 Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
 
-* First obfuscating the script by Pyarmor [#]_::
+* First obfuscate the script by Pyarmor [#]_::
 
     $ cd /path/to/src
-    $ pyarmor gen -O obfdist -a foo.py
+    $ pyarmor gen -O obfdist -r foo.py joker/
 
-* Moving runtime package to current path [#]_::
+* Then generate ``foo.spec`` by PyInstaller [#]_::
 
-    $ mv obfdist/pyarmor_runtime_000000 ./
+    $ pyi-makespec --onefile foo.py
 
-* Already have ``foo.spec``, appending runtime package to ``hiddenimports``
-
-.. code-block:: python
-
-    a = Analysis(
-        ...
-        hiddenimports=['pyarmor_runtime_000000'],
-        ...
-    )
-
-* Otherwise generating ``foo.spec`` by PyInstaller [#]_::
-
-    $ pyi-makespec --hidden-import pyarmor_runtime_000000 foo.py
-
-* Patching ``foo.spec`` by inserting extra code after ``a = Analysis``
+* Next patch ``foo.spec`` before line ``pyz = PYZ``, this is major work
 
 .. code-block:: python
 
     a = Analysis(
-        ...
-        hiddenimports=['pyarmor_runtime_000000'],
         ...
     )
 
     # Pyarmor patch start:
 
+    obfpath = r'/path/to/obfdist'
+    srcpath = r'/path/to/src'
+    rtpkg = 'pyarmor_runtime_000000'
+    rtext = 'pyarmor_runtime.so'
+
     def pyarmor_patcher(src, obfdist):
+
         # Make sure both of them are absolute paths
         src = os.path.abspath(src)
         obfdist = os.path.abspath(obfdist)
@@ -161,23 +181,35 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
                 if os.path.exists(x):
                     if hasattr(a.pure, '_code_cache'):
                         with open(x) as f:
-                            a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')
+                            a.pure._code_cache[a.pure[i][0]] = compile(
+                                f.read(), a.pure[i][1], 'exec')
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
-    pyarmor_patcher(r'/path/to/src', r'/path/to/obfdist')
+    a.pure.append((
+        rtpkg,
+        os.path.join(obfpath, rtpkg, '__init__.py'),
+        'PYMODULE'
+    ))
+    a.binaries.append((
+        os.path.join(rtpkg, rtext),
+        os.path.join(obfpath, rtpkg, rtext),
+        'EXTENSION'
+    ))
+    pyarmor_patcher(srcpath, obfpath)
 
     # Pyarmor patch end.
 
     pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-* Generating final bundle by this patched ``foo.spec``, also use option `--clean` to to remove all cached files::
+* Finally generate bundle by this patched ``foo.spec``, use option `--clean` to to remove all cached files::
 
     $ pyinstaller --clean foo.spec
 
 If following this example, please
 
-* Replacing all the ``/path/to/src`` and ``/path/to/obfdist`` with actual path
-* Replacing all the ``pyarmor_runtime_000000`` with actual name
+* Replace all the ``/path/to/src`` and ``/path/to/obfdist`` with actual path
+* Replace all the ``pyarmor_runtime_000000`` with actual name
+* In Windows, replace ``pyarmor_runtime.so`` with ``pyarmor_runtime.pyd``
 
 **how to verify obfuscated scripts have been packed**
 
@@ -194,7 +226,6 @@ If it's not obfuscated, the final bundle will raise error.
 .. rubric:: notes
 
 .. [#] Do not use :option:`-i` and :option:`--prefix` to obfuscate the scripts
-.. [#] Just let PyInstaller could find runtime package without extra pypath
 .. [#] Most of the other PyInstaller options could be used here
 
 Packing with PyInstaller Bundle

@@ -505,6 +505,10 @@ Use :term:`JIT` to process some sensitive data to improve security.
 
             Mix the string constant in scripts :sup:`basic`
 
+It may reduce performance if there are too many strings, in this case, only mix important strings by filter.
+
+.. seealso:: `Filter mix string` in :doc:`../tutorial/advanced`
+
 .. option:: --assert-call
 
             Assert function is obfuscated
@@ -562,7 +566,7 @@ The function :func:`__assert_armored__` is a builtin function in obfuscated scri
 
 This option neither touches statement ``from import``, nor the module imported by function ``__import__``.
 
-.. option:: --pack <onefile,onedir,FC,DC>
+.. option:: --pack <onefile,onedir,FC,DC,FILENAME.spec>
 
             Obfuscate script first, then pack the obfuscated scripts to bundle
 
@@ -571,7 +575,8 @@ This option neither touches statement ``from import``, nor the module imported b
 
             The old method still works, but it's deprecated.
 
-.. versionchanged:: 8.5.4
+.. versionchanged:: 8.5.4 supports `onefile` and `onedir`
+.. versionchanged:: 8.5.8 supports specfile
 
 Once this option is used, pyarmor will analysis the source of main script, and find all the imported modules and packages which are in the same path of main script. All of these used modules and packages will be obfuscated automatically
 
@@ -589,6 +594,12 @@ Sometimes it need specify option :option:`-r` to make sure all the child package
 PyInstaller_ will ask for confirm if output path exists, if need remove output path siliently, use mode `FC` or `DC`. Here `F` stands for `onefile`, `D` stands for `onedir`, `C` stands for clean output. For example::
 
     $ pyarmor gen --pack FC foo.py
+
+If plain script could be packed by one `.spec` file, pass it to `--pack` to pack the obfuscated script. For example::
+
+    $ pyarmor gen --pack foo.spec -r foo.py joker/
+
+Note that by this way Pyarmor only obfuscates the scripts in the command line, so specify all the scripts and packages need to be obfuscated.
 
 .. seealso:: :doc:`../topic/repack`
 
