@@ -39,10 +39,10 @@ Let's check what happens when the following commands are executed::
     $ cd project
     $ pyarmor gen --pack onefile foo.py
 
-1. Pyarmor first open `foo.py`, then find it need `queens.py` and package `joker`
-2. Then obfuscate all of them to one temporary path `.pyarmor/pack/dist`
-3. Next pyarmor call PyInstaller with plain script `foo.py`, to get all the system packages [#]_ used by `foo.py`, and save all of them to hiddenimports table.
-4. Finally pyarmor call PyInstaller again but with obfuscated scripts and all of hidden imports to generate final bundle.
+1. Pyarmor first call PyInstaller_ to anylysis plain script `foo.py` to find all the imported moduels and packages
+2. Pyarmor find `queens.py` and package `joker` are in the same path of `foo.py`, then obfuscate all of them to one temporary path `.pyarmor/pack/dist` by command line obfuscation options
+3. For the other imported modules and packages, save to hidden imports table
+4. Finally pyarmor call PyInstaller again, pack all obfuscated scripts in `.pyarmor/pack/dist` and all modules and packages in the hidden imports table to final bundle.
 
 Now let's run the final bundle, it's `dist/foo` or `dist/foo.exe`::
 
@@ -54,8 +54,6 @@ If need one folder bundle, just pass `onedir` to pack::
     $ pyarmor gen --pack onedir foo.py
     $ ls dist/foo
     $ dist/foo/foo
-
-.. [#] Python system modules and packages aren't obfuscated
 
 Using specfile
 --------------
@@ -70,12 +68,12 @@ In this case, pass it to :option:`--pack` directly. For example::
     $ pyarmor gen --pack foo.spec -r foo.py joker/
 
 1. Pyarmor obfuscates the scripts list in the command line, save them to `.pyarmor/pack/dist`
-2. Then generates ``foo.patched.spec`` by ``foo.spec``, this patch could replace plain scripts with obfuscated ones in the bundle
+2. Next generates ``foo.patched.spec`` by ``foo.spec``, this patch could replace plain scripts with obfuscated ones in the bundle
 3. Finally call PyInstaller_ to pack bundle by ``foo.patched.spec``
 
 .. note::
 
-   By specfile, only listed scripts are obfuscated. If need obfuscate other used modules and packages, list all of them in command line.
+   By this way, only listed scripts are obfuscated. If need obfuscate other used modules and packages, list all of them in command line.
 
 Checking Obfuscated Scripts Have Been Packed
 --------------------------------------------
