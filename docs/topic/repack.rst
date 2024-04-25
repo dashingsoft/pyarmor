@@ -186,16 +186,8 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
                                 f.read(), a.pure[i][1], 'exec')
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
-    a.pure.append((
-        rtpkg,
-        os.path.join(obfpath, rtpkg, '__init__.py'),
-        'PYMODULE'
-    ))
-    a.binaries.append((
-        os.path.join(rtpkg, rtext),
-        os.path.join(obfpath, rtpkg, rtext),
-        'EXTENSION'
-    ))
+    a.pure.append((rtpkg, os.path.join(obfpath, rtpkg, '__init__.py'), 'PYMODULE'))
+    a.binaries.append((os.path.join(rtpkg, rtext), os.path.join(obfpath, rtpkg, rtext), 'EXTENSION'))
     pyarmor_patcher(srcpath, obfpath)
 
     # Pyarmor patch end.
