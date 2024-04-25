@@ -158,11 +158,18 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
     srcpath = ''
     obfpath = 'obfdist'
 
-    def apply_pyarmor_patch(rtpkg='pyarmor_runtime_000000'):
+    def apply_pyarmor_patch(srcpath, obfpath):
 
         from PyInstaller.compat import is_win, is_cygwin
-        ext = '.pyd' if is_win or is_cygwin else '.so'
-        extpath = os.path.join(rtpkg, 'pyarmor_runtime' + ext)
+        extname = 'pyarmor_runtime' + ('.pyd' if is_win or is_cygwin else '.so')
+
+        from glob import glob
+        rtpkg = glob(os.path.join(obfpath, '*', extname))
+        if len(rtpkg) != 1:
+            raise RuntimeError('No runtime package found')
+        rtpkg = os.path.basename(os.path.dirname(rtpkg[0]))
+
+        extpath = os.path.join(rtpkg, extname)
 
         if hasattr(a.pure, '_code_cache'):
             code_cache = a.pure._code_cache
@@ -194,22 +201,21 @@ Here is an example to pack script ``foo.py`` in the path ``/path/to/src``
         a.pure.append((rtpkg, os.path.join(dest, rtpkg, '__init__.py'), 'PYMODULE'))
         a.binaries.append((extpath, os.path.join(dest, extpath), 'EXTENSION'))
 
-    apply_pyarmor_patch()
+    apply_pyarmor_patch(srcpath, obfpath)
 
     # Pyarmor patch end.
 
     # Before this line
     # pyz = PYZ(...)
 
-* Finally generate bundle by this patched ``foo.spec``, use option `--clean` to to remove all cached files::
+* Finally generate bundle by this patched ``foo.spec``, use option ``--clean`` to to remove all cached files::
 
     $ pyinstaller --clean foo.spec
 
 If following this example, please
 
-* Set ``srcpath`` to relative path, in this example, it's current path
+* Set ``srcpath`` to your path, in this example, it's current path
 * Set ``obfpath`` to your real path, in this example, it's ``obfdist``
-* Replace ``pyarmor_runtime_000000`` with actual name
 
 **how to verify obfuscated scripts have been packed**
 
