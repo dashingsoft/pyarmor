@@ -138,10 +138,10 @@ You need to know how to `using PyInstaller`__ and `using spec file`__, if not, l
 __ https://pyinstaller.org/en/stable/usage.html
 __ https://pyinstaller.org/en/stable/spec-files.html
 
-* First obfuscate the script by Pyarmor [#]_::
+* First obfuscate the script by Pyarmor. List all the scripts and folders need to be obfuscated after main script, other obfuscation options could be used, but no :option:`-i` or :option:`--prefix` [#]_::
 
     $ cd project/
-    $ pyarmor gen -O obfdist -r foo.py joker/
+    $ pyarmor gen -O obfdist -r foo.py util.py joker/
 
 * Then generate ``foo.spec`` by PyInstaller_ [#]_::
 
@@ -229,7 +229,7 @@ If it's not obfuscated, the final bundle will raise error.
 
 .. rubric:: notes
 
-.. [#] Do not use :option:`-i` and :option:`--prefix` to obfuscate the scripts
+.. [#] :option:`-i` or :option:`--prefix` results in runtime package could not be found
 .. [#] Most of the other PyInstaller options could be used here
 
 Packing with PyInstaller Bundle
