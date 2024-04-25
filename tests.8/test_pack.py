@@ -15,6 +15,11 @@ class BaseTestCase(unittest.TestCase):
         self.home = os.path.expanduser('~/.pyarmor')
         self.local_path = '.pyarmor'
         self.default_output = 'dist'
+        self.more_pyi_options = '-i {0} --add-data "{1}{2}mypkg"'.format(
+            'samples/pack/mypkg/logo.ico',
+            'samples/pack/mypkg/data.json',
+            os.pathsep
+        )
 
     def tearDown(self):
         shutil.rmtree(self.local_path, ignore_errors=True)
@@ -48,7 +53,7 @@ class BaseTestCase(unittest.TestCase):
                     '0 1 1 2 3 5 ',
                     'this is foo:  __pyarmor__']
         stdout = check_output(myapp, stderr=STDOUT)
-        self.assertEqual(stdout.decode().strip().split('\n'), expected)
+        self.assertEqual(stdout.decode().strip().split(os.linesep), expected)
 
 
 class UnitTestCases(BaseTestCase):
@@ -87,9 +92,7 @@ class UnitTestCases(BaseTestCase):
         self.verify_bundle('dist/myapp2/myapp2')
 
     def test_onefile_with_options(self):
-        args = ['cfg', 'pack:pyi_options', '=',
-                '-i samples/pack/mypkg/logo.png '
-                '--add-data samples/pack/mypkg/data.json:mypkg']
+        args = ['cfg', 'pack:pyi_options', '=', self.more_pyi_options]
         self.pyarmor_cmd(args)
 
         args = ['gen', '--pack', 'onefile', 'samples/pack/myapp.py']
@@ -97,9 +100,7 @@ class UnitTestCases(BaseTestCase):
         self.verify_bundle('dist/myapp')
 
     def test_onedir_with_options(self):
-        args = ['cfg', 'pack:pyi_options', '=',
-                '-i samples/pack/mypkg/logo.png '
-                '--add-data samples/pack/mypkg/data.json:mypkg']
+        args = ['cfg', 'pack:pyi_options', '=', self.more_pyi_options]
         self.pyarmor_cmd(args)
 
         args = ['gen', '--pack', 'onedir', 'samples/pack/myapp.py']
