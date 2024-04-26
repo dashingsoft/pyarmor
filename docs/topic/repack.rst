@@ -143,9 +143,17 @@ __ https://pyinstaller.org/en/stable/spec-files.html
     $ cd project/
     $ pyarmor gen -O obfdist -r foo.py util.py joker/
 
+  Make sure obfuscated scripts work::
+
+    $ python obfdist/foo.py
+
 * Then generate ``foo.spec`` by PyInstaller_ [#]_::
 
     $ pyi-makespec --onefile foo.py
+
+  Make sure the final bundle works::
+
+    $ dist/foo
 
 * Next patch ``foo.spec`` before line ``pyz = PYZ``, this is major work
 
