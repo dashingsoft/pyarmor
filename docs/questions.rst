@@ -17,11 +17,13 @@ Pyarmor is well document, before ask question, please try the following solution
 
 - If using :command:`pyarmor-7` or Pyarmor < 8.0, please check `Pyarmor 7.x Doc`_
 
-- Check :ref:`the detailed table of contents <mastertoc>`
-
 - If you have not read :doc:`tutorial/getting-started`, read it
 
-- Check :doc:`reference/errors`
+- If need some feature, first check :ref:`the detailed table of contents <mastertoc>`
+
+- If there is error message, check :doc:`reference/errors`
+
+- If obfuscated scripts don't work as expected, make sure you have read :doc:`topic/obfuscated-script`
 
 - If you have trouble in pack, check :doc:`topic/repack`
 
