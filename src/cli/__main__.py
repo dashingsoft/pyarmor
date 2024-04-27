@@ -209,7 +209,7 @@ def check_gen_context(ctx, args):
         raise CliError('--outer conflicts with any -e, --period, -b')
 
     if args.pack:
-        choices = 'auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'
+        choices = 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'
         if args.pack not in choices and not os.path.isfile(args.pack):
             raise CliError('--pack must be an executable file, specfile, '
                            '"onefile" or "onedir"')

@@ -20,7 +20,7 @@ logger = logging.getLogger('repack')
 
 
 def find_packer(mode):
-    if mode in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
+    if mode in ('onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
         return AutoRepacker
 
     if isinstance(mode, str) and mode.endswith('.spec'):
@@ -48,7 +48,7 @@ def autoclean_output(output, autoclean=True):
 # 1. Find all the imported modules and packages, save to hook script
 #
 # 2. Find imported modules and packages in the same path of main
-#    script, and save them to temporary file (all of them will be
+#    script, and save their names to one list (all of them will be
 #    obfuscated automatically)
 #
 spec_patch_code = '''
