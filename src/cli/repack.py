@@ -226,10 +226,10 @@ manual_spec_patch = '''
 
 def apply_pyarmor_patch():
 
-    src = {srcpath}
-    obfdist = {obfpath}
+    srcpath = {srcpath}
+    obfpath = {obfpath}
     pkgname = {rtname}
-    pkgpath = os.path.join(obfdist, pkgname)
+    pkgpath = os.path.join(obfpath, pkgname)
     extpath = os.path.join(pkgname, {extname})
 
     if hasattr(a.pure, '_code_cache'):
@@ -240,8 +240,8 @@ def apply_pyarmor_patch():
 
     count = 0
     for i in range(len(a.scripts)):
-        if a.scripts[i][1].startswith(src):
-            x = a.scripts[i][1].replace(src, obfdist)
+        if a.scripts[i][1].startswith(srcpath):
+            x = a.scripts[i][1].replace(srcpath, obfpath)
             if os.path.exists(x):
                 a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
                 count += 1
@@ -249,14 +249,14 @@ def apply_pyarmor_patch():
         raise RuntimeError('No obfuscated script found')
 
     for i in range(len(a.pure)):
-        if a.pure[i][1].startswith(src):
-            x = a.pure[i][1].replace(src, obfdist)
+        if a.pure[i][1].startswith(srcpath):
+            x = a.pure[i][1].replace(srcpath, obfpath)
             if os.path.exists(x):
                 code_cache.pop(a.pure[i][0], None)
                 a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
     a.pure.append((pkgname, os.path.join(pkgpath, '__init__.py'), 'PYMODULE'))
-    a.binaries.append((extpath, os.path.join(obfdist, extpath), 'EXTENSION'))
+    a.binaries.append((extpath, os.path.join(obfpath, extpath), 'EXTENSION'))
 
 apply_pyarmor_patch()
 
