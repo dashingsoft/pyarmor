@@ -11,7 +11,7 @@ Asking questions in GitHub
 
 Pyarmor provides rich options for different cases, the default option only works for common case. When something is wrong, it may be not bug, but need the right options. Users need spend time learning Pyarmor by documentation or `pyarmor man`, and find the right options for their project. Generally pyarmor team won't learn user's project and tell user which options should be used.
 
-Pyarmor is well document, you needn't read all of them at first, but it's necessary to read :doc:`tutorial/getting-started` which includes essentials concepts. If you spend 10 minutes reading full of it, it may save your 2 hours or more time to solve the usage problems.
+Pyarmor is well document, you needn't read all of them at first, but it's necessary to read :doc:`tutorial/getting-started` which includes essentials concepts. If you spend 10 minutes reading full of it, it may save your several hours to solve the wrong usage problems.
 
 If using :command:`pyarmor-7` or Pyarmor < 8.0, please check `Pyarmor 7.x Doc`_
 
