@@ -7,10 +7,10 @@ import sys
 import tempfile
 
 from fnmatch import fnmatch
-from importlib._bootstrap_external import _code_to_timestamp_pyc
-from subprocess import check_call, check_output, DEVNULL
+from subprocess import check_call, DEVNULL
 
 # Only used by BundleRepacker, they could be removed with deprecated routines
+from importlib._bootstrap_external import _code_to_timestamp_pyc
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
 from PyInstaller.compat import is_darwin, is_linux, is_win
@@ -761,6 +761,7 @@ class BundleRepacker:
     def _fixup_darwin_rtbinary(self, rtbinary, pylib_name):
         '''Unused since Pyarmor 8.3.0'''
         from sys import version_info as pyver
+        from subprocess import check_output
         pylib = os.path.normpath(os.path.join('@rpath', pylib_name))
         output = check_output(['otool', '-L', rtbinary])
         for line in output.splitlines():
