@@ -10,15 +10,357 @@ from fnmatch import fnmatch
 from importlib._bootstrap_external import _code_to_timestamp_pyc
 from subprocess import check_call, check_output, DEVNULL
 
+# Only used by BundleRepacker, they could be removed with deprecated routines
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
-try:
-    from PyInstaller.loader.pyimod02_archive import ZlibArchiveReader
-except ModuleNotFoundError:
-    # Since 5.3
-    from PyInstaller.loader.pyimod01_archive import ZlibArchiveReader
 from PyInstaller.compat import is_darwin, is_linux, is_win
 
+
+logger = logging.getLogger('repack')
+
+
+def find_packer(mode):
+
+    if mode in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
+        return AutoRepacker
+
+    if isinstance(mode, str) and mode.endswith('.spec'):
+        return SpecRepacker
+
+    return BundleRepacker
+
+
+def autoclean_output(output, autoclean=True):
+    if os.path.exists(output) and autoclean:
+        n = len(os.path.abspath(output).split(os.sep))
+        if n < 3:
+            prompt = 'Are you sure to remove path "%s" (y/n)? '
+            choice = input(prompt % output).lower()[:1]
+            if not choice == 'y':
+                return
+        logger.info('clean output path "%s"', output)
+        shutil.rmtree(output)
+
+
+# This patch is used to modify the specfile generate by PyInstaller
+#
+# It has 2 goals:
+#
+# 1. Find all the imported modules and packages
+#
+#    Save them to hook script
+#
+# 2. Search scripts and packages in the path of entry script
+#
+#    All of them will be obfuscated automatically
+#
+spec_patch_code = '''
+import marshal
+import os
+
+from PyInstaller.compat import base_prefix, EXTENSION_SUFFIXES
+from sys import prefix, exec_prefix
+
+exlist = set([base_prefix, prefix, exec_prefix])
+exlist = [os.path.normpath(x) for x in exlist]
+
+src = {src}
+sn = len(src) + 1
+sdir = os.path.relpath(src)
+sdir = '' if sdir == '.' else sdir
+
+hiddenimports = set([])
+plist = set([])
+mlist = []
+
+for name, path, kind in a.pure:
+    if name.startswith('pyi_rth'):
+        continue
+    hiddenimports.add(name)
+    if path.startswith(src) and not any([path.startswith(x) for x in exlist]):
+        if name.find('.') == -1 and os.path.basename(path) != '__init__.py':
+            mlist.append(os.path.join(sdir, path[sn:]))
+        else:
+            pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
+            plist.add(os.path.join(sdir, pkgname))
+
+for name, path, kind in a.binaries:
+    if kind == 'EXTENSION':
+        for x in EXTENSION_SUFFIXES:
+            if name.endswith(x):
+                name = name[:-len(x)]
+                break
+        hiddenimports.add(name.replace(os.sep, '.'))
+
+with open({resfile}, 'wb') as f:
+    marshal.dump(mlist + list(plist), f)
+with open({hookscript}, 'w') as f:
+    f.write("hiddenimports=[%s]" % ", ".join([repr(x) for x in hiddenimports]))
+'''
+
+
+class AutoRepacker:
+    """New repacker to support PyInstaller 6.0+
+
+    Args:
+        ctx: build context
+        mode: onefile or onedir
+        inputs: main script to pack
+        output: path to store final bundle, default is `dist`
+    """
+
+    def __init__(self, ctx, mode, inputs, output):
+        self.ctx = ctx
+        self.script = inputs[0]
+        self.output = os.path.normpath(output) if output else 'dist'
+
+        self.name = os.path.splitext(os.path.basename(self.script))[0]
+        self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
+        self.packpath = os.path.normpath(self.ctx.pack_basepath)
+        self.workpath = os.path.join(self.packpath, 'build')
+        self.pyicmd = [sys.executable, '-m', 'PyInstaller']
+        self.autoclean = mode in ('FC', 'DC')
+        self.modeopt = '-F' if mode in ('onefile', 'F', 'FC') else '-D'
+        self.init_opts()
+
+    def init_opts(self):
+        opts = self.ctx.pyi_options
+        exopts = '--noconfirm', '-y', '--onefile', '-F', '--onedir', '-D'
+        exvalues = '--distpath', '--specpath', '--workpath'
+
+        self.pyiopts = []
+
+        n = 0
+        while n < len(opts):
+            x = opts[n]
+            if x in ('--name', '-n'):
+                self.name = opts[n+1]
+
+            if x in ('--noconfirm', '-y'):
+                self.autoclean = True
+
+            if x in exvalues:
+                n += 1
+            elif x not in exopts:
+                self.pyiopts.append(x)
+            n += 1
+
+    def analysis(self):
+        """Got imported modules and packages by PyInstaller
+
+        Generate hook script
+        Return file/dir list need to be obfuscated
+        """
+        cmdspec = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
+        cmdspec.extend(self.pyiopts)
+        cmdspec.append(self.script)
+        logger.debug('%s', ' '.join(cmdspec))
+        logger.info('call PyInstaller to generate specfile')
+        check_call(cmdspec, stdout=DEVNULL, stderr=DEVNULL)
+
+        specfile = self.name + '.spec'
+        rtname = self.ctx.runtime_package_name
+        resfile = os.path.join(self.packpath, 'resources.list')
+        hookscript = os.path.join(self.packpath, 'hook-%s.py' % rtname)
+        self.patch_specfile(specfile, hookscript, resfile)
+
+        cmdlist = self.pyicmd + ['--clean', '--workpath', self.workpath]
+        cmdlist.append(specfile)
+        logger.debug('%s', ' '.join(cmdlist))
+        logger.info('call PyInstaller to analysis, '
+                    'it may take several minutes ...')
+        check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
+
+        with open(resfile, 'rb') as f:
+            reslist = marshal.load(f)
+
+        resoptions = self.ctx.get_res_options('')
+        excludes = resoptions.get('excludes', '').split()
+        if excludes:
+            reslist = [x for x in reslist
+                       if not any([fnmatch(x, pat) for pat in excludes])]
+        return reslist
+
+    def build(self):
+        """Generate final bundle to output"""
+        obfscript = os.path.join(self.obfpath, os.path.basename(self.script))
+        cmdlist = self.pyicmd + [
+            '--clean',
+            '--distpath', self.output,
+            '--workpath', self.workpath,
+            '--additional-hooks-dir', self.packpath,
+            self.modeopt
+        ]
+        cmdlist.extend(self.pyiopts)
+        cmdlist.append(obfscript)
+
+        logger.debug('%s', ' '.join(cmdlist))
+        logger.info('call PyInstaller to generate final bundle ...\n')
+        check_call(cmdlist)
+        logger.info('')
+        logger.info('the final bundle has been generated to "%s" successfully',
+                    self.output)
+
+    def repack(self, *unused):
+        """Only for compatible with Repacker"""
+        self.build()
+
+    def patch_specfile(self, specfile, hookscript, resfile):
+        lines = []
+        with open(specfile, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.startswith('pyz = PYZ'):
+                    break
+                lines.append(line)
+
+        lines.append(spec_patch_code.format(
+            src=repr(os.path.abspath(os.path.dirname(self.script))),
+            hookscript=repr(os.path.abspath(hookscript)),
+            resfile=repr(os.path.abspath(resfile))))
+
+        with open(specfile, 'w') as f:
+            f.write(''.join(lines))
+
+    def check(self):
+        autoclean_output(self.output, self.autoclean)
+
+
+manual_spec_patch = '''
+# Pyarmor patch start:
+
+def apply_pyarmor_patch():
+
+    src = {srcpath}
+    obfdist = {obfpath}
+    pkgname = {rtname}
+    pkgpath = os.path.join(obfdist, pkgname)
+    extpath = os.path.join(pkgname, {extname})
+
+    if hasattr(a.pure, '_code_cache'):
+        code_cache = a.pure._code_cache
+    else:
+        from PyInstaller.config import CONF
+        code_cache = CONF['code_cache'].get(id(a.pure))
+
+    count = 0
+    for i in range(len(a.scripts)):
+        if a.scripts[i][1].startswith(src):
+            x = a.scripts[i][1].replace(src, obfdist)
+            if os.path.exists(x):
+                a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
+                count += 1
+    if count == 0:
+        raise RuntimeError('No obfuscated script found')
+
+    for i in range(len(a.pure)):
+        if a.pure[i][1].startswith(src):
+            x = a.pure[i][1].replace(src, obfdist)
+            if os.path.exists(x):
+                code_cache.pop(a.pure[i][0], None)
+                a.pure[i] = a.pure[i][0], x, a.pure[i][2]
+
+    a.pure.append((pkgname, os.path.join(pkgpath, '__init__.py'), 'PYMODULE'))
+    a.binaries.append((extpath, os.path.join(obfdist, extpath), 'EXTENSION'))
+
+apply_pyarmor_patch()
+
+# Pyarmor patch end.
+'''
+
+
+class SpecRepacker:
+    """Patch specfile so that it could be used to pack obfuscated scripts
+
+    Args:
+        ctx: build context
+        specfile: specfile need to be patched
+        inputs: main script to pack
+        output: path to store final bundle, default is `dist`
+    """
+
+    def __init__(self, ctx, specfile, inputs, output):
+        self.ctx = ctx
+        self.specfile = specfile
+        self.script = inputs[0]
+        self.output = os.path.normpath(output) if output else 'dist'
+
+        self.pyicmd = [sys.executable, '-m', 'PyInstaller']
+        self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
+
+    def build(self):
+        """Generate patched specfile"""
+        specfile = self.specfile[:-5] + '.patched.spec'
+        logger.info('generate patched specfile "%s"', specfile)
+
+        rtpkg = self.ctx.runtime_package_name
+        for x in os.listdir(os.path.join(self.obfpath, rtpkg)):
+            if x.startswith('pyarmor_runtime'):
+                extname = x
+                break
+        else:
+            raise RuntimeError('no found extension `pyarmor_runtime`')
+
+        patch = manual_spec_patch.format(
+            srcpath=repr(os.path.abspath(os.path.dirname(self.script))),
+            obfpath=repr(os.path.abspath(self.obfpath)),
+            rtname=repr(self.ctx.runtime_package_name),
+            extname=repr(extname))
+
+        with open(self.specfile, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        n = 0
+        for line in lines:
+            if line.startswith('pyz = PYZ'):
+                lines[n:n] = [patch]
+                break
+            n += 1
+        else:
+            logger.error('no found line starts with "pyz = PYZ"')
+            raise RuntimeError('unsupported specfile "%s"' % self.specfile)
+
+        with open(specfile, 'w', encoding='utf-8') as f:
+            f.write(''.join(lines))
+
+        cmdlist = self.pyicmd + [
+            '--clean',
+            '--distpath', self.output,
+            '--workpath', os.path.join(self.ctx.pack_basepath, 'build'),
+            specfile
+        ]
+        logger.info('call PyInstaller to generate final bundle ...'
+                    '\n\n%s\n', ' '.join(cmdlist))
+        check_call(cmdlist)
+        logger.info('')
+        logger.info('the final bundle has been generated to "%s" successfully',
+                    self.output)
+
+    def repack(self, *unused):
+        """Only for compatible with Repacker"""
+        self.build()
+
+    def check(self):
+        options = self.ctx.pyi_options
+        autoclean = '-y' in options or '--noconfirm' in options
+        autoclean_output(self.output, autoclean)
+
+
+##############################################################
+#
+# Deprecated routines
+#
+# This is the old method to repack executable generated by PyInstaller
+#
+# Why is it deprecated?
+#
+# 1. It need hack PyInstaller bundle structure which may be changed in
+#    different PyInstaller version.
+#
+#    Actually, it doesn't work for PyInstaller 5.13+ because of this
+#
+# 2. Not friend to junior users
+#
+##
 
 # Type codes for PYZ PYZ entries
 PYZ_ITEM_MODULE = 0
@@ -40,32 +382,6 @@ PKG_ITEM_SPLASH = 'l'  # splash resources
 
 # Path suffix for extracted contents
 EXTRACT_SUFFIX = '_extracted'
-
-
-logger = logging.getLogger('repack')
-
-
-def find_packer(mode):
-
-    if mode in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
-        return Repacker6
-
-    if isinstance(mode, str) and mode.endswith('.spec'):
-        return Patcher
-
-    return Repacker
-
-
-def autoclean_output(output, autoclean=True):
-    if os.path.exists(output) and autoclean:
-        n = len(os.path.abspath(output).split(os.sep))
-        if n < 3:
-            prompt = 'Are you sure to remove path "%s" (y/n)? '
-            choice = input(prompt % output).lower()[:1]
-            if not choice == 'y':
-                return
-        logger.info('clean output path "%s"', output)
-        shutil.rmtree(output)
 
 
 class CArchiveReader2(CArchiveReader):
@@ -116,6 +432,12 @@ class CArchiveReader2(CArchiveReader):
     def open_pyzarchive(self, name):
         if hasattr(self, 'open_embedded_archive'):
             return self.open_embedded_archive(name)
+
+        try:
+            from PyInstaller.loader.pyimod02_archive import ZlibArchiveReader
+        except ModuleNotFoundError:
+            # Since 5.3
+            from PyInstaller.loader.pyimod01_archive import ZlibArchiveReader
 
         ndx = self.toc.find(name)
         (dpos, dlen, ulen, flag, typcd, nm) = self.toc.get(ndx)
@@ -330,7 +652,8 @@ def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
     logger.info('generate patched bundle "%s" successfully', executable)
 
 
-class Repacker:
+class BundleRepacker:
+    """Deprecated method since v8.5.8"""
 
     def __init__(self, ctx, executable, inputs=None, output=None):
         self.executable = executable
@@ -460,307 +783,3 @@ class Repacker:
             check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
         except Exception as e:
             logger.warning('%s', e)
-
-
-# This patch is used to modify the specfile generate by PyInstaller
-#
-# It has 2 goals:
-#
-# 1. Find all the imported modules and packages
-#
-#    Save them to hook script
-#
-# 2. Search scripts and packages in the path of entry script
-#
-#    All of them will be obfuscated automatically
-#
-spec_patch_code = '''
-import marshal
-import os
-
-from PyInstaller.compat import base_prefix, EXTENSION_SUFFIXES
-from sys import prefix, exec_prefix
-
-exlist = set([base_prefix, prefix, exec_prefix])
-exlist = [os.path.normpath(x) for x in exlist]
-
-src = {src}
-sn = len(src) + 1
-sdir = os.path.relpath(src)
-sdir = '' if sdir == '.' else sdir
-
-hiddenimports = set([])
-plist = set([])
-mlist = []
-
-for name, path, kind in a.pure:
-    if name.startswith('pyi_rth'):
-        continue
-    hiddenimports.add(name)
-    if path.startswith(src) and not any([path.startswith(x) for x in exlist]):
-        if name.find('.') == -1 and os.path.basename(path) != '__init__.py':
-            mlist.append(os.path.join(sdir, path[sn:]))
-        else:
-            pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
-            plist.add(os.path.join(sdir, pkgname))
-
-for name, path, kind in a.binaries:
-    if kind == 'EXTENSION':
-        for x in EXTENSION_SUFFIXES:
-            if name.endswith(x):
-                name = name[:-len(x)]
-                break
-        hiddenimports.add(name.replace(os.sep, '.'))
-
-with open({resfile}, 'wb') as f:
-    marshal.dump(mlist + list(plist), f)
-with open({hookscript}, 'w') as f:
-    f.write("hiddenimports=[%s]" % ", ".join([repr(x) for x in hiddenimports]))
-'''
-
-
-class Repacker6:
-    """New repacker to support PyInstaller 6.0+
-
-    Args:
-        ctx: build context
-        mode: onefile or onedir
-        inputs: main script to pack
-        output: path to store final bundle, default is `dist`
-    """
-
-    def __init__(self, ctx, mode, inputs, output):
-        self.ctx = ctx
-        self.inputs = inputs
-        self.output = os.path.normpath(output) if output else 'dist'
-
-        self.script = self.inputs[0]
-        self.name = os.path.splitext(os.path.basename(self.script))[0]
-        self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
-        self.packpath = os.path.normpath(self.ctx.pack_basepath)
-        self.workpath = os.path.join(self.packpath, 'build')
-        self.pyicmd = [sys.executable, '-m', 'PyInstaller']
-        self.autoclean = mode in ('FC', 'DC')
-        self.modeopt = '-F' if mode in ('onefile', 'F', 'FC') else '-D'
-        self.init_opts()
-
-    def init_opts(self):
-        opts = self.ctx.pyi_options
-        exopts = '--noconfirm', '-y', '--onefile', '-F', '--onedir', '-D'
-        exvalues = '--distpath', '--specpath', '--workpath'
-
-        self.pyiopts = []
-
-        n = 0
-        while n < len(opts):
-            x = opts[n]
-            if x in ('--name', '-n'):
-                self.name = opts[n+1]
-
-            if x in ('--noconfirm', '-y'):
-                self.autoclean = True
-
-            if x in exvalues:
-                n += 1
-            elif x not in exopts:
-                self.pyiopts.append(x)
-            n += 1
-
-    def analysis(self):
-        """Got imported modules and packages by PyInstaller
-
-        Generate hook script
-        Return file/dir list need to be obfuscated
-        """
-        cmdspec = [sys.executable, '-m', 'PyInstaller.utils.cliutils.makespec']
-        cmdspec.extend(self.pyiopts)
-        cmdspec.append(self.script)
-        logger.debug('%s', ' '.join(cmdspec))
-        logger.info('call PyInstaller to generate specfile')
-        check_call(cmdspec, stdout=DEVNULL, stderr=DEVNULL)
-
-        specfile = self.name + '.spec'
-        rtname = self.ctx.runtime_package_name
-        resfile = os.path.join(self.packpath, 'resources.list')
-        hookscript = os.path.join(self.packpath, 'hook-%s.py' % rtname)
-        self.patch_specfile(specfile, hookscript, resfile)
-
-        cmdlist = self.pyicmd + ['--clean', '--workpath', self.workpath]
-        cmdlist.append(specfile)
-        logger.debug('%s', ' '.join(cmdlist))
-        logger.info('call PyInstaller to analysis, '
-                    'it may take several minutes ...')
-        check_call(cmdlist, stdout=DEVNULL, stderr=DEVNULL)
-
-        with open(resfile, 'rb') as f:
-            reslist = marshal.load(f)
-
-        resoptions = self.ctx.get_res_options('')
-        excludes = resoptions.get('excludes', '').split()
-        if excludes:
-            reslist = [x for x in reslist
-                       if not any([fnmatch(x, pat) for pat in excludes])]
-        return reslist
-
-    def build(self):
-        """Generate final bundle to output"""
-        obfscript = os.path.join(self.obfpath, os.path.basename(self.script))
-        cmdlist = self.pyicmd + [
-            '--clean',
-            '--distpath', self.output,
-            '--workpath', self.workpath,
-            '--additional-hooks-dir', self.packpath,
-            self.modeopt
-        ]
-        cmdlist.extend(self.pyiopts)
-        cmdlist.append(obfscript)
-
-        logger.debug('%s', ' '.join(cmdlist))
-        logger.info('call PyInstaller to generate final bundle ...\n')
-        check_call(cmdlist)
-        logger.info('')
-        logger.info('the final bundle has been generated to "%s" successfully',
-                    self.output)
-
-    def repack(self, *unused):
-        """Only for compatible with Repacker"""
-        self.build()
-
-    def patch_specfile(self, specfile, hookscript, resfile):
-        lines = []
-        with open(specfile, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.startswith('pyz = PYZ'):
-                    break
-                lines.append(line)
-
-        lines.append(spec_patch_code.format(
-            src=repr(os.path.abspath(os.path.dirname(self.script))),
-            hookscript=repr(os.path.abspath(hookscript)),
-            resfile=repr(os.path.abspath(resfile))))
-
-        with open(specfile, 'w') as f:
-            f.write(''.join(lines))
-
-    def check(self):
-        autoclean_output(self.output, self.autoclean)
-
-
-manual_spec_patch = '''
-# Pyarmor patch start:
-
-def apply_pyarmor_patch():
-
-    src = {srcpath}
-    obfdist = {obfpath}
-    pkgname = {rtname}
-    pkgpath = os.path.join(obfdist, pkgname)
-    extpath = os.path.join(pkgname, {extname})
-
-    if hasattr(a.pure, '_code_cache'):
-        code_cache = a.pure._code_cache
-    else:
-        from PyInstaller.config import CONF
-        code_cache = CONF['code_cache'].get(id(a.pure))
-
-    count = 0
-    for i in range(len(a.scripts)):
-        if a.scripts[i][1].startswith(src):
-            x = a.scripts[i][1].replace(src, obfdist)
-            if os.path.exists(x):
-                a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
-                count += 1
-    if count == 0:
-        raise RuntimeError('No obfuscated script found')
-
-    for i in range(len(a.pure)):
-        if a.pure[i][1].startswith(src):
-            x = a.pure[i][1].replace(src, obfdist)
-            if os.path.exists(x):
-                code_cache.pop(a.pure[i][0], None)
-                a.pure[i] = a.pure[i][0], x, a.pure[i][2]
-
-    a.pure.append((pkgname, os.path.join(pkgpath, '__init__.py'), 'PYMODULE'))
-    a.binaries.append((extpath, os.path.join(obfdist, extpath), 'EXTENSION'))
-
-apply_pyarmor_patch()
-
-# Pyarmor patch end.
-'''
-
-
-class Patcher:
-    """Patch specfile so that it could be used to pack obfuscated scripts
-
-    Args:
-        ctx: build context
-        specfile: specfile need to be patched
-        inputs: main script to pack
-        output: path to store final bundle, default is `dist`
-    """
-
-    def __init__(self, ctx, specfile, inputs, output):
-        self.ctx = ctx
-        self.specfile = specfile
-        self.script = inputs[0]
-        self.output = os.path.normpath(output) if output else 'dist'
-
-        self.pyicmd = [sys.executable, '-m', 'PyInstaller']
-        self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
-
-    def build(self):
-        """Generate patched specfile"""
-        specfile = self.specfile[:-5] + '.patched.spec'
-        logger.info('generate patched specfile "%s"', specfile)
-
-        rtpkg = self.ctx.runtime_package_name
-        for x in os.listdir(os.path.join(self.obfpath, rtpkg)):
-            if x.startswith('pyarmor_runtime'):
-                extname = x
-                break
-        else:
-            raise RuntimeError('no found extension `pyarmor_runtime`')
-
-        patch = manual_spec_patch.format(
-            srcpath=repr(os.path.abspath(os.path.dirname(self.script))),
-            obfpath=repr(os.path.abspath(self.obfpath)),
-            rtname=repr(self.ctx.runtime_package_name),
-            extname=repr(extname))
-
-        with open(self.specfile, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-
-        n = 0
-        for line in lines:
-            if line.startswith('pyz = PYZ'):
-                lines[n:n] = [patch]
-                break
-            n += 1
-        else:
-            logger.error('no found line starts with "pyz = PYZ"')
-            raise RuntimeError('unsupported specfile "%s"' % self.specfile)
-
-        with open(specfile, 'w', encoding='utf-8') as f:
-            f.write(''.join(lines))
-
-        cmdlist = self.pyicmd + [
-            '--clean',
-            '--distpath', self.output,
-            '--workpath', os.path.join(self.ctx.pack_basepath, 'build'),
-            specfile
-        ]
-        logger.info('call PyInstaller to generate final bundle ...'
-                    '\n\n%s\n', ' '.join(cmdlist))
-        check_call(cmdlist)
-        logger.info('')
-        logger.info('the final bundle has been generated to "%s" successfully',
-                    self.output)
-
-    def repack(self, *unused):
-        """Only for compatible with Repacker"""
-        self.build()
-
-    def check(self):
-        options = self.ctx.pyi_options
-        autoclean = '-y' in options or '--noconfirm' in options
-        autoclean_output(self.output, autoclean)
