@@ -232,22 +232,10 @@ def cmd_gen(ctx, args):
         return _cmd_gen_key(builder, options)
     elif args.inputs[0].lower() in ('runtime', 'run', 'r'):
         _cmd_gen_runtime(builder, options)
-    elif args.pack in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
-        from .repack import Repacker6
-        packer = Repacker6(ctx, args.pack, options['inputs'], args.output)
-        packer.check()
-        builder.process(options, packer)
-        Plugin.post_build(ctx, pack=args.pack)
-    elif isinstance(args.pack, str) and args.pack.endswith('.spec'):
-        from .repack import Patcher
-        packer = Patcher(ctx, args.pack, args.inputs)
-        packer.check()
-        builder.process(options, packer)
-        Plugin.post_build(ctx, pack=args.pack)
     elif args.pack:
-        from .repack import Repacker
-        codesign = ctx.cfg['pack'].get('codesign_identify', None)
-        packer = Repacker(args.pack, ctx.pack_basepath, codesign=codesign)
+        from .repack import find_packer
+        Repacker = find_packer(args.pack)
+        packer = Repacker(ctx, args.pack, options['inputs'], args.output)
         packer.check()
         builder.process(options, packer=packer)
         Plugin.post_build(ctx, pack=args.pack)

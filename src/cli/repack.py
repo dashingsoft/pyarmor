@@ -45,6 +45,29 @@ EXTRACT_SUFFIX = '_extracted'
 logger = logging.getLogger('repack')
 
 
+def find_packer(mode):
+
+    if mode in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
+        return Repacker6
+
+    if isinstance(mode, str) and mode.endswith('.spec'):
+        return Patcher
+
+    return Repacker
+
+
+def autoclean_output(output, autoclean=True):
+    if os.path.exists(output) and autoclean:
+        n = len(os.path.abspath(output).split(os.sep))
+        if n < 3:
+            prompt = 'Are you sure to remove path "%s" (y/n)? '
+            choice = input(prompt % output).lower()[:1]
+            if not choice == 'y':
+                return
+        logger.info('clean output path "%s"', output)
+        shutil.rmtree(output)
+
+
 class CArchiveReader2(CArchiveReader):
 
     def find_magic_pattern(self, fp, magic_pattern):
@@ -309,11 +332,11 @@ def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
 
 class Repacker:
 
-    def __init__(self, executable, buildpath, codesign=None):
+    def __init__(self, ctx, executable, inputs=None, output=None):
         self.executable = executable
-        self.buildpath = buildpath
-        self.codesign = codesign
-        self.extract_carchive(executable, buildpath)
+        self.buildpath = ctx.pack_basepath
+        self.codesign = ctx.cfg['pack'].get('codesign_identify', None)
+        self.extract_carchive(executable, self.buildpath)
 
     def check(self):
         try:
@@ -534,6 +557,9 @@ class Repacker6:
             if x in ('--name', '-n'):
                 self.name = opts[n+1]
 
+            if x in ('--noconfirm', '-y'):
+                self.autoclean = True
+
             if x in exvalues:
                 n += 1
             elif x not in exopts:
@@ -617,15 +643,7 @@ class Repacker6:
             f.write(''.join(lines))
 
     def check(self):
-        if os.path.exists(self.output) and self.autoclean:
-            n = len(os.path.abspath(self.output).split(os.sep))
-            if n < 3:
-                prompt = 'Are you sure to remove path "%s" (y/n)? '
-                choice = input(prompt % self.output).lower()[:1]
-                if not choice == 'y':
-                    return
-            logger.info('clean output path "%s"', self.output)
-            shutil.rmtree(self.output)
+        autoclean_output(self.output, self.autoclean)
 
 
 manual_spec_patch = '''
@@ -677,12 +695,17 @@ class Patcher:
     Args:
         ctx: build context
         specfile: specfile need to be patched
+        inputs: main script to pack
+        output: path to store final bundle, default is `dist`
     """
 
-    def __init__(self, ctx, specfile, inputs):
+    def __init__(self, ctx, specfile, inputs, output):
         self.ctx = ctx
         self.specfile = specfile
         self.script = inputs[0]
+        self.output = os.path.normpath(output) if output else 'dist'
+
+        self.pyicmd = [sys.executable, '-m', 'PyInstaller']
         self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
 
     def build(self):
@@ -720,18 +743,24 @@ class Patcher:
         with open(specfile, 'w', encoding='utf-8') as f:
             f.write(''.join(lines))
 
-        workpath = os.path.join(self.ctx.pack_basepath, 'build')
-        cmdlist = [sys.executable, '-m', 'PyInstaller', '--clean',
-                   '--workpath', workpath, specfile]
+        cmdlist = self.pyicmd + [
+            '--clean',
+            '--distpath', self.output,
+            '--workpath', os.path.join(self.ctx.pack_basepath, 'build'),
+            specfile
+        ]
         logger.info('call PyInstaller to generate final bundle ...'
                     '\n\n%s\n', ' '.join(cmdlist))
         check_call(cmdlist)
         logger.info('')
-        logger.info('the final bundle has been generated successfully')
+        logger.info('the final bundle has been generated to "%s" successfully',
+                    self.output)
 
     def repack(self, *unused):
         """Only for compatible with Repacker"""
         self.build()
 
     def check(self):
-        pass
+        options = self.ctx.pyi_options
+        autoclean = '-y' in options or '--noconfirm' in options
+        autoclean_output(self.output, autoclean)
