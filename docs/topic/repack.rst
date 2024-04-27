@@ -226,9 +226,7 @@ If following this example, please
 
 **how to verify obfuscated scripts have been packed**
 
-Inserting some print statements in the ``foo.spec`` to print which script is replaced, or add some code only works in the obfuscated script.
-
-For example, add one line in the main script ``foo.py``
+Insert debug code in the main script or imported modules and packages. For example
 
 .. code-block:: python
 
