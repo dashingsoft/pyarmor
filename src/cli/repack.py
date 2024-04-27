@@ -265,7 +265,7 @@ apply_pyarmor_patch()
 
 
 class SpecRepacker:
-    """Patch specfile so that it could be used to pack obfuscated scripts
+    """Patch specfile and use it to pack obfuscated scripts
 
     Args:
         ctx: build context
@@ -284,7 +284,7 @@ class SpecRepacker:
         self.obfpath = os.path.normpath(self.ctx.pack_obfpath)
 
     def build(self):
-        """Generate patched specfile"""
+        """Generate patched specfile and pack obfuscated scripts"""
         specfile = self.specfile[:-5] + '.patched.spec'
         logger.info('generate patched specfile "%s"', specfile)
 
