@@ -156,13 +156,10 @@ class Builder(object):
         finder = Finder(self.ctx)
         finder.process()
 
-        if packer:
-            if options.get('self_contained'):
-                finder.process_extra(packer.contents)
-            if hasattr(packer, 'analysis'):
-                auto_resources = packer.analysis()
-                logger.info('find extra resources: %s', auto_resources)
-                finder.append(auto_resources)
+        if packer and hasattr(packer, 'analysis'):
+            auto_resources = packer.analysis()
+            logger.info('find extra resources: %s', auto_resources)
+            finder.append(auto_resources)
 
         Pytransform3.pre_build(self.ctx)
 
@@ -177,6 +174,3 @@ class Builder(object):
         logger.info('obfuscate scripts OK')
 
         Pytransform3.post_build(self.ctx)
-
-        if packer:
-            packer.repack(output, self.ctx.runtime_package_name)

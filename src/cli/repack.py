@@ -201,10 +201,6 @@ class AutoRepacker:
         logger.info('the final bundle has been generated to "%s" successfully',
                     self.output)
 
-    def repack(self, *unused):
-        """Only for compatible with Repacker"""
-        self.build()
-
     def patch_specfile(self, specfile, hookscript, resfile):
         lines = []
         with open(specfile, 'r', encoding='utf-8') as f:
@@ -334,10 +330,6 @@ class SpecRepacker:
         logger.info('')
         logger.info('the final bundle has been generated to "%s" successfully',
                     self.output)
-
-    def repack(self, *unused):
-        """Only for compatible with Repacker"""
-        self.build()
 
     def check(self):
         options = self.ctx.pyi_options
@@ -655,8 +647,10 @@ def repack_executable(executable, buildpath, obfpath, rtentry, codesign=None):
 class BundleRepacker:
     """Deprecated method since v8.5.8"""
 
-    def __init__(self, ctx, executable, inputs=None, output=None):
+    def __init__(self, ctx, executable, inputs, output):
+        self.ctx = ctx
         self.executable = executable
+        self.output = os.path.normpath(output) if output else 'dist'
         self.buildpath = ctx.pack_basepath
         self.codesign = ctx.cfg['pack'].get('codesign_identify', None)
         self.extract_carchive(executable, self.buildpath)
@@ -706,6 +700,9 @@ class BundleRepacker:
             x.name == 'base_library.zip'
             for x in os.scandir(os.path.dirname(executable))])
         logger.debug('one file mode is %s', bool(self.one_file_mode))
+
+    def build(self):
+        self.repack(self.output, self.ctx.runtime_package_name)
 
     def repack(self, obfpath, rtname, entry=None):
         buildpath = self.buildpath
