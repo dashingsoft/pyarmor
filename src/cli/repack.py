@@ -20,7 +20,6 @@ logger = logging.getLogger('repack')
 
 
 def find_packer(mode):
-
     if mode in ('auto', 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'):
         return AutoRepacker
 
@@ -44,15 +43,13 @@ def autoclean_output(output, autoclean=True):
 
 # This patch is used to modify the specfile generate by PyInstaller
 #
-# It has 2 goals:
+# It mainly does:
 #
-# 1. Find all the imported modules and packages
+# 1. Find all the imported modules and packages, save to hook script
 #
-#    Save them to hook script
-#
-# 2. Search scripts and packages in the path of entry script
-#
-#    All of them will be obfuscated automatically
+# 2. Find imported modules and packages in the same path of main
+#    script, and save them to temporary file (all of them will be
+#    obfuscated automatically)
 #
 spec_patch_code = '''
 import marshal
@@ -124,11 +121,11 @@ class AutoRepacker:
         self.init_opts()
 
     def init_opts(self):
+        self.pyiopts = []
+
         opts = self.ctx.pyi_options
         exopts = '--noconfirm', '-y', '--onefile', '-F', '--onedir', '-D'
         exvalues = '--distpath', '--specpath', '--workpath'
-
-        self.pyiopts = []
 
         n = 0
         while n < len(opts):
@@ -208,13 +205,16 @@ class AutoRepacker:
                 if line.startswith('pyz = PYZ'):
                     break
                 lines.append(line)
+            else:
+                logger.error('no found line starts with "pyz = PYZ"')
+                raise RuntimeError('unsupported specfile "%s"' % specfile)
 
         lines.append(spec_patch_code.format(
             src=repr(os.path.abspath(os.path.dirname(self.script))),
             hookscript=repr(os.path.abspath(hookscript)),
             resfile=repr(os.path.abspath(resfile))))
 
-        with open(specfile, 'w') as f:
+        with open(specfile, 'w', encoding='utf-8') as f:
             f.write(''.join(lines))
 
     def check(self):
