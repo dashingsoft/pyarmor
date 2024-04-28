@@ -192,7 +192,7 @@ __ https://pyinstaller.org/en/stable/spec-files.html
         count = 0
         for i in range(len(a.scripts)):
             if os.path.normcase(a.scripts[i][1]).startswith(src):
-                x = os.path.join(obf + a.scripts[i][1][n:])
+                x = os.path.join(obf, a.scripts[i][1][n:])
                 if os.path.exists(x):
                     a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
                     count += 1
@@ -201,7 +201,7 @@ __ https://pyinstaller.org/en/stable/spec-files.html
 
         for i in range(len(a.pure)):
             if os.path.normcase(a.pure[i][1]).startswith(src):
-                x = os.path.join(obf + a.pure[i][1][n:])
+                x = os.path.join(obf, a.pure[i][1][n:])
                 if os.path.exists(x):
                     code_cache.pop(a.pure[i][0], None)
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
