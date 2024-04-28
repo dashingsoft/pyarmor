@@ -238,13 +238,13 @@ def apply_pyarmor_patch():
         from PyInstaller.config import CONF
         code_cache = CONF['code_cache'].get(id(a.pure))
 
-    srcpath = os.path.normcase(srcpath)
-    nsrc = len(srcpath) + 1
+    src = os.path.normcase(srcpath)
+    n = len(src) + 1
 
     count = 0
     for i in range(len(a.scripts)):
-        if os.path.normcase(a.scripts[i][1]).startswith(srcpath):
-            x = os.path.join(obfpath + a.scripts[i][1][nsrc:])
+        if os.path.normcase(a.scripts[i][1]).startswith(src):
+            x = os.path.join(obfpath + a.scripts[i][1][n:])
             if os.path.exists(x):
                 a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
                 count += 1
@@ -252,8 +252,8 @@ def apply_pyarmor_patch():
         raise RuntimeError('No obfuscated script found')
 
     for i in range(len(a.pure)):
-        if os.path.normcase(a.pure[i][1]).startswith(srcpath):
-            x = os.path.join(obf + a.pure[i][1][nsrc:])
+        if os.path.normcase(a.pure[i][1]).startswith(src):
+            x = os.path.join(obfpath + a.pure[i][1][n:])
             if os.path.exists(x):
                 code_cache.pop(a.pure[i][0], None)
                 a.pure[i] = a.pure[i][0], x, a.pure[i][2]
