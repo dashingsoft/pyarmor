@@ -185,13 +185,14 @@ __ https://pyinstaller.org/en/stable/spec-files.html
             code_cache = CONF['code_cache'].get(id(a.pure))
 
         # Make sure both of them are absolute paths
-        src = os.path.abspath(srcpath)
+        src = os.path.normpath(os.path.abspath(srcpath))
         obf = os.path.abspath(obfpath)
+        n = len(src) + 1
 
         count = 0
         for i in range(len(a.scripts)):
-            if a.scripts[i][1].startswith(src):
-                x = a.scripts[i][1].replace(src, obf)
+            if os.path.normcase(a.scripts[i][1]).startswith(src):
+                x = os.path.join(obf + a.scripts[i][1][n:])
                 if os.path.exists(x):
                     a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
                     count += 1
@@ -199,8 +200,8 @@ __ https://pyinstaller.org/en/stable/spec-files.html
             raise RuntimeError('No obfuscated script found')
 
         for i in range(len(a.pure)):
-            if a.pure[i][1].startswith(src):
-                x = a.pure[i][1].replace(src, obf)
+            if os.path.normcase(a.pure[i][1]).startswith(src):
+                x = os.path.join(obf + a.pure[i][1][n:])
                 if os.path.exists(x):
                     code_cache.pop(a.pure[i][0], None)
                     a.pure[i] = a.pure[i][0], x, a.pure[i][2]
