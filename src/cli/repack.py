@@ -62,11 +62,14 @@ from fnmatch import fnmatch
 exlist = set([base_prefix, prefix, exec_prefix])
 expats = [os.path.join(os.path.normpath(x), '*') for x in exlist]
 
-src = {src}
-sn = len(src) + 1
+src = {src!r}
+resfile = {resfile!r}
+hookscript = {hookscript!r}
+
+nsrc = len(src) + 1
 rsrc = os.path.relpath(src)
 rsrc = '' if rsrc == '.' else rsrc
-srcpat = os.path.join(src, '*')
+psrc = os.path.join(src, '*')
 
 hiddenimports = set([])
 plist = set([])
@@ -76,11 +79,11 @@ for name, path, kind in a.pure:
     if name.startswith('pyi_rth'):
         continue
     hiddenimports.add(name)
-    if fnmatch(path, srcpat) and not any([fnmatch(path, x) for x in expats]):
+    if fnmatch(path, psrc) and not any([fnmatch(path, x) for x in expats]):
         if name.find('.') == -1 and os.path.basename(path) != '__init__.py':
-            mlist.append(os.path.join(rsrc, path[sn:]))
+            mlist.append(os.path.join(rsrc, path[nsrc:]))
         else:
-            pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
+            pkgname = os.path.dirname(path[nsrc:]).split(os.sep)[0]
             plist.add(os.path.join(rsrc, pkgname))
 
 for name, path, kind in a.binaries:
@@ -91,9 +94,9 @@ for name, path, kind in a.binaries:
                 break
         hiddenimports.add(name.replace(os.sep, '.'))
 
-with open({resfile}, 'wb') as f:
+with open(resfile, 'wb') as f:
     marshal.dump(mlist + list(plist), f)
-with open({hookscript}, 'w') as f:
+with open(hookscript, 'w') as f:
     f.write("hiddenimports=[%s]" % ", ".join([repr(x) for x in hiddenimports]))
 '''
 
@@ -212,9 +215,9 @@ class AutoRepacker:
                 raise RuntimeError('unsupported specfile "%s"' % specfile)
 
         lines.append(spec_patch_code.format(
-            src=repr(os.path.abspath(os.path.dirname(self.script))),
-            hookscript=repr(os.path.abspath(hookscript)),
-            resfile=repr(os.path.abspath(resfile))))
+            src=os.path.abspath(os.path.dirname(self.script)),
+            hookscript=os.path.abspath(hookscript),
+            resfile=os.path.abspath(resfile)))
 
         with open(specfile, 'w', encoding='utf-8') as f:
             f.write(''.join(lines))
@@ -228,11 +231,11 @@ manual_spec_patch = '''
 
 def apply_pyarmor_patch():
 
-    srcpath = {srcpath}
-    obfpath = {obfpath}
-    pkgname = {rtname}
+    srcpath = {srcpath!r}
+    obfpath = {obfpath!r}
+    pkgname = {rtname!r}
     pkgpath = os.path.join(obfpath, pkgname)
-    extpath = os.path.join(pkgname, {extname})
+    extpath = os.path.join(pkgname, {extname!r})
 
     if hasattr(a.pure, '_code_cache'):
         code_cache = a.pure._code_cache
@@ -240,25 +243,26 @@ def apply_pyarmor_patch():
         from PyInstaller.config import CONF
         code_cache = CONF['code_cache'].get(id(a.pure))
 
-    src = os.path.normcase(srcpath)
-    n = len(src) + 1
+    srclist = [os.path.normcase(x) for x in srcpath]
+    def match_obfuscated_script(orgpath):
+        for x in srclist:
+            if os.path.normcase(orgpath).startswith(x):
+                return os.path.join(obfpath, orgpath[len(x)+1:])
 
     count = 0
     for i in range(len(a.scripts)):
-        if os.path.normcase(a.scripts[i][1]).startswith(src):
-            x = os.path.join(obfpath, a.scripts[i][1][n:])
-            if os.path.exists(x):
-                a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
-                count += 1
+        x = match_obfuscated_script(a.scripts[i][1])
+        if x and os.path.exists(x):
+            a.scripts[i] = a.scripts[i][0], x, a.scripts[i][2]
+            count += 1
     if count == 0:
         raise RuntimeError('No obfuscated script found')
 
     for i in range(len(a.pure)):
-        if os.path.normcase(a.pure[i][1]).startswith(src):
-            x = os.path.join(obfpath, a.pure[i][1][n:])
-            if os.path.exists(x):
-                code_cache.pop(a.pure[i][0], None)
-                a.pure[i] = a.pure[i][0], x, a.pure[i][2]
+        x = match_obfuscated_script(a.pure[i][1])
+        if x and os.path.exists(x):
+            code_cache.pop(a.pure[i][0], None)
+            a.pure[i] = a.pure[i][0], x, a.pure[i][2]
 
     a.pure.append((pkgname, os.path.join(pkgpath, '__init__.py'), 'PYMODULE'))
     a.binaries.append((extpath, os.path.join(obfpath, extpath), 'EXTENSION'))
@@ -302,10 +306,10 @@ class SpecRepacker:
             raise RuntimeError('no found extension `pyarmor_runtime`')
 
         patch = manual_spec_patch.format(
-            srcpath=repr(os.path.abspath(os.path.dirname(self.script))),
-            obfpath=repr(os.path.abspath(self.obfpath)),
-            rtname=repr(self.ctx.runtime_package_name),
-            extname=repr(extname))
+            srcpath=[os.path.abspath(os.path.dirname(self.script))],
+            obfpath=os.path.abspath(self.obfpath),
+            rtname=self.ctx.runtime_package_name,
+            extname=extname)
 
         with open(self.specfile, 'r', encoding='utf-8') as f:
             lines = f.readlines()
