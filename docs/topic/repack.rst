@@ -108,6 +108,10 @@ Append another option::
 
     $ pyarmor cfg pack:pyi_options + " --add-data joker/config.json:joker"
 
+In Windows, maybe need use ``;`` as path separator instead of ``:``::
+
+    C:/User/test> pyarmor cfg pack:pyi_options + "--add-data joker/config.json;joker"
+
 All of them could be done by one command::
 
     $ pyarmor cfg pack:pyi_options = " -w  -i favion.ico --add-data joker/config.json:joker"
