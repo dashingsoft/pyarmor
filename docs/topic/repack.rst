@@ -185,7 +185,7 @@ __ https://pyinstaller.org/en/stable/spec-files.html
             code_cache = CONF['code_cache'].get(id(a.pure))
 
         # Make sure both of them are absolute paths
-        src = os.path.normpath(os.path.abspath(srcpath))
+        src = os.path.normcase(os.path.abspath(srcpath))
         obf = os.path.abspath(obfpath)
         n = len(src) + 1
 
