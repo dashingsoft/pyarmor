@@ -236,7 +236,7 @@ For example, the following functions are not obfuscated by BCC mode, because the
 Known issues
 ============
 
-* When format string has syntax error, BCC mode may raise `SystemError: NULL object passed to Py_BuildValue`, instead `SyntaxError` or `ValueError`.
+* When format string has syntax error, BCC mode may raise `SystemError: NULL object passed to Py_BuildValue`, instead of `SyntaxError` or `ValueError`.
 
   Found in test cases `lib/python3.12/test/test_fstring.py`:
   - test_invalid_syntax_error_message

@@ -65,7 +65,7 @@ Not all the platforms are supported, more information check :doc:`../reference/e
 
 .. note::
 
-    If only using Pyarmor 8+ features, installing :mod:`pyarmor.cli` instead :mod:`pyarmor`, could significantly decrease downloaded file size. For example::
+    If only using Pyarmor 8+ features, installing :mod:`pyarmor.cli` instead of :mod:`pyarmor`, could significantly decrease downloaded file size. For example::
 
         $ pip install pyarmor.cli
 
@@ -153,7 +153,7 @@ In Linux to generate for Windows, install windows package::
 
     $ pip install pyarmor.cli.windows-3.2.9-cp310-none-any.whl
 
-If only using Pyarmor 8+ features, it's recommend to install :mod:`pyarmor.cli` instead :mod:`pyarmor`, the former file size is significantly less than the latter. For example::
+If only using Pyarmor 8+ features, it's recommend to install :mod:`pyarmor.cli` instead of :mod:`pyarmor`, the former file size is significantly less than the latter. For example::
 
     $ pip install pyarmor.cli-8.2.9.zip
 
