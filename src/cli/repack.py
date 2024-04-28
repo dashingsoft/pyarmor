@@ -57,14 +57,16 @@ import os
 
 from PyInstaller.compat import base_prefix, EXTENSION_SUFFIXES
 from sys import prefix, exec_prefix
+from fnmatch import fnmatch
 
 exlist = set([base_prefix, prefix, exec_prefix])
-exlist = [os.path.normpath(x) for x in exlist]
+expats = [os.path.join(os.path.normpath(x), '*') for x in exlist]
 
 src = {src}
 sn = len(src) + 1
-sdir = os.path.relpath(src)
-sdir = '' if sdir == '.' else sdir
+rsrc = os.path.relpath(src)
+rsrc = '' if rsrc == '.' else rsrc
+srcpat = os.path.join(src, '*')
 
 hiddenimports = set([])
 plist = set([])
@@ -74,17 +76,17 @@ for name, path, kind in a.pure:
     if name.startswith('pyi_rth'):
         continue
     hiddenimports.add(name)
-    if path.startswith(src) and not any([path.startswith(x) for x in exlist]):
+    if fnmatch(path, srcpat) and not any([fnmatch(path, x) for x in expats]):
         if name.find('.') == -1 and os.path.basename(path) != '__init__.py':
-            mlist.append(os.path.join(sdir, path[sn:]))
+            mlist.append(os.path.join(rsrc, path[sn:]))
         else:
             pkgname = os.path.dirname(path[sn:]).split(os.sep)[0]
-            plist.add(os.path.join(sdir, pkgname))
+            plist.add(os.path.join(rsrc, pkgname))
 
 for name, path, kind in a.binaries:
     if kind == 'EXTENSION':
         for x in EXTENSION_SUFFIXES:
-            if name.endswith(x):
+            if fnmatch(name, '*' + x):
                 name = name[:-len(x)]
                 break
         hiddenimports.add(name.replace(os.sep, '.'))
