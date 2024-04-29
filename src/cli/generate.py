@@ -67,7 +67,7 @@ class Finder(object):
         for res in self._build_resource(resources):
             if res.pkgname not in resnames:
                 self.ctx.obfuscated_modules.add(res.pkgname)
-                self.ctx.extra_resources.append(res)
+                self.ctx.resources.append(res)
 
     def process(self):
         logger.info('search inputs ...')
