@@ -711,7 +711,8 @@ class BundleRepacker:
         logger.debug('one file mode is %s', bool(self.one_file_mode))
 
     def build(self):
-        self.repack(self.output, self.ctx.runtime_package_name)
+        obfpath = os.path.normpath(self.ctx.pack_obfpath)
+        self.repack(obfpath, self.ctx.runtime_package_name)
 
     def repack(self, obfpath, rtname, entry=None):
         buildpath = self.buildpath
