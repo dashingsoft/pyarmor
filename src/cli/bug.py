@@ -36,7 +36,7 @@ $tracelog
 $tb
 ''')
 
-ENABLE_DEBUG_HINTS = '''somthing is wrong
+ENABLE_DEBUG_HINTS = '''something is wrong
 *=============================================================*
 *  Please enable debug option `-d` to run it again            *
 *    pyarmor -d gen options ...                               *
@@ -49,7 +49,7 @@ ENABLE_DEBUG_HINTS = '''somthing is wrong
 *=============================================================*
 '''
 
-SOLUTION_HINTS = Template('''somthing is wrong
+SOLUTION_HINTS = Template('''something is wrong
 *=============================================================*
 *  Please check                                               *
 *    https://pyarmor.readthedocs.io/en/latest/questions.html  *
