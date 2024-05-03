@@ -31,14 +31,13 @@ Above all, Python interpreter to run the obfuscated scripts can't be replaced, i
 
 At this time Pyarmor need :option:`--pack` to implement this.
 
-First pack the script by `PyInstaller`_ [#]_::
-
-    $ pyinstaller foo.py
-
-Next configure and repack the bundle, the following options are necessary [#]_::
+First configure necessary items [#]_::
 
     $ pyarmor cfg check_debugger=1 check_interp=1
-    $ pyarmor gen --mix-str --assert-call --assert-import --private --pack dist/foo/foo foo.py
+
+Next pack the script by the following options [#]_::
+
+    $ pyarmor gen --mix-str --assert-call --assert-import --private --pack onedir foo.py
 
 Then protect all the binary files in the output path :file:`dist/foo/` through external tools, make sure these binary files can not be replaced or modified in runtime.
 
@@ -46,9 +45,9 @@ Available external tools: codesign, VMProtect
 
 .. rubric:: Note
 
-.. [#] If pack to one file by PyInstaller, it's not enough to protect this file alone. You must make sure all the binary files extracted from this file are protected too.
-
 .. [#] Do not use ``check_interp`` in 32-bit x86 platforms, it doesn't work
+
+.. [#] If pack to one file by PyInstaller, it's not enough to protect this file alone. You must make sure all the binary files extracted from this file are protected too.
 
 **Hook Scripts**
 
