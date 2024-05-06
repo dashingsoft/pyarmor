@@ -2,14 +2,14 @@ import logging
 import marshal
 import os
 import shutil
-import struct
 import sys
-import tempfile
 
 from fnmatch import fnmatch
 from subprocess import check_call, DEVNULL
 
 # Only used by BundleRepacker, they could be removed with deprecated routines
+import struct
+import tempfile
 from importlib._bootstrap_external import _code_to_timestamp_pyc
 from PyInstaller.archive.writers import ZlibArchiveWriter, CArchiveWriter
 from PyInstaller.archive.readers import CArchiveReader
