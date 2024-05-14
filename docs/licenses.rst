@@ -145,7 +145,7 @@ License features
    Bind Device             Y          Y          Y           Y       [7]_
    JIT Protection          Y          Y          Y           Y       [8]_
    Assert Protection       Y          Y          Y           Y       [9]_
-   Themedia Protection     Y          Y          Y           Y       [10]_
+   Themida Protection      Y          Y          Y           Y       [10]_
    Big Script              No         Y          Y           Y       [1]_
    Mix Str                 No         Y          Y           Y       [2]_
    obf-code > 1            No         Y          Y           Y       [11]_
