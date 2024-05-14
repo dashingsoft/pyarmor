@@ -32,6 +32,7 @@ from .register import Register, MACHFLAGS
 
 
 CONFIG = {
+    'host': '0.0.0.0',
     'port': 29092,
     'home': os.path.expanduser(os.path.join('~', '.pyarmor', 'docker')),
     'machid': None,
@@ -110,6 +111,7 @@ def main_entry():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Enable debug mode')
+    parser.add_argument('--host', type=str, default=CONFIG['host'])
     parser.add_argument('-p', '--port', type=int, default=CONFIG['port'],
                         help=argparse.SUPPRESS)
     parser.add_argument('-s', '--sock', default='/var/run/docker.sock',
@@ -135,9 +137,9 @@ def main_entry():
     CONFIG['machid'] = [Pytransform3.get_hd_info(x) for x in MACHFLAGS]
     logging.debug('machine id: %s', CONFIG['machid'])
 
-    host, port = '0.0.0.0', args.port
+    host, port = args.host, args.port
     with socketserver.TCPServer((host, port), DockerAuthHandler) as server:
-        logging.info('listen container auth request on %s:%s', host, args.port)
+        logging.info('listen container auth request on %s:%s', host, port)
         server.serve_forever()
 
 
