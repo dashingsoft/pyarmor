@@ -200,7 +200,7 @@ class PycResource(FileResource):
 class PathResource(Resource):
 
     def __init__(self, path, name=None, parent=None):
-        super().__init__(path, name=name, parent=parent)
+        super().__init__(path, name=os.path.basename(path), parent=parent)
         self.respaths = []
         self.resfiles = []
 
