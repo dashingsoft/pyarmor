@@ -165,7 +165,7 @@ License features
 .. [7] Bind Device: obfuscated scripts only run in specified devices
 .. [8] JIT Protection: processing some sensitive data by runtime generated binary code
 .. [9] Assert Protection: preventing others from hacking obfuscated scripts
-.. [10] Themedia Protection: using Themedia to protect Windows dlls
+.. [10] Themida Protection: using Themida to protect Windows dlls
 .. [11] ``--obf-code=2`` is new in Pyarmor 8.2
 .. [12] This feature is introduced in Pyarmor 8.3, group license supports unlimited dockers, basic and pro licenses only allow 100 runs one day. Also check above section ``Check device for group license``
 
