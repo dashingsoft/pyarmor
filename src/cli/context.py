@@ -110,7 +110,11 @@ def format_platform(plat, arch):
         ('armv6', ('armv6l',)),
         ('armv7', ('armv7l',)),
         ('aarch32', ('aarch32',)),
-        ('aarch64', ('aarch64', 'arm64'))
+        ('aarch64', ('aarch64', 'arm64')),
+        ('ppc64le', ('ppc64le',)),
+        ('mips32el', ('mipsel', 'mips32el')),
+        ('mips64el', ('mips64el',)),
+        ('riscv64', ('riscv64',)),
     )
 
     for alias, platlist in plat_table:

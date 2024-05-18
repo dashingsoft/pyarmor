@@ -54,7 +54,11 @@ def format_platform():
             ('armv6', ('armv6l',)),
             ('armv7', ('armv7l',)),
             ('aarch32', ('aarch32',)),
-            ('aarch64', ('aarch64', 'arm64'))
+            ('aarch64', ('aarch64', 'arm64')),
+            ('ppc64le', ('ppc64le',)),
+            ('mips32el', ('mipsel', 'mips32el')),
+            ('mips64el', ('mips64el',)),
+            ('riscv64', ('riscv64',)),
         )
         for alias, archlist in arch_table:
             if mach in archlist:

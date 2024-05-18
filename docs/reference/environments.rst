@@ -20,14 +20,14 @@ Supported Python versions
 .. table:: Table-1. Supported Python Versions
    :widths: auto
 
-   ===================  =====  =========  =========  ==========  ======  =======  ==============
-   Python Version        2.7    3.0~3.4    3.5~3.6    3.7~3.11    3.12    3.13+   Remark
-   ===================  =====  =========  =========  ==========  ======  =======  ==============
-   pyarmor 8 RFT Mode    No       No         No          Y         Y       N/y      [#]_
-   pyarmor 8 BCC Mode    No       No         No          Y         Y       N/y
-   pyarmor 8 others      No       No         No          Y         Y       N/y
-   pyarmor-7             Y        Y          Y           Y         No      No
-   ===================  =====  =========  =========  ==========  ======  =======  ==============
+   ===================  =====  =========  ==========  ======  ======  =======  ==============
+   Python Version        2.7    3.0~3.6    3.7~3.10    3.11    3.12    3.13+   Remark
+   ===================  =====  =========  ==========  ======  ======  =======  ==============
+   pyarmor 8 RFT Mode    No       No          Y         Y       Y       N/y      [#]_
+   pyarmor 8 BCC Mode    No       No          Y         Y       Y       N/y
+   pyarmor 8 others      No       No          Y         Y       Y       N/y
+   pyarmor-7             Y        Y           Y         No      No      No
+   ===================  =====  =========  ==========  ======  ======  =======  ==============
 
 Supported platforms
 ===================
@@ -61,18 +61,36 @@ Supported platforms
    pyarmor-7                 Y            Y          Y           Y           Y          Y       Y
    ===================  ============  =========  =========  ============  =========  =======  =======
 
+.. table:: Table-4. Supported Platforms (3) [#]_
+   :widths: auto
+
+   ===================  =============  ==================================================
+   OS                      Linux                 Linux, Alpine Linux
+   -------------------  -------------  --------------------------------------------------
+   Arch                  loongarch64         ppc64le, mips32el/64el, riscv64 [#]_
+   ===================  =============  ==================================================
+   pyarmor 8 RFT Mode        Y                    Y
+   pyarmor 8 BCC Mode        N                    N
+   JIT Feature               N                    Y
+   pyarmor 8 others          Y                    Y
+   ===================  =============  ==================================================
+
 .. rubric:: notes
 
 .. [#] ``N/y`` means not yet now, but will be supported in future.
 .. [#] This Linux is built with glibc
 .. [#] pyarmor-7 also supports more linux arches, refer to `Pyarmor 7.x platforms`__.
 .. [#] These platforms are introduced in Pyarmor 8.3
+.. [#] The prebuilt extensions for these arches are published in the package `pyarmor.cli.core.linux`__ and `pyarmor.cli.core.alpine`__ respectively since Pyarmor 8.5.9 (not tested)
+.. [#] For riscv64, only support Python 3.10+
 
 .. important::
 
    pyarmor-7 is bug fixed Pyarmor 7.x version, it's same as Pyarmor 7.x, and only works with old license. Do not use it with new license, it may report ``HTTP 401 error``.
 
 __ https://pyarmor.readthedocs.io/en/v7.7/platforms.html
+__ https://pypi.org/project/pyarmor.cli.core.linux/#files
+__ https://pypi.org/project/pyarmor.cli.core.alpine/#files
 
 Configuration options
 =====================

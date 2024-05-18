@@ -10,16 +10,16 @@ It includes prebuilt extensions support the following platforms for Python 3.7+:
 .. table::
    :widths: auto
 
-   ======== ======== ======== ======== ======== ======== ======== ==========
-    Arch     x86_64    i686   aarch64   aarch32  armv7    armv6    Remark
-   ======== ======== ======== ======== ======== ======== ======== ==========
-   Darwin     Y        No       Y        No        No       No      [#]_
-   Linux      Y        Y        Y        (?)       (?)      (?)     [#]_
-   Windows    Y        Y        (?)      No        No       No      [#]_
-   Android    Y        Y        Y        No        Y        No      [#]_
-   Alpine     Y        (?)      Y        (?)       (?)      (?)
-   FreeBSD    Y        No       No       No        No       No
-   ======== ======== ======== ======== ======== ======== ======== ==========
+   ======== ======== ===== ========= ========= ======= ======= ========= ============= ==========
+    Arch     x86_64   x86   aarch64   aarch32   armv7   armv6   ppc64le   mips32/64el    Remark
+   ======== ======== ===== ========= ========= ======= ======= ========= ============= ==========
+   Darwin      Y      No      Y         No       No      No       No          No         [#]_
+   Linux       Y      Y       Y         (?)      (?)     (?)      Y           Y          [#]_
+   Windows     Y      Y       (?)       No       No      No       No          No         [#]_
+   Android     Y      Y       Y         No       Y       No       No          No         [#]_
+   Alpine      Y      (?)     Y         (?)      (?)     (?)      Y           Y
+   FreeBSD     Y      No      No        No       No      No       No          No
+   ======== ======== ===== ========= ========= ======= ======= ========= ============= ==========
 
 * Y: already available
 * No: no support plan
