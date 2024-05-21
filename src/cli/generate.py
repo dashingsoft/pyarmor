@@ -111,7 +111,7 @@ class Builder(object):
         fullpath = os.path.join(path, res.output_filename)
         output = os.path.dirname(fullpath)
         os.makedirs(output, exist_ok=True)
-        logger.info('write %s', fullpath)
+        logger.info('write %s (not obfuscated)', fullpath)
         shutil.copy2(res.fullpath, output)
 
     def _obfuscate_scripts(self):
