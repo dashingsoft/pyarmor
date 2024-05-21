@@ -99,6 +99,21 @@ class Builder(object):
             self.ctx.runtime_key = self.generate_runtime_key()
         Pytransform3.generate_runtime_package(self.ctx, output)
 
+    def _generate_obfuscated_script(self, res):
+        try:
+            return Pytransform3.generate_obfuscated_script(self.ctx, res)
+        except RuntimeError as e:
+            if str(e) != 'out of license':
+                raise
+
+    def _copy_script(self, path, res):
+        logger.warning('%s is not obfuscated because out of license', res)
+        fullpath = os.path.join(path, res.output_filename)
+        output = os.path.dirname(fullpath)
+        os.makedirs(output, exist_ok=True)
+        logger.info('write %s', fullpath)
+        shutil.copy2(res.fullpath, output)
+
     def _obfuscate_scripts(self):
         rev = self.ctx.version_info()
         template = self.ctx.bootstrap_template
@@ -126,7 +141,10 @@ class Builder(object):
                     continue
 
                 logger.info('obfuscating %s', r)
-                code = Pytransform3.generate_obfuscated_script(self.ctx, r)
+                code = self._generate_obfuscated_script(r)
+                if code is None:
+                    self._copy_script(path, r)
+                    continue
                 source = r.generate_output(
                     template, code, relative=relative, pkgname=pkgname,
                     bootpath=bootpath, rev=rev
