@@ -294,6 +294,8 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
     end_lines = ("# Patch end.", "", "",)
 
     main_lines = (
+        "from PyInstaller.config import CONF",
+        "code_cache = CONF['code_cache']",
         "_src = %s" % repr(os.path.abspath(src)),
         "_obf = 0",
         "for i in range(len(a.scripts)):",
@@ -308,9 +310,9 @@ def _patch_specfile(obfdist, src, specfile, hookpath=None, encoding=None,
         "    if a.pure[i][1].startswith(_src):",
         "        x = a.pure[i][1].replace(_src, r'%s')" % p,
         "        if os.path.exists(x):",
-        "            if hasattr(a.pure, '_code_cache'):",
+        "            if code_cache.get(id(a.pure)):",
         "                with open(x) as f:",
-        "                    a.pure._code_cache[a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')",
+        "                    code_cache[id(a.pure)][a.pure[i][0]] = compile(f.read(), a.pure[i][1], 'exec')",
         "            a.pure[i] = a.pure[i][0], x, a.pure[i][2]",
     )
 
