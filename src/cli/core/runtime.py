@@ -20,18 +20,6 @@
 #  @Create Date: Tue Jun  6 07:50:00 CST 2023
 #
 
-PLATFORM_NAMES = (
-    'windows.x86_64', 'windows.x86',
-    'darwin.x86_64', 'darwin.arm64',
-    'linux.x86_64', 'linux.x86', 'linux.aarch64', 'linux.armv7',
-    'linux.mips32el', 'linux.mips64el', 'linux.ppc64le', 'linux.riscv64',
-    'alpine.x86_64', 'alpine.aarch64',
-    'alpine.mips32el', 'alpine.mips64el', 'alpine.ppc64le', 'alpine.riscv64',
-    'freebsd.x86_64',
-    'android.x86_64', 'android.x86', 'android.aarch64', 'android.armv7',
-)
-
-
 def map_platform(platname):
     if platname == 'darwin.aarch64':
         return 'darwin.arm64'

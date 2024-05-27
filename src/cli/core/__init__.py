@@ -22,12 +22,22 @@
 
 __VERSION__ = '6.5.2'
 
+PLATFORM_NAMES = (
+    'windows.x86_64', 'windows.x86',
+    'darwin.x86_64', 'darwin.arm64',
+    'linux.x86_64', 'linux.x86', 'linux.aarch64', 'linux.armv7',
+    'linux.mips32el', 'linux.mips64el', 'linux.ppc64le', 'linux.riscv64',
+    'alpine.x86_64', 'alpine.aarch64',
+    'alpine.mips32el', 'alpine.mips64el', 'alpine.ppc64le', 'alpine.riscv64',
+    'freebsd.x86_64',
+    'android.x86_64', 'android.x86', 'android.aarch64', 'android.armv7',
+)
+
 
 def check_and_install_prebuilt_package():
     import os
     from pyarmor.cli.context import format_platform
     from pyarmor.cli.bootstrap import check_prebuilt_runtime_library
-    from .runtime import PLATFORM_NAMES
 
     plat, arch = format_platform()
     platname = '%s.%s' % (plat, arch)
@@ -35,7 +45,7 @@ def check_and_install_prebuilt_package():
         raise RuntimeError('"%s" is still not supported by Pyarmor' % platname)
 
     if not os.path.exists(os.path.join(os.path.dirname(__file__), plat, arch)):
-        check_prebuilt_runtime_library([plat])
+        check_prebuilt_runtime_library([platname])
 
     return plat, arch
 
