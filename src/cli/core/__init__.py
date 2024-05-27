@@ -34,13 +34,19 @@ PLATFORM_NAMES = (
 )
 
 
+def map_platform(platname):
+    if platname == 'darwin.aarch64':
+        return 'darwin.arm64'
+    return platname
+
+
 def check_and_install_prebuilt_package():
     import os
     from pyarmor.cli.context import format_platform
     from pyarmor.cli.bootstrap import check_prebuilt_runtime_library
 
     plat, arch = format_platform()
-    platname = '%s.%s' % (plat, arch)
+    platname = map_platform('%s.%s' % (plat, arch))
     if platname not in PLATFORM_NAMES:
         raise RuntimeError('"%s" is still not supported by Pyarmor' % platname)
 

@@ -20,10 +20,7 @@
 #  @Create Date: Tue Jun  6 07:50:00 CST 2023
 #
 
-def map_platform(platname):
-    if platname == 'darwin.aarch64':
-        return 'darwin.arm64'
-    return platname
+from . import map_platform
 
 
 class PyarmorRuntime(object):
@@ -45,11 +42,12 @@ class PyarmorRuntime(object):
                 if parts[0] == prefix and parts[-1] in ('so', 'pyd', 'dylib'):
                     return entry.name, os_path.abspath(entry.path)
 
-        dirnames = map_platform(plat).split('.')
+        platname = map_platform(plat)
+        dirnames = platname.split('.')
         path = os_path.join(pkgpath, extra if extra else '', *dirnames)
         if not os_path.exists(path):
             from pyarmor.cli.bootstrap import check_prebuilt_runtime_library
-            check_prebuilt_runtime_library(dirnames[:1], extra)
+            check_prebuilt_runtime_library([platname], extra)
 
         if os_path.exists(path):
             for entry in scandir(path):
