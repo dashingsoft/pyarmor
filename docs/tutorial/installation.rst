@@ -12,26 +12,27 @@
 Prerequisite
 ============
 
-Pyarmor_ requires shared Python runtime library and C library.
+Pyarmor_ requires Python and C library (glibc or musl).
 
-In Linux, please install shared Python runtime library when needed. For example, install Python 3.10 shared runtime library::
+..
+  In Linux, please install shared Python runtime library when needed. For example, install Python 3.10 shared runtime library::
 
-    $ apt install libpython3.10
+      $ apt install libpython3.10
 
-In Darwin, make sure the file ``@rpath/lib/libpythonX.Y.dylib`` exists. ``X.Y`` stands for  Python major and minor version.
+  In Darwin, make sure the file ``@rpath/lib/libpythonX.Y.dylib`` exists. ``X.Y`` stands for  Python major and minor version.
 
-For example::
+  For example::
 
-    @rpath/lib/libpython3.10.dylib
+      @rpath/lib/libpython3.10.dylib
 
-``@rpath`` is one of:
+  ``@rpath`` is one of:
 
-- @executable_path/..
-- @loader_path/..
-- /System/Library/Frameworks/Python.framework/Versions/3.10
-- /Library/Frameworks/Python.framework/Versions/3.10
+  - @executable_path/..
+  - @loader_path/..
+  - /System/Library/Frameworks/Python.framework/Versions/3.10
+  - /Library/Frameworks/Python.framework/Versions/3.10
 
-If there is no this file, please install necessary packages or re-build Python with enable shared option, or using `install_name_tool` to adapt current Python installation, refer to :doc:`../question`.
+  If there is no this file, please install necessary packages or re-build Python with enable shared option, or using `install_name_tool` to adapt current Python installation, refer to :doc:`../question`.
 
 .. _install-pypi:
 
@@ -134,6 +135,12 @@ In Android or FreeBSD, there is no wheel in :mod:`pyarmor.cli.core`, it should i
     $ pip install pyarmor.cli.core-3.2.9.zip
     $ pip install pyarmor.cli.core.android-3.2.9-cp310-none-any.whl
     $ pip install pyarmor-8.2.9.zip
+
+For some arches like `ppc64le`, `mips32el`, `mips64el`, `riscv64`, `loongarch64`, it need install `pyarmor.cli.core.linux` (glibc) or `pyarmor.cli.core.alpine` (musl). For example::
+
+    $ pip install pyarmor.cli.core-8.5.9.zip
+    $ pip install pyarmor.cli.core.linux-6.5.2-cp310-none-any.whl
+    $ pip install pyarmor.cli-8.5.9.zip
 
 If need cross platform obfuscation, also install the corresponding platform package
 
