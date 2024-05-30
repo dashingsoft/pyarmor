@@ -74,6 +74,10 @@ Building Errors
    * - update license token failed
      - If run register command more than 3 times in 1 minute, wait for 5 minutes, and try again.
 
+       If more than 100 runs in different devices or docker containers in 24 hours, please wait until any token is released
+
+       If the date time of this device is not correct, restore it to current date
+
        If not, try to open `http://pyarmor.dashingsoft.com//api/auth2/` in web browser
 
        If the page says `NO:missing parameters`, it means network is fine, and license server is fine.
