@@ -236,10 +236,11 @@ def find_runtime_package(ctx, output):
         return os.path.join(output, rtname)
     if isinstance(prefix, str):
         return os.path.join(output, prefix.replace('.', os.path.sep), rtname)
-    for entry in os.scandir(output):
-        if entry.is_dir():
-            if rtname in os.listdir(entry.path):
-                return os.path.join(entry.path, rtname)
+    with os.scandir(output) as iterator:
+        for entry in iterator:
+            if entry.is_dir():
+                if rtname in os.listdir(entry.path):
+                    return os.path.join(entry.path, rtname)
 
 
 class DarwinUniversalPlugin:
