@@ -7,27 +7,16 @@ assignees: ''
 
 ---
 
-Please read this first before report any issue
+**Please remove this line and all the following lines when submit issue**
+
+In order to solve your issue quickly, please read this page and try common solutions in the section `Asking questions in GitHub`
 https://pyarmor.readthedocs.io/en/latest/questions.html
 
-If this issue has been documented and there is solution in FAQ, it will be marked as `documented` and be closed it immediately.
+If it's really a bug, please following the guide in the section `Reporting issues`
 
-Do not ask questions here but in discussions, it will be closed immediately.
+为了快速解决你遇到的问题，请务必打开下面的链接并尝试其中关于常见问题的通用解决方案
+https://pyarmor.readthedocs.io/en/latest/questions.html
 
-A good report should have
+如果确认是一个 Bug，建议按照上面链接中的章节 `报告问题` 的规范提交问题报告
 
-- A clear title
-- Reproduced steps
-- Expected results and actual results
-
-Please also provide necessary log (but not full log), for example, the whole command options `pyarmor gen` and first 4 logs in the console, paste the text directly, DO NOT paste IMAGE
-
-```
-$ pyarmor gen -O dist --assert-call foo.py
-INFO     Python 3.10.0
-INFO     Pyarmor 8.4.0 (trial), 000000, non-profits
-INFO     Platform darwin.x86_64
-
-```
-
-In order to save time for both of us, if the bug report is not clear or missing necessary information, it will be marked as `invalid` and be closed immediately.
+**在提交报告时候请删除当前行以及上面的所有行**

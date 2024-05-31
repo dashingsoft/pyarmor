@@ -1,13 +1,8 @@
-==========
+=====
  FAQ
-==========
+=====
 
 .. highlight:: none
-
-.. _asking questions:
-
-Asking questions in GitHub
-==========================
 
 Pyarmor provides rich options for different cases, the default option only works for common case. When something is wrong, it may be not bug, but need the right options. Users need spend time learning Pyarmor by documentation or `pyarmor man`, and find the right options for their project. Generally pyarmor team won't learn user's project and tell user which options should be used.
 
@@ -15,7 +10,12 @@ Pyarmor is well document, you needn't read all of them at first, but it's necess
 
 If using :command:`pyarmor-7` or Pyarmor < 8.0, please check `Pyarmor 7.x Doc`_
 
-Before ask question, please try the following solutions in order to avoid duplicated issues:
+.. _asking questions:
+
+Asking questions in GitHub
+==========================
+
+Before ask question, please try the following common solutions in order to avoid duplicated issues:
 
 - If need some feature, first check :ref:`the detailed table of contents <mastertoc>`
 
@@ -49,12 +49,10 @@ Before ask question, please try the following solutions in order to avoid duplic
 
 Please report bug in `issues`_ and ask questions in `discussions`_
 
-When report bug in `issues`_, please copy the whole command line :command:`pyarmor gen` and first 4 lines in the console, do not mask version and platform information, and do not paste snapshot image::
+.. _reporting bugs:
 
-    $ pyarmor gen -O dist --assert-call foo.py
-    INFO     Python 3.10.0
-    INFO     Pyarmor 8.1.1 (trial), 000000, non-profits
-    INFO     Platform darwin.x86_64
+Reporting bug
+=============
 
 A good report should have
 
@@ -63,9 +61,75 @@ A good report should have
 - Actual results
 - Expected results
 
+For different issues, please following different guide to report bug, and do not paste snapshot image but paste text directly.
+
 .. important::
 
    If a bug report misses necessary information and not clear, it may be marked as invalid and closed immediately.
+
+Build issues
+------------
+
+If there is error message when run pyarmor, please first check :doc:`reference/errors` to find solutions
+
+If still no solution, please run pyarmor with debug option :option:`-d`. For example::
+
+    $ pyarmor -d gen ...
+    $ pyarmor -d reg ...
+
+It will generate file :file:`pyarmor.report.bug` like this::
+
+    [Bug] `FileNotFoundError: [Errno 2] No such file or directory: 'aa.zip'`
+
+    ### Full command options and console output
+    pyarmor -d reg aa.zip
+
+    2024-05-30 21:50:52,682 Python 3.7.10
+    2024-05-30 21:50:52,684 Pyarmor 8.5.9 (pro), 005068, btarmor
+    2024-05-30 21:50:52,696 Platform darwin.x86_64
+    2024-05-30 21:50:52,696 native platform darwin.x86_64
+    2024-05-30 21:50:52,696 home path: /Users/jondy/.pyarmor
+    2024-05-30 21:50:52,696 register "aa.zip"
+    2024-05-30 21:50:52,698 unknown error, please check pyarmor.error.log
+    2024-05-30 21:50:52,704 [Errno 2] No such file or directory: 'aa.zip'
+
+    ### Traceback
+    Traceback (most recent call last):
+        ...
+        self.fp = io.open(file, filemode)
+    FileNotFoundError: [Errno 2] No such file or directory: 'aa.zip'
+
+Take the first line `[Bug] ...` as bug title, and the rest content as bug body and make necessary supplements and explanations
+
+Pack issues
+-----------
+
+Check list for pack issues:
+
+- Using PyInstaller to pack the script without obfuscation, make sure the final bundle works
+- Without packing, only obfuscate scripts, make sure the obfuscated scripts works
+
+If check list pass, then report bug as the next section guide
+
+Runtime issues
+--------------
+
+If the obfuscated scripts doesn't work or not as expected, first check :doc:`topic/obfuscated-script`
+
+If there is error message, also check :doc:`reference/errors` to find solutions
+
+If using :option:`--enable-bcc`, try to obfuscate script without it. If make sure this option results in problem, check :ref:`using bccmode` to find solutions
+
+If using :option:`--enable-rft`, , try to obfuscate script without it. If make sure this option results in problem, check :ref:`using rftmode` to find solutions
+
+Try to use less options to obfuscate script, find the minimum options to reproduce this issue
+
+Report runtime issue with:
+
+- A clear title
+- Full command options to obfuscate scripts
+- Full command to run the obfuscated scripts and traceback (if any)
+- Necessary supplements and explanations
 
 Hot Questions
 =============
@@ -98,151 +162,129 @@ Hot Questions
 
   Pyarmor is good at protecting Python scripts, but not good at memory protection and anti-debug. If you care about runtime memory data, or runtime key verification, generally it need extra methods to prevent debugger from hacking dynamic libraries. More information check :doc:`how-to/protection`
 
-Segment fault in Apple
-======================
+..
+  Segment fault in Apple
+  ======================
 
-First upgrade Pyarmor to 8.3.0+ which has fixed non-system Python crash issues.
+  First upgrade Pyarmor to 8.3.0+ which has fixed non-system Python crash issues.
 
-If it has been the latest version, then check both of prebuilt extensions `pytransform3.so` and `pyarmor_runtime.so`
+  If it has been the latest version, then check both of prebuilt extensions `pytransform3.so` and `pyarmor_runtime.so`
 
-* Make sure code sign is OK by `codesign -v /path/to/xxx.so`
-* Check used shared libraries `otool -L /path/to/xxx.so`, make sure all of them exist.
+  * Make sure code sign is OK by `codesign -v /path/to/xxx.so`
+  * Check used shared libraries `otool -L /path/to/xxx.so`, make sure all of them exist.
 
-For Pyarmor prior to 8.3.0, check the following issues
+  For Pyarmor prior to 8.3.0, check the following issues
 
-**Generally it's code sign issue**
+  **Generally it's code sign issue**
 
-If segment fault when obfuscating scripts or registering Pyarmor, try to re-sign extension ``pytransform3.so``::
+  If segment fault when obfuscating scripts or registering Pyarmor, try to re-sign extension ``pytransform3.so``::
 
-    $ codesign -s - -f /path/to/lib/pythonX.Y/site-packages/pyarmor/cli/core/pytransform3.so
+      $ codesign -s - -f /path/to/lib/pythonX.Y/site-packages/pyarmor/cli/core/pytransform3.so
 
-If segment fault when launching obfuscated scripts, try to re-sign extension ``pyarmor_runtime.so``::
+  If segment fault when launching obfuscated scripts, try to re-sign extension ``pyarmor_runtime.so``::
 
-    $ codesign -s - -f dist/pyarmor_runtime_000000/pyarmor_runtime.so
+      $ codesign -s - -f dist/pyarmor_runtime_000000/pyarmor_runtime.so
 
-If your app doesn’t have the new signature format, or is missing the DER entitlements in the signature, you’ll need to re-sign the app on a Mac running macOS 11 or later, which includes the DER encoding by default.
+  If your app doesn’t have the new signature format, or is missing the DER entitlements in the signature, you’ll need to re-sign the app on a Mac running macOS 11 or later, which includes the DER encoding by default.
 
-If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign it from the command-line in macOS 10.14 and later. To do so, use the following command to re-sign the MyApp.app app bundle with DER entitlements by using a signing identity named "Your Codesign Identity" stored in the keychain::
+  If you’re unable to use macOS 11 or later to re-sign your app, you can re-sign it from the command-line in macOS 10.14 and later. To do so, use the following command to re-sign the MyApp.app app bundle with DER entitlements by using a signing identity named "Your Codesign Identity" stored in the keychain::
 
-    $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
+      $ codesign -s "Your Codesign Identity" -f --preserve-metadata --generate-entitlement-der /path/to/MyApp.app
 
-Refer to Apple official documentation `Using the latest code signature format`__
+  Refer to Apple official documentation `Using the latest code signature format`__
 
-**Not system Python**
+  **Not system Python**
 
-The prebuilt ``pytrnasform.so`` and ``pyarmor_runtime.so`` need Python shared library, if there is no found Python shared library, it may crash.
+  The prebuilt ``pytrnasform.so`` and ``pyarmor_runtime.so`` need Python shared library, if there is no found Python shared library, it may crash.
 
-Using command line tool ``otool`` and ``install_name_tool`` to fix Python shared library issue.
+  Using command line tool ``otool`` and ``install_name_tool`` to fix Python shared library issue.
 
-To display the names and version numbers of the shared libraries that the object file uses::
+  To display the names and version numbers of the shared libraries that the object file uses::
 
-    $ otool -L /path/to/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
+      $ otool -L /path/to/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so
 
-    /path/to/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so:
-	pytransform3.so (compatibility version 0.0.0, current version 1.0.0)
-	@rpath/lib/libpython3.9.dylib (compatibility version 3.9.0, current version 3.9.0)
+      /path/to/lib/python3.9/site-packages/pyarmor/cli/core/pytransform3.so:
+  	pytransform3.so (compatibility version 0.0.0, current version 1.0.0)
+  	@rpath/lib/libpython3.9.dylib (compatibility version 3.9.0, current version 3.9.0)
+          ...
+
+  And ``rpath`` is configured by::
+
+      $ install_name_tool -id pytrnsform3.so \
+              -change $deplib @rpath/lib/libpython$ver.dylib \
+              -add_rpath @executable_path/.. \
+              -add_rpath @loader_path/.. \
+              -add_rpath /System/Library/Frameworks/Python.framework/Versions/$ver \
+              -add_rpath /Library/Frameworks/Python.framework/Versions/$ver \
+              build/$host/libs/cp$ver/$name.so
+
+  So check there is ``@rpath/lib/libpython3.9.dylib``. If it doesn't exists, please adapt to current Python by using ``install_name_tool``. Suppose current Python shared library is ``/usr/local/Python.framework/Versions/3.9/Python``::
+
+      $ install_name_tool -change @rpath/lib/libpython3.9.dylib /usr/local/Python.framework/Versions/3.9/Python \
+              /path/to/lib/pythonX.Y/site-packages/pyarmor/cli/core/pytransform3.so
+
+  How to find current Python shared library, please search network to find answer. Note that some Python may not built with shared library, it can't work with Pyarmor, please rebuild Python with shared library to fix this kind of issue.
+
+  It's same for ``dist/pyarmor_runtime_000000/pyarmor_runtime.so``.
+
+  Refer to Apple official documentation `Run-Path Dependent Libraries`__
+
+  **If there are many same version Python installed, make sure pytransform3.so or pyarmor_runtime.so links to the right one**
+
+  For example, there is default Python3.9 in ``/Library/Frameworks/Python.framework/Versions/3.9/`` and anaconda3 Python 3.9 in ``/Users/my_username/anaconda3/bin/python``
+
+  When using ``/Users/my_username/anaconda3/bin/python`` to run the obfuscated script, it will load ``dist/pyarmor_runtime_000000/pyarmor_runtime.so``, and this library need Python dynamic library. According to RPATH settings, first search ``/Users/my_username/anaconda3/bin/python/../lib/libpython3.9.dylib``, if it exists, everything is fine. If it doesn't exists, then search ``/Library/Frameworks/Python.framework/Versions/3.9/lib/libpython3.9.dylib``, load this unexpected Python dynamic library, and results in crash issue.
+
+  In this canse using `install_name_tool` to modify ``dist/pyarmor_runtime_000000/pyarmor_runtime.so`` so that it could load Python dynamic library in anaconda3.
+
+  Note that the obfuscated scripts work with system Python by default, and as possible as work with Python installed in the other locations.
+
+  **Application settings**
+
+  Pyarmor uses JIT to improve security, In Apple M1, it need extra entitlements. Check Python entitlements::
+
+      $ codesign -d --entitlements - $(which python)
+
+  Refer to Apple official documentation `Allow Execution of JIT-compiled Code Entitlement`__
+
+  **Check system segment fault log, and search solution by error message**
+
+  __ https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format/
+  __ https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/RunpathDependentLibraries.html
+  __ https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
+
+  Registering
+  ===========
+
+  **ERROR request license token failed (104)**
+
+    Please make sure firewall doesn't block the response of license server. If possible, turn off the firewall to verify it.
+
+    In Windows ``pytransform.pyd`` will connect to ``pyarmor.dashingsoft.com`` port ``80`` to request token for online obfuscation, in other platforms it is ``pytransform3.so``. Refer to firewall documentation to allow it to connect ``pyarmor.dashingsoft.com:80``.
+
+  **Group license raises "ERROR request license token failed"**
+
+    First upgrade Pyarmor to 8.4.0+
+
+    Then register group license with debug option ``-d`` in offline device. For example::
+
+        $ pyarmor -d reg pyarmor-device-regfile-6000.4.zip
+
+    Check log, make sure current machine id is inclueded by offline regfile. For example::
+
+        DEBUG    group license for machines: ['tokens/mb04eb35da4f5378185c8663522e0a5e3']
+        DEBUG    got machine id: mb04eb35da4f5378185c8663522e0a5e3
+
+    If machine id is mismatched, please generate new device file for this device by Pyarmor 8.4.0+::
+
+        $ pyarmor -v
+
+        Pyarmor 8.4.0
         ...
 
-And ``rpath`` is configured by::
+        $ pyarmor reg -g 5
 
-    $ install_name_tool -id pytrnsform3.so \
-            -change $deplib @rpath/lib/libpython$ver.dylib \
-            -add_rpath @executable_path/.. \
-            -add_rpath @loader_path/.. \
-            -add_rpath /System/Library/Frameworks/Python.framework/Versions/$ver \
-            -add_rpath /Library/Frameworks/Python.framework/Versions/$ver \
-            build/$host/libs/cp$ver/$name.so
-
-So check there is ``@rpath/lib/libpython3.9.dylib``. If it doesn't exists, please adapt to current Python by using ``install_name_tool``. Suppose current Python shared library is ``/usr/local/Python.framework/Versions/3.9/Python``::
-
-    $ install_name_tool -change @rpath/lib/libpython3.9.dylib /usr/local/Python.framework/Versions/3.9/Python \
-            /path/to/lib/pythonX.Y/site-packages/pyarmor/cli/core/pytransform3.so
-
-How to find current Python shared library, please search network to find answer. Note that some Python may not built with shared library, it can't work with Pyarmor, please rebuild Python with shared library to fix this kind of issue.
-
-It's same for ``dist/pyarmor_runtime_000000/pyarmor_runtime.so``.
-
-Refer to Apple official documentation `Run-Path Dependent Libraries`__
-
-**If there are many same version Python installed, make sure pytransform3.so or pyarmor_runtime.so links to the right one**
-
-For example, there is default Python3.9 in ``/Library/Frameworks/Python.framework/Versions/3.9/`` and anaconda3 Python 3.9 in ``/Users/my_username/anaconda3/bin/python``
-
-When using ``/Users/my_username/anaconda3/bin/python`` to run the obfuscated script, it will load ``dist/pyarmor_runtime_000000/pyarmor_runtime.so``, and this library need Python dynamic library. According to RPATH settings, first search ``/Users/my_username/anaconda3/bin/python/../lib/libpython3.9.dylib``, if it exists, everything is fine. If it doesn't exists, then search ``/Library/Frameworks/Python.framework/Versions/3.9/lib/libpython3.9.dylib``, load this unexpected Python dynamic library, and results in crash issue.
-
-In this canse using `install_name_tool` to modify ``dist/pyarmor_runtime_000000/pyarmor_runtime.so`` so that it could load Python dynamic library in anaconda3.
-
-Note that the obfuscated scripts work with system Python by default, and as possible as work with Python installed in the other locations.
-
-**Application settings**
-
-Pyarmor uses JIT to improve security, In Apple M1, it need extra entitlements. Check Python entitlements::
-
-    $ codesign -d --entitlements - $(which python)
-
-Refer to Apple official documentation `Allow Execution of JIT-compiled Code Entitlement`__
-
-**Check system segment fault log, and search solution by error message**
-
-__ https://developer.apple.com/documentation/xcode/using-the-latest-code-signature-format/
-__ https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/RunpathDependentLibraries.html
-__ https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_allow-jit
-
-Registering
-===========
-
-**ERROR request license token failed (104)**
-
-  Please make sure firewall doesn't block the response of license server. If possible, turn off the firewall to verify it.
-
-  In Windows ``pytransform.pyd`` will connect to ``pyarmor.dashingsoft.com`` port ``80`` to request token for online obfuscation, in other platforms it is ``pytransform3.so``. Refer to firewall documentation to allow it to connect ``pyarmor.dashingsoft.com:80``.
-
-**Group license raises "ERROR request license token failed"**
-
-  First upgrade Pyarmor to 8.4.0+
-
-  Then register group license with debug option ``-d`` in offline device. For example::
-
-      $ pyarmor -d reg pyarmor-device-regfile-6000.4.zip
-
-  Check log, make sure current machine id is inclueded by offline regfile. For example::
-
-      DEBUG    group license for machines: ['tokens/mb04eb35da4f5378185c8663522e0a5e3']
-      DEBUG    got machine id: mb04eb35da4f5378185c8663522e0a5e3
-
-  If machine id is mismatched, please generate new device file for this device by Pyarmor 8.4.0+::
-
-      $ pyarmor -v
-
-      Pyarmor 8.4.0
-      ...
-
-      $ pyarmor reg -g 5
-
-  For virtual machine, make sure machine id is same after reboot.
-
-Packing
-=======
-
-**In the old pyarmor 7, I'm using "pyarmor pack ...", I could not find any relate information for this in the pyarmor 8.2. How to solve this?**
-
-  There is no identical pack in Pyarmor 8, Pyarmor 8+ only provide repack function to handle bundle of PyInstaller. Refer to basic tutorial, topic `insight into pack`__ and this solved issue `Pyarmor pack missing in pyarmor 8.0`__
-
-__ https://pyarmor.readthedocs.io/en/stable/topic/repack.html
-__ https://github.com/dashingsoft/pyarmor/discussions/1107
-
-Running Obfuscated Scripts
-==========================
-
-**ImportError: libdl.so: cannot open shared object file: No such file or directory**
-
-  When running obfuscated scripts in unmatched platform, it may raise this error.
-
-  In this case checking dependencies by `ldd /path/to/pyarmor_runtime.so` to make sure it works. If not, please select right `--platform` to obfuscate the scripts.
-
-  For example, when obfuscating the scripts in Linux with target platform Termux, somethimes it need specify `--platform linux.aarch64`, not `--platform android.aarch64`, more information refer to `issue 1674`__
-
-__ https://github.com/dashingsoft/pyarmor/discussions/1674
+    For virtual machine, make sure machine id is same after reboot.
 
 License
 =======
@@ -342,6 +384,13 @@ Upgrading
 **Is there an option for custom licensing arrangements to accommodate specific project or organizational needs?**
 
   At this time, the answer is no.
+
+**In the old pyarmor 7, I'm using "pyarmor pack ...", I could not find any relate information for this in the pyarmor 8.2. How to solve this?**
+
+  There is no identical pack in Pyarmor 8, Pyarmor 8+ only provide repack function to handle bundle of PyInstaller. Refer to basic tutorial, topic `insight into pack`__ and this solved issue `Pyarmor pack missing in pyarmor 8.0`__
+
+__ https://pyarmor.readthedocs.io/en/stable/topic/repack.html
+__ https://github.com/dashingsoft/pyarmor/discussions/1107
 
 Purchasing
 ==========
