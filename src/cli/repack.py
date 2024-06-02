@@ -554,7 +554,7 @@ def repack_pyzarchive(pyzpath, pyztoc, obfpath, rtname, cipher=None):
             fullpath = fullpath + 'c'
         if os.path.exists(fullpath):
             logger.info('replace item "%s"', name)
-            with open(fullpath, 'r') as f:
+            with open(fullpath, 'r', encoding='utf-8') as f:
                 co = compile(f.read(), '<frozen %s>' % name, 'exec')
                 code_dict[name] = co
         else:
