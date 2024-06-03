@@ -415,26 +415,28 @@ It requires :mod:`pyarmor.cli.runtime` to get prebuilt binary libraries of other
 
 When private mode is enabled, the attributes of the obfuscated scripts could not be seen by plain script or Python interpreter.
 
-Note that main script is always not private, otherwise Python interpreter can't execute the obfuscated script. If need to protect the attributes of main script, reform it by moving real code to another module.
-
-For example, the original script is `foo.py`:
+Note that main script is always not private, otherwise the obfuscated script can't be executed by Python interpreter. If need protect the attributes of main script, move real code to one module. For example, suppose the original script is `foo.py`:
 
 .. code-block:: python
 
-  def main():
-      print('This is main code')
+    def main():
+        print('This is main code')
 
-  if __name__ == '__main__':
-      main()
+    if __name__ == '__main__':
+        main()
 
-In order to make `foo.py` private, copy it to `real_foo.py`, then change the content like this:
+Just copy it to `real_foo.py`, then create new `foo.py` like this:
 
 .. code-block:: python
 
-  from real_foo import main
+    from real_foo import main
 
-  if __name__ == '__main__':
-      main()
+    if __name__ == '__main__':
+        main()
+
+And obfuscate them::
+
+    $ pyarmor gen --private foo.py real_foo.py
 
 .. versionchanged:: 8.5.3
 
