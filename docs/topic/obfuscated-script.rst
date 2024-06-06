@@ -120,12 +120,15 @@ A few options may also change something:
 
 - ``pyarmor cfg mix_argname=1`` hides annotations.
 
+- Importing obfuscated module by `importlib.util.spec_from_file_location` need extra handle, refer to `issue 846`__
+
 .. seealso::
 
    :doc:`../how-to/third-party`
 
    `Generating cross platform scripts` and `Obfuscating scripts for multiple Python versions` in the chapter :doc:`../tutorial/advanced`
 
+__ https://github.com/dashingsoft/pyarmor/issues/846
 
 Supported Third-Party Interpreter
 =================================
