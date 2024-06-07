@@ -10,6 +10,7 @@
    how-to/packing
    how-to/wheel
    how-to/obfuscation
+   how-to/ci
    how-to/third-party
    how-to/register
 
