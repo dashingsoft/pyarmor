@@ -4,11 +4,20 @@
  Using Pyarmor in CI Pipeline
 ==============================
 
-Pyarmor could be used in CI/CD pipeline directly, except for Group License which may only work on some special runners like Self-Host runner.
+Pyarmor could be used in CI/CD pipeline directly, but there are some limitions:
 
-But it's recommend to use Pyarmor in CI/CD pipeline by another way. First obfuscate the scripts by a few runner and store them to another branch like `master-obf`, then all the other runners need not register Pyarmor, but continue the rest pipeline based on this branch like before. It also could solve this problem: Basic/Pro License only allows 100 runs in 24 hours.
+- Group License generally doesn't work in CI/CD pipeline
+- It only allows 3 runs in 1 minutes for Basic/Pro license
+- It only allows 100 runs in 24 hours for Basic/Pro license
 
-The test-project hierarchy is as follows::
+Pyarmor recommends to use Pyarmor in CI/CD pipeline by this way:
+
+- First obfuscate the scripts by a few runner and store them to another branch like `master-obf`
+- Then all the other runners continue the rest pipeline based on this branch like before
+
+Because only first step runners need register Pyarmor, so it could solve run limitions in most of cases.
+
+Suppose test-project locates at `https://github.com/dashingsoft/test-project`, the directory tree as follows::
 
     $ tree test-project
 
@@ -20,8 +29,6 @@ The test-project hierarchy is as follows::
             ├── child
             │   └── __init__.py
             └── __init__.py
-
-Suppose it locates at `https://github.com/dashingsoft/test-project`
 
 The first runner will obfuscate the scripts and store them into another branch. Here it's an example bash script:
 
@@ -35,10 +42,10 @@ The first runner will obfuscate the scripts and store them into another branch. 
     # Create new branch
     # git checkout -B master-obf
 
-    # So that the original script will be replaced directly by linking the source to output
+    # Create output path "dist" link to project path
     $ ln -s test-project dist
 
-    # Obfuscate the script to "dist", which is save as "test-project"
+    # Obfuscate the script to "dist", which is same as "test-project"
     # So "dist/src/main.py" is same as "test-project/src/main.py"
     $ pyarmor gen -O dist -r --platform windows.x86_64,linux.x86_64,darwin.x86_64 test_project/src
 
@@ -51,6 +58,6 @@ The first runner will obfuscate the scripts and store them into another branch. 
     # Push new branch to remote server
     $ git push -u origin master-obf
 
-For all the other runners, they need not install Pyarmor, just pull branch `master-obf`, then work as before.
+For all the other runners, they need not install Pyarmor, just checkout branch `master-obf`, and work as before.
 
 .. include:: ../_common_definitions.txt
