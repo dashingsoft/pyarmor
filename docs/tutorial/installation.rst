@@ -61,6 +61,7 @@ If you need generate obfuscated scripts to run in other platforms, install the c
     $ pip install pyarmor.cli.core.darwin
     $ pip install pyarmor.cli.core.freebsd
     $ pip install pyarmor.cli.core.android
+    $ pip install pyarmor.cli.core.alpine
 
 Not all the platforms are supported, more information check :doc:`../reference/environments`
 
@@ -221,6 +222,7 @@ Run the following commands to make a clean uninstallation::
     $ pip uninstall pyarmor.cli.core.darwin
     $ pip uninstall pyarmor.cli.core.freebsd
     $ pip uninstall pyarmor.cli.core.android
+    $ pip uninstall pyarmor.cli.core.alpine
 
     $ rm -rf ~/.pyarmor
     $ rm -rf ./.pyarmor

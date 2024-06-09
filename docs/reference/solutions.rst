@@ -59,6 +59,20 @@ Bootstrap failed
 
 3. If nothing works, please check :doc:`environments` to make sure Pyarmor supports this platform
 
+   For LINUX variant system, check the content of packages like `pyarmor.cli.core.linux`, `pyarmor.cli.core.alpine` , `pyarmor.cli.core.android` etc. Each package includes many prebuilt `pytransform.so`. For example::
+
+       pyarmor/cli/core/linux/aarch64/pytransform3.so
+       pyarmor/cli/core/linux/armv7/pytransform3.so
+       pyarmor/cli/core/linux/loongarch64/pytransform3.so
+       pyarmor/cli/core/linux/mips32el/pytransform3.so
+       ...
+
+    Check each `pytransform3.so` by `ldd`, once it works, then set environment variable and run `pyarmor`. For example::
+
+       $ export PYARMOR_PLATFORM=linux.mips32el
+       $ pyarmor gen foo.py
+
+
 Registration Failed
 -------------------
 
