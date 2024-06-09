@@ -64,7 +64,11 @@ def __pyarmor__():
             ('armv6', ('armv6l',)),
             ('armv7', ('armv7l',)),
             ('aarch32', ('aarch32',)),
-            ('aarch64', ('aarch64', 'arm64'))
+            ('aarch64', ('aarch64', 'arm64')),
+            ('ppc64le', ('ppc64le',)),
+            ('mips32el', ('mipsel', 'mips32el')),
+            ('mips64el', ('mips64el',)),
+            ('riscv64', ('riscv64',)),
         )
         for alias, archlist in arch_table:
             if mach in archlist:
@@ -92,9 +96,17 @@ __pyarmor__ = ExtensionFileLoader(
 '''
 
 
-def format_platform(plat, arch):
+def format_platform(plat=None, arch=None):
     from struct import calcsize
     from fnmatch import fnmatchcase
+
+    # Fix pyarmor.cli.core 6.5.2 issue, may be removed in 6.5.3
+    if plat is None and arch is None:
+        if os.getenv('PYARMOR_PLATFORM'):
+            plat, arch = os.getenv('PYARMOR_PLATFORM').split('.')
+        else:
+            from platform import system, machine
+            plat, arch = system().lower(), machine().lower()
 
     plat_table = (
         ('windows', ('windows', 'cygwin*')),

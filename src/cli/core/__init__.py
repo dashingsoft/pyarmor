@@ -44,12 +44,16 @@ def check_and_install_prebuilt_package():
     import os
     from pyarmor.cli.context import format_platform
     from pyarmor.cli.bootstrap import check_prebuilt_runtime_library
+    from platform import system, machine
 
-    plat, arch = format_platform()
-    platname = map_platform('%s.%s' % (plat, arch))
+    platname = os.getenv(
+        'PYARMOR_PLATFORM',
+        '.'.join(format_platform(system().lower(), machine().lower())))
+    platname = map_platform(platname)
     if platname not in PLATFORM_NAMES:
         raise RuntimeError('"%s" is still not supported by Pyarmor' % platname)
 
+    plat, arch = platname.split('.')
     if not os.path.exists(os.path.join(os.path.dirname(__file__), plat, arch)):
         check_prebuilt_runtime_library([platname])
 
