@@ -67,7 +67,7 @@ Bootstrap failed
        pyarmor/cli/core/linux/mips32el/pytransform3.so
        ...
 
-    Check each `pytransform3.so` by `ldd`, once it works, then set environment variable and run `pyarmor`. For example::
+   Check each `pytransform3.so` by `ldd`, once it works, then set environment variable and run `pyarmor`. For example::
 
        $ export PYARMOR_PLATFORM=linux.mips32el
        $ pyarmor gen foo.py
