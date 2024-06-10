@@ -61,17 +61,30 @@ Bootstrap failed
 
    For LINUX variant system, check the content of packages like `pyarmor.cli.core.linux`, `pyarmor.cli.core.alpine` , `pyarmor.cli.core.android` etc. Each package includes many prebuilt `pytransform.so`. For example::
 
-       pyarmor/cli/core/linux/aarch64/pytransform3.so
-       pyarmor/cli/core/linux/armv7/pytransform3.so
-       pyarmor/cli/core/linux/loongarch64/pytransform3.so
-       pyarmor/cli/core/linux/mips32el/pytransform3.so
-       ...
+       $ unzip ./pyarmor.cli.core.linux-6.5.3-cp310-none-any.whl
 
-   Check each `pytransform3.so` by `ldd`, once it works, then set environment variable and run `pyarmor`. For example::
+       Archive:  ./pyarmor.cli.core.linux-6.5.3-cp310-none-any.whl
+         inflating: pyarmor/cli/core/linux/__init__.py
+         inflating: pyarmor/cli/core/linux/aarch64/pyarmor_runtime.so
+         inflating: pyarmor/cli/core/linux/aarch64/pytransform3.so
+         inflating: pyarmor/cli/core/linux/armv7/pyarmor_runtime.so
+         inflating: pyarmor/cli/core/linux/armv7/pytransform3.so
+         inflating: pyarmor/cli/core/linux/loongarch64/pyarmor_runtime.so
+         inflating: pyarmor/cli/core/linux/loongarch64/pytransform3.so
+         inflating: pyarmor/cli/core/linux/mips32el/pyarmor_runtime.so
+         inflating: pyarmor/cli/core/linux/mips32el/pytransform3.so
+         ...
 
-       $ export PYARMOR_PLATFORM=linux.mips32el
+   Check each `pytransform3.so` by `ldd` to find which one works, then copy them to package `pyarmor.cli.core`. For example::
+
+       $ cp pyarmor/cli/core/linux/loongarch64/*.so /path/to/pyarmor/cli/core
        $ pyarmor gen foo.py
 
+   Or install this package and set environment variable like this::
+
+       $ pip install ./pyarmor.cli.core.linux-6.5.3-cp310-none-any.whl
+       $ export PYARMOR_PLATFORM=linux.loongarch64
+       $ pyarmor gen foo.py
 
 Registration Failed
 -------------------
