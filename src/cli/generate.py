@@ -141,10 +141,7 @@ class Builder(object):
                     continue
 
                 logger.info('obfuscating %s', r)
-                code = self._generate_obfuscated_script(r)
-                if code is None:
-                    self._copy_script(path, r)
-                    continue
+                code = Pytransform3.generate_obfuscated_script(self.ctx, r)
                 source = r.generate_output(
                     template, code, relative=relative, pkgname=pkgname,
                     bootpath=bootpath, rev=rev
