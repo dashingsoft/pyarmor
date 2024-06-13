@@ -132,12 +132,16 @@ If it returns as above, but still failed to register, report issue with license 
 
 3. Does device registration file ``pyarmor-device-regfile-????.N.zip`` match this device? Each device registration file has one machine id.
 
-3. If device Machine ID is same after reboot, and device registration file is matched this device, please report issue with the following information:
+4. If device Machine ID is same after reboot, and device registration file is matched this device, please report issue with the following information:
 
    - Machine ID
    - Device type, it's physics device, vm, ECS, docker container or something else
    - Linux, Windows or MacOS and arches
    - For Linux/MacOS, also provide the output of `uname -a`
+
+**Group License for docker container**
+
+1. Check docker host and container network, make sure they're in same network
 
 Obfuscation failed
 ------------------
@@ -231,7 +235,8 @@ If still not work, please check :doc:`environments` to make sure Pyarmor support
 **unauthorized use of script**
 
 1. Do not use restrict options like :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import`
-2. Find the problem option, and report issue
+2. Use `pyarmor cfg assert.call:excludes "xxx"` and `pyarmor cfg assert.import:excludes "xxx"` to exclude problem modules and functions
+3. Find the problem option, and report issue
 
 Failed to run obfuscated scripts
 --------------------------------
