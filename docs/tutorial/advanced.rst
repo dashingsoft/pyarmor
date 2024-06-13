@@ -340,7 +340,7 @@ Internationalization runtime error message
 Create :file:`messages.cfg` in the path :file:`.pyarmor`::
 
     $ mkdir .pyarmor
-    $ vi .pyarmor/message.cfg
+    $ vi .pyarmor/messages.cfg
 
 It's a ``.ini`` format file, add a section ``runtime.message`` with option ``languages``. The language code is same as environment variable ``LANG``, assume we plan to support 2 languages, and only customize 2 errors:
 
