@@ -165,4 +165,20 @@ Finally nuitka the obfuscated script ``dist/foo.py``, check whether it works or 
 
 Try more options, but I think restrict options such as :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
 
+streamlit
+---------
+
+It need change default configurations. At least::
+
+    $ pyarmor cfg restrict_module=0
+    $ pyarmor cfg clear_module_co=0
+
+This first one solves issue `RuntimeError: unauthorized use of script (1:1102)`
+
+Then second one solves issue `RuntimeError: the format of obfuscated script is incorrect (1:1082)`
+
+Now obfuscate the scripts::
+
+    $ pyarmor gen foo.py
+
 .. include:: ../_common_definitions.txt
