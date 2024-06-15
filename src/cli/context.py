@@ -213,12 +213,19 @@ class Context(object):
         return self._read_config(flist, encoding=encoding)
 
     def read_token(self):
-        if os.path.exists(self.license_token):
-            with open(self.license_token, 'rb') as f:
-                return f.read()
+        for filename in (self.license_token, self.license_group_token):
+            if os.path.exists(filename):
+                with open(filename, 'rb') as f:
+                    return f.read()
 
     def save_token(self, data):
         with open(self.license_token, 'wb') as f:
+            if not data.endswith(b'=='):
+                raise RuntimeError('got invalid token %r' % data)
+            f.write(data)
+
+    def save_group_token(self, data):
+        with open(self.license_group_token, 'wb') as f:
             if not data.endswith(b'=='):
                 raise RuntimeError('got invalid token %r' % data)
             f.write(data)
@@ -345,6 +352,10 @@ class Context(object):
     @property
     def license_token(self):
         return os.path.join(self.reg_path, '.license.token')
+
+    @property
+    def license_group_token(self):
+        return os.path.join(self.reg_path, '.license.group.token')
 
     @property
     def license_info(self):

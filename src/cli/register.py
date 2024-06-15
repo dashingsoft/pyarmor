@@ -199,7 +199,7 @@ class Register(object):
                         raise CliError('this group device license is not for '
                                        'this docker host')
                 logger.debug('extracting %s', name)
-                self.ctx.save_token(f.read(name))
+                self.ctx.save_group_token(f.read(name))
                 return
             if 'group.info' in namelist:
                 logger.info('refer to http://pyarmor.readthedocs.io/en/stable/how-to/register.html'
