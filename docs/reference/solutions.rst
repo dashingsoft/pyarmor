@@ -4,6 +4,8 @@
 
 .. program:: pyarmor gen
 
+Pyarmor team handles too many wrong usage issues, all of them are collected and organized into this document. When something is wrong, please check this doc at first.
+
 .. _build device:
 
 Build Device
