@@ -181,4 +181,6 @@ Now obfuscate the scripts::
 
     $ pyarmor gen foo.py
 
+**It may still not work because of Streamlit may patch code object by itself**
+
 .. include:: ../_common_definitions.txt
