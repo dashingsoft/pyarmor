@@ -217,8 +217,8 @@ class Register(object):
             rlist = []
             with socket(AF_INET, SOCK_STREAM) as s:
                 s.connect((host, port))
-                logger.debug('socket addr: %s', str(s.getsockname()))
-                logger.debug('remote addr: %s', str(s.getpeername()))
+                logger.info('socket addr: %s', str(s.getsockname()))
+                logger.info('remote addr: %s', str(s.getpeername()))
                 s.sendall(b'PADH' + b'x' * 60)
                 while True:
                     flag = s.recv(1)
