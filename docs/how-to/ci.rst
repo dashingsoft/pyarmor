@@ -40,7 +40,7 @@ The first runner will obfuscate the scripts and store them into another branch. 
     $ pyarmor reg /path/to/pyarmor-regfile-5068.zip
 
     # Create new branch
-    # git checkout -B master-obf
+    $ git checkout -B master-obf
 
     # Create output path "dist" link to project path
     $ ln -s test-project dist
