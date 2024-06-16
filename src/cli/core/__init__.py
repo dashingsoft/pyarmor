@@ -23,7 +23,7 @@
 __VERSION__ = '6.5.2'
 
 PLATFORM_NAMES = (
-    'windows.x86_64', 'windows.x86',
+    'windows.x86_64', 'windows.x86', 'cygwin.x86_64',
     'darwin.x86_64', 'darwin.arm64',
     'linux.x86_64', 'linux.x86', 'linux.aarch64', 'linux.armv7',
     'linux.mips32el', 'linux.mips64el', 'linux.ppc64le', 'linux.riscv64',

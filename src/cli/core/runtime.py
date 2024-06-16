@@ -29,6 +29,7 @@ class PyarmorRuntime(object):
     def get(plat, extra=None, native=True):
         from os import scandir, path as os_path
         prefix = 'pyarmor_runtime'
+        extlist = 'so', 'pyd', 'dylib', 'dll'
 
         # Themida is only available for windows
         if extra == 'themida' and not plat.startswith('windows'):
@@ -39,7 +40,7 @@ class PyarmorRuntime(object):
             path = pkgpath
             for entry in scandir(path):
                 parts = entry.name.split('.')
-                if parts[0] == prefix and parts[-1] in ('so', 'pyd', 'dylib'):
+                if parts[0] == prefix and parts[-1] in extlist:
                     return entry.name, os_path.abspath(entry.path)
 
         platname = map_platform(plat)
@@ -52,7 +53,7 @@ class PyarmorRuntime(object):
         if os_path.exists(path):
             for entry in scandir(path):
                 parts = entry.name.split('.')
-                if parts[0] == prefix and parts[-1] in ('so', 'pyd', 'dylib'):
+                if parts[0] == prefix and parts[-1] in extlist:
                     return entry.name, os_path.abspath(entry.path)
 
         # Fallback to pyarmor.cli.runtime

@@ -109,7 +109,8 @@ def format_platform(plat=None, arch=None):
             plat, arch = system().lower(), machine().lower()
 
     plat_table = (
-        ('windows', ('windows', 'cygwin*')),
+        ('windows', ('windows',)),
+        ('cygwin', ('cygwin*',)),
         ('darwin', ('darwin',)),
         ('linux', ('linux*',)),
         ('freebsd', ('freebsd*', 'openbsd*', 'isilon onefs')),
