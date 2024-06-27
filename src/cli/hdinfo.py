@@ -36,6 +36,22 @@ def get_hd_info(hdtype, name=None):
         return str(e)
 
 
+def get_all_ifmac():
+    try:
+        buf = get_hd_info(HT_IFMAC, name='*')
+        i = 0
+        n = len(buf)
+        rlist = []
+        while i < n and buf[i]:
+            j = i + 1 + buf[i]
+            rlist.append(':'.join(['%02x' % x for x in buf[i+1:j]]))
+            i = j
+    except Exception as e:
+        return str(e)
+
+    return '<%s>' % ','.join(rlist)
+
+
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('devname', nargs='*', help=(
@@ -49,7 +65,7 @@ def main(argv):
         print('Default Harddisk Serial Number: %s' % get_hd_info(HT_HARDDISK))
         print('Default Mac address: %s' % get_hd_info(HT_IFMAC))
         print('Default IPv4 address: %s' % get_hd_info(HT_IPV4))
-        print('Multiple Mac addresses: %s' % get_hd_info(HT_IFMAC, name='*'))
+        print('Multiple Mac addresses: %s' % get_all_ifmac())
         print('Domain: %s' % get_hd_info(HT_DOMAIN))
 
     for name in args.devname:
