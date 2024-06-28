@@ -49,7 +49,7 @@ def get_all_ifmac():
     except Exception as e:
         return str(e)
 
-    return '<%s>' % ','.join(rlist)
+    return '<%s>' % ','.join(set(rlist))
 
 
 def main(argv):
