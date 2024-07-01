@@ -38,7 +38,7 @@ def get_hd_info(hdtype, name=None):
 
 def get_all_ifmac():
     try:
-        buf = get_hd_info(HT_IFMAC, name='*')
+        buf = Pytransform3.get_hd_info(HT_IFMAC, name='*')
         i = 0
         n = len(buf)
         rlist = []
