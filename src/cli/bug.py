@@ -36,7 +36,7 @@ $tracelog
 $tb
 ''')
 
-ENABLE_DEBUG_HINTS = '''something is wrong
+UNUSED_ENABLE_DEBUG_HINTS = '''something is wrong
 *=============================================================*
 *  Please enable debug option `-d` to run it again            *
 *    pyarmor -d gen options ...                               *
@@ -45,11 +45,10 @@ ENABLE_DEBUG_HINTS = '''something is wrong
 *                                                             *
 *  Please also check                                          *
 *    https://pyarmor.readthedocs.io/en/latest/questions.html  *
-*  or run `pyarmor man` to find solutions quickly             *
 *=============================================================*
 '''
 
-SOLUTION_HINTS = Template('''something is wrong
+UNUSED_SOLUTION_HINTS = Template('''something is wrong
 *=============================================================*
 *  Please check                                               *
 *    https://pyarmor.readthedocs.io/en/latest/questions.html  *
@@ -58,6 +57,17 @@ SOLUTION_HINTS = Template('''something is wrong
 *  It's recommand to report issue by `pyarmor man` in order   *
 *  to provide necessary information, and avoid dupcliated     *
 *  issues or unclear question.                                *
+*=============================================================*
+''')
+
+ENABLE_DEBUG_HINTS = 'please enable debug option `-d` to run it again'
+
+SOLUTION_HINTS = Template('''something is wrong
+*=============================================================*
+*  Please check console log to find out what's wrong          *
+*                                                             *
+*  If still not solved, please find solutions by              *
+*    https://pyarmor.readthedocs.io/en/latest/questions.html  *
 *=============================================================*
 ''')
 
@@ -111,6 +121,7 @@ def find_solutions(e):
         logger.error(ENABLE_DEBUG_HINTS)
         return
 
+    logger.info('generate bug file "%s"', BUG_FILE)
     generate_bug_report(e)
     logger.error(SOLUTION_HINTS.substitute(bugfile=BUG_FILE))
 
