@@ -37,6 +37,8 @@ PLATFORM_NAMES = (
 def map_platform(platname):
     if platname == 'darwin.aarch64':
         return 'darwin.arm64'
+    if platname.startswith('musl.'):
+        return '.'.join('alpine', platname[5:])
     return platname
 
 
