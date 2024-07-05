@@ -214,7 +214,7 @@ class Context(object):
         return self._read_config(flist, encoding=encoding)
 
     def read_token(self):
-        for filename in (self.license_token, self.license_group_token):
+        for filename in (self.license_group_token, self.license_token):
             if os.path.exists(filename):
                 with open(filename, 'rb') as f:
                     return f.read()
