@@ -269,7 +269,8 @@ class Context(object):
         if self.cfg.has_section(extra_sect):
             options.update(self.cfg.items(extra_sect))
         if name:
-            cfg = self._named_config(name + '.ruler')
+            # If input path is '.', package name will start with '..'
+            cfg = self._named_config(name.strip('.') + '.ruler')
             if cfg.has_section(sect):
                 options.update(cfg.items(sect))
         return options
