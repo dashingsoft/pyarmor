@@ -104,7 +104,7 @@ Each ci quota allows 2,000 extra runs after 100 runs in 24 hours.
 
    If no more than 100 runs in 24 hours, it doesn't consume CI Quota.
 
-   .. list-table:: Table-2. Pyarmor CI Quota Usage Example
+.. list-table:: Table-2. Pyarmor CI Quota Usage Example
    :header-rows: 1
 
    * - Date
