@@ -209,8 +209,16 @@ class Context(object):
         return cfg
 
     def _named_config(self, name, encoding=None):
-        flist = [os.path.join(x, name)
-                 for x in (self.global_path, self.local_path)]
+        nlist = []
+        if self.cfg.getboolean('builder', 'propagate_package_options'):
+            i = name.find('.')
+            while i > -1:
+                nlist.append(name[:i])
+                i = name.find('.', i+1)
+        nlist.append(name)
+        flist = [os.path.join(b, a)
+                 for a in nlist
+                 for b in (self.global_path, self.local_path)]
         return self._read_config(flist, encoding=encoding)
 
     def read_token(self):
