@@ -121,27 +121,12 @@ Each ci quota allows 2,000 extra runs after 100 runs in 24 hours.
      - 80
      - 0
      - 2000
-     -
+     - No consume quota because 80 < 100
    * - 2024-05-03
      - 120
      - 20
      - 1080
-     -
-   * - 2024-05-04
-     - 160
-     - 60
-     - 1020
-     -
-   * - 2024-05-05
-     - 90
-     - 0
-     - 1020
-     -
-   * - 2024-05-06
-     - 101
-     - 1
-     - 1019
-     -
+     - Consume quota 20 = 120 - 100
 
 5. When ci quota is exhausted, it need purchase new Pyarmor CI Quota
 
