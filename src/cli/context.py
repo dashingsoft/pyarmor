@@ -40,7 +40,7 @@ def __pyarmor__():
 
     def format_system():
         plat = platform.system().lower()
-        plat = ('windows' if plat.startswith('cygwin') else
+        plat = ('cygwin' if plat.startswith('cygwin') else
                 'linux' if plat.startswith('linux') else
                 'freebsd' if plat.startswith(
                     ('freebsd', 'openbsd', 'isilon onefs')) else plat)
