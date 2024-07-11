@@ -196,16 +196,22 @@ Run Pyarmor from Python script
 
 Create a script :file:`tool.py`, pass arguments by yourself
 
+For example,
+
 .. code-block:: python
 
     from pyarmor.cli.__main__ import main_entry
 
-    args = ['gen', 'foo.py']
+    args = ['gen', '-O', 'dist', '--platform', 'linux.x86_64,windows.x86_64', 'foo.py']
     main_entry(args)
 
 Run it by Python interpreter::
 
     $ python tool.py
+
+It's same as this command::
+
+    $ pyarmor gen -O dist --platform linux.x86_64,windows.x86_64 foo.py
 
 Clean uninstallation
 ====================
