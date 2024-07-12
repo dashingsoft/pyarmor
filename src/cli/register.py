@@ -151,6 +151,11 @@ class Register(object):
     def register_regfile(self, regfile, clean=True):
         from zipfile import ZipFile
 
+        for x in (self.ctx.license_group_token, self.ctx.license_token):
+            if os.path.exists(x):
+                logger.info('remove old token "%s"', x)
+                os.remove(x)
+
         path = self.ctx.reg_path
         with ZipFile(regfile, 'r') as f:
             for item in ('license.lic', '.pyarmor_capsule.zip'):
