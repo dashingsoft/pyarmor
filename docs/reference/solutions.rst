@@ -245,13 +245,13 @@ Failed to run obfuscated scripts
 
 1. Do not use :option:`--enable-rft`, :option:`--enable-bcc` and any restrict options like :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import`, check the obfuscated scripts work or not. If it works, check the solutions in the **RFT Mode Problem**, **BCC Mode Problem** and **unauthorized use of script**
 
-2. If it doesn't work, try to obfuscate a hello world script, check it works or not
+2. If it doesn't work, try to obfuscate one simple script, check it works or not
 
 3. Add some print statement in the problem script, and get one script as simple as possible to reproduce the problem. It's better only use Python system packages. If really need third-parth library, check :doc:`../how-to/third-party` first
 
-4. Report issue with necessare information
+4. Report issue with necessary information
 
-   - Minimum pyarmor options, do not commit non-sense option
+   - Minimum pyarmor options, do not submit non-sense options
    - A simple script which only imports Python system package
    - How to run the obfuscated scripts and full trackback when it fails
 
