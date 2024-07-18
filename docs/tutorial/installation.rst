@@ -179,18 +179,6 @@ Sometimes, it need set runpath too. For example::
 
 Otherwise it will raise error `dlopen failed: cannot locate symbol "PyFloat_Type"`
 
-Cygwin issues
-=============
-
-In Cygwin, after installation it need create an extra link. For example, assume it's Python 3.10 in Cygwin::
-
-    $ cd /usr/bin
-    $ ln -s libpython3.10.dll python310.dll
-
-Otherwise the extension `pytransform3` could not be installed.
-
-It also need create this link when running the obfuscated script in Cygwin.
-
 Run Pyarmor from Python script
 ==============================
 

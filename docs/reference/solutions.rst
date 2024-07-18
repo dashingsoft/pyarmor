@@ -279,9 +279,7 @@ Failed to run the packed obfuscated scripts
 Platform Issues
 ===============
 
-Cygwin need create extra link `pythonXY.dll` to `libpythonX.Y.dll`
-
-Darwin Apple Silicon may need codesign
+Darwin Apple Silicon may need codesign if pyarmor or the obfuscated script can't run at all
 
 .. rubric:: Notes
 
