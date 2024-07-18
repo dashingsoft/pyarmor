@@ -335,19 +335,7 @@ def cmd_reg(ctx, args):
 
 
 def cmd_man(ctx, args):
-    pkgpath = os.path.join(os.path.dirname(__file__), '..', 'man')
-    if not os.path.exists(pkgpath):
-        from subprocess import check_output
-        check_output([
-            sys.executable, '-m', 'pip', 'install',
-            '--disable-pip-version-check', 'pyarmor.man'
-        ])
-
-    from pyarmor.man.cli import main_entry
-    try:
-        main_entry(args)
-    except KeyboardInterrupt:
-        logging.info('Quit from Pyarmor.Man, Bye-Bye')
+    logging.info('This feature is still developing ...')
 
 
 def main_parser():
