@@ -24,7 +24,7 @@ Pyarmor is published as shareware, free trial version never expires, but there a
 (6) Can not be used to provide obfuscation service in any form, in short this software can't be used to obfuscate the scripts of others
 (7) Can not use obf-code > 1
 
-These limitations can be unlocked by different License Types except last one.
+These limitations can be unlocked by different License Types except (6). All Pyarmor Licenses are only used to obfuscate the scripts written by licensee, in any case they couldn't be used to obfuscate the scripts not written by licensee.
 
 License types
 =============
