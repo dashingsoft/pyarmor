@@ -252,7 +252,7 @@ Some of runtime error messages could be customized. When something is wrong with
 First create :file:`messages.cfg` in the path :file:`.pyarmor`::
 
     $ mkdir .pyarmor
-    $ vi .pyarmor/message.cfg
+    $ vi .pyarmor/messages.cfg
 
 Then edit it. It's a ``.ini`` format file, change the error messages as needed
 
