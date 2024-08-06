@@ -210,6 +210,10 @@ fail to comply with any of its terms.
     product, even it's caused by 4.3, this Pyarmor License will be ceased. A
     notify email will be sent to registration email of this Pyarmor License.
 
+4.6 Pyarmor license must be installed in your build enviornments, you can't
+    install Pyarmor License in customer's device to obfuscate your customer's
+    scripts
+
 5. Restrictions
 ---------------
 
