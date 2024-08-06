@@ -57,7 +57,7 @@ Pyarmor has 3 kind of licenses:
 
 **Group license is bind to device hardwares, it may not work in any device which hardwares are volatile (docker container is OK only if group license works in docker host)**
 
-**Pyarmor License is only applicable to build machines which are used to obfuscate scripts, it has no any limitation for target machines in which to run the obfuscated scripts**
+**Pyarmor License is only allowed to be installed in the build environments to generate the obfuscated scripts, it need not Pyarmor to run the obfuscated scripts, and it's not allowed to install Pyarmor License with the obfuscated scripts in your customer devices**
 
 Each license has an unique number, the format is ``pyarmor-vax-xxxxxx``, which x stands for a digital.
 
