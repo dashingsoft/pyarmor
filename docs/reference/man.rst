@@ -387,6 +387,20 @@ The default unit is hour, for example, the following examples are equivalent::
 
    If the obfuscated script enters an infinite loop without call any obfuscated function, it doesn't trigger periodic check.
 
+   In this case, try to call one empty function in loop statement. For example::
+
+     def pyarmor_check_license():
+         pass
+
+     def main():
+         while True:
+             check_pyarmor_license()
+             sleep(0.01)
+
+    Besides, if bcc mode is enabled, it also need exclude this empty function. For example::
+
+      $ pyarmor cfg bcc:excludes = pyarmor_check_license
+
 .. option:: --outer
 
             Enable :term:`outer key`
