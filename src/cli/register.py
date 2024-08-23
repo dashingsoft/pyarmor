@@ -362,6 +362,24 @@ class WebRegister(Register):
         conn.request("GET", url[k:])
         return conn.getresponse()
 
+    def check_request_interval(self, delta=30.0):
+        """Make sure no more than 2 requests in 1 minute"""
+        tspath = os.path.join(self.ctx.reg_path, 'last_register')
+        try:
+            st = os.stat(tspath)
+        except FileNotFoundError:
+            os.makedirs(tspath)
+        else:
+            from time import sleep, time
+            d = delta - (time() - st.st_mtime)
+            if d > 0:
+                logger.info('last register was within %d seconds, '
+                            'waiting for %d seconds', delta, d)
+            while time() - st.st_mtime < delta:
+                logger.info('waiting ...')
+                sleep(3.0)
+            os.utime(tspath)
+
     def _send_request(self, url, timeout=6.0):
         try:
             return self._request(url)

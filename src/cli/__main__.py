@@ -304,6 +304,7 @@ def cmd_reg(ctx, args):
             logger.error('invalid registeration file "%s"', regfile)
             raise CliError('please use ".zip" file to register group device')
         regsvr = WebRegister(ctx)
+        regsvr.check_request_interval()
         regsvr.register_group_device(regfile, args.device)
         logger.info('The device regfile has been generated successfully')
 
@@ -315,6 +316,7 @@ def cmd_reg(ctx, args):
 
     else:
         regsvr = WebRegister(ctx)
+        regsvr.check_request_interval()
         info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
         prompt = 'Are you sure to continue? (yes/no) '
         if args.confirm:
