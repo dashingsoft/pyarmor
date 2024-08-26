@@ -387,6 +387,31 @@ CI pipeline could get obfuscated scripts from this new branch, and start workflo
 
 __ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
 
+Using multiple Pyarmor Licenses in same device
+==============================================
+
+Generally the registration information is sotred in the Pyarmor :term:`Home Path`, the default value is :file:`~/.pyarmor`. It means
+
+- All Python virtual environments share same registration information
+- It may not work to register other Pyarmor license in same device
+
+When need many Pyarmor Licenses in one machine, set each license to different path. For example::
+
+    $ pyarmor --home ~/.pyarmor1 reg pyarmor-regfile-2051.zip
+    $ pyarmor --home ~/.pyarmor1 gen project1/foo.py
+
+    $ pyarmor --home ~/.pyarmor2 reg pyarmor-regfile-2052.zip
+    $ pyarmor --home ~/.pyarmor2 gen project2/foo.py
+
+After upgrading pyarmor
+=======================
+
+Generally it need do nothing after upgrading Pyarmor, the registration information still works.
+
+If it doesn't work, please first check Pyarmor `change logs`__, make sure Pyarmor team doesn't annouce old license doesn't work in latest Pyarmor. Don't upgrade Pyarmor if old license isn't valid in latest Pyarmor.
+
+__ https://github.com/dashingsoft/pyarmor/releases
+
 Upgrading old Pyarmor license
 =============================
 
