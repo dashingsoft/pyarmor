@@ -403,8 +403,8 @@ When need many Pyarmor Licenses in one machine, set each license to different pa
     $ pyarmor --home ~/.pyarmor2 reg pyarmor-regfile-2052.zip
     $ pyarmor --home ~/.pyarmor2 gen project2/foo.py
 
-After upgrading Pyarmor
-=======================
+What need to do after upgrading Pyarmor
+=======================================
 
 Generally it need do nothing after upgrading Pyarmor, the registration information still works.
 
@@ -412,16 +412,16 @@ But in the following versions something is changed
 
 - **Pyarmor 8.0** Old license for Pyarmor 7 doesn't work
 
-  - Some old licenses can be upgraded to Basic License freely, :ref:`upgrade old license <upgrading old license>`
+  - Some old licenses can be upgraded to Basic License freely, refer to :ref:`upgrade old license <upgrading old license>`
   - Old license can't be upgraded to Pro or Group License
 
-- **Pyarmor 8.6** For Group License it need re-generate device regfile
+- **Pyarmor 8.6** For Group License it need generate device regfile again with Pyarmor 8.6+. The old device regfile which is generated in prior to Pyarmor 8.6 doesn't work in Pyarmor 8.6+
 
-  - First upgrade Pyarmor to 8.6+ in one online device
-  - Then generate device regfile again. For example, generate device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1::
+  - First upgrade Pyarmor to 8.6+ in online device
+  - Then generate device regfile as first time. For example, generate device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1::
 
       pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
 
-  - Finally, replace the old one with new one
+  - Finally, replace old one with new one
 
 .. include:: ../_common_definitions.txt
