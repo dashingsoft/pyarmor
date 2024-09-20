@@ -247,4 +247,12 @@ Known issues
   - test_with_two_commas_in_format_specifier
   - test_with_two_underscore_in_format_specifier
 
+* When generating BCC code, pyarmor may raise `RuntimeError: link bcc code failed`
+
+  Try to add extra cflags `-DENABLE_BCC_MEMSET` for this platform. For example, use the following command for Windows X86::
+
+      pyarmor cfg windows.x86.bcc:cflags += " -DENABLE_BCC_MEMSET"
+
+  Or patch :file:`pyarmor/cli/default.cfg` directly.
+
 .. include:: ../_common_definitions.txt
