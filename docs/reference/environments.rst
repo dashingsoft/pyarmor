@@ -372,7 +372,8 @@ Generally they're used with inline marker or in the hook scripts.
    :return: arg == 0 return the serial number of first harddisk
    :return: arg == 1 return mac address of first network card
    :return: arg == 2 return ipv4 address of first network card
-   :return: arg == 3 return device name
+   :return: arg == 3 unused
+   :return: arg == 4 return domain name
    :rtype: str
    :raises RuntimeError: when something is wrong
 
