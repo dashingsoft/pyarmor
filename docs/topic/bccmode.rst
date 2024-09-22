@@ -253,6 +253,10 @@ Known issues
 
       pyarmor cfg windows.x86.bcc:cflags += " -DENABLE_BCC_MEMSET"
 
-  Or patch :file:`pyarmor/cli/default.cfg` directly.
+  Or patch :file:`pyarmor/cli/default.cfg` directly, the final value should be like this::
+
+      Section: windows.x86.bcc
+
+      cflags = --target=i686-elf-linux -O3 -Wno-unsequenced -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-stack-protector -fPIC -mno-sse -std=c99 -c -DENABLE_BCC_MEMSET
 
 .. include:: ../_common_definitions.txt
