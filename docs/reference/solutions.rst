@@ -88,6 +88,8 @@ Bootstrap failed
        $ export PYARMOR_PLATFORM=linux.loongarch64
        $ pyarmor gen foo.py
 
+4. If this platform is supported, try to upgrade Python interprerter to latest patch version. For example, upgrade Python 3.11.0b2 to 3.11.9
+
 Registration Failed
 -------------------
 
@@ -200,6 +202,8 @@ Bootstrap failed
    Open the obfuscated script by any text editor, you can see the first statement is `from ... import`, make sure it works by Python import system
 
    If it doesn't work, try to use :option:`-i` or :option:`--prefix` to generate the obfuscated scripts again to fix it
+
+3. Try to upgrade Python interprerter to latest patch version. For example, upgrade Python 3.11.0b2 to 3.11.9
 
 **If target device is different from build device**
 
