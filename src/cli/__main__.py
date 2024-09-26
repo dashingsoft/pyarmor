@@ -238,8 +238,8 @@ def cmd_gen(ctx, args):
         packer = Repacker(ctx, args.pack, options['inputs'], args.output)
         packer.check()
         builder.process(options, packer=packer)
-        packer.build()
         Plugin.post_build(ctx, pack=args.pack)
+        packer.build()
     else:
         builder.process(options)
         Plugin.post_build(ctx)
