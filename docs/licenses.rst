@@ -249,27 +249,6 @@ If failed to upgrade the old license, please purchase new license to use Pyarmor
 
 The old license can't be upgraded to Pyarmor Pro and Group.
 
-..
-  But there is discount for old users to purchase Pyarmor Pro.
-
-  .. list-table:: Table-3. Pyarmor Pro Discount for Old Users
-     :header-rows: 1
-
-     * - Old License Purchased Date
-       - Discount(%)
-       - Remark
-     * - Between 2022-06-01 and 2023-05-31
-       - 40
-       -
-     * - Between 2021-06-01 and 2022-05-31
-       - 30
-       -
-     * - Before 2021-05-31
-       - 20
-       -
-
-  Please send your order no. to pyarmor@163.com to request discount coupon, this request must be sent from registration email.
-
 Upgrading old license to Pyarmor Basic
 --------------------------------------
 
