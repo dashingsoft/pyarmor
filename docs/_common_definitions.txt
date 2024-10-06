@@ -4,6 +4,7 @@
 .. _Pyarmor Doc: https://pyarmor.readthedocs.io/en/stable/
 .. _Pyarmor 7.x Doc: https://pyarmor.readthedocs.io/en/v7.7/
 .. _Pyarmor EULA: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
+.. _MyCommerce Shopping: https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
 
 .. |pyarmor| replace:: :doc:`pyarmor <man>`
 .. |Pyarmor| replace:: :term:`Pyarmor`

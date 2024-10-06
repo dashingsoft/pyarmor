@@ -172,13 +172,13 @@ License features
 Purchasing license
 ==================
 
-Open shopping cart in any web browser:
-
-    https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
-
-If you have Pyarmor 8.0+ installed, this command also could open shopping cart::
+If you have Pyarmor 8.6+ installed, this command also could open shopping cart::
 
     $ pyarmor reg --buy
+
+Open shopping cart in any web browser:
+
+    https://jondy.github.io/paypal.html
 
 In the shopping cart, select License Type and complete the payment online.
 
@@ -217,15 +217,19 @@ Following the guide in activation file to take the purchased license effects, or
 Refund policy
 -------------
 
-If activation file isn't used, and purchasing date is in 30 days, refund is acceptable. Please
+If activation file isn't used, and purchasing date is in 30 days, refund is acceptable.
 
-1. Email to Ordersupport@mycommerce.com with order information and ask for refund.
-2. Or click `FindMyOrder page`_ to submit refund request
+- If purchasing order from MyCommerce:
+
+  1. Email to Ordersupport@mycommerce.com with order information and ask for refund.
+  2. Or click `FindMyOrder page`_ to submit refund request
+
+- If purchasing order from reseller, contact your reseller
+
+- For other cases, email to pyarmor@163.com
 
 Out of 30 days, or activation file has been used, refund request will be rejected.
-
-.. _FindMyOrder page: https://www.findmyorder.com/store?Action=DisplayEmailCustomerServicePage&Env=BASE&Locale=en_US&SiteID=findmyor
-
+  .. _FindMyOrder page: https://www.findmyorder.com/store?Action=DisplayEmailCustomerServicePage&Env=BASE&Locale=en_US&SiteID=findmyor
 
 .. _upgrading old license:
 
@@ -290,71 +294,5 @@ In other devices using this new :term:`registration file` to register Pyarmor by
 After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
 
 If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
-
-..
-  Upgrading old license to Pyarmor Pro
-  ------------------------------------
-
-  Upgrading old license to Pyarmor Pro needs extra fees.
-
-  .. list-table:: Table-3. Upgrade fee from old license
-     :header-rows: 1
-
-     * - License Type
-       - Upgrading fee($)
-       - Remark
-     * - Basic
-       - 0
-       - following new EULA and match some conditions
-     * - Pro
-       - 50
-       -
-     * - Group
-       - N/A
-       -
-
-  Open shopping cart in any web browser:
-
-      https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
-
-  If you have Pyarmor 8.2+ installed, this command also could open shopping cart::
-
-      $ pyarmor reg --buy
-
-  In the shopping cart, select ``Pyarmor-upgrade`` and complete the payment online.
-
-  A file named ``pyarmor-regcode-to-pro.txt`` will be sent by email immediately after payment is completed successfully.
-
-  This file includes the guide  to upgrade old license to Pyarmor Pro.
-
-  Internet connection and Pyarmor 8.2+ are required to upgrade old license, check Pyarmor version by this command
-
-      pyarmor -v
-
-  Check old license
-
-      pyarmor-7 -v
-
-  If no old license found, register old license first
-
-      pyarmor-7 register pyarmor-regcode-xxxx.txt
-
-  Assume this license will be used to obfuscate product ``XXX``, run this command::
-
-      $ pyarmor reg -u -p "XXX" pyarmor-regcode-xxxx.txt
-
-  Check the upgraded license information::
-
-      $ pyarmor -v
-
-  After upgrade successfully, the file ``pyarmor-regcode-to-pro.txt`` is invalid. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
-
-  In other devices using this new :term:`registration file` to register Pyarmor by this command::
-
-      $ pyarmor reg pyarmor-regfile-xxxx.zip
-
-  After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
-
-  If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
 
 .. include:: _common_definitions.txt
