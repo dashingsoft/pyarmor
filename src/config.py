@@ -1,6 +1,6 @@
 from sys import platform
 
-version = '8.5.12'
+version = '8.6.0'
 
 # The corresponding version of pytransform.so
 core_version = 'r52.6'
@@ -43,7 +43,7 @@ platform_url = 'https://pyarmor.dashingsoft.com/files/{version}'
 
 key_url = 'https://api.dashingsoft.com/product/key/%s/query'
 reg_url = 'https://api.dashingsoft.com/product/key/activate/%s/'
-buy_url = 'https://order.shareit.com/cart/add?vendorid=200089125&PRODUCT[300871197]=1'
+buy_url = 'https://jondy.github.io/paypal.html'
 help_url = 'https://pyarmor.readthedocs.io/{lang}/v%s/{page}' % version
 
 sppmode_info = {
