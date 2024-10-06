@@ -176,9 +176,9 @@ If you have Pyarmor 8.6+ installed, this command also could open shopping cart::
 
     $ pyarmor reg --buy
 
-Open shopping cart in any web browser:
+Open `Pyarmor Shopping Cart`_ in any web browser:
 
-    https://jondy.github.io/paypal.html
+    https://jondy.github.io/paypal/index.html
 
 In the shopping cart, select License Type and complete the payment online.
 
