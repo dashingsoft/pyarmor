@@ -17,26 +17,18 @@ Pyarmor is published in `PyPI`_, free trial version never expires. Try it by the
      $ pyarmor gen foo.py
      $ python dist/foo.py
 
-There are some limitations in free version, for example, can't obfuscate big scripts etc. These limitations can be unlocked by different license types
-
-License types
-=============
-
-.. versionadded:: 9.0
-    Pyarmor CI License
-
-Pyarmor has 4 kind of licenses:
+There are some limitations in free version, for example, can't obfuscate big scripts etc. These limitations can be unlocked by different license types. Pyarmor has 4 kind of licenses:
 
 - Basic
-- Pro
-- Group
-- CI
+- Pro: Irreversible Obfuscation
+- Group: Offline build
+- CI: for CI/CD pipeline, new in v9.0
 
 .. list-table:: Table-1. Compare Different Licenses
    :widths: 40 12 12 12 12 12
    :header-rows: 1
    :stub-columns: 1
-   :align: center
+   :align: left center center center center center
 
    * - Feature
      - Free
@@ -83,14 +75,16 @@ Pyarmor has 4 kind of licenses:
 
 .. rubric:: notes
 
-.. [#] Big Script: file size exceeds a certain value.
-       Mix Str: obfuscating string constant in script
-.. [#] RFT Mode: renaming function/class/method/variable in Python scripts
-       BCC Mode: Transforming some Python functions in scripts to c functions, compile them to machine instructions directly
+.. [#]
+   - Big Script: file size exceeds a certain value.
+   - Mix Str: obfuscating string constant in script
+.. [#]
+   - RFT Mode: renaming function/class/method/variable in Python scripts
+   - BCC Mode: Transforming some Python functions in scripts to c functions, compile them to machine instructions directly
 .. [#] Offline build: the build device need not be online to verify Pyarmor License
 .. [#] Maximum devices could install Pyarmor
-.. [7] Unlimited local dockers: run docker container in local machine, may be offline or in private network
-.. [8] Work in CI/CD pipeline: it need special option to register Pyarmor in CI/CD pipeline
+.. [#] Unlimited local dockers: run docker container in local machine, may be offline or in private network
+.. [#] Work in CI/CD pipeline: it need special option to register Pyarmor in CI/CD pipeline
 
 .. important::
 
