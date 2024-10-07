@@ -82,11 +82,34 @@ After successful registration, all obfuscations will automatically apply this li
 Registering in Docker or CI pipeline
 ------------------------------------
 
-It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate user's application by Pyarmor Basic or Pro license. Register pyarmor with :file:`pyarmor-regfile-xxxx.zip` same as above. **But It's not allowed to distribute pyarmor self and any Pyarmor License to your customers**
+.. versionchanged:: 9.0
+    The Pyarmor Pro License couldn't be used in CI/CD pipeline since 9.0, use Pyarmor CI License instead.
 
-Don't run too many build dockers, maximum is 100 in 24 hours. If more than 100 runs one day, please use Pyarmor Group License.
+Refer to :ref:`Using Pyarmor in CI Pipeline`
 
-And if need run more than 3 build dockers, it's better to start each docker container or runner every 30 seconds, too many register requests in same time may be rejected by license server.
+.. _Check Device For Group License:
+
+Check Device For Group License
+==============================
+
+Check one device works for group license by this way:
+
+* First install Pyarmor 8.4.0+ trial version in this device
+* Got machine id by the following command::
+
+    $ pyarmor reg -g 1
+    ...
+    INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
+    INFO     device file has been generated successfully
+
+* Reboot this device, check machine id is same or not
+* If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
+
+For docker container, please check docker host as above. Only if docker host could work with group license, unlimited docker containers could be run in this docker host, refer to :doc:`how-to/register` section ``run unlimited dockers in offline device``
+
+**If machine id of docker host is changed after reboot, group license doesn't work in any docker container**
+
+Most of physics machine, cloud server or VM like qemu, virtual box, vmware with same disk image work with Group license. Most of runners in CI/CD pipeline could not use Group License.
 
 Using group license
 ===================
@@ -95,7 +118,7 @@ Using group license
 
 Each :term:`Pyarmor Group` could have 100 offline devices, each device has its own number, from 1 to 100.
 
-Only the machine id of device is not changed after reboot, it could be used as group device. Most of physics machine, cloud server or VM like Qemu, Virtual box, Vmware with same disk image work with Group license. If using group in CI pipeline, the default runner doesn't work, but something like `self-host runner`__ may work.
+Only the machine id of device is not changed after reboot, it could be used as group device. Most of physics machine, cloud server or VM like Qemu, Virtual box, Vmware with same disk image work with Group license. Refer to :ref:`Check Device For Group License`
 
 The allocated device No. is never free, if a device is reinstalled, it need allocate new one.
 
@@ -379,13 +402,37 @@ If run `pyarmor-auth` in Linux VM or WSL, please check group license could work 
 Using group license in CI pipeline
 ----------------------------------
 
-Pyarmor group license could not be used in CI pipeline with default runners, but it may work on something like `self-host runner`__, please check CI documentation for more information.
+.. deprecated:: 9.0
+    Use Pyarmor CI License instead, refer to :ref:`Using Pyarmor in CI Pipeline`
 
-The other workaround is that first obfuscating scripts in docker container like above, then create a new branch to store obfuscated scripts in VC server.
+Pyarmor Group License could not be used in CI pipeline generally.
 
-CI pipeline could get obfuscated scripts from this new branch, and start workflow as they're normal Python scripts.
+.. _using pyarmor in ci pipeline:
 
-__ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
+Using Pyarmor in CI Pipeline
+=============================
+
+.. versionadded:: 9.0
+
+For free version, it's enough to install pyarmor by `pip install pyarmor` in the pipeline.
+
+Pyarmor Pro License and Pyarmor Group License couldn't be used in CI/CD pipeline.
+
+Pyarmor Basic and CI License could be used in CI/CD pipeline by this way
+
+- First generate ci regfile like pyarmor-CIxxxx-202410240512.zip::
+
+    pyarmor reg -C pyarmor-regfile-xxxx.zip
+
+  "pyarmor reg -C" only could be used 3 times in 24 hours, so do not use it in the pipeline
+
+- Then copy this file to each pipeline and register Pyarmor::
+
+    pyarmor reg pyarmor-CIxxxx-202410240512.zip
+
+Make sure pipeline is online because it need do some online verification.
+
+This ci regfile will be expired in 3 days, please generate new one on demand.
 
 Using multiple Pyarmor Licenses in same device
 ==============================================
@@ -415,13 +462,56 @@ But in the following versions something is changed
   - Some old licenses can be upgraded to Basic License freely, refer to :ref:`upgrade old license <upgrading old license>`
   - Old license can't be upgraded to Pro or Group License
 
-- **Pyarmor 8.6** For Group License it need generate device regfile again with Pyarmor 8.6+. The old device regfile which is generated in prior to Pyarmor 8.6 doesn't work in Pyarmor 8.6+
+- **Pyarmor 9.0** For Group License it need generate device regfile again with Pyarmor 9.0+. The old device regfile which is generated in prior to Pyarmor 8.6 doesn't work in Pyarmor 9.0+
 
-  - First upgrade Pyarmor to 8.6+ in online device
+  - First upgrade Pyarmor to 9.0+ in online device
   - Then generate device regfile as first time. For example, generate device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1::
 
       pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
 
   - Finally, replace old one with new one
+
+.. _upgrading old license:
+
+Upgrading old license
+=====================
+
+Not all the old license could be upgraded to latest version.
+
+The old license could be upgraded to Pyarmor Basic freely only if it matches these conditions:
+
+* Following new `Pyarmor EULA`_
+* The license no. starts with ``pyarmor-vax-``
+* The original activation file ``pyarmor-regcode-xxxx.txt`` exists and isn't used more than 100 times
+* The old license is purchased before June 1, 2023. In principle, the old license purchased after Pyarmor 8 is available could not be upgraded to new license.
+
+If failed to upgrade the old license, please purchase new license to use Pyarmor latest version.
+
+The old license can't be upgraded to Pyarmor Pro and Group.
+
+Upgrading old license to Pyarmor Basic
+--------------------------------------
+
+First find the activation file ``pyarmor-regcode-xxxx.txt``, which is sent to registration email when purchasing the license.
+
+Next install Pyarmor 8.2+, according to new `EULA of Pyarmor`_, each license is only for one product.
+
+Assume this license will be used to obfuscate product ``XXX``, run this command::
+
+    $ pyarmor reg -u -p "XXX" pyarmor-regcode-xxxx.txt
+
+Check the upgraded license information::
+
+    $ pyarmor -v
+
+After upgrade successfully, do not use activation file ``pyarmor-regcode-xxxx.txt`` again, it's invalid now. A new :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` will be generated at the same time.
+
+In other devices using this new :term:`registration file` to register Pyarmor by this command::
+
+    $ pyarmor reg pyarmor-regfile-xxxx.zip
+
+After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
+
+If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
 
 .. include:: ../_common_definitions.txt
