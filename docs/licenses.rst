@@ -120,7 +120,9 @@ Terms of Use
 
    If you have purchased Pyarmor License for one product, but you have aother product, and the total revenue of the other project is less than 100 x Pyarmor License fee, you could rent this license in your aother product
 
-.. seealso:: `Pyarmor EULA`_, :doc:`Using Pyarmor Licenses <how-to/register>`
+In details check `Pyarmor EULA`_
+
+.. seealso:: :doc:`Using Pyarmor Licenses <how-to/register>`
 
 Privacy
 =======
@@ -184,7 +186,7 @@ Out of 30 days, or activation file has been used, refund request will be rejecte
 Appendix
 ========
 
-What Is One Product
+What is one product
 -------------------
 
 First of all, if not for sale, all the Python scripts are belong to one product "non-profits".

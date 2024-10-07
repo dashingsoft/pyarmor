@@ -6,6 +6,8 @@
 
 .. deprecated:: 9.0
 
+   Refer to :ref:`Using Pyarmor in CI Pipeline`
+
 Pyarmor also could be used in CI/CD pipeline by this way:
 
 - First obfuscate the scripts by a few runner and store them to another branch like `master-obf`
