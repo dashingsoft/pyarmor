@@ -5,7 +5,6 @@
 ==============================
 
 .. deprecated:: 9.0
-    Use Pyarmor Basic or CI License directly instead.
 
 Pyarmor also could be used in CI/CD pipeline by this way:
 
@@ -56,19 +55,5 @@ The first runner will obfuscate the scripts and store them into another branch. 
     $ git push -u origin master-obf
 
 For all the other runners, they need not install Pyarmor, just checkout branch `master-obf`, and work as before.
-
-.. _using pyarmor ci quota:
-
-Using Pyarmor CI Quota
-======================
-
-.. versionremoved:: 9.0
-   This feature has been removed.
-
-Pyarmor CI Quota is one experimental solution for this issue:
-
-- Basic/Pro license only allow 100 runs in CI/CD pipeline in 24 hours
-
-Each ci quota allows 2,000 extra runs after 100 runs in 24 hours.
 
 .. include:: ../_common_definitions.txt

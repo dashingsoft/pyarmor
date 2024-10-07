@@ -28,7 +28,6 @@ There are some limitations in free version, for example, can't obfuscate big scr
    :widths: 40 12 12 12 12 12
    :header-rows: 1
    :stub-columns: 1
-   :align: left center center center center center
 
    * - Feature
      - Free
