@@ -79,38 +79,6 @@ Check the registration information::
 
 After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
 
-Registering in Docker or CI pipeline
-------------------------------------
-
-.. versionchanged:: 9.0
-    The Pyarmor Pro License couldn't be used in CI/CD pipeline since 9.0, use Pyarmor CI License instead.
-
-Refer to :ref:`Using Pyarmor in CI Pipeline`
-
-.. _Check Device For Group License:
-
-Check Device For Group License
-==============================
-
-Check one device works for group license by this way:
-
-* First install Pyarmor 8.4.0+ trial version in this device
-* Got machine id by the following command::
-
-    $ pyarmor reg -g 1
-    ...
-    INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
-    INFO     device file has been generated successfully
-
-* Reboot this device, check machine id is same or not
-* If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
-
-For docker container, please check docker host as above. Only if docker host could work with group license, unlimited docker containers could be run in this docker host, refer to :doc:`how-to/register` section ``run unlimited dockers in offline device``
-
-**If machine id of docker host is changed after reboot, group license doesn't work in any docker container**
-
-Most of physics machine, cloud server or VM like qemu, virtual box, vmware with same disk image work with Group license. Most of runners in CI/CD pipeline could not use Group License.
-
 Using group license
 ===================
 
@@ -131,8 +99,6 @@ Basic steps:
 
 .. [#] Pyarmor will review group license manually and enable it in 24 hours since activation file is sent.
 .. [#] The device registration file is bind to specified device, each device has its own device regfile
-
-__ https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
 
 Initial registration
 --------------------
@@ -399,24 +365,17 @@ Anyway, please configure the docker host/container network so that `pyarmor-auth
 
 If run `pyarmor-auth` in Linux VM or WSL, please check group license could work in Linux VM or WSL. It may need generate new device regfile for Linux VM or WSL.
 
-Using group license in CI pipeline
-----------------------------------
-
-.. deprecated:: 9.0
-    Use Pyarmor CI License instead, refer to :ref:`Using Pyarmor in CI Pipeline`
-
-Pyarmor Group License could not be used in CI pipeline generally.
-
 .. _using pyarmor in ci pipeline:
 
 Using Pyarmor in CI Pipeline
 =============================
 
-.. versionadded:: 9.0
+.. versionchanged:: 9.0
+    Pyarmor Pro License couldn't be used in CI/CD pipeline since 9.0
 
-For free version, it's enough to install pyarmor by `pip install pyarmor` in the pipeline.
+For free version, just install pyarmor by `pip install pyarmor` in the pipeline.
 
-Pyarmor Pro License and Pyarmor Group License couldn't be used in CI/CD pipeline.
+Since Pyarmor 9.0, Pyarmor Pro License and Pyarmor Group License couldn't be used in CI/CD pipeline.
 
 Pyarmor Basic and CI License could be used in CI/CD pipeline by this way
 
@@ -470,6 +429,30 @@ But in the following versions something is changed
       pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
 
   - Finally, replace old one with new one
+
+.. _check device for group license:
+
+Check Device For Group License
+==============================
+
+Check one device works for group license by this way:
+
+* First install Pyarmor 8.4.0+ trial version in this device
+* Got machine id by the following command::
+
+    $ pyarmor reg -g 1
+    ...
+    INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
+    INFO     device file has been generated successfully
+
+* Reboot this device, check machine id is same or not
+* If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
+
+For docker container, please check docker host as above. Only if docker host could work with group license, unlimited docker containers could be run in this docker host, refer to :doc:`how-to/register` section ``run unlimited dockers in offline device``
+
+**If machine id of docker host is changed after reboot, group license doesn't work in any docker container**
+
+Most of physics machine, cloud server or VM like qemu, virtual box, vmware with same disk image work with Group license. Most of runners in CI/CD pipeline could not use Group License.
 
 .. _upgrading old license:
 

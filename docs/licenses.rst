@@ -72,7 +72,7 @@ There are some limitations in free version, for example, can't obfuscate big scr
      -
      - Y
 
-.. rubric:: notes
+.. rubric:: Notes
 
 .. [#]
    - Big Script: file size exceeds a certain value.
