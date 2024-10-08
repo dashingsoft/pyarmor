@@ -50,7 +50,7 @@ def check_and_install_prebuilt_package():
 
     platname = os.getenv(
         'PYARMOR_PLATFORM',
-        '.'.join(format_platform(system().lower(), machine().lower())))
+        format_platform(system().lower(), machine().lower()))
     platname = map_platform(platname)
     if platname not in PLATFORM_NAMES:
         raise RuntimeError('"%s" is still not supported by Pyarmor' % platname)
