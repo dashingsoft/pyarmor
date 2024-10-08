@@ -148,6 +148,50 @@ class Register(object):
 
         raise CliError('no registration code found in %s' % filename)
 
+    def _register_offline_license(self, fzip, namelist):
+        logger.info('machine id in group license: %s', ', '.join(
+            [x[7:] for x in namelist if x.startswith('tokens')]))
+        for idver in MACHFLAGS:
+            machid = self._get_machine_id(idver).decode('utf-8')
+            logger.debug('got machine id: %s', machid)
+            name = '/'.join(['tokens', machid])
+            if name in namelist:
+                logger.info('this machine id matchs group license')
+                break
+        else:
+            logger.info('no machine id matchs this group license')
+            logger.info('take this machine as docker container, and '
+                        'connect to docker host for authentication...')
+            mlist = self._get_docker_hostname()
+            if not mlist:
+                logger.info(
+                    'could not get docker host machine id\n%s',
+                    '\n'.join([
+                        '',
+                        'if this machine is docker container, please '
+                        'run command `pyarmor-auth` in docker host, '
+                        'and try it again', '',
+                        'otherwise please generate new group '
+                        'device license for this machine', '',
+                        'more information please check section '
+                        '"using group license" in documentation '
+                        '"how-to register" guide', ''
+                    ]))
+                raise CliError('this group device license is not for '
+                               'this machine')
+            for machid in mlist:
+                hostname = '/'.join(['tokens', machid])
+                if hostname in namelist:
+                    name = hostname
+                    break
+            else:
+                logger.debug('docker host machine ids: %s', mlist)
+                raise CliError('this group device license is not for '
+                               'this docker host')
+
+        logger.debug('extracting %s', name)
+        self.ctx.save_group_token(fzip.read(name))
+
     def register_regfile(self, regfile, clean=True):
         from zipfile import ZipFile
 
@@ -163,56 +207,19 @@ class Register(object):
                 f.extract(item, path=path)
             namelist = f.namelist()
             if 'group.tokens' in namelist:
-                logger.info('machine id in group license: %s', ', '.join([
-                    x[7:] for x in namelist if x.startswith('tokens')
-                ]))
-                for idver in MACHFLAGS:
-                    machid = self._get_machine_id(idver).decode('utf-8')
-                    logger.info('got machine id: %s', machid)
-                    name = '/'.join(['tokens', machid])
-                    if name in namelist:
-                        logger.info('this machine id matchs group license')
-                        break
-                else:
-                    logger.info('no machine id matchs this group license')
-                    logger.info('take this machine as docker container, and '
-                                'connect to docker host for authentication...')
-                    mlist = self._get_docker_hostname()
-                    if not mlist:
-                        logger.info(
-                            'could not get docker host machine id\n%s',
-                            '\n'.join([
-                                '',
-                                'if this machine is docker container, please '
-                                'run command `pyarmor-auth` in docker host, '
-                                'and try it again', '',
-                                'otherwise please generate new group '
-                                'device license for this machine', '',
-                                'more information please check section '
-                                '"using group license" in documentation '
-                                '"how-to register" guide', ''
-                            ]))
-                        raise CliError('this group device license is not for '
-                                       'this machine')
-                    for machid in mlist:
-                        hostname = '/'.join(['tokens', machid])
-                        if hostname in namelist:
-                            name = hostname
-                            break
-                    else:
-                        logger.debug('docker host machine ids: %s', mlist)
-                        raise CliError('this group device license is not for '
-                                       'this docker host')
+                self._register_offline_license(f, namelist)
+            elif 'ci.token' in namelist:
+                name = 'ci.token'
                 logger.debug('extracting %s', name)
-                self.ctx.save_group_token(f.read(name))
-                return
-            if 'group.info' in namelist:
-                logger.info('refer to http://pyarmor.readthedocs.io/en/stable/how-to/register.html'
-                            '#using-group-license')
+                self.ctx.save_token(f.read(name))
+            elif 'group.info' in namelist:
+                docurl = 'http://pyarmor.readthedocs.io/en/stable'
+                logger.info('refer to %s/how-to/register.html'
+                            '#using-group-license', docurl)
                 raise CliError('wrong usage for group license')
-
-        logger.info('update license token')
-        self.update_token()
+            else:
+                logger.info('update license token')
+                self.update_token()
 
     def _get_docker_hostname(self):
         try:
@@ -625,3 +632,35 @@ class WebRegister(Register):
 
         logger.info('please copy deivce regfile to offline device and run')
         logger.info('    pyarmor reg %s', filename)
+
+    def register_ci_license(self, regfile, host, rev=1, age=1):
+        from zipfile import ZipFile
+        logger.info('start to generate ci/cd license')
+
+        with ZipFile(regfile, 'r') as f:
+            licdata = f.read('license.lic')
+            capsule = f.read('.pyarmor_capsule.zip')
+            cidata = json_loads(f.read('ci.info'))
+
+        logger.info('send request to server')
+        url = self.regurl('/'.join(['ci', cidata['ucode']]))
+        paras = (
+            ('rev', str(rev)),
+            ('age', str(age)),
+            ('cindex', str(cidata['cindex'])),
+            ('source', ''),
+        )
+        url += '&'.join(['='.join(x) for x in paras])
+        logger.debug('url: %s', url)
+
+        res = self._send_request(url)
+        filename = self._handle_response(res)
+        with open(filename, 'rb') as f:
+            data = f.read()
+
+        with ZipFile(filename, 'w') as f:
+            f.writestr('license.lic', licdata)
+            f.writestr('.pyarmor_capsule.zip', capsule)
+            f.writestr('ci.token', data)
+
+        logger.info('generate ci regfile %s successfully', filename)
