@@ -36,7 +36,7 @@ Supported platforms
    :widths: auto
 
    ===================  ============  ========  =======  ============  =========  =======  =======
-   OS                     Windows           Apple                    Linux [#]_
+   OS                     Windows           Apple [#]_               Linux [#]_
    -------------------  ------------  -----------------  -----------------------------------------
    Arch                  x86/x86_64    x86_64    arm64    x86/x86_64    aarch64    armv7    armv6
    ===================  ============  ========  =======  ============  =========  =======  =======
@@ -78,6 +78,7 @@ Supported platforms
 .. rubric:: notes
 
 .. [#] ``N/y`` means not yet now, but will be supported in future.
+.. [#] Apple Silcon only supports Python 3.9+
 .. [#] This Linux is built with glibc
 .. [#] pyarmor-7 also supports more linux arches, refer to `Pyarmor 7.x platforms`__.
 .. [#] These platforms are introduced in Pyarmor 8.3
