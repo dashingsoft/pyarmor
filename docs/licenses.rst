@@ -143,8 +143,8 @@ Pyarmor provides comprehensive learning systems, including but not limited to th
 - Online documentation
 - Checklist and FAQs could fix 90% issues reported to Pyarmor Team
 - Discussions in Pyarmor project home
-- pyarmor man (coming soon), help command could show each option usage by full examples
-- EKE Learning Platform (coming soon), learn Pyarmor concepts by animations for junior users
+- Full examples to show each option usage and common cases by command ``pyarmor man`` (coming soon)
+- Learn Pyarmor concepts by figure and animations in EKE Learning Platform (coming soon)
 
 Rome was not bulit in a day. Pyarmor Team keeps improving documentation and learning systems according to users feedback to make it easy and effects
 
