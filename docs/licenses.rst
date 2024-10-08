@@ -114,7 +114,7 @@ Terms of Use
 
 4. Pay once
 
-   The purchased license works forever with Pyarmor version when this license is purchased, but may not work in future Pyarmor version
+   Except CI License, all the other licenses work forever with Pyarmor version when this license is purchased, but **may not work in future Pyarmor versions**
 
 5. Fair use
 
