@@ -58,7 +58,7 @@ There are some limitations in free version, for example, can't obfuscate big scr
      - 100
      - 100
      - 200
-     - 100
+     - 20
    * - Unlimited local dockers [#]_
      -
      -
