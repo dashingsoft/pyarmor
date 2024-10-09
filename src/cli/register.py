@@ -633,34 +633,26 @@ class WebRegister(Register):
         logger.info('please copy deivce regfile to offline device and run')
         logger.info('    pyarmor reg %s', filename)
 
-    def register_ci_license(self, regfile, host, rev=1, age=1):
-        from zipfile import ZipFile
-        logger.info('start to generate ci/cd license')
+    def register_ci_license(self, keyfile, host, rev=1, age=1):
+        logger.info('generate ci license from "%s"', keyfile)
+        reginfo = self.parse_keyfile(keyfile)
 
-        with ZipFile(regfile, 'r') as f:
-            licdata = f.read('license.lic')
-            capsule = f.read('.pyarmor_capsule.zip')
-            cidata = json_loads(f.read('ci.info'))
+        if len(reginfo[1]) != 192:
+            raise CliError('invalid activation file "%s"', keyfile)
 
-        logger.info('send request to server')
-        url = self.regurl('/'.join(['ci', cidata['ucode']]))
+        logger.info('check CI server "%s"', host)
+
+        url = self.regurl('ci/%s' % reginfo[1])
         paras = (
             ('rev', str(rev)),
             ('age', str(age)),
-            ('cindex', str(cidata['cindex'])),
-            ('source', ''),
         )
         url += '&'.join(['='.join(x) for x in paras])
         logger.debug('url: %s', url)
 
+        logger.info('send request to server')
         res = self._send_request(url)
-        filename = self._handle_response(res)
-        with open(filename, 'rb') as f:
-            data = f.read()
 
-        with ZipFile(filename, 'w') as f:
-            f.writestr('license.lic', licdata)
-            f.writestr('.pyarmor_capsule.zip', capsule)
-            f.writestr('ci.token', data)
-
-        logger.info('generate ci regfile %s successfully', filename)
+        logger.info('handle response')
+        cifile = self._handle_response(res)
+        logger.info('generate ci regfile %s successfully', cifile)
