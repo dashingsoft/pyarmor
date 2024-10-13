@@ -56,6 +56,8 @@ There are 2 methods for RFT mode to handle name in the attribute chains which do
 
   This method first search all the functions, classes and methods in the scripts, add them to include table, and transform all of them. If same name is used in attribute chains, but can't make sure its type, leave attribute name as it is.
 
+  Note that in rft-auto-include mode, local variables will not be touched, but they're renamed in next obfuscation process, unless you explicitly disable it by `pyarmor cfg mix_localnames=0`.
+
   For a simple script, Pyarmor could transform the script automatically. But for a complex script, it may raise name binding error. For example::
 
     $ python dist/foo.py
