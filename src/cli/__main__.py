@@ -308,6 +308,11 @@ def cmd_reg(ctx, args):
         regsvr.register_group_device(regfile, args.device)
         logger.info('The device regfile has been generated successfully')
 
+    elif args.ci:
+        regsvr = WebRegister(ctx)
+        regsvr.check_request_interval()
+        regsvr.register_ci_license(regfile)
+
     elif regfile.endswith('.zip'):
         reg = Register(ctx)
         logger.info('register "%s"', regfile)
@@ -626,6 +631,10 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-reg
     cparser.add_argument(
         '-y', '--confirm', action='store_true',
         help=argparse.SUPPRESS
+    )
+    cparser.add_argument(
+        '-C', '--CI', action='store_true', dest='ci',
+        help='request license regfile for CI pipeline'
     )
 
     cparser.add_argument(

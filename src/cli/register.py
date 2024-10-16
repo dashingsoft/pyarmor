@@ -124,6 +124,7 @@ class Register(object):
         return 'basic' if info['features'] == 1 else \
             'pro' if info['features'] == 7 else \
             'group' if info['features'] == 15 else \
+            'ci' if info['features'] == 23 else \
             'trial' if info['token'] == 0 else 'unknown'
 
     def _license_to(self, info):
@@ -326,9 +327,11 @@ $notes
 
         bccmode = info['features'] & 2
         rftmode = info['features'] & 4
+        cidmode = info.get('machine', '').startswith('CITK')
         advanced = [
             fmt % ('BCC Mode', 'Yes' if bccmode else 'No'),
             fmt % ('RFT Mode', 'Yes' if rftmode else 'No'),
+            fmt % ('CI/CD Mode', 'Yes' if cidmode else 'No'),
         ]
         if lictype == 'trial':
             self.notes.append('* Can\'t obfuscate big script and mix str')
@@ -337,6 +340,9 @@ $notes
                               'when obfuscating scripts')
         elif lictype == 'group':
             self.notes.append('* Offline obfuscation')
+
+        if info['note']:
+            self.notes.extend(info['note'].splitlines())
 
         lines.append(Template(self.__str__.__doc__).substitute(
             advanced='\n'.join(advanced),
@@ -517,6 +523,8 @@ class WebRegister(Register):
         reginfo = self.parse_keyfile(keyfile)
 
         url = self.regurl(reginfo[1], product=product)
+        # Request license file with extra info by rev 2
+        url += '&rev=2'
         if upgrade:
             url += '&upgrade_to_basic=1'
         logger.debug('url: %s', url)
@@ -554,6 +562,12 @@ class WebRegister(Register):
                 with open(filename, 'wb') as f:
                     f.write(data[n:])
                 self._write_group_info(filename, data[:n])
+            elif data.startswith(b'REGINFO:'):
+                i = len(b'REGINFO:')
+                n = data.find(b'}', i) + 1
+                with open(filename, 'wb') as f:
+                    f.write(data[n:])
+                self._write_reg_info(filename, data[i:n])
             else:
                 with open(filename, 'wb') as f:
                     f.write(data)
@@ -563,6 +577,12 @@ class WebRegister(Register):
             raise CliError(res.read().decode('utf-8'))
 
         raise CliError('no response from license server')
+
+    def _write_reg_info(self, filename, data):
+        from zipfile import ZipFile
+        logger.info('write reg information')
+        with ZipFile(filename, 'a') as f:
+            f.writestr('reg.info', data)
 
     def _write_group_info(self, filename, data):
         from zipfile import ZipFile
@@ -633,20 +653,29 @@ class WebRegister(Register):
         logger.info('please copy deivce regfile to offline device and run')
         logger.info('    pyarmor reg %s', filename)
 
-    def register_ci_license(self, keyfile, host, rev=1, age=1):
-        logger.info('generate ci license from "%s"', keyfile)
-        reginfo = self.parse_keyfile(keyfile)
+    def _write_ci_info(self, filename, data):
+        from zipfile import ZipFile
+        logger.info('write ci information')
+        with ZipFile(filename, 'a') as f:
+            f.writestr('ci.token', data)
 
-        if len(reginfo[1]) != 192:
-            raise CliError('invalid activation file "%s"', keyfile)
+    def register_ci_license(self, regfile, rev=2):
+        logger.info('request ci regfile by "%s"', regfile)
+        from zipfile import ZipFile
 
-        logger.info('check CI server "%s"', host)
+        with ZipFile(regfile, 'r') as f:
+            if 'reg.info' not in f.namelist():
+                logger.error('missing reg.info in regfile')
+                raise CliError('can not request CI license')
+            reginfo = json_loads(f.read('reg.info'))
 
-        url = self.regurl('ci/%s' % reginfo[1])
-        paras = (
-            ('rev', str(rev)),
-            ('age', str(age)),
-        )
+        ucode = reginfo['ucode']
+        rcode = reginfo['rcode']
+        if len(ucode) != 192:
+            raise CliError('invalid registration file "%s"', regfile)
+
+        url = self.regurl('ci/%s' % ucode)
+        paras = (('rev', str(rev)),)
         url += '&'.join(['='.join(x) for x in paras])
         logger.debug('url: %s', url)
 
@@ -654,5 +683,27 @@ class WebRegister(Register):
         res = self._send_request(url)
 
         logger.info('handle response')
-        cifile = self._handle_response(res)
+        if res is None:
+            raise CliError('no response from license server')
+
+        elif res.code != 200:
+            raise CliError(res.read().decode('utf-8'))
+
+        data = res.read()
+        if not data.startswith(b'CITOKEN:'):
+            raise CliError('wrong server data: "%s"' % data)
+
+        i = len(b'CITOKEN:') + 2
+        n = data[i-2] + (data[i-1] << 8)
+        token = data[i:i+n]
+
+        rn = rcode[-6:].lstrip('0')
+        cifile = 'pyarmor-ci-regfile-%s.zip' % rn
+
+        with ZipFile(regfile, 'r') as src:
+            with ZipFile(cifile, 'w') as dst:
+                for x in src.namelist():
+                    dst.writestr(x, src.read(x))
+                dst.writestr('ci.token', token)
+
         logger.info('generate ci regfile %s successfully', cifile)
