@@ -327,7 +327,7 @@ def cmd_reg(ctx, args):
         if args.confirm:
             from time import sleep
             sleep(1.0)
-        elif input(msg + prompt) not in ('y', 'yes'):
+        elif input(msg + prompt) not in ('y', 'yes', 'Y', 'Yes'):
             logger.info('abort registration')
             return
         # Free upgrade to Pyarmor Basic

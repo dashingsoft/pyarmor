@@ -533,23 +533,33 @@ class WebRegister(Register):
         res = self._send_request(url)
         regfile = self._handle_response(res)
 
+        logger.info('')
+        logger.info('the registration file "%s" has been generated', regfile)
+        logger.info('this license has been activated sucessfully')
+
         notes = [
             '* Please backup regfile "%s" carefully, and '
-            'use this file for subsequent registration' % regfile,
+            'use this file for next any registration' % regfile,
             '* Do not use "%s" again' % os.path.basename(keyfile),
         ]
 
         if group:
-            logger.info('This group license has been activated sucessfully')
             notes.append('* Please check `pyarmor reg` in Man page for '
                          'how to register Pyarmor on offline device')
-        else:
+            logger.info('\n\nImport Notes:\n%s\n', '\n'.join(notes))
+            return
+
+        notes.append('')
+        notes.append('Next register Pyarmor in any device by this command:')
+        notes.append('\tpyarmor reg %s' % regfile)
+        logger.info('\n\nImport Notes:\n%s\n', '\n'.join(notes))
+
+        prompt = 'Do you want register Pyarmor in this machine? (Y/n) '
+        choice = input(prompt).lower()[:1]
+        if choice == 'y':
             logger.info('register "%s"', regfile)
             self.register_regfile(regfile)
-            logger.info('This license code has been %s successfully',
-                        'upgraded' if upgrade else 'activated')
-
-        logger.info('Import Notes:\n\n%s\n', '\n'.join(notes))
+            logger.info('This license registration information:\n\n%s', self)
 
     def _handle_response(self, res):
         if res and res.code == 200:
