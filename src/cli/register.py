@@ -550,8 +550,10 @@ class WebRegister(Register):
             return
 
         notes.append('')
-        notes.append('Next register Pyarmor in any device by this command:')
+        notes.append('Next register Pyarmor in any device by this command'
+                     '(except docker and CI/CD pipeline):')
         notes.append('\tpyarmor reg %s' % regfile)
+        notes.append('')
         logger.info('\n\nImport Notes:\n%s\n', '\n'.join(notes))
 
         prompt = 'Do you want register Pyarmor in this machine? (Y/n) '
