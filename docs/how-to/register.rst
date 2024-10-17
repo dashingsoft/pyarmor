@@ -379,19 +379,22 @@ Since Pyarmor 9.0, Pyarmor Pro License and Pyarmor Group License couldn't be use
 
 Pyarmor Basic and CI License could be used in CI/CD pipeline by this way
 
-- First generate ci regfile like pyarmor-CIxxxx-202410240512.zip::
+- First request CI regfile :file:`pyarmor-ci-xxxx.zip` by :term:`registration file` on local online machine::
 
     pyarmor reg -C pyarmor-regfile-xxxx.zip
 
-  "pyarmor reg -C" only could be used 3 times in 24 hours, so do not use it in the pipeline
+  It will got one CI regfile :file:`pyarmor-ci-xxxx.zip` from Pyarmor License Server
 
-- Then copy this file to each pipeline and register Pyarmor::
+- Then use :file:`pyarmor-ci-xxxx.zip` in the CI/CD pipeline to register Pyarmor::
 
-    pyarmor reg pyarmor-CIxxxx-202410240512.zip
+    pyarmor reg pyarmor-ci-xxxx.zip
 
-Make sure pipeline is online because it need do some online verification.
+Important notes about CI regfile:
 
-This ci regfile will be expired in 3 days, please generate new one on demand.
+- CI regfile :file:`pyarmor-ci-xxxx.zip` is expired in 365 days
+- After it expired, it need request new one
+- CI regfile may not work in future Pyarmor version, after it doesn't work, try to rquest new one
+- One license can request <= 100 CI regfiles
 
 Using multiple Pyarmor Licenses in same device
 ==============================================
