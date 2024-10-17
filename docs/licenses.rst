@@ -129,7 +129,11 @@ Privacy
 
 License No. and product name will be embedded into obfuscated scripts, all the other user's information, for example, regname, email are not
 
-For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to remote server for verification. No any user script will be uploaded to remote server
+For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to Pyarmor License Server for verification
+
+When using Basic or CI License in CI/CD pipeline, some information about docker like docker name, ethernet address, IPv4/IPv6 address, and license information will be sent to Pyarmor License Server for verification
+
+No any user script will be uploaded to Pyarmor License Server
 
 Technical Support
 =================
