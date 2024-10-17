@@ -20,7 +20,7 @@
 #  @Create Date: Thu Jan 12 17:29:25 CST 2023
 #
 
-__VERSION__ = '6.5.3'
+__VERSION__ = '7.6.0'
 
 PLATFORM_NAMES = (
     'windows.x86_64', 'windows.x86', 'cygwin.x86_64',
