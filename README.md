@@ -94,64 +94,15 @@ Please read the [Pyarmor EULA](LICENSE).
 
 ## Changelog
 
-Pyarmor 8.0 introduces significant changes. It has been rewritten and new features are implemented through the new commands:
-`gen`, `reg`, `cfg`. These commands only work for Python 3.7 and above.
-
-Users of versions prior to 8.0 should read the [Import Notes][important-notes] section to decide whether to upgrade Pyarmor.
-
 Each major version comes with a separate changelog file, detailing fixed issues, new features, and compatibility issues between different versions.
 
 Make sure to read the changelog carefully before upgrading Pyarmor:
+
 - [Pyarmor 8.x Changelog](docs/ChangeLogs.8)
+- [Pyarmor 9.x Changelog](docs/ChangeLogs.9)
 
 **Full changelogs** at [releases][releases]
 
-**Upcoming features** at [Pyarmor 8.x Release Plan](ReleasePlan.md)
+**Upcoming features** at [Pyarmor Release Plan](ReleasePlan.md)
 
 [releases]: https://github.com/dashingsoft/pyarmor/releases
-
-[important-notes]: #important-notes-for-users-of-pyarmor-prior-to-80
-
-## Important Notes for Users of Pyarmor Prior to 8.0
-
-Going forward, only bug fixes will be provided for older commands, such as `obfuscate` and `licenses`.
-No new features will be added to these commands, but they will continue to be usable.
-
-Upon the release of Pyarmor 8.0, there are three scenarios for existing users:
-
-### 1. Never upgrade to version 8.0+
-
-- **SPP mode will not work**
-  - To use SPP mode, you must upgrade Pyarmor to version 8.0 or later.
-
-- **`pyarmor register` command without arguments returns a `404` error**
-  - This command was used to query registration information in earlier versions of Pyarmor. However, the license server no longer supports this web API. Use `pyarmor -v` to ensure you are not using a trial version.
-
-- **Registering Pyarmor with `pyarmor register pyarmor-regcode-xxxxxx.txt` is limited to 10 uses**:
-  - To use Pyarmor on a new machine, CI server, or Docker, refer to the second method described in the registration file "pyarmor-regcode-xxxxxx.txt":
-```
-Downloading "pyarmor-regfile-xxxxxx.zip" once, use this `.zip` file to register Pyarmor later.
-```
-
-### 2. Upgrade to version 8.0 but only use old features
-
-By default, the `pyarmor` command only accepts the new commands.
-
-To continue using older commands like `obfuscate` and `licenses`, you can:
-- Use `pyarmor-7` instead of `pyarmor`
-- Set the environment variable `PYARMOR_CLI=7` and continue using `pyarmor`
-- Call the entry point `pyarmor.pyarmor:main_entry` in any other way
-
-### 3. Upgrade to version 8.0 and use new features
-
-- **New EULA**:
-  - Adhere to the new [Pyarmor EULA](LICENSE). This is a significant change for users with old personal licenses, as the new license only allows one product.
-
-- **License Upgrades**:
-  - Not all old licenses can be freely upgraded to the new license. Please refer to the [Pyarmor licenses][licenses] for more information.
-
-- **Internet Connection**:
-  - Older commands do not require an internet connection, but new commands do.
-
-- **Python Version Support**:
-  - While older commands support Python 2.7-3.10, new commands only support Python 3.7+.
