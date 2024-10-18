@@ -26,7 +26,7 @@ import sys
 
 from . import logger, CliError
 from .context import Context
-from .register import Register, WebRegister
+from .register import Register, WebRegister, check_license_version
 from .config import Configer
 from .shell import PyarmorShell
 from .plugin import Plugin
@@ -222,6 +222,8 @@ def check_gen_context(ctx, args):
 def cmd_gen(ctx, args):
     options = format_gen_args(ctx, args)
     logger.debug('command options: %s', options)
+    check_license_version(ctx)
+
     ctx.push(options)
     check_gen_context(ctx, args)
 
@@ -710,6 +712,7 @@ def print_version(ctx):
     print('\n'.join(info))
 
     reg.check_group_license()
+    check_license_version(ctx, silent=True)
 
 
 def get_home_paths(args):

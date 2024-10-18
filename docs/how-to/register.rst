@@ -448,7 +448,7 @@ But in the following versions something is changed
 
 - **Pyarmor 9.0**
 
-  A big change about using Pyarmor in CI/CD license
+  A big change about using Pyarmor in CI/CD pipeline
 
   - :term:`Pyarmor Basic`
 

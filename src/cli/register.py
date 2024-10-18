@@ -78,6 +78,34 @@ def parse_token(data):
         }
 
 
+def check_license_version(ctx, silent=False):
+    licinfo = ctx.license_info
+    rev = licinfo.get('rev', 0)
+    token = licinfo.get('token', 0)
+    features = licinfo.get('features', 0)
+    if rev == 1 and features > 0 and token > 0:
+        logger.warning('this license is not for Pyarmor 9')
+        if silent:
+            return False
+
+        url = 'https://github.com/dashingsoft/pyarmor/issues/1958'
+        prompt = (
+            '',
+            'Pyarmor 9 has big change on CI/CD pipeline',
+            'If not using Pyarmor License in CI/CD pipeline',
+            'Press "c" to continue',
+            'Otherwise press "h" to check Pyarmor 9.0 Upgrade Notes',
+            '',
+            'Continue (c), Help (h), Quit (q): '
+        )
+        choice = input('\n'.join(prompt)).lower()[:1]
+        if choice == 'h':
+            import webbrowser
+            webbrowser.open(url)
+        if not choice == 'c':
+            raise SystemExit('Quit')
+
+
 class Register(object):
 
     def __init__(self, ctx):
@@ -318,7 +346,7 @@ class Register(object):
         return path
 
     def check_group_license(self, silent=False):
-        licinfo = self.ctx.license_info
+        licinfo = self.license_info
         if licinfo['features'] & 8:
             licmach = licinfo.get('machine', '')
             if not licmach:
