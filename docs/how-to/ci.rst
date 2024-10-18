@@ -32,6 +32,12 @@ Notes
 * Once CI regfile doesn't work, require new one
 * One license can request <= 100 CI regfiles
 
+.. important::
+
+   In CI/CD pipeline, each run will send license and docker information to Pyarmor License Server, excessive requests or requests beyond normal usage may be rejected by Pyarmor License Server
+
+   It's not allowed to install Pyarmor in your customer's docker image
+
 :term:`Pyarmor Pro` and :term:`Pyarmor Group` License can't be used in CI/CD pipeline directly, but there is one workaround
 
 - First obfuscate the scripts in local device and store them to another branch like `master-obf`
