@@ -118,7 +118,6 @@ def find_solutions(e):
     '''
     logger = logging.getLogger()
     if logger.getEffectiveLevel() > logging.DEBUG:
-        logger.error(ENABLE_DEBUG_HINTS)
         return
 
     logger.info('generate bug file "%s"', BUG_FILE)
