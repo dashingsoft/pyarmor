@@ -21,7 +21,7 @@
 #
 import os
 
-from base64 import b64decode, urlsafe_b64encode
+from base64 import b64decode, b64encode, urlsafe_b64encode
 from json import loads as json_loads
 from string import Template
 
@@ -35,7 +35,38 @@ MACHFLAGS = 22, 21, 18, 20, 16, 11
 def parse_token(data):
     from struct import unpack
 
-    if not data or data.find(b' ') == -1:
+    if data and data.find(b' ') > 0:
+        try:
+            buf = b64decode(data.split()[0])
+
+            token, value = unpack('II', buf[:8])
+            rev, features = value & 0xff, value >> 8
+            licno = buf[16:34].decode('utf-8')
+
+            pstr = []
+            i = 64
+            for k in range(4):
+                n = buf[i]
+                i += 1
+                pstr.append(buf[i:i+n].decode('utf-8') if n
+                            else '')
+                i += n
+
+            product = ('non-profits(TBD)' if pstr[2] in ('', 'TBD')
+                       else pstr[2])
+            return {
+                'token': token,
+                'rev': rev,
+                'features': features,
+                'licno': licno,
+                'machine': pstr[0],
+                'regname': pstr[1],
+                'product': product,
+                'note': pstr[3],
+            }
+        except Exception as e:
+            logger.warning('bad token: %s', str(e))
+
         return {
             'token': 0,
             'rev': 0,
@@ -45,32 +76,6 @@ def parse_token(data):
             'product': 'non-profits',
             'note': 'This is trial license'
         }
-
-    buf = b64decode(data.split()[0])
-
-    token, value = unpack('II', buf[:8])
-    rev, features = value & 0xff, value >> 8
-    licno = buf[16:34].decode('utf-8')
-
-    pstr = []
-    i = 64
-    for k in range(4):
-        n = buf[i]
-        i += 1
-        pstr.append(buf[i:i+n].decode('utf-8') if n else '')
-        i += n
-
-    product = 'non-profits(TBD)' if pstr[2] in ('', 'TBD') else pstr[2]
-    return {
-        'token': token,
-        'rev': rev,
-        'features': features,
-        'licno': licno,
-        'machine': pstr[0],
-        'regname': pstr[1],
-        'product': product,
-        'note': pstr[3],
-    }
 
 
 class Register(object):
@@ -193,13 +198,46 @@ class Register(object):
         logger.debug('extracting %s', name)
         self.ctx.save_group_token(fzip.read(name))
 
+    def _init_token(self, reginfo):
+        from struct import pack
+        rev, licno, lictp, regname, product = (
+            reginfo['rev'], reginfo['rcode'], reginfo['type'],
+            reginfo['name'], reginfo['product']
+        )
+
+        token = 0
+        old_license = self.license_info
+        if old_license['licno'] == licno:
+            token = old_license['token']
+
+        features = (1 if lictp == 'J' else 7 if lictp == 'Z' else
+                    15 if lictp == 'G' else 23 if lictp == 'C' else
+                    0)
+        notes = (
+            '* Do not use this file in CI/CD pipeline directly\n'
+            '* Only use it to request CI regfile '
+            '"pyarmor-ci-%s.zip"' % licno[:6].lstrip('0')
+            if lictp == 'C' else ''
+        )
+
+        data = pack('<II8x20s28xBB2sB2sB2s', token,
+                    rev | features << 8,
+                    licno.encode('utf-8'),
+                    0,
+                    len(regname), b'%s',
+                    len(product), b'%s',
+                    len(notes), b'%s') % (
+                        regname.encode('utf-8'),
+                        product.encode('utf-8'),
+                        notes.encode('utf-8'),
+                    )
+        return b64encode(data) + b' *=='
+
     def register_regfile(self, regfile, clean=True):
         from zipfile import ZipFile
 
-        for x in (self.ctx.license_group_token, self.ctx.license_token):
-            if os.path.exists(x):
-                logger.info('remove old token "%s"', x)
-                os.remove(x)
+        if os.path.exists(self.ctx.license_group_token):
+            os.remove(self.ctx.license_group_token)
 
         path = self.ctx.reg_path
         with ZipFile(regfile, 'r') as f:
@@ -218,9 +256,11 @@ class Register(object):
                 logger.info('refer to %s/how-to/register.html'
                             '#using-group-license', docurl)
                 raise CliError('wrong usage for group license')
+            elif 'reg.info' in namelist:
+                info = json_loads(f.read('reg.info'), encoding='utf-8')
+                self.ctx.save_token(self._init_token(info))
             else:
-                logger.info('update license token')
-                self.update_token()
+                raise CliError('this license is not ready for Pyarmor 9')
 
     def _get_docker_hostname(self):
         try:
@@ -309,7 +349,6 @@ class Register(object):
     def __str__(self):
         '''$advanced
 
-Notes
 $notes
 '''
 
@@ -343,6 +382,9 @@ $notes
 
         if info['note']:
             self.notes.extend(info['note'].splitlines())
+
+        if self.notes:
+            self.notes.insert(0, 'Notes')
 
         lines.append(Template(self.__str__.__doc__).substitute(
             advanced='\n'.join(advanced),
@@ -449,16 +491,13 @@ class WebRegister(Register):
         lines = []
         if upgrade:
             if rcode and not rcode.startswith('pyarmor-vax-'):
-                logger.error('please check Pyarmor 8 EULA')
                 raise CliError('old license "%s" can not be upgraded' % rcode)
             if info['upgrade']:
                 lines.append(upgrade_to_pro_info.substitute(rcode=rcode))
             else:
                 lines.append(upgrade_to_basic_info.substitute())
         else:
-            if info['lictype'] not in ('BASIC', 'PRO', 'GROUP'):
-                logger.error('this license does not work in Pyarmor 8')
-                logger.error('please check Pyarmor 8.0 EULA')
+            if info['lictype'] not in ('BASIC', 'PRO', 'GROUP', 'CI'):
                 raise CliError('unknown license type %s' % info['lictype'])
             lines.append('This license registration information will be')
 
@@ -576,11 +615,15 @@ class WebRegister(Register):
                 self._write_group_info(filename, data[:n])
             elif data.startswith(b'REGINFO:'):
                 i = len(b'REGINFO:')
-                n = data.find(b'}', i) + 1
+                n = data[i] + (data[i+1] << 8)
+                i += 2
+                n += i
                 with open(filename, 'wb') as f:
                     f.write(data[n:])
                 self._write_reg_info(filename, data[i:n])
             else:
+                # TBD: it should not happened
+                logger.warning('no REGINFO found')
                 with open(filename, 'wb') as f:
                     f.write(data)
             return filename
@@ -710,7 +753,7 @@ class WebRegister(Register):
         token = data[i:i+n]
 
         rn = rcode[-6:].lstrip('0')
-        cifile = 'pyarmor-ci-regfile-%s.zip' % rn
+        cifile = 'pyarmor-ci-%s.zip' % rn
 
         with ZipFile(regfile, 'r') as src:
             with ZipFile(cifile, 'w') as dst:
