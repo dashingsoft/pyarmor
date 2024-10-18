@@ -295,23 +295,9 @@ Hot Questions
 License
 =======
 
-**Which license is right for my project?**
-
-  Hints for all licenses:
-
-  - If using Python 2.7 or Python <= 3.6, then only Pyarmor old license works. All the new licenses only work for Python 3.7+
-  - Each license only need pay once, but it may not work in Pyarmor future versions
-
-  Hints for 3 new licenses (Pyarmor Basic, Pro and Gropu license):
-
-  - If need offline obfuscation, only Pyarmor Group license works
-  - Pyarmor Basic and Pro license need internet connection to verify license when obfuscating the scripts, and in 24 hours only 100 different devices are allowed for each license
-  - In 24 hours, if need more than 100 docker containers to obfuscate your scripts, only Pyarmor Group license works.
-  - Pyarmor Basic, Pro and Group licenses don't work for Pyarmor 7.
-
 **Will Pyarmor Pro license upload my scripts to remote server to verify license?**
 
-No. For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to remote server for verification.
+  No. For Pyarmor Basic and Pro License, only Pyarmor License file, serial number of hard disk, Ethernet address, IPv4/IPv6 address, and hostname will be sent to remote server for verification.
 
 **I am interested to know if the users are entitled to updates to ensure compatibility with future versions of Python.**
 
@@ -319,7 +305,7 @@ No. For Pyarmor Basic and Pro License, only Pyarmor License file, serial number 
 
 **we use Docker to build/obfuscate the code locally then publish the Docker file to the client. After the build stage, the whole environment (and the license) is gone. I wonder how the workflow would be? Can I add the license file to the pipeline and register every time and build?**
 
-  It's no problem to run Pyarmor in Docker or CI pipeline to obfuscate application. Each build registering pyarmor with :file:`pyarmor-regfile-xxxx.zip` which is generated in initial registration. But It's not allowed to distribute package pyarmor and :term:`Pyarmor Basic`, :term:`Pyarmor Pro`, :term:`Pyarmor Group` License to customer, and don't run too many build dockers.
+  Please refer to :doc:`how-to/ci`
 
 **We are currently using a trial license for testing, but unfortunately our scripts are big and we are not able to statistically test the operation of Pyarmor. Do you have a commercial trial license for a certain trial period so that we can test the operation of Pyarmor for our scripts?**
 
@@ -345,10 +331,7 @@ No. For Pyarmor Basic and Pro License, only Pyarmor License file, serial number 
 
 **Which PyArmor 8.0 license for CI, more than 100 runs / day**
 
-  At this time, only Group License with self-host runner may work, the default runner which has volatile hardwares may not work. For CI with group license, there are 2 workarouds, please check section `using group license in CI pipeline`__
-
-__ https://pyarmor.readthedocs.io/en/latest/how-to/register.html#using-group-license-in-ci-pipeline
-
+  It's recommend to upgrade to Pyarmor 9, and use :term:`Pyarmor CI` License or :term:`Pyarmor Basic` License. See also :doc:`how-to/ci`
 ..
   **We intend to use PyArmor in CI to build obfuscated Docker images. According to the docs we can't use PyArmor in CI because the machine IDs will be different across each CI run (we verified this is the case), but according to this section in the docs, we can use PyArmor on "all the devices to develop, build, test the product", so we're a bit confused on whether this would work in CI. Could we buy a group license and then activate PyArmor as part of the CI pipeline? All of these different CI machines and developer laptops are building "one product"**
 
@@ -365,7 +348,7 @@ Upgrading
 
   The old license is valid for ever. In this case need not upgrade old license to Pyarmor Basic license, just install Pyarmor 8.x, and using :command:`pyarmor-7` with old license.
 
-  Check :doc:`licenses` for more information about upgrading
+  Check :doc:`how-to/register` for more information about upgrading
 
 **If we upgrade the old license, will the current license expire? (no more available in terms of Pyarmor v7?**
 
@@ -398,7 +381,6 @@ Upgrading
 __ https://pyarmor.readthedocs.io/en/stable/topic/repack.html
 __ https://github.com/dashingsoft/pyarmor/discussions/1107
 
-..
 Purchasing
 ==========
 
