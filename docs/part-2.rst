@@ -10,8 +10,8 @@
    how-to/packing
    how-to/wheel
    how-to/obfuscation
+   how-to/register
    how-to/ci
    how-to/third-party
-   how-to/register
 
 .. include:: _common_definitions.txt

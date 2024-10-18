@@ -16,36 +16,23 @@ Prerequisite
 
 First of all
 
-1. An :term:`activation file` of :term:`Pyarmor License` like :file:`pyarmor-regcode-xxxx.txt`, refer to :doc:`../licenses` to purchase right one
-2. Pyarmor 8.2+
+1. One :term:`activation file` of :term:`Pyarmor License`, refer to :doc:`../licenses` to purchase right one
+2. One device has installed Pyarmor 9.0+
 3. Internet connection
-4. Product name bind to this license, for non-commercial use, product name is ``non-profits``
+4. Product name which bind to this license
 
-**If any firewall turns on**
-
-In Windows ``pytransform.pyd`` will connect to ``pyarmor.dashingsoft.com`` port ``80`` to request token for online obfuscation, in other platforms it is ``pytransform3.so``. Refer to firewall documentation to allow it to connect ``pyarmor.dashingsoft.com:80``.
-
-Using Pyarmor Basic or Pro
-==========================
-
-Basic use steps:
-
-1. Using :term:`activation file` to initial registration, set product name bind to this license
-2. Once initial registration completed, a :term:`registration file` is generated
-3. Using :term:`registration file` to register Pyarmor in other devices
+.. _initial registration:
 
 Initial registration
---------------------
+====================
 
-Using :option:`-p` to specify product name for this license, for non-commercial use, set product name to ``non-profits``.
-
-Assume this license is used to protect your product ``XXX``, initial registration by this command::
+Any license need this step to request :term:`registration file` from Pyarmor License Server by :term:`activation file` like :file:`pyarmor-regcode-xxxx.txt`::
 
     $ pyarmor reg -p "XXX" pyarmor-regcode-xxxx.txt
 
-Pyarmor will show registration information and ask for your confirmation. If everything is fine, type :kbd:`yes` and :kbd:`Enter` to continue. Any other input aborts registration.
+Using :option:`-p` to specify product name for this license, please replace "XXX" with real product name. For non-commercial use, replace it to ``non-profits``.
 
-If initial registration is successful, it prints final license information in the console. And a :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` is generated in the current path at the same time. This file is used for subsequent registration in other machines.
+If initial registration is successful, one :term:`registration file` like :file:`pyarmor-regfile-xxxx.zip` is generated in the current path at the same time. This file is used for subsequent registration in other machines.
 
 Once initial registration completed, activation file :file:`pyarmor-regcode-xxxx.txt` is invalid, do not use it again.
 
@@ -66,10 +53,13 @@ In 6 months real product name must be set by this command::
 
 If it's not changed after 6 months, the product name will be set to ``non-profits`` automatically and can't be changed again.
 
-Registering in other machines
------------------------------
+Using Pyarmor Basic or Pro
+==========================
 
-Copy :term:`registration file` :file:`pyarmor-regfile-xxxx.zip` to other machines, run the following command::
+1. Refer to :ref:`initial registration`, got :term:`registration file` like `pyarmor-regfile-xxxx.zip`
+2. Using :term:`registration file` to register Pyarmor in other devices
+
+Copy :term:`registration file` to other machines, then run this command::
 
     $ pyarmor reg pyarmor-regfile-xxxx.zip
 
@@ -78,6 +68,68 @@ Check the registration information::
     $ pyarmor -v
 
 After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
+
+This license can register Pyarmor on at most 100 devices
+
+Do not register Pyarmor in the CI/CD pipeline or docker container by this :term:`registration file`, each run will taken as one new device.
+
+.. seealso:: :doc:`ci`
+
+Using Pyarmor CI License
+========================
+
+.. versionadded:: 9.0
+
+Refer to :ref:`initial registration`, got :term:`registration file` like `pyarmor-regfile-xxxx.zip`
+
+Do not use ``pyarmor-regfile-xxxx.zip`` in CI/CD pipeline directly, it's only used to request CI regfile:
+
+- In local device run the following command to request one CI regfile ``pyarmor-ci-xxxx.zip``::
+
+    pyarmor reg -C pyarmor-regfile-xxxx.zip
+
+- In CI/CD pipeline, add 2 steps to register Pyarmor by CI regfile ``pyarmor-ci-xxxx.zip``::
+
+    pip install pyarmor
+    pyarmor reg pyarmor-ci-{rn}.zip
+
+- Check registration information in CI/CD pipeline::
+
+    pyarmor -v
+
+Notes
+
+* Do not request CI regfile in CI/CD pipeline
+* CI regfile ``pyarmor-ci-xxxx.zip`` will be expired about in 360 days
+* CI regfile may not work in future Pyarmor version
+* Once CI regfile doesn't work, require new one
+* One license can request <= 100 CI regfiles
+
+.. _check device for group license:
+
+Check Device For Group License
+==============================
+
+Check one device works for group license by this way:
+
+* First install Pyarmor 8.4.0+ trial version in this device
+* Got machine id by the following command::
+
+    $ pyarmor reg -g 1
+    ...
+    INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
+    INFO     device file has been generated successfully
+
+* Reboot this device, check machine id is same or not
+* If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
+
+For docker container, please check docker host as above. Only if docker host could work with group license, unlimited docker containers could be run in this docker host, refer to :doc:`how-to/register` section ``run unlimited dockers in offline device``
+
+**If machine id of docker host is changed after reboot, group license doesn't work in any docker container**
+
+Most of physics machine, cloud server or VM like qemu, virtual box, vmware with same disk image work with Group license. Most of runners in CI/CD pipeline could not use Group License.
+
+.. _using group license:
 
 Using group license
 ===================
@@ -92,12 +144,11 @@ The allocated device No. is never free, if a device is reinstalled, it need allo
 
 Basic steps:
 
-1. Using activation file :file:`pyarmor-regcode-xxxx.txt` to initial registration, set product name bind to this license, and generate :term:`registration file` [#]_
+1. Using activation file :file:`pyarmor-regcode-xxxx.txt` to initial registration, set product name bind to this license, and generate :term:`registration file`
 2. Generating group device file separately on each offline device
 3. Using :term:`registration file` and group device file to generate device registration file.
 4. Using device registration file to register Pyarmor on offline device [#]_
 
-.. [#] Pyarmor will review group license manually and enable it in 24 hours since activation file is sent.
 .. [#] The device registration file is bind to specified device, each device has its own device regfile
 
 Initial registration
@@ -365,37 +416,6 @@ Anyway, please configure the docker host/container network so that `pyarmor-auth
 
 If run `pyarmor-auth` in Linux VM or WSL, please check group license could work in Linux VM or WSL. It may need generate new device regfile for Linux VM or WSL.
 
-.. _using pyarmor in ci pipeline:
-
-Using Pyarmor in CI Pipeline
-=============================
-
-.. versionchanged:: 9.0
-    Pyarmor Pro License couldn't be used in CI/CD pipeline since 9.0
-
-For free version, just install pyarmor by `pip install pyarmor` in the pipeline.
-
-Since Pyarmor 9.0, Pyarmor Pro License and Pyarmor Group License couldn't be used in CI/CD pipeline.
-
-Pyarmor Basic and CI License could be used in CI/CD pipeline by this way
-
-- First request CI regfile :file:`pyarmor-ci-xxxx.zip` by :term:`registration file` on local online machine::
-
-    pyarmor reg -C pyarmor-regfile-xxxx.zip
-
-  It will got one CI regfile :file:`pyarmor-ci-xxxx.zip` from Pyarmor License Server
-
-- Then use :file:`pyarmor-ci-xxxx.zip` in the CI/CD pipeline to register Pyarmor::
-
-    pyarmor reg pyarmor-ci-xxxx.zip
-
-Important notes about CI regfile:
-
-- CI regfile :file:`pyarmor-ci-xxxx.zip` is expired in 365 days
-- After it expired, it need request new one
-- CI regfile may not work in future Pyarmor version, after it doesn't work, try to rquest new one
-- One license can request <= 100 CI regfiles
-
 Using multiple Pyarmor Licenses in same device
 ==============================================
 
@@ -419,50 +439,43 @@ Generally it need do nothing after upgrading Pyarmor, the registration informati
 
 But in the following versions something is changed
 
-- **Pyarmor 8.0** Old license for Pyarmor 7 doesn't work
+- **Pyarmor 8.0**
+
+  Old license for Pyarmor 7 doesn't work
 
   - Some old licenses can be upgraded to Basic License freely, refer to :ref:`upgrade old license <upgrading old license>`
   - Old license can't be upgraded to Pro or Group License
 
-- **Pyarmor 9.0** For Group License it need generate device regfile again with Pyarmor 9.0+. The old device regfile which is generated in prior to Pyarmor 8.6 doesn't work in Pyarmor 9.0+
+- **Pyarmor 9.0**
 
-  - First upgrade Pyarmor to 9.0+ in online device
-  - Then generate device regfile as first time. For example, generate device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1::
+  A big change about using Pyarmor in CI/CD license
 
-      pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
+  - :term:`Pyarmor Basic`
 
-  - Finally, replace old one with new one
+    - :ref:`upgrade to pyarmor 9` freely
+    - If using Pyarmor in CI/CD pipeline, refer to :doc:`ci`
 
-.. _check device for group license:
+  - :term:`Pyarmor Pro`
 
-Check Device For Group License
-==============================
+    - If not using Pyarmor in CI/CD pipeline, :ref:`upgrade to pyarmor 9` freely
+    - If using Pyarmor in CI/CD pipeline, 2 choices
 
-Check one device works for group license by this way:
+      - Still use Pyarmor 8.x as before
+      - Upgrade to Pyarmor 9, it need upgrade :term:`Pyarmor Pro` to :term:`Pyarmor CI`
 
-* First install Pyarmor 8.4.0+ trial version in this device
-* Got machine id by the following command::
+        - :term:`Pyarmor CI` is paid per year
+        - Please contact pyarmor@163.com if need upgrade to :term:`Pyarmor CI`
 
-    $ pyarmor reg -g 1
-    ...
-    INFO     current machine id is "mc92c9f22c732b482fb485aad31d789f1"
-    INFO     device file has been generated successfully
+  - :term:`Pyarmor Group`
 
-* Reboot this device, check machine id is same or not
-* If machine id is same after each reboot, group license works in this device. Otherwise group license doesn't work in this device.
-
-For docker container, please check docker host as above. Only if docker host could work with group license, unlimited docker containers could be run in this docker host, refer to :doc:`how-to/register` section ``run unlimited dockers in offline device``
-
-**If machine id of docker host is changed after reboot, group license doesn't work in any docker container**
-
-Most of physics machine, cloud server or VM like qemu, virtual box, vmware with same disk image work with Group license. Most of runners in CI/CD pipeline could not use Group License.
+    It need generate device regfile for each offline device again by Pyarmor 9.0+, refer to :ref:`upgrade to pyarmor 9`
 
 .. _upgrading old license:
 
 Upgrading old license
 =====================
 
-Not all the old license could be upgraded to latest version.
+Not all the old license (Pyarmor 7) could be upgraded to latest version.
 
 The old license could be upgraded to Pyarmor Basic freely only if it matches these conditions:
 
@@ -499,5 +512,19 @@ In other devices using this new :term:`registration file` to register Pyarmor by
 After successful registration, all obfuscations will automatically apply this license, and each obfuscation requires online license verification.
 
 If old license is used by many products (mainly old personal license), only one product could be used after upgrading. For the others, it need purchase new license.
+
+.. _upgrade to pyarmor 9:
+
+Upgrade to Pyarmor 9
+--------------------
+
+  For Group License it need generate device regfile again with Pyarmor 9.0+. The old device regfile which is generated in prior to Pyarmor 8.6 doesn't work in Pyarmor 9.0+
+
+  - First upgrade Pyarmor to 9.0+ in online device
+  - Then generate device regfile as first time. For example, generate device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1::
+
+      pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
+
+  - Finally, replace old one with new one
 
 .. include:: ../_common_definitions.txt

@@ -105,6 +105,10 @@
 
     A :term:`Pyarmor License` type
 
+  Pyarmor CI
+
+    A :term:`Pyarmor License` type
+
   Pyarmor Group
 
     A :term:`Pyarmor License` type

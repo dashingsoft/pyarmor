@@ -4,18 +4,40 @@
  Using Pyarmor in CI Pipeline
 ==============================
 
-.. deprecated:: 9.0
+**Trial Version** could be used in CI/CD pipeline by one step::
 
-   Refer to :ref:`Using Pyarmor in CI Pipeline`
+    pip install pyarmor
 
-Pyarmor also could be used in CI/CD pipeline by this way:
+For :term:`Pyarmor Basic` and :term:`Pyarmor CI` License
 
-- First obfuscate the scripts by a few runner and store them to another branch like `master-obf`
-- Then all the other runners continue the rest pipeline based on this branch like before
+- Refer to :ref:`initial registration`, first got :term:`registration file` like ``pyarmor-regfile-xxxx.zip``
+- In local device run the following command to request one CI regfile ``pyarmor-ci-xxxx.zip``::
 
-Because only first step runners need register Pyarmor, so it could solve run limitions prior to Pyarmor 9.0
+    pyarmor reg -C pyarmor-regfile-xxxx.zip
 
-Suppose test-project locates at `https://github.com/dashingsoft/test-project`, the directory tree as follows::
+- In CI/CD pipeline, add 2 steps to register Pyarmor by CI regfile ``pyarmor-ci-xxxx.zip``::
+
+    pip install pyarmor
+    pyarmor reg pyarmor-ci-{rn}.zip
+
+- Check registration information in CI/CD pipeline::
+
+    pyarmor -v
+
+Notes
+
+* Do not request CI regfile in CI/CD pipeline
+* CI regfile ``pyarmor-ci-xxxx.zip`` will be expired about in 360 days
+* CI regfile may not work in future Pyarmor version
+* Once CI regfile doesn't work, require new one
+* One license can request <= 100 CI regfiles
+
+:term:`Pyarmor Pro` and :term:`Pyarmor Group` License can't be used in CI/CD pipeline directly, but there is one workaround
+
+- First obfuscate the scripts in local device and store them to another branch like `master-obf`
+- Then in CI/CD pipeline to check this new branch
+
+Here is an example, suppose test-project locates at `https://github.com/dashingsoft/test-project`, the directory tree as follows::
 
     $ tree test-project
 
@@ -28,7 +50,7 @@ Suppose test-project locates at `https://github.com/dashingsoft/test-project`, t
             │   └── __init__.py
             └── __init__.py
 
-The first runner will obfuscate the scripts and store them into another branch. Here it's an example bash script:
+In local device the scripts are obfuscated and are stored into another branch:
 
 .. code-block:: bash
 
@@ -56,6 +78,6 @@ The first runner will obfuscate the scripts and store them into another branch. 
     # Push new branch to remote server
     $ git push -u origin master-obf
 
-For all the other runners, they need not install Pyarmor, just checkout branch `master-obf`, and work as before.
+In CI/CD pipeline, it need not install Pyarmor, just checkout branch `master-obf`, and work as before.
 
 .. include:: ../_common_definitions.txt
