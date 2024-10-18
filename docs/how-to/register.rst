@@ -518,13 +518,40 @@ If old license is used by many products (mainly old personal license), only one 
 Upgrade to Pyarmor 9
 --------------------
 
-  For Group License it need generate device regfile again with Pyarmor 9.0+. The old device regfile which is generated in prior to Pyarmor 8.6 doesn't work in Pyarmor 9.0+
+1. :term:`Pyarmor Basic` and :term:`Pyarmor Pro`
 
-  - First upgrade Pyarmor to 9.0+ in online device
-  - Then generate device regfile as first time. For example, generate device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1::
+   If not used in CI/CD pipeline,
 
-      pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
+   - First upgrade to Pyarmor 9::
 
-  - Finally, replace old one with new one
+         $ pip install -U pyarmor
+
+   - Then use :term:`activation file` to generate new :term:`registration file`::
+
+         # Please replace XXX with real product name
+         $ pyarmor reg -p XXX pyarmor-regcode-xxxx.txt
+
+   - Save and backup new :term:`registration file` ``pyarmor-regfile-xxxx.zip``
+
+   - Use this new regfile to register Pyarmor in any device::
+
+         $ pyarmor reg pyarmor-regfile-xxxx.zip
+         $ pyarmor -v
+
+2. :term:`Pyarmor Group` License
+
+   It need generate device regfile again with Pyarmor 9.0+
+
+   - First upgrade to Pyarmor 9::
+
+         $ pip install -U pyarmor
+
+   - Then generate device regfile as before
+
+     For example, generate device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1::
+
+         $ pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
+
+  - Finally, replace old with new one
 
 .. include:: ../_common_definitions.txt
