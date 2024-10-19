@@ -532,7 +532,7 @@ Upgrade to Pyarmor 9
 
 1. :term:`Pyarmor Basic` and :term:`Pyarmor Pro`
 
-   **If Pyarmor License has been registerred in this device**
+   **If Pyarmor License has been registered in this device**
 
    - First upgrade to Pyarmor 9::
 
@@ -552,7 +552,7 @@ Upgrade to Pyarmor 9
 
    - Just press :kbd:`c` to continue, there is no prompt later
 
-   **If Pyarmor License isn't registerred in this device**
+   **If Pyarmor License isn't registered in this device**
 
    - First use :term:`activation file` to generate new :term:`registration file`::
 
