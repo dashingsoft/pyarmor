@@ -25,7 +25,7 @@ For :term:`Pyarmor Basic` and :term:`Pyarmor CI` License
       pip install pyarmor=9.X.Y
       pyarmor reg pyarmor-ci-xxxx.zip
 
-- Check registration information in CI/CD pipeline::
+  Check registration information in CI/CD pipeline::
 
       pyarmor -v
 

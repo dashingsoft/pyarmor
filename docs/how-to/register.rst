@@ -532,23 +532,43 @@ Upgrade to Pyarmor 9
 
 1. :term:`Pyarmor Basic` and :term:`Pyarmor Pro`
 
-   If not used in CI/CD pipeline,
+   **If Pyarmor License has been registerred in this device**
 
    - First upgrade to Pyarmor 9::
 
          $ pip install -U pyarmor
 
-   - Then use :term:`activation file` to generate new :term:`registration file`::
+   - When first time to obfuscate scripts, it will show hints::
+
+         $ pyarmor gen foo.py
+
+         ...
+         Pyarmor 9 has big change on CI/CD pipeline
+         If not using Pyarmor License in CI/CD pipeline
+         Press "c" to continue
+         Otherwise press "h" to check Pyarmor 9.0 Upgrade Notes
+
+         Continue (c), Help (h), Quit (q):
+
+   - Just press :kbd:`c` to continue, there is no prompt later
+
+   **If Pyarmor License isn't registerred in this device**
+
+   - First use :term:`activation file` to generate new :term:`registration file`::
+
+         $ pip install -U pyarmor
 
          # Please replace XXX with real product name
          $ pyarmor reg -p XXX pyarmor-regcode-xxxx.txt
 
    - Save and backup new :term:`registration file` ``pyarmor-regfile-xxxx.zip``
 
-   - Use this new regfile to register Pyarmor in any device::
+   - Use this new regfile to register Pyarmor in other new device::
 
          $ pyarmor reg pyarmor-regfile-xxxx.zip
          $ pyarmor -v
+
+   If :term:`activation file` is used too many times, please first install Pyarmor 8, then upgrade to Pyarmor 9
 
 2. :term:`Pyarmor Group` License
 
@@ -564,6 +584,8 @@ Upgrade to Pyarmor 9
 
          $ pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
 
-  - Finally, replace old with new one
+  - Finally, use new one to register Pyarmor in offline device::
+
+         $ pyarmor reg pyarmor-device-regfile-6000.1.zip
 
 .. include:: ../_common_definitions.txt

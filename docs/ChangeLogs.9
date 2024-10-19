@@ -1,7 +1,80 @@
 # Pyarmor 9 Change Logs
 
-There is a big change about using Pyarmor in CI/CD pipeline
+Because Pyarmor License is paid once in Pyarmor 8, but online verification for using Pyarmor License in CI/CD pipeline will continue consuming a lot of Pyarmor Server resources.
 
-Pyarmor Pro License couldn't be used in CI/CD pipeline since Pyarmor 9, use new license Pyarmor CI instead
+So Pyarmor 9 has a big change about using Pyarmor in CI/CD pipeline:
 
-If not use Pyarmor License in CI/CD pipeline, almost nothing changed
+- Pyarmor Pro License couldn't be used in CI/CD pipeline since Pyarmor 9
+- Pyarmor CI License is right for CI/CD pipeline case
+- Pyarmor Basic still could be used in CI/CD pipeline, but it need request one extra CI regfile
+
+In a short
+
+**If not use Pyarmor License in CI/CD pipeline, almost nothing changed**
+**If not upgrade to Pyarmor 9, but still use Pyarmor 8, nothing changed**
+**Pyarmor Pro License purchased after Pyarmor 9 is released could not be used in CI/CD pipeline even use it with Pyarmor 8**
+
+Pyarmor CI License is paid each year, and couldn't be used in local machine.
+
+## Upgrade Basic or Pro License to Pyarmor 9
+
+1. If Pyarmor License has been registerred in this device
+
+   - First upgrade to Pyarmor 9
+     ```bash
+         $ pip install -U pyarmor
+     ```
+
+   - When first time to obfuscate scripts, it will show hints
+     ```bash
+         $ pyarmor gen foo.py
+
+         ...
+         Pyarmor 9 has big change on CI/CD pipeline
+         If not using Pyarmor License in CI/CD pipeline
+         Press "c" to continue
+         Otherwise press "h" to check Pyarmor 9.0 Upgrade Notes
+
+         Continue (c), Help (h), Quit (q):
+     ```
+   - Just press `c` to continue, there is no prompt later
+
+2. If Pyarmor License isn't registerred in this device
+
+   - First use activation file to generate new registration file
+     ```bash
+         $ pip install -U pyarmor
+
+         # Please replace XXX with real product name
+         $ pyarmor reg -p XXX pyarmor-regcode-xxxx.txt
+     ```
+   - Save and backup new registration file `pyarmor-regfile-xxxx.zip`
+
+   - Use this new regfile to register Pyarmor in other new device
+     ```bash
+         $ pyarmor reg pyarmor-regfile-xxxx.zip
+         $ pyarmor -v
+     ```
+
+   **If activation file is used too many times, please first install Pyarmor 8, then upgrade to Pyarmor 9**
+
+## Upgrade Group License to Pyarmor 9
+
+It need generate device regfile again with Pyarmor 9.0+
+
+- First upgrade to Pyarmor 9
+  ```bash
+      $ pip install -U pyarmor
+  ```
+
+- Then generate device regfile as before
+
+  For example, generate device regfile `pyarmor-device-regfile-6000.1.zip` for device no. 1
+  ```bash
+      $ pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
+   ```
+
+- Finally, use new one to register Pyarmor in offline device
+  ```bash
+      $ pyarmor reg pyarmor-device-regfile-6000.1.zip
+  ```
