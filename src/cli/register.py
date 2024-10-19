@@ -280,11 +280,20 @@ class Register(object):
                 self.ctx.save_token(f.read(name))
             elif 'group.info' in namelist:
                 docurl = 'http://pyarmor.readthedocs.io/en/stable'
+                logger.info('this file "%s" is only used to '
+                            'request device regfile', regfile)
                 logger.info('refer to %s/how-to/register.html'
                             '#using-group-license', docurl)
                 raise CliError('wrong usage for group license')
             elif 'reg.info' in namelist:
-                info = json_loads(f.read('reg.info'), encoding='utf-8')
+                data = f.read('reg.info')
+                info = json_loads(data, encoding='utf-8')
+                if info.get('features', 0) & 16:
+                    logger.info('this file "%s" is only used to '
+                                'request ci regfile', regfile)
+                    logger.info('refer to %s/how-to/register.html'
+                                '#using-ci-license', docurl)
+                    raise CliError('wrong usage for ci license')
                 self.ctx.save_token(self._init_token(info))
             else:
                 self.show_upgrade_notes()
