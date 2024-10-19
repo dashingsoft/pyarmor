@@ -84,7 +84,7 @@ def check_license_version(ctx, silent=False):
     token = licinfo.get('token', 0)
     features = licinfo.get('features', 0)
     if rev == 1 and features > 0 and token > 0:
-        logger.warning('this license is not for Pyarmor 9')
+        logger.warning('this license is not ready for Pyarmor 9')
         if silent:
             return False
 
