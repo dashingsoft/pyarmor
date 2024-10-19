@@ -34,6 +34,12 @@ MACHFLAGS = 22, 21, 18, 20, 16, 11
 # Upgrade notes for Pyarmor 9
 URL_UPGRADE_V9 = 'https://github.com/dashingsoft/pyarmor/issues/1958'
 
+# Template for license info
+LICENSE_INFO_TEMPLATE = '''$advanced
+
+$notes
+'''
+
 
 def parse_token(data):
     from struct import unpack
@@ -81,7 +87,7 @@ def parse_token(data):
         }
 
 
-def prompt_help_page(prompt, url):
+def show_help_page(prompt, url):
     choice = input('\n'.join(prompt)).lower()[:1]
     if choice == 'h':
         import webbrowser
@@ -110,7 +116,7 @@ def check_license_version(ctx, silent=False):
                 '',
                 'Help (h), Quit (q): '
             )
-            prompt_help_page(prompt, URL_UPGRADE_V9)
+            show_help_page(prompt, URL_UPGRADE_V9)
             raise SystemExit('Quit')
 
         prompt = (
@@ -122,7 +128,7 @@ def check_license_version(ctx, silent=False):
             '',
             'Continue (c), Help (h), Quit (q): '
         )
-        if not prompt_help_page(prompt, URL_UPGRADE_V9) == 'c':
+        if not show_help_page(prompt, URL_UPGRADE_V9) == 'c':
             raise SystemExit('Quit')
 
 
@@ -321,8 +327,8 @@ class Register(object):
                     '',
                     'Help (h), Quit (q): '
                 )
-                prompt_help_page(prompt, URL_UPGRADE_V9)
-                raise SystemExit('Quit')
+                show_help_page(prompt, URL_UPGRADE_V9)
+                raise SystemExit()
 
     def _get_docker_hostname(self):
         try:
@@ -409,11 +415,6 @@ class Register(object):
                     'this group license is not for this machine')
 
     def __str__(self):
-        '''$advanced
-
-$notes
-'''
-
         info = self.license_info
         lictype = self._license_type(info)
 
@@ -448,7 +449,7 @@ $notes
         if self.notes:
             self.notes.insert(0, 'Notes')
 
-        lines.append(Template(self.__str__.__doc__).substitute(
+        lines.append(Template(LICENSE_INFO_TEMPLATE).substitute(
             advanced='\n'.join(advanced),
             notes='\n'.join(self.notes),
         ))
