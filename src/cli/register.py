@@ -248,17 +248,16 @@ class Register(object):
             if lictp == 'C' else ''
         )
 
+        regname = regname.encode('utf-8')
+        product = product.encode('utf-8')
+        notes = notes.encode('utf-8')
         data = pack('<II8x20s28xBB2sB2sB2s', token,
                     rev | features << 8,
                     licno.encode('utf-8'),
                     0,
                     len(regname), b'%s',
                     len(product), b'%s',
-                    len(notes), b'%s') % (
-                        regname.encode('utf-8'),
-                        product.encode('utf-8'),
-                        notes.encode('utf-8'),
-                    )
+                    len(notes), b'%s') % (regname, product, notes)
         return b64encode(data) + b' *=='
 
     def register_regfile(self, regfile, clean=True):
@@ -679,7 +678,14 @@ class WebRegister(Register):
             return filename
 
         elif res:
-            raise CliError(res.read().decode('utf-8'))
+            data = res.read()
+            logger.debug('server return(%d): %s', res.code, data)
+            try:
+                msg = data.decode('utf-8')
+            except Exception as e:
+                logger.debug('decode server data error "%s"', e)
+                msg = data
+            raise CliError(msg)
 
         raise CliError('no response from license server')
 
