@@ -731,6 +731,8 @@ def main_entry(argv):
 
     if sys.version_info[0] == 2 or sys.version_info[1] < 7:
         raise CliError('only Python 3.7+ is supported now')
+    elif sys.version_info[0] == 3 and sys.version_info[1] > 12:
+        raise CliError('Python 3.13+ is not supported now')
 
     ctx = Context(*get_home_paths(args))
 
