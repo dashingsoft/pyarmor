@@ -62,7 +62,7 @@ UNUSED_SOLUTION_HINTS = Template('''something is wrong
 
 ENABLE_DEBUG_HINTS = 'please enable debug option `-d` to run it again'
 
-SOLUTION_HINTS = Template('''something is wrong
+SOLUTION_HINTS = Template('''
 *=============================================================*
 *  Please check console log to find out what's wrong          *
 *                                                             *
@@ -120,9 +120,10 @@ def find_solutions(e):
     if logger.getEffectiveLevel() > logging.DEBUG:
         return
 
+    print('\nDebug Information:')
     logger.info('generate bug file "%s"', BUG_FILE)
     generate_bug_report(e)
-    logger.error(SOLUTION_HINTS.substitute(bugfile=BUG_FILE))
+    logger.info(SOLUTION_HINTS.substitute(bugfile=BUG_FILE))
 
 
 if __name__ == '__main__':

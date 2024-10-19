@@ -288,7 +288,27 @@ class Register(object):
                 info = json_loads(f.read('reg.info'), encoding='utf-8')
                 self.ctx.save_token(self._init_token(info))
             else:
-                raise CliError('this license is not ready for Pyarmor 9')
+                self.show_upgrade_notes()
+
+    def show_upgrade_notes(self):
+        if os.getenv('LANG', '').startswith('zh_CN'):
+            lang = 'zh', '#pyarmor'
+        else:
+            lang = 'en', '#what-need-to-do-after-upgrading-pyarmor'
+        docurl = ('https://pyarmor.readthedocs.io/'
+                  '%s/v9.0/how-to/register.html%s' % lang)
+        prompt = (
+            '',
+            'Pyarmor 9 has big change on CI/CD pipeline',
+            'Press "h" to check Pyarmor 9.0 Upgrade Notes',
+            '',
+            'Help (h), Quit (q): '
+        )
+        choice = input('\n'.join(prompt)).lower()[:1]
+        if choice == 'h':
+            import webbrowser
+            webbrowser.open(docurl)
+        raise CliError('this license is not ready for Pyarmor 9')
 
     def _get_docker_hostname(self):
         try:
