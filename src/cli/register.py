@@ -823,4 +823,12 @@ class WebRegister(Register):
                     dst.writestr(x, src.read(x))
                 dst.writestr('ci.token', token)
 
-        logger.info('generate ci regfile %s successfully', cifile)
+        logger.info('generate CI regfile "%s" successfully', cifile)
+
+        ver = '.'.join([str(x) for x in self.ctx.version])
+        logger.info('\n\nCheck CI license in local machine by:\n'
+                    '\n\tpyarmor reg %s\n\n'
+                    'Register Pyarmor in CI/CD pipeline by:\n'
+                    '\n\tpip install pyarmor==%s\n'
+                    '\tpyarmor reg %s\n',
+                    cifile, ver, cifile)
