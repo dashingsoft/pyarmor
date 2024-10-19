@@ -84,12 +84,14 @@ Please read the [Pyarmor EULA](LICENSE).
 
 * [Website](https://pyarmor.dashingsoft.com)
 * [Documentation][doc]
+* [Documentation 8.x](https://pyarmor.readthedocs.io/en/v8.5.12/)
 * [Documentation 7.x](https://pyarmor.readthedocs.io/en/v7.7/)
 
 中文资源
 
 * [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
 * [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
+* [Pyarmor 8.x 在线文档](https://pyarmor.readthedocs.io/zh/v8.5.12/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/)
 
 ## Changelog
