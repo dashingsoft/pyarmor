@@ -75,8 +75,8 @@ Do not register Pyarmor in the CI/CD pipeline or docker container by this :term:
 
 .. seealso:: :doc:`ci`
 
-Using Pyarmor CI License
-========================
+Using Pyarmor CI
+================
 
 .. versionadded:: 9.0
 
@@ -104,6 +104,12 @@ Notes
 * CI regfile may not work in future Pyarmor version
 * Once CI regfile doesn't work, require new one
 * One license can request <= 100 CI regfiles
+
+.. important::
+
+   :term:`Pyarmor CI` License doesn't work in local device
+
+.. seealso:: :doc:`ci`
 
 .. _check device for group license:
 

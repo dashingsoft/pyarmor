@@ -58,7 +58,7 @@ There are some limitations in free version, for example, can't obfuscate big scr
      - 100
      - 100
      - 200
-     - 20
+     - N/A
    * - Unlimited local dockers [#]_
      -
      -
@@ -81,7 +81,7 @@ There are some limitations in free version, for example, can't obfuscate big scr
    - RFT Mode: renaming function/class/method/variable in Python scripts
    - BCC Mode: Transforming some Python functions in scripts to c functions, compile them to machine instructions directly
 .. [#] Offline build: the build device need not be online to verify Pyarmor License
-.. [#] Maximum devices could install Pyarmor
+.. [#] Maximum devices could install Pyarmor, CI license couldn't be used in local machine
 .. [#] Unlimited local dockers: run docker container in local machine, may be offline or in private network
 .. [#] Work in CI/CD pipeline: it need special option to register Pyarmor in CI/CD pipeline
 
