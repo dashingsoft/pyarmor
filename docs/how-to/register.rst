@@ -75,7 +75,9 @@ Do not register Pyarmor in the CI/CD pipeline or docker container by this :term:
 
 .. seealso:: :doc:`ci`
 
-Using Pyarmor CI
+.. _using ci license:
+
+Using CI License
 ================
 
 .. versionadded:: 9.0
