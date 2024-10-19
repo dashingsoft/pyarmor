@@ -289,7 +289,7 @@ class Register(object):
                 if info.get('type', '') == 'C':
                     logger.info('this file is only used to '
                                 'request ci regfile:\n\n'
-                                '\tpyarmor reg -c %s\n', regfile)
+                                '\tpyarmor reg -C %s\n', regfile)
                     raise CliError('wrong usage for CI License')
                 self.ctx.save_token(self._init_token(info))
             else:
@@ -776,7 +776,7 @@ class WebRegister(Register):
         with ZipFile(filename, 'a') as f:
             f.writestr('ci.token', data)
 
-    def register_ci_license(self, regfile, rev=2):
+    def request_ci_regfile(self, regfile, rev=2):
         logger.info('request ci regfile by "%s"', regfile)
         from zipfile import ZipFile
 

@@ -313,7 +313,7 @@ def cmd_reg(ctx, args):
     elif args.ci:
         regsvr = WebRegister(ctx)
         regsvr.check_request_interval()
-        regsvr.register_ci_license(regfile)
+        regsvr.request_ci_regfile(regfile)
 
     elif regfile.endswith('.zip'):
         reg = Register(ctx)
