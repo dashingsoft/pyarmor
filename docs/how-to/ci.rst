@@ -13,16 +13,21 @@ For :term:`Pyarmor Basic` and :term:`Pyarmor CI` License
 - Refer to :ref:`initial registration`, first got :term:`registration file` like ``pyarmor-regfile-xxxx.zip``
 - In local device run the following command to request one CI regfile ``pyarmor-ci-xxxx.zip``::
 
-    pyarmor reg -C pyarmor-regfile-xxxx.zip
+      $ pyarmor reg -C pyarmor-regfile-xxxx.zip
 
-- In CI/CD pipeline, add 2 steps to register Pyarmor by CI regfile ``pyarmor-ci-xxxx.zip``::
+  Check CI license info in local machine::
 
-    pip install pyarmor
-    pyarmor reg pyarmor-ci-{rn}.zip
+      $ pyarmor reg pyarmor-ci-xxxx.zip
+
+- In CI/CD pipeline, add 2 steps to register Pyarmor by CI regfile::
+
+      # Please replace "9.X.Y" with current Pyarmor version
+      pip install pyarmor=9.X.Y
+      pyarmor reg pyarmor-ci-xxxx.zip
 
 - Check registration information in CI/CD pipeline::
 
-    pyarmor -v
+      pyarmor -v
 
 Notes
 
