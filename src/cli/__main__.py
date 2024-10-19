@@ -729,13 +729,8 @@ def main_entry(argv):
     parser = main_parser()
     args = parser.parse_args(argv)
 
-    if sys.version_info[0] == 2:
-        raise CliError('Python 2 is not supported')
-    elif sys.version_info[0] == 3 and sys.version_info[1] < 7:
-        raise CliError('only Python 3.7+ is supported now')
-    elif sys.version_info[0] == 3 and sys.version_info[1] > 12:
-        raise CliError('Python 3.13+ is not supported now')
-    else:
+    major, minor = sys.version_info[:2]
+    if not (major == 3 and minor > 6 and minor < 13):
         raise CliError('this Python version is not supported')
 
     ctx = Context(*get_home_paths(args))
