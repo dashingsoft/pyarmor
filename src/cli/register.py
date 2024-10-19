@@ -31,6 +31,9 @@ from . import logger, CliError
 # All supported machine flags for group license: [11, 26)
 MACHFLAGS = 22, 21, 18, 20, 16, 11
 
+# Upgrade notes for Pyarmor 9
+URL_UPGRADE_V9 = 'https://github.com/dashingsoft/pyarmor/issues/1958'
+
 
 def parse_token(data):
     from struct import unpack
@@ -78,6 +81,14 @@ def parse_token(data):
         }
 
 
+def prompt_help_page(prompt, url):
+    choice = input('\n'.join(prompt)).lower()[:1]
+    if choice == 'h':
+        import webbrowser
+        webbrowser.open(url)
+    return choice
+
+
 def check_license_version(ctx, silent=False):
     licinfo = ctx.license_info
     rev = licinfo.get('rev', 0)
@@ -88,7 +99,6 @@ def check_license_version(ctx, silent=False):
         if silent:
             return False
 
-        url = 'https://github.com/dashingsoft/pyarmor/issues/1958'
         # Group License
         if features == 15:
             prompt = (
@@ -100,10 +110,7 @@ def check_license_version(ctx, silent=False):
                 '',
                 'Help (h), Quit (q): '
             )
-            choice = input('\n'.join(prompt)).lower()[:1]
-            if choice == 'h':
-                import webbrowser
-                webbrowser.open(url)
+            prompt_help_page(prompt, URL_UPGRADE_V9)
             raise SystemExit('Quit')
 
         prompt = (
@@ -115,11 +122,7 @@ def check_license_version(ctx, silent=False):
             '',
             'Continue (c), Help (h), Quit (q): '
         )
-        choice = input('\n'.join(prompt)).lower()[:1]
-        if choice == 'h':
-            import webbrowser
-            webbrowser.open(url)
-        if not choice == 'c':
+        if not prompt_help_page(prompt, URL_UPGRADE_V9) == 'c':
             raise SystemExit('Quit')
 
 
@@ -310,27 +313,16 @@ class Register(object):
                     raise CliError('wrong usage for CI License')
                 self.ctx.save_token(self._init_token(info))
             else:
-                self.show_upgrade_notes()
-
-    def show_upgrade_notes(self):
-        if os.getenv('LANG', '').startswith('zh_CN'):
-            lang = 'zh', '#pyarmor'
-        else:
-            lang = 'en', '#what-need-to-do-after-upgrading-pyarmor'
-        docurl = ('https://pyarmor.readthedocs.io/'
-                  '%s/v9.0/how-to/register.html%s' % lang)
-        prompt = (
-            '',
-            'Pyarmor 9 has big change on CI/CD pipeline',
-            'Press "h" to check Pyarmor 9.0 Upgrade Notes',
-            '',
-            'Help (h), Quit (q): '
-        )
-        choice = input('\n'.join(prompt)).lower()[:1]
-        if choice == 'h':
-            import webbrowser
-            webbrowser.open(docurl)
-        raise CliError('this license is not ready for Pyarmor 9')
+                logger.error('this license is not ready for Pyarmor 9')
+                prompt = (
+                    '',
+                    'Pyarmor 9 has big change on CI/CD pipeline',
+                    'Press "h" to check Pyarmor 9.0 Upgrade Notes',
+                    '',
+                    'Help (h), Quit (q): '
+                )
+                prompt_help_page(prompt, URL_UPGRADE_V9)
+                raise SystemExit('Quit')
 
     def _get_docker_hostname(self):
         try:
