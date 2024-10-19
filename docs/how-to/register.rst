@@ -473,7 +473,7 @@ But in the following versions something is changed
 .. _upgrading old license:
 
 Upgrading old license
-=====================
+---------------------
 
 Not all the old license (Pyarmor 7) could be upgraded to latest version.
 
@@ -488,8 +488,7 @@ If failed to upgrade the old license, please purchase new license to use Pyarmor
 
 The old license can't be upgraded to Pyarmor Pro and Group.
 
-Upgrading old license to Pyarmor Basic
---------------------------------------
+**Upgrading old license to Pyarmor Basic**
 
 First find the activation file ``pyarmor-regcode-xxxx.txt``, which is sent to registration email when purchasing the license.
 

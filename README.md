@@ -66,7 +66,7 @@ Please read the [Pyarmor EULA](LICENSE).
 
 ## Getting Help
 
-1. **Consult the [Pyarmor 8.0 Documentation][doc].**
+1. **Consult the [Pyarmor Documentation][doc].**
 2. **Check the [FAQ][faq] for answers to common questions.**
 3. **Try the documentation [index][genindex] or the [detailed table of contents][mastertoc].**
 4. **If you still can't find the information you need, see [asking questions on GitHub][asking].**
@@ -83,13 +83,13 @@ Please read the [Pyarmor EULA](LICENSE).
 ## Resources
 
 * [Website](https://pyarmor.dashingsoft.com)
-* [Documentation 8.0][doc]
+* [Documentation][doc]
 * [Documentation 7.x](https://pyarmor.readthedocs.io/en/v7.7/)
 
 中文资源
 
 * [Pyarmor 网站](https://pyarmor.dashingsoft.com/index-zh.html)
-* [Pyarmor 8.0 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
+* [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/)
 
 ## Changelog
