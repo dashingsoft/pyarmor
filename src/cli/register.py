@@ -89,6 +89,23 @@ def check_license_version(ctx, silent=False):
             return False
 
         url = 'https://github.com/dashingsoft/pyarmor/issues/1958'
+        # Group License
+        if features == 15:
+            prompt = (
+                '',
+                'Pyarmor 9 has some changes on license policy',
+                'This group license is still available',
+                'But it need request new device regfile as before',
+                'Press "h" to check Pyarmor 9 Upgrade Notes',
+                '',
+                'Help (h), Quit (q): '
+            )
+            choice = input('\n'.join(prompt)).lower()[:1]
+            if choice == 'h':
+                import webbrowser
+                webbrowser.open(url)
+            raise SystemExit('Quit')
+
         prompt = (
             '',
             'Pyarmor 9 has big change on CI/CD pipeline',
