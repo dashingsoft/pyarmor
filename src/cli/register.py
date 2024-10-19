@@ -625,9 +625,11 @@ class WebRegister(Register):
         logger.info('this license has been activated sucessfully')
 
         notes = [
-            '* Please backup regfile "%s" carefully, and '
+            '* Please backup "%s", but do not use it to '
+            'register Pyarmor' % os.path.basename(keyfile),
+            '* Please backup regfile "%s", and '
             'use this file for next any registration' % regfile,
-            '* Do not use "%s" again' % os.path.basename(keyfile),
+            '* Do not use this file in docker and CI/CD pipeline',
         ]
 
         if group:
@@ -637,8 +639,8 @@ class WebRegister(Register):
             return
 
         notes.append('')
-        notes.append('Next register Pyarmor in any device by this command'
-                     '(except docker and CI/CD pipeline):')
+        notes.append('Next register Pyarmor in build device by this command:')
+
         notes.append('\tpyarmor reg %s' % regfile)
         notes.append('')
         logger.info('\n\nImport Notes:\n%s\n', '\n'.join(notes))
