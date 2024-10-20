@@ -71,6 +71,8 @@ After successful registration, all obfuscations will automatically apply this li
 
 This license can register Pyarmor on at most 100 devices
 
+On each device it's enough to register Pyarmor once, do not register Pyarmor before each obfuscation
+
 Do not register Pyarmor in the CI/CD pipeline or docker container by this :term:`registration file`, each run will taken as one new device.
 
 .. seealso:: :doc:`ci`
