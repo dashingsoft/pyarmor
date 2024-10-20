@@ -76,15 +76,15 @@ def parse_token(data):
         except Exception as e:
             logger.warning('bad token: %s', str(e))
 
-        return {
-            'token': 0,
-            'rev': 0,
-            'features': 0,
-            'licno': 'pyarmor-vax-000000',
-            'regname': '',
-            'product': 'non-profits',
-            'note': 'This is trial license'
-        }
+    return {
+        'token': 0,
+        'rev': 0,
+        'features': 0,
+        'licno': 'pyarmor-vax-000000',
+        'regname': '',
+        'product': 'non-profits',
+        'note': 'This is trial license'
+    }
 
 
 def show_help_page(prompt, url):
