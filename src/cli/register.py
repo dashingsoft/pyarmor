@@ -311,7 +311,7 @@ class Register(object):
                 raise CliError('wrong usage for Group License')
             elif 'reg.info' in namelist:
                 data = f.read('reg.info')
-                info = json_loads(data, encoding='utf-8')
+                info = json_loads(data)
                 if info.get('type', '') == 'C':
                     logger.info('this file is only used to '
                                 'request ci regfile:\n\n'
