@@ -1,6 +1,6 @@
 import logging
 
-__VERSION__ = '9.0.3'
+__VERSION__ = '9.0.4'
 
 logger = logging.getLogger('cli')
 
