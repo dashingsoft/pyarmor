@@ -72,6 +72,7 @@ Please read the [Pyarmor EULA](LICENSE).
 4. **If you still can't find the information you need, see [asking questions on GitHub][asking].**
 5. **[Report bugs][issues] following the issue template.**
 6. **For business and security inquiries, send an email to <pyarmor@163.com>.**
+7. **You can also [Ask Pyarmor Guru][gurubase], it is a Pyarmor-focused AI to answer your questions.**
 
 [faq]: https://pyarmor.readthedocs.io/en/latest/questions.html
 [issues]: https://github.com/dashingsoft/pyarmor/issues
@@ -79,6 +80,7 @@ Please read the [Pyarmor EULA](LICENSE).
 [mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
 [asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
 [doc]: https://pyarmor.readthedocs.io/
+[gurubase]: https://gurubase.io/g/pyarmor
 
 ## Resources
 
