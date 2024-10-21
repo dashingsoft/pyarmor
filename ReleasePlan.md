@@ -1,6 +1,6 @@
-# Release Plan for Pyarmor 8
+# Release Plan for Pyarmor 8+
 
-The scheduled features for Pyarmor 8
+The scheduled features for Pyarmor 8+
 
 **8.0**
 
