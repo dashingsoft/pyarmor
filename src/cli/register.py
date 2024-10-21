@@ -717,7 +717,7 @@ class WebRegister(Register):
         with ZipFile(filename, 'a') as f:
             f.writestr('group.info', data)
 
-    def register_group_device(self, regfile, devid, rev=1):
+    def register_group_device(self, regfile, devid, rev=2):
         from zipfile import ZipFile
         devfile = self.ctx.group_device_file(devid)
         logger.info('register device file "%s"', devfile)
