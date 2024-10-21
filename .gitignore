@@ -102,4 +102,4 @@ ENV/
 
 # pip
 .pypirc
-pypi-upload.sh
+scripts/pypi-upload.sh

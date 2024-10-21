@@ -38,6 +38,8 @@ make_platform_files()
     # cp -a ${src}/macosx_x86_64 ${dst}/darwin/x86_64;
     cp -a plugins ./src/
 }
+# Change to workpath
+cd ~/workspace/pyarmor
 
 # Make platform files
 make_platform_files
