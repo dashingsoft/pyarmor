@@ -1,5 +1,9 @@
 # Plugins
 
+***This document is written for Pyarmor 7***
+
+***All examples in this folder not work in Pyarmor 8+***
+
 Plugin usually is used to extend license type, or insert some extra check code
 to obfuscated scripts to improve the security.
 
