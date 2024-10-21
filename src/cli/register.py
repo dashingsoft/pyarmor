@@ -687,8 +687,8 @@ class WebRegister(Register):
                     f.write(data[n:])
                 self._write_reg_info(filename, data[i:n])
             else:
-                # TBD: it should not happened
-                logger.warning('no REGINFO found')
+                # Only for request group token
+                logger.debug('no REGINFO found')
                 with open(filename, 'wb') as f:
                     f.write(data)
             return filename
