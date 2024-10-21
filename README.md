@@ -105,6 +105,6 @@ Make sure to read the changelog carefully before upgrading Pyarmor:
 
 **Full changelogs** at [releases][releases]
 
-**Upcoming features** at [Pyarmor Release Plan](ReleasePlan.md)
+**Upcoming features** at [Pyarmor Release Plan](docs/ReleasePlan.md)
 
 [releases]: https://github.com/dashingsoft/pyarmor/releases
