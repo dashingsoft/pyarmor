@@ -81,7 +81,7 @@ There are some limitations in free version, for example, can't obfuscate big scr
    - RFT Mode: renaming function/class/method/variable in Python scripts
    - BCC Mode: Transforming some Python functions in scripts to c functions, compile them to machine instructions directly
 .. [#] Offline build: the build device need not be online to verify Pyarmor License
-.. [#] Maximum devices could install Pyarmor, CI license couldn't be used in local machine
+.. [#] Maximum devices could install Pyarmor, each docker run will be taken as one new build device, CI license only works in CI/CD pipeline
 .. [#] Unlimited local dockers: run docker container in local machine, may be offline or in private network
 .. [#] Work in CI/CD pipeline: it need special option to register Pyarmor in CI/CD pipeline
 
@@ -119,6 +119,8 @@ Terms of Use
 5. Fair use
 
    If you have purchased Pyarmor License for one product, but you have aother product, and the total revenue of the other project is less than 100 x Pyarmor License fee, you could rent this license in your aother product
+
+   Pyarmor Pro License still could be used in CI/CD pipeline for low volume (100 runs per month)
 
 In details check `Pyarmor EULA`_
 
