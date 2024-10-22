@@ -94,7 +94,7 @@ Do not use ``pyarmor-regfile-xxxx.zip`` in CI/CD pipeline directly, it's only us
 
   Check CI license info in local machine::
 
-      $ pyarmor reg pyarmor-ci-xxxx.zip
+      $ pyarmor --home temp reg pyarmor-ci-xxxx.zip
 
 - In CI/CD pipeline, add 2 steps to register Pyarmor by CI regfile::
 
