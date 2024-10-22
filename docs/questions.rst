@@ -332,6 +332,15 @@ License
 **Which PyArmor 8.0 license for CI, more than 100 runs / day**
 
   It's recommend to upgrade to Pyarmor 9, and use :term:`Pyarmor CI` License or :term:`Pyarmor Basic` License. See also :doc:`how-to/ci`
+
+**We should be able to assume that the CI regfile will keep working as long as it is within the license limits. Otherwise, builds might break at a moment notice. Could you confirm whether it is safe to assume that the CI license will keep working?**
+
+  Fix Pyarmor version in the CI/CD pipeline, CI regfile works within the validity period.
+
+**About CI License, is there an option to allow offline usage in the CI/CD pipeline?**
+
+  No. There is no offline option for CI License.
+
 ..
   **We intend to use PyArmor in CI to build obfuscated Docker images. According to the docs we can't use PyArmor in CI because the machine IDs will be different across each CI run (we verified this is the case), but according to this section in the docs, we can use PyArmor on "all the devices to develop, build, test the product", so we're a bit confused on whether this would work in CI. Could we buy a group license and then activate PyArmor as part of the CI pipeline? All of these different CI machines and developer laptops are building "one product"**
 
