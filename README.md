@@ -73,6 +73,10 @@ Please read the [Pyarmor EULA](LICENSE).
 5. **[Report bugs][issues] following the issue template.**
 6. **For business and security inquiries, send an email to <pyarmor@163.com>.**
 
+There are also some third-party learn platforms (not Pyarmor offical)
+
+- **[Ask Pyarmor Guru][gurubase], it is a Pyarmor-focused AI to answer your questions**
+
 [faq]: https://pyarmor.readthedocs.io/en/latest/questions.html
 [issues]: https://github.com/dashingsoft/pyarmor/issues
 [genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
