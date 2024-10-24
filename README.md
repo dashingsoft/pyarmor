@@ -83,6 +83,7 @@ There are also some third-party learn platforms (not Pyarmor offical)
 [mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
 [asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
 [doc]: https://pyarmor.readthedocs.io/
+[gurubase]: https://gurubase.io/g/pyarmor
 
 ## Resources
 
