@@ -313,7 +313,7 @@ class UnitTestCases(BaseTestCase):
         ])
         args = ['g', '--enable-bcc', 'samples/queens.py']
         self.pyarmor_gen(args)
-        with open(os.path.join(self.local_path, 'pyarmor.trace.log')) as f:
+        with open('pyarmor.trace.log') as f:
             output = f.read()
         for line in (
                 'trace.bcc            ! queens:30:Queens.solve (excluded)',
@@ -329,7 +329,7 @@ class UnitTestCases(BaseTestCase):
         ])
         args = ['g', '--enable-bcc', '--enable-rft', 'samples/queens.py']
         self.pyarmor_gen(args)
-        with open(os.path.join(self.local_path, 'pyarmor.trace.log')) as f:
+        with open('pyarmor.trace.log') as f:
             output = f.read()
         for line in (
                 'trace.bcc            ! queens:30',
