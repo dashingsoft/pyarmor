@@ -782,14 +782,10 @@ def main_entry(argv):
 def main():
     try:
         main_entry(sys.argv[1:])
-    except CliError as e:
-        logger.error(e)
-        log_bug(e)
-        sys.exit(1)
     except Exception as e:
         logger.error(e)
         log_bug(e)
-        sys.exit(2)
+        sys.exit(1 if isinstance(e, CliError) else 2)
 
 
 if __name__ == '__main__':
