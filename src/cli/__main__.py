@@ -363,7 +363,7 @@ def main_parser():
     )
     parser.add_argument(
         '-d', '--debug', action='store_true',
-        help='print debug informations in the console'
+        help='generate debug file "pyarmor.debug.log"'
     )
     parser.add_argument(
         '-i', dest='interactive', action='store_true',

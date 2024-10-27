@@ -36,18 +36,19 @@ Here only introduces common options in a short, using any combination of them as
 Debug mode and trace log
 ========================
 
-When something is wrong, check console log to find what Pyarmor does, and use :option:`-d` to enable debug mode to print more information::
+When something is wrong, check console log to find what Pyarmor does, and use :option:`-d` to generate :file:`pyarmor.debug.log` to get more information::
 
     $ pyarmor -d gen foo.py
+    $ cat pyarmor.debug.log
 
 Trace log is useful to check whatever protected by Pyarmor, enable it by this command::
 
     $ pyarmor cfg enable_trace=1
 
-After that, :ref:`pyarmor gen` will generate a logfile :file:`.pyarmor/pyarmor.trace.log`. For example::
+After that, :ref:`pyarmor gen` will generate a logfile :file:`pyarmor.trace.log`. For example::
 
     $ pyarmor gen foo.py
-    $ cat .pyarmor/pyarmor.trace.log
+    $ cat pyarmor.trace.log
 
     trace.co             foo:1:<module>
     trace.co             foo:5:hello

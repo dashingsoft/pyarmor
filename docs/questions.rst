@@ -83,12 +83,7 @@ If still no solution, please run pyarmor with debug option :option:`-d`. For exa
     $ pyarmor -d gen ...
     $ pyarmor -d reg ...
 
-It will generate file :file:`pyarmor.report.bug` like this::
-
-    [Bug] `FileNotFoundError: [Errno 2] No such file or directory: 'aa.zip'`
-
-    ### Full command options and console output
-    pyarmor -d reg aa.zip
+It will generate file :file:`pyarmor.debug.bug` like this::
 
     2024-05-30 21:50:52,682 Python 3.7.10
     2024-05-30 21:50:52,684 Pyarmor 8.5.9 (pro), 005068, btarmor
@@ -98,14 +93,11 @@ It will generate file :file:`pyarmor.report.bug` like this::
     2024-05-30 21:50:52,696 register "aa.zip"
     2024-05-30 21:50:52,698 unknown error, please check pyarmor.error.log
     2024-05-30 21:50:52,704 [Errno 2] No such file or directory: 'aa.zip'
+    2024-05-30 21:50:52,892 command line
 
-    ### Traceback
-    Traceback (most recent call last):
-        ...
-        self.fp = io.open(file, filemode)
-    FileNotFoundError: [Errno 2] No such file or directory: 'aa.zip'
+    pyarmor reg aa.zip
 
-Take the first line `[Bug] ...` as bug title, and the rest content as bug body and make necessary supplements and explanations
+Take it as part of bug body and make necessary supplements and explanations
 
 Pack issues
 -----------

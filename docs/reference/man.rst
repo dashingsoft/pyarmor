@@ -25,7 +25,7 @@ pyarmor
 -h, --help            show available command set then quit
 -v, --version         show version information then quit
 -q, --silent          suppress all normal output :option:`... <-q>`
--d, --debug           show more information in the console :option:`... <-d>`
+-d, --debug           generate debug log file :option:`... <-d>`
 --home PATH           set Pyarmor HOME path :option:`... <--home>`
 
 These options can be used after :program:`pyarmor` but before command, here are available commands:
@@ -51,11 +51,12 @@ For example::
 
 .. option:: -d, --debug
 
-            Show more information in the console
+            Generate debug log :file:`pyarmor.debug.log`
 
-When something is wrong, print more debug information in the console. For example::
+When something is wrong, use this option to generate :file:`pyarmor.debug.log` to get more information. For example::
 
-    pyarmor -d gen foo.py
+    $ pyarmor -d gen foo.py
+    $ cat pyarmor.debug.log
 
 .. option:: --home PATH[,GLOBAL[,LOCAL[,REG]]]
 
