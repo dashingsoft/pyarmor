@@ -343,7 +343,25 @@ def cmd_reg(ctx, args):
 
 
 def cmd_man(ctx, args):
-    logger.info('This feature is still developing ...')
+    from subprocess import check_call, check_output, STDOUT
+
+    try:
+        m = __import__('pyarmor.man')
+    except ModuleNotFoundError:
+        m = None
+
+    if m is None:
+        logger.info('pyarmor.man is still not installed')
+        if input('Install it ? (Y/n) ') in ('Y', 'y'):
+            cmdlist = [sys.executable, '-m', 'pip',
+                       'install', '-U', 'pyarmor.man']
+            logger.info('installing package "pyarmor.man"...')
+            check_output(cmdlist, stderr=STDOUT)
+            logger.info('install package "pyarmor.man" OK')
+        else:
+            return
+
+    check_call([sys.executable, '-m', 'pyarmor.man.shell'])
 
 
 def main_parser():
