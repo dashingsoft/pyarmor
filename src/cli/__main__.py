@@ -21,7 +21,6 @@
 #
 import argparse
 import logging
-import logging.config
 import os
 import sys
 
@@ -344,7 +343,7 @@ def cmd_reg(ctx, args):
 
 
 def cmd_man(ctx, args):
-    logging.info('This feature is still developing ...')
+    logger.info('This feature is still developing ...')
 
 
 def main_parser():
@@ -647,19 +646,18 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-reg
 
 
 def man_parser(subparsers):
-    '''Open Pyarmor.Man in web-browser
+    '''Start Pyarmor Man shell
 
     Pyarmor Man is designed to help Pyarmor users to learn and use
     Pyarmor, to find solution quickly when something is wrong, to
-    report bug and ask question by wizard in order to save both
-    Pyarmor team's and Pyarmor users' time.
+    report bug by template in order to save both Pyarmor team's
+    and users' time.
     '''
-
     cparser = subparsers.add_parser(
         'man',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=man_parser.__doc__,
-        help='register Pyarmor or upgrade old Pyarmor license'
+        help='start Pyarmor Man shell'
     )
 
     cparser.set_defaults(func=cmd_man)
@@ -667,6 +665,7 @@ def man_parser(subparsers):
 
 
 def log_settings(ctx, args):
+    import logging.config
     logging.config.fileConfig(ctx.default_config)
 
     if args.silent:
@@ -681,17 +680,30 @@ def log_settings(ctx, args):
         logging.getLogger('trace').setLevel(level)
 
 
-def log_bug(e, unexpected=False):
-    logger.error(e)
+def log_bug(e):
+    parser = main_parser()
+    args = parser.parse_args(sys.argv[1:])
+    ctx = Context(*get_home_paths(args))
+    cmdline = ' '.join(sys.argv)
+    buglog = logging.getLogger('cli.bug')
 
-    logger.setLevel(logging.DEBUG)
-    logger.handlers[1].setLevel(logging.DEBUG)
+    buglog.info('[BUG]: %s\n', e)
+    buglog.info('## Command Line\n%s\n', cmdline)
+    buglog.info('## Environments', )
+    buglog.info('Python %d.%d.%d', *sys.version_info[:3])
+    buglog.info('Pyarmor %s', ctx.version_info())
+    buglog.info('Platform %s', ctx.pyarmor_platform)
+    buglog.info('Native %s', ctx.native_platform)
+    buglog.info('Home %s', ctx.home_path)
+    buglog.info('')
 
-    if unexpected:
+    if not isinstance(e, CliError):
         from traceback import format_exc
-        logger.debug(format_exc())
+        buglog.info('## Traceback\n%s\n', format_exc())
 
-    logger.debug('command line\n%s', ' '.join(sys.argv))
+    # reference/errors.html
+    # reference/solutions.html
+    # questions.html
 
 
 def print_version(ctx):
@@ -717,12 +729,12 @@ def main_entry(argv):
     parser = main_parser()
     args = parser.parse_args(argv)
 
+    ctx = Context(*get_home_paths(args))
+    log_settings(ctx, args)
+
     x, y = sys.version_info[:2]
     if not (x == 3 and y > 6 and y < 13):
         raise CliError('Python %s.%s is not supported' % (x, y))
-
-    ctx = Context(*get_home_paths(args))
-    log_settings(ctx, args)
 
     if args.version:
         print_version(ctx)
@@ -748,10 +760,12 @@ def main():
     try:
         main_entry(sys.argv[1:])
     except CliError as e:
+        logger.error(e)
         log_bug(e)
         sys.exit(1)
     except Exception as e:
-        log_bug(e, unexpected=True)
+        logger.error(e)
+        log_bug(e)
         sys.exit(2)
 
 
