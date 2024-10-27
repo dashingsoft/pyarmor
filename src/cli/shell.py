@@ -21,7 +21,6 @@
 #
 import configparser
 import cmd
-import os
 
 
 class PyarmorShell(cmd.Cmd):
