@@ -348,17 +348,22 @@ def cmd_man(ctx, args):
     try:
         m = __import__('pyarmor.man')
     except ModuleNotFoundError:
+        logger.info('pyarmor.man is still not installed')
+        if input('Install it now? (Y/n) ') not in ('Y', 'y'):
+            return
         m = None
 
     if m is None:
-        logger.info('pyarmor.man is still not installed')
-        if input('Install it ? (Y/n) ') in ('Y', 'y'):
-            cmdlist = [sys.executable, '-m', 'pip',
-                       'install', '-U', 'pyarmor.man']
+        try:
             logger.info('installing package "pyarmor.man"...')
-            check_output(cmdlist, stderr=STDOUT)
+            check_output([sys.executable, '-m', 'pip',
+                          'install', '-U', 'pyarmor.man'],
+                         stderr=STDOUT)
             logger.info('install package "pyarmor.man" OK')
-        else:
+        except Exception:
+            logger.error('install package "pyarmor.man" failed')
+            logger.error('please install it manually:')
+            logger.error('\tpip install -U pyarmor.man')
             return
 
     check_call([sys.executable, '-m', 'pyarmor.man.shell'])
