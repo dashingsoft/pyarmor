@@ -18,7 +18,14 @@
 #  @Author: Jondy Zhao (pyarmor@163.com)
 #
 #  @Create Date: Tue Mar 12 15:19:41 CST 2024
-#
+
+
+#############################################################
+#                                                           #
+# Deprecated since Pyarmor 9, use `pyarmor man` instead     #
+#                                                           #
+#############################################################
+
 import logging
 
 from string import Template

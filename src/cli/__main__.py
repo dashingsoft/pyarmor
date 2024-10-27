@@ -21,6 +21,7 @@
 #
 import argparse
 import logging
+import logging.config
 import os
 import sys
 
@@ -32,7 +33,6 @@ from .shell import PyarmorShell
 from .plugin import Plugin
 from .generate import Builder
 from .bootstrap import check_prebuilt_runtime_library
-from .bug import find_solutions
 
 
 def _cmd_gen_key(builder, options):
@@ -667,43 +667,31 @@ def man_parser(subparsers):
 
 
 def log_settings(ctx, args):
-    if args.debug:
-        root = logging.getLogger()
-        root.setLevel(logging.DEBUG)
-        handler = logging.FileHandler(ctx.debug_logfile,
-                                      mode='w',
-                                      encoding='utf-8')
-        handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
-        handler.setLevel(logging.DEBUG)
-        root.addHandler(handler)
-
-    tracelog = logging.getLogger('trace')
-    tracelog.propagate = False
-    tracelog.addHandler(logging.NullHandler())
-    if ctx.cfg.getboolean('builder', 'enable_trace'):
-        handler = logging.FileHandler(ctx.trace_logfile,
-                                      mode='w',
-                                      encoding='utf-8')
-        handler.setFormatter(logging.Formatter('%(name)-20s %(message)s'))
-        handler.setLevel(logging.DEBUG if args.debug else logging.INFO)
-        tracelog.addHandler(handler)
+    logging.config.fileConfig(ctx.default_config)
 
     if args.silent:
-        logging.getLogger().setLevel(100)
+        logger.setLevel(logging.ERROR)
+
+    elif args.debug:
+        logger.setLevel(logging.DEBUG)
+        logger.handlers[1].setLevel(logging.DEBUG)
+
+    if ctx.cfg.getboolean('builder', 'enable_trace'):
+        level = logging.DEBUG if args.debug else logging.INFO
+        logging.getLogger('trace').setLevel(level)
 
 
-def log_exception(e):
-    logger.debug('unknown error, please check pyarmor.error.log')
-    handler = logging.FileHandler('pyarmor.error.log',
-                                  mode='w',
-                                  encoding='utf-8')
-    fmt = '%(process)d %(processName)s %(asctime)s'
-    handler.setFormatter(logging.Formatter(fmt))
-    log = logging.getLogger('error')
-    log.propagate = False
-    log.addHandler(logging.NullHandler())
-    log.addHandler(handler)
-    log.exception(e)
+def log_bug(e, unexpected=False):
+    logger.error(e)
+
+    logger.setLevel(logging.DEBUG)
+    logger.handlers[1].setLevel(logging.DEBUG)
+
+    if unexpected:
+        from traceback import format_exc
+        logger.debug(format_exc())
+
+    logger.debug('command line\n%s', ' '.join(sys.argv))
 
 
 def print_version(ctx):
@@ -734,7 +722,6 @@ def main_entry(argv):
         raise CliError('Python %s.%s is not supported' % (x, y))
 
     ctx = Context(*get_home_paths(args))
-
     log_settings(ctx, args)
 
     if args.version:
@@ -758,21 +745,13 @@ def main_entry(argv):
 
 
 def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(levelname)-8s %(message)s',
-    )
-
     try:
         main_entry(sys.argv[1:])
     except CliError as e:
-        logger.error(e)
-        find_solutions(e)
+        log_bug(e)
         sys.exit(1)
     except Exception as e:
-        log_exception(e)
-        logger.error(e)
-        find_solutions(e)
+        log_bug(e, unexpected=True)
         sys.exit(2)
 
 
