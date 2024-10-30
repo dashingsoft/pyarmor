@@ -180,7 +180,7 @@ class Register(object):
         return parse_token(self.ctx.read_token())
 
     def _license_type(self, info):
-        return 'basic' if info['features'] == 1 else \
+        return 'basic' if info['features'] in (1, 17) else \
             'pro' if info['features'] == 7 else \
             'group' if info['features'] == 15 else \
             'ci' if info['features'] == 23 else \

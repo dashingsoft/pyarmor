@@ -301,7 +301,7 @@ class Context(object):
             return rev
 
         licinfo = self.license_info
-        lictype = 'basic' if licinfo['features'] == 1 else \
+        lictype = 'basic' if licinfo['features'] in (1, 17) else \
             'pro' if licinfo['features'] == 7 else \
             'group' if licinfo['features'] == 15 else \
             'ci' if licinfo['features'] == 23 else \
