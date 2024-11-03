@@ -772,6 +772,7 @@ def main_entry(argv):
 
     logger.debug('native platform %s', ctx.native_platform)
     logger.debug('home path: %s', ctx.home_path)
+    logger.debug('args: %s', argv)
 
     if hasattr(args, 'func'):
         return args.func(ctx, args)
