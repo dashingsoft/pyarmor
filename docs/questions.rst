@@ -67,7 +67,7 @@ A good report should have
 - Actual results
 - Expected results
 
-For different issues, please following different guide to report bug, and do not paste snapshot image but paste text directly.
+It's recommand to report issue by command `pyarmor man`.
 
 .. important::
 
