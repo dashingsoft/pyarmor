@@ -146,10 +146,10 @@ Users need to learn Pyarmor features and how to use it by themself. Generally Py
 
 Pyarmor provides comprehensive learning systems, including but not limited to the following ways:
 
-- Online documentation
-- Checklist and FAQs could fix 90% issues reported to Pyarmor Team
-- Discussions in Pyarmor project home
-- Full examples to show each option usage and common cases by command ``pyarmor man`` (coming soon)
+- :doc:`Online documentation <index>`
+- :doc:`Checklist <reference/solutions>` and :doc:`FAQs <questions>` could fix 90% issues reported to Pyarmor Team
+- `Discussions`_ in Pyarmor project home
+- Full examples to show each option usage and common cases by command ``pyarmor man``
 - Learn Pyarmor concepts by figure and animations in EKE Learning Platform (coming soon)
 
 Rome was not bulit in a day. Pyarmor Team keeps improving documentation and learning systems according to users feedback to make it easy and effects
