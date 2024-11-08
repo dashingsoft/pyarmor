@@ -148,7 +148,7 @@ class Configer(object):
 
         if not optvalue:
             if op is None:
-                self._clear(sect, optname, local, name)
+                self._remove(sect, [optname], local, name)
             return
 
         ctxcfg = ctx.cfg
