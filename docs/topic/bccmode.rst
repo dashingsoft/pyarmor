@@ -33,8 +33,8 @@ To check which functions are converted to C function, enable trace mode before o
 
 Then check the trace log::
 
-    $ ls .pyarmor/pyarmor.trace.log
-    $ grep trace.bcc .pyarmor/pyarmor.trace.log
+    $ ls pyarmor.trace.log
+    $ grep trace.bcc pyarmor.trace.log
 
     trace.bcc            foo:5:hello
     trace.bcc            foo:9:sum2
@@ -114,7 +114,7 @@ Let's enable trace mode to check these functions are ignored::
 
     $ pyarmor cfg enable_trace 1
     $ pyarmor gen --enable-bcc foo.py
-    $ grep trace.bcc .pyarmor/pyarmor.trace.log
+    $ grep trace.bcc pyarmor.trace.log
 
 Another example, in the following commands BCC mode ignores ``joker/card.py``, but handle all the other scripts in package ``joker``::
 

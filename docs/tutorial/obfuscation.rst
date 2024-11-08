@@ -120,7 +120,7 @@ To check which function or which string are protected, enable trace log and chec
 
     $ pyarmor cfg enable_trace=1
     $ pyarmor gen --mix-str --assert-call fib.py
-    $ cat .pyarmor/pyarmor.trace.log
+    $ cat pyarmor.trace.log
 
     trace.assert.call    fib:10:'fib'
     trace.mix.str        fib:1:'abcxyz'

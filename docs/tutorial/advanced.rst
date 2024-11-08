@@ -143,8 +143,8 @@ To check which functions are converted to C function, enable trace mode before o
 
 Then check the trace log::
 
-    $ ls .pyarmor/pyarmor.trace.log
-    $ grep trace.bcc .pyarmor/pyarmor.trace.log
+    $ ls pyarmor.trace.log
+    $ grep trace.bcc pyarmor.trace.log
 
     trace.bcc            foo:5:hello
     trace.bcc            foo:9:sum2

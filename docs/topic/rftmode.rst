@@ -118,7 +118,7 @@ When both of trace log and trace rft are enabled, RFT mode will log which names 
 
     $ pyarmor cfg enable_trace=1 trace_rft=1
     $ pyarmor gen --enable-rft foo.py
-    $ grep trace.rft .pyarmor/pyarmor.trace.log
+    $ grep trace.rft pyarmor.trace.log
 
     trace.rft            foo:1 (import sys as pyarmor__1)
     trace.rft            foo:12 (self.wScan->self.pyarmor__4)
@@ -137,7 +137,7 @@ When RFT scripts complain of name not found error, just exclude this name. For e
 
 If no found name like ``pyarmor__22``, find the original name in the trace log::
 
-    $ grep pyarmor__22 .pyarmor/pyarmor.trace.log
+    $ grep pyarmor__22 pyarmor.trace.log
 
     trace.rft            foo:65 (self.height->self.pyarmor__22)
     trace.rft            foo:81 (self.height->self.pyarmor__22)
@@ -218,7 +218,7 @@ First configure this ruler by command::
 Then check the result::
 
     $ pyarmor gen --enable-rft foo.py
-    $ grep trace.rft .pyarmor/pyarmor.trace.log
+    $ grep trace.rft pyarmor.trace.log
 
     trace.rft            foo:8 (self.task.x->self.task.pyarmor__2)
 
@@ -227,7 +227,7 @@ line 8 ``self.task.x`` will be transformed to ``self.task.pyarmor__2``
 Let's change action to ``self.?.?``, and check the result::
 
     $ pyarmor cfg rft_rulers "self.task.x self.?.?"
-    $ grep trace.rft .pyarmor/pyarmor.trace.log
+    $ grep trace.rft pyarmor.trace.log
 
     trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
 
@@ -236,7 +236,7 @@ Do not change action to ``?.?.?``, it doesn't work, the first action can't be ``
 Let's add new ruler to change ``self.task.y``, here need to use ``^`` to append new line to rulers::
 
     $ pyarmor cfg rft_rulers ^"self.task.y self.?.?"
-    $ grep trace.rft .pyarmor/pyarmor.trace.log
+    $ grep trace.rft pyarmor.trace.log
 
     trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
     trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
@@ -244,7 +244,7 @@ Let's add new ruler to change ``self.task.y``, here need to use ``^`` to append 
 Actually, both of rulers can combined to one::
 
     $ pyarmor cfg rft_rulers = "self.task.* self.?.?"
-    $ grep trace.rft .pyarmor/pyarmor.trace.log
+    $ grep trace.rft pyarmor.trace.log
 
     trace.rft            foo:8 (self.task.x->self.pyarmor__1.pyarmor__2)
     trace.rft            foo:9 (self.task.y->self.pyarmor__1.pyarmor__3)
