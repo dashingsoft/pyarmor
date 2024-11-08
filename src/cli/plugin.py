@@ -249,6 +249,9 @@ class DarwinUniversalPlugin:
     def post_build(ctx, inputs, outputs, pack):
         from shutil import rmtree
 
+        if not ctx.native_platform.startswith('darwin.'):
+            return
+
         def rebuild_init(oneplat, init_script):
             with open(init_script, 'r') as f:
                 lines = f.readlines()
