@@ -6,7 +6,7 @@ ARCH := $(shell arch)
 ifeq ($(findstring Linux,$(UNAME)),Linux)
     ifeq ($(ARCH),x86_64)
         HOST ?= linux.x86_64
-	PYVERS := 3.7 3.8 3.9 3.10 3.11 3.12
+	PYVERS := 3.7 3.8 3.9 3.10 3.11 3.12 3.13
 	PYTHONBIN := /usr/local/bin/pythonXY
     else ifeq ($(ARCH),aarch64)
         HOST ?= linux.aarch64
