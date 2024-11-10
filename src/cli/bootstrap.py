@@ -47,7 +47,7 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
             if current_rtver == rtver:
                 return
 
-        pkgver = 'pyarmor.cli.runtime==%s' % rtver
+        pkgver = 'pyarmor.cli.runtime~=%s' % rtver
         logging.info('install "%s" for cross platforms', pkgver)
         try:
             return check_call(instcmd + [pkgver])
@@ -73,7 +73,7 @@ def check_prebuilt_runtime_library(platnames, extra=None, rtver=''):
                 pkgnames.remove(entry.name)
 
     if pkgnames:
-        pkgvers = ['pyarmor.cli.core.%s==%s' % (x, corever) for x in pkgnames]
+        pkgvers = ['pyarmor.cli.core.%s~=%s' % (x, corever) for x in pkgnames]
         logging.info('install packages %s for cross platforms', str(pkgvers))
         try:
             check_call(instcmd + pkgvers)
