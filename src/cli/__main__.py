@@ -395,7 +395,6 @@ def main_parser():
 
     subparsers = parser.add_subparsers(
         title='The most commonly used pyarmor commands are',
-        metavar=''
     )
 
     gen_parser(subparsers)
