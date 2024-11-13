@@ -1,6 +1,11 @@
-# Release Plan for Pyarmor 8+
+# Release Plan
 
 The scheduled features for Pyarmor 8+
+
+- [Pyarmor 8 (closed)](#plan-features-for-pyarmor-8)
+- [Pyarmor 9 (working)](#plan-features-for-pyarmor-9)
+
+## Plan Features For Pyarmor 8
 
 **8.0**
 
@@ -60,6 +65,8 @@ Status: released (2024-03-08)
 - New plugin "post_script" called after each script has been obfuscated
 - Runtime key could be obfuscated
 - No patch `pyarmor_runtime.so` for Apple Silcon so Windows users could build obfuscated scripts for Apple Silcon
+
+## Plan Features For Pyarmor 9
 
 **9.0**
 
