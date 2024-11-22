@@ -108,7 +108,7 @@ Terms of Use
 
 3. One product one license
 
-   One product means one kind of product, not one copy of product. For example, Micorsoft Excel is one product, even it's installed on coutless devices
+   One product means one kind of product, not one copy of product. For example, Micorsoft Excel is one product, even it's installed on countless devices
 
    Each license has an unique number, the format is ``pyarmor-vax-xxxxxx``, which x stands for a digital.
 
