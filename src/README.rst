@@ -16,7 +16,7 @@ Key Features
 Support Platforms
 -----------------
 
-* Python 3.7~3.12
+* Python 3.7~3.13
 * Windows
 * Many linuxs, include embedded systems
 * Apple Intel and Apple Silicon
