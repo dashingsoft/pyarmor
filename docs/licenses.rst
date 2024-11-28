@@ -122,6 +122,8 @@ Terms of Use
 
    Pyarmor Pro License still could be used in CI/CD pipeline for low volume (100 runs per month)
 
+   Pyarmor CI License has rate limit in CI/CD pipeline
+
 In details check `Pyarmor EULA`_
 
 .. seealso:: :doc:`Using Pyarmor Licenses <how-to/register>`
@@ -216,5 +218,18 @@ Pyarmor is one product, it includes:
 Microsoft Office is not one product, because each product in Microsoft Office is functional independence. For example, Microsoft Word and Microsoft Excel belong to Microsoft Office, but they're totally different.
 
 Microsoft Word is one product, and Microsoft Word 2003，Word 2007 etc. are belong to one product Microsoft word.
+
+Q & A
+-----
+
+**I noticed that the pricing table lists "0 Maximum build devices," for the CI/CD plan which has left me a bit confused. Could you please clarify what this means?**
+
+  It means CI License only works in CI/CD pipeline, can’t be used in local device.
+
+**If we are using the product in our CI/CD environment we can deploy it to unlimited number of kubernetes pods**
+
+  If the product means the obfuscated scripts, Pyarmor has no any limitation on it.
+
+  Pyarmor License is only apply to build machine in which to generate the obfuscated scripts.
 
 .. include:: _common_definitions.txt
