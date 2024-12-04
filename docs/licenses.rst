@@ -118,7 +118,7 @@ Terms of Use
 
 5. Fair use
 
-   If you have purchased Pyarmor License for one product, but you have aother product, and the total revenue of the other project is less than 100 x Pyarmor License fee, you could rent this license in your aother product
+   If you have purchased Pyarmor License for one product, but you have another product, and the total revenue of the other project is less than 100 x Pyarmor License fee, you could rent this license in your aother product
 
    Pyarmor Pro License still could be used in CI/CD pipeline for low volume (100 runs per month)
 
