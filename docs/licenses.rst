@@ -173,6 +173,8 @@ Open `Pyarmor Shopping Cart`_ in any web browser:
 
     https://jondy.github.io/paypal/index.html
 
+All of these license are only for Python 3.7+, if need Python < 3.7, please purchase `old license <https://jondy.github.io/paypal/obsolete.html>`
+
 Refund policy
 =============
 
@@ -219,8 +221,128 @@ Microsoft Office is not one product, because each product in Microsoft Office is
 
 Microsoft Word is one product, and Microsoft Word 2003，Word 2007 etc. are belong to one product Microsoft word.
 
+.. _select-license-type:
+
+Which license type is right for me
+----------------------------------
+
+All of the following licenses are only for Python 3.7+
+
+.. list-table:: Table-2. Select Different Licenses
+   :widths: 40 12 12 12 12 12
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Condition
+     - Free
+     - Basic
+     - Pro
+     - Group
+     - CI
+   * - Less than 100 runs per month in CI/CD pipeline
+     - Y
+     - Y
+     - Y
+     -
+     - Y
+   * - More than 100 runs per month in CI/CD pipeline
+     - Y
+     - Y
+     -
+     -
+     - Y
+   * - Need offline obfuscation
+     - Y
+     -
+     -
+     - Y
+     -
+   * - Need irreversible obfuscation
+     -
+     -
+     - Y
+     - Y
+     - Y
+   * - Less than 100 runs per month in local dockers
+     - Y
+     - Y
+     - Y
+     - Y
+     - Y
+   * - More than 100 runs per month in local dockers
+     - Y
+     - Y
+     -
+     - Y
+     - Y
+
+.. _how-many-licenses-required:
+
+How many licenses are required
+------------------------------
+
+1. List all the products which are sold separately
+
+   - If the sales revenue of the product is less than 100 x Pyarmor license fee, there is no need to list the product
+   - If no more than 2 products left, one license is OK
+
+2. How to tell diffenent product could be taken as one proudct in Pyarmor view
+
+   Suppose there are 2 products left in step 1: A and B
+
+   a. case 1, A and B could use one license
+
+      - B includes whole A features
+      - The extra features in B is related to A features
+
+      For example, Pyarmor Basic (A), Pyarmor Pro (B)
+
+   b. case 2, A and B could use one license
+
+      - B is a functional supplement for product A
+
+      For example, A is CAD Editor, B is CAD Tool to convert CAD file to PDF file
+
+   c. case 3, A and B need 2 licenses
+
+      - B includes whole A features
+      - A features is very small than B features
+
+      For example, A is a facial recognition product, B is an attendance management system that uses facial recognition functionality
+
+   d. case 4, A and B need 2 licenses
+
+      - The functions of B and A are almost independent
+
+      For example, Microsoft Word (A), Micorsoft Excel (B) are 2 products, even they're belong to Micorsoft Office Suite
+
+3. Regard to shared backend system
+
+   There are 2 product A and B, share one backend engineer C
+
+   a. case 1: need obfuscate backend C, but frontend of A and B need not
+
+      - one license for backend C is OK
+
+   b. case 2: need obfuscate backend C, and the frontend of A and B
+
+      - 2 licenses, one for A, another for B
+      - C need not new license, use any license for A or B
+
+4. Many products need use one license in technical
+
+   If there are many products (in Pyarmor view) need use one Pyarmor license in development view
+
+   - Purchase many licenses
+   - Only initial registration for each product with different license
+   - Use one of registeration file to generate the obfuscated scripts
+
 Q & A
 -----
+
+**I have just started selling my product, do I can use Pyarmor trial version to product it**
+
+Before the value of sales exceed 100 x Pyarmor license fee, Pyarmor trial version can be used to obfuscate the product. After the value of sales exceed, it need purchase Pyarmor license.
 
 **I noticed that the pricing table lists "0 Maximum build devices," for the CI/CD plan which has left me a bit confused. Could you please clarify what this means?**
 
