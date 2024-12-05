@@ -288,33 +288,36 @@ How many licenses are required
 
 2. How to tell diffenent product could be taken as one proudct in Pyarmor view
 
-   Suppose there are 2 products left in step 1: A and B
+   Suppose there are 2 products in step 1: X and Y
 
-   a. case 1, A and B could use one license
+   a. case 1, X and Y could use one license
 
-      - B includes whole A features
-      - The extra features in B is related to A features
+      - Y includes whole X features
+      - The extra features of Y is related to X features
 
-      For example, Pyarmor Basic (A), Pyarmor Pro (B)
+      For example, Pyarmor Basic (X), Pyarmor Pro (Y) could use one license because
 
-   b. case 2, A and B could use one license
+      - Pyarmor Pro includes all the features of Pyarmor Basic
+      - The extra features of Pyarmor Pro is irreversible obfuscation which is an enhancement of Pyarmor Basic
 
-      - B is a functional supplement for product A
+   b. case 2, X and Y need 2 licenses
 
-      For example, A is CAD Editor, B is CAD Tool to convert CAD file to PDF file
+      - Y includes whole X features
+      - But X features is very small in the Y features
 
-   c. case 3, A and B need 2 licenses
+      For example, X is a facial recognition product, B is an attendance management system that uses facial recognition functionality
 
-      - B includes whole A features
-      - A features is very small than B features
+   c. case 3, X and Y could use one license
 
-      For example, A is a facial recognition product, B is an attendance management system that uses facial recognition functionality
+      - Y is a functional supplement for product X
 
-   d. case 4, A and B need 2 licenses
+      For example, X is CAD Editor, Y is CAD Tool which is used to convert CAD file to PDF file
 
-      - The functions of B and A are almost independent
+   d. case 4, X and Y need 2 licenses
 
-      For example, Microsoft Word (A), Micorsoft Excel (B) are 2 products, even they're belong to Micorsoft Office Suite
+      - The functions of X and Y are almost independent
+
+      For example, Microsoft Word (X), Micorsoft Excel (Y) are 2 products, even they're belong to Micorsoft Office Suite
 
 3. Regard to shared backend system
 
@@ -331,11 +334,11 @@ How many licenses are required
 
 4. Many products need use one license in technical
 
-   If there are many products (in Pyarmor view) need use one Pyarmor license in development view
+   If there are many products (in Pyarmor view) need use one Pyarmor license in development view, it should
 
    - Purchase many licenses
-   - Only initial registration for each product with different license
-   - Use one of registeration file to generate the obfuscated scripts
+   - Register each product with different license once
+   - Use one of registeration file to generate the obfuscated scripts for all the products
 
 Q & A
 -----
