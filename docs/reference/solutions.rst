@@ -121,7 +121,7 @@ If it's using :term:`Activation File` (`pyarmor-regcode-xxxx.txt`), make sure th
       >>> print(res.read())
       b'NO:missing parameter'
 
-If it raises exception or return something else, it’s firewall problem, please configure firwire to allow Python interpreter to visit pyarmor.dashingsoft.com and port 80 or 443
+If it raises exception or return something else, it’s firewall problem, please configure firewall to allow Python interpreter to visit pyarmor.dashingsoft.com at port 80 or 443
 
 If it returns as above, but still failed to register, report issue with license no. like `pyarmor-vax-5068`
 
