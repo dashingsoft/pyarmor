@@ -24,7 +24,7 @@ Bootstrap failed
 
 2. Check extension `pytransform3` is exact for this Python and platform
 
-   Test it by Python interperter:
+   Test it by Python interpreter:
 
    .. code-block:: bash
 
@@ -88,7 +88,7 @@ Bootstrap failed
        $ export PYARMOR_PLATFORM=linux.loongarch64
        $ pyarmor gen foo.py
 
-4. If this platform is supported, try to upgrade Python interprerter to latest patch version. For example, upgrade Python 3.11.0b2 to 3.11.9
+4. If this platform is supported, try to upgrade Python interpreter to latest patch version. For example, upgrade Python 3.11.0b2 to 3.11.9
 
 Registration Failed
 -------------------
@@ -111,7 +111,7 @@ If it's using :term:`Activation File` (`pyarmor-regcode-xxxx.txt`), make sure th
 
    Otherwise check network configuration
 
-6. Check Python interpreter by the following commands (If there are many Python installed, make sure this Python interperter is used to execute Pyarmor)
+6. Check Python interpreter by the following commands (If there are many Python installed, make sure this Python interpreter is used to execute Pyarmor)
 
    .. code-block:: bash
 
@@ -121,7 +121,7 @@ If it's using :term:`Activation File` (`pyarmor-regcode-xxxx.txt`), make sure th
       >>> print(res.read())
       b'NO:missing parameter'
 
-If it raises exception or return something else, it’s firewall problem, please configure firwire to allow Python interpreter to visit pyarmor.dashingsoft.com and port 80 or 443
+If it raises exception or return something else, it’s firewall problem, please configure firewall to allow Python interpreter to visit pyarmor.dashingsoft.com at port 80 or 443
 
 If it returns as above, but still failed to register, report issue with license no. like `pyarmor-vax-5068`
 
@@ -178,7 +178,7 @@ Please check above section `Registration Failed`
 Packing failed
 --------------
 
-1. Try to pack the original script by PyInstaller directly first, mkae sure it works and the final bundle works
+1. Try to pack the original script by PyInstaller directly first, make sure it works and the final bundle works
 2. Check :doc:`../topic/repack`
 
 .. _target device:
@@ -203,7 +203,7 @@ Bootstrap failed
 
    If it doesn't work, try to use :option:`-i` or :option:`--prefix` to generate the obfuscated scripts again to fix it
 
-3. Try to upgrade Python interprerter to latest patch version. For example, upgrade Python 3.11.0b2 to 3.11.9
+3. Try to upgrade Python interpreter to latest patch version. For example, upgrade Python 3.11.0b2 to 3.11.9
 
 **If target device is different from build device**
 
@@ -251,7 +251,7 @@ Failed to run obfuscated scripts
 
 2. If it doesn't work, try to obfuscate one simple script, check it works or not
 
-3. Add some print statement in the problem script, and get one script as simple as possible to reproduce the problem. It's better only use Python system packages. If really need third-parth library, check :doc:`../how-to/third-party` first
+3. Add some print statement in the problem script, and get one script as simple as possible to reproduce the problem. It's better only use Python system packages. If really need third-party library, check :doc:`../how-to/third-party` first
 
 4. Report issue with necessary information
 
@@ -272,7 +272,7 @@ Check solutions in :ref:`using bccmode`
 Failed to run the packed obfuscated scripts
 -------------------------------------------
 
-1. Do not pack the sciprt, just use same options to obfuscate the script, and run the obfuscated script in target device, make sure it works, otherwise check solutions in above section
+1. Do not pack the script, just use same options to obfuscate the script, and run the obfuscated script in target device, make sure it works, otherwise check solutions in above section
 
 2. Do not obfuscate the scripts, pack the original script by PyInstaller directly, and execute the final executable in target device, make sure it works. Otherwise check PyInstaller_ documentation to find solutions
 
@@ -291,10 +291,10 @@ Darwin Apple Silicon may need codesign if pyarmor or the obfuscated script can't
 
    Download https://pyarmor.dashingsoft.com/downloads/tools/cygcheck.zip and unzip it
 
-   Or get it from offical website
+   Or get it from official website
 
    - Open https://cygwin.com/mirrors.html
-   - Select one mirror, enter pathes `x86_64/release/cygwin/`
+   - Select one mirror, enter paths `x86_64/release/cygwin/`
    - Download the latest package `cygwin-3.5.3-1.tar.xz`
    - Extract `cygcheck.exe` from this file by `tar xJf cygwin-3.5.3-1.tar.xz`
 
