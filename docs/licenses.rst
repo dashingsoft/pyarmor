@@ -83,7 +83,13 @@ There are some limitations in free version, for example, can't obfuscate big scr
 .. [#] Offline build: the build device need not be online to verify Pyarmor License
 .. [#] Maximum devices could install Pyarmor, each docker run will be taken as one new build device, CI license only works in CI/CD pipeline
 .. [#] Unlimited local dockers: run docker container in local machine, may be offline or in private network
-.. [#] Work in CI/CD pipeline: it need special option to register Pyarmor in CI/CD pipeline
+.. [#] Work in CI/CD pipeline: it need special option to register Pyarmor in CI/CD pipeline.
+
+.. important::
+
+    CI license doesn't work in the runner which has its own disk.
+
+    If the runner is not docker container, use Pro license instead.
 
 .. important::
 

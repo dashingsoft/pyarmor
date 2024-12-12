@@ -118,6 +118,8 @@ Notes
 
    :term:`Pyarmor CI` License doesn't work in local device
 
+    Even in the CI/CD pipeline, :term:`Pyarmor CI` License also doesn't work in the runner which has its own disk. If the runner is not docker container, use :term:`Pyarmor Pro` License instead.
+
 .. seealso:: :doc:`ci`
 
 .. _check device for group license:
