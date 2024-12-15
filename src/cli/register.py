@@ -356,7 +356,10 @@ class Register(object):
 
     def _get_machine_id(self, devflag=11):
         from .core import Pytransform3
-        return Pytransform3.get_hd_info(devflag)
+        try:
+            return Pytransform3.get_hd_info(devflag)
+        except SystemError:
+            return b'unknown-machine'
 
     def generate_group_device(self, devid):
         from datetime import datetime
@@ -792,7 +795,9 @@ class WebRegister(Register):
 
         with ZipFile(regfile, 'r') as f:
             if 'reg.info' not in f.namelist():
-                logger.error('missing reg.info in regfile')
+                logger.error('missing reg.info in regfile, '
+                             'this license may be out of date, '
+                             'please check Pyarmor upgrade notes')
                 raise CliError('can not request CI license')
             reginfo = json_loads(f.read('reg.info'))
 
