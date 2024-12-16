@@ -160,6 +160,8 @@ class Register(object):
     def regurl(self, ucode, product=None, rcode=None, prepare=False):
         url = self.ctx.cfg['pyarmor']['regurl'] % ucode
         if product:
+            if len(product) > 60:
+                raise CliError('too long product name (length > 60)')
             url += '&product=' + \
                 urlsafe_b64encode(product.encode('utf-8')).decode()
         if rcode:
