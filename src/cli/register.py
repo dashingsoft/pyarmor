@@ -361,7 +361,8 @@ class Register(object):
         try:
             return Pytransform3.get_hd_info(devflag)
         except SystemError:
-            return b'unknown-machine'
+            from time import time
+            return b'u-machine-id:%020.6f' % time()
 
     def generate_group_device(self, devid):
         from datetime import datetime
