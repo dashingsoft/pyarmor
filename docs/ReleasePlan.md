@@ -100,7 +100,7 @@ The following features are cancelled because ECC/VMC mode are introduced:
 
 **9.x**
 
-Status: plan, released on Dec., 2025, 2 months after Python 3.14 is released
+Status: plan, released on 2025-12-01, 2 months after Python 3.14 is released
 
 - Support Python 3.14 which will be released on 2025-10-01 as plan
 
