@@ -362,6 +362,29 @@ class UnitTestCases(BaseTestCase):
             'hello bob',
         ]]))
 
+    def test_thread(self):
+        args = ['g', 'samples/td.py']
+        self.pyarmor_gen(args)
+        rc, stdout, stderr = self.assert_python_ok('dist/td.py')
+        lines = [x.strip() for x in stdout.splitlines()]
+        self.assertTrue(all([x.encode() in lines for x in [
+            'module name: __main__',
+            'function f',
+            'hello bob',
+        ]]))
+
+    @only_protest
+    def test_thread_with_bcc(self):
+        args = ['g', '--enable-bcc', 'samples/td.py']
+        self.pyarmor_gen(args)
+        rc, stdout, stderr = self.assert_python_ok('dist/td.py')
+        lines = [x.strip() for x in stdout.splitlines()]
+        self.assertTrue(all([x.encode() in lines for x in [
+            'module name: __main__',
+            'function f',
+            'hello bob',
+        ]]))
+
 
 if __name__ == '__main__':
     logging.getLogger().addHandler(logging.NullHandler())
