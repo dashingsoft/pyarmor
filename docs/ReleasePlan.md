@@ -70,9 +70,9 @@ Status: released (2024-03-08)
 
 **9.0**
 
-Status: released (2024-11-10), still testing, not stable
+Status: released (2024-11-10)
 
-- Pyarmor.man package with web-ui to help users learning, using Pyarmor, and quickly find solutions when something is wrong
+- Pyarmor.man package to find solutions quickly when something is wrong
 - Add special Pyarmor CI License for CI/CD pipeline
 - Support Python 3.13 (since v9.0.5)
 
@@ -88,7 +88,7 @@ Status: developing
 
 Status: not start
 
-- ECC mode, mini BCC mode, only transform part of function body to C code (draft)
+- ECC mode, mini BCC mode, only transform part of function body to C code
 - VMC mode, simple ECC mode, convert function body to VM, not real C code
 
 The following features are cancelled because ECC/VMC mode are introduced:
@@ -98,7 +98,13 @@ The following features are cancelled because ECC/VMC mode are introduced:
 - BCC mode support cross-platform (may not if too complex) (cancel)
 - Obfuscate string constants in extension module "pyarmor_runtime" (cancel)
 
-**9.x**
+**9.3**
+
+Status: not start
+
+- Learning system to help users learning and using Pyarmor
+
+**9.4**
 
 Status: plan, released on 2025-12-01, 2 months after Python 3.14 is released
 
