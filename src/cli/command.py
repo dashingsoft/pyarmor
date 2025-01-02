@@ -381,24 +381,9 @@ class Commander:
         logger.info('build target %s end', args.target)
 
     def _build(self, project, target, output):
-        try:
-            from .rftbuild import rft_project
-        except Exception as e:
-            logger.debug('no refactor because of %s', str(e))
-        else:
-            rft_project(project, target, output)
-
-        if target == '--mini':
-            self._build_mini(project, output)
-        # elif target == '--vmc':
-        #     self._build_vmc(project, output)
-        # elif target == '--ecc':
-        #     self._build_ecc(project, output)
-        # elif target == '--std':
-        #     self._build_std(project, output)
-
-    def _build_mini(self, project, output):
-        pass
+        from .core import Pytransform3
+        args = [self.ctx, target, project, output]
+        Pytransform3.pre_build(args)
 
     def cmd_env(self, ctx, args):
         """Check and change pyarmor settings
@@ -479,6 +464,7 @@ def test_main(args, log=False):
     from os.path import expanduser
 
     from .context import Context
+    from .rftbuild import rft_build_project
 
     home = joinpath('~', '.pyarmor')
     home = abspath(expanduser(home))
@@ -486,7 +472,9 @@ def test_main(args, log=False):
     ctx = Context(home)
     if log:
         logging.config.fileConfig(ctx.default_config)
-    Commander().run(ctx, args)
+    cmd = Commander()
+    cmd._build = rft_build_project
+    cmd.run(ctx, args)
 
 
 if __name__ == '__main__':
