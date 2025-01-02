@@ -33,9 +33,6 @@ from .shell import PyarmorShell
 
 class Commander:
 
-    def __init__(self, ctx=None):
-        self.ctx = ctx
-
     def init_parser(self, subparsers):
         parser = subparsers.add_parser(
             'init',
@@ -223,17 +220,16 @@ class Commander:
 
         return parser
 
-    def run(self, argv):
+    def run(self, ctx, argv):
         parser = self.main_parser()
         args = parser.parse_args(argv)
         if hasattr(args, 'func'):
-            args.func(args)
+            args.func(ctx, args)
         else:
             parser.print_help()
 
-    def cmd_init(self, args):
+    def cmd_init(self, ctx, args):
         logger.debug('init %s', args)
-        ctx = self.ctx
 
         sep = ','
         cfgsep = ' '
@@ -318,7 +314,7 @@ class Commander:
             cfg.write(f)
         logger.info('project saved')
 
-    def cmd_build(self, args):
+    def cmd_build(self, ctx, args):
         """Obfuscate all scripts, modules and packages in project
 
         Show project information:
@@ -344,7 +340,6 @@ class Commander:
 
         """
         logger.debug('build %s', args)
-        ctx = self.ctx
         cfg = configparser.ConfigParser(
             empty_lines_in_values=False,
             interpolation=configparser.ExtendedInterpolation(),
@@ -390,7 +385,7 @@ class Commander:
         analysis_project(project)
         build_project(project, target, output)
 
-    def cmd_env(self, args):
+    def cmd_env(self, ctx, args):
         """Check and change pyarmor settings
 
         Enter interactive mode:
@@ -420,7 +415,7 @@ class Commander:
         """
         logger.debug('env %s', args)
         logger.info('enter domain: %s', args.domain)
-        shell = PyarmorShell(self.ctx, domain=args.domain)
+        shell = PyarmorShell(ctx, domain=args.domain)
 
         if args.exprs:
             exprs = args.exprs
@@ -476,7 +471,7 @@ def test_main(args, log=False):
     ctx = Context(home)
     if log:
         logging.config.fileConfig(ctx.default_config)
-    Commander(ctx).run(args)
+    Commander().run(ctx, args)
 
 
 if __name__ == '__main__':

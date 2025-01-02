@@ -370,7 +370,7 @@ def cmd_man(ctx, args):
     check_call([sys.executable, '-m', 'pyarmor.man.shell'])
 
 
-def main_parser(cmd):
+def main_parser(cmd=None):
     parser = argparse.ArgumentParser(
         prog='pyarmor',
         fromfile_prefix_chars='@',
@@ -401,9 +401,10 @@ def main_parser(cmd):
     gen_parser(subparsers)
     reg_parser(subparsers)
 
-    cmd.env_parser(subparsers)
-    cmd.init_parser(subparsers)
-    cmd.build_parser(subparsers)
+    if cmd:
+        cmd.env_parser(subparsers)
+        cmd.init_parser(subparsers)
+        cmd.build_parser(subparsers)
 
     cfg_parser(subparsers)
     man_parser(subparsers)
