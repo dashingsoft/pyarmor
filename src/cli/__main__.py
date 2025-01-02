@@ -32,6 +32,7 @@ from .shell import PyarmorShell
 from .plugin import Plugin
 from .generate import Builder
 from .bootstrap import check_prebuilt_runtime_library
+from .command import Commander
 
 
 def _cmd_gen_key(builder, options):
@@ -369,7 +370,7 @@ def cmd_man(ctx, args):
     check_call([sys.executable, '-m', 'pyarmor.man.shell'])
 
 
-def main_parser():
+def main_parser(cmd):
     parser = argparse.ArgumentParser(
         prog='pyarmor',
         fromfile_prefix_chars='@',
@@ -399,8 +400,12 @@ def main_parser():
 
     gen_parser(subparsers)
     reg_parser(subparsers)
-    cfg_parser(subparsers)
 
+    cmd.env_parser(subparsers)
+    cmd.init_parser(subparsers)
+    cmd.build_parser(subparsers)
+
+    cfg_parser(subparsers)
     man_parser(subparsers)
 
     return parser
@@ -748,10 +753,11 @@ def get_home_paths(args):
 
 
 def main_entry(argv):
-    parser = main_parser()
+    cmd = Commander()
+    parser = main_parser(cmd)
     args = parser.parse_args(argv)
 
-    ctx = Context(*get_home_paths(args))
+    ctx = cmd.ctx = Context(*get_home_paths(args))
     log_settings(ctx, args)
 
     x, y = sys.version_info[:2]
