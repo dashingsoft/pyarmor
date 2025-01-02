@@ -26,7 +26,7 @@ import shlex
 from os import makedirs
 from os.path import abspath, exists, join as joinpath, relpath
 
-from . import logger
+from . import logger, CliError
 from .project import Project
 from .shell import PyarmorShell
 
@@ -258,7 +258,7 @@ class Commander:
             if not sect.get('src'):
                 sect['src'] = src
             elif src != sect['src']:
-                raise RuntimeError(
+                raise CliError(
                     'project has another src, '
                     'use option "-C" to fix this issue'
                 )
@@ -269,7 +269,7 @@ class Commander:
                 sect['src'] = src
 
         if not exists(src):
-            raise RuntimeError('no found src "%s"' % src)
+            raise CliError('no found src "%s"' % src)
 
         def format_path(plist, raw=False):
             r = []
@@ -348,7 +348,7 @@ class Commander:
 
         sectname = 'project'
         if not cfg.has_section(sectname):
-            raise RuntimeError('no project information')
+            raise CliError('no project information')
 
         cfgdata = dict(cfg.items(sectname))
         logger.debug('project: %s', cfgdata)
@@ -381,9 +381,24 @@ class Commander:
         logger.info('build target %s end', args.target)
 
     def _build(self, project, target, output):
-        from .rftbuild import analysis_project, build_project
-        analysis_project(project)
-        build_project(project, target, output)
+        try:
+            from .rftbuild import rft_project
+        except Exception as e:
+            logger.debug('no refactor because of %s', str(e))
+        else:
+            rft_project(project, target, output)
+
+        if target == '--mini':
+            self._build_mini(project, output)
+        # elif target == '--vmc':
+        #     self._build_vmc(project, output)
+        # elif target == '--ecc':
+        #     self._build_ecc(project, output)
+        # elif target == '--std':
+        #     self._build_std(project, output)
+
+    def _build_mini(self, project, output):
+        pass
 
     def cmd_env(self, ctx, args):
         """Check and change pyarmor settings

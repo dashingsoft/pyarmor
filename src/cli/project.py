@@ -745,14 +745,11 @@ class Project:
         if key not in self.unknown_vars:
             self.unknown_vars.append(key)
 
-    def log_unknown_call(self, ftype):
-        if isinstance(ftype, str):
-            func = '{%s}' % ftype
-        else:
-            func = ':'.join(ftype.module, '.'.join(ftype.scopes))
-
-        if func not in self.unknown_calls:
-            self.unknown_calls.append(func)
+    def log_unknown_call(self, func):
+        name = ('{%s}' % func if isinstance(func, str) else
+                ':'.join([func.module, '.'.join(func.scopes)]))
+        if name not in self.unknown_calls:
+            self.unknown_calls.append(name)
 
     def build(self, target='std'):
         """Build project to generate obfuscated scripts"""
