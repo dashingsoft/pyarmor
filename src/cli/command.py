@@ -459,7 +459,7 @@ class Commander:
             shell.cmdloop()
 
 
-def test_main(args, log=False):
+def test_main(args, target='rft', log=False):
     import logging.config
     from os.path import expanduser
 

@@ -64,14 +64,13 @@ Examples
 
 2. Obfuscate all the scripts in the project
 
-    $ pyarmor build --std
+    $ pyarmor build --rft
     $ pyarmor build --mini
-    $ pyarmor build --plain
 
 3. Config project and print project information
 
     $ pyarmor env -p
-    $ pyarmor env -p set remove_docstring 1
+    $ pyarmor env -p set rft_remove_docstr 1
 
 """
 import ast
@@ -366,14 +365,17 @@ class Project:
         self._rmodules = None
         self._builtins = None
 
-        # 在重构过程中记录类型未知，但是需要更改其属性的变量
+        # Log variable name in chain attributes
         self.unknown_vars = []
 
-        # 在重构过程中记录类型已知，但是属性没有在类型中定义
+        # Log attribute used but not defined in class
         self.unknown_attrs = {}
 
-        # 在重构过程中记录使用 **kwarg 方式调用的函数列表
+        # Log function which called with **kwarg
         self.unknown_calls = []
+
+        # Log unknown caller with keyword arguments
+        self.unknown_args = []
 
     @property
     def abspath(self):
@@ -746,14 +748,16 @@ class Project:
             self.unknown_vars.append(key)
 
     def log_unknown_call(self, func):
-        name = ('{%s}' % func if isinstance(func, str) else
-                ':'.join([func.module, '.'.join(func.scopes)]))
-        if name not in self.unknown_calls:
-            self.unknown_calls.append(name)
-
-    def build(self, target='std'):
-        """Build project to generate obfuscated scripts"""
-        pass
+        if isinstance(func, str):
+            fields = func.split(':')
+            if fields[2].find('.') == -1:
+                self.log_unknown_var('%s:%s.%s' % fields)
+            elif func not in self.unknown_args:
+                self.unknown_args.append(func)
+        else:
+            name = ':'.join([func.module, '.'.join(func.scopes)])
+            if name not in self.unknown_calls:
+                self.unknown_calls.append(name)
 
     def _as_dot(self):
         """Map project to dot graph"""
