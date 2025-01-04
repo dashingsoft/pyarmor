@@ -366,15 +366,61 @@ class Project:
         self._builtins = None
 
         # Log variable name in chain attributes
+        #
+        # For example, in module "foo.py":
+        #
+        #   def fa(x):
+        #       x.runner[0].start()
+        #
+        # Because don't know the type of "x", log it as
+        #
+        #   self.unknown_vars.append("foo:fa:x")
+        #
         self.unknown_vars = []
 
         # Log attribute used but not defined in class
+        #
+        # For example, in module "foo.py":
+        #
+        #   def fa(x: Fibo):
+        #       x.items[0].start()
+        #
+        # If no found attribute "items" in class "Fibo", log it
+        #
+        #   self.unknown_attrs.append("foo:Fibo:items[].start()")
+        #
         self.unknown_attrs = {}
 
-        # Log function which called with **kwarg
+        # Log function which called with **kwargs
+        #
+        # For example, in the module "foo.py":
+        #
+        #   class Fibo:
+        #
+        #       def runner(self, a=1, b=2):
+        #           return a + b
+        #
+        #   c = Fibo()
+        #   c.runner(**data)
+        #
+        # Because the method "Fibo.runner" is called by dict
+        # argument "**data", log it as
+        #
+        #   self.unknown_calls.append("foo:Fibo.runner")
+        #
         self.unknown_calls = []
 
-        # Log unknown caller with keyword arguments
+        # Log unknown caller with keyword arguments.
+        #
+        # For example, in the module "foo.py":
+        #
+        #    def fa(c):
+        #        c.runner[2].echo(msg='hello')
+        #
+        # If don't know where "echo" is defined, log it as
+        #
+        #     self.unknown_args.append("foo:fa:c.runner[].echo")
+        #
         self.unknown_args = []
 
     @property
