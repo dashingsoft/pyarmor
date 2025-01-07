@@ -365,6 +365,8 @@ class Project:
         self._rmodules = None
         self._builtins = None
 
+        self._var_type_table = None
+
         # Log variable name in chain attributes
         #
         # For example, in module "foo.py":
@@ -383,11 +385,31 @@ class Project:
         # For example, in module "foo.py":
         #
         #   def fa(x: Fibo):
-        #       x.items[0].start()
+        #       x.items[0].run()
         #
-        # If no found attribute "items" in class "Fibo", log it
+        # If no found attribute "items" in class "Fibo", log it as
         #
-        #   self.unknown_attrs.append("foo:Fibo:items[].start()")
+        #   self.unknown_attrs.append("foo:Fibo:x?items[].run()")
+        #
+        # Question mask "?" is placed before unknown attribute
+        #
+        # If only last attr `start` is unknown, for example:
+        #
+        #   def fa(x: Fibo):
+        #       x.runner.start()
+        #
+        # Log it as:
+        #
+        #   self.unknown_attrs.append("foo:Fibo:x.runner?start()")
+        #
+        # If the first variable "x" is unknown, for example:
+        #
+        #   def fa(x):
+        #       x.items[0].run()
+        #
+        # Log it as:
+        #
+        #   self.unknown_attrs.append("foo:Fibo:?x.items[].run()")
         #
         self.unknown_attrs = {}
 
@@ -420,6 +442,15 @@ class Project:
         # If don't know where "echo" is defined, log it as
         #
         #     self.unknown_args.append("foo:fa:c.runner[].echo")
+        #
+        # If it uses dict arguments, for example:
+        #
+        #    def fa(c):
+        #        c.runner[2].echo(**data)
+        #
+        # Log it with suffix "*"
+        #
+        #     self.unknown_args.append("foo:fa:c.runner[].echo*")
         #
         self.unknown_args = []
 
@@ -647,13 +678,13 @@ class Project:
     def rft_attr_rulers(self):
         """Refactor attribute rulers, for special attribute node
 
-          If can't decide variable type, use ruler for chains
+        If can't decide variable type, use ruler for chains
 
-          For example, "x.a", if "x" of type is unknown
+        For example, "x.a.b", if "x" of type is unknown
 
-          Use ruler "x.a" to rename attribute "a"
+        Use ruler "x.a.b" to rename attribute "a", "b"
 
-          Use ruler "!x.a" to keep attribute "a"
+        Use ruler "x.a().b[].c" to rename "a", "b", "c"
         """
         value = self.rft_rulers.get('rft_attr_rulers', '')
         for x in value.splitlines():
@@ -663,16 +694,36 @@ class Project:
     def rft_arg_rulers(self):
         """Refactor ruler, for arg name in Function/Call node
 
-          For example, in the call statement
+        For example, in the call statement
 
             kwargs = { 'msg': 'hello' }
             foo(**kwargs)
 
-          This kind of rule could be used to rename string `msg`
+        This kind of rule could be used to rename string `msg`
         """
         value = self.rft_rulers.get('rft_arg_rulers', '')
         for x in value.splitlines():
             yield x
+
+    @property
+    def var_type_table(self):
+        if self._var_type_table is None:
+            vartypes = {}
+            lines = self.opt('var_type_table')
+            for line in lines.splitlines() if lines else []:
+                varinfo, tname = line.split()
+                if varinfo.startswith('{'):
+                    modname, varname = varinfo[1:-1].split(':', 1)
+                    vartypes.setdefault(modname, {})
+                    mtypes = vartypes[modname]
+                    mtypes.setdefault('__ivars__', {})
+                    mtypes['__ivars__'][varname] = tname
+                else:
+                    modname, varname = varinfo.split(':', 1)
+                    vartypes.setdefault(modname, {})
+                    vartypes[modname][varname] = tname
+            self._var_type_table = vartypes
+        return self._var_type_table
 
     @property
     def builtins(self):
@@ -788,10 +839,13 @@ class Project:
         logger.info('load %d modules', len(self._modules))
         logger.info('load %d packages', len(self._packages))
 
-    def log_unknown_var(self, module, var):
-        key = '%s:%s' % (module, var)
-        if key not in self.unknown_vars:
-            self.unknown_vars.append(key)
+    def log_unknown_var(self, var):
+        if var not in self.unknown_vars:
+            self.unknown_vars.append(var)
+
+    def log_unknown_attr(self, attr):
+        if attr not in self.unknown_attrs:
+            self.unknown_vars.append(attr)
 
     def log_unknown_call(self, func):
         if isinstance(func, str):
