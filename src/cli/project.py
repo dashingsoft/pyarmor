@@ -389,29 +389,9 @@ class Project:
         #
         # If no found attribute "items" in class "Fibo", log it as
         #
-        #   self.unknown_attrs.append("foo:Fibo:x?items[].run()")
+        #   self.unknown_attrs.append("foo:fa:x.items.run ?items")
         #
-        # Question mask "?" is placed before unknown attribute
-        #
-        # If only last attr `start` is unknown, for example:
-        #
-        #   def fa(x: Fibo):
-        #       x.runner.start()
-        #
-        # Log it as:
-        #
-        #   self.unknown_attrs.append("foo:Fibo:x.runner?start()")
-        #
-        # If the first variable "x" is unknown, for example:
-        #
-        #   def fa(x):
-        #       x.items[0].run()
-        #
-        # Log it as:
-        #
-        #   self.unknown_attrs.append("foo:Fibo:?x.items[].run()")
-        #
-        self.unknown_attrs = {}
+        self.unknown_attrs = []
 
         # Log function which called with **kwargs
         #
@@ -441,7 +421,7 @@ class Project:
         #
         # If don't know where "echo" is defined, log it as
         #
-        #     self.unknown_args.append("foo:fa:c.runner[].echo")
+        #     self.unknown_args.append("foo:fa:c.runner.echo")
         #
         # If it uses dict arguments, for example:
         #
@@ -450,7 +430,7 @@ class Project:
         #
         # Log it with suffix "*"
         #
-        #     self.unknown_args.append("foo:fa:c.runner[].echo*")
+        #     self.unknown_args.append("foo:fa:c.runner.echo*")
         #
         self.unknown_args = []
 
@@ -684,9 +664,19 @@ class Project:
 
         Use ruler "x.a.b" to rename attribute "a", "b"
 
-        Use ruler "x.a().b[].c" to rename "a", "b", "c"
+        Use ruler "x.a.b.c" to rename "a", "b", "c"
         """
-        value = self.rft_rulers.get('rft_attr_rulers', '')
+        value = self.rft_options.get('rft_attr_rulers', '')
+        for x in value.splitlines():
+            yield x
+
+    @property
+    def rft_call_rulers(self):
+        """Refactor keyword argument in call statement
+
+        If can't decide function type, use ruler to rename arg
+        """
+        value = self.rft_options.get('rft_call_rulers', '')
         for x in value.splitlines():
             yield x
 
@@ -701,7 +691,7 @@ class Project:
 
         This kind of rule could be used to rename string `msg`
         """
-        value = self.rft_rulers.get('rft_arg_rulers', '')
+        value = self.rft_options.get('rft_arg_rulers', '')
         for x in value.splitlines():
             yield x
 
@@ -757,6 +747,9 @@ class Project:
 
     def iter_module(self):
         """Iterate all modules in this project"""
+        for x in self._scripts:
+            yield x
+
         for x in self._modules:
             yield x
 
@@ -845,19 +838,15 @@ class Project:
 
     def log_unknown_attr(self, attr):
         if attr not in self.unknown_attrs:
-            self.unknown_vars.append(attr)
+            self.unknown_attrs.append(attr)
 
     def log_unknown_call(self, func):
-        if isinstance(func, str):
-            fields = func.split(':')
-            if fields[2].find('.') == -1:
-                self.log_unknown_var('%s:%s.%s' % fields)
-            elif func not in self.unknown_args:
-                self.unknown_args.append(func)
-        else:
-            name = ':'.join([func.module, '.'.join(func.scopes)])
-            if name not in self.unknown_calls:
-                self.unknown_calls.append(name)
+        if func not in self.unknown_calls:
+            self.unknown_calls.append(func)
+
+    def log_unknown_arg(self, func):
+        if func not in self.unknown_args:
+            self.unknown_args.append(func)
 
     def _as_dot(self):
         """Map project to dot graph"""

@@ -357,6 +357,14 @@ SECTIONS = {
             many=True,
         ),
         OptionModel(
+            name='rft_attr_rulers',
+            cls='RftAttrFilter',
+        ),
+        OptionModel(
+            name='rft_call_rulers',
+            cls='RftAttrFilter',
+        ),
+        OptionModel(
             name='rft_str_keywords',
             cls='DictOption',
         ),

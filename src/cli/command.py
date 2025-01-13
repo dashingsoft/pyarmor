@@ -160,6 +160,19 @@ class Commander:
             action="store_const", const='list',
             help='list project scripts, modules and packages'
         )
+        group.add_argument(
+            '--types', dest='target', default='std',
+            action="store_const", const='types',
+            help=argparse.SUPPRESS
+        )
+        group.add_argument(
+            '--randname', type=int, metavar='N',
+            help='Enable random name'
+        )
+        group.add_argument(
+            '--autofix', type=int, choices=(0, 1, 2, 3),
+            help='Enable auto-fix mode'
+        )
 
         # parser.add_argument(
         #     '--pack', metavar='MODE',
@@ -375,14 +388,27 @@ class Commander:
                     logger.info('    %s', project.relsrc(s))
             return
 
-        logger.info('build target %s ...', args.target)
-        output = args.output if args.output else 'dist'
-        self._build(project, args.target, output)
-        logger.info('build target %s end', args.target)
+        if args.autofix is not None:
+            value = args.autofix
+            logger.info('build auto-fix-table:%s ...', value)
+            output = args.output if args.output else 'dist'
+            self._build(project, 'autofix', output, value)
+            logger.info('build auto-fix-table:%s end', value)
+        elif args.randname is not None:
+            value = args.randname
+            logger.info('build rand-pool:%s ...', value)
+            output = args.output if args.output else 'dist'
+            self._build(project, 'namepool', output, value)
+            logger.info('build rand-pool:%s end', value)
+        else:
+            logger.info('build target %s ...', args.target)
+            output = args.output if args.output else 'dist'
+            self._build(project, args.target, output)
+            logger.info('build target %s end', args.target)
 
-    def _build(self, project, target, output):
+    def _build(self, project, target, output, value=None):
         from .core import Pytransform3
-        args = [self.ctx, target, project, output]
+        args = [self.ctx, target, project, output, value]
         Pytransform3.pre_build(args)
 
     def cmd_env(self, ctx, args):
@@ -479,4 +505,4 @@ def test_main(args, target='rft', log=False):
 
 if __name__ == '__main__':
     import sys
-    test_main(sys.argv[1:])
+    test_main(sys.argv[1:], log=True)
