@@ -71,6 +71,8 @@ Building Errors
        Please use ``pyarmor-7`` or downgrade pyarmor to 7.7.4
    * - This code has been used too many times
      - If this code is used in CI/Docker pipeline, please send **order information** by registration email of this code to pyarmor@163.com to unlock it. Do not send this code only, it doesn't make sense.
+   * - no registration code found in pyarmor-regcode-xxxx.txt
+     - Download `pyarmor-regcode-xxxx.txt` again, check its content, make sure it's same as email body
    * - update license token failed
      - If run register command more than 3 times in 1 minute, wait for 5 minutes, and try again.
 
