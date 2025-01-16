@@ -339,7 +339,7 @@ SECTIONS = {
             many=True,
         ),
         OptionModel(
-            name='var_type_table',
+            name='rft_type_rules',
             cls='DictOption',
         ),
         OptionModel(
@@ -352,7 +352,12 @@ SECTIONS = {
             many=True,
         ),
         OptionModel(
-            name='rft_exclude_args',
+            name='rft_exclude_funcs',
+            cls='RftNamePattern',
+            many=True,
+        ),
+        OptionModel(
+            name='rft_exclude_calls',
             cls='RftNamePattern',
             many=True,
         ),

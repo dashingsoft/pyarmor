@@ -365,7 +365,9 @@ class Project:
         self._rmodules = None
         self._builtins = None
 
-        self._var_type_table = None
+        self._rft_external_attrs = None
+
+        self._rft_type_rules = None
 
         # Log variable name in chain attributes
         #
@@ -408,9 +410,9 @@ class Project:
         # Because the method "Fibo.runner" is called by dict
         # argument "**data", log it as
         #
-        #   self.unknown_calls.append("foo:Fibo.runner")
+        #   self.unknown_funcs.append("foo:Fibo.runner")
         #
-        self.unknown_calls = []
+        self.unknown_funcs = []
 
         # Log unknown caller with keyword arguments.
         #
@@ -421,7 +423,7 @@ class Project:
         #
         # If don't know where "echo" is defined, log it as
         #
-        #     self.unknown_args.append("foo:fa:c.runner.echo")
+        #     self.unknown_calls.append("foo:fa:c.runner.echo")
         #
         # If it uses dict arguments, for example:
         #
@@ -430,9 +432,9 @@ class Project:
         #
         # Log it with suffix "*"
         #
-        #     self.unknown_args.append("foo:fa:c.runner.echo*")
+        #     self.unknown_calls.append("foo:fa:c.runner.echo*")
         #
-        self.unknown_args = []
+        self.unknown_calls = []
 
     @property
     def abspath(self):
@@ -528,7 +530,7 @@ class Project:
 
           Move it from rft_filter
 
-        - rft_exclude_args: list
+        - rft_exclude_funcs: list
 
           Move it from rft_filter
 
@@ -538,7 +540,7 @@ class Project:
 
           When call function, solve argument not found issue
 
-        - var_type_table: dict
+        - rft_type_rules: dict
 
           Specify variable type
 
@@ -604,9 +606,9 @@ class Project:
                 yield x
 
     @property
-    def rft_exclude_args(self):
+    def rft_exclude_funcs(self):
         """No refactor arguments of the functions in this list"""
-        value = self.opt('rft_exclude_args')
+        value = self.opt('rft_exclude_funcs')
         if value:
             for x in value.splitlines():
                 yield x
@@ -696,10 +698,10 @@ class Project:
             yield x
 
     @property
-    def var_type_table(self):
-        if self._var_type_table is None:
+    def rft_type_rules(self):
+        if self._rft_type_rules is None:
             vartypes = {}
-            lines = self.opt('var_type_table')
+            lines = self.opt('rft_type_rules')
             for line in lines.splitlines() if lines else []:
                 varinfo, tname = line.split()
                 if varinfo.startswith('{'):
@@ -712,8 +714,8 @@ class Project:
                     modname, varname = varinfo.split(':', 1)
                     vartypes.setdefault(modname, {})
                     vartypes[modname][varname] = tname
-            self._var_type_table = vartypes
-        return self._var_type_table
+            self._rft_type_rules = vartypes
+        return self._rft_type_rules
 
     @property
     def builtins(self):
@@ -721,6 +723,23 @@ class Project:
             import builtins
             self._builtins = set(dir(builtins))
         return self._builtins
+
+    @property
+    def rft_external_attrs(self):
+        """External attributes"""
+        if self._rft_external_attrs is None:
+            attrnames = set()
+            value = self.opt('rft_external_attrs')
+            if value:
+                attrnames.update(value.split())
+            else:
+                types = list, int, str, set, tuple, float, dict
+                for tp in types:
+                    attrnames.update([
+                        x for x in dir(tp) if x[:2] != '__'
+                    ])
+            self._rft_external_attrs = attrnames
+        return self._rft_external_attrs
 
     def std_options(self):
         """Obfuscation options only for std target
@@ -840,13 +859,13 @@ class Project:
         if attr not in self.unknown_attrs:
             self.unknown_attrs.append(attr)
 
+    def log_unknown_func(self, func):
+        if func not in self.unknown_funcs:
+            self.unknown_funcs.append(func)
+
     def log_unknown_call(self, func):
         if func not in self.unknown_calls:
             self.unknown_calls.append(func)
-
-    def log_unknown_arg(self, func):
-        if func not in self.unknown_args:
-            self.unknown_args.append(func)
 
     def _as_dot(self):
         """Map project to dot graph"""
