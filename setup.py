@@ -113,7 +113,7 @@ setup(
     },
 
     install_requires=[
-        'pyarmor.cli.core~=7.6.3'
+        'pyarmor.cli.core~=7.6.4'
     ],
 
     entry_points={
