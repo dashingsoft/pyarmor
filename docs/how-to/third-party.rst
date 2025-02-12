@@ -163,13 +163,15 @@ Finally nuitka the obfuscated script ``dist/foo.py``, check whether it works or 
 
 Try more options, but I think restrict options such as :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
 
-Note that extension `pyarmor_runtime.so` must be in the package. For example::
+.. note::
 
-    $ ls dist/pyarmor_runtime_000000
-    ...    __init__.py
-    ...    pyarmor_runtime.so
+   Before v9.1.0, the extension `pyarmor_runtime.so` must be in the package. For example::
 
-If Nuitka convert `__init__.py` to `pyarmor_runtime_000000_init_.py`, and copy `pyarmor_runtime.so` to same path, it also raises ``RuntimeError: unauthorized use of script``
+      $ ls dist/pyarmor_runtime_000000
+      ...    __init__.py
+      ...    pyarmor_runtime.so
+
+  If Nuitka convert `__init__.py` to `pyarmor_runtime_000000_init_.py`, and copy `pyarmor_runtime.so` to same path, it also raises ``RuntimeError: unauthorized use of script``
 
 streamlit
 ---------
