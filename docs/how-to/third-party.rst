@@ -155,8 +155,6 @@ First disable restrict mode::
 
     $ pyarmor cfg restrict_module=0
 
-Now disable restrict_module, run the nuitka script may raise ``RuntimeError: unauthorized use of script``
-
 Next use default options to obfuscate the scripts::
 
     $ pyarmor gen foo.py
@@ -164,6 +162,14 @@ Next use default options to obfuscate the scripts::
 Finally nuitka the obfuscated script ``dist/foo.py``, check whether it works or not.
 
 Try more options, but I think restrict options such as :option:`--private`, :option:`--restrict`, :option:`--assert-call`, :option:`--assert-import` may not work.
+
+Note that extension `pyarmor_runtime.so` must be in the package. For example::
+
+    $ ls dist/pyarmor_runtime_000000
+    ...    __init__.py
+    ...    pyarmor_runtime.so
+
+If Nuitka convert `__init__.py` to `pyarmor_runtime_000000_init_.py`, and copy `pyarmor_runtime.so` to same path, it also raises ``RuntimeError: unauthorized use of script``
 
 streamlit
 ---------
