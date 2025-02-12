@@ -170,8 +170,8 @@ Termux issues
 
 In Termux, after installation it need patch extensions. For example::
 
-    $ patchelf --add-needed /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pytransform3.so
-    $ patchelf --add-needed /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pyarmor_runtime.so
+    $ patchelf --add-needed libpython3.11.so.0.1 /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pytransform3.so
+    $ patchelf --add-needed libpython3.11.so.0.1 /data/data/com.termux/files/usr/lib/python3.11/site-packages/pyarmor/cli/core/android/aarch64/pyarmor_runtime.so
 
 Sometimes, it need set runpath too. For example::
 
