@@ -5,6 +5,9 @@ build:
   tools:
     python: "3.7"
 
+sphinx:
+  configuration: docs/conf.py
+
 python:
   install:
     - requirements: docs/requirements.txt
