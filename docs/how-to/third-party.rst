@@ -165,7 +165,7 @@ Try more options, but I think restrict options such as :option:`--private`, :opt
 
 .. note::
 
-   It also requires v9.1.0+. Before v9.1.0, Nuitka will convert package `pyarmor_runtime_000000/__init__.py` to `pyarmor_runtime_000000_init_.py`, it also results in ``RuntimeError: unauthorized use of script``
+   It also requires v9.1.0+. Because Nuitka will convert package `pyarmor_runtime_000000/__init__.py` to `pyarmor_runtime_000000_init_.py`, it also results in ``RuntimeError: unauthorized use of script``, this is fixed in v9.1.0 (non-trial version).
 
 streamlit
 ---------
