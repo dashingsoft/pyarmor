@@ -165,13 +165,7 @@ Try more options, but I think restrict options such as :option:`--private`, :opt
 
 .. note::
 
-   Before v9.1.0, the extension `pyarmor_runtime.so` must be in the package. For example::
-
-      $ ls dist/pyarmor_runtime_000000
-      ...    __init__.py
-      ...    pyarmor_runtime.so
-
-  If Nuitka convert `__init__.py` to `pyarmor_runtime_000000_init_.py`, and copy `pyarmor_runtime.so` to same path, it also raises ``RuntimeError: unauthorized use of script``
+   It also requires v9.1.0+. Before v9.1.0, Nuitka will convert package `pyarmor_runtime_000000/__init__.py` to `pyarmor_runtime_000000_init_.py`, it also results in ``RuntimeError: unauthorized use of script``
 
 streamlit
 ---------
