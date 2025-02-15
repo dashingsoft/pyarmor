@@ -110,4 +110,4 @@ Status: plan, released on 2025-12-01, 2 months after Python 3.14 is released
 
 - Support Python 3.14 which will be released on 2025-10-01 as plan
 
-Pyarmor features will be stable around Dec. 31, 2024
+Pyarmor features will be stable in 2025
