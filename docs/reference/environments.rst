@@ -303,6 +303,15 @@ Check it, first copy this script to ``.pyarmor/hooks/pyarmor_runtime.py``::
       ...
     RuntimeError: unauthorized use of script (1:10325)
 
+If need query hardware information, the simple way is to import Pyarmor extension `pytransform3`. For example, in Windows, copy the corresponding `pytransform3.pyd` to target device, then get machine id by this way
+
+.. code-block:: python
+
+    def bootstrap(user_data):
+        from pytransform3 import get_hd_info
+        # Refer to pyarmor/cli/get_hd_info.py
+        print('Machine ID: %s' % get_hd_info(22).decode())
+
 .. _target environments:
 
 =====================
