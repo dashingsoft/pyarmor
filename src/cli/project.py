@@ -23,7 +23,7 @@
 #
 #   - Define project object for Pyarmor 9.
 #   - Define project commands: init, build
-#   - Define 3 targets: std, mini, plain
+#   - Define targets: std, fly, vmc, ecc, rft
 
 """Manage projects
 
@@ -45,16 +45,6 @@ excludes = patterh patterh ...
 
 rpath = path path
 
-[project.name]
-name =
-path =
-
-modules =
-packages = 0 or 1
-excludes =
-
-rpath =
-
 Examples
 --------
 
@@ -70,7 +60,7 @@ Examples
 3. Config project and print project information
 
     $ pyarmor env -p
-    $ pyarmor env -p set rft_remove_docstr 1
+    $ pyarmor env -p set rft:remove_docstr 1
 
 """
 import ast
@@ -79,8 +69,9 @@ import logging
 import os
 import tokenize
 
-from fnmatch import fnmatch
 from collections import namedtuple
+from fnmatch import fnmatch
+from json import loads as jsonloads, load as jsonload
 from os.path import (
     abspath, basename, exists, isabs, join as joinpath,
     normpath, relpath, splitext
@@ -89,7 +80,7 @@ from string import Template
 from textwrap import dedent
 
 
-logger = logging.getLogger('cli.project')
+logger = logging.getLogger('cli.build')
 
 
 GRAPHVIZ_INDENT = '  '
@@ -349,6 +340,8 @@ class Project:
 
     """
 
+    ATTR_LOGFILE = '.pyarmor/project/rft_unknown_attrs.log'
+
     def __init__(self, ctx):
         self.ctx = ctx
         self.src = ''
@@ -365,9 +358,9 @@ class Project:
         self._rmodules = None
         self._builtins = None
 
-        self._rft_external_attrs = None
-
         self._rft_type_rules = None
+        self._rft_include_attrs = None
+        self._used_external_types = None
 
         # Log variable name in chain attributes
         #
@@ -380,7 +373,7 @@ class Project:
         #
         #   self.unknown_vars.append("foo:fa:x")
         #
-        self.unknown_vars = []
+        # self.unknown_vars = []
 
         # Log attribute used but not defined in class
         #
@@ -393,7 +386,7 @@ class Project:
         #
         #   self.unknown_attrs.append("foo:fa:x.items.run ?items")
         #
-        self.unknown_attrs = []
+        self.unknown_attrs = set()
 
         # Log function which called with **kwargs
         #
@@ -436,6 +429,19 @@ class Project:
         #
         self.unknown_calls = []
 
+        # Log all attributes which is external base class attr
+        #
+        # For example:
+        #
+        #    class C(dict):
+        #
+        #        def merge(self, another):
+        #            super().merge(another)
+        #
+        # "merge" will be loged to external_attrs
+        # self.external_attrs = []
+
+
     @property
     def abspath(self):
         return abspath(self.src)
@@ -472,15 +478,15 @@ class Project:
     def rft_options(self):
         """Refactor options:
 
-        - rft_remove_assert: bool
+        - remove_assert: bool
 
           If 1, remove assert node
 
-        - rft_remove_docstr: bool
+        - remove_docstr: bool
 
           If 1, remove all docstring
 
-        - rft_builtin: bool
+        - builtin_mode: bool
 
           0, do not touch any builtin names
           1, as build target, maybe std, mini or plain
@@ -491,9 +497,9 @@ class Project:
 
         - rft_ximport: bool
 
-          always 0, do not touch node "from..import *"
+          Always 0, do not touch node "from..import *"
 
-        - rft_argument: enum('no', 'pos', '!kw', 'all')
+        - argument_mode: enum('0', '1', '2', '3')
 
           0: "no", no reform any argument node
           1: "pos", reform posonly arguments
@@ -522,15 +528,19 @@ class Project:
           1, reform string by rft_string_filters
           2, reform all string
 
-        - rft_auto_export: bool
+        - auto_export_mode: bool
 
-          Auto export all names in module.__all__
+          True: auto export all names in module.__all__
 
-        - rft_exclude_names: list
+          If class is exported, all class members are exported
+          If function is exported, arguments can't be renamed
+          Only module variable can be exported separately
+
+        - exclude_names: list
 
           Move it from rft_filter
 
-        - rft_exclude_funcs: list
+        - exclude_funcs: list
 
           Move it from rft_filter
 
@@ -574,7 +584,7 @@ class Project:
         """
         if self._rft_options is None:
             cfg = self.ctx.cfg
-            sect = 'rft_option'
+            sect = 'rft'
             if cfg.has_section(sect):
                 self._rft_options = dict(cfg.items(sect))
             else:
@@ -597,18 +607,16 @@ class Project:
         Each ruler must start with package or module name
         It supports pattern match as fnmatchcase
         Pattern only match one level
-
-        It's also used to export names manually
         """
-        value = self.opt('rft_exclude_names')
+        value = self.opt('exclude_names')
         if value:
             for x in value.splitlines():
                 yield x
 
     @property
     def rft_exclude_funcs(self):
-        """No refactor arguments of the functions in this list"""
-        value = self.opt('rft_exclude_funcs')
+        """No touch arguments for listed functions"""
+        value = self.opt('exclude_funcs')
         if value:
             for x in value.splitlines():
                 yield x
@@ -657,34 +665,38 @@ class Project:
         return self._rft_rulers
 
     @property
-    def rft_attr_rulers(self):
-        """Refactor attribute rulers, for special attribute node
+    def rft_attr_rules(self):
+        """Refactor attribute rules, for special attribute node
 
-        If can't decide variable type, use ruler for chains
+        If can't decide variable type, use rule for chains
 
         For example, "x.a.b", if "x" of type is unknown
 
-        Use ruler "x.a.b" to rename attribute "a", "b"
+        Use rule "x.a.b" to rename attribute "a", "b"
 
-        Use ruler "x.a.b.c" to rename "a", "b", "c"
+        Use rule "x.a.b.c" to rename "a", "b", "c"
+
+        Use rule "x.a.b -> *.?.*" to rename "a" only
+
+        Use rule "*.write -> *.write" to keep all write attribute
         """
-        value = self.rft_options.get('rft_attr_rulers', '')
+        value = self.rft_options.get('attr_rules', '')
         for x in value.splitlines():
             yield x
 
     @property
-    def rft_call_rulers(self):
+    def rft_call_rules(self):
         """Refactor keyword argument in call statement
 
         If can't decide function type, use ruler to rename arg
         """
-        value = self.rft_options.get('rft_call_rulers', '')
+        value = self.rft_options.get('call_rules', '')
         for x in value.splitlines():
             yield x
 
     @property
-    def rft_arg_rulers(self):
-        """Refactor ruler, for arg name in Function/Call node
+    def rft_arg_rules(self):
+        """Refactor rule, for arg name in Function/Call node
 
         For example, in the call statement
 
@@ -693,19 +705,32 @@ class Project:
 
         This kind of rule could be used to rename string `msg`
         """
-        value = self.rft_options.get('rft_arg_rulers', '')
+        value = self.rft_options.get('rft_arg_rules', '')
         for x in value.splitlines():
             yield x
 
     @property
     def rft_type_rules(self):
+        """Specify variable/blockvar type
+
+        Support format:
+
+            modname:scope:var     typename
+            modname:scope:var.[?] typename
+            modname:scope:func.() typename
+            modname:scope:cls.method.() typename
+
+        For blockvar in For/Comprehension/With
+            modname:scope:{var}   typename
+        """
         if self._rft_type_rules is None:
             vartypes = {}
-            lines = self.opt('rft_type_rules')
+            lines = self.opt('var_types')
             for line in lines.splitlines() if lines else []:
                 varinfo, tname = line.split()
-                if varinfo.startswith('{'):
-                    modname, varname = varinfo[1:-1].split(':', 1)
+                if varinfo.endswith('}'):
+                    info = varinfo[:-1].replace('{', '')
+                    modname, varname = info.split(':', 1)
                     vartypes.setdefault(modname, {})
                     mtypes = vartypes[modname]
                     mtypes.setdefault('__ivars__', {})
@@ -725,21 +750,55 @@ class Project:
         return self._builtins
 
     @property
+    def used_external_types(self):
+        """Used external types"""
+        if self._used_external_types is None:
+            used_types = {}
+            names = self.opt('rft_external_types')
+            if names is None:
+                names = [
+                    'builtins',
+                    '.pyarmor/project/rft_external_types.json'
+                ]
+            for name in names:
+                if name.endswith('.json'):
+                    if exists(name):
+                        with open(name) as f:
+                            used_types.update(jsonload(f))
+                else:
+                    m = name.split('.')[0]
+                    used_types.update(self._get_external_types(m))
+            self._used_external_types = used_types
+        return self._used_external_types
+
+    @property
+    def rft_external_types(self):
+        """External types manual"""
+        value = self.rft_options.get('external_types', '')
+        if value:
+            for x in value:
+                yield x
+
+    @property
     def rft_external_attrs(self):
-        """External attributes"""
-        if self._rft_external_attrs is None:
-            attrnames = set()
-            value = self.opt('rft_external_attrs')
+        """External attrs manual
+        x means append to attrs of rft_external_types
+        !x means exclude x from attrs of rft_external_types
+        """
+        value = self.rft_options.get('external_attrs', '')
+        if value:
+            for x in value:
+                yield x
+
+    @property
+    def rft_include_attrs(self):
+        """List attributes need to be renamed on unknown type"""
+        if self._rft_include_attrs is None:
+            self._rft_include_attrs = set()
+            value = self.rft_options.get('include_attrs', '')
             if value:
-                attrnames.update(value.split())
-            else:
-                types = list, int, str, set, tuple, float, dict
-                for tp in types:
-                    attrnames.update([
-                        x for x in dir(tp) if x[:2] != '__'
-                    ])
-            self._rft_external_attrs = attrnames
-        return self._rft_external_attrs
+                self._rft_include_attrs.update(value.split())
+        return self._rft_include_attrs
 
     def std_options(self):
         """Obfuscation options only for std target
@@ -851,13 +910,20 @@ class Project:
         logger.info('load %d modules', len(self._modules))
         logger.info('load %d packages', len(self._packages))
 
-    def log_unknown_var(self, var):
-        if var not in self.unknown_vars:
-            self.unknown_vars.append(var)
+    def start(self):
+        self._logfile = open(self.ATTR_LOGFILE, 'w')
 
-    def log_unknown_attr(self, attr):
-        if attr not in self.unknown_attrs:
-            self.unknown_attrs.append(attr)
+    def stop(self):
+        self._logfile.close()
+
+    def log_unknown_attr(self, line):
+        fields = line.split(':')
+        attrs = fields[2].split('.')
+        start = int(fields[3])
+        self.unknown_attrs.update([
+            x for x in attrs[start:] if x[:1] not in ('(', '[')
+        ])
+        self._logfile.write(line + '\n')
 
     def log_unknown_func(self, func):
         if func not in self.unknown_funcs:
@@ -866,6 +932,44 @@ class Project:
     def log_unknown_call(self, func):
         if func not in self.unknown_calls:
             self.unknown_calls.append(func)
+
+    def _get_external_types(self, modname, pypaths=None):
+        from sys import executable
+        from subprocess import check_output, CalledProcessError
+        source = Template(dedent("""\
+        import json
+        import sys
+        x = ${pypaths}
+        if x:
+            sys.path[0:0] = [x] if isinstance(x, str) else x
+        import ${name}
+        typeinfo = {'${name}': []}
+        for key, value in ${name}.__dict__.items():
+            if key[:2] == '__':
+                continue
+            if isinstance(value, type):
+                typeinfo['${name}.%s' % key] = [
+                    x for x in dir(value) if x[:2] != '__'
+                ]
+            typeinfo['${name}'].append(key)
+        print(json.dumps(typeinfo))
+        """)).substitute(name=modname, pypaths=repr(pypaths))
+
+        try:
+            output = check_output([executable, '-c', source])
+            return jsonloads(output)
+        except CalledProcessError:
+            pass
+
+    def get_external_type(self, modname, clsname=None):
+        extypes = self.used_external_types
+        if modname not in extypes:
+            result = self._get_external_types(modname)
+            if result:
+                extypes.update(result)
+            if clsname is None:
+                return extypes
+        return extypes.get('%s.%s' % (modname, clsname), [])
 
     def _as_dot(self):
         """Map project to dot graph"""

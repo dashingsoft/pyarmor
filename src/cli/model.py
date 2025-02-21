@@ -191,13 +191,12 @@ class RftArgEnum(EnumOption):
     """How to rename argument
 
     - 0: no rename arguments
-    - 1: rename all arguments
-    - min: only rename posonly, vararg and kwarg
-    - !keyword: no rename keyword only arguments
-    - !default: no rename argument which has default and kwarg
+    - 1: rename posonly arguments
+    - 2: rename kwonly arguments
+    - 3: rename all arguments
     """
 
-    CHOICES = '0', '1', '2', '3', 'no', 'min', '!kw', 'all'
+    CHOICES = '0', '1', '2', '3'
 
 
 class RftNamePattern(TextOption):
@@ -302,34 +301,29 @@ SECTIONS = {
         ),
     ],
 
-    'rft_option': [
+    'rft': [
         OptionModel(
-            name='rft_remove_assert',
+            name='remove_assert',
             cls='BoolOption',
             value=0,
         ),
         OptionModel(
-            name='rft_remove_docstr',
+            name='remove_docstr',
             cls='BoolOption',
             value=0,
         ),
         OptionModel(
-            name='rft_builtin',
+            name='builtin_mode',
             cls='BoolOption',
             value=0,
         ),
         OptionModel(
-            name='rft_argument',
+            name='argument_mode',
             cls='RftArgEnum',
-            value='1',
+            value='3',
         ),
         OptionModel(
-            name='on_unknown_attr',
-            cls='RftAttrEnum',
-            value='log',
-        ),
-        OptionModel(
-            name='rft_auto_export',
+            name='auto_export_mode',
             cls='BoolOption',
             value=0,
         ),
@@ -339,39 +333,36 @@ SECTIONS = {
             many=True,
         ),
         OptionModel(
-            name='rft_type_rules',
+            name='var_types',
             cls='DictOption',
         ),
         OptionModel(
-            name='extra_type_info',
-            cls='DictOption',
-        ),
-        OptionModel(
-            name='rft_exclude_names',
+            name='exclude_names',
             cls='RftNamePattern',
             many=True,
         ),
         OptionModel(
-            name='rft_exclude_funcs',
+            name='exclude_funcs',
             cls='RftNamePattern',
             many=True,
         ),
         OptionModel(
-            name='rft_exclude_calls',
+            name='external_types',
             cls='RftNamePattern',
             many=True,
         ),
         OptionModel(
-            name='rft_attr_rulers',
+            name='external_attrs',
+            cls='RftNamePattern',
+            many=True,
+        ),
+        OptionModel(
+            name='attr_rules',
             cls='RftAttrFilter',
         ),
         OptionModel(
-            name='rft_call_rulers',
+            name='call_rules',
             cls='RftAttrFilter',
-        ),
-        OptionModel(
-            name='rft_str_keywords',
-            cls='DictOption',
         ),
     ],
     'rft_filter': [

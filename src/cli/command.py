@@ -128,7 +128,7 @@ class Commander:
         )
 
         group = parser.add_argument_group(
-            'select build target (default: std)'
+            'select build target'
         ).add_mutually_exclusive_group()
         # group.add_argument(
         #     '--std', dest='target', default='std',
@@ -146,13 +146,18 @@ class Commander:
         #     help='genetate scripts with vm C code'
         # )
         group.add_argument(
+            '--rft', dest='target', default='std',
+            action="store_const", const='rft',
+            help='only refactor scripts'
+        )
+        group.add_argument(
             '--mini', dest='target', default='std',
             action="store_const", const='mini',
             help='genetate high performance scripts'
         )
         group.add_argument(
-            '--rft', dest='target', default='std',
-            action="store_const", const='rft',
+            '--mini-rft', dest='target', default='std',
+            action="store_const", const='mini-rft',
             help='only refactor scripts'
         )
         group.add_argument(
@@ -166,12 +171,12 @@ class Commander:
             help=argparse.SUPPRESS
         )
         group.add_argument(
-            '--randname', type=int, metavar='N',
-            help='Enable random name'
+            '--randname', type=int, metavar='{0,1}',
+            help='Build random name pool'
         )
         group.add_argument(
             '--autofix', type=int, choices=(0, 1, 2, 3),
-            help='Enable auto-fix mode'
+            help='Generate rft rules by autofix mode'
         )
 
         # parser.add_argument(

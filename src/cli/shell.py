@@ -280,7 +280,7 @@ class PyarmorShell(cmd.Cmd):
             for name in ('filter', 'bcc'):
                 domain.add_group(name, GROUPS[name])
 
-        ps.add_section('rft_option')
+        ps.add_section('rft')
 
         return {'global': gs, 'local': ls, 'project': ps}
 
