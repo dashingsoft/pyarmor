@@ -709,7 +709,7 @@ def log_settings(ctx, args):
 
 
 def log_bug(e):
-    parser = main_parser()
+    parser = main_parser(cmd=Commander())
     args = parser.parse_args(sys.argv[1:])
     ctx = Context(*get_home_paths(args))
     cmdline = ' '.join(sys.argv)
