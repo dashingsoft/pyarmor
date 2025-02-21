@@ -1019,6 +1019,33 @@ Not all the old license could be upgrade to new license, check :doc:`../licenses
 
             Valid value is from 1 to 100
 
+.. _pyarmor init:
+
+pyarmor init
+============
+
+.. versionadded:: 9.1
+
+Refer to https://eke.dashingsoft.com/pyarmor/docs/en/user/man.html
+
+.. _pyarmor env:
+
+pyarmor env
+===========
+
+.. versionadded:: 9.1
+
+Refer to https://eke.dashingsoft.com/pyarmor/docs/en/user/man.html
+
+.. _pyarmor build:
+
+pyarmor build
+=============
+
+.. versionadded:: 9.1
+
+Refer to https://eke.dashingsoft.com/pyarmor/docs/en/user/man.html
+
 Environment Variables
 =====================
 

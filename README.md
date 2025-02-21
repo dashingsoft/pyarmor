@@ -66,24 +66,17 @@ Please read the [Pyarmor EULA](LICENSE).
 
 ## Getting Help
 
-1. **Consult the [Pyarmor Documentation][doc].**
-2. **Check the [FAQ][faq] for answers to common questions.**
-3. **Try the documentation [index][genindex] or the [detailed table of contents][mastertoc].**
-4. **If you still can't find the information you need, see [asking questions on GitHub][asking].**
-5. **[Report bugs][issues] following the issue template.**
-6. **For business and security inquiries, send an email to <pyarmor@163.com>.**
+- **[Ask in learning system][askeke] or [look through check list][checklist]**
+- **Consult the [Pyarmor Documentation][doc].**
+- **Check the [FAQ][faq] for answers to common questions.**
+- **Try the documentation [index][genindex] or the [detailed table of contents][mastertoc].**
+- **If you still can't find the information you need, see [asking questions on GitHub][asking].**
+- **[Report bugs][issues] following the issue template.**
+- **For business and security inquiries, send an email to <pyarmor@163.com>.**
 
 There are also some third-party learn platforms (not Pyarmor offical)
 
 - **[Ask Pyarmor Guru][gurubase], it is a Pyarmor-focused AI to answer your questions**
-
-[faq]: https://pyarmor.readthedocs.io/en/latest/questions.html
-[issues]: https://github.com/dashingsoft/pyarmor/issues
-[genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
-[mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
-[asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
-[doc]: https://pyarmor.readthedocs.io/
-[gurubase]: https://gurubase.io/g/pyarmor
 
 ## Resources
 
@@ -91,6 +84,8 @@ There are also some third-party learn platforms (not Pyarmor offical)
 * [Documentation][doc]
 * [Documentation 8.x](https://pyarmor.readthedocs.io/en/v8.5.12/)
 * [Documentation 7.x](https://pyarmor.readthedocs.io/en/v7.7/)
+* [Pyarmor 9.1 new features](https://eke.dashingsoft.com/pyarmor/docs/en/index.html)
+* [Pyarmor Learning System](https://eke.dashingsoft.com/pyarmor/)
 
 中文资源
 
@@ -98,6 +93,8 @@ There are also some third-party learn platforms (not Pyarmor offical)
 * [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
 * [Pyarmor 8.x 在线文档](https://pyarmor.readthedocs.io/zh/v8.5.12/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/)
+* [Pyarmor 9.1 新功能](https://eke.dashingsoft.com/pyarmor/docs/zh/index.html)
+* [Pyarmor 学习系统](https://eke.dashingsoft.com/pyarmor/)
 
 ## Changelog
 
@@ -113,3 +110,12 @@ Make sure to read the changelog carefully before upgrading Pyarmor:
 **Upcoming features** at [Pyarmor Release Plan](docs/ReleasePlan.md)
 
 [releases]: https://github.com/dashingsoft/pyarmor/releases
+[faq]: https://pyarmor.readthedocs.io/en/latest/questions.html
+[issues]: https://github.com/dashingsoft/pyarmor/issues
+[genindex]: https://pyarmor.readthedocs.io/en/stable/genindex.html
+[mastertoc]: https://pyarmor.readthedocs.io/en/stable/index.html#table-of-contents
+[asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
+[doc]: https://pyarmor.readthedocs.io/
+[gurubase]: https://gurubase.io/g/pyarmor
+[askeke]: https://eke.dashingsoft.com/pyarmor/ask
+[checklist]: https://pyarmor.readthedocs.io/en/latest/reference/solutions.html
