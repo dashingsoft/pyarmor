@@ -206,7 +206,9 @@ def check_gen_context(ctx, args):
 
     if ctx.runtime_outer and any(
             [ctx.runtime_devices, ctx.runtime_period, ctx.runtime_expired]):
-        raise CliError('--outer conflicts with any -e, --period, -b')
+        # Fix issue 2069
+        if args.inputs[0].lower() not in ('key', 'k'):
+            raise CliError('--outer conflicts with any -e, --period, -b')
 
     if args.pack:
         choices = 'onefile', 'onedir', 'F', 'D', 'FC', 'DC'
