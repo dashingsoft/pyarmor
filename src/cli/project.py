@@ -441,7 +441,6 @@ class Project:
         # "merge" will be loged to external_attrs
         # self.external_attrs = []
 
-
     @property
     def abspath(self):
         return abspath(self.src)
@@ -591,7 +590,7 @@ class Project:
                 self._rft_options = {}
         return self._rft_options
 
-    def opt(self, name):
+    def rft_opt(self, name):
         return self.rft_options.get(name)
 
     @property
@@ -608,7 +607,7 @@ class Project:
         It supports pattern match as fnmatchcase
         Pattern only match one level
         """
-        value = self.opt('exclude_names')
+        value = self.rft_opt('exclude_names')
         if value:
             for x in value.splitlines():
                 yield x
@@ -616,7 +615,7 @@ class Project:
     @property
     def rft_exclude_funcs(self):
         """No touch arguments for listed functions"""
-        value = self.opt('exclude_funcs')
+        value = self.rft_opt('exclude_funcs')
         if value:
             for x in value.splitlines():
                 yield x
@@ -725,7 +724,7 @@ class Project:
         """
         if self._rft_type_rules is None:
             vartypes = {}
-            lines = self.opt('var_types')
+            lines = self.rft_opt('var_types')
             for line in lines.splitlines() if lines else []:
                 varinfo, tname = line.split()
                 if varinfo.endswith('}'):
@@ -754,7 +753,7 @@ class Project:
         """Used external types"""
         if self._used_external_types is None:
             used_types = {}
-            names = self.opt('rft_external_types')
+            names = self.rft_opt('external_types')
             if names is None:
                 names = [
                     'builtins',
@@ -776,7 +775,7 @@ class Project:
         """External types manual"""
         value = self.rft_options.get('external_types', '')
         if value:
-            for x in value:
+            for x in value.split():
                 yield x
 
     @property
@@ -787,7 +786,7 @@ class Project:
         """
         value = self.rft_options.get('external_attrs', '')
         if value:
-            for x in value:
+            for x in value.split():
                 yield x
 
     @property

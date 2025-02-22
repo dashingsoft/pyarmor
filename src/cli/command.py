@@ -158,7 +158,7 @@ class Commander:
         group.add_argument(
             '--mini-rft', dest='target', default='std',
             action="store_const", const='mini-rft',
-            help='only refactor scripts'
+            help='genetate high performance refactor scripts'
         )
         group.add_argument(
             '--list', dest='target', default='std',
@@ -176,7 +176,7 @@ class Commander:
         )
         group.add_argument(
             '--autofix', type=int, choices=(0, 1, 2, 3),
-            help='Generate rft rules by autofix mode'
+            help='Generate refactor rules by autofix mode'
         )
 
         # parser.add_argument(
@@ -348,14 +348,6 @@ class Commander:
 
             pyarmor build --mini
 
-        Generate standard obfuscated scirpts::
-
-            pyarmor build --std
-
-        Generate standard obfuscated scirpts with extra options::
-
-            pyarmor build --std --assert-import --restrict 2
-
         """
         logger.debug('build %s', args)
         cfg = configparser.ConfigParser(
@@ -425,23 +417,23 @@ class Commander:
 
         Show project src
 
-           pyarmor env get src
+           pyarmor env -p get src
 
         Change project src
 
-           pyarmor env set src ../src
+           pyarmor env -p set src ../src
 
         Append project excludes
 
-           pyarmor env push excludes "test*"
+           pyarmor env -p push excludes "test*"
 
         Remove project excludes
 
-           pyarmor env pop excludes "test*"
+           pyarmor env -p pop excludes "test*"
 
         Clear project excludes
 
-           pyarmor env reset excludes
+           pyarmor env -p reset excludes
 
         """
         logger.debug('env %s', args)
