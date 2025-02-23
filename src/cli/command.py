@@ -406,7 +406,8 @@ class Commander:
     def _build(self, project, target, output, value=None):
         from .core import Pytransform3
         args = [self.ctx, target, project, output, value]
-        Pytransform3.pre_build(args)
+        m = Pytransform3.init(self.ctx)
+        m.pre_build(args)
 
     def cmd_env(self, ctx, args):
         """Check and change pyarmor settings
