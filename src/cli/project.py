@@ -759,17 +759,17 @@ class Project:
         """Used external types"""
         if self._used_external_types is None:
             used_types = {}
-            names = self.rft_opt('external_types')
-            if names is None:
-                names = 'builtins .pyarmor/project/rft_external_types.json'
+            names = 'builtins'
             for name in names.split():
                 if name.endswith('.json'):
                     if exists(name):
                         with open(name) as f:
                             used_types.update(jsonload(f))
                 else:
-                    m = name.split('.')[0]
-                    used_types.update(self._get_external_types(m))
+                    modname = name.split(':')[0]
+                    alltypes = self._get_external_types(modname)
+                    if alltypes:
+                        used_types.update(alltypes)
             self._used_external_types = used_types
         return self._used_external_types
 
