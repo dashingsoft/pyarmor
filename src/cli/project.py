@@ -185,6 +185,11 @@ class Module:
         return (self._path if isabs(self._path) else
                 joinpath(self.parent.abspath, self._path))
 
+    @property
+    def destpath(self):
+        s = self.qualname + ('' if self._name else '.__init__')
+        return joinpath(*s.split('.')) + splitext(self.path)[-1]
+
     def compile_file(self, force=False):
         if self._co is not None and not force:
             return
