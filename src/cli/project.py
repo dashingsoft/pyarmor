@@ -341,6 +341,7 @@ class Project:
     """
 
     ATTR_LOGFILE = '.pyarmor/project/rft_unknown_attrs.log'
+    CALL_LOGFILE = '.pyarmor/project/rft_unknown_calls.log'
 
     def __init__(self, ctx):
         self.ctx = ctx
@@ -427,7 +428,7 @@ class Project:
         #
         #     self.unknown_calls.append("foo:fa:c.runner.echo*")
         #
-        self.unknown_calls = []
+        self.unknown_calls = None
 
         # Log all attributes which is external base class attr
         #
@@ -755,11 +756,8 @@ class Project:
             used_types = {}
             names = self.rft_opt('external_types')
             if names is None:
-                names = [
-                    'builtins',
-                    '.pyarmor/project/rft_external_types.json'
-                ]
-            for name in names:
+                names = 'builtins .pyarmor/project/rft_external_types.json'
+            for name in names.split():
                 if name.endswith('.json'):
                     if exists(name):
                         with open(name) as f:
@@ -911,9 +909,11 @@ class Project:
 
     def start(self):
         self._logfile = open(self.ATTR_LOGFILE, 'w')
+        self._logfile2 = open(self.CALL_LOGFILE, 'w')
 
     def stop(self):
         self._logfile.close()
+        self._logfile2.close()
 
     def log_unknown_attr(self, line):
         fields = line.split(':')
@@ -928,9 +928,9 @@ class Project:
         if func not in self.unknown_funcs:
             self.unknown_funcs.append(func)
 
-    def log_unknown_call(self, func):
-        if func not in self.unknown_calls:
-            self.unknown_calls.append(func)
+    def log_unknown_call(self, line):
+        self.unknown_calls = True
+        self._logfile2.write(line + '\n')
 
     def _get_external_types(self, modname, pypaths=None):
         from sys import executable
