@@ -38,6 +38,16 @@ def only_protest(func):
     return wrap
 
 
+def only_v9test(func):
+
+    def wrap(self, *args, **kwargs):
+        if self.is_trial() or sys.version_info[1] < 9:
+            self.skipTest('v9 pro case')
+        func(self, *args, **kwargs)
+
+    return wrap
+
+
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -47,6 +57,13 @@ class BaseTestCase(unittest.TestCase):
 
     def is_trial(self):
         return not os.path.exists(os.path.join(self.home, 'license.lic'))
+
+    def copy_mini_extension(self):
+        root, ext = (('C:/', '.pyd') if sys.platform == 'windows'
+                     else (os.path.expanduser('~'), '.so'))
+        tag = f'cp3.{sys.version_info[1]}'
+        plat = 'darwin.x86_64'
+        shutil.copy(f'{root}/workspace/pytransform/slight/extensions/{plat}/libs/{tag}/pyarmor_mini{ext}', '.')
 
     def tearDown(self):
         shutil.rmtree(self.local_path, ignore_errors=True)
@@ -384,6 +401,34 @@ class UnitTestCases(BaseTestCase):
             'function f',
             'hello bob',
         ]]))
+
+    @only_v9test
+    def test_v9_rft_foo(self):
+        args = ['init', '-e', 'samples/foo.py']
+        self.pyarmor_cmd(args)
+        args = ['build', '--rft']
+        self.pyarmor_cmd(args)
+        self.verify_dist_foo()
+
+    @only_v9test
+    def test_v9_mini_foo(self):
+        self.copy_mini_extension()
+        args = ['init', '-e', 'samples/foo.py']
+        self.pyarmor_cmd(args)
+        args = ['build', '--mini']
+        self.pyarmor_cmd(args)
+        shutil.copy('pyarmor_mini.so', 'dist')
+        self.verify_dist_foo()
+
+    @only_v9test
+    def test_v9_mini_rft_foo(self):
+        self.copy_mini_extension()
+        args = ['init', '-e', 'samples/foo.py']
+        self.pyarmor_cmd(args)
+        args = ['build', '--mini-rft']
+        self.pyarmor_cmd(args)
+        shutil.copy('pyarmor_mini.so', 'dist')
+        self.verify_dist_foo()
 
 
 if __name__ == '__main__':
