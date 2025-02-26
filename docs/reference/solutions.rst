@@ -13,6 +13,8 @@ Build Device
 
 If something is wrong in build device, check this section.
 
+.. _fix-bootstrap-issue:
+
 Bootstrap failed
 ----------------
 
@@ -90,6 +92,8 @@ Bootstrap failed
 
 4. If this platform is supported, try to upgrade Python interpreter to latest patch version. For example, upgrade Python 3.11.0b2 to 3.11.9
 
+.. _fix-register-issue:
+
 Registration Failed
 -------------------
 
@@ -147,6 +151,8 @@ If it returns as above, but still failed to register, report issue with license 
 
 1. Check docker host and container network, make sure they're in same network
 
+.. _fix-obfuscate-issue:
+
 Obfuscation failed
 ------------------
 
@@ -175,6 +181,8 @@ Please check above section `Registration Failed`
    - A script as simple as possible to reproduce issue
    - Do not use the options which doesn't make sense for this issue
 
+.. _fix-pack-issue:
+
 Packing failed
 --------------
 
@@ -187,6 +195,8 @@ Target Device
 =============
 
 If your own code in the obfuscated script still isn't executed, check `Bootstrap failed`, otherwise check `failed to run obfuscated scripts` or `failed to run the packed obfuscated scripts`
+
+.. _fix-runtime-bootstrap-issue:
 
 Bootstrap failed
 ----------------
@@ -244,6 +254,8 @@ If still not work, please check :doc:`environments` to make sure Pyarmor support
 2. Use `pyarmor cfg assert.call:excludes "xxx"` and `pyarmor cfg assert.import:excludes "xxx"` to exclude problem modules and functions
 3. Find the problem option, and report issue
 
+.. _fix-run-obfuscated-script-issue:
+
 Failed to run obfuscated scripts
 --------------------------------
 
@@ -268,6 +280,8 @@ Check solutions in :ref:`using rftmode`
 First use a hello world script to make sure it works. If it doesn't work, check your configuration and try again in clean environments
 
 Check solutions in :ref:`using bccmode`
+
+.. _fix-run-packed-script-issue:
 
 Failed to run the packed obfuscated scripts
 -------------------------------------------
