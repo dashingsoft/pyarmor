@@ -27,7 +27,7 @@ How the documentation is organized
 
    New features introduced by Pyarmor 9.1.0 are moved to Pyarmor Learning System
 
-   https:://eke.dashingsoft.com/pyarmor/docs/en/index.html
+   https://eke.dashingsoft.com/pyarmor/docs/en/index.html
 
    It includes 3 commands: `pyarmor init`, `pyarmor env`, `pyarmor build`
 
