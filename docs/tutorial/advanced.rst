@@ -388,6 +388,8 @@ When obfuscated scripts start, it checks :envvar:`LANG` to get current language 
     export PYARMOR_LANG=zh_TW
     python dist/foo.py
 
+.. _generating cross platform scripts:
+
 Generating cross platform scripts
 =================================
 
@@ -408,6 +410,8 @@ Using :option:`--platform` multiple times to support multiple platforms. For exa
                   --platform linux.x86_64 \
                   --platform darwin.x86_64 \
                   foo.py
+
+.. _support-multiple-python-versions:
 
 Obfuscating scripts for multiple Python versions
 ================================================

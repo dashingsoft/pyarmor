@@ -66,7 +66,7 @@ Please read the [Pyarmor EULA](LICENSE).
 
 ## Getting Help
 
-- **[Look through check list][checklist]**
+-- **[Ask in learning system][askeke] or [look through check list][checklist]**
 - **Consult the [Pyarmor Documentation][doc].**
 - **Check the [FAQ][faq] for answers to common questions.**
 - **Try the documentation [index][genindex] or the [detailed table of contents][mastertoc].**
