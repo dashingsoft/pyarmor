@@ -37,6 +37,10 @@ Notes
 * Once CI regfile doesn't work, require new one
 * One license can request <= 100 CI regfiles
 
+.. note::
+
+   In GitHub Action, it may be one extra step, refer to this thread `Error when using CI license in CI pipeline <https://github.com/dashingsoft/pyarmor/discussions/2004>`_
+
 .. important::
 
    In CI/CD pipeline, each run will send license and docker information to Pyarmor License Server, excessive requests or requests beyond normal usage may be rejected by Pyarmor License Server
