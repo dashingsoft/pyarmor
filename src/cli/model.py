@@ -323,7 +323,7 @@ SECTIONS = {
             value='3',
         ),
         OptionModel(
-            name='auto_export_mode',
+            name='export_mode',
             cls='BoolOption',
             value=0,
         ),

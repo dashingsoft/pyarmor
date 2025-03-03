@@ -533,7 +533,7 @@ class Project:
           1, reform string by rft_string_filters
           2, reform all string
 
-        - auto_export_mode: bool
+        - export_mode: bool
 
           True: auto export all names in module.__all__
 
