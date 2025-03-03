@@ -39,7 +39,17 @@ Notes
 
 .. note::
 
-   In GitHub Action, it may be one extra step, refer to this thread `Error when using CI license in CI pipeline <https://github.com/dashingsoft/pyarmor/discussions/2004>`_
+   In GitHub Action, it need one extra step, otherwise `CI license only works in CI/CD pipeline`
+
+   1. For Ubuntu, add this step::
+
+        - run: sudo mv /dev/disk /dev/disk-none
+
+   2. For Darwin, add this step::
+
+        - run: sudo mv /dev/rdisk0 /dev/rdisk0-none
+
+   Refer to this thread `Error when using CI license in CI pipeline <https://github.com/dashingsoft/pyarmor/discussions/2004>`_
 
 .. important::
 
