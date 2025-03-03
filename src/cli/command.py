@@ -65,12 +65,12 @@ class Commander:
         parser.add_argument(
             '-x', '--exclude', metavar='PATTERN',
             dest='excludes', action='append',
-            help='exclude file or path from src'
+            help='exclude file or path'
         )
 
         parser.add_argument(
-            '-r', '--recursive', action='store_true',
-            help='search modules and packages recursively'
+            '-r', '--recursive', choices=(0, 1, 2, 3),
+            help='how to search modules and packages'
         )
         parser.add_argument(
             '-C', '--clean', action='store_true',
