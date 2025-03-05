@@ -43,14 +43,14 @@ modules = pattern pattern ...
 packages = pattern path@name @section ...
 excludes = patterh patterh ...
 
-rpath = path path
+pypaths = path modname::path
 
 Examples
 --------
 
-1. Create a project in current path
+1. Create a project with scripts/packages in current path
 
-    $ pyarmor init
+    $ pyarmor init -r
 
 2. Obfuscate all the scripts in the project
 
@@ -766,7 +766,7 @@ class Project:
                         with open(name) as f:
                             used_types.update(jsonload(f))
                 else:
-                    modname = name.split(':')[0]
+                    modname = name.split('::')[0]
                     alltypes = self._get_external_types(modname)
                     if alltypes:
                         used_types.update(alltypes)
@@ -876,8 +876,7 @@ class Project:
                 # 3 forms: path, path@name, @sect
                 i = item.find('@')
                 if i == 0:
-                    logger.info('package at section %s', item)
-                    continue
+                    raise NotImplementedError(f'package {item}')
                 if i == -1:
                     path, pkgname = item, basename(item)
                 else:
@@ -887,7 +886,8 @@ class Project:
                 obj = Package(path, name=pkgname, parent=self)
                 self._packages.append(obj)
 
-        elif not modules and not scripts:
+        recursive = data.get('recursive', '0')
+        if recursive == '1':
             pkginit = joinpath(src, '__init__.py')
             if exists(pkginit):
                 pkgname = name if name else basename(src)
@@ -974,6 +974,187 @@ class Project:
             if clsname is None:
                 return extypes
         return extypes.get('%s.%s' % (modname, clsname), [])
+
+    def preview_autofix_result(self, mode):
+        if mode not in (2, 3):
+            return
+        output = f'.pyarmor/project/rft_autofix.{mode}.org'
+
+        rulefile = '.pyarmor/project/rft_autofix.rules'
+        if not exists(rulefile):
+            logger.info('no found %s', rulefile)
+            return
+        with open(rulefile) as f:
+            fixtable = jsonload(f)
+
+        if mode == 2:
+            self._preview_autofix_2(fixtable, output)
+        elif mode == 3:
+            self._preview_autofix_3(fixtable, output)
+
+    def _preview_autofix_2(self, fixtable, output):
+        modules = fixtable['modules']
+        attrinfo = {}
+        with open(self.ATTR_LOGFILE) as f:
+            # Line format:
+            # modname:scopes:attrs:index:begin_line,end_line
+            for line in f:
+                line = line.strip()
+                fields = line.split(':')
+                modname, scope = fields[:2]
+                attrs = [x for x in fields[2].split('.')
+                         if x[:1] not in ('(', '[')]
+                start = int(fields[3])
+                lineno = [int(x) for x in fields[4].split(',')]
+                for s in attrs[start:]:
+                    attrinfo.setdefault(s, [])
+                    fname = modules.get(modname, modname)
+                    title = ':'.join([
+                        modname, scope, '.'.join(attrs)
+                    ])
+                    attrinfo[s].append([fname, lineno[0], title])
+
+        header = Template(dedent("""\
+        * RFT AutoFix Mode 2
+
+        The following attributes have been renamed, if any of
+        them should not be renamed, configure it as external
+        attribute and run autofix mode again.
+
+        For example, suppose `append` is external attribute:
+
+            pyarmor env -p push rft:external_attrs append
+            pyarmor build --autofix 2
+            pyarmor build --rft
+
+        Refactoring Attribute List
+
+        $attrs
+
+        """))
+        attrsect = Template(dedent("""\
+        ** $name
+
+        $srclinks
+
+        """))
+
+        inattrs = fixtable.get('include_attrs', [])
+        rftattrs = header.substitute(attrs='\n'.join(
+            [f'[[*{x}][{x}]]' for x in inattrs]))
+        with open(output, 'w') as fp:
+            fp.write(rftattrs)
+            for attr in inattrs:
+                infos = attrinfo.get(attr)
+                if infos is None:
+                    continue
+                fp.write(attrsect.substitute(
+                    name=attr,
+                    srclinks='\n'.join([
+                        f'- [[file:{fname}::{n}][{title}]]'
+                        for fname, n, title in infos
+                    ])
+                ))
+
+    def _preview_autofix_3(self, fixtable, output):
+        modules = fixtable['modules']
+        confused_names = fixtable.get('confused_names', [])
+        attrules = {}
+        rftattrs = {}
+        with open(self.ATTR_LOGFILE) as f:
+            # Line format:
+            # modname:scopes:attrs:index:begin_line,end_line
+            for line in f:
+                fields = line.strip().split(':')
+                modname, scope = fields[:2]
+                attrs = [x for x in fields[2].split('.')
+                         if x[:1] not in ('(', '[')]
+                start = int(fields[3])
+                lineno = fields[4].split(',')[0]
+                actions = ['*'] * start
+                rnames = []
+                for s in attrs[start:]:
+                    if s in confused_names:
+                        actions.append('?')
+                        rnames.append(s)
+                    else:
+                        actions.append('*')
+                if rnames:
+                    aname = '.'.join(attrs)
+                    pat = '.'.join(actions)
+                    filename = modules.get(modname, modname)
+                    rule = f'{modname}::{scope}:{aname} {pat}'
+                    anchor = modname, filename, lineno
+                    if rule not in attrules:
+                        attrules[rule] = [anchor]
+                    else:
+                        attrules[rule].append(anchor)
+                    s = rnames[0]
+                    rftattrs.setdefault(s, set())
+                    rftattrs[s].add(rule)
+
+        header = Template(dedent("""\
+        * RFT AutoFix Mode 3
+
+        The following attributes have been renamed, if any of
+        them should not be renamed, add one attribute rule and
+        run autofix mode again.
+
+        For example, there is one line
+
+            *** rftbuild::log_patch_script:cfgpatch.append *.?
+            - rftbuild.py::2690
+
+        But `cfgpatch` is builtin type `list`, and its attribute
+        `append` shouldn't be renamed
+
+        In this case, replace `?` with `*`, add one rule:
+
+            pyarmor env -p push rft:attr_rules "rftbuild::log_patch_script:cfgpatch.append *.*"
+
+        Then rebuild the project:
+
+            pyarmor build --autofix 3
+            pyarmor build --rft
+
+        Refactoring Attribute List
+
+        $attrs
+
+        """))
+        attrsect = Template(dedent("""\
+        ** $name
+
+        $rules
+
+        """))
+
+        rulesect = Template(dedent("""\
+        *** $rule
+        $srclinks
+        """))
+
+        attrs = sorted(rftattrs.keys())
+        with open(output, 'w') as fp:
+            fp.write(header.substitute(
+                attrs='\n'.join([f'[[*{x}][{x}]]' for x in attrs])
+            ))
+            for key in attrs:
+                rules = rftattrs[key]
+                rlist = []
+                for r in rules:
+                    infos = attrules[r]
+                    rlist.append(rulesect.substitute(
+                        rule=r,
+                        srclinks='\n'.join([
+                            f'- [[file:{s}::{n}][{m}:{n}]]'
+                            for m, s, n in infos
+                        ])
+                    ))
+                fp.write(attrsect.substitute(
+                    name=key,
+                    rules='\n'.join(rlist)
+                ))
 
     def _as_dot(self):
         """Map project to dot graph"""

@@ -23,7 +23,7 @@ import argparse
 import configparser
 import shlex
 
-from os import makedirs
+from os import makedirs, remove as rmfile
 from os.path import abspath, exists, join as joinpath, relpath
 
 from . import logger, CliError
@@ -69,8 +69,8 @@ class Commander:
         )
 
         parser.add_argument(
-            '-r', '--recursive', choices=(0, 1, 2, 3),
-            help='how to search modules and packages'
+            '-r', '--recursive', action='store_true',
+            help='Search modules and packages recursively'
         )
         parser.add_argument(
             '-C', '--clean', action='store_true',
@@ -263,7 +263,17 @@ class Commander:
         if args.clean:
             logger.info('clean old project')
             if cfg.has_section(sectname):
+                logger.debug('remove cfg section: project')
                 cfg.remove_section(sectname)
+            if cfg.has_section('rft'):
+                logger.debug('remove cfg section: rft')
+                cfg.remove_section('rft')
+            propath = joinpath(ctx.local_path, 'project')
+            for name in ['rft_autofix.rules']:
+                profile = joinpath(propath, name)
+                if exists(profile):
+                    logger.debug('remove file: %s', profile)
+                    rmfile(profile)
 
         if cfg.has_section(sectname):
             logger.info('change project settings')
@@ -309,7 +319,7 @@ class Commander:
             data['packages'] = format_path(args.packages)
 
         if args.recursive:
-            data['recursive'] = 1
+            data['recursive'] = '1'
 
         for key, value in data.items():
             old = sect.get(key)
@@ -391,6 +401,7 @@ class Commander:
             output = args.output if args.output else 'dist'
             self._build(project, 'autofix', output, value)
             logger.info('build auto-fix-table:%s end', value)
+            project.preview_autofix_result(value)
         elif args.randname is not None:
             value = args.randname
             logger.info('build rand-pool:%s ...', value)

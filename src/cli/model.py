@@ -299,6 +299,11 @@ SECTIONS = {
             cls='BoolOption',
             value=0,
         ),
+        OptionModel(
+            name='pypaths',
+            cls='PatternOption',
+            many=True,
+        ),
     ],
 
     'rft': [
@@ -333,10 +338,6 @@ SECTIONS = {
             many=True,
         ),
         OptionModel(
-            name='var_types',
-            cls='DictOption',
-        ),
-        OptionModel(
             name='exclude_names',
             cls='RftNamePattern',
             many=True,
@@ -363,6 +364,10 @@ SECTIONS = {
         OptionModel(
             name='call_rules',
             cls='RftAttrFilter',
+        ),
+        OptionModel(
+            name='var_types',
+            cls='DictOption',
         ),
     ],
     'rft_filter': [
