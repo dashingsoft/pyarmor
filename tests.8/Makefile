@@ -103,7 +103,7 @@ test-%:
 install-%:
 	@rm -rf ./pyarmor ./pyarmor.cli.core.themida*
 	@tar xzf ${pkgpath}/pyarmor-${testver}.tar.gz
-	@cp ${pkgpath}/mini.extensions/${HOST}/libs/cp${PYVER}/pyarmor_mini.* .
+	@test -d ${pkgpath}/mini.extensions/${HOST} && cp ${pkgpath}/mini.extensions/${HOST}/libs/cp${PYVER}/pyarmor_mini.* .
 	@mv pyarmor-${testver}/pyarmor .
 	@rm -rf pyarmor-${testver}
 	@unzip ${whlpath}/pyarmor.cli.core-${corever}-cp$(subst .,,$(subst install-,,$@))-none-${platform}.whl > /dev/null
