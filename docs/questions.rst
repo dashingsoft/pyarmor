@@ -371,6 +371,10 @@ Upgrading
 
   There is no identical pack in Pyarmor 8, Pyarmor 8+ only provide repack function to handle bundle of PyInstaller. Refer to basic tutorial, topic `insight into pack`__ and this solved issue `Pyarmor pack missing in pyarmor 8.0`__
 
+**Using PyArmor 9.x newer version, we cannot generated licenses compatible with "Software" created using older PyArmor (7.x versions), mainly using license.lic. Correct?**
+
+  You're right. At this time one possible solution is still using Pyarmor 7 obfuscated script to verify old runtime key, in Pyarmor 9 obfuscated script check old runtime key by calling Pyarmor 7 obfuscated script indirectly (IPC)
+
 __ https://pyarmor.readthedocs.io/en/stable/topic/repack.html
 __ https://github.com/dashingsoft/pyarmor/discussions/1107
 

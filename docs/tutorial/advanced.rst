@@ -480,4 +480,13 @@ If using :term:`outer key` with runtime package, it need specify `--outer` both 
     $ pyarmor gen key -e .10
     $ mv dist/pyarmor.rkey dist/pyarmor_runtime_000000
 
+.. _check-pyarmor-7-license:
+
+Working with old runtime key
+============================
+
+If still need check Pyarmor 7 runtime key in the obfuscated scripts of Pyarmor 9, here it's one possible solution
+
+The idea is still using Pyarmor 7 obfuscated script to verify old runtime key, in Pyarmor 9 obfuscated script check old runtime key by calling Pyarmor 7 obfuscated script indirectly (IPC)
+
 .. include:: ../_common_definitions.txt
