@@ -964,7 +964,7 @@ class Project:
 
     def _get_external_types(self, modname, pypaths=None):
         from sys import executable
-        from subprocess import check_output, CalledProcessError
+        from subprocess import check_output, CalledProcessError, DEVNULL
         source = Template(dedent("""\
         import json
         import sys
@@ -985,12 +985,16 @@ class Project:
         """)).substitute(name=modname, pypaths=repr(pypaths))
 
         try:
-            output = check_output([executable, '-c', source])
+            output = check_output([executable, '-c', source], stderr=DEVNULL)
             return jsonloads(output)
         except CalledProcessError:
             pass
 
     def get_external_type(self, modname, clsname=None):
+        if not all([x.isidentifier() for x in modname.split('.')]):
+            logger.debug('invalid external module: %s', modname)
+            return []
+
         extypes = self.used_external_types
         if modname not in extypes:
             result = self._get_external_types(modname)
