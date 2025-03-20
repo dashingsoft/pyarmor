@@ -241,17 +241,34 @@ class Script(Module):
 class Package(Module):
     """Package concept"""
 
-    def __init__(self, path, name=None, parent=None):
+    def __init__(self, path, name=None, parent=None, excludes=[]):
         super().__init__(path, name=name, parent=parent)
 
         self._modules = None
         self._packages = None
+        self._excludes = excludes if excludes else GLOBAL_EXCLS
+        self._filters = None
+
+    @property
+    def filters(self):
+        if self._filters is None:
+            self._filters = []
+            for x in self._excludes:
+                i = x.find(':')
+                if i == -1:
+                    self._filters.append(x)
+                elif fnmatch(self.qualname, x[:i]):
+                    self._filters.append(x[i+1:])
+        return self._filters
 
     def load(self):
-        excludes = GLOBAL_EXCLS
-        files, dirs = scan_path(self.abspath, excludes=excludes)
+        excls = self.filters
+        files, dirs = scan_path(self.abspath, excludes=excls)
         self._modules = [Module(x, parent=self) for x in files]
-        self._packages = [Package(x, parent=self) for x in dirs]
+        self._packages = [
+            Package(x, parent=self, excludes=self._excludes)
+            for x in dirs
+        ]
 
     @property
     def modules(self):
@@ -858,17 +875,19 @@ class Project:
         src = self.src = data['src']
         name = data.get('name')
         excludes = vlist('excludes') + list(GLOBAL_EXCLS)
+        proexcls = [x.strip(':') for x in excludes
+                    if x.find(':') < 1]
 
         scripts = []
         for pat in vlist('scripts'):
-            scripts.extend(search_item(src, pat, excludes))
+            scripts.extend(search_item(src, pat, proexcls))
         self._scripts.extend([
             Script(self.relsrc(x), parent=self) for x in scripts
         ])
 
         modules = []
         for pat in vlist('modules'):
-            modules.extend(search_item(src, pat, excludes))
+            modules.extend(search_item(src, pat, proexcls))
 
         packages = vlist('packages')
         if packages:
@@ -883,7 +902,10 @@ class Project:
                     path, pkgname = item.split('@')
                 if not isabs(path):
                     path = joinpath(src, path)
-                obj = Package(path, name=pkgname, parent=self)
+                obj = Package(path,
+                              name=pkgname,
+                              parent=self,
+                              excludes=excludes)
                 self._packages.append(obj)
 
         recursive = data.get('recursive', '0')
@@ -891,10 +913,13 @@ class Project:
             pkginit = joinpath(src, '__init__.py')
             if exists(pkginit):
                 pkgname = name if name else basename(src)
-                obj = Package(src, name=pkgname, parent=self)
+                obj = Package(src,
+                              name=pkgname,
+                              parent=self,
+                              excludes=excludes)
                 self._packages.append(obj)
             else:
-                files, dirs = scan_path(src, excludes=excludes)
+                files, dirs = scan_path(src, excludes=proexcls)
                 modules.extend([joinpath(src, x) for x in files])
                 self._packages.extend([
                     Package(x, parent=self) for x in dirs
