@@ -81,7 +81,7 @@ whlpath := $(shell (test -d ${whlpath} && echo ${whlpath}) || echo ./pkgdist)
 
 pkgfile := $(word 1,$(shell cd ${pkgpath}; ls -t pyarmor-*.tar.gz))
 testver := $(subst pyarmor-,,$(subst .tar.gz,,${pkgfile}))
-coreprefix := pyarmor.cli.core-
+coreprefix := pyarmor_cli_core-
 coresuffix := -cp38-none-macosx_10_14_x86_64.whl
 corever=$(subst ${coreprefix},,$(subst ${coresuffix},,$(shell cd ${whlpath}; ls -t ${coreprefix}*${coresuffix})))
 
@@ -101,14 +101,14 @@ test-%:
 	PYVER=$(subst test-,,$@) make install-$(subst test-,,$@) atest ptest
 
 install-%:
-	@rm -rf ./pyarmor ./pyarmor.cli.core.themida*
+	@rm -rf ./pyarmor ./pyarmor_cli_core_themida*
 	@tar xzf ${pkgpath}/pyarmor-${testver}.tar.gz
-	@test -d ${pkgpath}/mini.extensions/${HOST} && cp ${pkgpath}/mini.extensions/${HOST}/libs/cp${PYVER}/pyarmor_mini.* .
+	-@test -d ${pkgpath}/mini.extensions/${HOST} && cp ${pkgpath}/mini.extensions/${HOST}/libs/cp${PYVER}/pyarmor_mini.* .
 	@mv pyarmor-${testver}/pyarmor .
 	@rm -rf pyarmor-${testver}
-	@unzip ${whlpath}/pyarmor.cli.core-${corever}-cp$(subst .,,$(subst install-,,$@))-none-${platform}.whl > /dev/null
-	@(themida=../pyarmor.cli.core.themida-${corever}-cp$(subst .,,$(subst install-,,$@))-none-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
-	@rm -rf pyarmor.cli.core-${corever}.dist-info
+	@unzip ${whlpath}/pyarmor_cli_core-${corever}-cp$(subst .,,$(subst install-,,$@))-none-${platform}.whl > /dev/null
+	@(themida=../pyarmor_cli_core_themida-${corever}-cp$(subst .,,$(subst install-,,$@))-none-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
+	@rm -rf pyarmor_cli_core-${corever}.dist-info
 
 atest:
 	${PYTHON} accept_test.py
