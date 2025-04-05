@@ -279,13 +279,15 @@ class Register(object):
         regname = regname.encode('utf-8')
         product = product.encode('utf-8')
         notes = notes.encode('utf-8')
-        data = pack('<II8x20s28xBB2sB2sB2s', token,
+        sizes = len(regname), len(product), len(notes)
+        data = pack('<II8x20s28xBB{0}sB{1}sB{2}s'.format(*sizes),
+                    token,
                     rev | features << 8,
                     licno.encode('utf-8'),
                     0,
-                    len(regname), b'%s',
-                    len(product), b'%s',
-                    len(notes), b'%s') % (regname, product, notes)
+                    sizes[0], regname,
+                    sizes[1], product,
+                    sizes[2], notes)
         return b64encode(data) + b' *=='
 
     def register_regfile(self, regfile, clean=True):
