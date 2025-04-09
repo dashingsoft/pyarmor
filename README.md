@@ -74,9 +74,9 @@ Please read the [Pyarmor EULA](LICENSE).
 - **[Report bugs][issues] following the issue template.**
 - **For business and security inquiries, send an email to <pyarmor@163.com>.**
 
-There are also some third-party learn platforms (not made by Pyarmor Team, the answer doesn't stand for Pyarmor Team's opinion)
+There are also some third-party learn platforms
 
-- **[Ask Pyarmor Guru][gurubase], it is a Pyarmor-focused AI to answer your questions**
+- **[Ask Pyarmor Guru][gurubase], it is a Pyarmor-focused AI to answer your questions** (not made by Pyarmor Team, the answer doesn't stand for Pyarmor Team's opinion)
 
 ## Resources
 
