@@ -126,7 +126,7 @@ Terms of Use
 
    If you have purchased Pyarmor License for one product, but you have another product, and the total revenue of the other project is less than 100 x Pyarmor License fee, you could rent this license in your aother product
 
-   Pyarmor Pro License still could be used in CI/CD pipeline for low volume (100 runs per month)
+   Pyarmor Pro License could be used in CI/CD pipeline for low volume (100 runs per month, only for debug purpose)
 
    Pyarmor CI License has rate limit in CI/CD pipeline
 
