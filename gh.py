@@ -429,9 +429,11 @@ class Github(cmd.Cmd):
 
             body = read_body('Add discussion comment:')
             if body:
+                body = body.encode("unicode_escape").decode()
+                # body.replace('"', r'\"')
                 query = query_add_discussion_comment.substitute(
                     discussionId=discussionId,
-                    body=body.replace('"', r'\"'))
+                    body=body)
                 call_query(cmd_discussion_graphql, query)
 
     def do_dd(self, arg):
