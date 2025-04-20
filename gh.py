@@ -275,6 +275,7 @@ def call_query(cmd, query):
 
 
 def read_body(prompt):
+    """Input line by line, CTRL+D to end, CTRL+C to cancel"""
     lines = []
 
     try:
@@ -284,6 +285,8 @@ def read_body(prompt):
                 print()
             lines.append(s)
             s = input()
+    except EOFError:
+        pass
     except KeyboardInterrupt:
         lines.clear()
         print('Abort by user, there is nothing to do')
