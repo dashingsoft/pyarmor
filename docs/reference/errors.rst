@@ -214,4 +214,20 @@ By searching error message in google or any other search engine to find the solu
 
 __ https://github.com/dashingsoft/pyarmor/discussions/1674
 
+**No such file or directory: 'nul'**
+
+Generally something is wrong with Windows System.
+
+Try to create NUL device again by this command::
+
+    sc create null binpath=C:\Windows\System32\drivers\null.sys type=kernel start=auto error=normal
+
+Then start null::
+
+    sc start null
+
+If it works, this problem should be fixed.
+
+If not, please google the solution. It's Windows System issue.
+
 .. include:: ../_common_definitions.txt
