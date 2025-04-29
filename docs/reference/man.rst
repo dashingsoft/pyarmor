@@ -544,6 +544,8 @@ Use :term:`JIT` to process some sensitive data to improve security.
 
             Mix the string constant in scripts :sup:`basic`
 
+            This option doesn't touch any docstring
+
 It may reduce performance if there are too many strings, in this case, only mix important strings by filter.
 
 .. seealso:: `Filter mix string` in :doc:`../tutorial/advanced`

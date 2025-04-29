@@ -252,6 +252,10 @@ Encrypt only string length between 8 and 32 by regular expression::
 
 Check trace log to find which strings are protected.
 
+.. note::
+
+   This option doesn't touch any docstring
+
 Filter assert function and import
 =================================
 
