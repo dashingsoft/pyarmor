@@ -568,6 +568,8 @@ class WebRegister(Register):
             else:
                 lines.append(upgrade_to_basic_info.substitute())
         else:
+            if info['lictype'] == 'OLD':
+                raise CliError('old license only works for Pyarmor <= 7.7.4')
             if info['lictype'] not in ('BASIC', 'PRO', 'GROUP', 'CI'):
                 raise CliError('unknown license type %s' % info['lictype'])
             lines.append('This license registration information will be')
