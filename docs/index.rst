@@ -8,6 +8,16 @@
 :Authors: |Author|
 :Copyright: This document has been placed in the public domain.
 
+.. important::
+
+   New features introduced by Pyarmor 9.1.0 are moved to Pyarmor Learning System
+
+   https://eke.dashingsoft.com/pyarmor/docs/en/index.html
+
+   It includes 3 commands: `pyarmor init`, `pyarmor env`, `pyarmor build`
+
+   And new obfuscated script types: `rft`, `mini`, `vmc`, `ecc`
+
 How the documentation is organized
 ==================================
 
@@ -22,16 +32,6 @@ How the documentation is organized
 * :doc:`Part 4: Topics <part-4>` guides insight into key topics and provide useful background information and explanation. They describe how it works and how to use it but assume that you have a basic understanding of key concepts.
 
 * :doc:`Part 5: Licenses <licenses>` describes EULA of |Pyarmor|, the different |Pyarmor| licenses and how to purchase |Pyarmor| license.
-
-.. important::
-
-   New features introduced by Pyarmor 9.1.0 are moved to Pyarmor Learning System
-
-   https://eke.dashingsoft.com/pyarmor/docs/en/index.html
-
-   It includes 3 commands: `pyarmor init`, `pyarmor env`, `pyarmor build`
-
-   And new obfuscated script types: `rft`, `mini`, `vmc`, `ecc`
 
 Getting help
 ============
