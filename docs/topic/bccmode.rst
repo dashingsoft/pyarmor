@@ -239,6 +239,7 @@ Known issues
 * When format string has syntax error, BCC mode may raise `SystemError: NULL object passed to Py_BuildValue`, instead of `SyntaxError` or `ValueError`.
 
   Found in test cases `lib/python3.12/test/test_fstring.py`:
+
   - test_invalid_syntax_error_message
   - test_missing_variable
   - test_syntax_error_for_starred_expressions
