@@ -96,7 +96,7 @@ for name, path, kind in a.binaries:
 
 with open(resfile, 'wb') as f:
     marshal.dump(mlist + list(plist), f)
-with open(hookscript, 'w') as f:
+with open(hookscript, 'w', encoding='utf-8') as f:
     f.write("hiddenimports=[%s]" % ", ".join([repr(x) for x in hiddenimports]))
 '''
 
