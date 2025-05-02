@@ -187,7 +187,29 @@ Here are some changed features in the BCC mode:
 
 * Most of function attributes which starts with ``__`` doesn't exists, or the value is different from the original. For example, there is no `__qualname__` for BCC function.
 
-* The traceback of exception may be empty or different from the original script
+* In the exception handler, `sys.exception()` will return `None`, so the functions depended on `sys.exception` may not work. For example
+
+.. code-block:: python
+
+    import traceback
+
+    def main():
+        try:
+            1 / 0
+        except Exception as e:
+
+            # In BCC mode, sys.exception() will return None, the output is:
+            #    None
+            print(sys.exception())
+
+            # It doesn't work in BCC mode, the output is "NoneType: None"
+            traceback.print_exc()
+
+            # The traceback will be printed by this form in BCC mode
+            # But the traceback doesn't include line no. and source
+            traceback.print_exception(e)
+
+    main()
 
 Unsupported features
 ====================
@@ -218,7 +240,6 @@ And unsupported functions:
 * super
 * locals
 * sys._getframe
-* sys.exc_info
 
 For example, the following functions are not obfuscated by BCC mode, because they use unsupported features or unsupported functions:
 
