@@ -185,7 +185,9 @@ Here are some changed features in the BCC mode:
 
 * Some exception messages may different from the plain script.
 
-* Most of function attributes which starts with ``__`` doesn't exists, or the value is different from the original.
+* Most of function attributes which starts with ``__`` doesn't exists, or the value is different from the original. For example, there is no `__qualname__` for BCC function.
+
+* The traceback of exception may be empty or different from the original script
 
 Unsupported features
 ====================
