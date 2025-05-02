@@ -107,6 +107,9 @@ Here are the list of problem libraries and possible solutions. You are welcome t
    * - `nuitka`_
      - Should work with restrict_module = 0
      - Not verify yet
+   * - `Cython`_
+     - Should work with restrict_module = 0
+     -
 
 .. rubric:: Footnotes
 
@@ -184,5 +187,39 @@ Now obfuscate the scripts::
     $ pyarmor gen foo.py
 
 **It may still not work because of Streamlit may patch code object by itself**
+
+Cython
+------
+
+Here it's an example show how to `cythonize` a python script `foo.py` obfuscated
+by pyarmor::
+
+    print('Hello Cython')
+
+First obfuscate it with some extra options::
+
+    $ pyarmor cfg restrict_module=0
+    $ pyarmor gen foo.py
+    $ ls dist/
+    foo.py pyarmor_runtime_000000
+
+The obfuscated script and runtime files will be saved in the path `dist`
+
+Next `cythonize` the obfuscated script `dist/foo.py` to `foo.c`::
+
+    $ cd dist
+    $ cythonize -3 foo.py
+
+Then compile `foo.c` to the extension modules(it may need extra cfalg ``-fPIC`` in some platforms)::
+
+    $ gcc -shared $(python-config --cflags) $(python-config --ldflags) \
+          -o foo$(python-config --extension-suffix) foo.c
+
+Finally test it, remove `dist/foo.py` and import the extension module::
+
+    $ rm foo.py
+    $ python -c 'import foo'
+
+It will print `Hello Cython` as expected.
 
 .. include:: ../_common_definitions.txt
