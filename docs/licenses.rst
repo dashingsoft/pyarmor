@@ -179,7 +179,7 @@ Open `Pyarmor Shopping Cart`_ in any web browser:
 
     https://jondy.github.io/paypal/index.html
 
-All of these license are only for Pyarmor 8.0 and Python 3.7+, if need work with Pyarmor 7.x which supports Python < 3.7, please purchase `Pyarmor Old License`:
+All of these license are only for Pyarmor 8.0+ with Python 3.7+, if need work with Pyarmor 7.x which supports Python < 3.7, please purchase `Pyarmor Old License`:
 
    https://jondy.github.io/paypal/obsolete.html
 
