@@ -208,7 +208,7 @@ class Register(object):
                 if len(line) == 192 and line.find(' ') == -1:
                     return regname, line
 
-        raise CliError('no registration code found in %s' % filename)
+        raise CliError('invalid activation file "%s"' % filename)
 
     def _register_offline_license(self, fzip, namelist):
         logger.info('machine id in group license: %s', ', '.join(
