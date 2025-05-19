@@ -449,6 +449,8 @@ When need many Pyarmor Licenses in one machine, set each license to different pa
     $ pyarmor --home ~/.pyarmor2 reg pyarmor-regfile-2052.zip
     $ pyarmor --home ~/.pyarmor2 gen project2/foo.py
 
+.. _pyarmor:
+
 What need to do after upgrading Pyarmor
 =======================================
 

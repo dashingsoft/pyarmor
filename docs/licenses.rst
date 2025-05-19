@@ -348,6 +348,22 @@ How many licenses are required
    - Register each product with different license once
    - Use one of registeration file to generate the obfuscated scripts for all the products
 
+.. _how-to-upgrade-license:
+
+How to upgrade Pyarmor Licenses
+-------------------------------
+
+Now it doesn't support to upgrade one Pyarmor License to any other Pyarmor License. For example, upgrade Pyarmor Basic to Pyarmor Pro by paying price difference
+
+There are only the following special cases
+
+- Pyarmor Old License used by Pyarmor <= 7.x could be upgrade to Pyarmor Basic License in some conditions
+- If upgrading Pyarmor v8 to v9, Pyarmor License need to be re-activated
+
+Please refer to `What need to do after upgrading Pyarmor <how-to/register.html#pyarmor>`_
+
+In short, if it could be upgraded successfully by the guide in the documentation, it's OK. If something is wrong, this license can't be upgraded. Pyarmor Team doesn't handle this kind of request, there may be no any reply.
+
 Q & A
 -----
 
