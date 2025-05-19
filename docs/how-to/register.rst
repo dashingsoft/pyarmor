@@ -478,10 +478,7 @@ But in the following versions something is changed
     - If using Pyarmor in CI/CD pipeline, 2 choices
 
       - Still use Pyarmor 8.x as before
-      - Upgrade to Pyarmor 9, it need upgrade :term:`Pyarmor Pro` to :term:`Pyarmor CI`
-
-        - :term:`Pyarmor CI` is paid per year
-        - Please contact pyarmor@163.com if need upgrade to :term:`Pyarmor CI`
+      - Upgrade to Pyarmor 9, and purchase new :term:`Pyarmor CI`
 
   - :term:`Pyarmor Group`
 
