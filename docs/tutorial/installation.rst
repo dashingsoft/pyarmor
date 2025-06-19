@@ -71,6 +71,14 @@ Not all the platforms are supported, more information check :doc:`../reference/e
 
         $ pip install pyarmor.cli
 
+.. note::
+
+   If need install old version Pyarmor, just specify the exact version. For example::
+
+       $ pip install pyarmor==8.5.12
+
+   For more information, please check `pip` doc
+
 Installed command
 -----------------
 
