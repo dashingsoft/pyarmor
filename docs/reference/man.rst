@@ -367,6 +367,8 @@ If DATA has a leading ``@``, then the rest is a filename. Pyarmor reads the bina
 
 For any other case, DATA is converted to bytes as private data.
 
+By special builtin function :func:`__pyarmor__`, the bind data can be read in the obfuscated scripts. Refer to this example `Using hook to bind script to docker ` in the :doc:`../tutorial/customization`
+
 .. option:: --period N
 
 Check :term:`Runtime Key` periodically.
