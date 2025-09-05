@@ -445,7 +445,7 @@ class Register(object):
         ]
         if lictype == 'trial':
             self.notes.append('* Can\'t obfuscate big script and mix str')
-        elif lictype in ('bacic', 'pro'):
+        elif lictype in ('basic', 'pro'):
             self.notes.append('* Need verify license online '
                               'when obfuscating scripts')
         elif lictype == 'group':
