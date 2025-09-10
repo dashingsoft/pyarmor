@@ -554,7 +554,7 @@ It may reduce performance if there are too many strings, in this case, only mix 
 
 .. option:: --assert-call
 
-            Assert function is obfuscated
+            Assert function is obfuscated, this option implies :option:`--private`.
 
 If this option is enabled, Pyarmor scans each function call in the scripts. If the called function is in the obfuscated scripts, protect it as below, and leave others as it is. For example,
 
@@ -586,7 +586,7 @@ In this example, ``fib`` is protected, ``print`` is not.
 
 .. option:: --assert-import
 
-            Assert module is obfuscated
+            Assert module is obfuscated, this option implies :option:`--private`.
 
 If this option is enabled, Pyarmor scans each ``import`` statement in the scripts. If the imported module is obfuscated, protect it as below, and leave others as it is. For example,
 
