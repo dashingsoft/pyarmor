@@ -172,6 +172,42 @@ Now do above test again, it should work::
     ... import joker OK
     ... import joker.queens
 
+.. _using readonly module:
+
+Using readonly module
+---------------------
+
+.. versionadded:: 8.1.9
+
+Readonly module is one simple way to protect the obfuscated package, it only allows the plain scripts import and read the obfuscated module, but can't write or change any attribute or method of obfuscated modules.
+
+Enable readonly module by this way::
+
+    $ pyarmor cfg readonly_module=1
+
+Then obfuscate the whole package::
+
+    $ pyarmor gen --enable-jit --mix-str joker/
+
+Test it::
+
+    $ cd dist
+    $ python
+    >>> import joker
+    >>> dir(joker)
+    >>> joker.aaa = 1
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    RuntimeError: protection exception (16782406)
+
+If only need export a few modules, for example, `joker.card` and `joker.__init__`, the other modules in the package need not be exported, the best way is like these::
+
+    $ pyarmor cfg readonly_module=1
+    $ pyarmor cfg exclude_restrict_modules="__init__ joker.card"
+    $ pyarmor gen --enable-jit --mix-str --assert-call --assert-import --restrict joker/
+
+The modules list in the `exclude_restrict_modules` are readonly, all the others are more restricted.
+
 Copying package data files
 ==========================
 
