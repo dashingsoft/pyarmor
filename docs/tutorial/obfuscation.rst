@@ -177,7 +177,7 @@ Now do above test again, it should work::
 Using readonly module
 ---------------------
 
-.. versionadded:: 8.1.9
+.. versionadded:: 9.1.9
 
 Readonly module is one simple way to protect the obfuscated package, it only allows the plain scripts import and read the obfuscated module, but can't write or change any attribute or method of obfuscated modules.
 
