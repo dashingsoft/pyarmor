@@ -190,6 +190,8 @@ If activation file isn't used, and purchasing date is in 30 days, refund is acce
 
 - For other cases, email to pyarmor@163.com
 
+- Pyarmor Team may charge 5% fee for some refund cases.
+
 Out of 30 days, or activation file has been used, refund request will be rejected.
 
 Appendix
