@@ -93,6 +93,10 @@ Building Errors
          b'NO:missing parameter'
 
        If not return this, but raises exception, it's firewall problem, please configure it to allow Python interpreter to visit `pyarmor.dashingsoft.com:80`
+   * - invalid activation file
+     - Make sure it's the attachment of activation email which title likes `[Pyarmor] License Activation Code`
+       Make sure it's not changed by your email server, it should be same as the email content which starts with `Dear ...` and includes the activation code in one line (it's important there should no line break in the activation code).
+
 
 Runtime Errors
 ==============

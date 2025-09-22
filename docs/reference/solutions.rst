@@ -99,6 +99,13 @@ Registration Failed
 
 If it's using :term:`Activation File` (`pyarmor-regcode-xxxx.txt`), make sure this file is not used more than 3 times, generally once initial registration completed, activation file :file:`pyarmor-regcode-xxxx.txt` is invalid. It should use :term:`Registration File` ``pyarmor-regfile-xxxx.zip`` for any next registration.
 
+**Error: invalid activation file**
+
+It means that the activation file is not issued by Pyarmor Team, please make sure:
+
+- It's exactly the attachment of activation email which title is `[Pyarmor] License Activation Code` and this attchment is NOT modified by your mail server
+- The content of activation file should be same as the email content which starts with `Dear ...` and includes the activation code in one line (it's important there is no line break in the activation code).
+
 **Basic/Pro License**
 
 1. If the date time of this device has been changed, restore it to current time
