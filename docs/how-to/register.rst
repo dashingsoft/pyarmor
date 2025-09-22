@@ -399,7 +399,15 @@ If there is IPv4 Address, for example ``172.22.32.1``, which is in the same netw
 
 Anyway, `pyarmor-auth` must listen on any IPv4 address which is in the same network as docker container.
 
-If there is no available IPv4 address in Windows, the other solution is running `pyarmor-auth` in WSL, in this case, WSL should be taken as offline device.
+If there is no available IPv4 address in Windows, the other solution is running `pyarmor-auth` in WSL, in this case, WSL should be taken as offline device. For example::
+
+    # Create a custom Docker bridge network with a defined subnet
+    docker network create --subnet=172.17.0.0/16 pyarmor-net
+
+    # Run the container on this network and point host.docker.internal at the gateway
+    docker run --network pyarmor-net --add-host host.docker.internal=172.17.0.1 ...
+
+This makes it explicit that the license check requires host and container to be in the same subnet, not just routable.
 
 **When something is wrong**
 
