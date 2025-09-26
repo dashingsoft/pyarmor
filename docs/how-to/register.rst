@@ -409,6 +409,8 @@ If there is no available IPv4 address in Windows, the other solution is running 
 
 This makes it explicit that the license check requires host and container to be in the same subnet, not just routable.
 
+Another solution is to run docker with `--network=host`, it make sure docker container has the same netwok netmask with host.
+
 **When something is wrong**
 
 1. Check docker container network:
