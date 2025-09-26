@@ -357,6 +357,18 @@ In Linux, binding to specify name::
 
       $ pyarmor gen -b "/dev/vda2:KDX3298FS6P5AX380" foo.py
 
+It also supports prefix for each hardware type, for example::
+
+      $ pyarmor gen -b "*HARDDISK:0000_1111_2222_3333 *IFIPV4:11:22:33:44:55:66"
+
+This could fix some runtime key failed issues. All supported prefix are
+
+- ``*MID:``
+- ``*IFMAC:``
+- ``*IFIPV4:``
+- ``*DOMAIN:``
+- ``*HARDDISK:``
+
 .. option:: --bind-data DATA
 
             DATA may be ``@FILENAME`` or string
