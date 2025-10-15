@@ -338,11 +338,11 @@ Using this options multiple times means binding many machines. For example, the 
 
 In case there are more network cards, binding anyone by this form::
 
-    $ pyarmor gen -b "<2a:33:50:46:8f>" foo.py
+    $ pyarmor gen -b "*IFMAC:<2a:33:50:46:8f>" foo.py
 
 Bind all network cards by this form::
 
-    $ pyarmor gen -b "<2a:33:50:46:8f,f0:28:69:c0:24:3a>" foo.py
+    $ pyarmor gen -b "*IFMAC:<2a:33:50:46:8f,f0:28:69:c0:24:3a>" foo.py
 
 In Linux, it's possible to bind named Ethernet card::
 
@@ -359,7 +359,7 @@ In Linux, binding to specify name::
 
 It also supports prefix for each hardware type, for example::
 
-      $ pyarmor gen -b "*HARDDISK:0000_1111_2222_3333 *IFIPV4:11:22:33:44:55:66"
+      $ pyarmor gen -b "*HARDDISK:0000_1111_2222_3333 *IFMAC:11:22:33:44:55:66"
 
 This could fix some runtime key failed issues. All supported prefix are
 
