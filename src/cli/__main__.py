@@ -764,7 +764,7 @@ def main_entry(argv):
     log_settings(ctx, args)
 
     x, y = sys.version_info[:2]
-    if not (x == 3 and y > 6 and y < 14):
+    if not (x == 3 and y > 6 and y < 15):
         raise CliError('Python %s.%s is not supported' % (x, y))
 
     if args.version:
