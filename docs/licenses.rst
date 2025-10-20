@@ -126,7 +126,12 @@ Terms of Use
 
    If you have purchased Pyarmor License for one product, but you have another product, and the total revenue of the other project is less than 100 x Pyarmor License fee, you could rent this license in your aother product
 
-   Pyarmor CI License has rate limit in CI/CD pipeline
+   Pyarmor CI License has rate limit in CI/CD pipeline:
+
+   - 1 run per second
+   - 100 runs per hour
+   - 1,000 runs per day
+   - 10,000 runs per month
 
 In details check `Pyarmor EULA`_
 
