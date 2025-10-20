@@ -53,7 +53,13 @@ Notes
 
 .. important::
 
-   In CI/CD pipeline, each run will send license and docker information to Pyarmor License Server, excessive requests or requests beyond normal usage may be rejected by Pyarmor License Server
+   In CI/CD pipeline, each run will send license and docker information to Pyarmor License Server, excessive requests or requests beyond normal usage may be rejected by Pyarmor License Server. Generally do not exceed any of these rate limits:
+
+   - 1 run per second
+   - 100 runs per hour
+   - 1,000 runs per day
+   - 10,000 runs per month
+
 
    It's not allowed to install Pyarmor in your customer's docker image
 
