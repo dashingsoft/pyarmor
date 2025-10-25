@@ -4,6 +4,14 @@
  Using Pyarmor in CI Pipeline
 ==============================
 
+There are 2 ways to use Pyarmor in CI/CD pipeline:
+
+- Direct way, it's simple, but only works for Trial, Basic and CI license, and there is rate limits
+- Indirect way, it need change the original build workflow, but works for any type license
+
+Direct Way
+==========
+
 **Trial Version** could be used in CI/CD pipeline by one step::
 
     pip install pyarmor
@@ -60,10 +68,40 @@ Notes
    - 1,000 runs per day
    - 10,000 runs per month
 
+   If exceeds any of these limitions, please check the section `High frequency use solution`
 
    It's not allowed to install Pyarmor in your customer's docker image
 
-:term:`Pyarmor Pro` and :term:`Pyarmor Group` License can't be used in CI/CD pipeline directly, but there is one workaround
+When need to request new CI regfile
+-----------------------------------
+
+In the following cases, it need request one new CI regfile
+
+- After :term:`Pyarmor CI` License is expired, all the previous CI regfiles don't work any longer. After the renewal is successful, it need request new CI regfile ``pyarmor-ci-N.zip``
+- After Pyarmor is upgrade one new major/minor version, the old CI regfile may not work in the latest version (but it still works with old Pyarmor version). It need request one new CI regfile by the version. Note that the patch number has no effect for this case, for example, from v9.1.3 to v9.1.8, nothing changed.
+
+High frequency use solution
+---------------------------
+
+.. versionadded:: 9.2.0
+
+For daily build, it need special workflow.
+
+Pyarmor team need verify the project, and understand how many runs per hour and per month probably.
+
+Generally, it should be no more than 1,000 runs per hour.
+
+Each month the free quota is 10, 000 runs, if need more quota, it need extra fees:
+
+- 100,000 per month, extra fee: $10 for one year
+- 200,000 per month, extra fee: $20 for one year
+- 300,000 per month, extra fee: $30 for one year
+- ...
+
+Indirect Way
+============
+
+:term:`Pyarmor Pro` and :term:`Pyarmor Group` License can't be used in CI/CD pipeline directly, but this works
 
 - First obfuscate the scripts in local device and store them to another branch like `master-obf`
 - Then in CI/CD pipeline to check this new branch
