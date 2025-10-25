@@ -10,7 +10,7 @@
 
 .. important::
 
-   New features introduced by Pyarmor 9.1.0 are moved to Pyarmor Learning System
+   New features introduced by Pyarmor 9.1.0 are also availabled here
 
    https://eke.dashingsoft.com/pyarmor/docs/en/index.html
 
