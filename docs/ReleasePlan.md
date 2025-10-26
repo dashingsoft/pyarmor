@@ -86,6 +86,12 @@ Status: developing
 
 **9.2**
 
+Status: developing, released on 2025-12-01, 2 months after Python 3.14 is released
+
+- Support Python 3.14 which will be released on 2025-10-01 as plan
+
+**9.3**
+
 Status: not start
 
 - ECC mode, mini BCC mode, only transform part of function body to C code
@@ -98,16 +104,10 @@ The following features are cancelled because ECC/VMC mode are introduced:
 - BCC mode support cross-platform (may not if too complex) (cancel)
 - Obfuscate string constants in extension module "pyarmor_runtime" (cancel)
 
-**9.3**
+**9.4**
 
 Status: not start
 
 - Learning system to help users learning and using Pyarmor
-
-**9.4**
-
-Status: plan, released on 2025-12-01, 2 months after Python 3.14 is released
-
-- Support Python 3.14 which will be released on 2025-10-01 as plan
 
 Pyarmor features will be stable in 2025
