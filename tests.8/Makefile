@@ -3,10 +3,12 @@ HOSTS := darwin.x86_64 darwin.arm64 linux.x86_64 linux.aarch64 linux.x86 windows
 UNAME = $(shell uname)
 ARCH := $(shell arch)
 
+ALL_PYVERS := 3.7 3.8 3.9 3.10 3.11 3.12 3.13 3.14 3.15
+
 ifeq ($(findstring Linux,$(UNAME)),Linux)
     ifeq ($(ARCH),x86_64)
         HOST ?= linux.x86_64
-	PYVERS := 3.7 3.8 3.9 3.10 3.11 3.12 3.13
+	PYVERS := ${ALL_PYVERS}
 	PYTHONBIN := /usr/local/bin/pythonXY
     else ifeq ($(ARCH),aarch64)
         HOST ?= linux.aarch64
@@ -14,7 +16,7 @@ ifeq ($(findstring Linux,$(UNAME)),Linux)
 	PYTHONBIN := /usr/local/bin/pythonXY
     else
         HOST ?= linux.x86
-	PYVERS := 3.7 3.8 3.9 3.10 3.11 3.12 3.13
+	PYVERS := ${ALL_PYVERS}
 	PYTHONBIN := /usr/local/bin/pythonXY
     endif
 else ifeq ($(findstring Darwin,$(UNAME)),Darwin)
@@ -24,7 +26,7 @@ else ifeq ($(findstring Darwin,$(UNAME)),Darwin)
 	PYTHONBIN := /usr/local/bin/pythonXY
     else
 	HOST ?= darwin.x86_64
-	PYVERS := 3.7 3.8 3.9 3.10 3.11 3.12 3.13
+	PYVERS := ${ALL_PYVERS}
 	PYTHONBIN := /usr/local/bin/pythonXY
     endif
 else
