@@ -498,6 +498,8 @@ But in the following versions something is changed
 
 - **Pyarmor 9.2**
 
+  From Pyarmor 9.0+ upgrade to 9.2, something is changed for :term:`Pyarmor CI` and :term:`Pyarmor Group`. If Pyarmor version < 9.0, please also check the changes in above **Pyarmor 9.0**.
+
   - :term:`Pyarmor CI`
 
     It need request new ci regfile for new version. The old one still works for old version.
