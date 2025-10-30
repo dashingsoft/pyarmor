@@ -496,6 +496,32 @@ But in the following versions something is changed
 
     It need generate device regfile for each offline device again by Pyarmor 9.0+, refer to :ref:`upgrade to pyarmor 9`
 
+- **Pyarmor 9.2**
+
+  - :term:`Pyarmor CI`
+
+    It need request new ci regfile for new version. The old one still works for old version.
+
+    For example, you have one old ci regfile `pyarmor-ci-8000.zip`, use it for old version.
+
+    After upgrade to Pyarmor 9.2+, request new one `pyarmor-ci-8000.zip`::
+
+        $ pyarmor reg -C pyarmor-regfile-8000.zip
+
+    Then use new one in Pyarmor 9.2+, note that it doesn't work in any prior to versions.
+
+  - :term:`Pyarmor Group`
+
+    It need update device regfile for new version. The old one still works for old version.
+
+    For example, you have old device regfile ``pyarmor-device-regfile-6000.1.zip`` for device no. 1, use it for old version.
+
+    After upgrade to Pyarmor 9.2+, request new one::
+
+        $ pyarmor reg -g 1 /path/to/pyarmor-regfile-6000.zip
+
+    Then use new one in Pyarmor 9.2+, note that it doesn't work in any prior to versions.
+
 .. _upgrading old license:
 
 Upgrading old license
