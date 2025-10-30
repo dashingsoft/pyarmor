@@ -480,6 +480,10 @@ The upgraded license information will be''')
 
 class WebRegister(Register):
 
+    # Pyarmor v9.0: 2
+    # Pyarmor v9.2: 3
+    LICENSE_REVSION = 3
+
     def _request(self, url):
         from http.client import HTTPSConnection
         n = len('https://')
@@ -635,8 +639,7 @@ class WebRegister(Register):
         reginfo = self.parse_keyfile(keyfile)
 
         url = self.regurl(reginfo[1], product=product)
-        # Request license file with extra info by rev 2
-        url += '&rev=2'
+        url += '&rev=' + str(self.LICENSE_REVSION)
         if upgrade:
             url += '&upgrade_to_basic=1'
         logger.debug('url: %s', url)
@@ -727,10 +730,11 @@ class WebRegister(Register):
         with ZipFile(filename, 'a') as f:
             f.writestr('group.info', data)
 
-    def register_group_device(self, regfile, devid, rev=2):
+    def register_group_device(self, regfile, devid):
         from zipfile import ZipFile
         devfile = self.ctx.group_device_file(devid)
-        logger.info('register device file "%s"', devfile)
+        rev = self.LICENSE_REVSION
+        logger.info('register device file "%s" (v%d)', devfile, rev)
         logger.info('use group license "%s"', regfile)
         if not os.path.exists(devfile):
             logger.error('please generate device file in offline device by')
@@ -796,8 +800,9 @@ class WebRegister(Register):
         with ZipFile(filename, 'a') as f:
             f.writestr('ci.token', data)
 
-    def request_ci_regfile(self, regfile, rev=2):
-        logger.info('request ci regfile by "%s"', regfile)
+    def request_ci_regfile(self, regfile):
+        rev = self.LICENSE_REVSION
+        logger.info('request ci regfile v%d by "%s"', rev, regfile)
         from zipfile import ZipFile
 
         with ZipFile(regfile, 'r') as f:
