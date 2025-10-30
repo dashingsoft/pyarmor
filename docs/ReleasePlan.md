@@ -78,22 +78,22 @@ Status: released (2024-11-10)
 
 **9.1**
 
-Status: developing
+Status: released (2025-02-24)
 
-- Full testcases
-- Refine RFT mode to improve performance for big scripts (same as MINI mode)
 - MINI mode, a simple RFT mode, the goal is high performance after obfuscation
 
 **9.2**
 
-Status: developing, released on 2025-12-01, 2 months after Python 3.14 is released
+Status: released (2025-10-31)
 
-- Support Python 3.14 which will be released on 2025-10-01 as plan
+- Support Python 3.14 and 3.15 (a2)
 
 **9.3**
 
-Status: not start
+Status: developing
 
+- Full testcases
+- Refine RFT mode to improve performance for big scripts (same as MINI mode)
 - ECC mode, mini BCC mode, only transform part of function body to C code
 - VMC mode, simple ECC mode, convert function body to VM, not real C code
 
