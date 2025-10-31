@@ -309,7 +309,7 @@ def cmd_reg(ctx, args):
             raise CliError('please use ".zip" file to register group device')
         regsvr = WebRegister(ctx)
         regsvr.check_request_interval()
-        regsvr.register_group_device(regfile, args.device)
+        regsvr.request_device_regfile(regfile, args.device)
         logger.info('The device regfile has been generated successfully')
 
     elif args.ci:
