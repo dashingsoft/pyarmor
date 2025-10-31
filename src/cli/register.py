@@ -89,7 +89,7 @@ def parse_token(data):
 
 def show_help_page(prompt, url):
     choice = input('\n'.join(prompt)).lower()[:1]
-    if choice == 'h':
+    if choice in ('h', 'y'):
         import webbrowser
         webbrowser.open(url)
     return choice
@@ -619,7 +619,7 @@ class WebRegister(Register):
 
         logger.info('send upgrade request to server')
         res = self._send_request(url)
-        regfile = self._handle_response(res)
+        regfile, lictype = self._handle_response(res)
 
         logger.info('update license token')
         self.update_token()
@@ -646,7 +646,7 @@ class WebRegister(Register):
 
         logger.info('send request to server')
         res = self._send_request(url)
-        regfile = self._handle_response(res)
+        regfile, lictype = self._handle_response(res)
 
         logger.info('')
         logger.info('the registration file "%s" has been generated', regfile)
@@ -658,35 +658,21 @@ class WebRegister(Register):
             '* Please backup regfile "%s", and '
             'use this file for next any registration' % regfile,
             '* Do not use this file in docker and CI/CD pipeline',
+            '',
         ]
-
-        if group:
-            notes.append('* Please check `pyarmor reg` in Man page for '
-                         'how to register Pyarmor on offline device')
-            logger.info('\n\nImport Notes:\n%s\n', '\n'.join(notes))
-            return
-
-        notes.append('')
-        notes.append('Next register Pyarmor in build device by this command:')
-
-        notes.append('\tpyarmor reg %s' % regfile)
-        notes.append('')
         logger.info('\n\nImport Notes:\n%s\n', '\n'.join(notes))
 
-        prompt = 'Do you want register Pyarmor in this machine? (Y/n) '
-        choice = input(prompt).lower()[:1]
-        if choice == 'y':
-            logger.info('register "%s"', regfile)
-            self.register_regfile(regfile)
-            logger.info('This license registration information:\n\n%s', self)
+        LicenseHelper(self).run(lictype, regfile)
 
     def _handle_response(self, res):
         if res and res.code == 200:
+            lictype = None
             dis = res.headers.get('Content-Disposition')
             filename = dis.split('"')[1] if dis else 'pyarmor-regfile.zip'
             logger.info('write registration file "%s"', filename)
             data = res.read()
             if data.startswith(b'{"group":'):
+                lictype = 'G'
                 n = data.find(b'}') + 1
                 with open(filename, 'wb') as f:
                     f.write(data[n:])
@@ -698,13 +684,15 @@ class WebRegister(Register):
                 n += i
                 with open(filename, 'wb') as f:
                     f.write(data[n:])
-                self._write_reg_info(filename, data[i:n])
+                reginfo = data[i:n]
+                lictype = json_loads(reginfo).get('type', None)
+                self._write_reg_info(filename, reginfo)
             else:
                 # Only for request group token
                 logger.debug('no REGINFO found')
                 with open(filename, 'wb') as f:
                     f.write(data)
-            return filename
+            return filename, lictype
 
         elif res:
             data = res.read()
@@ -778,7 +766,7 @@ class WebRegister(Register):
             logger.debug('url: %s', url)
 
             res = self._send_request(url)
-            filename = self._handle_response(res)
+            filename, lictype = self._handle_response(res)
             with open(filename, 'rb') as f:
                 data = f.read()
             os.makedirs(os.path.dirname(tokencache), exist_ok=True)
@@ -859,3 +847,207 @@ class WebRegister(Register):
                     '\n\tpip install pyarmor==%s\n'
                     '\tpyarmor reg %s\n',
                     cifile, ver, cifile)
+
+
+BASIC_LICENSE_HELP_INFO = Template('''
+Using Basic license in CI/CD pipeline or docker container need extra steps, please check this page
+
+$docurl/how-to/ci.html
+
+More usage about Basic License, check this page
+
+$docurl/how-to/register.html
+
+If need register Pyarmor in build device, run this command:
+
+    pyarmor reg $regfile
+
+''')
+
+PRO_LICENSE_HELP_INFO = Template('''
+Pro license can't be used in CI/CD pipeline or docker container direclty.
+
+A few times for debug purpose, about 60 runs per month, may work.
+
+But there is one workaroud to use Pro licnese in CI/CD pipeline, please check this page
+
+$docurl/how-to/ci.html
+
+More usage about Pro License, check this page
+
+$docurl/how-to/register.html
+
+If need register Pyarmor in build device, run this command:
+
+    pyarmor reg $regfile
+
+''')
+
+GROUP_LICENSE_HELP_INFO = Template('''
+Group License file `$regfile` is only used to request device regfile
+
+In order to register Pyarmor in offline device:
+
+1. In the build device (may be offline), generate device info by this command
+
+   pyarmor reg -g 1
+
+2. In any online device, copy device file generated by first step, then request device regfile for this device
+
+   $ cp pyarmor-group-device.1 .pyarmor/group/
+   $ pyarmor reg -g 1 $regfile
+
+3. In the build device, register Pyarmor by device regfile
+
+   $ pyarmor reg pyarmor-device-regfile-xxxx.1.zip
+
+More usage about CI License, check section `Using group licnese`
+$docurl/how-to/register.html
+''')
+
+CI_LICENSE_HELP_INFO = Template('''
+fCI license file `$regfile` is only used to request CI regfile
+
+CI regfile is used to register Pyarmor in the CI/CD pipeline
+
+If need request CI regfile, run this command:
+
+    pyarmor reg -C $regfile
+
+Note that CI regfile can NOT be used in physical machine, and there is rate limits to register CI regfile in CI/CD pipeline and docker container.
+
+It may need request new CI regfile after Pyarmor is upgraded, please check section `When need to request new CI regfile` in this page
+$docurl/how-to/ci.html
+
+More usage about CI License, check these pages
+
+$docurl/how-to/register.html
+$docurl/how-to/ci.html
+''')
+
+
+class LicenseHelper(object):
+    """Only used for first activate license.
+
+    Help the beginner to understand how to use different licenses.
+
+    """
+
+    def __init__(self, parent):
+        self.parent = parent
+        self.docurl = parent.ctx.cfg.get('pyarmor', 'docurl').rstrip('/')
+
+    def run(self, lictype, regfile):
+        if lictype == 'G':
+            self._group_license_helper(regfile)
+
+        elif lictype == 'C':
+            self._ci_license_helper(regfile)
+
+        elif lictype == 'Z':
+            self._pro_license_helper(regfile)
+
+        elif lictype in ('J', 'B', 'P'):
+            self._basic_license_helper(regfile)
+
+        else:
+            raise CliError('unknown license type "%s"' % lictype)
+
+    def _basic_license_helper(self, regfile):
+        logger.info(BASIC_LICENSE_HELP_INFO.format(
+            docurl=self.docurl, regfile=regfile))
+
+        prompt = 'Yes (y), No (n), Quit (q): '
+        logger.info('Show basic license usage in webbrowser? (n)')
+        choice = show_help_page(prompt, self.docurl + '/how-to/register.html')
+        if choice == 'q':
+            return
+
+        logger.info('Show basic license for CI/CD pipeline or docker? (n)')
+        choice = show_help_page(prompt, self.docurl + '/how-to/ci.html')
+        if choice == 'q':
+            return
+
+        logger.info('Do you want register Pyarmor in this machine? (y)')
+        choice = input(prompt).lower()[:1]
+        if choice == 'q':
+            return
+
+        if choice in ('y', ''):
+            logger.info('register "%s"', regfile)
+            self.parent.register_regfile(regfile)
+            logger.info('This license registration information:\n\n%s',
+                        self.parent)
+
+    def _pro_license_helper(self, regfile):
+        logger.info(PRO_LICENSE_HELP_INFO.format(
+            docurl=self.docurl, regfile=regfile))
+
+        prompt = 'Yes (y), No (n), Quit (q): '
+        logger.info('Show pro license usage in webbrowser? (n)')
+        choice = show_help_page(prompt, self.docurl + '/how-to/register.html')
+        if choice == 'q':
+            return
+
+        logger.info('Show pro license for CI/CD pipeline or docker? (n)')
+        choice = show_help_page(prompt, self.docurl + '/how-to/ci.html')
+        if choice == 'q':
+            return
+
+        logger.info('Do you want register Pyarmor in this machine? (y)')
+        choice = input(prompt).lower()[:1]
+        if choice == 'q':
+            return
+
+        if choice in ('y', ''):
+            logger.info('register "%s"', regfile)
+            self.parent.register_regfile(regfile)
+            logger.info('This license registration information:\n\n%s',
+                        self.parent)
+
+    def _group_license_helper(self, regfile):
+        logger.info(GROUP_LICENSE_HELP_INFO.format(
+            docurl=self.docurl, regfile=regfile))
+
+        prompt = 'Yes (y), No (n), Quit (q): '
+        logger.info('Show group license usage in webbrowser? (n)')
+        choice = show_help_page(prompt, self.docurl + '/how-to/register.html')
+        if choice == 'q':
+            return
+
+        logger.info('Do you want register Pyarmor in this machine? (y)')
+        choice = input(prompt).lower()[:1]
+        if choice == 'q':
+            return
+
+        if choice in ('y', ''):
+            devid = 1
+            sep = '-' * 16
+            devinfo = self.ctx.group_device_file(devid)
+            logger.info('%s 1. generate device info', sep)
+            if not os.path.exists(devinfo):
+                self.parent.generate_group_device(devid)
+            logger.info('%s 2. request device regfile', sep)
+            self.parent.register_group_device(regfile, devid)
+            logger.info('%s 3. register Pyarmor with device regfile', sep)
+            self.parent.register(regfile.
+                                 replace('.zip', '.%d.zip' % devid).
+                                 replace('-regfile', '-device-regfile'))
+
+    def _ci_license_helper(self, regfile):
+        logger.info(CI_LICENSE_HELP_INFO.format(
+            docurl=self.docurl, regfile=regfile))
+
+        prompt = 'Yes (y), No (n), Quit (q): '
+        logger.info('Show ci license usage in webbrowser? (n)')
+        choice = show_help_page(prompt, self.docurl + '/how-to/ci.html')
+        if choice == 'q':
+            return
+
+        logger.info('Do you want request one CI Regfile now? (y)')
+        choice = input(prompt).lower()[:1]
+        if choice == 'q':
+            return
+
+        if choice in ('y', ''):
+            self.parent.request_ci_regfile(regfile)
