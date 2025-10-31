@@ -800,8 +800,8 @@ class WebRegister(Register):
 
     def request_ci_regfile(self, regfile):
         rev = self.LICENSE_REVSION
-        ci_rev = self.CI_LICENSE_REVSION
-        logger.info('request ci regfile (v%d) by "%s"', ci_rev, regfile)
+        cirev = self.CI_LICENSE_REVSION
+        logger.info('request ci regfile (v%d) by "%s"', cirev, regfile)
         from zipfile import ZipFile
 
         with ZipFile(regfile, 'r') as f:
@@ -818,7 +818,7 @@ class WebRegister(Register):
             raise CliError('invalid registration file "%s"', regfile)
 
         url = self.regurl('ci/%s' % ucode)
-        paras = ('rev', str(rev)), ('cirev', str(ci_rev))
+        paras = ('rev', str(rev)), ('cirev', str(cirev))
         url += '&'.join(['='.join(x) for x in paras])
         logger.debug('url: %s', url)
 
