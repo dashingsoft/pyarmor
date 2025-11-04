@@ -325,7 +325,7 @@ def cmd_reg(ctx, args):
 
     else:
         regsvr = WebRegister(ctx)
-        regsvr.check_request_interval()
+        regsvr.check_request_interval(activation=regfile)
         info, msg = regsvr.prepare(regfile, args.product, upgrade=upgrade)
         prompt = 'Are you sure to continue? (yes/no) '
         if args.confirm:

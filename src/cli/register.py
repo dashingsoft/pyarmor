@@ -498,7 +498,7 @@ class WebRegister(Register):
         conn.request("GET", url[k:])
         return conn.getresponse()
 
-    def check_request_interval(self, delta=30.0):
+    def check_request_interval(self, delta=30.0, activation=False):
         """Make sure no more than 2 requests in 1 minute"""
         tspath = os.path.join(self.ctx.reg_path, 'last_register')
         try:
@@ -509,8 +509,10 @@ class WebRegister(Register):
             from time import sleep, time
             d = delta - (time() - st.st_mtime)
             if d > 0:
-                logger.warning('caution: this activation file can only '
-                               'be used no more than 10 times')
+                if activation:
+                    logger.warning(
+                        'caution: this activation file "%s" can only '
+                        'be used no more than 10 times', activation)
                 logger.info('waiting for %d seconds', d)
             while time() - st.st_mtime < delta:
                 logger.info('waiting ...')
