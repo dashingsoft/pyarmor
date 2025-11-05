@@ -87,13 +87,51 @@ High frequency use solution
 
 .. versionadded:: 9.2.0
 
-For daily build, it need special workflow.
+If many `pyarmor gen` commands are used in one workflow, try to merge them to one pyarmor process
 
-Pyarmor team need verify the project, and understand how many runs per hour and per month probably.
+For example, create one script `batch.py` like these:
 
-Generally, it should be no more than 1,000 runs per hour.
+.. code-block:: python
 
-Each month the free quota is 10, 000 runs, if need more quota, it need extra fees:
+    import shlex
+    import os
+
+    from pyarmor.cli.__main__ import main_entry as pyarmor_run
+
+    # Do not run `pyarmor reg pyarmor-ci-xxxx.zip` here, run it before this script
+
+    build_commands = """
+    pyarmor gen main.py
+    cd ../package1
+    pyarmor gen -R --enable-bcc src/
+    cd ../package2
+    pyarmor gen -R --enable-jit --private src/
+    """
+
+    for cmd in build_commands.splitlines():
+        if cmd.startswith('#'):
+            continue
+
+        if cmd.startswith('cd '):
+            path = cmd[3:].strip()
+            print('Change current path:', path)
+            os.chdir(path)
+
+        elif cmd.startswith('pyarmor '):
+            print('Execute: ', cmd)
+            args = shlex.split(cmd[8:].strip())
+            pyarmor_run(args)
+
+Then call it in the workflow::
+
+    $ pyarmor reg pyarmor-ci-8000.zip
+    $ python3 batch.py
+
+If merge solution doesn't work, or you don't want change the original workflow, it need extra steps.
+
+Pyarmor team need verify the project, and use special server to verify this license. Even that, it should be no more than 1,000 runs per hour, and need extra fees.
+
+The free quota is 10, 000 runs per month, exceed that:
 
 - 100,000 per month, extra fee: $10 for one year
 - 200,000 per month, extra fee: $20 for one year
