@@ -80,7 +80,7 @@ When need to request new CI regfile
 In the following cases, it need request one new CI regfile
 
 - After :term:`Pyarmor CI` License is expired, all the previous CI regfiles don't work any longer. After the renewal is successful, it need request new CI regfile ``pyarmor-ci-N.zip``
-- After Pyarmor is upgrade one new major/minor version, the old CI regfile may not work in the latest version (but it still works with old Pyarmor version). It need request one new CI regfile by the version. Note that the patch number has no effect for this case, for example, from v9.1.3 to v9.1.8, nothing changed.
+- After Pyarmor is upgrade one new major/minor version, the old CI regfile may not work in the latest version (but it still works with old Pyarmor version). It need request one new CI regfile by new version. Note that the patch number has no effect for this case, for example, from v9.1.3 to v9.1.8, nothing changed.
 
 High frequency use solution
 ---------------------------
@@ -129,7 +129,7 @@ Then call it in the workflow::
 
 If merge solution doesn't work, or you don't want change the original workflow, it need extra steps.
 
-Pyarmor team need verify the project, and use special server to verify this license. Even that, it should be no more than 1,000 runs per hour, and need extra fees.
+Pyarmor team need verify the project, and use special license server for this case.
 
 The free quota is 10, 000 runs per month, exceed that:
 
