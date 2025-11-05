@@ -87,55 +87,59 @@ High frequency use solution
 
 .. versionadded:: 9.2.0
 
-If many `pyarmor gen` commands are used in one workflow, try to merge them to one pyarmor process
+If many `pyarmor gen` commands are used in one workflow, try to merge them to one
 
-For example, create one script `batch.py` like these:
+For example::
+
+    # Old workflow: there are 3 "pyarmor gen"
+    pyarmor gen -R /path/to/package1
+    pyarmor gen -R /path/to/package2
+    pyarmor gen -R /path/to/package3
+
+    # New workflow: merge 3 to one
+    pyarmor gen -R /path/to/package1 /path/to/package2 /path/to/package2
+
+Or create one Python script to execute all pyarmor commands in one process
+
+For example, create one script `batch.py`:
 
 .. code-block:: python
 
-    import shlex
     import os
+    import shlex
 
     from pyarmor.cli.__main__ import main_entry as pyarmor_run
 
-    # Do not run `pyarmor reg pyarmor-ci-xxxx.zip` here, run it before this script
+    # Do not run `pyarmor reg pyarmor-ci-XXXX.zip` in the script
 
-    build_commands = """
-    pyarmor gen main.py
-    cd ../package1
-    pyarmor gen -R --enable-bcc src/
-    cd ../package2
-    pyarmor gen -R --enable-jit --private src/
-    """
+    # Run command: pyarmor gen -R /path/to/package1
+    pyarmor_run(['gen', '-R', '/path/to/package1'])
 
-    for cmd in build_commands.splitlines():
-        if cmd.startswith('#'):
-            continue
+    # Or more like shell command to run: pyarmor gen -R /path/to/package2
+    cmdlist = shlex.split("pyarmor gen -R /path/to/package2")
+    pyarmor_run(cmdlist[1:])
 
-        if cmd.startswith('cd '):
-            path = cmd[3:].strip()
-            print('Change current path:', path)
-            os.chdir(path)
+    # Or change path
+    os.chdir('/path/to/other')
 
-        elif cmd.startswith('pyarmor '):
-            print('Execute: ', cmd)
-            args = shlex.split(cmd[8:].strip())
-            pyarmor_run(args)
+    # Execute any other pyarmor command
+    cmdlist = shlex.split("pyarmor gen key -e 30")
+    pyarmor_run(cmdlist[1:])
 
-Then call it in the workflow::
+Then execute it in the workflow::
 
     $ pyarmor reg pyarmor-ci-8000.zip
     $ python3 batch.py
 
 If merge solution doesn't work, or you don't want change the original workflow, it need extra steps.
 
-Pyarmor team need verify the project, and use special license server for this case.
+Pyarmor team need verify this project, and you need request one new CI regfile to use special license server for it.
 
-The free quota is 10, 000 runs per month, exceed that:
+The free quota is 10, 000 runs per month, exceed free quota, it need extra fees:
 
-- 100,000 per month, extra fee: $10 for one year
-- 200,000 per month, extra fee: $20 for one year
-- 300,000 per month, extra fee: $30 for one year
+- 100,000 per month, extra fees: $10 for one year
+- 200,000 per month, extra fees: $20 for one year
+- 300,000 per month, extra fees: $30 for one year
 - ...
 
 Indirect Way
