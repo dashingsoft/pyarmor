@@ -124,7 +124,8 @@ class FileResource(Resource):
                     k = n + 1
                     n = line.find(b'\n', k)
                     m = research(r'coding[=:]\s*([-\w.]+)', line[k:n].decode())
-                    return m and m.group(1)
+                    if m:
+                        return m.group(1)
         return encoding
 
     def readlines(self, encoding=None):
