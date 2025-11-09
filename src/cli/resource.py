@@ -109,23 +109,34 @@ class FileResource(Resource):
         return self.pyext.lower() == '.pyc'
 
     def _get_encoding(self, encoding):
+        # Maybe: from tokenize import detect_encoding
         from codecs import BOM_UTF8
         from re import search as research
+
+        def find_encoding(line):
+            try:
+                pat = r'coding[=:]\s*([-\w.]+)'
+                n = line.find(b'\n')
+                if n > -1:
+                    m = research(pat, line[:n].decode())
+                    if m:
+                        return m.group(1)
+                    if line[n+1] == 35:
+                        k = n + 1
+                        n = line.find(b'\n', k)
+                        m = research(pat, line[k:n].decode())
+                        if m:
+                            return m.group(1)
+            except Exception:
+                # Ignore decoding error or index error
+                pass
+
         with open(self.fullpath, 'rb') as f:
             line = f.read(80)
             if line and line[:3] == BOM_UTF8:
                 return 'utf-8'
             if line and line[0] == 35:
-                n = line.find(b'\n')
-                m = research(r'coding[=:]\s*([-\w.]+)', line[:n].decode())
-                if m:
-                    return m.group(1)
-                if n > -1 and len(line) > (n+1) and line[n+1] == 35:
-                    k = n + 1
-                    n = line.find(b'\n', k)
-                    m = research(r'coding[=:]\s*([-\w.]+)', line[k:n].decode())
-                    if m:
-                        return m.group(1)
+                encoding = find_encoding(line) or encoding
         return encoding
 
     def readlines(self, encoding=None):
