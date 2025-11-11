@@ -140,11 +140,6 @@ class Commander:
         #     action="store_const", const='ecc',
         #     help='genetate scripts with embedded C code'
         # )
-        # group.add_argument(
-        #     '--vmc', dest='target', default='std',
-        #     action="store_const", const='vmc',
-        #     help='genetate scripts with vm C code'
-        # )
         group.add_argument(
             '--rft', dest='target', default='std',
             action="store_const", const='rft',
@@ -159,6 +154,16 @@ class Commander:
             '--mini-rft', dest='target', default='std',
             action="store_const", const='mini-rft',
             help='genetate high performance refactor scripts'
+        )
+        group.add_argument(
+            '--vmc', dest='target', default='std',
+            action="store_const", const='vmc',
+            help='genetate scripts with vmc code'
+        )
+        group.add_argument(
+            '--vmc-rft', dest='target', default='std',
+            action="store_const", const='vmc-rft',
+            help='generate scripts by combining --rft and --vmc'
         )
         group.add_argument(
             '--list', dest='target', default='std',
@@ -412,6 +417,8 @@ class Commander:
             logger.info('build target %s ...', args.target)
             output = args.output if args.output else 'dist'
             self._build(project, args.target, output)
+            if args.target.startswith('std'):
+                self._cmd_gen(args)
             logger.info('build target %s end', args.target)
 
     def _build(self, project, target, output, value=None):
@@ -419,6 +426,25 @@ class Commander:
         args = [self.ctx, target, project, output, value]
         m = Pytransform3.init(self.ctx)
         m.pre_build(args)
+
+    def _cmd_gen(self, args):
+        """If build target is std, then call `pyarmor gen`
+
+        It will obfuscate the scripts with `pyarmor_runtime.so`
+
+        Most of obfuscated options are got from config file, not from
+        command line
+
+        Option `--pack` may be still got from command line
+        """
+        from .generate import Builder
+        from .plugin import Plugin
+
+        ctx = self.ctx
+        builder = Builder(ctx)
+        Plugin.install(ctx)
+        builder.process(args)
+        Plugin.post_build(ctx)
 
     def cmd_env(self, ctx, args):
         """Check and change pyarmor settings
