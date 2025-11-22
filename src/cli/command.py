@@ -180,10 +180,6 @@ class Commander:
             action="store_const", const='types',
             help=argparse.SUPPRESS
         )
-
-        group = parser.add_argument_group(
-            'Refactor options'
-        )
         group.add_argument(
             '--randname', type=int, metavar='{0,1}',
             help='Build random name pool'
