@@ -135,11 +135,6 @@ class Commander:
         #     action="store_const", const='std',
         #     help='genetate standard obfuscated scripts'
         # )
-        # group.add_argument(
-        #     '--ecc', dest='target', default='std',
-        #     action="store_const", const='ecc',
-        #     help='genetate scripts with embedded C code'
-        # )
         group.add_argument(
             '--rft', dest='target', default='std',
             action="store_const", const='rft',
@@ -153,7 +148,7 @@ class Commander:
         group.add_argument(
             '--mini-rft', dest='target', default='std',
             action="store_const", const='mini-rft',
-            help='genetate high performance refactor scripts'
+            help='generate scripts by combining --rft and --mini'
         )
         group.add_argument(
             '--vmc', dest='target', default='std',
@@ -166,6 +161,16 @@ class Commander:
             help='generate scripts by combining --rft and --vmc'
         )
         group.add_argument(
+            '--ecc', dest='target', default='std',
+            action="store_const", const='ecc',
+            help='genetate scripts with embedded C code'
+        )
+        group.add_argument(
+            '--ecc-rft', dest='target', default='std',
+            action="store_const", const='ecc',
+            help='generate scripts by combining --rft and --ecc'
+        )
+        group.add_argument(
             '--list', dest='target', default='std',
             action="store_const", const='list',
             help='list project scripts, modules and packages'
@@ -174,6 +179,10 @@ class Commander:
             '--types', dest='target', default='std',
             action="store_const", const='types',
             help=argparse.SUPPRESS
+        )
+
+        group = parser.add_argument_group(
+            'Refactor options'
         )
         group.add_argument(
             '--randname', type=int, metavar='{0,1}',
