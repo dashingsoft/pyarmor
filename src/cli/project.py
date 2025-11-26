@@ -213,12 +213,13 @@ class Module:
         filename = self.abspath
         with open(filename, 'rb') as f:
             encoding, lines = tokenize.detect_encoding(f.readline)
-            if lines and lines[0].startswith('#!'):
-                self._shebang = lines[0].encode(encoding)
+            if lines and lines[0].startswith(b'#!'):
+                self._shebang = lines[0].decode(encoding)
 
+        options = self.project.parse_options
         with open(filename, 'r', encoding=encoding) as f:
             logger.info('parse %s ...', self.qualname)
-            self._tree = ast.parse(f.read(), filename, 'exec')
+            self._tree = ast.parse(f.read(), filename, 'exec', **options)
             logger.info('parse %s end', self.qualname)
 
     def _as_dot(self):
@@ -393,6 +394,8 @@ class Project:
         self._rft_include_attrs = None
         self._used_external_types = None
 
+        self._parse_options = None
+
         # Log variable name in chain attributes
         #
         # For example, in module "foo.py":
@@ -503,6 +506,17 @@ class Project:
         """Only top namespace"""
         for x in self._namespaces:
             yield x
+
+    @property
+    def parse_options(self):
+        """Options for ast.parse when parsing project module"""
+        if self._parse_options is None:
+            cfg = self.ctx.cfg
+            optimize = cfg['builder'].getint('optimize', -1)
+            self._parse_options = {
+                'optimize': optimize
+            }
+        return self._parse_options
 
     @property
     def rft_options(self):
