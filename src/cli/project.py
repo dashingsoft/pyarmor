@@ -214,7 +214,7 @@ class Module:
         with open(filename, 'rb') as f:
             encoding, lines = tokenize.detect_encoding(f.readline)
             if lines and lines[0].startswith('#!'):
-                self._shebang = lines[0]
+                self._shebang = lines[0].encode(encoding)
 
         with open(filename, 'r', encoding=encoding) as f:
             logger.info('parse %s ...', self.qualname)
