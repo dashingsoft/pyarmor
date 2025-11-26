@@ -23,7 +23,7 @@
 #
 #   - Define project object for Pyarmor 9.
 #   - Define project commands: init, build
-#   - Define targets: std, fly, vmc, ecc, rft
+#   - Define targets: std, mini, vmc, ecc, rft
 
 """Manage projects
 
