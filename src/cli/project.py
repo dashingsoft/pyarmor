@@ -151,6 +151,8 @@ class Module:
         self._tree = None
         self._type = None
 
+        self._shebang = ''
+
     @property
     def name(self):
         return '' if self._name == '__init__' else self._name
@@ -190,6 +192,10 @@ class Module:
         s = self.qualname + ('' if self.name else '.__init__')
         return joinpath(*s.split('.')) + splitext(self.path)[-1]
 
+    @property
+    def shebang(self):
+        return self._shebang
+
     def compile_file(self, force=False):
         if self._co is not None and not force:
             return
@@ -206,7 +212,9 @@ class Module:
 
         filename = self.abspath
         with open(filename, 'rb') as f:
-            encoding, _ = tokenize.detect_encoding(f.readline)
+            encoding, lines = tokenize.detect_encoding(f.readline)
+            if lines and lines[0].startswith('#!'):
+                self._shebang = lines[0]
 
         with open(filename, 'r', encoding=encoding) as f:
             logger.info('parse %s ...', self.qualname)
