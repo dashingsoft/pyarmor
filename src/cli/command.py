@@ -348,7 +348,7 @@ class Commander:
             logger.info('%-20s: %s', key, value)
 
         makedirs(ctx.local_path, exist_ok=True)
-        with open(ctx.local_config, 'w') as f:
+        with open(ctx.local_config, 'w', encoding=ctx.encoding) as f:
             cfg.write(f)
         logger.info('project saved')
 

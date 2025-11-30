@@ -186,7 +186,7 @@ class MultiPythonPlugin:
         os.makedirs(verpath)
 
         pkgscript = os.path.join(pkgpath, '__init__.py')
-        with open(pkgscript) as f:
+        with open(pkgscript, encoding=ctx.encoding) as f:
             lines = f.readlines()
         start = 1 if lines[0].startswith('#') else 0
 
@@ -196,13 +196,13 @@ class MultiPythonPlugin:
                 '{0} = __import__("py%d%d.pyarmor_runtime" % py_version[:2],'
                 ' globals(), locals(), ["{0}"], 1).{0}'.format('__pyarmor__')
             ])
-            with open(pkgscript, 'w') as f:
+            with open(pkgscript, 'w', encoding=ctx.encoding) as f:
                 f.write(''.join(lines))
             for x in MultiPythonPlugin.RUNTIME_FILES:
                 move(x, verpath)
         else:
             lines[start:start] = 'from sys import version_info as py_version\n'
-            with open(pkgscript, 'w') as f:
+            with open(pkgscript, 'w', encoding=ctx.encoding) as f:
                 f.write(''.join(lines).replace(
                     "join(['_'", "join(['py%d%d' % py_version[:2], '_'"))
             for x in MultiPythonPlugin.RUNTIME_FILES:
@@ -253,7 +253,7 @@ class DarwinUniversalPlugin:
             return
 
         def rebuild_init(oneplat, init_script):
-            with open(init_script, 'r') as f:
+            with open(init_script, 'r', encoding=ctx.encoding) as f:
                 lines = f.readlines()
             if oneplat:
                 lines[1:] = ['from .pyarmor_runtime import __pyarmor__']
@@ -262,7 +262,7 @@ class DarwinUniversalPlugin:
                     if lines[i].strip().startswith("# mach = 'universal'"):
                         lines[i] = lines[i].replace('# ', '')
                         break
-            with open(init_script, 'w') as f:
+            with open(init_script, 'w', encoding=ctx.encoding) as f:
                 f.write(''.join(lines))
 
         rtpath = find_runtime_package(ctx, outputs[0])

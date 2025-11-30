@@ -86,7 +86,7 @@ class CfgEntity:
         self._reader = self._writer = None
 
     def save(self):
-        with open(self.cfgfile, 'w') as f:
+        with open(self.cfgfile, 'w', encoding=self._encoding) as f:
             self.writer.write(f)
 
 
@@ -260,7 +260,7 @@ class PyarmorShell(cmd.Cmd):
             ctx.default_config,
             ctx.global_config,
             ctx.local_config
-        ])
+        ], encoding=ctx.encoding)
         self._domains = self._init_domains()
         self._domain = self._section = self._domains[domain]
 
