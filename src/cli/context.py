@@ -164,9 +164,9 @@ class Context(object):
             os.path.join(self.home_path, rpath)
 
         # self.encoding is just for reading config file
-        self.encoding = encoding
+        self.encoding = encoding if encoding else 'utf-8'
         cfglist = self.default_config, self.global_config, self.local_config
-        self.cfg = self._read_config(cfglist, encoding=encoding)
+        self.cfg = self._read_config(cfglist, encoding=self.encoding)
 
         # self.runtime_package = 'pyarmor_runtime'
         # self.runtime_suffix = '_000000'
@@ -205,6 +205,7 @@ class Context(object):
             empty_lines_in_values=False,
             interpolation=configparser.ExtendedInterpolation(),
         )
+        encoding = encoding or self.encoding
         cfg.read(filelist, encoding=encoding)
         return cfg
 

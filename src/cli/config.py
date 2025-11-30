@@ -43,7 +43,7 @@ class Configer(object):
 
     def __init__(self, ctx, encoding=None):
         self.ctx = ctx
-        self._encoding = encoding
+        self._encoding = encoding or ctx.encoding
 
     def _read_config(self, filename):
         cfg = configparser.ConfigParser(empty_lines_in_values=False)
@@ -166,7 +166,7 @@ class Configer(object):
         cfg.set(sect, optname, optvalue)
 
         os.makedirs(os.path.dirname(filename), exist_ok=True)
-        with open(filename, 'w') as f:
+        with open(filename, 'w', encoding=self._encoding) as f:
             cfg.write(f)
 
         self._list_value(sect, optname, local=local, name=name)
@@ -196,7 +196,7 @@ class Configer(object):
                         logger.info('remove empty section "%s"', section)
                         cfg.remove_section(section)
 
-            with open(filename, 'w') as f:
+            with open(filename, 'w', encoding=self._encoding) as f:
                 cfg.write(f)
 
     def _clear(self, section=None, options=None, local=True, name=None):
