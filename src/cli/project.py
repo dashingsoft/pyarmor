@@ -802,7 +802,7 @@ class Project:
             for name in names.split():
                 if name.endswith('.json'):
                     if exists(name):
-                        with open(name) as f:
+                        with open(name, encoding='utf-8') as f:
                             used_types.update(jsonload(f))
                 else:
                     modname = name.split('::')[0]
@@ -1035,7 +1035,7 @@ class Project:
         if not exists(rulefile):
             logger.info('no found %s', rulefile)
             return
-        with open(rulefile) as f:
+        with open(rulefile, encoding='utf-8') as f:
             fixtable = jsonload(f)
 
         if mode == 2:
@@ -1093,7 +1093,7 @@ class Project:
         inattrs = fixtable.get('include_attrs', [])
         rftattrs = header.substitute(attrs='\n'.join(
             [f'[[*{x}][{x}]]' for x in inattrs]))
-        with open(output, 'w') as fp:
+        with open(output, 'w', encoding='utf-8') as fp:
             fp.write(rftattrs)
             for attr in inattrs:
                 infos = attrinfo.get(attr)
@@ -1186,7 +1186,7 @@ class Project:
         """))
 
         attrs = sorted(rftattrs.keys())
-        with open(output, 'w') as fp:
+        with open(output, 'w', encoding='utf-8') as fp:
             fp.write(header.substitute(
                 attrs='\n'.join([f'[[*{x}][{x}]]' for x in attrs])
             ))
