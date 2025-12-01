@@ -202,8 +202,9 @@ class Module:
 
         self.parse_file(force=force)
 
+        options = self.project.compile_options
         logger.info('compile %s ...', self.qualname)
-        self._co = compile(self._tree, self.abspath, 'exec')
+        self._co = compile(self._tree, self.abspath, 'exec', **options)
         logger.info('compile %s end', self.qualname)
 
     def parse_file(self, force=False):
@@ -216,10 +217,9 @@ class Module:
             if lines and lines[0].startswith(b'#!'):
                 self._shebang = lines[0].decode(encoding)
 
-        options = self.project.parse_options
         with open(filename, 'r', encoding=encoding) as f:
             logger.info('parse %s ...', self.qualname)
-            self._tree = ast.parse(f.read(), filename, 'exec', **options)
+            self._tree = ast.parse(f.read(), filename, 'exec')
             logger.info('parse %s end', self.qualname)
 
     def _as_dot(self):
@@ -394,7 +394,7 @@ class Project:
         self._rft_include_attrs = None
         self._used_external_types = None
 
-        self._parse_options = None
+        self._compile_options = None
 
         # Log variable name in chain attributes
         #
@@ -508,15 +508,15 @@ class Project:
             yield x
 
     @property
-    def parse_options(self):
+    def compile_options(self):
         """Options for ast.parse when parsing project module"""
-        if self._parse_options is None:
+        if self._compile_options is None:
             cfg = self.ctx.cfg
             optimize = cfg['builder'].getint('optimize', -1)
-            self._parse_options = {
+            self._compile_options = {
                 'optimize': optimize
             }
-        return self._parse_options
+        return self._compile_options
 
     @property
     def rft_options(self):
