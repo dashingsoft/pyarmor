@@ -105,9 +105,9 @@ test-%:
 install-%:
 	@rm -rf ./pyarmor ./pyarmor_cli_core_themida*
 	@tar xzf ${pkgpath}/pyarmor-${testver}.tar.gz
-	-@test -d ${pkgpath}/mini.extensions/${HOST} && cp ${pkgpath}/mini.extensions/${HOST}/libs/cp${PYVER}/pyarmor_mini.* .
 	@mv pyarmor-${testver}/pyarmor .
 	@rm -rf pyarmor-${testver}
+	-@test -d ${pkgpath}/mini.extensions/${HOST} && mkdir -p pyarmor/mini/ && cp ${pkgpath}/mini.extensions/${HOST}/libs/cp${PYVER}/pyarmor_mini.* ./pyarmor/mini/
 	@unzip ${whlpath}/pyarmor_cli_core-${corever}-cp$(subst .,,$(subst install-,,$@))-none-${platform}.whl > /dev/null
 	@(themida=../pyarmor_cli_core_themida-${corever}-cp$(subst .,,$(subst install-,,$@))-none-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
 	@rm -rf pyarmor_cli_core-${corever}.dist-info

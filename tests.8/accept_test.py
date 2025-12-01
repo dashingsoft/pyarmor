@@ -60,7 +60,7 @@ class BaseTestCase(unittest.TestCase):
 
     def copy_mini_extension(self, output='dist'):
         ext = '.pyd' if sys.platform == 'windows' else '.so'
-        shutil.copy(f'pyarmor_mini{ext}', output)
+        shutil.copy(f'pyarmor/mini/pyarmor_mini{ext}', output)
 
     def tearDown(self):
         shutil.rmtree(self.local_path, ignore_errors=True)
