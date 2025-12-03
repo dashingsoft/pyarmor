@@ -376,6 +376,10 @@ class Commander:
         )
         cfg.read([ctx.local_config], encoding=ctx.encoding)
 
+        x, y = ctx.python_version
+        if not (x == 3 and y > 8 and y < 16):
+            raise CliError('`pyarmor build` only works for Python 3.9+')
+
         sectname = 'project'
         if not cfg.has_section(sectname):
             raise CliError('no project information')
