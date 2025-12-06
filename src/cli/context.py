@@ -332,6 +332,11 @@ class Context(object):
         return sys.version_info[:2]
 
     @property
+    def freethreading(self):
+        from sysconfig import get_config_var
+        return 1 if get_config_var("Py_GIL_DISABLED") else 0
+
+    @property
     def default_config(self):
         return os.path.join(os.path.dirname(__file__), 'default.cfg')
 
