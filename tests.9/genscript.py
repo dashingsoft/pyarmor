@@ -12,9 +12,13 @@
 #
 
 import itertools
+import sys
 
 from string import Template
 from textwrap import dedent, indent
+
+
+PYMAJOR, PYMINOR = sys.version_info[:2]
 
 
 INDENT = 4
@@ -847,9 +851,12 @@ script_materials = itertools.chain(
     try_materials,
     with_materials,
     yield_materials,
-    match_materials,
     cell_materials,
 )
+
+if PYMINOR >= 10:
+    script_materials.extend(match_materials)
+
 # script_materials = cell_materials
 
 
