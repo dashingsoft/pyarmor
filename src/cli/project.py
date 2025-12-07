@@ -813,6 +813,8 @@ class Project:
                 self._mini_options = dict(cfg.items(sect))
             else:
                 self._mini_options = {}
+            self._mini_options.setdefault(
+                'import_from', 'pyarmor.mini.pyarmor_mini')
         return self._mini_options
 
     def mini_opt(self, name):
