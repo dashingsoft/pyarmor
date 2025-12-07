@@ -7,7 +7,7 @@ import unittest
 
 from test.support import script_helper
 
-import genscript as script_generator
+from script_factory import script_generator
 
 
 class BaseTestCase(unittest.TestCase):
@@ -23,7 +23,7 @@ class BaseTestCase(unittest.TestCase):
         shutil.rmtree(self.local_path, ignore_errors=True)
 
     def tearDown(self):
-        shutil.rmtree(self.local_path, ignore_errors=True)
+        pass
 
     def assert_python_ok(self, *args):
         kwargs = {
@@ -53,29 +53,74 @@ class BaseTestCase(unittest.TestCase):
         script_helper.assert_python_ok(*args, **kwargs)
         return os.path.join(self.default_output, os.path.basename(script))
 
+    def _test_target(self, target, catalog=None):
+        for script in self.iter_scripts(catalog):
+            with self.subTest(script=script):
+                expected = self.assert_python_ok(script)
+                obfscript = self.build_v9_script(script, target)
+                self.verify_script_pass(obfscript, expected)
+
     def make_script(self, source, name='foo'):
         return script_helper.make_script(self.work_path, name, source)
 
-    def iter_scripts(self, catalog=''):
-        path = os.path.join('samples', catalog)
-        if os.path.exists(path):
-            with os.scandir(path) as it:
-                for entry in it:
-                    if entry.name.endswith('.py') and entry.is_file():
-                        yield entry.path
+    def iter_samples(self):
+        path = os.path.join(self.work_path, 'samples')
+        with os.scandir(path) as it:
+            for entry in it:
+                if entry.name.endswith('.py') and entry.is_file():
+                    yield entry.path
 
-        for name, source in script_generator.iter_scripts(catalog):
-            yield self.make_script(source, name=name)
+    def iter_scripts(self, catalog):
+        if catalog:
+            for name, source in script_generator(catalog):
+                yield self.make_script(source, name=name)
+        else:
+            return self.iter_samples()
 
 
 class UnitTestCases(BaseTestCase):
 
+    def test_mini_mode(self):
+        self._test_target('mini')
+        self._test_target('mini', 'modules')
+        self._test_target('mini', 'functions')
+        self._test_target('mini', 'methods')
+
     def test_vmc_mode(self):
-        for script in self.iter_scripts('modules'):
-            with self.subTest(script=script):
-                expected = self.assert_python_ok(script)
-                vmcscript = self.build_v9_script(script, 'vmc')
-                self.verify_script_pass(vmcscript, expected)
+        self._test_target('vmc')
+        self._test_target('vmc', 'modules')
+        self._test_target('vmc', 'functions')
+        self._test_target('vmc', 'methods')
+
+    def test_ecc_mode(self):
+        self._test_target('ecc')
+        self._test_target('ecc', 'modules')
+        self._test_target('ecc', 'functions')
+        self._test_target('ecc', 'methods')
+
+    def test_rft_mode(self):
+        self._test_target('rft')
+        self._test_target('rft', 'modules')
+        self._test_target('rft', 'functions')
+        self._test_target('rft', 'methods')
+
+    def test_mini_rft_mode(self):
+        self._test_target('mini-rft')
+        self._test_target('mini-rft', 'modules')
+        self._test_target('mini-rft', 'functions')
+        self._test_target('mini-rft', 'methods')
+
+    def test_vmc_rft_mode(self):
+        self._test_target('vmc-rft')
+        self._test_target('vmc-rft', 'modules')
+        self._test_target('vmc-rft', 'functions')
+        self._test_target('vmc-rft', 'methods')
+
+    def test_ecc_rft_mode(self):
+        self._test_target('ecc-rft')
+        self._test_target('ecc-rft', 'modules')
+        self._test_target('ecc-rft', 'functions')
+        self._test_target('ecc-rft', 'methods')
 
 
 if __name__ == '__main__':

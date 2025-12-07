@@ -897,7 +897,7 @@ script_catalog = {
 }
 
 
-def iter_scripts(catalog=None):
+def script_generator(catalog=None):
     """生成用于测试各种 Python 功能的脚本
 
     参数:
