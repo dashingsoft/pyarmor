@@ -401,6 +401,15 @@ SECTIONS = {
             cls='DictOption',
         ),
     ],
+    'mini': [
+        OptionModel(
+            name='import_from',
+            cls='NameOption',
+            value='pyarmor.mini.pyarmor_mini',
+        ),
+    ],
+    'vmc': [],
+    'ecc': [],
 }
 
 

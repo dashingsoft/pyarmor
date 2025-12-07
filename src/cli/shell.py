@@ -281,6 +281,9 @@ class PyarmorShell(cmd.Cmd):
                 domain.add_group(name, GROUPS[name])
 
         ps.add_section('rft')
+        ps.add_section('mini')
+        ps.add_section('vmc')
+        ps.add_section('ecc')
 
         return {'global': gs, 'local': ls, 'project': ps}
 

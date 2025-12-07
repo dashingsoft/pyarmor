@@ -196,13 +196,15 @@ class Module:
     def shebang(self):
         return self._shebang
 
-    def compile_file(self, force=False):
+    def compile_file(self, force=False, optimize=-1):
         if self._co is not None and not force:
             return
 
         self.parse_file(force=force)
 
-        options = self.project.compile_options
+        options = {
+            'optimize': optimize
+        }
         logger.info('compile %s ...', self.qualname)
         self._co = compile(self._tree, self.abspath, 'exec', **options)
         logger.info('compile %s end', self.qualname)
@@ -394,7 +396,10 @@ class Project:
         self._rft_include_attrs = None
         self._used_external_types = None
 
-        self._compile_options = None
+        self._std_options = None
+        self._mini_options = None
+        self._vmc_options = None
+        self._ecc_options = None
 
         # Log variable name in chain attributes
         #
@@ -508,15 +513,18 @@ class Project:
             yield x
 
     @property
-    def compile_options(self):
-        """Options for ast.parse when parsing project module"""
-        if self._compile_options is None:
+    def std_options(self):
+        """Options got from ctx.builder, not in project"""
+        if self._std_options is None:
             cfg = self.ctx.cfg
             optimize = cfg['builder'].getint('optimize', -1)
-            self._compile_options = {
+            self._std_options = {
                 'optimize': optimize
             }
-        return self._compile_options
+        return self._std_options
+
+    def std_opt(self, name):
+        return self.std_options.get(name)
 
     @property
     def rft_options(self):
@@ -787,6 +795,60 @@ class Project:
         return self._rft_type_rules
 
     @property
+    def mini_options(self):
+        """MINI mode options:
+
+        - import_from: str
+
+          Default value is "pyarmor.mini.pyarmor_mini", it means from
+          package `pyarmor.mini` import extension `pyarmor_mini`
+
+          Set it to "pyarmor_mini" if it's distributed with obfuscated
+          scripts
+        """
+        if self._mini_options is None:
+            cfg = self.ctx.cfg
+            sect = 'mini'
+            if cfg.has_section(sect):
+                self._mini_options = dict(cfg.items(sect))
+            else:
+                self._mini_options = {}
+        return self._mini_options
+
+    def mini_opt(self, name):
+        return self.mini_options.get(name)
+
+    @property
+    def vmc_options(self):
+        """VMC mode options"""
+        if self._vmc_options is None:
+            cfg = self.ctx.cfg
+            sect = 'vmc'
+            if cfg.has_section(sect):
+                self._vmc_options = dict(cfg.items(sect))
+            else:
+                self._vmc_options = {}
+        return self._vmc_options
+
+    def vmc_opt(self, name):
+        return self.vmc_options.get(name)
+
+    @property
+    def ecc_options(self):
+        """ECC mode options"""
+        if self._ecc_options is None:
+            cfg = self.ctx.cfg
+            sect = 'ecc'
+            if cfg.has_section(sect):
+                self._ecc_options = dict(cfg.items(sect))
+            else:
+                self._ecc_options = {}
+        return self._ecc_options
+
+    def ecc_opt(self, name):
+        return self.ecc_options.get(name)
+
+    @property
     def builtins(self):
         if self._builtins is None:
             import builtins
@@ -840,19 +902,6 @@ class Project:
             if value:
                 self._rft_include_attrs.update(value.split())
         return self._rft_include_attrs
-
-    def std_options(self):
-        """Obfuscation options only for std target
-
-        - std_assert_import
-        - std_assert_call
-        - std_restrict_module
-        - std_expired_date
-        - std_bind_devices
-
-        Got from command line, not in config file
-        """
-        pass
 
     def get_module(self, qualname):
         """Get module in the project by unique qualname
