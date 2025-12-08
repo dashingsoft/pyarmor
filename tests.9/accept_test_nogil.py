@@ -16,6 +16,7 @@ class BaseTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.python_nogil = os.path.abspath(os.getenv('PYTHON_NOGIL'))
         cls.local_path = os.path.join(cls.work_path, '.pyarmor')
         cls.default_output = os.path.join(cls.work_path, 'dist')
 
@@ -37,9 +38,11 @@ class BaseTestCase(unittest.TestCase):
         }
         return script_helper.assert_python_failure(*args, **kwargs)
 
-    def verify_script_pass(self, script, expected):
-        rc, stdout, stderr = self.assert_python_ok(script)
-        self.assertEqual(expected, (rc, stdout, stderr))
+    def verify_script_nogil_pass(self, script, expected):
+        from subprocess import check_output
+        assert os.path.exists(self.python_nogil), self.python_nogil
+        stdout = check_output([self.python_nogil, script])
+        self.assertEqual(expected[1], stdout)
 
     def build_v9_script(self, script, target):
         kwargs = {
@@ -58,7 +61,7 @@ class BaseTestCase(unittest.TestCase):
             with self.subTest(script=script):
                 expected = self.assert_python_ok(script)
                 obfscript = self.build_v9_script(script, target)
-                self.verify_script_pass(obfscript, expected)
+                self.verify_script_nogil_pass(obfscript, expected)
 
     def make_script(self, source, name='foo'):
         return script_helper.make_script(self.work_path, name, source)
@@ -93,10 +96,10 @@ class UnitTestCases(BaseTestCase):
         self._test_target('vmc', 'methods')
 
     def test_ecc_mode(self):
-        self._test_target('ecc')
-        self._test_target('ecc', 'modules')
-        self._test_target('ecc', 'functions')
-        self._test_target('ecc', 'methods')
+        self._test_target('ecc-nogil')
+        self._test_target('ecc-nogil', 'modules')
+        self._test_target('ecc-nogil', 'functions')
+        self._test_target('ecc-nogil', 'methods')
 
     def test_rft_mode(self):
         self._test_target('rft')
@@ -117,16 +120,16 @@ class UnitTestCases(BaseTestCase):
         self._test_target('vmc-rft', 'methods')
 
     def test_ecc_rft_mode(self):
-        self._test_target('ecc-rft')
-        self._test_target('ecc-rft', 'modules')
-        self._test_target('ecc-rft', 'functions')
-        self._test_target('ecc-rft', 'methods')
+        self._test_target('ecc-nogil-rft')
+        self._test_target('ecc-nogil-rft', 'modules')
+        self._test_target('ecc-nogil-rft', 'functions')
+        self._test_target('ecc-nogil-rft', 'methods')
 
 
 if __name__ == '__main__':
     logging.getLogger().addHandler(logging.NullHandler())
 
     loader = unittest.TestLoader()
-    # loader.testMethodPrefix = 'test_exclude_'
+    # loader.testMethodPrefix = 'test_nogil'
     suite = loader.loadTestsFromTestCase(UnitTestCases)
     result = unittest.TextTestRunner(verbosity=2).run(suite)

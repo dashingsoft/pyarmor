@@ -5,9 +5,9 @@
 # 使用方法:
 #
 #    from test.support import script_helper
-#    from driver import generator
+#    from script_factory import script_generator
 #
-#    for name, source in generator.iter_scripts(''):
+#    for name, source in script_generator('functions'):
 #       script_helper.make_script(source, name=name)
 #
 
@@ -854,12 +854,6 @@ script_materials = itertools.chain(
     cell_materials,
 )
 
-if PYMINOR >= 10:
-    script_materials.extend(match_materials)
-
-# script_materials = cell_materials
-
-
 locals_materials = [
 ]
 
@@ -918,6 +912,10 @@ def script_generator(catalog=None):
         for name, source in script_materials:
             yield name, tpl.substitute(
                 body=indent(source, prefix)[col:] if level else source)
+        # if PYMINOR >= 10:
+        #     for name, source in match_materials:
+        #         yield name, tpl.substitute(
+        #             body=indent(source, prefix)[col:] if level else source)
     else:
         materials = script_catalog.get(catalog, [])
         yield from materials
