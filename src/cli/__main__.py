@@ -767,6 +767,9 @@ def main_entry(argv):
     if not (x == 3 and y > 6 and y < 16):
         raise CliError('Python %s.%s is not supported' % (x, y))
 
+    if ctx.py_gil_disabled:
+        raise CliError('Pyarmor does not support free-threading Python')
+
     if args.version:
         print_version(ctx)
         parser.exit()
