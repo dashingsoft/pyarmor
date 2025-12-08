@@ -171,6 +171,17 @@ class Commander:
             help='generate scripts by combining --rft and --ecc'
         )
         group.add_argument(
+            '--ecc-nogil', dest='target', default='std',
+            action="store_const", const='ecc',
+            help='genetate ECC scripts for free-threading Python'
+        )
+        group.add_argument(
+            '--ecc-rft-nogil', dest='target', default='std',
+            action="store_const", const='ecc',
+            help=('generate scripts by combining --rft and --ecc'
+                  ' for free-threading Python')
+        )
+        group.add_argument(
             '--list', dest='target', default='std',
             action="store_const", const='list',
             help='list project scripts, modules and packages'
