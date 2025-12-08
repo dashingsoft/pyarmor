@@ -167,17 +167,17 @@ class Commander:
         )
         group.add_argument(
             '--ecc-rft', dest='target', default='std',
-            action="store_const", const='ecc',
+            action="store_const", const='ecc-rft',
             help='generate scripts by combining --rft and --ecc'
         )
         group.add_argument(
             '--ecc-nogil', dest='target', default='std',
-            action="store_const", const='ecc',
+            action="store_const", const='ecc-nogil',
             help='genetate ECC scripts for free-threading Python'
         )
         group.add_argument(
             '--ecc-rft-nogil', dest='target', default='std',
-            action="store_const", const='ecc',
+            action="store_const", const='ecc-rft-nogil',
             help=('generate scripts by combining --rft and --ecc'
                   ' for free-threading Python')
         )
