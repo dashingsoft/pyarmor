@@ -29,7 +29,12 @@ else ifeq ($(findstring Darwin,$(UNAME)),Darwin)
 	PYVERS := ${ALL_PYVERS}
 	PYTHONBIN := /usr/local/bin/pythonXY
     endif
-else
+else ifeq (${HOSTNAME},584VVL9L9XIZV8H)
+    # This is win10 test server
+    HOST ?=windows.x86_64
+    PYVERS := 3.9 3.10 3.11 3.12 3.13 3.14
+    PYTHONBIN := C:/Users/Administrator/AppData/Local/Programs/Python/PythonXY/python.exe
+else ifeq (${HOSTNAME},WIN7-1611171239)
     ifeq (${HOST},windows.x86)
 	PYVERS := 3.7 3.8
 	PYTHONBIN := C:/PythonXY-32/python
