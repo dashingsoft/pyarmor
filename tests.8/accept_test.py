@@ -3,12 +3,14 @@
 import logging
 import os
 import shutil
-import sys
 import time
 import unittest
 
 from struct import calcsize
 from test.support import script_helper
+
+
+is_win7 = os.getenv('HOSTNAME', '').startswith('WIN7-')
 
 
 def metricmethod(func):
@@ -227,13 +229,13 @@ class UnitTestCases(BaseTestCase):
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @unittest.skipUnless(sys.platform.startswith('win'), 'only for windows')
+    @unittest.skipUnless(is_win7, 'only for windows 7')
     def test_themida_script(self):
         args = ['g', '--enable-themida', 'samples/foo.py']
         self.pyarmor_gen(args)
         self.verify_dist_foo()
 
-    @unittest.skipUnless(sys.platform.startswith('win'), 'only for windows')
+    @unittest.skipUnless(is_win7, 'only for windows 7')
     def test_themida_bcc(self):
         args = ['g', '--enable-themida', '--enable-bcc', 'samples/foo.py']
         self.pyarmor_gen(args)

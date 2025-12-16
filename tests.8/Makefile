@@ -33,7 +33,7 @@ else ifeq (${HOSTNAME},584VVL9L9XIZV8H)
     # This is win10 test server
     HOST ?=windows.x86_64
     PYVERS := 3.9 3.10 3.11 3.12 3.13 3.14
-    PYTHONBIN := C:/Users/Administrator/AppData/Local/Programs/Python/PythonXY/python.exe
+    PYTHONBIN := ~/v9-test/venv/XY/Scripts/python.exe
 else ifeq (${HOSTNAME},WIN7-1611171239)
     ifeq (${HOST},windows.x86)
 	PYVERS := 3.7 3.8
@@ -58,7 +58,9 @@ ifneq ($(findstring ${PYVER},${PYVERS}),${PYVER})
     $(error "${PYVER}" not in supported Python versions "${PYVERS}")
 endif
 
-ifeq (${HOST},windows.x86_64)
+ifeq (${HOSTNAME},584VVL9L9XIZV8H)
+    PYTHON ?= $(subst XY,${PYVER},${PYTHONBIN})
+else ifeq (${HOST},windows.x86_64)
     PYTHON ?= $(subst XY,$(subst .,,${PYVER}),${PYTHONBIN})
 else ifeq (${HOST},windows.x86)
     PYTHON ?= $(subst XY,$(subst .,,${PYVER}),${PYTHONBIN})
@@ -89,7 +91,7 @@ whlpath := $(shell (test -d ${whlpath} && echo ${whlpath}) || echo ./pkgdist)
 pkgfile := $(word 1,$(shell cd ${pkgpath}; ls -t pyarmor-*.tar.gz))
 testver := $(subst pyarmor-,,$(subst .tar.gz,,${pkgfile}))
 coreprefix := pyarmor_cli_core-
-coresuffix := -cp38-none-macosx_10_14_x86_64.whl
+coresuffix := -cp38-cp38-macosx_10_14_x86_64.whl
 corever=$(subst ${coreprefix},,$(subst ${coresuffix},,$(shell cd ${whlpath}; ls -t ${coreprefix}*${coresuffix})))
 
 $(info got test package file: ${pkgfile})
@@ -112,8 +114,8 @@ install-%:
 	@tar xzf ${pkgpath}/pyarmor-${testver}.tar.gz
 	@mv pyarmor-${testver}/pyarmor .
 	@rm -rf pyarmor-${testver}
-	@unzip ${whlpath}/pyarmor_cli_core-${corever}-cp$(subst .,,$(subst install-,,$@))-none-${platform}.whl > /dev/null
-	@(themida=../pyarmor_cli_core_themida-${corever}-cp$(subst .,,$(subst install-,,$@))-none-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
+	@unzip ${whlpath}/pyarmor_cli_core-${corever}-cp$(subst .,,$(subst install-,,$@))-cp$(subst .,,$(subst install-,,$@))-${platform}.whl > /dev/null
+	@(themida=../pyarmor_cli_core_themida-${corever}-cp$(subst .,,$(subst install-,,$@))-cp$(subst .,,$(subst install-,,$@))-any.whl && test -f $$themida && unzip $$themida > /dev/null || echo no themida $$themida)
 	@rm -rf pyarmor_cli_core-${corever}.dist-info
 
 atest:
