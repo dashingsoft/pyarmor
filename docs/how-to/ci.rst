@@ -131,9 +131,10 @@ Then execute it in the workflow::
     $ pyarmor reg pyarmor-ci-8000.zip
     $ python3 batch.py
 
-If merge solution doesn't work, or you don't want change the original workflow, it need extra steps.
+If merge solution doesn't work, or you don't want change the original workflow, it need request more quota.
 
-Pyarmor team need verify this project, and you need request one new CI regfile to use special license server for it.
+Request More Quota
+~~~~~~~~~~~~~~~~~~
 
 The free quota is 10, 000 runs per month, exceed free quota, it need extra fees:
 
@@ -141,6 +142,24 @@ The free quota is 10, 000 runs per month, exceed free quota, it need extra fees:
 - 200,000 per month, extra fees: $20 for one year
 - 300,000 per month, extra fees: $30 for one year
 - ...
+
+The steps to request more quota
+
+1. Send request to Pyarmor Team (pyarmor@163.com)
+
+   Please provide the project information, web link, etc. Pyarmor team only use these information for internal review.
+
+   And the quota per month. For example, 100, 000 per month.
+
+2. Pyarmor Team send you PayPal invoice of extra fees.
+
+   For example, if you request quota is 100, 000 per month, Pyarmor team will send you $10 invoice. One year later, when this CI license is expired and need renew, Pyarmor Team will send you $90 + $10 = $100 invoice
+
+3. After invoice is paid, Pyarmor Team will send you notification email
+
+4. You need request one new CI regfile with Pyarmor 9.2+
+
+   Only Pyarmor 9.2+ support this feature.
 
 Indirect Way
 ============
