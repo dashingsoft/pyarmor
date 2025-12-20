@@ -185,7 +185,71 @@ class Builder(object):
             logger.info('generate runtime files OK')
 
         logger.info('start to obfuscate scripts')
-        self._obfuscate_scripts()
+        n = self.ctx.cfg.getint('builder', 'max_workers')
+        async_obfuscate_scripts(self, n) if n else self._obfuscate_scripts()
         logger.info('obfuscate scripts OK')
 
         Pytransform3.post_build(self.ctx)
+
+
+def async_obfuscate_scripts(builder, max_workers):
+    from concurrent.futures import ProcessPoolExecutor, wait
+
+    ctx = builder.ctx
+    rev = ctx.version_info()
+    template = ctx.bootstrap_template
+    relative = ctx.import_prefix
+    pkgname = ctx.runtime_package_name
+    bootpath = ctx.cfg.get('builder', 'bootstrap_file')
+    encoding = ctx.cfg.get('builder', 'encoding')
+    max_workers = None if max_workers < 2 else max_workers
+
+    plugins = [x for x in ctx.plugins if hasattr(x, 'post_script')]
+
+    namelist = []
+    futures = []
+
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        for res in ctx.resources + ctx.extra_resources:
+            logger.info('process resource "%s"', res.fullname)
+            name = res.name
+            path = builder.format_output(ctx.outputs, namelist.count(name))
+            namelist.append(name)
+            os.makedirs(path, exist_ok=True)
+
+            for r in res:
+                if not r.is_script():
+                    logger.info('copy data file %s', r.fullpath)
+                    data_path = os.path.join(path, r.output_path)
+                    os.makedirs(data_path, exist_ok=True)
+                    shutil.copy2(r.fullpath, data_path)
+                    continue
+
+                logger.info('obfuscating %s', r)
+                futures.append(executor.submit(aysnc_generate_script, *(
+                    r, path, ctx, template, relative, pkgname, bootpath,
+                    rev, plugins, encoding)))
+
+    wait(futures)
+    for x in futures:
+        x.result()
+
+
+def aysnc_generate_script(r, path, ctx, template, relative,
+                          pkgname, bootpath, rev, plugins, encoding):
+    code = Pytransform3.generate_obfuscated_script(ctx, r)
+    source = r.generate_output(
+        template, code, relative=relative, pkgname=pkgname,
+        bootpath=bootpath, rev=rev
+    )
+
+    fullpath = os.path.join(path, r.output_filename)
+    os.makedirs(os.path.dirname(fullpath), exist_ok=True)
+
+    for plugin in plugins:
+        patched_source = plugin.post_script(ctx, r, source)
+        if patched_source:
+            source = patched_source
+
+    with open(fullpath, 'w', encoding=encoding) as f:
+        f.write(source)
