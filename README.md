@@ -66,7 +66,7 @@ Please read the [Pyarmor EULA](LICENSE).
 
 ## Getting Help
 
-- **[Ask in learning system][askeke] or [look through check list][checklist]**
+- **[Ask in learning system][learning] or [look through check list][checklist]**
 - **Consult the [Pyarmor Documentation][doc].**
 - **Check the [FAQ][faq] for answers to common questions.**
 - **Try the documentation [index][genindex] or the [detailed table of contents][mastertoc].**
@@ -84,8 +84,8 @@ There is also one third-party learn platform
 * [Documentation][doc]
 * [Documentation 8.x](https://pyarmor.readthedocs.io/en/v8.5.12/)
 * [Documentation 7.x](https://pyarmor.readthedocs.io/en/v7.7/)
-* [Pyarmor 9.1 new features](https://eke.dashingsoft.com/pyarmor/docs/en/index.html)
-* [Pyarmor Learning System](https://eke.dashingsoft.com/pyarmor/)
+* [Pyarmor 9.1 new features](https://pyarmor.eke.org.cn/v9.html)
+* [Pyarmor Learning System][learning]
 
 中文资源
 
@@ -93,8 +93,8 @@ There is also one third-party learn platform
 * [Pyarmor 在线文档](https://pyarmor.readthedocs.io/zh/latest/)
 * [Pyarmor 8.x 在线文档](https://pyarmor.readthedocs.io/zh/v8.5.12/)
 * [Pyarmor 7.x 在线文档](https://pyarmor.readthedocs.io/zh/v7.x/)
-* [Pyarmor 9.1 新功能](https://eke.dashingsoft.com/pyarmor/docs/zh/index.html)
-* [Pyarmor 学习系统](https://eke.dashingsoft.com/pyarmor/)
+* [Pyarmor 9.1 新功能](https://pyarmor.eke.org.cn/v9.html)
+* [Pyarmor 学习系统][learning]
 
 ## Changelog
 
@@ -117,5 +117,5 @@ Make sure to read the changelog carefully before upgrading Pyarmor:
 [asking]: https://pyarmor.readthedocs.io/en/latest/questions.html#asking-questions-in-github
 [doc]: https://pyarmor.readthedocs.io/
 [gurubase]: https://gurubase.io/g/pyarmor
-[askeke]: https://eke.dashingsoft.com/pyarmor/ask
+[learning]: https://pyarmor.eke.org.cn/
 [checklist]: https://pyarmor.readthedocs.io/en/latest/reference/solutions.html

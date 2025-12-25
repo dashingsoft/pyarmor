@@ -12,7 +12,7 @@ If using :command:`pyarmor-7` or Pyarmor < 8.0, please check `Pyarmor 7.x Doc`_
 
 .. important::
 
-   Pyarmor team handles too many wrong usage issues, so one document :doc:`reference/solutions` has been arranged to solve this kind of issue quickly. If you aren't sure this issue is wrong usage or not, please check this doc or https://eke.dashingsoft.com/pyarmor/ask/ at first.
+   Pyarmor team handles too many wrong usage issues, so one document :doc:`reference/solutions` has been arranged to solve this kind of issue quickly. If you aren't sure this issue is wrong usage or not, please check this doc or https://pyarmor.eke.org.cn/ at first.
 
    Pyarmor team will mark this kind of issue as `invalid` or `documented` and close it immediately.
 

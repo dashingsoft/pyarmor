@@ -1042,7 +1042,7 @@ pyarmor init
 
 .. versionadded:: 9.1
 
-Refer to https://eke.dashingsoft.com/pyarmor/docs/en/user/man.html
+Refer to |V9man|
 
 .. _pyarmor env:
 
@@ -1051,7 +1051,7 @@ pyarmor env
 
 .. versionadded:: 9.1
 
-Refer to https://eke.dashingsoft.com/pyarmor/docs/en/user/man.html
+Refer to |V9man|
 
 .. _pyarmor build:
 
@@ -1060,7 +1060,7 @@ pyarmor build
 
 .. versionadded:: 9.1
 
-Refer to https://eke.dashingsoft.com/pyarmor/docs/en/user/man.html
+Refer to |V9man|
 
 Environment Variables
 =====================

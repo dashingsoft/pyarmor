@@ -12,7 +12,7 @@
 
    New features introduced by Pyarmor 9.1.0 are also availabled here
 
-   https://eke.dashingsoft.com/pyarmor/docs/en/index.html
+   |V9doc|
 
    It includes 3 commands: `pyarmor init`, `pyarmor env`, `pyarmor build`
 
