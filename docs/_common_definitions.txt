@@ -6,6 +6,8 @@
 .. _Pyarmor EULA: https://github.com/dashingsoft/pyarmor/blob/master/LICENSE
 .. _MyCommerce Shopping: https://order.mycommerce.com/product?vendorid=200089125&productid=301044051
 .. _Pyarmor Shopping Cart: https://jondy.github.io/paypal/index.html
+.. _Pyarmor V9 Man: https://pyarmor.eke.org.cn/archive/v9/docs/en/user/man.html
+.. _Pyarmor V9 Doc: https://pyarmor.eke.org.cn/v9.html
 
 .. |pyarmor| replace:: :doc:`pyarmor <man>`
 .. |Pyarmor| replace:: :term:`Pyarmor`
@@ -14,8 +16,6 @@
 .. |Manual| replace:: https://pyarmor.readthedocs.io/
 .. |Author| replace:: Jondy
 .. |Contact| replace:: pyarmor@163.com
-.. |V9doc| replace:: https://pyarmor.eke.org.cn/v9.html
-.. |V9man| replace:: https://eke.dashingsoft.com/pyarmor/docs/en/user/man.html
 
 .. |FAQ| replace:: :doc:`FAQ <questions>`
 

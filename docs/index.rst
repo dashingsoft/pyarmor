@@ -10,9 +10,7 @@
 
 .. important::
 
-   New features introduced by Pyarmor 9.1.0 are also availabled here
-
-   |V9doc|
+   New features introduced by Pyarmor 9.1.0 are also in the `Pyarmor V9 Doc`_
 
    It includes 3 commands: `pyarmor init`, `pyarmor env`, `pyarmor build`
 
