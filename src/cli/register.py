@@ -171,7 +171,7 @@ class Register(object):
         return url
 
     def update_token(self):
-        from .core import Pytransform3
+        from pyarmor.cli.core import Pytransform3
         assert Pytransform3._pytransform3 is None
         with open(self.ctx.license_token, 'wb') as f:
             f.close()
@@ -359,7 +359,7 @@ class Register(object):
             logger.debug('%s:%d:%s', host, port, str(e))
 
     def _get_machine_id(self, devflag=11):
-        from .core import Pytransform3
+        from pyarmor.cli.core import Pytransform3
         try:
             return Pytransform3.get_hd_info(devflag)
         except SystemError:

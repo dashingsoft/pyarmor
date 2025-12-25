@@ -442,7 +442,7 @@ class Commander:
             logger.info('build target %s end', args.target)
 
     def _build(self, project, target, output, value=None):
-        from .core import Pytransform3
+        from pyarmor.cli.core import Pytransform3
         args = [self.ctx, target, project, output, value]
         m = Pytransform3.init(self.ctx)
         m.pre_build(args)

@@ -22,8 +22,9 @@
 import os
 import shutil
 
+from pyarmor.cli.core import Pytransform3
+
 from . import logger, CliError
-from .core import Pytransform3
 from .resource import FileResource, PathResource
 
 
