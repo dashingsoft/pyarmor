@@ -9,6 +9,12 @@ There are 2 ways to use Pyarmor in CI/CD pipeline:
 - Direct way, it's simple, but only works for Trial, Basic and CI license, and there is rate limits
 - Indirect way, it need change the original build workflow, but works for any type license
 
+.. note::
+
+   In this page, CI/CD pipeline means the runner is unstable device like docker containter, which machine id is changed after reboot.
+
+   If the runner in CI/CD pipeline is physical machine, it's not in CI/CD pipeline  defined by Pyarmor, it can be taken as one normal device.
+
 Direct Way
 ==========
 
