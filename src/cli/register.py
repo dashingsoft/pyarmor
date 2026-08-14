@@ -644,7 +644,7 @@ class WebRegister(Register):
             'use this file for subsequent registration' % regfile,
         logger.info('Import Notes:\n\n%s\n', notes)
 
-    def register(self, keyfile, product, upgrade=False, group=False):
+    def register(self, keyfile, product=None, upgrade=False, group=False):
         if keyfile.endswith('.zip'):
             logger.info('register "%s"', keyfile)
             self.register_regfile(keyfile)
