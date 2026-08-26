@@ -20,7 +20,7 @@
 #  @Create Date: Thu Jan 12 17:29:25 CST 2023
 #
 
-__VERSION__ = '8.1.1'
+__VERSION__ = '8.1.2'
 
 PLATFORM_NAMES = (
     'windows.x86_64', 'windows.x86', 'cygwin.x86_64',
