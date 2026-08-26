@@ -154,9 +154,41 @@ If it returns as above, but still failed to register, report issue with license 
    - Linux, Windows or MacOS and arches
    - For Linux/MacOS, also provide the output of `uname -a`
 
-**Group License for docker container**
+**Group License for local docker container**
 
 1. Check docker host and container network, make sure they're in same network
+
+   In docker container, check the log of `pyarmor reg`. For example::
+
+     $ pyarmor reg ./pyarmor-device-regfile-xxxx.1.zip
+
+     INFO     Python 3.12.12
+     INFO     Pyarmor 9.1.8 (trial), 000000, non-profits
+     INFO     Platform linux.x86_64
+     INFO     register "./pyarmor-device-regfile-xxxx.1.zip"
+     INFO     machine id in group license: m5532894dc5ccf82a061382a3ffbb0af00af
+     INFO     no machine id matchs this group license
+     INFO     take this machine as docker container, and connect to docker host
+     for authentication...
+     INFO     socket addr: ('192.168.139.57', 39044)
+     INFO     remote addr: ('192.168.139.3', 29092)
+     ...
+
+   The important thing is `socket addr` and `remote addr`, make sure they're in the same network (netmask is same)
+
+2. Check route from client to host
+
+   In docker container, run `traceroute` to trace remote addr. For example::
+
+     $ traceroute 192.168.139.3
+       traceroute to 192.168.139.3 (192.168.139.3), 30 hops max, 60 byte packets
+       1  192.168.139.3 (192.168.139.3)  0.618 ms  0.259 ms  0.185 ms
+
+   Make sure there is only 1 or 2 hops, otherwise it will receive empty packet.
+
+3. Refer docker doc and change network config to match above 2 conditions.
+
+   Otherwise, it doesn't work.
 
 .. _fix-obfuscate-issue:
 
