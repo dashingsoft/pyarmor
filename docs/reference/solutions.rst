@@ -180,11 +180,15 @@ If it returns as above, but still failed to register, report issue with license 
 
    In docker container, run `traceroute` to trace remote addr. For example::
 
-     $ traceroute 192.168.139.3
+     $ traceroute host.docker.internal
        traceroute to 192.168.139.3 (192.168.139.3), 30 hops max, 60 byte packets
        1  192.168.139.3 (192.168.139.3)  0.618 ms  0.259 ms  0.185 ms
 
    Make sure there is only 1 or 2 hops, otherwise it will receive empty packet.
+
+   If `host.docker.internal` is not `192.168.139.3`, then set environment varaible::
+
+     $ export PYARMOR_DOCKER_HOST=192.168.139.3
 
 3. Refer docker doc and change network config to match above 2 conditions.
 
