@@ -190,9 +190,15 @@ If it returns as above, but still failed to register, report issue with license 
 
      $ export PYARMOR_DOCKER_HOST=192.168.139.3
 
-3. Refer docker doc and change network config to match above 2 conditions.
+3. Refer docker doc and change network config to match above 2 conditions. Otherwise it doesn't work
 
-   Otherwise, it doesn't work.
+   For Windows Host (WSL) and Linux Container, here is one success case
+
+   https://github.com/dashingsoft/pyarmor/issues/2229
+
+4. If  docker container includes `/dev/disk`, rename it. For example::
+
+     $ sudo mv /dev/disk /dev/nodisk
 
 .. _fix-obfuscate-issue:
 
