@@ -139,6 +139,8 @@ def merge_runtimes(paths, rname, output):
         if not os.path.exists(rpath):
             raise RuntimeError('no runtime package found')
         for x in os.scandir(rpath):
+            if x.name == '__pycache__':
+                continue
             if x.is_dir():
                 logger.info('copy runtime files "%s" to "%s"', x.name, dest)
                 shutil.copytree(x.path, os.path.join(dest, x.name))
