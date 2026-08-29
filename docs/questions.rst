@@ -385,16 +385,9 @@ Purchasing
 
   If this order isn't activated and in 30 days since purchasing, you can refund the order by one of ways
 
-  * If purchasing order from MyCommerce:
-
-    1. Email to Ordersupport@mycommerce.com with order information and ask for refund.
-    2. Or click `FindMyOrder page`_ to submit refund request
-
   * If purchasing order from reseller, contact your reseller
 
   * For other cases, email to pyarmor@163.com
-
-.. _FindMyOrder page: https://www.findmyorder.com/store?Action=DisplayEmailCustomerServicePage&Env=BASE&Locale=en_US&SiteID=findmyor
 
 Misc.
 =====
