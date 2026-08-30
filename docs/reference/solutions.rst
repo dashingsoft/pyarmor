@@ -186,7 +186,7 @@ If it returns as above, but still failed to register, report issue with license 
 
    Make sure there is only 1 or 2 hops, otherwise it will receive empty packet.
 
-   If `host.docker.internal` is not `192.168.139.3`, then set environment varaible::
+   If `host.docker.internal` is not `192.168.139.3`, then set environment variable::
 
      $ export PYARMOR_DOCKER_HOST=192.168.139.3
 
