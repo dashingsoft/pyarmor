@@ -750,17 +750,18 @@ class Context(object):
         from urllib.request import urlopen
 
         parts = url.split('?', 1)
-        parts[0] = '/products/auth/r2/'
+        parts[0] = self._opts('pyarmor', 'tokurl')
         url = '?'.join(parts)
-        host = self.cfg['pyarmor'].get('server', 'api.dashingsoft.com')
 
-        def get_response(host, url):
-            from ssl import _create_unverified_context
-            context = _create_unverified_context()
-            req = 'https://%s%s' % (host, url)
-            return urlopen(req, None, timeout, context=context)
+        def get_response(url):
+            try:
+                from ssl import _create_unverified_context
+                context = _create_unverified_context()
+            except Exception:
+                context = None
+            return urlopen(url, None, timeout, context=context)
 
-        with get_response(host, url) as res:
+        with get_response(url) as res:
             return res.read()
 
     #
