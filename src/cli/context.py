@@ -743,7 +743,7 @@ class Context(object):
         else:
             host = http_proxy[i:j]
             port = http_proxy[j+1:]
-        url = b'http://pyarmor.dashingsoft.com'
+        url = b'http://api.dashingsoft.com'
         return b'\x00'.join([host, port, url, header, b'\x00'])
 
     def request_token(self, url, timeout=6.0):
