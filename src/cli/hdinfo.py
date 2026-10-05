@@ -59,7 +59,18 @@ def main(argv):
         'or harddisk name like "/dev/sda"'))
     args = parser.parse_args(argv)
 
-    print('Machine ID: %s' % get_hd_info(GROUP_LICENSE_MACHINE_FLAG)[1:])
+    machid = get_hd_info(GROUP_LICENSE_MACHINE_FLAG)[1:]
+    if machid[1] == '-':
+        machid2 = machid.replace('-', 'm', 1)
+    else:
+        machid2 = get_hd_info(GROUP_LICENSE_MACHINE_FLAG)[1:]
+
+    if machid == machid2:
+        print('This device is stable device')
+        print('Machine ID: %s' % machid2)
+    else:
+        print('This device is unstable device')
+        print('Machind ID is unstable in this device')
 
     if not args.devname:
         print('Default Harddisk Serial Number: %s' % get_hd_info(HT_HARDDISK))
