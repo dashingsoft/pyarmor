@@ -168,7 +168,7 @@ By default RFT mode doesn't touch all the names in the module ``__all__``. If th
 
 It's possible to ignore this attribute by this command::
 
-    $ pyarmor cfg rft_export__all__ 0
+    $ pyarmor cfg rft_auto_export 0
 
 It will transform names in the ``__all__``, but it may not work if it's imported by other scripts.
 
