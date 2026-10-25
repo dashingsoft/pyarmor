@@ -4,7 +4,7 @@
 # 1. Basic usage, test all pythons in this platform
 #
 #    make test
-#    make nogil-test
+#    make test-nogil
 #
 # 2. Test one python version
 #
@@ -12,7 +12,7 @@
 #
 # 3. Test free-threaded version
 #
-#    make nogil-test-3.13
+#    make test-nogil-3.13
 #
 # Prerequisites:
 #
@@ -114,18 +114,18 @@ $(info got test package: $(notdir ${testpkg}))
 $(info got core package: $(notdir ${corepkg}))
 $(info got mini package: $(notdir ${minipkg}))
 
-.PHONY: all test nogil-test test-* notil-test-* install clean
+.PHONY: all test nogil-test test-* test-notil-* install clean
 
-all: test nogil-test
+all: test test-nogil
 
 test:
 	for ver in ${PYVERS} ; do \
 		make test-$$ver ; \
 	done
 
-nogil-test:
+test-nogil:
 	for ver in ${PYVERS_T} ; do \
-		make nogil-test-$$ver ; \
+		make test-nogil-$$ver ; \
 	done
 
 install:
@@ -134,16 +134,16 @@ install:
 test-%:
 	PYVER=$(subst test-,,$@) make install run-test
 
-nogil-install:
+install-nogil:
 	${PIP_T} ${minipkg_t}
 
-nogil-test-%:
-	PYVER=$(subst nogil-test-,,$@) make install nogil-install run-nogil-test
+test-nogil-%:
+	PYVER=$(subst test-nogil-,,$@) make install install-nogil run-test-nogil
 
 run-test:
 	${PYTHON} ${workpath}/accept_test.py
 
-run-nogil-test:
+run-test-nogil:
 	PYTHON_NOGIL=${PYTHON_T} ${PYTHON} ${workpath}/accept_test_nogil.py
 
 clean:
