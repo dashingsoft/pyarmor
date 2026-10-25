@@ -23,8 +23,8 @@ HOSTS := darwin.x86_64 darwin.arm64 linux.x86_64 linux.aarch64 windows.x86_64
 
 UNAME ?= $(shell uname)
 ARCH ?= $(shell arch)
-PYVERS ?= 3.9 3.10 3.11 3.12 3.13 3.14
-PYVERS_T ?= 3.13 3.14
+PYVERS ?= 3.9 3.10 3.11 3.12 3.13 3.14 3.15
+PYVERS_T ?= 3.13 3.14 3.15
 
 PYVER ?= $(word 1,${PYVERS})
 ifneq ($(findstring ${PYVER},${PYVERS}),${PYVER})
