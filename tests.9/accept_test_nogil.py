@@ -120,10 +120,10 @@ class UnitTestCases(BaseTestCase):
         self._test_target('vmc-rft', 'methods')
 
     def test_ecc_rft_mode(self):
-        self._test_target('ecc-nogil-rft')
-        self._test_target('ecc-nogil-rft', 'modules')
-        self._test_target('ecc-nogil-rft', 'functions')
-        self._test_target('ecc-nogil-rft', 'methods')
+        self._test_target('ecc-rft-nogil')
+        self._test_target('ecc-rft-nogil', 'modules')
+        self._test_target('ecc-rft-nogil', 'functions')
+        self._test_target('ecc-rft-nogil', 'methods')
 
 
 if __name__ == '__main__':
