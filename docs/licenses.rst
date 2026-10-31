@@ -187,13 +187,11 @@ Refund policy
 
 If activation file isn't used, and purchasing date is in 30 days, refund is acceptable.
 
-- If purchasing order from reseller, contact your reseller
-
-- For other cases, email to pyarmor@163.com
+- Please send refund request to pyarmor@163.com with order and payment information
 
 - Pyarmor Team may charge 5% fee for some refund cases.
 
-Out of 30 days, or activation file has been used, refund request will be rejected.
+Out of 30 days, or activation file has been used, refund request will be rejected, Pyarmor Team may not reply in this case.
 
 Appendix
 ========
