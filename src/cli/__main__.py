@@ -658,8 +658,12 @@ https://pyarmor.readthedocs.io/en/stable/reference/man.html#pyarmor-reg
         help='upgrade old Pyarmor license'
     )
     cparser.add_argument(
-        '-g', '--device', metavar='ID', type=int, choices=range(1, 101),
-        help='device id (1-100) in group license'
+        '-g', '--device', metavar='ID', type=int, choices=range(1, 201),
+        help='device id (1-200) in group license'
+    )
+    cparser.add_argument(
+        '-m', '--machine', metavar='FILENAME',
+        help='request device registration file (only for group license)'
     )
     cparser.add_argument(
         '--buy', action='store_true',
