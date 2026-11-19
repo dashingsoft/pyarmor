@@ -289,7 +289,9 @@ The conditions:
 Basic usage
 
 1. On Docker Host install Pyarmor 9.3.1+, and register it wit group device as above
-2. On Docker Host start `pyarmor-auth`::
+2. On Docker Host start `pyarmor-auth`:
+
+.. code-block:: bash
 
    $ pyarmor-auth
 
@@ -299,7 +301,10 @@ Basic usage
    # If run it in backround, with option -b
    $ pyarmor-auth -b
 
-3. On Docker Container, install Pyarmor 9.3.1+, and register Pyarmor::
+3. On Docker Container, install Pyarmor 9.3.1+, and register Pyarmor:
+
+.. code-block:: bash
+
    $ docker run -it python bash
 
    root@86b180b28a50:/# pip3 install pyarmor.cli
