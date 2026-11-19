@@ -275,6 +275,39 @@ After successful registration, all obfuscations will automatically apply this gr
 Run unlimited dockers in offline device
 ---------------------------------------
 
+.. versionchanged:: 9.3
+
+Pyarmor 9.3.1 make this feature simplify with Windows and MacOS host
+
+The conditions:
+
+- Docker Host and Containers must be in same machine
+- Docker container can visit Host by `host.docker.internal`. For example::
+
+  root@86b180b28a50:/# ping host.docker.internal
+
+Basic usage
+
+1. On Docker Host install Pyarmor 9.3.1+, and register it wit group device as above
+2. On Docker Host start `pyarmor-auth`::
+
+   $ pyarmor-auth
+
+   # If something is wrong, start with debug option -d
+   $ pyarmor-auth -d
+
+   # If run it in backround, with option -b
+   $ pyarmor-auth -b
+
+3. On Docker Container, install Pyarmor 9.3.1+, and register Pyarmor::
+   $ docker run -it python bash
+
+   root@86b180b28a50:/# pip3 install pyarmor.cli
+   root@86b180b28a50:/# pyarmor reg docker
+   root@86b180b28a50:/# pyarmor gen foo.py
+
+Before v9.3, use the old way
+
 .. versionadded:: 8.3
 
 Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
