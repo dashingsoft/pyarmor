@@ -323,6 +323,12 @@ def cmd_reg(ctx, args):
         reg.register_regfile(regfile)
         logger.info('This license registration information:\n\n%s', str(reg))
 
+    elif regfile.lower() == 'docker':
+        reg = Register(ctx)
+        logger.info('register docker container')
+        reg.register_docker()
+        logger.info('This license registration information:\n\n%s', str(reg))
+
     else:
         regsvr = WebRegister(ctx)
         regsvr.check_request_interval(activation=regfile)

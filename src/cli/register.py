@@ -24,6 +24,7 @@ import os
 from base64 import b64decode, b64encode, urlsafe_b64encode
 from json import loads as json_loads
 from string import Template
+from struct import unpack, pack
 
 from . import logger, CliError
 
@@ -42,8 +43,6 @@ $notes
 
 
 def parse_token(data):
-    from struct import unpack
-
     if data and data.find(b' ') > 0:
         try:
             buf = b64decode(data.split()[0])
@@ -261,7 +260,6 @@ class Register(object):
         self.ctx.save_group_token(fzip.read(name))
 
     def _init_token(self, reginfo):
-        from struct import pack
         rev, licno, lictp, regname, product = (
             reginfo['rev'], reginfo['rcode'], reginfo['type'],
             reginfo['name'], reginfo['product']
@@ -429,6 +427,42 @@ class Register(object):
                 logger.info('but this machine id: %s', machid)
                 raise RuntimeError(
                     'this group license is not for this machine')
+
+    def register_docker(self):
+        from socket import socket, AF_INET, SOCK_STREAM, gethostname
+
+        ctx = self.ctx
+
+        if os.path.exists(ctx.license_group_token):
+            logger.info('remove old token')
+            os.remove(ctx.license_group_token)
+
+        if not os.path.exists(ctx.reg_path):
+            logger.info('make reginfo path: %s', ctx.reg_path)
+            os.makedirs(ctx.reg_path)
+
+        dkid = os.getenv('PYARMOR_DOCKER_ID', gethostname())
+        host = os.getenv('PYARMOR_DOCKER_HOST', 'host.docker.internal')
+        port = 29092
+        with socket(AF_INET, SOCK_STREAM) as s:
+            s.connect((host, port))
+            logger.info('docker id: %s', dkid)
+            logger.info('docker addr: %s', str(s.getsockname()))
+            logger.info('host addr: %s', str(s.getpeername()))
+            s.sendall(b'PADC' + dkid.encode('utf-8'))
+            while True:
+                header = s.recv(4)
+                size1, size2 = unpack('!HH', header)
+                data = s.recv(size1)
+                logger.info('write token (%d)', size1)
+                ctx.save_group_token(data)
+                data = s.recv(size2)
+                break
+
+            logger.info('write key (%d)', size2)
+            keyname = os.path.join(ctx.reg_path, ctx.license_file)
+            with open(keyname, 'wb') as f:
+                f.write(data)
 
     def __str__(self):
         info = self.license_info
