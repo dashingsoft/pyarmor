@@ -24,6 +24,7 @@ import logging
 import os
 import socketserver
 import struct
+import subprocess
 import sys
 
 from .context import Context
@@ -34,7 +35,7 @@ from .register import Register, MACHFLAGS
 CONFIG = {
     'host': '0.0.0.0',
     'port': 29092,
-    'home': os.path.expanduser(os.path.join('~', '.pyarmor', 'docker')),
+    'home': os.path.expanduser(os.path.join('~', '.pyarmor')),
     'machid': None,
     'ctx': None,
 }
@@ -69,25 +70,24 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
             self.request.send(response)
         elif cmd == b'PADK':
             userdata = self.parse_packet(packet).decode('utf-8')
-            rtkey = self.generate_runtime_key(userdata)
+            rtkey = generate_runtime_key(userdata)
             response = struct.pack('!HH', 0, len(rtkey)) + rtkey
+            self.request.send(response)
+        elif cmd == b'PADC':
+            ctx = CONFIG['ctx']
+            key = ctx.read_license()
+            token = ctx.read_token()
+            response = struct.pack('!HH', len(token), len(key)) + token + key
             self.request.send(response)
         else:
             raise RuntimeError('unknown packet %r' % packet)
         return response
 
     def parse_packet(self, packet):
-        if len(packet) == 32 and packet[:4] == b'PADK':
+        n = len(packet)
+        if n >= 32 and packet[:4] == b'PADK' and packet[32:34] in (b'DK', b''):
             return packet[12:]
         raise RuntimeError('invalid auth request: %r' % packet)
-
-    def generate_runtime_key(self, userdata):
-        ctx = CONFIG['ctx']
-        ctx.cmd_options['user_data'] = userdata
-        ctx.cmd_options['expired'] = '.3'
-        ctx.cmd_options['outer'] = 0
-        Pytransform3._pytransform3.init_ctx(ctx)
-        return Pytransform3.generate_runtime_key(ctx)
 
     def generate_outer_key(self, userdata, outer=True):
         ctx = CONFIG['ctx']
@@ -98,16 +98,41 @@ class DockerAuthHandler(socketserver.BaseRequestHandler):
         return Pytransform3.generate_runtime_key(ctx, outer=outer)
 
 
+def generate_runtime_key(userdata):
+    ctx = CONFIG['ctx']
+    ctx.cmd_options['user_data'] = userdata
+    ctx.cmd_options['expired'] = '.3'
+    ctx.cmd_options['outer'] = 0
+    Pytransform3._pytransform3.init_ctx(ctx)
+    return Pytransform3.generate_runtime_key(ctx)
+
+
 def register_pyarmor(ctx, regfile):
     reg = Register(ctx)
-    logging.info('register "%s"', regfile)
-    reg.register_regfile(regfile)
+    if regfile:
+        logging.info('register "%s"', regfile)
+        reg.register_regfile(regfile)
+    else:
+        master = Context(home=CONFIG['home'])
+        if not os.path.exists(master.license_group_token):
+            raise RuntimeError('this device is not registerred as group license')
+
+        def copy_files(src, dest):
+            import shutil
+            with open(src.license_group_token, 'rb') as f:
+                data = f.read()
+            dest.save_group_token(data)
+            shutil.copy(src.license_file, dest.reg_path)
+
+        copy_files(master, ctx)
+
+    logging.debug(reg.license_info)
     if reg.license_info['features'] < 15:
         raise RuntimeError('this feature is only for group license')
     Pytransform3.init(ctx)
 
 
-def main_entry():
+def prepare(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Enable debug mode')
@@ -117,30 +142,84 @@ def main_entry():
     parser.add_argument('-s', '--sock', default='/var/run/docker.sock',
                         help=argparse.SUPPRESS)
     parser.add_argument('--home', help=argparse.SUPPRESS)
-    parser.add_argument('regfile', nargs=1,
+    parser.add_argument('-b', '--background', action='store_true',
+                        help='Enable daemon mode')
+    parser.add_argument('regfile', nargs='?',
                         help='group device registration file for this machine')
-    args = parser.parse_args(sys.argv[1:])
+    args = parser.parse_args()
 
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
     if args.home:
         CONFIG['home'] = os.path.expandvars(os.path.expanduser(args.home))
-    home = CONFIG['home']
+
+    home = os.path.join(CONFIG['home'], 'docker')
     logging.info('work path: %s', home)
+
+    if not os.path.exists(home):
+        os.makedirs(home)
 
     # lpath should be non-existent or empty
     ctx = Context(home=home, lpath=os.path.join(home, 'non-existent'))
-    register_pyarmor(ctx, args.regfile[0])
+    register_pyarmor(ctx, args.regfile)
     CONFIG['ctx'] = ctx
 
     CONFIG['machid'] = [Pytransform3.get_hd_info(x) for x in MACHFLAGS]
     logging.debug('machine id: %s', CONFIG['machid'])
 
-    host, port = args.host, args.port
+    logging.info('check command `docker`')
+    subprocess.check_call(['docker', '-v'])
+
+    logging.info('check group license')
+    generate_runtime_key('test group license')
+
+    return args.host, args.port, args.background
+
+
+def start_daemon_proc(args):
+    command = [sys.executable, '-m', 'pyarmor.cli.docker'] + args
+    command.extend([x for x in args if x not in ('-b', '--background')])
+
+    if sys.platform == "win32":
+        subprocess.Popen(
+            command,
+            creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP
+                           | subprocess.CREATE_NO_WINDOW),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            close_fds=True,
+        )
+    else:
+        subprocess.Popen(
+            command,
+            start_new_session=True,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            close_fds=True,
+        )
+
+
+def main_entry():
+    args = sys.argv[1:]
+    try:
+        host, port, background = prepare(args)
+    except Exception as e:
+        logging.error('%s', e)
+        return
+
+    if background:
+        start_daemon_proc(args)
+        return
+
     with socketserver.TCPServer((host, port), DockerAuthHandler) as server:
         logging.info('listen container auth request on %s:%s', host, port)
-        server.serve_forever()
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            logging.info('bye bye')
 
 
 def main():
@@ -179,8 +258,7 @@ def get_container(client, ipaddr):
 
 
 def copy_file_into_docker(containerid, filename):
-    from subprocess import check_call
-    check_call(['docker', 'cp', filename, '%s:/' % containerid])
+    subprocess.check_call(['docker', 'cp', filename, '%s:/' % containerid])
 
 
 def get_container_info(client, shortid):
