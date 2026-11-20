@@ -262,6 +262,14 @@ def cmd_reg(ctx, args):
         open_new_tab(ctx.cfg['pyarmor']['buyurl'])
         return
 
+    if args.machine:
+        regsvr = WebRegister(ctx)
+        regsvr.check_request_interval()
+        regsvr.request_machine_regfile(args.machine, args.regfile)
+        logger.info('The device regfile has been generated successfully')
+
+        return
+
     if args.device and not args.regfile:
         reg = Register(ctx)
         reg.generate_group_device(args.device)
