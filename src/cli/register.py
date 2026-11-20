@@ -429,7 +429,7 @@ class Register(object):
                 raise RuntimeError(
                     'this group license is not for this machine')
 
-    def _fix_docker_hosts(hostname, dockname):
+    def _fix_docker_hosts(self, hostname, dockname):
         if hostname != 'host.docker.internal':
             return
 
@@ -455,7 +455,7 @@ class Register(object):
                 with open(etcfile, 'a') as f:
                     n = dockip.rfind('.')
                     hostip = dockip[:n] + '.1'
-                    logger.info('got host ipaddr "%s"', hostip)
+                    logger.info('got host ipaddr: %s', hostip)
                     f.write('%s %s\n' % (hostip, hostname))
                 return True
 
@@ -480,7 +480,7 @@ class Register(object):
         host = os.getenv('PYARMOR_DOCKER_HOST', 'host.docker.internal')
         port = 29092
         with socket(AF_INET, SOCK_STREAM) as s:
-            s.timeout(timeout)
+            s.settimeout(timeout)
             try:
                 s.connect((host, port))
             except gaierror:
