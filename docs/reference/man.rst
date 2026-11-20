@@ -948,6 +948,8 @@ Register Pyarmor or upgrade Pyarmor license
                       license to this product
 -u, --upgrade         upgrade Pyarmor license
 -g ID, --device ID    device no. in group license
+-m FILENAME, --machine FILENAME
+                      request device regsitration file (only for group license)
 
 .. describe:: Arguments
 
@@ -1007,6 +1009,18 @@ Copy device regfile to device no. 1, then run the following command::
 
 Repeat above steps for the rest device no. 2, no. 3 ...
 
+Since v9.3.1, use `-m` to specify device filename, the license server will assign next available device no. to this device automatically. For example::
+
+    $ pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
+
+Then license server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip`
+
+If current device has been registerred as group license, this request also works::
+
+    pyarmor reg -m pyarmor-group-device.1
+
+And next device no. `pyarmor-device-regfile-xxxx.3.zip` is generated
+
 .. option:: -p NAME, --product NAME
 
             Set product name bind to license
@@ -1033,7 +1047,23 @@ Not all the old license could be upgrade to new license, check :doc:`../licenses
 
             specify device no. in group license
 
-            Valid value is from 1 to 100
+            Valid value is from 1 to 200
+
+.. versionadded:: v9.3.1
+
+.. option:: -m FILENAME, --machine FILENAME
+
+            Only for group license.
+
+            It could be text file, machine id or device registration file.
+
+            For example, request device registration file by `pyarmor-group-device.txt`::
+
+                pyarmor reg -m pyarmor-group-device.txt
+
+            Or request by machine id `mc92c9f22c732b482fb485aad31d789f1`::
+
+                pyarmor reg -m mc92c9f22c732b482fb485aad31d789f1
 
 .. _pyarmor init:
 

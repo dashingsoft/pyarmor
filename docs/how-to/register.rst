@@ -223,11 +223,17 @@ Copying group device file ``pyarmor-group-device.1`` to initial registration dev
 
 The device regfile ``pyarmor-device-regfile-xxxx.1.zip`` is bind to machine id in the device file ``pyarmor-group-device.1``.
 
-.. note::
+Since v9.3.1, use `-m` to specify device filename, the license server will assign next available device no. to this device automatically. For example::
 
-   If there are new versions which fix any bug that machine id is changed after this device reboot, it need generate new device file ``pyarmor-group-device.2`` for this device by new Pyarmor version, and generate new device regfile ``pyarmor-device-regfile-xxxx.2.zip`` by new Pyarmor version too.
+    $ pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
 
-   Because device no. ``1`` has been used, so it need use next device no. ``2``, that is to say, one device may occupy more than one device no. Generally it should not be problem because there are 100 device no. available.
+Then license server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip`
+
+If current device has been registerred as group license, this request also works::
+
+    pyarmor reg -m pyarmor-group-device.1
+
+And next device no. `pyarmor-device-regfile-xxxx.3.zip` is generated
 
 Registering Pyarmor in offline device
 -------------------------------------
