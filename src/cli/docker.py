@@ -155,8 +155,12 @@ def prepare(argv):
         CONFIG['home'] = os.path.expandvars(os.path.expanduser(args.home))
 
     home = os.path.join(CONFIG['home'], 'docker')
-    logging.info('work path: %s', home)
 
+    if args.regfile in ('s', 'stop'):
+        stop_daemon_proc(home)
+        return
+
+    logging.info('work path: %s', home)
     if not os.path.exists(home):
         os.makedirs(home)
 
@@ -178,32 +182,59 @@ def prepare(argv):
 
 
 def start_daemon_proc(args):
-    command = [sys.executable, '-m', 'pyarmor.cli.docker'] + args
+    command = [sys.executable, '-m', 'pyarmor.cli.docker']
     command.extend([x for x in args if x not in ('-b', '--background')])
+    ctx = CONFIG['ctx']
 
-    if sys.platform == "win32":
-        subprocess.Popen(
-            command,
-            creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP
-                           | subprocess.CREATE_NO_WINDOW),
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            close_fds=True,
-        )
-    else:
-        subprocess.Popen(
-            command,
-            start_new_session=True,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            close_fds=True,
-        )
+    pidfile = os.path.join(ctx.home_path, 'auth.pid')
+    logfile = os.path.join(ctx.home_path, 'auth.log')
+
+    logging.info('log file: %s', logfile)
+    with open(logfile, 'w') as f:
+        if sys.platform == "win32":
+            p = subprocess.Popen(
+                command,
+                creationflags=(subprocess.CREATE_NEW_PROCESS_GROUP
+                               | subprocess.CREATE_NO_WINDOW),
+                stdin=subprocess.DEVNULL,
+                stdout=f.fileno(),
+                stderr=subprocess.STDOUT,
+                close_fds=True,
+            )
+        else:
+            p = subprocess.Popen(
+                command,
+                start_new_session=True,
+                stdin=subprocess.DEVNULL,
+                stdout=f.fileno(),
+                stderr=subprocess.STDOUT,
+                close_fds=True,
+            )
+    with open(pidfile, 'w') as f:
+        f.write('%s' % p.pid)
+    return p.pid
 
 
-def main_entry():
-    args = sys.argv[1:]
+def stop_daemon_proc(home):
+    from signal import SIGINT, SIGTERM
+    pidfile = os.path.join(Context(home=home).home_path, 'auth.pid')
+    try:
+        with open(pidfile) as f:
+            pid = f.read()
+
+        logging.info('kill pyarmor-auth (pid: %s)', pid)
+        os.kill(int(pid), SIGINT)
+
+        logging.info('pyarmor-auth now is stopped')
+        sys.exit(0)
+    except FileNotFoundError:
+        logging.error('no pid file "%s" found', pidfile)
+    except Exception as e:
+        logging.error('failed to stop pyarmor-auth: %s', e)
+    sys.exit(1)
+
+
+def main_entry(args):
     try:
         host, port, background = prepare(args)
     except Exception as e:
@@ -211,15 +242,22 @@ def main_entry():
         return
 
     if background:
-        start_daemon_proc(args)
+        try:
+            pid = start_daemon_proc(args)
+            logging.info('pyarmor-auth is running in background (%s)', pid)
+            logging.info('run command `pyarmor-auth stop` to quit')
+        except Exception as e:
+            logging.error('%s', e)
         return
 
+    logging.info('listen container auth request on %s:%s', host, port)
     with socketserver.TCPServer((host, port), DockerAuthHandler) as server:
-        logging.info('listen container auth request on %s:%s', host, port)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
             logging.info('bye bye')
+        except Exception as e:
+            logging.error('unknown error: %s', e)
 
 
 def main():
@@ -227,7 +265,7 @@ def main():
         level=logging.INFO,
         format='%(asctime)s: %(message)s',
     )
-    main_entry()
+    main_entry(sys.argv[1:])
 
 
 #
