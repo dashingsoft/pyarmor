@@ -104,7 +104,7 @@ def generate_runtime_key(userdata):
     ctx.cmd_options['expired'] = '.3'
     ctx.cmd_options['outer'] = 0
     Pytransform3._pytransform3.init_ctx(ctx)
-    return Pytransform3.generate_runtime_key(ctx)
+    return Pytransform3.generate_runtime_key(ctx, outer=False)
 
 
 def register_pyarmor(ctx, regfile):
