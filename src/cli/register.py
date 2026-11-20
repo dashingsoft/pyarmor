@@ -429,8 +429,40 @@ class Register(object):
                 raise RuntimeError(
                     'this group license is not for this machine')
 
+    def _update_docker_hosts(hostname, dockname):
+        if hostname != 'host.docker.internal':
+            return
+
+        etcfile = (
+            '/etc/hosts' if os.sep == '/' else
+            os.path.expandvars(r'%SystemRoot%\system32\drivers\etc\hosts')
+        )
+
+        try:
+            dockip = None
+
+            with open(etcfile, 'r') as f:
+                for line in f:
+                    if line.startswith('#'):
+                        continue
+                    if line.find(dockname):
+                        dockip = line.split()[0]
+                    elif line.find(hostname):
+                        return
+
+            if dockip:
+                with open(etcfile, 'a') as f:
+                    rlist = dockip.split('.')
+                    rlist[-1] = '1'
+                    line = '%s %s' % ('.'.join(rlist), hostname)
+                    f.write(line)
+                return True
+        except Exception as e:
+            logger.debug('update docker hosts failed: %s', e)
+
     def register_docker(self):
-        from socket import socket, AF_INET, SOCK_STREAM, gethostname
+        from socket import socket, AF_INET, SOCK_STREAM, gethostname, gaierror
+        timeout = 3.0
 
         ctx = self.ctx
 
@@ -446,7 +478,15 @@ class Register(object):
         host = os.getenv('PYARMOR_DOCKER_HOST', 'host.docker.internal')
         port = 29092
         with socket(AF_INET, SOCK_STREAM) as s:
-            s.connect((host, port))
+            s.timeout(timeout)
+            try:
+                s.connect((host, port))
+            except gaierror:
+                if self._update_docker_hosts(host, dkid):
+                    s.connect((host, port))
+                else:
+                    raise
+
             logger.info('docker id: %s', dkid)
             logger.info('docker addr: %s', str(s.getsockname()))
             logger.info('host addr: %s', str(s.getpeername()))
