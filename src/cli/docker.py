@@ -212,6 +212,16 @@ def start_daemon_proc(args):
             )
     with open(pidfile, 'w') as f:
         f.write('%s' % p.pid)
+
+    try:
+        logging.info('starting pyarmor-auth in background')
+        p.wait(3.0)
+    except Exception as e:
+        logging.debug('%s', e)
+
+    if p.returncode is not None:
+        raise RuntimeError('something is wrong, please check "%s"', logfile)
+
     return p.pid
 
 
