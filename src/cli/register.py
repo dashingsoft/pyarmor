@@ -429,7 +429,7 @@ class Register(object):
                 raise RuntimeError(
                     'this group license is not for this machine')
 
-    def _update_docker_hosts(hostname, dockname):
+    def _fix_docker_hosts(hostname, dockname):
         if hostname != 'host.docker.internal':
             return
 
@@ -445,18 +445,20 @@ class Register(object):
                 for line in f:
                     if line.startswith('#'):
                         continue
-                    if line.find(dockname):
+                    if line.find(dockname) > 0:
                         dockip = line.split()[0]
-                    elif line.find(hostname):
+                        logger.info('got docker ipaddr: %s', dockip)
+                    elif line.find(hostname) > 0:
                         return
 
             if dockip:
                 with open(etcfile, 'a') as f:
-                    rlist = dockip.split('.')
-                    rlist[-1] = '1'
-                    line = '%s %s' % ('.'.join(rlist), hostname)
-                    f.write(line)
+                    n = dockip.rfind('.')
+                    hostip = dockip[:n] + '.1'
+                    logger.info('got host ipaddr "%s"', hostip)
+                    f.write('%s %s\n' % (hostip, hostname))
                 return True
+
         except Exception as e:
             logger.debug('update docker hosts failed: %s', e)
 
@@ -482,7 +484,7 @@ class Register(object):
             try:
                 s.connect((host, port))
             except gaierror:
-                if self._update_docker_hosts(host, dkid):
+                if self._fix_docker_hosts(host, dkid):
                     s.connect((host, port))
                 else:
                     raise
