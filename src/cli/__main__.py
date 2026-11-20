@@ -265,9 +265,8 @@ def cmd_reg(ctx, args):
     if args.machine:
         regsvr = WebRegister(ctx)
         regsvr.check_request_interval()
-        regsvr.request_machine_regfile(args.machine, args.regfile)
+        regsvr.request_machine_regfile(args.machine, args.regfile, args.device)
         logger.info('The device regfile has been generated successfully')
-
         return
 
     if args.device and not args.regfile:
