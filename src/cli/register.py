@@ -881,11 +881,12 @@ class WebRegister(Register):
             regfile = [group]
             for name in ('license.lic', '.pyarmor_capsule.zip'):
                 filename = os.path.join(path, name)
-                if not os.path.exists(filename):
+                try:
+                    with open(filename, 'rb') as f:
+                        regfile.append(f.read())
+                except FileNotFoundError:
                     logger.error('no "%s" found in reg path' % name)
                     raise CliError('this device is not registerred')
-                with open(filename, 'rb') as f:
-                    regfile.append(f.read())
 
         devid = 0 if devid is None else devid
         if os.path.exists(machine):
