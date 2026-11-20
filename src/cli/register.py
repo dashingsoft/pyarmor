@@ -869,17 +869,18 @@ class WebRegister(Register):
     def request_machine_regfile(self, machine, regfile=None):
         if regfile is None:
             path = self.ctx.reg_path
-            filename = os.path.join(path, 'group.tokens')
-            if not os.path.exists(filename):
-                logger.error('no "group.tokens" found in reg path')
+            try:
+                with open(os.path.join(path, 'group.tokens'), 'r') as f:
+                    group = json_loads(f.read()).get('group')
+            except FileNotFoundError:
+                logger.error('no found "group.tokens" in "%s"', path)
                 raise CliError('this device may be not registerred '
                                'by Pyarmor 9.3.1+')
-
-            with open(filename, 'r') as f:
-                group = json_loads(f.read()).get('group')
-
-            if not group:
-                raise CliError('invalid "group.tokens" file')
+            except Exception as e:
+                logger.error('failed to parse "group.tokens": %s', e)
+                raise CliError('this device registration file may not '
+                               'be requested by Pyarmor 9.3.1+. '
+                               'Please specify group regfile in the command.')
 
             regfile = [group]
             for name in ('license.lic', '.pyarmor_capsule.zip'):
