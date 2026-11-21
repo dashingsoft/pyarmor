@@ -952,9 +952,17 @@ Register Pyarmor, update Pyarmor license or upgrade Pyarmor license
 -m FILENAME, --machine FILENAME
                       request device regsitration file (only for group license)
 
-.. version-added:: v9.3.1
+.. versionadded:: v9.3.1
+                  :option:`-m`
 
-    :option:`-m`
+.. describe:: Arguments
+
+The ``FILENAME`` must be one of these forms:
+
+* ``pyarmor-regcode-xxxx.txt`` got by purchasing Pyarmor license
+* ``pyarmor-regfile-xxxx.zip`` got by initial registration with above file
+
+.. describe:: Description
 
 .. option:: -p NAME, --product NAME
 
@@ -1001,16 +1009,7 @@ Register Pyarmor, update Pyarmor license or upgrade Pyarmor license
                 pyarmor reg -m pyarmor-group-device.txt
                 pyarmor reg -m mc92c9f22c732b482fb485aad31d789f1
 
-.. describe:: Arguments
-
-The ``FILENAME`` must be one of these forms:
-
-* ``pyarmor-regcode-xxxx.txt`` got by purchasing Pyarmor license
-* ``pyarmor-regfile-xxxx.zip`` got by initial registration with above file
-
-.. describe:: Description
-
-The command `pyarmor reg` could be used in these cases
+.. describe:: Examples
 
 - Check the registration information::
 
@@ -1096,7 +1095,7 @@ The command `pyarmor reg` could be used in these cases
 
   License server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip` with next device id 2.
 
-  If current device has been registerred as group license, this request also works::
+  If current device has been registerred with Group License, this short form also works::
 
       pyarmor reg -m pyarmor-group-device.1
 
@@ -1106,7 +1105,7 @@ The command `pyarmor reg` could be used in these cases
 
       pyarmor reg -m pyarmor-group-device.1 -g 1
 
-  It will not assign new device, but genenate one new device regfile `pyarmor-device-regfile-xxxx.1.zip`
+  It will not allocate new device id, but genenate one new device regfile `pyarmor-device-regfile-xxxx.1.zip`
 
 - Register Pyarmor on offline build device
 

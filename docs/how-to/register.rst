@@ -209,16 +209,16 @@ Because group license is bind to device, so machine id should keep same after re
 
 For VM machine, WSL(Windows Subsystem Linux) or any other system, please check the documentation to configure the network and harddisk, make sure network mac address and serial number of harddisk are fixed. If they're volatile, group license could not work in this system.
 
-Generating offline device regfile
----------------------------------
+Generating device regfile
+-------------------------
 
-Generating device regfile needs an internet connection
+Generating device regfile needs internet connection
 
-Since v9.3.1, use `-m` to specify device filename or machine id to request device regfile, the license server will assign next available device no. to this device automatically. For example::
+Since v9.3.1 :option:`-m` to specify device filename or machine id to request device regfile. For example::
 
     pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
 
-Then license server will generate device registration file `pyarmor-device-regfile-xxxx.1.zip`
+Then license server will assign next available device no. to this device automatically, and generate device registration file `pyarmor-device-regfile-xxxx.1.zip`
 
 It also supports to request device regfile by machine id directly. For example::
 
@@ -226,7 +226,7 @@ It also supports to request device regfile by machine id directly. For example::
 
 License server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip` with next device id 2.
 
-If current device has been registerred as group license, this request also works::
+If current device has been registerred with Group License, this short form also works::
 
     pyarmor reg -m pyarmor-group-device.1
 
@@ -236,11 +236,9 @@ If need update device regfile, specify device id by `-g`. For example::
 
     pyarmor reg -m pyarmor-group-device.1 -g 1
 
-It will not assign new device, but genenate one new device regfile `pyarmor-device-regfile-xxxx.1.zip`
+It will not allocate new device id, but genenate one new device regfile `pyarmor-device-regfile-xxxx.1.zip`
 
-Prior to Pyarmor 9.3.1, by using the old way
-
-Copying group device file ``pyarmor-group-device.1`` to initial registration device or any computer which has internet connection and registration file, this file must be saved in the path ``.pyarmor/group/``, then run the following command to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip``::
+Prior to Pyarmor 9.3.1, it need copy group device file ``pyarmor-group-device.1`` to any computer which has internet connection and registration file, this file must be saved in the path ``.pyarmor/group/``. For example::
 
     $ mkdir -p .pyarmor/group
     $ cp pyarmor-group-device.1 .pyarmor/group/
@@ -295,12 +293,12 @@ After successful registration, all obfuscations will automatically apply this gr
 Run unlimited dockers in offline device
 ---------------------------------------
 
-.. version-added:: 8.3
+.. versionadded:: 8.3
                    This feature is available
 
 Pyarmor 9.3.1 make this feature simplify with Windows and MacOS host
 
-The conditions:
+Prerequisites:
 
 - Docker Host and Containers must be in same machine
 - Docker container can visit Host by `host.docker.internal`. For example::
@@ -309,7 +307,7 @@ The conditions:
 
 Basic usage
 
-1. On Docker Host install Pyarmor 9.3.1+, and register it wit group device as above
+1. On Docker Host install Pyarmor 9.3.1+, and register it with group license
 2. On Docker Host start `pyarmor-auth`:
 
 .. code-block:: bash
@@ -335,7 +333,7 @@ Basic usage
    root@86b180b28a50:/# pyarmor reg docker
    root@86b180b28a50:/# pyarmor gen foo.py
 
-Prior to Pyarmor 9.3.1, by using the old way
+The following content is for prior to Pyarmor 9.3.1
 
 Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
 
