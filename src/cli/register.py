@@ -294,6 +294,27 @@ class Register(object):
                     sizes[2], notes)
         return b64encode(data) + b' *=='
 
+    def _check_license(self, licinfo, regfile):
+        lictype = licinfo.get('type', '')
+        if lictype == 'C':
+            logger.info(
+                'this file is only used to request ci regfile:\n\n'
+                '\tpyarmor reg -C %s\n', regfile
+            )
+            raise CliError('wrong usage for CI License')
+        elif lictype in ('J', 'Z'):
+            mlist = [self._get_machine_id(MACHFLAGS[0]) for i in range(2)]
+            if mlist[0] != mlist[1]:
+                logger.warning(
+                    'Basic/Pro License can NOT be used in the docker\n\n'
+                    'each docker run will be taken as one build device\n'
+                    'after 100 runs, this license will not be available '
+                    'until next 30 days'
+                )
+                ch = input('Are you sure continue (y/N) ? ').lower()[:1]
+                if ch != 'y':
+                    raise CliError('user abort')
+
     def register_regfile(self, regfile, clean=True):
         from zipfile import ZipFile
 
@@ -321,11 +342,7 @@ class Register(object):
             elif 'reg.info' in namelist:
                 data = f.read('reg.info')
                 info = json_loads(data)
-                if info.get('type', '') == 'C':
-                    logger.info('this file is only used to '
-                                'request ci regfile:\n\n'
-                                '\tpyarmor reg -C %s\n', regfile)
-                    raise CliError('wrong usage for CI License')
+                self._check_license(info, regfile)
                 self.ctx.save_token(self._init_token(info))
             else:
                 logger.error('this license is not ready for Pyarmor 9')
