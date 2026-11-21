@@ -309,7 +309,8 @@ class Register(object):
                     'Basic/Pro License can NOT be used in the docker\n\n'
                     'each docker run will be taken as one build device\n'
                     'after 100 runs, this license will not be available '
-                    'until next 30 days'
+                    'until there is free token\n'
+                    'each token will be unlocked after 30 days'
                 )
                 ch = input('Are you sure continue (y/N) ? ').lower()[:1]
                 if ch != 'y':
