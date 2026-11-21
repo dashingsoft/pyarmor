@@ -933,7 +933,7 @@ Without this option, all the changed settings are stored in :term:`Local Path`, 
 pyarmor reg
 ===========
 
-Register Pyarmor or upgrade Pyarmor license
+Register Pyarmor, update Pyarmor license or upgrade Pyarmor license
 
 .. program:: pyarmor reg
 
@@ -947,9 +947,59 @@ Register Pyarmor or upgrade Pyarmor license
 -p NAME, --product NAME
                       license to this product
 -u, --upgrade         upgrade Pyarmor license
+-C, --CI              request CI regfile (only for Basic or CI license)
 -g ID, --device ID    device no. in group license
 -m FILENAME, --machine FILENAME
                       request device regsitration file (only for group license)
+
+.. version-added:: v9.3.1
+
+    :option:`-m`
+
+.. option:: -p NAME, --product NAME
+
+            Set product name bind to license
+
+            For non-commercial use, set product name to ``non-profits``
+
+            When initial registration, use this option to set product name for this license.
+
+            It's meaningless to use this option after initial registration.
+
+            ``TBD`` is a special product name. If product name is ``TBD`` at initial registration, the product name can be changed once in 6 months. If it's still not set after 6 months, the product name will be set to ``non-profits`` automatically.
+
+            For any other product name, it can't be changed any more.
+
+            Only :term:`Pyarmor basic` and :term:`Pyarmor pro` could set product name to ``TBD``
+
+.. option:: -u, --upgrade
+
+            Upgrade old license to Pyarmor 8.0 License
+
+            Not all the old license could be upgrade to new license
+
+            Refer to `What need to do after upgrading Pyarmor <../how-to/register.html#pyarmor>`_
+
+.. option:: -C, --CI
+
+            Request CI regfile, only for Basic or CI license
+
+.. option:: -g ID, --device ID
+
+            specify device no. in group license
+
+            Valid value is from 1 to 200
+
+.. option:: -m FILENAME, --machine FILENAME
+
+            Only for group license to request device registration file.
+
+            It could be text file or machine id
+
+            It's used to request device registration file. For examples::
+
+                pyarmor reg -m pyarmor-group-device.txt
+                pyarmor reg -m mc92c9f22c732b482fb485aad31d789f1
 
 .. describe:: Arguments
 
@@ -960,110 +1010,129 @@ The ``FILENAME`` must be one of these forms:
 
 .. describe:: Description
 
-Check the registration information::
+The command `pyarmor reg` could be used in these cases
 
-    $ pyarmor -v
+- Check the registration information::
 
-**Initial registration**
+      pyarmor reg
 
-Initial registration by the following command, replace ``NAME`` with real product name or ``non-profits``::
+- Activate any Pyarmor License, request :term:`registration file` from license server
 
-    $ pyarmor reg -p NAME pyarmor-regcode-xxxx.txt
+  First make activation file `pyarmor-regcode-xxxx.txt` by activation email sent by Pyarmor Team
 
-A :term:`registration file` ``pyarmor-regfile-xxxx.zip`` will be generated after initial registration completed. Using this file for subsequent registration::
+  Then request registration file `pyarmor-regfile-xxxx.zip`.
 
-    $ pyarmor reg pyarmor-regfile-xxxx.zip
+  For example, suppose this licnese is bind to product `ekeapp`::
 
-**Upgrading old license**
+      pyarmor reg -p ekeapp pyarmor-regcode-xxxx.txt
 
-Upgrading old license by the following command, if product name is not same as old license, it's ignored::
+  This will generate :term:`registration file`, it's one zip file like `pyarmor-regfile-xxxx.zip`
 
-    $ pyarmor reg -p NAME pyarmor-regcode-xxxx.txt
+  The activation file `pyarmor-regcode-xxxx.txt` is also used to update :term:`registration file` when upgrading Pyarmor to incompatible version.
 
-A :term:`registration file` ``pyarmor-regfile-xxxx.zip`` will be generated after upgrade completed. Using this file for subsequent registration::
+  For example, after upgrading Pyarmor to 9.2, it need request new one::
 
-    $ pyarmor reg pyarmor-regfile-xxxx.zip
+      pyarmor reg -p ekeapp pyarmor-regcode-xxxx.txt
 
-**Using group license**
+  But this command could be used no more than 10 times, so use it only necessary.
 
-:term:`Pyarmor group` also needs an internet connectection for initial registration, and generate the corresponding :term:`registration file`.
+- On stable build device, register basic license or pro license
 
-One group license could have 100 offline devices, each device has its own number, from 1 to 100.
+  First got :term:`registration file`  `pyarmor-regfile-xxxx.zip`
 
-For each device, first install Pyarmor 8.2+, and generate one device file. For example, run this command in device no. 1 to generate group device file ``pyarmor-group-device.1``::
+  Then run this command in stable build device::
 
-    $ pyarmor reg -g 1
+      pyarmor reg pyarmor-regfile-xxxx.zip
 
-Next prepare to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip`` for this device.
+  Run it once in each device, it can be used no more than 100 times
 
-It requires internet connection, group device file ``pyarmor-group-device.1``, group license :term:`registration file`. For example, copy group device file to initial registration machine, save it to path ``.pyarmor/group/``, run the following command to generate ``pyarmor-device-regfile-xxxx.1.zip``::
+  Note that if there are multiple systems in one machine, for example, one is Ubuntu, another MacOS, it need register Pyarmor in both of them (2 build devices)
 
-    $ mkdir -p .pyarmor/group
-    $ cp pyarmor-group-device.1 .pyarmor/group/
+- Request CI regfile for basic and ci license
 
-    $ pyarmor reg -g 1 pyarmor-regfile-xxxx.zip
+  The :term:`registration file` can't be used to register Pyarmor in the CI/CD pipeline, but to request CI regfile like `pyarmor-ci-xxxx.zip`. For example::
 
-Copy device regfile to device no. 1, then run the following command::
+      pyarmor reg -C pyarmor-regfile-xxxx.zip
 
-    $ pyarmor reg pyarmor-device-regfile-xxxx.1.zip
+  This command will generate CI regfile `pyarmor-ci-xxxx.zip`
 
-Repeat above steps for the rest device no. 2, no. 3 ...
+  CI regfile can be used to register Pyarmor in the pipeline, and valid for up to 1 year
 
-Since v9.3.1, use `-m` to specify device filename, the license server will assign next available device no. to this device automatically. For example::
+  This option only works for Basic and CI License, and can be used no more than 100 times
 
-    $ pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
+  So only use CI regfile to request new CI regfile in necessary:
 
-Then license server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip`
+    - When old one is expired
+    - When upgrading Pyarmor to incompatible version
 
-If current device has been registerred as group license, this request also works::
+- Register CI regfile in CI/CD pipeline by this equivalent command::
 
-    pyarmor reg -m pyarmor-group-device.1
+    pyarmor reg pyarmor-ci-xxxx.zip
 
-And next device no. `pyarmor-device-regfile-xxxx.3.zip` is generated
+**The following cases are only for Group License**
 
-.. option:: -p NAME, --product NAME
+- Generate device information file `pyarmor-group-device.x`::
 
-            Set product name bind to license
+      pyarmor reg -g 1
 
-            For non-commercial use, set product name to ``non-profits``
+  This command generate one text file `pyarmor-group-device.1`
 
-When initial registration, use this option to set product name for this license.
+- Request device registration file `pyarmor-device-regfile-xxxx.zip`
 
-It's meaningless to use this option after initial registration.
+  Prerequisites:
 
-``TBD`` is a special product name. If product name is ``TBD`` at initial registration, the product name can be changed once in 6 months. If it's still not set after 6 months, the product name will be set to ``non-profits`` automatically.
+      - Device information file `pyarmor-group-device.x`
+      - Group License registration file `pyarmor-regfile-xxxx.zip`
 
-For any other product name, it can't be changed any more.
+  Run this command to request device regfile::
 
-Only :term:`Pyarmor basic` and :term:`Pyarmor pro` could set product name to ``TBD``
+      pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
 
-.. option:: -u, --upgrade
+  License server will generate device registration file `pyarmor-device-regfile-xxxx.1.zip`
 
-            Upgrade old license to Pyarmor 8.0 License
+  It also supports to request device regfile by machine id directly. For example::
 
-Not all the old license could be upgrade to new license, check :doc:`../licenses`
+      pyarmor reg -m mc92c9f22c732b482fb485aad31d789f1 pyarmor-regfile-xxxx.zip
 
-.. option:: -g ID, --device ID
+  License server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip` with next device id 2.
 
-            specify device no. in group license
+  If current device has been registerred as group license, this request also works::
 
-            Valid value is from 1 to 200
+      pyarmor reg -m pyarmor-group-device.1
 
-.. versionadded:: v9.3.1
+  Then next device id `pyarmor-device-regfile-xxxx.3.zip` is generated
 
-.. option:: -m FILENAME, --machine FILENAME
+  If need update device regfile, specify device id by `-g`. For example::
 
-            Only for group license.
+      pyarmor reg -m pyarmor-group-device.1 -g 1
 
-            It could be text file, machine id or device registration file.
+  It will not assign new device, but genenate one new device regfile `pyarmor-device-regfile-xxxx.1.zip`
 
-            For example, request device registration file by `pyarmor-group-device.txt`::
+- Register Pyarmor on offline build device
 
-                pyarmor reg -m pyarmor-group-device.txt
+  Copy device registration file `pyarmor-device-regfile-xxxx.zip` to offline device, then::
 
-            Or request by machine id `mc92c9f22c732b482fb485aad31d789f1`::
+      pyarmor reg pyarmor-device-regfile-xxxx.zip
 
-                pyarmor reg -m mc92c9f22c732b482fb485aad31d789f1
+- Update device registration file after upgrading Pyarmor to incompatible version
+
+  Run this command in any inline machine::
+
+      pyarmor reg -m pyarmor-group-device.1 -g 1 pyarmor-reg-xxxx.zip
+
+  Or inline device has been registerred as Group License::
+
+      pyarmor reg -m pyarmor-group-device.1 -g 1
+
+- Register Pyarmor in local docker containers
+
+  Docker host must be registerred as one offline device with Group License
+
+  And start `pyarmor-auth` successfully
+
+  Then run this command in docker container::
+
+      pyarmor reg docker
 
 .. _pyarmor init:
 
