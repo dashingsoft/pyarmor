@@ -214,7 +214,7 @@ Generating device regfile
 
 Generating device regfile needs internet connection
 
-Since v9.3.1 :option:`-m` to specify device filename or machine id to request device regfile. For example::
+Since v9.3.1 using :option:`-m` to specify device filename or machine id to request device regfile. For example::
 
     pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
 
@@ -301,9 +301,7 @@ Pyarmor 9.3.1 make this feature simplify with Windows and MacOS host
 Prerequisites:
 
 - Docker Host and Containers must be in same machine
-- Docker container can visit Host by `host.docker.internal`. For example::
-
-  root@86b180b28a50:/# ping host.docker.internal
+- Docker container can visit Host by `host.docker.internal`
 
 Basic usage
 
