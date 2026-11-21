@@ -212,7 +212,33 @@ For VM machine, WSL(Windows Subsystem Linux) or any other system, please check t
 Generating offline device regfile
 ---------------------------------
 
-Generating offline device regfile needs an internet connection, Pyarmor 8.2+, group device file  ``pyarmor-group-device.1`` and group license :term:`registration file` ``pyarmor-regfile-xxxx.zip``.
+Generating device regfile needs an internet connection
+
+Since v9.3.1, use `-m` to specify device filename or machine id to request device regfile, the license server will assign next available device no. to this device automatically. For example::
+
+    pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
+
+Then license server will generate device registration file `pyarmor-device-regfile-xxxx.1.zip`
+
+It also supports to request device regfile by machine id directly. For example::
+
+    pyarmor reg -m mc92c9f22c732b482fb485aad31d789f1 pyarmor-regfile-xxxx.zip
+
+License server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip` with next device id 2.
+
+If current device has been registerred as group license, this request also works::
+
+    pyarmor reg -m pyarmor-group-device.1
+
+Then next device id `pyarmor-device-regfile-xxxx.3.zip` is generated
+
+If need update device regfile, specify device id by `-g`. For example::
+
+    pyarmor reg -m pyarmor-group-device.1 -g 1
+
+It will not assign new device, but genenate one new device regfile `pyarmor-device-regfile-xxxx.1.zip`
+
+Prior to Pyarmor 9.3.1, by using the old way
 
 Copying group device file ``pyarmor-group-device.1`` to initial registration device or any computer which has internet connection and registration file, this file must be saved in the path ``.pyarmor/group/``, then run the following command to generate device regfile ``pyarmor-device-regfile-xxxx.1.zip``::
 
@@ -222,18 +248,6 @@ Copying group device file ``pyarmor-group-device.1`` to initial registration dev
     $ pyarmor reg -g 1 /path/to/pyarmor-regfile-xxxx.zip
 
 The device regfile ``pyarmor-device-regfile-xxxx.1.zip`` is bind to machine id in the device file ``pyarmor-group-device.1``.
-
-Since v9.3.1, use `-m` to specify device filename, the license server will assign next available device no. to this device automatically. For example::
-
-    $ pyarmor reg -m pyarmor-group-device.1 pyarmor-regfile-xxxx.zip
-
-Then license server will generate device registration file `pyarmor-device-regfile-xxxx.2.zip`
-
-If current device has been registerred as group license, this request also works::
-
-    pyarmor reg -m pyarmor-group-device.1
-
-And next device no. `pyarmor-device-regfile-xxxx.3.zip` is generated
 
 Registering Pyarmor in offline device
 -------------------------------------
@@ -281,7 +295,8 @@ After successful registration, all obfuscations will automatically apply this gr
 Run unlimited dockers in offline device
 ---------------------------------------
 
-.. versionchanged:: 9.3
+.. version-added:: 8.3
+                   This feature is available
 
 Pyarmor 9.3.1 make this feature simplify with Windows and MacOS host
 
@@ -307,6 +322,9 @@ Basic usage
    # If run it in backround, with option -b
    $ pyarmor-auth -b
 
+   # Stop background process
+   $ pyarmor-auth stop
+
 3. On Docker Container, install Pyarmor 9.3.1+, and register Pyarmor:
 
 .. code-block:: bash
@@ -317,9 +335,7 @@ Basic usage
    root@86b180b28a50:/# pyarmor reg docker
    root@86b180b28a50:/# pyarmor gen foo.py
 
-Before v9.3, use the old way
-
-.. versionadded:: 8.3
+Prior to Pyarmor 9.3.1, by using the old way
 
 Group license supports unlimited dockers which uses default bridge network and not highly customized, the docker containers use same device regfile of host.
 
