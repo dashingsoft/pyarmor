@@ -949,6 +949,9 @@ class WebRegister(Register):
                     raise CliError('this device is not registerred')
 
         devid = 0 if devid is None else devid
+        if devid and machine == str(devid):
+            return self.request_device_regfile(regfile, devid)
+
         if os.path.exists(machine):
             self.request_device_regfile(regfile, devid, devfile=machine)
         elif len(machine) == 33 and machine[:1] == 'm' and all(
