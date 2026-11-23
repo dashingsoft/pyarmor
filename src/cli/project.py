@@ -396,6 +396,9 @@ class Project:
         self._rft_include_attrs = None
         self._used_external_types = None
 
+        self._rft_rename_module_names = None
+        self._rft_exclude_module_names = None
+
         self._std_options = None
         self._mini_options = None
         self._vmc_options = None
@@ -482,9 +485,6 @@ class Project:
         # "merge" will be loged to external_attrs
         # self.external_attrs = []
 
-        # Renamed module alias
-        self.rft_module_alias = {}
-
     @property
     def abspath(self):
         return abspath(self.src)
@@ -566,17 +566,11 @@ class Project:
 
           Otherwises, this option is one list of patterns.
 
-          Each pattern includes 1 or 2 parts, each part supports
-          `fnmatch` wildcard:
-
-              mod
-              pkg.mod
+          Each pattern supports `fnmatch` wildcard to match module
+          or top package name
 
           If pattern starts with `!`, it means not rename these
-          matched names:
-
-              !mod
-              !pkg.mod
+          matched names
 
         - argument_mode: enum('0', '1', '2', '3')
 
@@ -939,6 +933,50 @@ class Project:
                 self._rft_include_attrs.update(value.split())
         return self._rft_include_attrs
 
+    @property
+    def rft_rename_module_names(self):
+        """List all modules need to be renamed."""
+        if self._rft_rename_module_names is None:
+            results = set()
+            value = self.rft_opt('rename_module_names')
+
+            def iter_top_modules():
+                for x in self._modules:
+                    yield x
+                for x in self._packages + self._namespaces:
+                    yield x
+
+            if value == '2' or (value == '1' and self._scripts):
+                for x in iter_top_modules():
+                    results.add(x.name)
+
+            elif isinstance(str, value) and len(value) > 1:
+                pats = value.split()
+                incls = [x for x in pats if x[:1] != '!']
+                excls = [x[1:] for x in pats if x[:1] == '!']
+
+                match = fnmatchcase
+                for x in iter_top_modules():
+                    name = x.name
+                    if (any([match(name, x) for x in incls])
+                        if incls else True and
+                        not any([match(name, x) for x in excls])):
+                        results.add(name)
+            self._rft_rename_module_names = results
+
+        return self._rft_rename_module_names
+
+    @property
+    def rft_exclude_module_names(self):
+        """List all modules need not to be renamed."""
+        if self._rft_exclude_module_names is None:
+            results = set()
+            value = self.rft_opt('exclude_module_names')
+            if value:
+                results.update(value.split())
+            self._rft_exclude_module_names = results
+        return self._rft_exclue_module_names
+
     def get_module(self, qualname):
         """Get module in the project by unique qualname
         It equals one dict: map_qualname_to_module
@@ -1110,38 +1148,6 @@ class Project:
             if clsname is None:
                 return extypes
         return extypes.get('%s.%s' % (modname, clsname), [])
-
-    def rename_project_modules(self):
-        value = self.rft_opt('rename_module_names')
-        if value is None:
-            return
-
-        def iter_modules():
-            for x in self._modules:
-                yield x
-            for child in self._packages + self._namespaces:
-                for x in child.iter_module():
-                    yield x
-
-        if value in ('0', '1', '2'):
-            if value == '2' or (value == '1' and self._scripts):
-                for x in iter_modules():
-                    self.rft_module_alias[x.qualname] = True
-            return
-
-        pats = value.split()
-        incls = [x for x in pats if x[:1] != '!']
-        excls = [x[1:].strip() for x in pats if x[:1] == '!']
-
-        def match_module(name):
-            return (any([fnmatchcase(name, x) for x in incls])
-                    if incls else True and
-                    not any([fnmatchcase(name, x) for x in excls]))
-
-        for x in iter_modules():
-            qualname = x.qualname
-            if match_module(qualname):
-                self.rft_module_alias[qualname] = True
 
     def preview_autofix_result(self, mode):
         if mode not in (2, 3):
