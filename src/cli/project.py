@@ -187,10 +187,13 @@ class Module:
         return (self._path if isabs(self._path) else
                 joinpath(self.parent.abspath, self._path))
 
-    @property
-    def destpath(self):
+    def build_destpath(self, qualname):
         s = self.qualname + ('' if self.name else '.__init__')
         return joinpath(*s.split('.')) + splitext(self.path)[-1]
+
+    @property
+    def destpath(self):
+        return self.build_destpath(self.qualname)
 
     @property
     def shebang(self):
