@@ -556,21 +556,17 @@ class Project:
 
           Always 0, do not touch node "from..import *"
 
-        - rename_module_names: 0, 1, 2 or patterns
+        - rename_module_mode: 0, 1, 2
 
-          Whether rename module names, if it's one of
+          How to rename module names
 
           0: don't rename any modules (default)
           1: rename modules only when project has any script
           2: rename all modules even no script in project
 
-          Otherwises, this option is one list of patterns.
+        - exclude_module_names: list
 
-          Each pattern supports `fnmatch` wildcard to match module
-          or top package name
-
-          If pattern starts with `!`, it means not rename these
-          matched names
+          This option is one list of patterns of `fnmatch`
 
         - argument_mode: enum('0', '1', '2', '3')
 
@@ -938,30 +934,24 @@ class Project:
         """List all modules need to be renamed."""
         if self._rft_rename_module_names is None:
             results = set()
-            value = self.rft_opt('rename_module_names')
+            value = self.rft_opt('module_name_mode')
+
+            excls = self.rft_exclude_module_names
+
+            def is_excluded(name):
+                return any([fnmatchcase(name, p) for p in excls])
 
             def iter_top_modules():
                 for x in self._modules:
-                    yield x
+                    if not is_excluded(x.name):
+                        yield x.name
                 for x in self._packages + self._namespaces:
-                    yield x
+                    if not is_excluded(x.name):
+                        yield x.name
 
             if value == '2' or (value == '1' and self._scripts):
-                for x in iter_top_modules():
-                    results.add(x.name)
+                results.update([x for x in iter_top_modules()])
 
-            elif isinstance(str, value) and len(value) > 1:
-                pats = value.split()
-                incls = [x for x in pats if x[:1] != '!']
-                excls = [x[1:] for x in pats if x[:1] == '!']
-
-                match = fnmatchcase
-                for x in iter_top_modules():
-                    name = x.name
-                    if (any([match(name, x) for x in incls])
-                        if incls else True and
-                        not any([match(name, x) for x in excls])):
-                        results.add(name)
             self._rft_rename_module_names = results
 
         return self._rft_rename_module_names
@@ -970,12 +960,10 @@ class Project:
     def rft_exclude_module_names(self):
         """List all modules need not to be renamed."""
         if self._rft_exclude_module_names is None:
-            results = set()
-            value = self.rft_opt('exclude_module_names')
-            if value:
-                results.update(value.split())
-            self._rft_exclude_module_names = results
-        return self._rft_exclue_module_names
+            value = self.rft_opt('exclude_module_names', '')
+            self._rft_exclude_module_names = value.split()
+        for x in self._rft_exclue_module_names:
+            yield x
 
     def get_module(self, qualname):
         """Get module in the project by unique qualname
