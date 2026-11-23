@@ -70,7 +70,7 @@ import os
 import tokenize
 
 from collections import namedtuple
-from fnmatch import fnmatch
+from fnmatch import fnmatch, fnmatchcase
 from json import loads as jsonloads, load as jsonload
 from os.path import (
     abspath, basename, exists, isabs, join as joinpath,
@@ -482,6 +482,9 @@ class Project:
         # "merge" will be loged to external_attrs
         # self.external_attrs = []
 
+        # Renamed module alias
+        self.rft_module_alias = {}
+
     @property
     def abspath(self):
         return abspath(self.src)
@@ -552,6 +555,28 @@ class Project:
         - rft_ximport: bool
 
           Always 0, do not touch node "from..import *"
+
+        - rename_module_names: 0, 1, 2 or patterns
+
+          Whether rename module names, if it's one of
+
+          0: don't rename any modules (default)
+          1: rename modules only when project has any script
+          2: rename all modules even no script in project
+
+          Otherwises, this option is one list of patterns.
+
+          Each pattern includes 1 or 2 parts, each part supports
+          `fnmatch` wildcard:
+
+              mod
+              pkg.mod
+
+          If pattern starts with `!`, it means not rename these
+          matched names:
+
+              !mod
+              !pkg.mod
 
         - argument_mode: enum('0', '1', '2', '3')
 
@@ -1085,6 +1110,38 @@ class Project:
             if clsname is None:
                 return extypes
         return extypes.get('%s.%s' % (modname, clsname), [])
+
+    def rename_project_modules(self):
+        value = self.rft_opt('rename_module_names')
+        if value is None:
+            return
+
+        def iter_modules():
+            for x in self._modules:
+                yield x
+            for child in self._packages + self._namespaces:
+                for x in child.iter_module():
+                    yield x
+
+        if value in ('0', '1', '2'):
+            if value == '2' or (value == '1' and self._scripts):
+                for x in iter_modules():
+                    self.rft_module_alias[x.qualname] = True
+            return
+
+        pats = value.split()
+        incls = [x for x in pats if x[:1] != '!']
+        excls = [x[1:].strip() for x in pats if x[:1] == '!']
+
+        def match_module(name):
+            return (any([fnmatchcase(name, x) for x in incls])
+                    if incls else True and
+                    not any([fnmatchcase(name, x) for x in excls]))
+
+        for x in iter_modules():
+            qualname = x.qualname
+            if match_module(qualname):
+                self.rft_module_alias[qualname] = True
 
     def preview_autofix_result(self, mode):
         if mode not in (2, 3):
