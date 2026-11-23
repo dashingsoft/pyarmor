@@ -29,6 +29,7 @@ from os.path import abspath, exists, join as joinpath, relpath
 from . import logger, CliError
 from .project import Project
 from .shell import PyarmorShell
+from .packer import Packer
 
 
 class Commander:
@@ -200,10 +201,11 @@ class Commander:
             help='Generate refactor rules by autofix mode'
         )
 
-        # parser.add_argument(
-        #     '--pack', metavar='MODE',
-        #     help='specify pack mode, onefile or onedir'
-        # )
+        parser.add_argument(
+            '--pack', metavar='MODE',
+            choices=('onefile', 'onedir', 'F', 'D', 'FC', 'DC'),
+            help='Pack the obfuscated scripts to one bundle'
+        )
 
         # sgroup = parser.add_argument_group(
         #     title='these options only for --std target',
@@ -403,6 +405,9 @@ class Commander:
         project.load(cfgdata)
         logger.info('load project end')
 
+        packer = Packer(project, args.pack, args.output)
+        packer.analysis()
+
         if args.target == 'list':
             logger.info('project src: %s', relpath(project.src))
             logger.info('project scripts:')
@@ -435,10 +440,10 @@ class Commander:
             logger.info('build rand-pool:%s end', value)
         else:
             logger.info('build target %s ...', args.target)
-            output = args.output if args.output else 'dist'
-            self._build(project, args.target, output)
+            self._build(project, args.target, packer.obfpath)
             if args.target.startswith('std'):
                 self._cmd_gen(args)
+            packer.build()
             logger.info('build target %s end', args.target)
 
     def _build(self, project, target, output, value=None):
