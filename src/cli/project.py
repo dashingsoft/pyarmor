@@ -401,6 +401,8 @@ class Project:
         self._vmc_options = None
         self._ecc_options = None
 
+        self._pack_options = None
+
         # Log variable name in chain attributes
         #
         # For example, in module "foo.py":
@@ -849,6 +851,13 @@ class Project:
 
     def ecc_opt(self, name):
         return self.ecc_options.get(name)
+
+    @property
+    def pack_options(self):
+        """Pack mode options"""
+        if self._pack_options is None:
+            self._pack_options = self.ctx.pyi_options
+        return self._pack_options
 
     @property
     def builtins(self):
