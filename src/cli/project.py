@@ -937,24 +937,16 @@ class Project:
         """List all modules need to be renamed."""
         if self._rft_rename_module_names is None:
             results = set()
-            value = self.rft_opt('module_name_mode')
-
+            value = self.rft_opt('rename_module_mode')
             excls = self.rft_exclude_module_names
 
             def is_excluded(name):
                 return any([fnmatchcase(name, p) for p in excls])
 
-            def iter_top_modules():
-                for x in self._modules:
-                    if not is_excluded(x.name):
-                        yield x.name
-                for x in self._packages + self._namespaces:
-                    if not is_excluded(x.name):
-                        yield x.name
-
             if value == '2' or (value == '1' and self._scripts):
-                results.update([x for x in iter_top_modules()])
-
+                results.update([x.name for x in self._modules +
+                                self._packages + self._namespaces
+                                if not is_excluded(x.name)])
             self._rft_rename_module_names = results
 
         return self._rft_rename_module_names
