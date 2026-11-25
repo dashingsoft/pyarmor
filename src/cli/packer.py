@@ -26,7 +26,6 @@ import os
 import shutil
 import sys
 
-from fnmatch import fnmatch
 from subprocess import check_call, DEVNULL
 
 logger = logging.getLogger('packer')
